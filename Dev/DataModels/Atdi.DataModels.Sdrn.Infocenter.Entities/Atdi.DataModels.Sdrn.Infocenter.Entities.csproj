@@ -41,12 +41,28 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\ICluttersDesc.cs" />
+    <Compile Include="Entities\ICluttersDescFreqClutter.cs" />
+    <Compile Include="Entities\ICluttersDescFreq.cs" />
+    <Compile Include="Entities\ICluttersDescClutter.cs" />
     <Compile Include="InfocenterEntityOrmContext.cs" />
     <Compile Include="Entities\IMapSector.cs" />
     <Compile Include="Entities\IMap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="DataLayer\Oracle\Tables\[INFOC].[CLUTTERS_DESCS].sql" />
+    <Content Include="DataLayer\Oracle\Tables\[INFOC].[CLUTTERS_DESCS_CLUTTERS].sql" />
+    <Content Include="DataLayer\Oracle\Tables\[INFOC].[CLUTTERS_DESCS_FREQS].sql" />
+    <Content Include="DataLayer\Oracle\Tables\[INFOC].[CLUTTERS_DESCS_FREQS_CLUTTERS].sql" />
+    <Content Include="DataLayer\Oracle\Tables\[INFOC].[MAPS].sql" />
+    <Content Include="DataLayer\Oracle\Tables\[INFOC].[MAP_SECTORS].sql" />
+    <Content Include="DataLayer\SqlServer\Tables\[INFOC].[CLUTTERS_DESCS].sql" />
+    <Content Include="DataLayer\SqlServer\Tables\[INFOC].[CLUTTERS_DESCS_CLUTTERS].sql" />
+    <Content Include="DataLayer\SqlServer\Tables\[INFOC].[CLUTTERS_DESCS_FREQS].sql" />
+    <Content Include="DataLayer\SqlServer\Tables\[INFOC].[CLUTTERS_DESCS_FREQS_CLUTTERS].sql" />
+    <Content Include="DataLayer\SqlServer\Tables\[INFOC].[MAPS].sql" />
+    <Content Include="DataLayer\SqlServer\Tables\[INFOC].[MAP_SECTORS].sql" />
     <Content Include="Metadata\DataTypes\ClrObject\CT.Object.xml" />
     <Content Include="Metadata\DataTypes\ClrObject\CT.ReadOnlyDictionary.String.String.xml" />
     <Content Include="Metadata\DataTypes\ClrObject\DateTime.DATETIME.xml" />
@@ -97,6 +113,10 @@
     <Content Include="Metadata\DataTypes\Database\Text.Bytes.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.MAX.xml" />
     <Content Include="Metadata\DataTypes\Database\Time.xml" />
+    <Content Include="Metadata\Entities\CluttersDescFreqClutter.xml" />
+    <Content Include="Metadata\Entities\CluttersDescFreq.xml" />
+    <Content Include="Metadata\Entities\CluttersDescClutter.xml" />
+    <Content Include="Metadata\Entities\CluttersDesc.xml" />
     <Content Include="Metadata\Entities\MapSector.xml" />
     <Content Include="Metadata\Entities\Map.xml" />
     <Content Include="Metadata\Entities\Monitoring\LogEvent.xml" />
@@ -119,15 +139,16 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DataLayer\Oracle\Functions\" />
-    <Folder Include="DataLayer\Oracle\Tables\" />
     <Folder Include="DataLayer\SqlServer\Functions\" />
-    <Folder Include="DataLayer\SqlServer\Tables\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Atdi.DataModels.EntityOrm\Atdi.DataModels.EntityOrm.csproj">
       <Project>{73c8791e-3fc5-4c91-84e5-c19c98096f10}</Project>
       <Name>Atdi.DataModels.EntityOrm</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Metadata\Entities\CluttersDesc.json" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

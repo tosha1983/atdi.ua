@@ -14,7 +14,9 @@ using System.Threading.Tasks;
 using Atdi.Contracts.Sdrn.CalcServer.Internal;
 using Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations;
 using System.IO;
+using Atdi.DataModels.Sdrn.DeepServices.Gis;
 using Newtonsoft.Json;
+#pragma warning disable 649
 
 namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 {
@@ -36,26 +38,36 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 
 		private class ResultProfile
 		{
-			public Coordinate Point;
-			public Coordinate Target;
+			public AtdiCoordinate Point;
+			public AtdiCoordinate Target;
 
-			public ResultProfileRecord[] Records { get; set; }
+			public ResultProfileRecord[] Records;
 
-			public int Count { get; set; }
+			public int Count;
+
+			public string Map;
+
+			public string ForwardXIndex;
+			public string ForwardYIndex;
+
+			public string ReversXIndex;
+			public string ReversYIndex;
 		}
 
 		private struct ResultProfileRecord
 		{
 			public int Num;
 			public int Index;
-			public Indexer Indexer;
+#pragma warning disable 649
+			public ProfileIndexer Indexer;
 			public short Relief;
 			public byte Clutter;
 			public byte Building;
+#pragma warning restore 649
 		};
 
 		private readonly IDataLayer<EntityDataOrm<CalcServerEntityOrmContext>> _calcServerDataLayer;
-		private readonly IMapService _mapService;
+		private readonly IMapRepository _mapService;
 		private readonly IIterationsPool _iterationsPool;
 		private readonly ILogger _logger;
 		private ITaskContext _taskContext;
@@ -65,7 +77,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 
 		public CoverageProfilesCalcTask(
 			IDataLayer<EntityDataOrm<CalcServerEntityOrmContext>> calcServerDataLayer,
-			IMapService mapService,
+			IMapRepository mapService,
 			IIterationsPool iterationsPool,
 			ILogger logger)
 		{
@@ -96,7 +108,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 			this.ValidateTaskParameters();
 
 			// найти и загрузить карту
-			this._mapData = _mapService.GetMapByName(this._taskContext.ProjectId, this._parameters.MapName);
+			this._mapData = _mapService.GetMapByName(this._calcDbScope, this._taskContext.ProjectId, this._parameters.MapName);
 
 			// проверить принадлежность точек к карте
 
@@ -119,7 +131,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 				$"profile_P{_taskContext.ProjectId:D6}_T{_taskContext.TaskId:D8}_R{_taskContext.ResultId:D10}");
 
 			// беффер хранения индексов получени яданных профиля
-			var indexesBuffer = new Indexer[this._mapData.AxisX.Number + this._mapData.AxisY.Number];
+			var indexesBuffer = new ProfileIndexer[this._mapData.AxisX.Number + this._mapData.AxisY.Number];
 
 			var iteration = this._iterationsPool.GetIteration<ProfileIndexersCalcData, int>();
 
@@ -130,14 +142,14 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 				{
 					var fullFileName = fileName + $"_I{i:D5}.mpf";
 
-					var point = new Coordinate()
+					var point = new AtdiCoordinate()
 					{
 						// ReSharper disable once PossibleInvalidOperationException
 						X = this._parameters.PointsX[i],
 						// ReSharper disable once PossibleInvalidOperationException
 						Y = this._parameters.PointsY[i]
 					};
-					var target = new Coordinate()
+					var target = new AtdiCoordinate()
 					{
 						X = _parameters.PointsX[++i],
 						Y = _parameters.PointsY[i]
@@ -148,7 +160,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 			}
 			else if (_parameters.Mode == CoverageProfilesCalcModeCode.FirstWithAll)
 			{
-				var point = new Coordinate()
+				var point = new AtdiCoordinate()
 				{
 					// ReSharper disable once PossibleInvalidOperationException
 					X = this._parameters.PointsX[0],
@@ -157,7 +169,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 				};
 				for (var i = 1; i < _parameters.PointsX.Length; i++)
 				{
-					var target = new Coordinate()
+					var target = new AtdiCoordinate()
 					{
 						X = _parameters.PointsX[i],
 						Y = _parameters.PointsY[i]
@@ -169,18 +181,24 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 			}
 			else if (_parameters.Mode == CoverageProfilesCalcModeCode.AllWithAll)
 			{
-				for (var i = 1; i < _parameters.PointsX.Length; i++)
+				var count = 0;
+				for (var i = 0; i < _parameters.PointsX.Length; i++)
 				{
-					var point = new Coordinate()
+					var point = new AtdiCoordinate()
 					{
 						// ReSharper disable once PossibleInvalidOperationException
 						X = this._parameters.PointsX[i],
 						// ReSharper disable once PossibleInvalidOperationException
 						Y = this._parameters.PointsY[i]
 					};
-					for (var j = i + 1; j < _parameters.PointsX.Length; j++)
+					for (var j = 0; j < _parameters.PointsX.Length; j++)
 					{
-						var target = new Coordinate()
+						if (i == j)
+						{
+							continue;
+						}
+
+						var target = new AtdiCoordinate()
 						{
 							X = _parameters.PointsX[j],
 							Y = _parameters.PointsY[j]
@@ -188,8 +206,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 
 						var fullFileName = fileName + $"_I{i:D5}X{j:D5}.mpf";
 						CalcProfile(indexesBuffer, point, target, iteration, fullFileName);
+						++count;
 					}
 				}
+				System.Diagnostics.Debug.WriteLine($"Count profiles: {count}");
 			}
 			else
 			{
@@ -199,7 +219,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 			
 		}
 
-		private void CalcProfile(Indexer[] indexesBuffer, Coordinate point, Coordinate target, IIterationHandler<ProfileIndexersCalcData, int> iteration,
+		private void CalcProfile(ProfileIndexer[] indexesBuffer, AtdiCoordinate point, AtdiCoordinate target, IIterationHandler<ProfileIndexersCalcData, int> iteration,
 			string fileName)
 		{
 			var iterationData = new ProfileIndexersCalcData
@@ -212,30 +232,78 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 
 			var count = iteration.Run(this._taskContext, iterationData);
 
-			var result = new ResultProfile()
-			{
-				Point = point,
-				Target = target,
-				Records = new ResultProfileRecord[count],
-				Count = count
-			};
-			for (var j = 0; j < count; j++)
-			{
-				var indexer = iterationData.Result[j];
-				var mapIndex = indexer.YIndex * _mapData.AxisX.Number + indexer.XIndex;
+			//var result = new ResultProfile()
+			//{
+			//	Point = point,
+			//	Target = target,
+			//	Records = new ResultProfileRecord[count],
+			//	Count = count,
+			//	Map = _mapData.ToString()
+			//};
+			//for (var j = 0; j < count; j++)
+			//{
+			//	var indexer = iterationData.Result[j];
+			//	var mapIndex = indexer.YIndex * _mapData.AxisX.Number + indexer.XIndex;
 
-				result.Records[j] = new ResultProfileRecord
-				{
-					Num = j,
-					Index = mapIndex,
-					Indexer = indexer,
-					Relief = _mapData.ReliefContent[mapIndex],
-					Building = _mapData.BuildingContent[mapIndex],
-					Clutter = _mapData.ClutterContent[mapIndex]
-				};
-			}
+			//	result.Records[j] = new ResultProfileRecord
+			//	{
+			//		Num = j,
+			//		Index = mapIndex,
+			//		Indexer = indexer,
+			//		Relief = _mapData.ReliefContent[mapIndex],
+			//		Building = _mapData.BuildingContent[mapIndex],
+			//		Clutter = _mapData.ClutterContent[mapIndex]
+			//	};
+			//}
 
-			File.AppendAllText(fileName, JsonConvert.SerializeObject(result, Formatting.Indented), Encoding.UTF8);
+			//if (iterationData.HasError)
+			//{
+			//	result.ForwardXIndex = string.Join(", ", result.Records.Select(r => r.Indexer.XIndex.ToString()).ToArray());
+			//	result.ForwardYIndex = string.Join(", ", result.Records.Select(r => r.Indexer.YIndex.ToString()).ToArray());
+
+			//	result.ReversXIndex = string.Join(", ", result.Records.Select(r => r.Indexer.XIndex.ToString()).Reverse().ToArray());
+			//	result.ReversYIndex = string.Join(", ", result.Records.Select(r => r.Indexer.YIndex.ToString()).Reverse().ToArray());
+
+			//	File.AppendAllText(fileName, JsonConvert.SerializeObject(result, Formatting.Indented), Encoding.UTF8);
+
+			//	iterationData.Point = target;
+			//	iterationData.Target = point;
+
+			//	count = iteration.Run(this._taskContext, iterationData);
+
+			//	result = new ResultProfile()
+			//	{
+			//		Point = point,
+			//		Target = target,
+			//		Records = new ResultProfileRecord[count],
+			//		Count = count,
+			//		Map = _mapData.ToString()
+			//	};
+			//	for (var j = 0; j < count; j++)
+			//	{
+			//		var indexer = iterationData.Result[j];
+			//		var mapIndex = indexer.YIndex * _mapData.AxisX.Number + indexer.XIndex;
+
+			//		result.Records[j] = new ResultProfileRecord
+			//		{
+			//			Num = j,
+			//			Index = mapIndex,
+			//			Indexer = indexer,
+			//			Relief = _mapData.ReliefContent[mapIndex],
+			//			Building = _mapData.BuildingContent[mapIndex],
+			//			Clutter = _mapData.ClutterContent[mapIndex]
+			//		};
+			//	}
+
+			//	result.ForwardXIndex = string.Join(", ", result.Records.Select(r => r.Indexer.XIndex.ToString()).ToArray());
+			//	result.ForwardYIndex = string.Join(", ", result.Records.Select(r => r.Indexer.YIndex.ToString()).ToArray());
+
+			//	result.ReversXIndex = string.Join(", ", result.Records.Select(r => r.Indexer.XIndex.ToString()).Reverse().ToArray());
+			//	result.ReversYIndex = string.Join(", ", result.Records.Select(r => r.Indexer.YIndex.ToString()).Reverse().ToArray());
+
+			//	File.AppendAllText(fileName + ".reveres", JsonConvert.SerializeObject(result, Formatting.Indented), Encoding.UTF8);
+			//}
+
 		}
 
 		private void ValidateTaskParameters()

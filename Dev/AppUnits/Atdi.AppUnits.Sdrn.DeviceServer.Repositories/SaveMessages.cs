@@ -30,12 +30,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
             {
                 var fileName = MakeFileName(typeof(T).Name.ToString());
                 var fullPath = Path.Combine(this._messageFolder, fileName);
-
-                IFormatter formatter = new BinaryFormatter();
-                using (MemoryStream stream = new MemoryStream())
+                //lock (fileName)
                 {
-                    formatter.Serialize(stream, receivedMessage);
-                    File.WriteAllBytes(fullPath, stream.ToArray());
+                    IFormatter formatter = new BinaryFormatter();
+                    using (FileStream file = new FileStream(fullPath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.ReadWrite))
+                    using (StreamWriter streamWriter = new StreamWriter(file))
+                    {
+                        formatter.Serialize(streamWriter.BaseStream, receivedMessage);
+                        streamWriter.Close();
+                    }
                 }
                 return fullPath;
             }
@@ -57,7 +60,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
             {
                 if (File.Exists(fileName))
                 {
-                    File.Delete(fileName);
+                    //lock (fileName)
+                    {
+                        File.Delete(fileName);
+                    }
                     return true;
                 }
                 else
@@ -81,13 +87,19 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
 
             try
             {
-                var fullPath = Path.Combine(this._messageFolder, fileName);
-
-                IFormatter formatter = new BinaryFormatter();
-                using (MemoryStream stream = new MemoryStream())
+                //lock (fileName)
                 {
-                    formatter.Serialize(stream, receivedMessage);
-                    File.WriteAllBytes(fullPath, stream.ToArray());
+                    var fullPath = Path.Combine(this._messageFolder, fileName);
+                    if (File.Exists(fullPath))
+                    {
+                        IFormatter formatter = new BinaryFormatter();
+                        using (FileStream file = new FileStream(fullPath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.ReadWrite))
+                        using (StreamWriter streamWriter = new StreamWriter(file))
+                        {
+                            formatter.Serialize(streamWriter.BaseStream, receivedMessage);
+                            streamWriter.Close();
+                        }
+                    }
                 }
                 return true;
             }

@@ -159,5 +159,10 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// </summary>
         [DataMember]
         public double? UpFreq;
+        /// <summary>
+        /// Sensor title
+        /// </summary>
+        [DataMember]
+        public string SensorTitle;
     }
 }

@@ -23,21 +23,23 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 
 		string CallSign { get; set; }
 
-		byte TypeCode { get; set; }
+		byte StateCode { get; set; }
 
-		string TypeName { get; set; }
+		string StateName { get; set; }
 
 		IContextStationSite SITE { get; set; }
+
+		IContextStationAntenna ANTENNA { get; set; }
 
 		IContextStationTransmitter TRANSMITTER { get; set; }
 
 		IContextStationReceiver RECEIVER { get; set; }
 
-		IContextStationAntenna ANTENNA { get; set; }
-	}
+		IContextStationCoordinates COORDINATES { get; set; }
+}
 
 
-	public enum StationTypeCode
+	public enum StationStateCode
 	{
 		/// <summary>
 		/// Unknown

@@ -10,9 +10,11 @@ using Atdi.Contracts.CoreServices.DataLayer;
 using Atdi.Contracts.CoreServices.EntityOrm;
 using Atdi.Contracts.Sdrn.Infocenter;
 using Atdi.DataModels.DataConstraint;
+using Atdi.DataModels.Sdrn.Infocenter;
 using ES = Atdi.DataModels.Sdrn.Infocenter.Entities;
 using Atdi.Platform.Logging;
 using Atdi.Platform.Workflows;
+using Newtonsoft.Json;
 
 namespace Atdi.AppUnits.Sdrn.Infocenter
 {
@@ -51,7 +53,9 @@ namespace Atdi.AppUnits.Sdrn.Infocenter
 			}
 
 			// находим файлы
-			var fileNames = Directory.GetFiles(folderName, "*.*", SearchOption.TopDirectoryOnly);
+			var fileNames = Directory.EnumerateFiles(folderName, "*.*", SearchOption.TopDirectoryOnly)
+				.Where(s => s.EndsWith(".geo") || s.EndsWith(".blg") || s.EndsWith(".sol")).ToArray();
+			//Directory.GetFiles(folderName, "*.geo,*.blg,*.sol", SearchOption.TopDirectoryOnly);
 
 			if (fileNames != null && fileNames.Length > 0)
 			{
@@ -73,6 +77,16 @@ namespace Atdi.AppUnits.Sdrn.Infocenter
 							}
 							
 							File.Move(fileName, Path.Combine(movingFolder, $"map_{mapId:D10}_" + Path.GetFileName(fileName)));
+
+							if (".sol".Equals(Path.GetExtension(fileName), StringComparison.OrdinalIgnoreCase))
+							{
+								var clutterFileName = fileName + ".json";
+								if (File.Exists(clutterFileName))
+								{
+									ImportClutterJson(clutterFileName, mapId, dbScope);
+									File.Move(clutterFileName, Path.Combine(movingFolder, $"map_{mapId:D10}_" + Path.GetFileName(clutterFileName)));
+								}
+							}
 							dbScope.Commit();
 						}
 						catch (Exception e)
@@ -85,7 +99,102 @@ namespace Atdi.AppUnits.Sdrn.Infocenter
 				}
 			}
 
+
+			// сканируем на факт наличия дефолтного описания клатеров
+			var defaultCluttersDescFileName = Path.Combine(folderName, "DefaultCluttersDesc.json");
+			if (File.Exists(defaultCluttersDescFileName))
+			{
+				using (var dbScope = this._dataLayer.CreateScope<InfocenterDataContext>())
+				{
+					dbScope.BeginTran();
+					try
+					{
+						// перемещаем в каталог обработки
+						var movingFolder = Path.Combine(folderName, "Processed");
+						if (!Directory.Exists(movingFolder))
+						{
+							Directory.CreateDirectory(movingFolder);
+						}
+
+						var descId = ImportClutterJson(defaultCluttersDescFileName, null, dbScope);
+						File.Move(defaultCluttersDescFileName, Path.Combine(movingFolder, $"cdesc_{descId:D10}_" + Path.GetFileName(defaultCluttersDescFileName)));
+						dbScope.Commit();
+					}
+					catch (Exception e)
+					{
+						_logger.Exception(Contexts.ThisComponent, Categories.ClutterImport, e);
+						dbScope.Rollback();
+					}
+				}
+			}
 			return JobExecutionResult.Completed;
+		}
+
+		private long ImportClutterJson(string path, long? mapId, IDataLayerScope dbScope)
+		{
+			try
+			{
+				var cluttersDesc = JsonConvert.DeserializeObject<CluttersDesc>(File.ReadAllText(path));
+
+				var descQuery = _dataLayer.GetBuilder<ES.ICluttersDesc>()
+					.Insert()
+					.SetValue(c => c.CreatedDate, DateTimeOffset.Now)
+					.SetValue(c => c.Name, cluttersDesc.Name)
+					.SetValue(c => c.Note, cluttersDesc.Note)
+					;
+				if (mapId.HasValue)
+				{
+					descQuery.SetValue(c => c.MAP.Id, mapId.Value);
+				}
+				var descPk = dbScope.Executor.Execute<ES.ICluttersDesc_PK>(descQuery);
+
+				for (var i = 0; i < cluttersDesc.Clutters.Length; i++)
+				{
+					var clutter = cluttersDesc.Clutters[i];
+					var clutterQuery = _dataLayer.GetBuilder<ES.ICluttersDescClutter>()
+							.Insert()
+							.SetValue(c => c.CLUTTERS_DESC.Id, descPk.Id)
+							.SetValue(c => c.Code, clutter.Code)
+							.SetValue(c => c.Name, clutter.Name)
+							.SetValue(c => c.Note, clutter.Note)
+							.SetValue(c => c.Height_m, clutter.Height_m)
+						;
+					dbScope.Executor.Execute(clutterQuery);
+				}
+				for (var i = 0; i < cluttersDesc.Frequencies.Length; i++)
+				{
+					var freq = cluttersDesc.Frequencies[i];
+					var freqQuery = _dataLayer.GetBuilder<ES.ICluttersDescFreq>()
+							.Insert()
+							.SetValue(c => c.CLUTTERS_DESC.Id, descPk.Id)
+							.SetValue(c => c.Freq_MHz, freq.Freq_MHz)
+							.SetValue(c => c.Note, freq.Note)
+						;
+					var freqPk = dbScope.Executor.Execute<ES.ICluttersDescFreq_PK>(freqQuery);
+					for (var j = 0; j < freq.Clutters.Length; j++)
+					{
+						var clutter = freq.Clutters[j];
+						var clutterQuery = _dataLayer.GetBuilder<ES.ICluttersDescFreqClutter>()
+								.Insert()
+								.SetValue(c => c.FREQ.Id, freqPk.Id)
+								.SetValue(c => c.Code, clutter.Code)
+								.SetValue(c => c.Note, clutter.Note)
+								.SetValue(c => c.FlatLoss_dB, (float?)clutter.FlatLoss_dB)
+								.SetValue(c => c.LinearLoss_dBkm, (float?)clutter.LinearLoss_dBkm)
+								.SetValue(c => c.Reflection, (float?)clutter.Reflection)
+							;
+						dbScope.Executor.Execute(clutterQuery);
+					}
+				}
+				return descPk.Id;
+			}
+			catch (Exception e)
+			{
+				_logger.Exception(Contexts.ThisComponent, Categories.ClutterImport, e, this);
+				_logger.Error(Contexts.ThisComponent, Categories.ClutterImport, $"An error occurred while importing the clutter description from the file {path} (Map ID #{mapId})");
+				throw;
+			}
+			
 		}
 
 		private long ImportMapFromFile(string path, IDataLayerScope dbScope)
@@ -450,10 +559,34 @@ namespace Atdi.AppUnits.Sdrn.Infocenter
 			//map.Max = DecodeInt(body, 390, 10);
 
 			// валидация
+			ValidateMap(map);
+
+			// Карту нужно сдивнуть в лево и вверх на step/2
+			var xOffset = map.AxisX.Step / 2;
+			var yOffset = map.AxisY.Step / 2;
+
+			map.Coordinates.UpperLeft.X -= xOffset;
+			map.Coordinates.UpperRight.X -= xOffset;
+			map.Coordinates.LowerLeft.X -= xOffset;
+			map.Coordinates.LowerRight.X -= xOffset;
+			map.Coordinates.UpperLeft.Y += yOffset;
+			map.Coordinates.UpperRight.Y += yOffset;
+			map.Coordinates.LowerLeft.Y += yOffset;
+			map.Coordinates.LowerRight.Y += yOffset;
+
+			// повторная валидация после сдвига
+			ValidateMap(map);
+
+			return map;
+		}
+
+		private static void ValidateMap(AtdiMapFile map)
+		{
 			if (map.Coordinates.UpperLeft.Y != map.Coordinates.UpperRight.Y)
 			{
 				throw new InvalidDataException("Incorrect coordinates for the upper axis y");
 			}
+
 			if (map.Coordinates.LowerLeft.Y != map.Coordinates.LowerRight.Y)
 			{
 				throw new InvalidDataException("Incorrect coordinates for the lower axis y");
@@ -474,6 +607,7 @@ namespace Atdi.AppUnits.Sdrn.Infocenter
 			{
 				throw new InvalidDataException("Incorrect coordinates for the upper axis X");
 			}
+
 			if (map.Coordinates.LowerLeft.X > map.Coordinates.LowerRight.X)
 			{
 				throw new InvalidDataException("Incorrect coordinates for the lower axis X");
@@ -483,6 +617,7 @@ namespace Atdi.AppUnits.Sdrn.Infocenter
 			{
 				throw new InvalidDataException("Incorrect coordinates for the left axis y");
 			}
+
 			if (map.Coordinates.UpperRight.Y < map.Coordinates.LowerRight.Y)
 			{
 				throw new InvalidDataException("Incorrect coordinates for the right axis y");
@@ -492,12 +627,13 @@ namespace Atdi.AppUnits.Sdrn.Infocenter
 			{
 				throw new InvalidDataException("Incorrect X-coordinates or X-axis properties");
 			}
+
 			if (map.AxisY.Size != map.Coordinates.AxisY)
 			{
 				throw new InvalidDataException("Incorrect Y-coordinates or Y-axis properties");
 			}
-			return map;
 		}
+
 
 		private static float DecodeFloat(byte[] source, uint offset, uint size)
 		{

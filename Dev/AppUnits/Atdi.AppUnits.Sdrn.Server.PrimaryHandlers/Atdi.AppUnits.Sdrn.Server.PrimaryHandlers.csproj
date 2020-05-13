@@ -46,6 +46,7 @@
     <Compile Include="Models\InitOnlineMeasurementModel.cs" />
     <Compile Include="PipelineHandlers\CommandsPipelineHandler.cs" />
     <Compile Include="PipelineHandlers\CommandsSendEventPipelineHandler.cs" />
+    <Compile Include="PipelineHandlers\CreateTask\MeasTask\UpdateMeasTask.cs" />
     <Compile Include="PipelineHandlers\SendEventOnlineMeasurementPipelineHandler.cs" />
     <Compile Include="PipelineHandlers\InitOnlineMeasurementPipelineHandler.cs" />
     <Compile Include="PipelineHandlers\MeasTasksSendPipelineHandler.cs" />
@@ -66,6 +67,7 @@
     <Compile Include="Subscribes\OnReceivedDelMeasTaskEvent.cs" />
     <Compile Include="Subscribes\OnReceivedNewMeasTaskEvent.cs" />
     <Compile Include="Subscribes\OnReceivedRunMeasTaskEvent.cs" />
+    <Compile Include="Subscribes\OnReceivedUpdateMeasTaskEvent.cs" />
     <Compile Include="Subscribes\OnReceivedStopMeasTaskEvent.cs" />
   </ItemGroup>
   <ItemGroup>

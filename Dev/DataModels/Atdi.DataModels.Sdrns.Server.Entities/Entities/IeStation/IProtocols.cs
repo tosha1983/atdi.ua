@@ -19,6 +19,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities.IeStation
         string PermissionNumber { get; set; }
         DateTime? PermissionStart { get; set; }
         DateTime? PermissionStop { get; set; }
+        DateTimeOffset? TimeMeas { get; set; }
         string GlobalSID { get; set; }
         double Freq_MHz { get; set; }
         double Level_dBm { get; set; }

@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<DataType 
+  Name           = "Float.FLOAT"
+  DataSourceType = "ClrObject"
+  xmlns          =  "http://schemas.atdi.com/orm/entity.xsd">
+  
+  <CodeVarType>Float</CodeVarType>
+  <SourceVarType>FLOAT</SourceVarType>  
+</DataType>

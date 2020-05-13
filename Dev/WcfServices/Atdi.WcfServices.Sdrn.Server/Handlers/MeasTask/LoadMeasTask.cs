@@ -55,6 +55,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderMeasTask.Select(c => c.TimeStop);
                 builderMeasTask.Select(c => c.Type);
                 builderMeasTask.Where(c => c.Status, ConditionOperator.NotEqual, Status.Z.ToString());
+                builderMeasTask.Where(c => c.Status, ConditionOperator.NotEqual, Status.S.ToString());
                 queryExecuter.Fetch(builderMeasTask, readerMeasTask =>
                 {
 
@@ -141,6 +142,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderMeasTask.Select(c => c.Type);
                 builderMeasTask.Where(c => c.Id, ConditionOperator.Equal, taskId);
                 builderMeasTask.Where(c => c.Status, ConditionOperator.NotEqual, Status.Z.ToString());
+                builderMeasTask.Where(c => c.Status, ConditionOperator.NotEqual, Status.S.ToString());
                 builderMeasTask.Where(c => c.Status, ConditionOperator.IsNotNull);
                 queryExecuter.Fetch(builderMeasTask, readerMeasTask =>
                 {
@@ -285,6 +287,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderMeasTask.Select(c => c.Type);
                 builderMeasTask.Where(c => c.Id, ConditionOperator.Equal, id);
                 builderMeasTask.Where(c => c.Status, ConditionOperator.NotEqual, Status.Z.ToString());
+                builderMeasTask.Where(c => c.Status, ConditionOperator.NotEqual, Status.S.ToString());
                 builderMeasTask.Where(c => c.Status, ConditionOperator.IsNotNull);
                 queryExecuter.Fetch(builderMeasTask, readerMeasTask =>
                 {
@@ -351,6 +354,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderMeasTaskSignaling.Select(c => c.CheckLevelChannel);
                         builderMeasTaskSignaling.Select(c => c.MinPointForDetailBW);
                         builderMeasTaskSignaling.Select(c => c.CollectEmissionInstrumentalEstimation);
+                        builderMeasTaskSignaling.Select(c => c.IsUseRefSpectrum);
                         
 
 
@@ -378,6 +382,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 measTask.SignalingMeasTaskParameters.SignalizationNCount = readerMeasTaskSignaling.GetValue(c => c.SignalizationNCount);
                                 measTask.SignalingMeasTaskParameters.AnalyzeByChannel = readerMeasTaskSignaling.GetValue(c => c.AnalyzeByChannel);
                                 measTask.SignalingMeasTaskParameters.CollectEmissionInstrumentalEstimation = readerMeasTaskSignaling.GetValue(c => c.CollectEmissionInstrumentalEstimation);
+                                measTask.SignalingMeasTaskParameters.IsUseRefSpectrum = readerMeasTaskSignaling.GetValue(c => c.IsUseRefSpectrum);
                                 measTask.SignalingMeasTaskParameters.AnalyzeSysInfoEmission = readerMeasTaskSignaling.GetValue(c => c.AnalyzeSysInfoEmission);
                                 measTask.SignalingMeasTaskParameters.DetailedMeasurementsBWEmission = readerMeasTaskSignaling.GetValue(c => c.DetailedMeasurementsBWEmission);
                                 measTask.SignalingMeasTaskParameters.Standard = readerMeasTaskSignaling.GetValue(c => c.Standard);
@@ -648,6 +653,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         var builderMeasOther = this._dataLayer.GetBuilder<MD.IMeasOther>().From();
                         builderMeasOther.Select(c => c.Id);
                         builderMeasOther.Select(c => c.LevelMinOccup);
+                        builderMeasOther.Select(c => c.SupportMultyLevel);
                         builderMeasOther.Select(c => c.MEAS_TASK.Id);
                         builderMeasOther.Select(c => c.Nchenal);
                         builderMeasOther.Select(c => c.TypeSpectrumOccupation);
@@ -657,6 +663,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                             while (readerMeasOther.Read())
                             {
                                 measOther.LevelMinOccup = readerMeasOther.GetValue(c => c.LevelMinOccup);
+                                measOther.SupportMultyLevel = readerMeasOther.GetValue(c => c.SupportMultyLevel);
                                 measOther.NChenal = readerMeasOther.GetValue(c => c.Nchenal);
 
                                 SpectrumOccupationType typeSpectrumOccupation;
@@ -770,8 +777,9 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderMeasTask.Select(c => c.TimeStop);
                 builderMeasTask.Select(c => c.Type);
                 builderMeasTask.Where(c => c.Id, ConditionOperator.Equal, id);
-                builderMeasTask.Where(c => c.Status, ConditionOperator.NotEqual, Status.Z.ToString());
-                builderMeasTask.Where(c => c.Status, ConditionOperator.IsNotNull);
+                //builderMeasTask.Where(c => c.Status, ConditionOperator.NotEqual, Status.Z.ToString());
+                //builderMeasTask.Where(c => c.Status, ConditionOperator.NotEqual, Status.S.ToString());
+                //builderMeasTask.Where(c => c.Status, ConditionOperator.IsNotNull);
                 queryExecuter.Fetch(builderMeasTask, readerMeasTask =>
                 {
                     var measTask = new MeasTask();
@@ -839,6 +847,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderMeasTaskSignaling.Select(c => c.CheckLevelChannel);
                         builderMeasTaskSignaling.Select(c => c.MinPointForDetailBW);
                         builderMeasTaskSignaling.Select(c => c.CollectEmissionInstrumentalEstimation);
+                        builderMeasTaskSignaling.Select(c => c.IsUseRefSpectrum);
                         builderMeasTaskSignaling.Where(c => c.MEAS_TASK.Id, ConditionOperator.Equal, readerMeasTask.GetValue(c => c.Id));
                         queryExecuter.Fetch(builderMeasTaskSignaling, readerMeasTaskSignaling =>
                         {
@@ -863,6 +872,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 measTask.SignalingMeasTaskParameters.SignalizationNCount = readerMeasTaskSignaling.GetValue(c => c.SignalizationNCount);
                                 measTask.SignalingMeasTaskParameters.AnalyzeByChannel = readerMeasTaskSignaling.GetValue(c => c.AnalyzeByChannel);
                                 measTask.SignalingMeasTaskParameters.CollectEmissionInstrumentalEstimation = readerMeasTaskSignaling.GetValue(c => c.CollectEmissionInstrumentalEstimation);
+                                measTask.SignalingMeasTaskParameters.IsUseRefSpectrum = readerMeasTaskSignaling.GetValue(c => c.IsUseRefSpectrum);
                                 measTask.SignalingMeasTaskParameters.AnalyzeSysInfoEmission = readerMeasTaskSignaling.GetValue(c => c.AnalyzeSysInfoEmission);
                                 measTask.SignalingMeasTaskParameters.DetailedMeasurementsBWEmission = readerMeasTaskSignaling.GetValue(c => c.DetailedMeasurementsBWEmission);
                                 measTask.SignalingMeasTaskParameters.Standard = readerMeasTaskSignaling.GetValue(c => c.Standard);
@@ -1047,6 +1057,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         var builderMeasOther = this._dataLayer.GetBuilder<MD.IMeasOther>().From();
                         builderMeasOther.Select(c => c.Id);
                         builderMeasOther.Select(c => c.LevelMinOccup);
+                        builderMeasOther.Select(c => c.SupportMultyLevel);
                         builderMeasOther.Select(c => c.MEAS_TASK.Id);
                         builderMeasOther.Select(c => c.Nchenal);
                         builderMeasOther.Select(c => c.TypeSpectrumOccupation);
@@ -1056,6 +1067,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                             while (readerMeasOther.Read())
                             {
                                 measOther.LevelMinOccup = readerMeasOther.GetValue(c => c.LevelMinOccup);
+                                measOther.SupportMultyLevel = readerMeasOther.GetValue(c => c.SupportMultyLevel);
                                 measOther.NChenal = readerMeasOther.GetValue(c => c.Nchenal);
 
                                 SpectrumOccupationType typeSpectrumOccupation;

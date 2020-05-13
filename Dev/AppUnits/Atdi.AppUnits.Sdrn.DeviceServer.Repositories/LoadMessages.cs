@@ -172,20 +172,31 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
 
         private T ReadMessageData(string fileName)
         {
+            T dataobj = default(T);
             if (!File.Exists(fileName))
             {
                 return default(T);
             }
-
             try
             {
-                var body = File.ReadAllBytes(fileName);
-                using (var memoryStream = new MemoryStream(body))
+                //lock (fileName)
                 {
-                    IFormatter formatter = new BinaryFormatter();
-                    formatter.Binder = new LocalBinder();
-                    var data = (T)formatter.Deserialize(memoryStream);
-                    return data;
+                    if (File.Exists(fileName))
+                    {
+                        using (FileStream file = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                        {
+                            if (file.Length > 0)
+                            {
+                                using (StreamReader streamReader = new StreamReader(file))
+                                {
+                                    IFormatter formatter = new BinaryFormatter();
+                                    formatter.Binder = new LocalBinder();
+                                    dataobj = (T)formatter.Deserialize(streamReader.BaseStream);
+                                    streamReader.Close();
+                                }
+                            }
+                        }
+                    }
                 }
             }
             catch (Exception e)
@@ -193,6 +204,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                 this._logger.Exception(Contexts.ThisComponent, Categories.ErrorGetMessageFromDB, e);
                 throw new InvalidOperationException($"Error read message from DB: {fileName} {e.StackTrace}");
             }
+            return dataobj;
         }
 
 
@@ -203,7 +215,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
             {
                 if (disposing)
                 {
-                    
+
                 }
                 disposedValue = true;
             }

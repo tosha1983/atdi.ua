@@ -15,7 +15,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 	[Entity]
 	public interface ICalcTask : ICalcTask_PK
 	{
-		IProject PROJECT { get; set; }
+		IClientContext CONTEXT { get; set; }
 
 		int TypeCode { get; set; }
 
@@ -59,5 +59,34 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 		/// Задача неактуальная
 		/// </summary>
 		Archived = 4
+	}
+
+	public enum CalcTaskTypeCode
+	{
+		/// <summary>
+		/// Расчет профилей покрытия относительно одной произволной точки 
+		/// </summary>
+		CoverageProfilesCalc = 1,
+
+		/// <summary>
+		/// Расчет профилей покрытия относительно одной произволной точки 
+		/// </summary>
+		PointFieldStrengthCalc = 2,
+
+		/// <summary>
+		/// Первая тестовая расчетная задача
+		/// </summary>
+		FirstExampleTask = 101,
+
+		/// <summary>
+		/// Вторая тестовая расчетная задача
+		/// </summary>
+		SecondExampleTask = 102,
+
+		/// <summary>
+		/// Треться тестовая расчетная задачи
+		/// </summary>
+		ThirdExampleTask = 103
+
 	}
 }

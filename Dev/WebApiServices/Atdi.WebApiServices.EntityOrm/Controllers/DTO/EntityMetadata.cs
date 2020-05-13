@@ -66,9 +66,6 @@ namespace Atdi.WebApiServices.EntityOrm.Controllers.DTO
             
         }
 
-        /// <summary>
-        /// The qualified name
-        /// </summary>
         public string Name { get; }
 
         public string QualifiedName { get; }

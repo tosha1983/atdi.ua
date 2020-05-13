@@ -7,6 +7,7 @@ using Atdi.DataModels.DataConstraint;
 using Atdi.DataModels.EntityOrm;
 using Atdi.Platform.Logging;
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,6 +15,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
 using Newtonsoft.Json.Linq;
+using System.Net;
+using System.Net.Http;
 
 namespace Atdi.WebApiServices.EntityOrm.Controllers
 {
@@ -33,7 +36,7 @@ namespace Atdi.WebApiServices.EntityOrm.Controllers
 
         [HttpGet]
         [Route("{context}/{ns}/{entity}")]
-        public IHttpActionResult GetDataSet(string context, string ns, string entity, [FromUri] string[] select = null, [FromUri] string[] filter = null, [FromUri] string[] orderBy = null, [FromUri] int top = -1)
+        public IHttpActionResult GetDataSet(string context, string ns, string entity, [FromUri] string[] select = null, [FromUri] string[] filter = null, [FromUri] string[] orderBy = null, [FromUri] int top = -1, [FromUri] long fetch = -1, [FromUri] long offset = -1, [FromUri] bool distinct = false)
         {
             var query = new DTO.DataSetRequest
             {
@@ -43,80 +46,128 @@ namespace Atdi.WebApiServices.EntityOrm.Controllers
                 Select = select,
                 Filter = filter,
                 OrderBy = orderBy,
-                Top = top
+                Top = top,
+				Distinct =  distinct
             };
 
-            return this.GetDataSet(query);
+            if (fetch >= 0)
+            {
+	            query.Fetch = fetch;
+            }
+            if (offset >= 0)
+            {
+	            query.Offset = offset;
+            }
+
+			return this.GetDataSet(query);
         }
 
         [HttpPost]
         [Route("$DataSet")]
         public IHttpActionResult GetDataSet([FromBody] DTO.DataSetRequest query)
         {
-            if (!this.CheckQuery(query, out string messaage))
-            {
-                return BadRequest(messaage);
-            }
+	        
+			try
+			{
+				//try
+				//{
+				//	var c = 0;
+				//	var d = 1 / c;
+				//}
+				//catch (Exception e)
+				//{
+				//	Console.WriteLine(e);
+				//	throw new InvalidOperationException("New exception", e);
+				//}
+				
+				if (!this.CheckQuery(query, out var message))
+				{
+					return BadRequest(message);
+				}
 
-            if (!this.TryEnsureEntityMetadata(query.QName, out IEntityMetadata entity, out messaage))
-            {
-                return BadRequest(messaage);
-            }
+				if (!this.TryEnsureEntityMetadata(query.QName, out var entity, out message))
+				{
+					return BadRequest(message);
+				}
 
-            if (!this.TryParseFields(entity, query.Select, out DTO.FieldDescriptor[] fields, out messaage))
-            {
-                return BadRequest(messaage);
-            }
+				if (!this.TryParseFields(entity, query.Select, out DTO.FieldDescriptor[] fields, out message))
+				{
+					return BadRequest(message);
+				}
 
-            var ormQuery = _dataLayer.Builder
-                .From(query.QName)
-                .Select(fields.Select(f => f.Path).ToArray());
+				var ormQuery = _dataLayer.Builder
+					.From(query.QName)
+					.Select(fields.Select(f => f.Path).ToArray());
 
-            if (query.Top > 0)
-            {
-                ormQuery.OnTop((int)query.Top);
-            }
-            if (query.Filter != null && query.Filter.Length > 0)
-            {
-                var condition = Helpers.FilterParser.Parse(query.Filter);
-                ormQuery.Where(condition);
-            }
-            if (query.OrderBy != null && query.OrderBy.Length > 0)
-            {
-                var orderByExpressions = Helpers.FieldParser.ParseOrderBy(query.OrderBy);
-                ormQuery.OrderBy(orderByExpressions);
-            }
+				if (query.Top > 0)
+				{
+					ormQuery.OnTop((int)query.Top);
+				}
 
-            using (var scope = _dataLayer.CreateScope(new SimpleDataContext(query.Context)))
-            {
-                return scope.Executor.ExecuteAndFetch(ormQuery, reader =>
-                {
-                    var result = new DTO.DataSetResult
-                    {
-                        Fields = fields
-                    };
-                    var records = new List<object[]>();
-                    long count = 0;
-                    while (reader.Read())
-                    {
-                        var record = new object[fields.Length];
-                        for (int i = 0; i < fields.Length; i++)
-                        {
-                            var field = fields[i];
-                            record[i] = reader.GetValue((DataType)field.Type.VarTypeCode, field.Path);
-                        }
-                        records.Add(record);
-                        ++count;
-                    }
-                    result.Records = records.ToArray();
-                    result.Count = count;
-                    return (IHttpActionResult)Ok(result);
-                });
-            }
+				if (query.Filter != null && query.Filter.Length > 0)
+				{
+					var condition = Helpers.FilterParser.Parse(query.Filter);
+					ormQuery.Where(condition);
+				}
+
+				if (query.OrderBy != null && query.OrderBy.Length > 0)
+				{
+					var orderByExpressions = Helpers.FieldParser.ParseOrderBy(query.OrderBy);
+					var pagingQuery = ormQuery.OrderBy(orderByExpressions);
+
+					if (query.Offset.HasValue && query.Offset >= 0)
+					{
+						pagingQuery.OffsetRows(query.Offset.Value);
+					}
+				}
+				
+				if (query.Fetch.HasValue && query.Fetch >= 0)
+				{
+					ormQuery.FetchRows(query.Fetch.Value);
+				}
+
+				if (query.Distinct)
+				{
+					ormQuery.Distinct();
+				}
+				
+
+				using (var scope = _dataLayer.CreateScope(new SimpleDataContext(query.Context)))
+				{
+					return scope.Executor.ExecuteAndFetch(ormQuery, reader =>
+					{
+						var result = new DTO.DataSetResult
+						{
+							Fields = fields
+						};
+						var records = new List<object[]>();
+						long count = 0;
+						while (reader.Read())
+						{
+							var record = new object[fields.Length];
+							for (var i = 0; i < fields.Length; i++)
+							{
+								var field = fields[i];
+								record[i] = reader.GetValue((DataType)field.Type.VarTypeCode, field.Path);
+							}
+							records.Add(record);
+							++count;
+						}
+						result.Records = records.ToArray();
+						result.Count = count;
+						return Ok(result);
+					});
+				}
+			}
+	        catch (Exception e)
+	        {
+				this.Logger.Exception((EventContext)"EntityOrmWebApi", (EventCategory)"GetDataSet", e);
+				//throw;
+				//return this.BadRequest("Bad request message!!!!");
+				return this.InternalServerError(e);
+	        }
+            
         }
-
-
-        
 
         [HttpGet]
         [Route("{context}/{ns}/{entity}/{primaryKey}")]
@@ -139,26 +190,28 @@ namespace Atdi.WebApiServices.EntityOrm.Controllers
         [Route("$Record")]
         public IHttpActionResult GetDataRecord([FromBody] DTO.DataRecordRequest query)
         {
-            if (!this.CheckQuery(query, out string messaage))
-            {
-                return BadRequest(messaage);
-            }
+	        try
+	        {
 
-            if (!this.TryEnsureEntityMetadata(query.QName, out IEntityMetadata entity, out messaage))
-            {
-                return BadRequest(messaage);
-            }
-            if (!this.TryParseFields(entity, query.Select, out DTO.FieldDescriptor[] fields, out messaage))
-            {
-                return BadRequest(messaage);
-            }
-            if (!this.TryEnsurePrimaryKeyCondition(entity, query.PrimaryKey, out Condition pkCondition, out messaage))
-            {
-                return BadRequest(messaage);
-            }
+				if (!this.CheckQuery(query, out var message))
+	            {
+	                return BadRequest(message);
+	            }
 
-            try
-            {
+	            if (!this.TryEnsureEntityMetadata(query.QName, out var entity, out message))
+	            {
+	                return BadRequest(message);
+	            }
+	            if (!this.TryParseFields(entity, query.Select, out DTO.FieldDescriptor[] fields, out message))
+	            {
+	                return BadRequest(message);
+	            }
+	            if (!this.TryEnsurePrimaryKeyCondition(entity, query.PrimaryKey, out var pkCondition, out message))
+	            {
+	                return BadRequest(message);
+	            }
+
+            
 	            var ormQuery = _dataLayer.Builder
 		            .From(query.QName)
 		            .Select(fields.Select(f => f.Path).ToArray())
@@ -182,7 +235,7 @@ namespace Atdi.WebApiServices.EntityOrm.Controllers
 					            Record = new object[fields.Length],
 					            Fields = fields
 				            };
-				            for (int i = 0; i < fields.Length; i++)
+				            for (var i = 0; i < fields.Length; i++)
 				            {
 					            var field = fields[i];
 					            result.Record[i] = reader.GetValue((DataType)field.Type.VarTypeCode, field.Path);
@@ -195,9 +248,9 @@ namespace Atdi.WebApiServices.EntityOrm.Controllers
 			}
             catch (Exception e)
             {
-	            System.Diagnostics.Debug.WriteLine(e.ToString());
-	            throw;
-            }
+				this.Logger.Exception((EventContext)"EntityOrmWebApi", (EventCategory)"GetDataRecord", e);
+				return this.InternalServerError(e);
+			}
             
         }
 
@@ -261,7 +314,7 @@ namespace Atdi.WebApiServices.EntityOrm.Controllers
 							Count = 1,
 							PrimaryKey = pkObject
 						};
-						return (IHttpActionResult)Ok(result);
+						return Ok(result);
 					}
 					else
 					{
@@ -271,7 +324,7 @@ namespace Atdi.WebApiServices.EntityOrm.Controllers
 						{
 							Count = count
 						};
-						return (IHttpActionResult)Ok(result);
+						return Ok(result);
 					}
 
 
@@ -279,8 +332,8 @@ namespace Atdi.WebApiServices.EntityOrm.Controllers
 			}
 			catch (Exception e)
 			{
-				Console.WriteLine(e);
-				throw;
+				this.Logger.Exception((EventContext)"EntityOrmWebApi", (EventCategory)"CreateDataRecord", e);
+				return this.InternalServerError(e);
 			}
 			
 		}
@@ -289,84 +342,305 @@ namespace Atdi.WebApiServices.EntityOrm.Controllers
 		[Route("$Record/update")]
 		public IHttpActionResult UpdateDataRecord([FromBody] DTO.DataRecordUpdateRequest request)
 		{
-			if (!this.CheckQuery(request, out var message))
+			try
 			{
-				return BadRequest(message);
-			}
-
-			if (!this.TryEnsureEntityMetadata(request.QName, out var entity, out message))
-			{
-				return BadRequest(message);
-			}
-			if (!this.TryParseFields(entity, request.Fields, out IFieldMetadata[] fields, out message))
-			{
-				return BadRequest(message);
-			}
-			if (!this.TryEnsurePrimaryKeyCondition(entity, request.PrimaryKey, out var pkCondition, out message))
-			{
-				return BadRequest(message);
-			}
-
-
-			var ormQuery = _dataLayer.Builder
-				.Update(request.QName);
-
-			for (var i = 0; i < request.Fields.Length; i++)
-			{
-				var field = fields[i];
-				var value = ValueOperand.Create(field.DataType.CodeVarType,
-					ParseValue(field.DataType, request.Values[i]));
-				ormQuery.SetValue(request.Fields[i], value);
-			}
-
-			ormQuery.Where(pkCondition);
-
-
-			using (var scope = _dataLayer.CreateScope(new SimpleDataContext(request.Context)))
-			{
-				var count = scope.Executor.Execute(ormQuery);
-				var result = new DTO.RecordUpdateResult()
+				if (!this.CheckQuery(request, out var message))
 				{
-					Count = count
-				};
-				return (IHttpActionResult)Ok(result);
+					return BadRequest(message);
+				}
+
+				if (!this.TryEnsureEntityMetadata(request.QName, out var entity, out message))
+				{
+					return BadRequest(message);
+				}
+				if (!this.TryParseFields(entity, request.Fields, out IFieldMetadata[] fields, out message))
+				{
+					return BadRequest(message);
+				}
+				if (!this.TryEnsurePrimaryKeyCondition(entity, request.PrimaryKey, out var pkCondition, out message))
+				{
+					return BadRequest(message);
+				}
+
+
+				var ormQuery = _dataLayer.Builder
+					.Update(request.QName);
+
+				for (var i = 0; i < request.Fields.Length; i++)
+				{
+					var field = fields[i];
+					var value = ValueOperand.Create(field.DataType.CodeVarType,
+						ParseValue(field.DataType, request.Values[i]));
+					ormQuery.SetValue(request.Fields[i], value);
+				}
+
+				ormQuery.Where(pkCondition);
+
+
+				using (var scope = _dataLayer.CreateScope(new SimpleDataContext(request.Context)))
+				{
+					var count = scope.Executor.Execute(ormQuery);
+					var result = new DTO.RecordUpdateResult()
+					{
+						Count = count
+					};
+					return Ok(result);
+				}
 			}
+			catch (Exception e)
+			{
+				this.Logger.Exception((EventContext)"EntityOrmWebApi", (EventCategory)"UpdateDataRecord", e);
+				return this.InternalServerError(e);
+			}
+			
+		}
+
+		[HttpPost]
+		[Route("$DataSet/update")]
+		public IHttpActionResult UpdateDataRecords([FromBody] DTO.DataRecordsUpdateRequest request)
+		{
+			try
+			{
+				if (!this.CheckQuery(request, out var message))
+				{
+					return BadRequest(message);
+				}
+
+				if (!this.TryEnsureEntityMetadata(request.QName, out var entity, out message))
+				{
+					return BadRequest(message);
+				}
+				if (!this.TryParseFields(entity, request.Fields, out IFieldMetadata[] fields, out message))
+				{
+					return BadRequest(message);
+				}
+				if (request.Filter == null || request.Filter.Length == 0)
+				{
+					return BadRequest("Undefined filter");
+				}
+
+
+				var ormQuery = _dataLayer.Builder
+					.Update(request.QName);
+
+				for (var i = 0; i < request.Fields.Length; i++)
+				{
+					var field = fields[i];
+					var value = ValueOperand.Create(field.DataType.CodeVarType,
+						ParseValue(field.DataType, request.Values[i]));
+					ormQuery.SetValue(request.Fields[i], value);
+				}
+
+				var condition = Helpers.FilterParser.Parse(request.Filter);
+				ormQuery.Where(condition);
+
+
+				using (var scope = _dataLayer.CreateScope(new SimpleDataContext(request.Context)))
+				{
+					var count = scope.Executor.Execute(ormQuery);
+					var result = new DTO.RecordUpdateResult()
+					{
+						Count = count
+					};
+					return Ok(result);
+				}
+			}
+			catch (Exception e)
+			{
+				this.Logger.Exception((EventContext)"EntityOrmWebApi", (EventCategory)"UpdateDataRecords", e);
+				return this.InternalServerError(e);
+			}
+			
+		}
+
+		[HttpPost]
+		[Route("$Record/apply")]
+		public IHttpActionResult ApplyDataRecord([FromBody] DTO.DataRecordApplyRequest request)
+		{
+			try
+			{
+				if (!this.CheckQuery(request, out var message))
+				{
+					return BadRequest(message);
+				}
+
+				if (!this.TryEnsureEntityMetadata(request.QName, out var entity, out message))
+				{
+					return BadRequest(message);
+				}
+				if (!this.TryParseFields(entity, request.FieldsToCreate, out IFieldMetadata[] fieldsToCreate, out message))
+				{
+					return BadRequest(message);
+				}
+				if (!this.TryParseFields(entity, request.FieldsToUpdate, out IFieldMetadata[] fieldsToUpdate, out message))
+				{
+					return BadRequest(message);
+				}
+				if (request.Filter == null || request.Filter.Length == 0)
+				{
+					return BadRequest("Undefined filter");
+				}
+
+			
+				var updateQuery = _dataLayer.Builder
+					.Update(request.QName);
+
+				for (var i = 0; i < request.FieldsToUpdate.Length; i++)
+				{
+					var field = fieldsToUpdate[i];
+					var value = ValueOperand.Create(field.DataType.CodeVarType,
+						ParseValue(field.DataType, request.ValuesToUpdate[i]));
+					updateQuery.SetValue(request.FieldsToUpdate[i], value);
+				}
+
+				var condition = Helpers.FilterParser.Parse(request.Filter);
+				updateQuery.Where(condition);
+
+				using (var scope = _dataLayer.CreateScope(new SimpleDataContext(request.Context)))
+				{
+					var count = scope.Executor.Execute(updateQuery);
+
+					if (count > 0)
+					{
+						var result = new DTO.RecordApplyResult()
+						{
+							Count = count
+						};
+						return Ok(result);
+					}
+					
+					var createQuery = _dataLayer.Builder
+						.Insert(request.QName);
+
+					for (var i = 0; i < request.FieldsToCreate.Length; i++)
+					{
+						var field = fieldsToCreate[i];
+						var value = ValueOperand.Create(field.DataType.CodeVarType,
+							ParseValue(field.DataType, request.ValuesToCreate[i]));
+						createQuery.SetValue(request.FieldsToCreate[i], value);
+					}
+
+					var pkType = _entityOrm.GetPrimaryKeyInstanceType(entity);
+					if (pkType != null)
+					{
+						var pkObject = scope.Executor.Execute(createQuery, pkType);
+
+						var result = new DTO.RecordApplyResult
+						{
+							Count = 1,
+							PrimaryKey = pkObject
+						};
+						return Ok(result);
+					}
+					else
+					{
+						count = scope.Executor.Execute(createQuery);
+
+						var result = new DTO.RecordApplyResult
+						{
+							Count = count
+						};
+						return Ok(result);
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				this.Logger.Exception((EventContext)"EntityOrmWebApi", (EventCategory)"ApplyDataRecord", e);
+				return this.InternalServerError(e);
+			}
+
+			
+		}
+
+		[HttpPost]
+		[Route("$DataSet/delete")]
+		public IHttpActionResult DeleteDataRecords([FromBody] DTO.DataRecordsDeleteRequest request)
+		{
+			try
+			{
+				if (!this.CheckQuery(request, out var message))
+				{
+					return BadRequest(message);
+				}
+
+				if (!this.TryEnsureEntityMetadata(request.QName, out var entity, out message))
+				{
+					return BadRequest(message);
+				}
+
+				if (request.Filter == null || request.Filter.Length == 0)
+				{
+					return BadRequest("Undefined filter");
+				}
+
+				var ormQuery = _dataLayer.Builder
+					.Delete(request.QName);
+
+				var condition = Helpers.FilterParser.Parse(request.Filter);
+				ormQuery.Where(condition);
+
+				using (var scope = _dataLayer.CreateScope(new SimpleDataContext(request.Context)))
+				{
+					var count = scope.Executor.Execute(ormQuery);
+					var result = new DTO.RecordDeleteResult()
+					{
+						Count = count
+					};
+					return Ok(result);
+				}
+			}
+			catch (Exception e)
+			{
+				this.Logger.Exception((EventContext)"EntityOrmWebApi", (EventCategory)"DeleteDataRecords", e);
+				return this.InternalServerError(e);
+			}
+			
 		}
 
 		[HttpPost]
 		[Route("$Record/delete")]
 		public IHttpActionResult DeleteDataRecord([FromBody] DTO.DataRecordDeleteRequest request)
 		{
-			if (!this.CheckQuery(request, out var message))
+			try
 			{
-				return BadRequest(message);
-			}
-
-			if (!this.TryEnsureEntityMetadata(request.QName, out var entity, out message))
-			{
-				return BadRequest(message);
-			}
-
-			if (!this.TryEnsurePrimaryKeyCondition(entity, request.PrimaryKey, out var pkCondition, out message))
-			{
-				return BadRequest(message);
-			}
-
-
-			var ormQuery = _dataLayer.Builder
-				.Delete(request.QName)
-				.Where(pkCondition);
-
-
-			using (var scope = _dataLayer.CreateScope(new SimpleDataContext(request.Context)))
-			{
-				var count = scope.Executor.Execute(ormQuery);
-				var result = new DTO.RecordDeleteResult()
+				if (!this.CheckQuery(request, out var message))
 				{
-					Count = count
-				};
-				return (IHttpActionResult)Ok(result);
+					return BadRequest(message);
+				}
+
+				if (!this.TryEnsureEntityMetadata(request.QName, out var entity, out message))
+				{
+					return BadRequest(message);
+				}
+
+				if (!this.TryEnsurePrimaryKeyCondition(entity, request.PrimaryKey, out var pkCondition, out message))
+				{
+					return BadRequest(message);
+				}
+
+
+				var ormQuery = _dataLayer.Builder
+					.Delete(request.QName)
+					.Where(pkCondition);
+
+
+				using (var scope = _dataLayer.CreateScope(new SimpleDataContext(request.Context)))
+				{
+					var count = scope.Executor.Execute(ormQuery);
+					var result = new DTO.RecordDeleteResult()
+					{
+						Count = count
+					};
+					return Ok(result);
+				}
 			}
+			catch (Exception e)
+			{
+				this.Logger.Exception((EventContext)"EntityOrmWebApi", (EventCategory)"DeleteDataRecord", e);
+				return this.InternalServerError(e);
+			}
+			
 		}
 
 		/// <summary>
@@ -400,59 +674,68 @@ namespace Atdi.WebApiServices.EntityOrm.Controllers
         [Route("$FieldValue")]
         public IHttpActionResult GetFieldValue([FromBody] DTO.FieldValueRequest query)
         {
-            if (!this.CheckQuery(query, out string messaage))
-            {
-                return BadRequest(messaage);
-            }
+	        try
+	        {
+				if (!this.CheckQuery(query, out var message))
+				{
+					return BadRequest(message);
+				}
+
+				if (!this.TryEnsureEntityMetadata(query.QName, out var entity, out message))
+				{
+					return BadRequest(message);
+				}
+
+				if (!this.TryEnsureColumnField(entity, query.FieldPath, out var field, out message))
+				{
+					return BadRequest(message);
+				}
+
+				if (!this.TryEnsurePrimaryKeyCondition(entity, query.PrimaryKey, out var pkCondition, out message))
+				{
+					return BadRequest(message);
+				}
+
+				var ormQuery = _dataLayer.Builder
+					.From(query.QName)
+					.Select(query.FieldPath)
+					.Where(pkCondition)
+					.OnTop(1);
+
+				if (query.Filter != null && query.Filter.Length > 0)
+				{
+					var condition = Helpers.FilterParser.Parse(query.Filter);
+					ormQuery.Where(condition);
+				}
+
+				using (var scope = _dataLayer.CreateScope(new SimpleDataContext(query.Context)))
+				{
+					return scope.Executor.ExecuteAndFetch(ormQuery, reader =>
+					{
+						if (reader.Read())
+						{
+							var result = new DTO.FieldValueResult
+							{
+								Field = new DTO.FieldDescriptor
+								{
+									Index = 0,
+									Path = query.FieldPath,
+									Type = new DTO.DataTypeMetadata(field.DataType)
+								},
+								Value = reader.GetValue(field.DataType.CodeVarType, query.FieldPath)
+							};
+							return (IHttpActionResult)Ok(result);
+						}
+						return NotFound();
+					});
+				}
+			}
+	        catch (Exception e)
+	        {
+				this.Logger.Exception((EventContext)"EntityOrmWebApi", (EventCategory)"GetFieldValue", e);
+				return this.InternalServerError(e);
+			}
             
-            if (!this.TryEnsureEntityMetadata(query.QName, out IEntityMetadata entity, out messaage))
-            {
-                return BadRequest(messaage);
-            }
-
-            if (!this.TryEnsureColumnField(entity, query.FieldPath, out IFieldMetadata field, out messaage))
-            {
-                return BadRequest(messaage);
-            }
-
-            if (!this.TryEnsurePrimaryKeyCondition(entity, query.PrimaryKey, out Condition pkCondition, out messaage))
-            {
-                return BadRequest(messaage);
-            }
-
-            var ormQuery = _dataLayer.Builder
-                .From(query.QName)
-                .Select(query.FieldPath)
-                .Where(pkCondition)
-                .OnTop(1);
-
-            if (query.Filter != null && query.Filter.Length > 0)
-            {
-                var condition = Helpers.FilterParser.Parse(query.Filter);
-                ormQuery.Where(condition);
-            }
-
-            using (var scope = _dataLayer.CreateScope(new SimpleDataContext(query.Context)))
-            {
-                return scope.Executor.ExecuteAndFetch(ormQuery, reader => 
-                {
-                    if (reader.Read())
-                    {
-                        var result = new DTO.FieldValueResult
-                        {
-                            Field = new DTO.FieldDescriptor
-                            {
-                                Index = 0,
-                                Path = query.FieldPath,
-                                Type = new DTO.DataTypeMetadata(field.DataType)
-                            },
-                            Value = reader.GetValue(field.DataType.CodeVarType, query.FieldPath)
-                        };
-                        return (IHttpActionResult)Ok(result);
-                    }
-                    return NotFound();
-                });
-            }
         }
 
         private bool TryParseFields(IEntityMetadata entity, string[] select, out DTO.FieldDescriptor[] fields, out string message)

@@ -68,6 +68,8 @@ namespace Atdi.AppUnits.Sdrn.MasterServer.PrimaryHandlers
                                 builderInsertResLevels.SetValue(c => c.ValueSpect, freqSample.Level_dBmkVm);
                                 builderInsertResLevels.SetValue(c => c.OccupancySpect, freqSample.Occupation_Pt);
                                 builderInsertResLevels.SetValue(c => c.FreqMeas, freqSample.Freq_MHz);
+                                builderInsertResLevels.SetValue(c => c.LevelMinArr, freqSample.LevelMinArr);
+                                builderInsertResLevels.SetValue(c => c.SpectrumOccupationArr, freqSample.SpectrumOccupationArr);
                                 builderInsertResLevels.SetValue(c => c.RES_MEAS.Id, resMeas.Id);
                                 scope.Executor.Execute(builderInsertResLevels);
                             }

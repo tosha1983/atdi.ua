@@ -171,9 +171,9 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                 }
                 else if ((permissionCancelDate != null) && (permissionStart != null))
                 {
-                    if (permissionStart.Value > startDate)
+                    if (permissionCancelDate.Value > startDate)
                     {
-                        startDateVal = permissionStart.Value;
+                        startDateVal = permissionCancelDate.Value;
                     }
                     else
                     {

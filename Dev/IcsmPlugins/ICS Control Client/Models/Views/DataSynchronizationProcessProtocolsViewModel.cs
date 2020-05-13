@@ -32,12 +32,18 @@ namespace XICSM.ICSControlClient.Models.Views
         public DateTime? DateMeas_OnlyDate { get; set; }
         public TimeSpan? DateMeas_OnlyTime { get; set; }
         public TimeSpan? DurationMeasurement { get; set; }
+
         public double? SensorLongitude { get; set; }
         public double? SensorLatitude { get; set; }
+        public string SensorCoordinates { get; set; }
+        public string SensorCoordinatesLat { get; set; }
+        public string SensorCoordinatesLon { get; set; }
+
         public double? Longitude { get; set; }
         public double? Latitude { get; set; }
-        public string SensorCoordinates { get; set; }
         public string Coordinates { get; set; }
+        public string CoordinatesLat { get; set; }
+        public string CoordinatesLon { get; set; }
 
         public string OwnerName { get; set; }
         public string Standard { get; set; }

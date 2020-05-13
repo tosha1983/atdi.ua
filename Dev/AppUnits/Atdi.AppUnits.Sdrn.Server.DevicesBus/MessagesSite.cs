@@ -158,65 +158,59 @@ namespace Atdi.AppUnits.Sdrn.Server.DevicesBus
 
         private void ProcessMessage(IDataLayerScope dbScope, MessageEventData message)
         {
-	        var statusCode = (byte)MessageProcessingStatus.SentEvent;
-	        var statusName = "SentEvent";
-	        var eventName = $"On{message.Type}DeviceBusEvent";
-	        var statusNote = $"The event '{eventName}' was sent";
+	        if (message == null) throw new ArgumentNullException(nameof(message));
 
+	        var eventName = $"On{message.Type}DeviceBusEvent";
+	        
 	        try
 	        {
-		        this.AddToLog(message.Id, statusCode, statusName, "Before sending event and changing status", $"SDRN.MessageProcessing:[Type='{message.Type}'][HandleMessage]", dbScope);
+		        this.AddToLog(message.Id, MessageProcessingStatus.SentEvent, "Before sending event and changing status", $"SDRN.MessageProcessing:[Type='{message.Type}'][ProcessMessage]", dbScope);
 
-		        var busEvent = new DevicesBusEvent(eventName, "SdrnDeviceBusController")
+				var busEvent = new DevicesBusEvent(eventName, "MessagesSite")
 		        {
 			        BusMessageId = message.Id
 				};
 		        _eventEmitter.Emit(busEvent);
 
-	        }
+		        
+		        var deleteQuery = this._amqpEventQueryBuilder
+			        .Delete()
+			        .Where(c => c.Id, DataModels.DataConstraint.ConditionOperator.Equal, message.Id);
+		        dbScope.Executor.Execute(deleteQuery);
+
+		        var statusNote = $"The event '{eventName}' was sent";
+				this.ChangeStatus(dbScope, message.Id, (byte)MessageProcessingStatus.Created, MessageProcessingStatus.SentEvent, statusNote);
+			}
 	        catch (Exception e)
 	        {
-		        statusCode = (byte)MessageProcessingStatus.Failure;
-		        statusName = "Failure";
-		        statusNote = $"An error occurred while sending a notification '{eventName}': {e.Message}";
-		        _logger.Exception(Contexts.ThisComponent, Categories.Processing, statusNote, e, (object)this);
-	        }
-	        finally
-	        {
-		        this.ChangeStatus(dbScope, message.Id, (byte)MessageProcessingStatus.Created, statusCode, statusNote);
-	        }
-		}
+		        var errorMessage = $"An error occurred while sending a notification '{eventName}': {e.Message}";
+		        _logger.Exception(Contexts.ThisComponent, Categories.Processing, errorMessage, e, (object)this);
+		        this.ChangeStatus(dbScope, message.Id, (byte)MessageProcessingStatus.Created, MessageProcessingStatus.Failure, errorMessage);
 
-		private void ChangeStatus(IDataLayerScope dbScope, long messageId, byte oldCode, byte newCode, string statusNote)
+				throw new InvalidOperationException(errorMessage, e);
+			}
+        }
+
+		private void ChangeStatus(IDataLayerScope dbScope, long messageId, MessageProcessingStatus oldCode, MessageProcessingStatus newCode, string statusNote)
 		{
 			try
 			{
-				var statusName = ((MessageProcessingStatus)newCode).ToString();
+				var statusName = newCode.ToString();
 
 				var updateQuery = this._amqpMessageQueryBuilder
 					.Update()
-					.SetValue(c => c.StatusCode, newCode)
+					.SetValue(c => c.StatusCode, (byte)newCode)
 					.SetValue(c => c.StatusName, statusName)
 					.SetValue(c => c.StatusNote, statusNote)
 					.Where(c => c.Id, DataModels.DataConstraint.ConditionOperator.Equal, messageId)
 					// важно: следующее услови это блокиратор от ситуации когда 
 					// евент дошел и начал обрабатывать на прикладном уровне сообщение
-					.Where(c => c.StatusCode, DataModels.DataConstraint.ConditionOperator.Equal, oldCode);
+					.Where(c => c.StatusCode, DataModels.DataConstraint.ConditionOperator.Equal, (byte)oldCode);
 
 				dbScope.Executor.Execute(updateQuery);
 
-				// для статуса 0 нужно подчистить собітия
-				if (oldCode == (byte)MessageProcessingStatus.Created)
-				{
-					var deleteQuery = this._amqpEventQueryBuilder
-						.Delete()
-						.Where(c => c.Id, DataModels.DataConstraint.ConditionOperator.Equal, messageId);
-
-					dbScope.Executor.Execute(deleteQuery);
-				}
-
-
-				this.AddToLog(messageId, newCode, statusName,$"Status was changed. Note: {statusNote}", $"SDRN.ChangeStatus:[OldCode=#{oldCode}][MessagesSite][ChangeStatus]", dbScope);
+				
+				this.AddToLog(messageId, newCode, $"Status was changed. Note: {statusNote}", $"SDRN.ChangeStatus:[OldCode=#{oldCode}][MessagesSite][ChangeStatus]", dbScope);
 					
 			}
 			catch (Exception e)
@@ -227,9 +221,10 @@ namespace Atdi.AppUnits.Sdrn.Server.DevicesBus
 			}
 		}
 
-		private void AddToLog(long messageId, byte statusCode, string statusName, string statusNote, string source, IDataLayerScope dbScope)
+		private void AddToLog(long messageId, MessageProcessingStatus statusCode, string statusNote, string source, IDataLayerScope dbScope)
         {
-	        var logQueryInsert = this._amqpMessageLogQueryBuilder
+	        var statusName = statusCode.ToString();
+			var logQueryInsert = this._amqpMessageLogQueryBuilder
 		        .Insert()
 		        .SetValue(c => c.MESSAGE.Id, messageId)
 		        .SetValue(c => c.StatusCode, (byte)statusCode)

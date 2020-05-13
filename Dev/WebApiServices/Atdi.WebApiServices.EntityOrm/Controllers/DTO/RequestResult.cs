@@ -12,8 +12,6 @@ namespace Atdi.WebApiServices.EntityOrm.Controllers.DTO
 
     }
 
-    
-
     public class FieldDescriptor : API.IFieldDescriptor
     {
         public string Path { get; set; }
@@ -45,7 +43,14 @@ namespace Atdi.WebApiServices.EntityOrm.Controllers.DTO
 	    public object PrimaryKey { get; set; }
 	}
 
-    public class RecordUpdateResult : RequestResult, API.IRecordUpdateResult
+    public class RecordApplyResult : RequestResult, API.IRecordApplyResult
+	{
+	    public int Count { get; set; }
+
+	    public object PrimaryKey { get; set; }
+    }
+
+	public class RecordUpdateResult : RequestResult, API.IRecordUpdateResult
     {
 	    public int Count { get; set; }
     }

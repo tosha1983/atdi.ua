@@ -10,6 +10,10 @@ namespace XICSM.ICSControlClient.ViewModels.Chart
 {
     public class ChartLine
     {
+        public double Freq_Mhz { get; set; }
+        public double freqMiddle_MHz { get; set; }
+        public double level_dBm { get; set; }
+        public string Num { get; set; }
         public string Name { get; set; }
         public double LabelLeft { get; set; }
         public double LabelTop { get; set; }

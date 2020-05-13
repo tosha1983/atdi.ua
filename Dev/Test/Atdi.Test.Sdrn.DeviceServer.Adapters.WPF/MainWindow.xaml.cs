@@ -35,8 +35,10 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
         DummyTimeService TimeService;
         ConsoleLogger logger;
         DummyAdapterHost adapterHost;
+
+        DummyGPSExecutionContextMy KSGPSContext;
         //ADP.SignalHound.Adapter adapter;
-        ADP.RSFPL.Adapter ANadapter;
+        ADP.KTN6841A.Adapter KSadapter;
         ADP.RSFPL.Adapter AN2adapter;
         ADP.SignalHound.Adapter SHadapter;
 
@@ -45,9 +47,9 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
 
         private delegate void AnyDelegate();
         private Thread TimeThread;
-        private Thread ANThread;
+        private Thread KSThread;
         private Thread AN2Thread;
-        private AnyDelegate AND;
+        private AnyDelegate KSD;
         private AnyDelegate AN2D;
         private Thread SHThread;
         private AnyDelegate SHD;
@@ -79,11 +81,11 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
         }
         private void StartTime_Click(object sender, RoutedEventArgs e)
         {
-            //ANThread = new Thread(ANWorks);
-            //ANThread.Name = "ANThread";
-            //ANThread.IsBackground = true;
-            //ANThread.Start();
-            //AND += ANConnect;
+            KSThread = new Thread(KSWorks);
+            KSThread.Name = "KSThread";
+            KSThread.IsBackground = true;
+            KSThread.Start();
+            KSD += KSConnect;
 
             //AN2Thread = new Thread(AN2Works);
             //AN2Thread.Name = "AN2Thread";
@@ -91,11 +93,11 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             //AN2Thread.Start();
             //AN2D += AN2Connect;
 
-            SHThread = new Thread(SHWorks);
-            SHThread.Name = "SHThread";
-            SHThread.IsBackground = true;
-            SHThread.Start();
-            SHD += SHConnect;
+            //SHThread = new Thread(SHWorks);
+            //SHThread.Name = "SHThread";
+            //SHThread.IsBackground = true;
+            //SHThread.Start();
+            //SHD += SHConnect;
 
             //GPSThread = new Thread(GPSWorks);
             //GPSThread.Name = "GPSThread";
@@ -128,42 +130,54 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
 
         }
 
-        #region AN
-        private void ANWorks()
+        #region KS
+        private void KSWorks()
         {
             TimeSpan ts = new TimeSpan(10000);
             bool Cycle = true;
             while (Cycle)
             {
-                if (AND != null) { AND(); }
+                if (KSD != null) { KSD(); }
                 Thread.Sleep(ts);
             }
         }
-        private void ANConnect()
+        private void KSConnect()
         {
             try
             {
-                var adapterConfig = new ADP.RSFPL.AdapterConfig()
+                KSGPSContext = new DummyGPSExecutionContextMy(logger);
+                var adapterConfig = new ADP.KTN6841A.AdapterConfig()
                 {
-                    SerialNumber = "101396",
-                    IPAddress = "192.168.2.110",
-                    DisplayUpdate = true,
-                    OnlyAutoSweepTime = true,
-                    Optimization = 2,
-                    //ConnectionMode = 1
+                    SensorName = "US50310575",
+                    SmsHostName = "",
+                    WindowType = 4,
+                    UseGNSS = true,
+                    SensorInLocalNetwork = true,
+                    LockSensorResource = false,
+                    SelectedAntenna = 2
+                    //SerialNumber = "101396",
+                    //IPAddress = "192.168.2.110",
+                    //DisplayUpdate = true,
+                    //OnlyAutoSweepTime = true,
+                    //Optimization = 2,
+                    ////ConnectionMode = 1
                 };
 
-                ANadapter = new ADP.RSFPL.Adapter(adapterConfig, logger, TimeService);
+                KSadapter = new ADP.KTN6841A.Adapter(adapterConfig, logger, TimeService);
                 App.Current.Dispatcher.Invoke((Action)delegate // <--- HERE
                 {
-                    DS_AN.ANAdapter = ANadapter;
-                    ANIQ.ANAdapter = ANadapter;
+                    DS_KS.KSAdapter = KSadapter;
+                    //ANIQ.KSAdapter = KSadapter;
                 });//ANIQ.ANAdapter = ANadapter;
-                ANadapter.Connect(adapterHost);
+                KSadapter.Connect(adapterHost);
+
+                var command = new CMD.GpsCommand();
+                command.Parameter.GpsMode = CMD.Parameters.GpsMode.Start;
+                KSadapter.GPSCommandHandler(command, KSGPSContext);
             }
             finally
             {
-                AND -= ANConnect;
+                KSD -= KSConnect;
             }
         }
 
@@ -171,16 +185,16 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
         {
             try
             {
-                ANadapter.Disconnect();
+                KSadapter.Disconnect();
 
             }
             finally
             {
-                ANThread.Abort();
-                AND -= ANDisconnect;
+                KSThread.Abort();
+                KSD -= ANDisconnect;
             }
         }
-        #endregion AN
+        #endregion KS
 
         #region AN2
         private void AN2Works()
@@ -307,7 +321,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             {
                 var adapterConfig = new ADP.GPS.ConfigGPS()
                 {
-                    PortName = "COM21",
+                    PortName = "COM45",
                     PortBaudRate = "baudRate9600",
                     PortDataBits = "dataBits8",
                     PortHandshake = "None",
@@ -352,16 +366,17 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
 
         private void Connect_Click(object sender, RoutedEventArgs e)
         {
-            ANadapter.Connect(adapterHost);
+            KSadapter.Connect(adapterHost);
         }
         private void Disconnect_Click(object sender, RoutedEventArgs e)
         {
             //gnss.CloseConGPS();
-            AND += ANDisconnect;
+            KSD += ANDisconnect;
+            AN2D += ANDisconnect;
             SHD += SHDisconnect;
         }
-        #region AN
-        private void GetTraceAN()
+        #region KS
+        private void GetTraceKS()
         {
             try
             {
@@ -380,14 +395,15 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 command.Parameter.RefLevel_dBm = -40;
                 command.Parameter.SweepTime_s = -1;// 0.003;
                 command.Parameter.TraceCount = 1;
-                command.Parameter.TracePoint = 200000;
+                command.Parameter.TracePoint = -1;
                 command.Parameter.TraceType = CMD.Parameters.TraceType.ClearWhrite;
                 command.Parameter.DetectorType = CMD.Parameters.DetectorType.MaxPeak;
                 command.Parameter.LevelUnit = CMD.Parameters.LevelUnit.dBm;
-                //long t1 = TimeService.TimeStamp.Ticks;
-                ANadapter.MesureTraceCommandHandler(command, context);
-                //long t2 = TimeService.TimeStamp.Ticks;
-
+                long t1 = TimeService.TimeStamp.Ticks;
+                KSadapter.MesureTraceCommandHandler(command, context);
+                long t2 = TimeService.TimeStamp.Ticks;
+                string rbw = KSadapter.RBW.ToString() + "  ";
+                string tp = KSadapter.LevelArrLength.ToString() + "  ";
 
                 centr = 500m * 1000000;
                 span = 5.0m * 1000000;//0.025m
@@ -395,25 +411,36 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 command.Parameter.FreqStop_Hz = centr + span / 2;//930*1000000;//424.675m * 1000000;
                 command.Parameter.RBW_Hz = 50000;
                 command.Parameter.VBW_Hz = 50000;
-                ANadapter.MesureTraceCommandHandler(command, context);
 
+                KSadapter.MesureTraceCommandHandler(command, context);
+                rbw += KSadapter.RBW.ToString() + "  ";
+                tp += KSadapter.LevelArrLength.ToString() + "  ";
+
+                long t3 = TimeService.TimeStamp.Ticks;
                 centr = 2000m * 1000000;
                 span = 20.0m * 1000000;//0.025m
                 command.Parameter.FreqStart_Hz = centr - span / 2;//910 * 1000000;//424.625m * 1000000;//424.650
                 command.Parameter.FreqStop_Hz = centr + span / 2;//930*1000000;//424.675m * 1000000;
-                command.Parameter.RBW_Hz = 300000;
-                command.Parameter.VBW_Hz = 300000;
-                ANadapter.MesureTraceCommandHandler(command, context);
-                //long t3 = TimeService.TimeStamp.Ticks;
+                command.Parameter.RBW_Hz = 50000;
+                command.Parameter.VBW_Hz = 50000;
+                KSadapter.MesureTraceCommandHandler(command, context);
+                rbw += KSadapter.RBW.ToString() + "  ";
+                tp += KSadapter.LevelArrLength.ToString() + "  ";
 
-                //MessageBox.Show(new TimeSpan(t2 - t1).ToString() + "   \r\n" + new TimeSpan(t3 - t2).ToString());
+                long t4 = TimeService.TimeStamp.Ticks;
+
+                Debug.WriteLine(new TimeSpan(t2 - t1).ToString() + 
+                    "   \r\n" + new TimeSpan(t3 - t2).ToString() + 
+                    "   \r\n" + new TimeSpan(t4 - t3).ToString() +
+                    "   \r\n" + rbw +
+                    "   \r\n" + tp);
             }
             finally
             {
-                AND -= GetTraceAN;
+                KSD -= GetTraceKS;
             }
         }
-        private void GetTraceAN2()
+        private void GetTraceKS2()
         {
             try
             {
@@ -424,24 +451,24 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 command.Parameter.FreqStart_Hz = 104.750m * 1000000;// 421.5075m * 1000000;// 100000000;421.525m
                 command.Parameter.FreqStop_Hz = 105.250m * 1000000;// 421.5425m * 1000000;//110000000;
                 command.Parameter.PreAmp_dB = 30;
-                command.Parameter.RBW_Hz = 100;
-                command.Parameter.VBW_Hz = 100;
+                command.Parameter.RBW_Hz = -1;
+                command.Parameter.VBW_Hz = -1;
                 command.Parameter.RefLevel_dBm = -40;
                 command.Parameter.SweepTime_s = 0.00001;
                 command.Parameter.TraceCount = 10;
-                command.Parameter.TracePoint = -1;
+                command.Parameter.TracePoint = 1000;
                 command.Parameter.TraceType = CMD.Parameters.TraceType.MaxHold;
                 command.Parameter.DetectorType = CMD.Parameters.DetectorType.MaxPeak;
                 command.Parameter.LevelUnit = CMD.Parameters.LevelUnit.dBm;
 
-                ANadapter.MesureTraceCommandHandler(command, context);
+                KSadapter.MesureTraceCommandHandler(command, context);
             }
             finally
             {
-                AND -= GetTraceAN2;
+                KSD -= GetTraceKS2;
             }
         }
-        private void GetTraceAN3()
+        private void GetTraceKS3()
         {
             try
             {
@@ -449,27 +476,30 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 var context = new DummyExecutionContextMy(logger);
                 var command = new CMD.MesureTraceCommand();
                 command.Parameter.Att_dB = 0;
-                command.Parameter.FreqStart_Hz = 104.750m * 1000000;// 421.5075m * 1000000;// 100000000;421.525m
-                command.Parameter.FreqStop_Hz = 105.250m * 1000000;// 421.5425m * 1000000;//110000000;
+                decimal centr = 100m * 1000000;
+                decimal span = 25.0m * 1000000;//0.025m
+
+                command.Parameter.FreqStart_Hz = centr - span / 2;//910 * 1000000;//424.625m * 1000000;//424.650
+                command.Parameter.FreqStop_Hz = centr + span / 2;//930*1000000;//424.675m * 1000000;
                 command.Parameter.PreAmp_dB = 0;
-                command.Parameter.RBW_Hz = 5000;
-                command.Parameter.VBW_Hz = 5000;
+                command.Parameter.RBW_Hz = 50;
+                command.Parameter.VBW_Hz = 50;
                 command.Parameter.RefLevel_dBm = -40;
                 command.Parameter.SweepTime_s = 0.00001;
                 command.Parameter.TraceCount = 100;
-                command.Parameter.TracePoint = 16000;
+                command.Parameter.TracePoint = -1;
                 command.Parameter.TraceType = CMD.Parameters.TraceType.ClearWhrite;
                 command.Parameter.DetectorType = CMD.Parameters.DetectorType.MaxPeak;
                 command.Parameter.LevelUnit = CMD.Parameters.LevelUnit.dBm;
 
-                ANadapter.MesureTraceCommandHandler(command, context);
+                KSadapter.MesureTraceCommandHandler(command, context);
             }
             finally
             {
-                AND -= GetTraceAN3;
+                KSD -= GetTraceKS3;
             }
         }
-        private void GetTraceAN1800()
+        private void GetTraceKS1800()
         {
             try
             {
@@ -477,27 +507,30 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 var context = new DummyExecutionContextMy(logger);
                 var command = new CMD.MesureTraceCommand();
                 command.Parameter.Att_dB = 0;
-                command.Parameter.FreqStart_Hz = 1800 * 1000000;// 421.5075m * 1000000;// 100000000;421.525m
-                command.Parameter.FreqStop_Hz = 1900 * 1000000;// 421.5425m * 1000000;//110000000;
+                decimal centr = 1850m * 1000000;
+                decimal span = 15.0m * 1000000;//0.025m
+
+                command.Parameter.FreqStart_Hz = centr - span / 2;//910 * 1000000;//424.625m * 1000000;//424.650
+                command.Parameter.FreqStop_Hz = centr + span / 2;//930*1000000;//424.675m * 1000000;
                 command.Parameter.PreAmp_dB = 0;
-                command.Parameter.RBW_Hz = 30000;
-                command.Parameter.VBW_Hz = 30000;
+                command.Parameter.RBW_Hz = -1;
+                command.Parameter.VBW_Hz = -1;
                 command.Parameter.RefLevel_dBm = -40;
                 command.Parameter.SweepTime_s = 0.00001;
-                command.Parameter.TraceCount = 1;
-                command.Parameter.TracePoint = 5100;
+                command.Parameter.TraceCount = 100;
+                command.Parameter.TracePoint = 500000;
                 command.Parameter.TraceType = CMD.Parameters.TraceType.ClearWhrite;
                 command.Parameter.DetectorType = CMD.Parameters.DetectorType.MaxPeak;
                 command.Parameter.LevelUnit = CMD.Parameters.LevelUnit.dBm;
 
-                ANadapter.MesureTraceCommandHandler(command, context);
+                KSadapter.MesureTraceCommandHandler(command, context);
             }
             finally
             {
-                AND -= GetTraceAN1800;
+                KSD -= GetTraceKS1800;
             }
         }
-        private void GetTraceAN1800AVG()
+        private void GetTraceKS1800AVG()
         {
             try
             {
@@ -505,55 +538,55 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 var context = new DummyExecutionContextMy(logger);
                 var command = new CMD.MesureTraceCommand();
                 command.Parameter.Att_dB = 0;
-                command.Parameter.FreqStart_Hz = 1800 * 1000000;// 421.5075m * 1000000;// 100000000;421.525m
-                command.Parameter.FreqStop_Hz = 1900 * 1000000;// 421.5425m * 1000000;//110000000;
+                command.Parameter.FreqStart_Hz = 150.05m * 1000000;// 421.5075m * 1000000;// 100000000;421.525m
+                command.Parameter.FreqStop_Hz = 167.7625m * 1000000;// 421.5425m * 1000000;//110000000;
                 command.Parameter.PreAmp_dB = 0;
-                command.Parameter.RBW_Hz = 30000;
-                command.Parameter.VBW_Hz = 30000;
+                command.Parameter.RBW_Hz = -1;
+                command.Parameter.VBW_Hz = -1;
                 command.Parameter.RefLevel_dBm = -40;
                 command.Parameter.SweepTime_s = 0.00001;
-                command.Parameter.TraceCount = 100;
-                command.Parameter.TracePoint = 10000;
-                command.Parameter.TraceType = CMD.Parameters.TraceType.Average;
+                command.Parameter.TraceCount = 10;
+                command.Parameter.TracePoint = 141700;
+                command.Parameter.TraceType = CMD.Parameters.TraceType.ClearWhrite;
                 command.Parameter.DetectorType = CMD.Parameters.DetectorType.MaxPeak;
                 command.Parameter.LevelUnit = CMD.Parameters.LevelUnit.dBm;
 
-                ANadapter.MesureTraceCommandHandler(command, context);
+                KSadapter.MesureTraceCommandHandler(command, context);
             }
             finally
             {
-                AND -= GetTraceAN1800AVG;
+                KSD -= GetTraceKS1800AVG;
             }
         }
-        private void GetTraceAN9352()
+        private void GetTraceKS9352()
         {
             try
             {
                 // send command
                 var context = new DummyExecutionContextMy(logger);
                 var command = new CMD.MesureTraceCommand();
-                command.Parameter.Att_dB = 0;
+                command.Parameter.Att_dB = 5;
                 command.Parameter.FreqStart_Hz = 934.95m * 1000000;// 421.5075m * 1000000;// 100000000;421.525m
                 command.Parameter.FreqStop_Hz = 935.45m * 1000000;// 421.5425m * 1000000;//110000000;
-                command.Parameter.PreAmp_dB = 0;
-                command.Parameter.RBW_Hz = 1000;
-                command.Parameter.VBW_Hz = 1000;
+                command.Parameter.PreAmp_dB = 1;
+                command.Parameter.RBW_Hz = -1;
+                command.Parameter.VBW_Hz = -1;
                 command.Parameter.RefLevel_dBm = -40;
                 command.Parameter.SweepTime_s = 0.00001;
                 command.Parameter.TraceCount = 100;
                 command.Parameter.TracePoint = 2000;
-                command.Parameter.TraceType = CMD.Parameters.TraceType.Average;
+                command.Parameter.TraceType = CMD.Parameters.TraceType.ClearWhrite;
                 command.Parameter.DetectorType = CMD.Parameters.DetectorType.MaxPeak;
                 command.Parameter.LevelUnit = CMD.Parameters.LevelUnit.dBm;
 
-                ANadapter.MesureTraceCommandHandler(command, context);
+                KSadapter.MesureTraceCommandHandler(command, context);
             }
             finally
             {
-                AND -= GetTraceAN9352;
+                KSD -= GetTraceKS9352;
             }
         }
-        private void GetTraceAN1350()
+        private void GetTraceKS1350()
         {
             try
             {
@@ -579,11 +612,11 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 command.Parameter.DetectorType = CMD.Parameters.DetectorType.RMS;
                 command.Parameter.LevelUnit = CMD.Parameters.LevelUnit.dBm;
 
-                ANadapter.MesureTraceCommandHandler(command, context);
+                KSadapter.MesureTraceCommandHandler(command, context);
             }
             finally
             {
-                AND -= GetTraceAN1350;
+                KSD -= GetTraceKS1350;
             }
         }
         #endregion AN
@@ -648,7 +681,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 // send command
                 var context = new DummyExecutionContextMy(logger);
                 var command = new CMD.MesureTraceCommand();
-               
+
                 decimal centr = 100m * 1000000;
                 decimal span = 30.0m * 1000000;//0.025m
 
@@ -911,7 +944,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             {
                 // send command
                 var context = new DummyExecutionContextMy(logger);
-                var command = new CMD.MesureTraceCommand();
+                var command = new CMD.EstimateRefLevelCommand();
                 command.Parameter.Att_dB = 30;
                 command.Parameter.FreqStart_Hz = 104.750m * 1000000;// 421.5075m * 1000000;// 100000000;421.525m
                 command.Parameter.FreqStop_Hz = 105.250m * 1000000;// 421.5425m * 1000000;//110000000;
@@ -1054,7 +1087,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
         #endregion SH
 
         long UTCOffset = 621355968000000000;
-        private void GetIQAN()
+        private void GetIQKS()
         {
             try
             {
@@ -1096,12 +1129,12 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
 
                 ////////Debug.WriteLine("\r\n" + new TimeSpan(DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks).ToString() + " Set Param");
                 ////////Debug.WriteLine("\r\n" + new TimeSpan(command.Parameter.TimeStart).ToString() + " Set Param");
-                ANadapter.MesureIQStreamCommandHandler(command, context);
+                KSadapter.MesureIQStreamCommandHandler(command, context);
 
             }
             finally
             {
-                AND -= GetIQAN;
+                KSD -= GetIQKS;
             }
         }
         private void GetIQ2AN()
@@ -1197,7 +1230,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             }
         }
 
-        private void GetIQAN2()
+        private void GetIQKS2()
         {
             try
             {
@@ -1240,12 +1273,12 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
 
                 ////////Debug.WriteLine("\r\n" + new TimeSpan(DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks).ToString() + " Set Param");
                 ////////Debug.WriteLine("\r\n" + new TimeSpan(command.Parameter.TimeStart).ToString() + " Set Param");
-                ANadapter.MesureIQStreamCommandHandler(command, context);
+                KSadapter.MesureIQStreamCommandHandler(command, context);
 
             }
             finally
             {
-                AND -= GetIQAN2;
+                KSD -= GetIQKS2;
             }
         }
         private void GetIQ2AN2()
@@ -1343,7 +1376,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
         }
 
 
-        private void GetIQAN3()
+        private void GetIQKS3()
         {
             try
             {
@@ -1382,12 +1415,12 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
 
                 ////////Debug.WriteLine("\r\n" + new TimeSpan(DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks).ToString() + " Set Param");
                 ////////Debug.WriteLine("\r\n" + new TimeSpan(command.Parameter.TimeStart).ToString() + " Set Param");
-                ANadapter.MesureIQStreamCommandHandler(command, context);
+                KSadapter.MesureIQStreamCommandHandler(command, context);
 
             }
             finally
             {
-                AND -= GetIQAN3;
+                KSD -= GetIQKS3;
             }
         }
         private void GetIQ2AN3()
@@ -1480,7 +1513,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             }
         }
 
-        private void GetIQAN4()
+        private void GetIQKS4()
         {
             try
             {
@@ -1519,12 +1552,12 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
 
                 ////////Debug.WriteLine("\r\n" + new TimeSpan(DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks).ToString() + " Set Param");
                 ////////Debug.WriteLine("\r\n" + new TimeSpan(command.Parameter.TimeStart).ToString() + " Set Param");
-                ANadapter.MesureIQStreamCommandHandler(command, context);
+                KSadapter.MesureIQStreamCommandHandler(command, context);
 
             }
             finally
             {
-                AND -= GetIQAN4;
+                KSD -= GetIQKS4;
             }
         }
         private void GetIQ2AN4()
@@ -1625,70 +1658,71 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
         }
         private void GetTrace_Click(object sender, RoutedEventArgs e)
         {
-            AND += GetTraceAN;
+            KSD += GetTraceKS;
+            AN2D += GetTrace2AN;
             SHD += GetTraceSH;
         }
         private void SetMeas2_Click(object sender, RoutedEventArgs e)
         {
-            AND += GetTraceAN2;
+            KSD += GetTraceKS2;
             AN2D += GetTrace2AN2;
             SHD += GetTraceSH2;
         }
         private void SetMeas3_Click(object sender, RoutedEventArgs e)
         {
             AN2D += GetTrace2AN3;
-            AND += GetTraceAN3;
+            KSD += GetTraceKS3;
             SHD += GetTraceSH3;
         }
         private void SetMeas1800_Click(object sender, RoutedEventArgs e)
         {
             AN2D += GetTrace2AN1800;
-            AND += GetTraceAN1800;
+            KSD += GetTraceKS1800;
             SHD += GetTraceSH1800;
         }
         private void SetMeas1800AVG_Click(object sender, RoutedEventArgs e)
         {
             AN2D += GetTrace2AN1800AVG;
-            AND += GetTraceAN1800AVG;
+            KSD += GetTraceKS1800AVG;
             SHD += GetTraceSH1800AVG;
         }
         private void SetMeas9352AVG_Click(object sender, RoutedEventArgs e)
         {
             AN2D += GetTrace2AN9352;
-            AND += GetTraceAN9352;
+            KSD += GetTraceKS9352;
             SHD += GetTraceSH9352;
         }
         private void SetMeasAVG1350_Click(object sender, RoutedEventArgs e)
         {
             AN2D += GetTrace2AN1350;
-            AND += GetTraceAN1350;
+            KSD += GetTraceKS1350;
             SHD += GetTraceSH1350;
         }
         private void SetMeasIQ_Click(object sender, RoutedEventArgs e)
         {
             Debug.WriteLine("=======================================================================================================");
-            AND += GetIQAN;
+            KSD += GetIQKS;
             AN2D += GetIQ2AN;
             SHD += GetIQSH;
         }
         private void SetMeasIQ2_Click(object sender, RoutedEventArgs e)
         {
             Debug.WriteLine("=======================================================================================================");
-            AND += GetIQAN2;
+            KSD += GetIQKS2;
             AN2D += GetIQ2AN2;
             SHD += GetIQSH2;
         }
         private void SetMeasIQ3_Click(object sender, RoutedEventArgs e)
         {
             Debug.WriteLine("=======================================================================================================");
-            AND += GetIQAN3;
+            KSD += GetIQKS3;
             AN2D += GetIQ2AN3;
             SHD += GetIQSH3;
         }
         private void SetMeasIQ4_Click(object sender, RoutedEventArgs e)
         {
             Debug.WriteLine("=======================================================================================================");
-            AND += GetIQAN4;
+            KSD += GetIQKS4;
             AN2D += GetIQ2AN4;
             SHD += GetIQSH4;
         }
@@ -1829,7 +1863,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
 
         private void SetWND_Click(object sender, RoutedEventArgs e)
         {
-            ANadapter.SetIQWindow();
+            //KSadapter.SetIQWindow();
         }
         private void SetWNDType_Click(object sender, RoutedEventArgs e)
         {
@@ -1895,28 +1929,28 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             }
             finally
             {
-                AND -= ANGetIQ;
+                KSD -= ANGetIQ;
             }
         }
 
         private void SaveIQAN_Click(object sender, RoutedEventArgs e)
         {
-            string strPath = @System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\IQ.txt";
-            if (!System.IO.File.Exists(strPath))
-            {
-                System.IO.File.Create(strPath).Dispose();
-            }
-            using (System.IO.StreamWriter sw = System.IO.File.AppendText(strPath))
-            {
-                sw.WriteLine((ANadapter.IQArr.Length / 2).ToString() + ";");
-                for (int i = 0; i < ANadapter.IQArr.Length / 2; i++)
-                {
-                    sw.WriteLine(ANadapter.IQArr[0 + i * 2].ToString() + ";" + ANadapter.IQArr[1 + i * 2].ToString());
-                }
+            //string strPath = @System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\IQ.txt";
+            //if (!System.IO.File.Exists(strPath))
+            //{
+            //    System.IO.File.Create(strPath).Dispose();
+            //}
+            //using (System.IO.StreamWriter sw = System.IO.File.AppendText(strPath))
+            //{
+            //    sw.WriteLine((KSadapter.IQArr.Length / 2).ToString() + ";");
+            //    for (int i = 0; i < KSadapter.IQArr.Length / 2; i++)
+            //    {
+            //        sw.WriteLine(KSadapter.IQArr[0 + i * 2].ToString() + ";" + KSadapter.IQArr[1 + i * 2].ToString());
+            //    }
 
 
-                sw.Dispose();
-            }
+            //    sw.Dispose();
+            //}
         }
     }
     public class DummyTimeService : ITimeService
@@ -2051,6 +2085,100 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
 
         public void PushResult(ICommandResultPart result)
         {
+            //this._logger.Verbouse("DummyExecutionContext", "Call method", $"PushResult");
+
+            //Task.Run(() =>
+            //{
+            //    var myResult = result as MyResultObject
+
+            //    for (int i = 0; i < length; i++)
+            //    {
+            //        var data = myResult.myProperty[i];
+            //        if (data > 10000)
+            //        {
+            //            this._logger.Critical("Test", "Result", $"Не соотвествие данных");
+            //        }
+            //    }
+            //});
+        }
+
+        public void Unlock(params CommandType[] types)
+        {
+            this._logger.Verbouse("DummyExecutionContext", "Call method", $"Unlock");
+        }
+
+        public void Unlock(params Type[] commandType)
+        {
+            this._logger.Verbouse("DummyExecutionContext", "Call method", $"Unlock");
+        }
+
+        public void Unlock()
+        {
+            this._logger.Verbouse("DummyExecutionContext", "Call method", $"Unlock");
+        }
+
+
+        public T TakeResult<T>(string key, ulong index, CommandResultStatus status) where T : ICommandResultPart
+        {
+            object t = new Atdi.DataModels.Sdrn.DeviceServer.Commands.Results.MesureTraceResult()
+            {
+                Level = new float[10000000]
+            };
+            return (T)t;
+            //throw new NotImplementedException();
+        }
+
+        public void ReleaseResult<T>(T result) where T : ICommandResultPart
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class DummyGPSExecutionContextMy : IExecutionContext
+    {
+        private readonly ILogger _logger;
+
+        public DummyGPSExecutionContextMy(ILogger logger)
+        {
+            this._logger = logger;
+        }
+
+        public CancellationToken Token { get; set; }
+
+        public void Abort(Exception e)
+        {
+            this._logger.Verbouse("DummyExecutionContext", "Call method", $"Abort");
+        }
+
+        public void Cancel()
+        {
+            this._logger.Verbouse("DummyExecutionContext", "Call method", $"Cancel");
+        }
+
+        public void Finish()
+        {
+            this._logger.Verbouse("DummyExecutionContext", "Call method", $"Finish");
+        }
+
+        public void Lock(params CommandType[] types)
+        {
+            this._logger.Verbouse("DummyExecutionContext", "Call method", $"Lock");
+        }
+
+        public void Lock(params Type[] commandType)
+        {
+            this._logger.Verbouse("DummyExecutionContext", "Call method", $"Lock");
+        }
+
+        public void Lock()
+        {
+            this._logger.Verbouse("DummyExecutionContext", "Call method", $"Lock");
+        }
+
+        public void PushResult(ICommandResultPart result)
+        {
+            var myResult = result as Atdi.DataModels.Sdrn.DeviceServer.Commands.Results.GpsResult;
+            Debug.WriteLine("Lat " + myResult.Lat.ToString() + "  Lon " + myResult.Lon.ToString() + "   EVL " + myResult.Asl.ToString());
             //this._logger.Verbouse("DummyExecutionContext", "Call method", $"PushResult");
 
             //Task.Run(() =>

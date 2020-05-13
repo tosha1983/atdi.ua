@@ -96,23 +96,47 @@
     <Compile Include="Environment\Wpf\WpfExtensions.cs" />
     <Compile Include="Environment\Wpf\WpfViewModelBase.cs" />
     <Compile Include="Forms\Base\DataGridFilters.cs" />
+    <Compile Include="Forms\Base\gridFilterString.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Base\gridFilterString.Designer.cs">
+      <DependentUpon>gridFilterString.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ExportRSParametersForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ExportRSParametersForm.Designer.cs">
+      <DependentUpon>ExportRSParametersForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\GraphicForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\GraphicForm.Designer.cs">
       <DependentUpon>GraphicForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Base\filterBool.cs">
+    <Compile Include="Forms\Base\gridFilterBool.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Base\filterBool.Designer.cs">
-      <DependentUpon>filterBool.cs</DependentUpon>
+    <Compile Include="Forms\Base\gridFilterBool.Designer.cs">
+      <DependentUpon>gridFilterBool.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Base\filterNumeric.cs">
+    <Compile Include="Forms\Base\gridFilterNumeric.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Base\filterNumeric.Designer.cs">
-      <DependentUpon>filterNumeric.cs</DependentUpon>
+    <Compile Include="Forms\Base\gridFilterNumeric.Designer.cs">
+      <DependentUpon>gridFilterNumeric.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Base\gridFilterBase.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Base\gridFilterBase.Designer.cs">
+      <DependentUpon>gridFilterBase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ExportSODatatoCSVForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ExportSODatatoCSVForm.Designer.cs">
+      <DependentUpon>ExportSODatatoCSVForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\GroupeEmissionWithStationForm.cs">
       <SubType>Form</SubType>
@@ -168,6 +192,12 @@
     <Compile Include="Forms\OnlineMeasurementForm.Designer.cs">
       <DependentUpon>OnlineMeasurementForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\SelectRefSpectrums.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\SelectRefSpectrums.Designer.cs">
+      <DependentUpon>SelectRefSpectrums.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\SignalizationSensorsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -194,6 +224,12 @@
     </Compile>
     <Compile Include="Forms\Base\WpfFormBase.cs">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Base\WpfStandardForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Base\WpfStandardForm.Designer.cs">
+      <DependentUpon>WpfStandardForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Handlers\Allotments\Commands\StartSignalizationCommand.cs" />
     <Compile Include="Handlers\Allotments\Forms\CalcSODlg1Form.cs">
@@ -264,6 +300,7 @@
     </Compile>
     <Compile Include="Handlers\YetOtherTerrestrialStations\Commands\ShowResultMonitoringCommand.cs" />
     <Compile Include="Handlers\YetOtherTerrestrialStations\YetOtherTerrestrialStationsContextMenuBuilder.cs" />
+    <Compile Include="Helpers\MapsDrawingHelper.cs" />
     <Compile Include="Metadata\FreqPlanChan.cs" />
     <Compile Include="Metadata\AllStations.cs" />
     <Compile Include="Metadata\Allotments.cs" />
@@ -272,6 +309,7 @@
     <Compile Include="Models\Common\LocationPolygon.cs" />
     <Compile Include="Models\Common\LocationPolygonRect.cs" />
     <Compile Include="Models\Common\MeasStationsSignalization.cs" />
+    <Compile Include="Models\Common\ExportSO.cs" />
     <Compile Include="Models\Common\MeasTask.cs" />
     <Compile Include="Models\Common\StationsEquipment.cs" />
     <Compile Include="Models\DataStore.cs" />
@@ -346,6 +384,7 @@
     <Compile Include="Models\WcfDataApadters\StationsEquipmentDataAdapter.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Handlers\PluginCommands.cs" />
+    <Compile Include="Helpers\PluginHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Handlers\Tour\Commands\UpdateInspectionsCommand.cs" />
     <Compile Include="Handlers\Tour\Commands\CreateMeasTaskCommand.cs" />
@@ -376,6 +415,7 @@
     <Compile Include="ViewModels\ControlClientViewModel.cs" />
     <Compile Include="ViewModels\CreateMeasTaskViewModel.cs" />
     <Compile Include="ViewModels\GrapficViewModel.cs" />
+    <Compile Include="ViewModels\ExportSODatatoCSVModelViewModel.cs" />
     <Compile Include="ViewModels\GroupeEmissionWithStationModelViewModel.cs" />
     <Compile Include="ViewModels\GroupeEmissionWithStationProtocolModelViewModel.cs" />
     <Compile Include="ViewModels\MeasResultSignalizationViewViewModel.cs" />
@@ -388,6 +428,7 @@
     <Compile Include="Handlers\OnlineMeasurement\Calculation\BandWidthEstimation.cs" />
     <Compile Include="Handlers\OnlineMeasurement\Calculation\CalcBWForChart.cs" />
     <Compile Include="Handlers\OnlineMeasurement\Calculation\CalcChannelPowForChart.cs" />
+    <Compile Include="ViewModels\SavedTaskViewModel.cs" />
     <Compile Include="ViewModels\SignalizationSensorsViewModel.cs" />
     <Compile Include="ViewModels\SignalizationStationsEquipmentsViewModel.cs" />
     <Compile Include="ViewModels\SignalizationSysInfoViewModel.cs" />
@@ -420,14 +461,29 @@
     <Content Include="ICSM 6.2.70\OrmCs.dll" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Forms\Base\gridFilterString.resx">
+      <DependentUpon>gridFilterString.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Base\WpfFormBase.resx">
+      <DependentUpon>WpfFormBase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Base\WpfStandardForm.resx">
+      <DependentUpon>WpfStandardForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ExportRSParametersForm.resx">
+      <DependentUpon>ExportRSParametersForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\GraphicForm.resx">
       <DependentUpon>GraphicForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Base\filterBool.resx">
-      <DependentUpon>filterBool.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Base\gridFilterBool.resx">
+      <DependentUpon>gridFilterBool.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Base\filterNumeric.resx">
-      <DependentUpon>filterNumeric.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Base\gridFilterNumeric.resx">
+      <DependentUpon>gridFilterNumeric.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ExportSODatatoCSVForm.resx">
+      <DependentUpon>ExportSODatatoCSVForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\GroupeEmissionWithStationForm.resx">
       <DependentUpon>GroupeEmissionWithStationForm.cs</DependentUpon>
@@ -455,6 +511,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\OnlineMeasurementForm.resx">
       <DependentUpon>OnlineMeasurementForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\SelectRefSpectrums.resx">
+      <DependentUpon>SelectRefSpectrums.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\SignalizationSensorsForm.resx">
       <DependentUpon>SignalizationSensorsForm.cs</DependentUpon>
@@ -534,9 +593,17 @@
     <Folder Include="Xaml\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Api\Atdi.Api.EntityOrm.WebClient\Atdi.Api.EntityOrm.WebClient.csproj">
+      <Project>{48ace960-6ba0-4a99-b060-4dbb8a182206}</Project>
+      <Name>Atdi.Api.EntityOrm.WebClient</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Common\Atdi.Common\Atdi.Common.csproj">
       <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
       <Name>Atdi.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Api\Atdi.Contracts.Api.EntityOrm.WebClient\Atdi.Contracts.Api.EntityOrm.WebClient.csproj">
+      <Project>{a252d199-1162-484d-b50a-8c44a4edd670}</Project>
+      <Name>Atdi.Contracts.Api.EntityOrm.WebClient</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Contracts\WcfServices\Atdi.Contracts.WcfServices.Sdrn.Server.IeStation\Atdi.Contracts.WcfServices.Sdrn.Server.IeStation.csproj">
       <Project>{cd78d548-da04-4cb0-9931-2164d9637392}</Project>
@@ -546,9 +613,17 @@
       <Project>{bb70f260-1614-4683-b693-bd5fb8848c55}</Project>
       <Name>Atdi.Contracts.WcfServices.Sdrn.Server</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Api.EntityOrm.WebClient\Atdi.DataModels.Api.EntityOrm.WebClient.csproj">
+      <Project>{36ae7031-fc14-4305-bd04-87c70fda0f25}</Project>
+      <Name>Atdi.DataModels.Api.EntityOrm.WebClient</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns.Device\Atdi.DataModels.Sdrns.Device.csproj">
       <Project>{4670da92-06cf-4ce4-bbf8-67353a907bd0}</Project>
       <Name>Atdi.DataModels.Sdrns.Device</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns.Server.Entities\Atdi.DataModels.Sdrns.Server.Entities.csproj">
+      <Project>{4178c008-8b0f-4ea8-a1d9-1b86bf8dc428}</Project>
+      <Name>Atdi.DataModels.Sdrns.Server.Entities</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns.Server\Atdi.DataModels.Sdrns.Server.csproj">
       <Project>{e1234fea-9bb0-402a-aad1-9ee393c25d1f}</Project>
@@ -561,6 +636,10 @@
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels\Atdi.DataModels.csproj">
       <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
       <Name>Atdi.DataModels</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Modules\Atdi.Modules.Sdrn.Calculation\Atdi.Modules.Sdrn.SpecializedCalculation.csproj">
+      <Project>{9d457947-b938-4aae-9b14-293d349fd621}</Project>
+      <Name>Atdi.Modules.Sdrn.SpecializedCalculation</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\WpfControls\Atdi.WpfControls.Charts\Atdi.WpfControls.Charts.csproj">
       <Project>{895b75e6-83db-41f1-961e-55c6bb578bdb}</Project>

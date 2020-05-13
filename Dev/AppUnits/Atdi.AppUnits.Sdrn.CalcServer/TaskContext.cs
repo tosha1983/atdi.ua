@@ -22,6 +22,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 			this.ResultId = taskResult.ResultId;
 			this.TaskId = taskResult.TaskId;
 			this.ProjectId = taskResult.ProjectId;
+			this.ClientContextId = taskResult.ContextId;
+
 			this.LaunchHandle = new TaskLaunchHandle
 			{
 				TaskId = taskResult.TaskId,
@@ -40,6 +42,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 		public long TaskId { get; }
 
 		public long ProjectId { get; }
+
+		public long ClientContextId { get; }
 
 		public void SendEvent(ICalcEvent @event)
 		{

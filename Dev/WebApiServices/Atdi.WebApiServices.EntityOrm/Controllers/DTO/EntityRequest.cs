@@ -26,8 +26,14 @@ namespace Atdi.WebApiServices.EntityOrm.Controllers.DTO
 
         public string[] Filter { get; set; }
 
-        public long Top { get; set; } 
-    }
+        public long Top { get; set; }
+
+        public long? Offset { get; set; }
+
+		public long? Fetch { get; set; }
+
+		public bool Distinct { get; set; }
+	}
 
     public class DataRecordRequest : EntityRequest, API.IDataRecordRequest
     {
@@ -56,7 +62,34 @@ namespace Atdi.WebApiServices.EntityOrm.Controllers.DTO
 	    public object[] Values { get; set; }
     }
 
-    public class DataRecordDeleteRequest : EntityRequest, API.IDataRecordDeleteRequest
+    public class DataRecordsUpdateRequest : EntityRequest, API.IDataRecordCreateRequest
+    {
+	    public string[] Filter { get; set; }
+
+	    public string[] Fields { get; set; }
+
+	    public object[] Values { get; set; }
+    }
+
+    public class DataRecordApplyRequest : EntityRequest, API.IDataRecordApplyRequest
+	{
+	    public string[] Filter { get; set; }
+
+	    public string[] FieldsToCreate { get; set; }
+
+	    public string[] FieldsToUpdate { get; set; }
+
+		public object[] ValuesToCreate { get; set; }
+
+		public object[] ValuesToUpdate { get; set; }
+	}
+
+	public class DataRecordsDeleteRequest : EntityRequest
+    {
+	    public string[] Filter { get; set; }
+    }
+
+	public class DataRecordDeleteRequest : EntityRequest, API.IDataRecordDeleteRequest
     {
 	    public string PrimaryKey { get; set; }
 

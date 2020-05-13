@@ -88,6 +88,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                             logger.Verbouse(Contexts.ThisComponent, "AdapterAutoRefLevels were not found in the configuration " +
                                 "file and were replaced with the default values for this adapter.");
                         }
+                        else
+                        {
+                            ValidateAdapterAvtoRefLevelMainConfig(ref tac.Main.AutoRefLevel);
+                        }
+
                         mainConfig = tac.Main;
                     }
                     (MesureTraceDeviceProperties mtdp, MesureIQStreamDeviceProperties miqdp) = GetProperties(mainConfig);
@@ -96,8 +101,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
 
                     host.RegisterHandler<COM.MesureTraceCommand, COMR.MesureTraceResult>(MesureTraceCommandHandler, rpd, mtdp);
                     host.RegisterHandler<COM.MesureIQStreamCommand, COMR.MesureIQStreamResult>(MesureIQStreamCommandHandler, miqdp);
-
-                    //host.RegisterHandler<COM.MesureTraceCommand, COMR.MesureTraceResult>(EstimateRefLevelCommandHandler, mtdp);
+                    host.RegisterHandler<COM.EstimateRefLevelCommand, COMR.EstimateRefLevelResult>(EstimateRefLevelCommandHandler, mtdp);
                 }
             }
             #region Exception
@@ -354,7 +358,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
 
         }
 
-        public void EstimateRefLevelCommandHandler(COM.MesureTraceCommand command, IExecutionContext context)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="command"></param>
+        /// <param name="context"></param>
+        public void EstimateRefLevelCommandHandler(COM.EstimateRefLevelCommand command, IExecutionContext context)
         {
             try
             {
@@ -372,6 +381,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         StatusError(AdapterDriver.bbAbort(deviceId), context);
                         idleState = false;
                     }
+
+                    if (command.Parameter.Att_dB >= 0 && command.Parameter.PreAmp_dB >= 0)
+                    {
+                        throw new Exception("Att_dB and PreAmp_dB are set to a specific value, one of these parameters must be set to Auto.");
+                    }
+
                     ValidateAndSetFreqStartStop(command.Parameter.FreqStart_Hz, command.Parameter.FreqStop_Hz, context);
 
 
@@ -514,6 +529,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
         public MEN.LevelUnit LevelUnit = MEN.LevelUnit.dBm;
         private EN.Gain Gain = EN.Gain.Gain_AUTO;
         private EN.Attenuator Attenuator = EN.Attenuator.Atten_AUTO;
+        private const int refLevelMax = 20, refLevelMin = -130;
         #endregion
 
         #region Trace Data
@@ -676,6 +692,34 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 throw new Exception("The AdapterTraceResultPools configuration exceeded the maximum pool size limit of " + poolMaxSize / 1000000 + " MB. File Name \"" + fileName + "\"");
             }
             return rpd;
+        }
+
+        private void ValidateAdapterAvtoRefLevelMainConfig(ref CFG.AdapterAutoRefLevel autoRefLevel)
+        {
+            if (autoRefLevel.Start_dBm > refLevelMax)
+            {
+                throw new Exception("AutoRefLevel.Start_dBm is set above the available level. Reference level should not exceed " + refLevelMax + " dBm.");
+            }
+            if (autoRefLevel.Stop_dBm < refLevelMin)
+            {
+                throw new Exception("AutoRefLevel.Stop_dBm is set below the available level. reference level must not be less than " + refLevelMin + " dBm.");
+            }
+            if (autoRefLevel.Start_dBm < autoRefLevel.Stop_dBm)
+            {
+                throw new Exception("AutoRefLevel.Start_dBm cannot be less than AutoRefLevel.Stop_dBm");
+            }
+            if ((autoRefLevel.Start_dBm - autoRefLevel.Stop_dBm) < autoRefLevel.Step_dB)
+            {
+                throw new Exception("(AutoRefLevel.Start_dBm - AutoRefLevel.Stop_dBm) < AutoRefLevel.Step_dB. AutoRefLevel.Step_dB must be set to make at least two measurements.");
+            }
+            if (autoRefLevel.PersentOverload > 100)
+            {
+                throw new Exception("AutoRefLevel.PersentOverload should not exceed 100%.");
+            }
+            if (autoRefLevel.NumberScan > 1000)
+            {
+                throw new Exception("AutoRefLevel.NumberScan should not exceed 1000.");
+            }
         }
 
         private void ValidateAndSetFreqStartStop(decimal freqStart, decimal freqStop, IExecutionContext context)
@@ -1319,23 +1363,25 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 }
             }
         }
-        private void GetAndPushRefLevelResults(COM.MesureTraceCommand command, IExecutionContext context)
+        private void GetAndPushRefLevelResults(COM.EstimateRefLevelCommand command, IExecutionContext context)
         {
+            string poolKeyName = "";
+            bool poolKeyFind = false;
             uint traceLen = 0;
-
             ValidateAndSetGain(command.Parameter.PreAmp_dB, context);
-            int steps = (mainConfig.AutoRefLevel.Stop_dBm - mainConfig.AutoRefLevel.Start_dBm) / mainConfig.AutoRefLevel.Step_dB;
+            int steps = (mainConfig.AutoRefLevel.Start_dBm - mainConfig.AutoRefLevel.Stop_dBm) / (int)mainConfig.AutoRefLevel.Step_dB;
             TempRefLevelData[] data = new TempRefLevelData[steps];
             int reflevel = 10000000;
             for (int i = 0; i < steps; i++)
             {
                 data[i] = new TempRefLevelData()
                 {
-                    RefLevel = mainConfig.AutoRefLevel.Start_dBm - mainConfig.AutoRefLevel.Step_dB * i,
+                    RefLevel = mainConfig.AutoRefLevel.Start_dBm - (int)mainConfig.AutoRefLevel.Step_dB * i,
                     PercentRFOverload = 0,
                     RFOverloadState = new bool[mainConfig.AutoRefLevel.NumberScan]
                 };
                 ValidateAndSetAttRefLevel(command.Parameter.Att_dB, data[i].RefLevel, context);
+                StatusError(AdapterDriver.bbInitiate(deviceId, (uint)deviceMode, (uint)flagMode), context);
                 for (int l = 0; l < mainConfig.AutoRefLevel.NumberScan; l++)
                 {
                     data[i].RFOverloadState[l] = false;
@@ -1347,27 +1393,39 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         Status != EN.Status.USBTimeoutErr)
                     {
                         isRuning = true;
-                        data[i].PercentRFOverload += 1 / mainConfig.AutoRefLevel.NumberScan;
+                        data[i].PercentRFOverload += 100.0f / mainConfig.AutoRefLevel.NumberScan;
                     }
-                    if (Status == EN.Status.ADCOverflow)
+                    if (!data[i].RFOverloadState[l] && Status == EN.Status.ADCOverflow)
                     {
                         data[i].RFOverloadState[l] = true;
+                        data[i].PercentRFOverload += 100.0f / mainConfig.AutoRefLevel.NumberScan;
                     }
                     StatusError(AdapterDriver.bbFetchTrace_32f(deviceId, unchecked((int)traceLen), sweepMin, sweepMax));
-                    if (Status == EN.Status.ADCOverflow)
+                    if (!data[i].RFOverloadState[l] && Status == EN.Status.ADCOverflow)
                     {
                         data[i].RFOverloadState[l] = true;
-                        data[i].PercentRFOverload += 1 / mainConfig.AutoRefLevel.NumberScan;
+                        data[i].PercentRFOverload += 100.0f / mainConfig.AutoRefLevel.NumberScan;
                     }
                     if (data[i].PercentRFOverload > mainConfig.AutoRefLevel.PersentOverload)
                     {
-
-                        //break;
+                        break;//выйдем из внутреннего цикла т.к. дальше нет смысла пробывать
                     }
                 }
+                //проверим как получилось
                 if (data[i].PercentRFOverload > mainConfig.AutoRefLevel.PersentOverload)
                 {
-                    reflevel = data[i - 1].RefLevel;
+                    //выйдем из цикла перебора опорного уровня т.к. дальше будит только хуже 
+                    //и т.к. сдесь уже все плохо то предыдущее можно использовать
+                    if (i > 0)
+                    {
+                        reflevel = data[i - 1].RefLevel;
+                    }
+                    else if (i == 0)
+                    {
+                        reflevel = data[0].RefLevel;
+                        logger.Warning(Contexts.ThisComponent, "When executing the EstimateRefLevelCommandHandler command, "+
+                            "it is not possible to determine the necessary RefLevel since at the starting value, the device receives RFOverload.");
+                    }
                     break;
                 }
             }
@@ -1375,7 +1433,28 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             {
                 reflevel = mainConfig.AutoRefLevel.Stop_dBm;
             }
+            //готовим и публикуем результат
+            if (!poolKeyFind)
+            {
+                FindTracePoolName((int)traceLen, ref poolKeyFind, ref poolKeyName);
+            }
+            var result = context.TakeResult<COMR.MesureTraceResult>(poolKeyName, traceCount, CommandResultStatus.Final);
+            //result.Level не заполняем бо неимеет смысла
+            result.LevelMaxIndex = (int)traceLen;
+            result.FrequencyStart_Hz = resFreqStart;
+            result.FrequencyStep_Hz = resFreqStep;
 
+            result.TimeStamp = timeService.GetGnssUtcTime().Ticks - uTCOffset;// new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;//неюзабельно
+                                                                              //result.TimeStamp = DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
+            result.Att_dB = lpc.Attenuator(Attenuator);
+            result.PreAmp_dB = lpc.Gain(Gain);
+            result.RefLevel_dBm = (int)reflevel;
+            result.RBW_Hz = RBW;
+            result.VBW_Hz = VBW;
+
+            result.DeviceStatus = COMR.Enums.DeviceStatus.Normal;
+
+            context.PushResult(result);
         }
 
         private void FindTracePoolName(int size, ref bool state, ref string name)
@@ -2124,8 +2203,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 FreqMin_Hz = FreqMin,
                 PreAmpMax_dB = 30,
                 PreAmpMin_dB = 0,
-                RefLevelMax_dBm = 20,
-                RefLevelMin_dBm = -130,
+                RefLevelMax_dBm = refLevelMax,
+                RefLevelMin_dBm = refLevelMin,
                 EquipmentInfo = new EquipmentInfo()
                 {
                     AntennaCode = config.AdapterEquipmentInfo.AntennaSN,// "Omni",//S/N  В конфиг

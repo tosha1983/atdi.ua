@@ -33,7 +33,7 @@ namespace XICSM.ICSControlClient
                 s.DeclareField("PERMISSION_NUMBER", "VARCHAR(200)", null, null, null);
                 s.DeclareField("PERMISSION_START", "DATE", "Date", null, null);
                 s.DeclareField("PERMISSION_STOP", "DATE", "Date", null, null);
-                s.DeclareField("ADDRESS", "VARCHAR(100)", null, null, null);
+                s.DeclareField("ADDRESS", "VARCHAR(1000)", null, null, null);
                 s.DeclareField("LONGITUDE", "VARCHAR(40)", null, null, null);
                 s.DeclareField("LATITUDE", "VARCHAR(40)", null, null, null);
                 s.DeclareField("SENSOR_LON", "VARCHAR(40)", null, null, null);
@@ -48,6 +48,7 @@ namespace XICSM.ICSControlClient
                 s.DeclareField("DESIG_EMISSION", "VARCHAR(25)", null, null, null);
                 s.DeclareField("GLOBAL_SID", "VARCHAR(50)", null, null, null);
                 s.DeclareField("CREATED_BY", "VARCHAR(150)", null, null, null);
+                s.DeclareField("VISN", "VARCHAR(250)", null, null, null);
             }
         }
     }

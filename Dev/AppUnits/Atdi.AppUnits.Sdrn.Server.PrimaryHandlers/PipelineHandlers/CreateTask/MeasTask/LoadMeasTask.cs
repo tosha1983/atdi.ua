@@ -173,7 +173,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
             builderMeasTaskSignaling.Select(c => c.CheckLevelChannel);
             builderMeasTaskSignaling.Select(c => c.MinPointForDetailBW);
             builderMeasTaskSignaling.Select(c => c.CollectEmissionInstrumentalEstimation);
-            
+            builderMeasTaskSignaling.Select(c => c.IsUseRefSpectrum);
 
 
             builderMeasTaskSignaling.Where(c => c.MEAS_TASK.Id, ConditionOperator.Equal, id);
@@ -200,6 +200,8 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
                     measTaskSignaling.SignalingMeasTaskParameters.SignalizationNCount = readerMeasTaskSignaling.GetValue(c => c.SignalizationNCount);
                     measTaskSignaling.SignalingMeasTaskParameters.AnalyzeByChannel = readerMeasTaskSignaling.GetValue(c => c.AnalyzeByChannel);
                     measTaskSignaling.SignalingMeasTaskParameters.CollectEmissionInstrumentalEstimation = readerMeasTaskSignaling.GetValue(c => c.CollectEmissionInstrumentalEstimation);
+                    measTaskSignaling.SignalingMeasTaskParameters.IsUseRefSpectrum = readerMeasTaskSignaling.GetValue(c => c.IsUseRefSpectrum);
+                    
                     measTaskSignaling.SignalingMeasTaskParameters.AnalyzeSysInfoEmission = readerMeasTaskSignaling.GetValue(c => c.AnalyzeSysInfoEmission);
                     measTaskSignaling.SignalingMeasTaskParameters.DetailedMeasurementsBWEmission = readerMeasTaskSignaling.GetValue(c => c.DetailedMeasurementsBWEmission);
                     measTaskSignaling.SignalingMeasTaskParameters.Standard = readerMeasTaskSignaling.GetValue(c => c.Standard);
@@ -416,6 +418,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
             var builderMeasOther = this._dataLayer.GetBuilder<MD.IMeasOther>().From();
             builderMeasOther.Select(c => c.Id);
             builderMeasOther.Select(c => c.LevelMinOccup);
+            builderMeasOther.Select(c => c.SupportMultyLevel);
             builderMeasOther.Select(c => c.MEAS_TASK.Id);
             builderMeasOther.Select(c => c.Nchenal);
             builderMeasOther.Select(c => c.TypeSpectrumOccupation);
@@ -425,6 +428,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
                 while (readerMeasOther.Read())
                 {
                     spectrumOccupationParameters.LevelMinOccup = readerMeasOther.GetValue(c => c.LevelMinOccup);
+                    spectrumOccupationParameters.SupportMultyLevel = readerMeasOther.GetValue(c => c.SupportMultyLevel);
                     spectrumOccupationParameters.NChenal = readerMeasOther.GetValue(c => c.Nchenal);
 
                     SpectrumOccupationType typeSpectrumOccupation;
@@ -471,7 +475,33 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
             return task;
         }
 
-
+        public string GetStatusTask(long id)
+        {
+            string status = "";
+            try
+            {
+                var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
+                var builderMeasTask = this._dataLayer.GetBuilder<MD.IMeasTask>().From();
+                builderMeasTask.Select(c => c.Status);
+                builderMeasTask.Where(c => c.Id, ConditionOperator.Equal, id);
+                builderMeasTask.Where(c => c.Status, ConditionOperator.NotEqual, "Z");
+                builderMeasTask.Where(c => c.Status, ConditionOperator.IsNotNull);
+                queryExecuter.Fetch(builderMeasTask, readerMeasTask =>
+                {
+                    while (readerMeasTask.Read())
+                    {
+                        status = readerMeasTask.GetValue(c => c.Status);
+                        break;
+                    }
+                    return true;
+                });
+            }
+            catch (Exception e)
+            {
+                this._logger.Exception(Contexts.ThisComponent, e);
+            }
+            return status;
+        }
         public MeasTask ReadBaseTask(long id)
         {
             MeasTask measTask = null;

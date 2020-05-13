@@ -20,11 +20,11 @@ namespace Atdi.Test.Sdrn.SynchroProcess.Client
 
             var sdrnServer = GetServicByEndpoint("SdrnServerBasicHttpEndpoint");
 
-            var proc = sdrnServer.GetAllDataSynchronizationProcess();
+            //var proc = sdrnServer.GetAllDataSynchronizationProcess();
 
-            var proc2 = sdrnServer.GetDetailProtocolsByParameters(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+            var proc2 = sdrnServer.GetDetailProtocolsByParameters(null, null, null, null, null, null, null, null, 2000, 2800, null, null, null, null, null, null, null, "A");
             //bool isSuccess  = sdrnServer.DeleteRefSpectrum(new long[] { 9});  
-
+            /*
             DataSynchronizationBase dataSynchronizationBase = new DataSynchronizationBase();
             dataSynchronizationBase.CreatedBy = "ICSM";
             dataSynchronizationBase.DateCreated = DateTime.Now;
@@ -132,7 +132,7 @@ namespace Atdi.Test.Sdrn.SynchroProcess.Client
             stationExtended2.TableName = "MOB_STATION";
 
             var status = sdrnServer.RunDataSynchronizationProcess(dataSynchronizationBase, new long[] { 160 }, new long[] { 13 }, new Area[] { area }, new StationExtended[] { stationExtended1, stationExtended2 }  );
-
+            */
 
             Console.WriteLine($"Test was finished. Press any key to exit.");
             Console.ReadLine();

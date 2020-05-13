@@ -7,7 +7,6 @@ GO
 CREATE TABLE [CALC].[CALCRESULTS](
 	[ID] [bigint] IDENTITY(1,1) NOT NULL,
 	[TASK_ID] [bigint] NOT NULL,
-    [CONTEXT_ID] [bigint] NOT NULL,
 	[STATUS_CODE] [tinyint] NOT NULL,
 	[STATUS_NAME] [nvarchar](50) NOT NULL,
 	[STATUS_NOTE] [nvarchar](max) NULL,	

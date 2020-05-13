@@ -31,6 +31,101 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
         }
 
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="measTask"></param>
+        /// <param name="status"></param>
+        /// <returns></returns>
+        public bool UpdateMeasTaskParametersAndRecalcResults(MeasTask measTask)
+        {
+            bool isSuccess = false;
+            try
+            {
+                if (measTask is MeasTaskSpectrumOccupation)
+                {
+                    var spectOccupationTask = measTask as MeasTaskSpectrumOccupation;
+                    if ((spectOccupationTask.SpectrumOccupationParameters.SupportMultyLevel!=null) && (spectOccupationTask.SpectrumOccupationParameters.SupportMultyLevel.Value))
+                    {
+                        using (var scope = this._dataLayer.CreateScope<SdrnServerDataContext>())
+                        {
+                            scope.BeginTran();
+                            var builderUpdateMeasOther = this._dataLayer.GetBuilder<MD.IMeasOther>().Update();
+                            builderUpdateMeasOther.Where(c => c.MEAS_TASK.Id, ConditionOperator.Equal, measTask.Id.Value);
+                            builderUpdateMeasOther.SetValue(c => c.LevelMinOccup, spectOccupationTask.SpectrumOccupationParameters.LevelMinOccup);
+                            scope.Executor.Execute(builderUpdateMeasOther);
+                            scope.Commit();
+                        }
+
+                        using (var scope = this._dataLayer.CreateScope<SdrnServerDataContext>())
+                        {
+                            scope.BeginTran();
+
+                            var freqSampleList = new List<DEV.FrequencySample>();
+                            var builderResMeasLevels = this._dataLayer.GetBuilder<MD.IResLevels>().From();
+                            builderResMeasLevels.Select(c => c.VMMaxLvl, c => c.VMinLvl, c => c.ValueLvl, c => c.ValueSpect, c => c.OccupancySpect, c => c.FreqMeas, c => c.LevelMinArr, c => c.SpectrumOccupationArr, c => c.Id);
+                            builderResMeasLevels.Where(c => c.RES_MEAS.SUBTASK_SENSOR.SUBTASK.MEAS_TASK.Id, ConditionOperator.Equal, measTask.Id.Value);
+                            scope.Executor.Fetch(builderResMeasLevels, readerResMeasLevels =>
+                            {
+                                while (readerResMeasLevels.Read())
+                                {
+                                    var spectrumOccupationArr = readerResMeasLevels.GetValue(c => c.SpectrumOccupationArr);
+                                    if ((spectrumOccupationArr != null) && (spectrumOccupationArr.Length > 0))
+                                    {
+                                        var id = readerResMeasLevels.GetValue(c => c.Id);
+                                        if (readerResMeasLevels.GetValue(c => c.LevelMinArr) != null)
+                                        {
+                                            var subValue = (int)(spectOccupationTask.SpectrumOccupationParameters.LevelMinOccup - readerResMeasLevels.GetValue(c => c.LevelMinArr));
+                                            if (subValue >= 0)
+                                            {
+                                                if ((spectrumOccupationArr.Length - 1) >= subValue)
+                                                {
+                                                    var builderUpdateResLevels = this._dataLayer.GetBuilder<MD.IResLevels>().Update();
+                                                    builderUpdateResLevels.Where(c => c.Id, ConditionOperator.Equal, id);
+                                                    builderUpdateResLevels.SetValue(c => c.OccupancySpect, spectrumOccupationArr[subValue]);
+                                                    scope.Executor.Execute(builderUpdateResLevels);
+                                                }
+                                                else if ((spectrumOccupationArr.Length - 1) < subValue)
+                                                {
+                                                    var builderUpdateResLevels = this._dataLayer.GetBuilder<MD.IResLevels>().Update();
+                                                    builderUpdateResLevels.Where(c => c.Id, ConditionOperator.Equal, id);
+                                                    builderUpdateResLevels.SetValue(c => c.OccupancySpect, 0);
+                                                    scope.Executor.Execute(builderUpdateResLevels);
+                                                }
+                                            }
+                                            else
+                                            {
+                                                var builderUpdateResLevels = this._dataLayer.GetBuilder<MD.IResLevels>().Update();
+                                                builderUpdateResLevels.Where(c => c.Id, ConditionOperator.Equal, id);
+                                                builderUpdateResLevels.SetValue(c => c.OccupancySpect, 100);
+                                                scope.Executor.Execute(builderUpdateResLevels);
+                                            }
+                                        }
+                                    }
+                                }
+                                return true;
+                            });
+                            isSuccess = true;
+
+                            if (isSuccess == true)
+                            {
+                                scope.Commit();
+                            }
+                            else
+                            {
+                                throw new Exception("An error occurred while updating the 'LevelMinOccup' field of table 'MeasOther'");
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                this._logger.Exception(Contexts.ThisComponent, e);
+                isSuccess = false;
+            }
+            return isSuccess;
+        }
 
         /// <summary>
         /// Update status MeasTask
@@ -136,9 +231,11 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
                 var measOther = value;
                 var builderInsertMeasOther = this._dataLayer.GetBuilder<MD.IMeasOther>().Insert();
                 builderInsertMeasOther.SetValue(c => c.LevelMinOccup, measOther.LevelMinOccup);
+                builderInsertMeasOther.SetValue(c => c.SupportMultyLevel, measOther.SupportMultyLevel);
                 builderInsertMeasOther.SetValue(c => c.Nchenal, measOther.NChenal);
                 builderInsertMeasOther.SetValue(c => c.TypeSpectrumOccupation, measOther.TypeSpectrumOccupation.ToString());
                 builderInsertMeasOther.SetValue(c => c.MEAS_TASK.Id, sensorIdentifier);
+                
 
                 var measOtherPK = dataLayerScope.Executor.Execute<MD.IMeasOther_PK>(builderInsertMeasOther);
                 spectrumOccupationParametersId = measOtherPK.Id;
@@ -471,6 +568,10 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
                                         if (measTaskSignaling.SignalingMeasTaskParameters.CollectEmissionInstrumentalEstimation != null)
                                         {
                                             builderInsertMeasTaskSignaling.SetValue(c => c.CollectEmissionInstrumentalEstimation, measTaskSignaling.SignalingMeasTaskParameters.CollectEmissionInstrumentalEstimation);
+                                        }
+                                        if (measTaskSignaling.SignalingMeasTaskParameters.IsUseRefSpectrum != null)
+                                        {
+                                            builderInsertMeasTaskSignaling.SetValue(c => c.IsUseRefSpectrum, measTaskSignaling.SignalingMeasTaskParameters.IsUseRefSpectrum);
                                         }
                                         if (measTaskSignaling.SignalingMeasTaskParameters.AnalyzeSysInfoEmission != null)
                                         {
@@ -969,6 +1070,8 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
                                         MTSDR.SignalingMeasTaskParameters.SignalizationNCount = taskSignaling.SignalingMeasTaskParameters.SignalizationNCount;
                                         MTSDR.SignalingMeasTaskParameters.AnalyzeByChannel = taskSignaling.SignalingMeasTaskParameters.AnalyzeByChannel;
                                         MTSDR.SignalingMeasTaskParameters.CollectEmissionInstrumentalEstimation = taskSignaling.SignalingMeasTaskParameters.CollectEmissionInstrumentalEstimation;
+                                        MTSDR.SignalingMeasTaskParameters.IsUseRefSpectrum = taskSignaling.SignalingMeasTaskParameters.IsUseRefSpectrum;
+
                                         MTSDR.SignalingMeasTaskParameters.AnalyzeSysInfoEmission = taskSignaling.SignalingMeasTaskParameters.AnalyzeSysInfoEmission;
                                         MTSDR.SignalingMeasTaskParameters.DetailedMeasurementsBWEmission = taskSignaling.SignalingMeasTaskParameters.DetailedMeasurementsBWEmission;
                                         MTSDR.SignalingMeasTaskParameters.Standard = taskSignaling.SignalingMeasTaskParameters.Standard;
@@ -1132,6 +1235,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
                                     var taskSO = task as MeasTaskSpectrumOccupation;
                                     if (taskSO.SpectrumOccupationParameters == null) taskSO.SpectrumOccupationParameters = new SpectrumOccupationParameters();
                                     if (taskSO.SpectrumOccupationParameters.LevelMinOccup != null) { MTSDR.SOParam.LevelMinOccup_dBm = taskSO.SpectrumOccupationParameters.LevelMinOccup.GetValueOrDefault(); } else { MTSDR.SOParam.LevelMinOccup_dBm = -70; }
+                                    MTSDR.SOParam.SupportMultyLevel = taskSO.SpectrumOccupationParameters.SupportMultyLevel; 
                                     if (taskSO.SpectrumOccupationParameters.NChenal != null) { MTSDR.SOParam.MeasurmentNumber = taskSO.SpectrumOccupationParameters.NChenal.GetValueOrDefault(); } else { MTSDR.SOParam.MeasurmentNumber = 10; }
                                     switch (taskSO.SpectrumOccupationParameters.TypeSpectrumOccupation)
                                     {

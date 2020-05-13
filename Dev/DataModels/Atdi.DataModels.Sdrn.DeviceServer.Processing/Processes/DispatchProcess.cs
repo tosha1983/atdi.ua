@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DM = Atdi.DataModels.Sdrns.Device;
+using System.Collections.Concurrent;
 
 namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
 {
@@ -14,31 +15,16 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
         private object _syncLon = new object();
         private object _syncAsl = new object();
         private object _syncActiveSensor = new object();
-        private object _syncListDeferredTasks = new object();
-        private object _syncContextSOTask = new object();
-        private object _syncContextSignalization = new object();
-        private object _syncContextBandWidth = new object();
-        private object _syncContextSysInfo = new object();
-
-
-
-
         private double _lat;
         private double _lon;
         private double _asl;
         private DM.Sensor _activeSensor;
-        private List<ITaskContext<SOTask, SpectrumOccupationProcess>> _contextSOTasks;
-        private List<ITaskContext<SignalizationTask, SignalizationProcess>> _contextSignalizationTasks;
-        private List<ITaskContext<BandWidthTask, BandWidthProcess>> _contextBandWidthTasks;
-        private List<ITaskContext<SysInfoTask, SysInfoProcess>> _contextSysInfoTasks;
-
-
-
-
-
-        private List<TaskParameters> _listDeferredTasks;
-
-         
+        public ConcurrentBag<ITaskContext<SOTask, SpectrumOccupationProcess>> contextSOTasks;
+        public ConcurrentBag<ITaskContext<SignalizationTask, SignalizationProcess>> contextSignalizationTasks;
+        public ConcurrentBag<ITaskContext<BandWidthTask, BandWidthProcess>> contextBandWidthTasks;
+        public ConcurrentBag<ITaskContext<SysInfoTask, SysInfoProcess>> contextSysInfoTasks;
+        public ConcurrentBag<TaskParameters> listDeferredTasks;
+                 
         public double Lat
         {
             get
@@ -95,94 +81,14 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
             }
         }
 
-       
-
-
-
-        public List<TaskParameters> listDeferredTasks
-        {
-            get
-            {
-                lock (_syncListDeferredTasks)
-                    return _listDeferredTasks;
-            }
-            set
-            {
-                lock (_syncListDeferredTasks)
-                    _listDeferredTasks = value;
-            }
-        }
-
-
-
-        public List<ITaskContext<SOTask, SpectrumOccupationProcess>> contextSOTasks
-        {
-            get
-            {
-                lock (_syncContextSOTask)
-                    return _contextSOTasks;
-            }
-            set
-            {
-                lock (_syncContextSOTask)
-                    _contextSOTasks = value;
-            }
-        }
-
-        public List<ITaskContext<SignalizationTask, SignalizationProcess>> contextSignalizationTasks
-        {
-            get
-            {
-                lock (_syncContextSignalization)
-                    return _contextSignalizationTasks;
-            }
-            set
-            {
-                lock (_syncContextSignalization)
-                    _contextSignalizationTasks = value;
-            }
-        }
-
-        public List<ITaskContext<BandWidthTask, BandWidthProcess>> contextBandWidthTasks
-        {
-            get
-            {
-                lock (_syncContextBandWidth)
-                    return _contextBandWidthTasks;
-            }
-            set
-            {
-                lock (_syncContextBandWidth)
-                    _contextBandWidthTasks = value;
-            }
-        }
-
-
-        public List<ITaskContext<SysInfoTask, SysInfoProcess>> contextSysInfoTasks
-        {
-            get
-            {
-                lock (_syncContextSysInfo)
-                    return _contextSysInfoTasks;
-            }
-            set
-            {
-                lock (_syncContextSysInfo)
-                    _contextSysInfoTasks = value;
-            }
-        }
-
-        
-
-
 
         public DispatchProcess() : base("Dispatch process")
         {
-            listDeferredTasks = new List<TaskParameters>();
-            contextSOTasks = new List<ITaskContext<SOTask, SpectrumOccupationProcess>>();
-            contextSignalizationTasks = new List<ITaskContext<SignalizationTask, SignalizationProcess>>();
-            contextBandWidthTasks = new List<ITaskContext<BandWidthTask, BandWidthProcess>>();
-            contextSysInfoTasks = new List<ITaskContext<SysInfoTask, SysInfoProcess>>();
+            listDeferredTasks = new ConcurrentBag<TaskParameters>();
+            contextSOTasks = new ConcurrentBag<ITaskContext<SOTask, SpectrumOccupationProcess>>();
+            contextSignalizationTasks = new ConcurrentBag<ITaskContext<SignalizationTask, SignalizationProcess>>();
+            contextBandWidthTasks = new ConcurrentBag<ITaskContext<BandWidthTask, BandWidthProcess>>();
+            contextSysInfoTasks = new ConcurrentBag<ITaskContext<SysInfoTask, SysInfoProcess>>();
         }
     }
 }

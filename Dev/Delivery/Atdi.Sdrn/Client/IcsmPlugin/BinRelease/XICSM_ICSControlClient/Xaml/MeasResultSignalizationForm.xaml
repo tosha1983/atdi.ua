@@ -154,7 +154,7 @@
                   <DataGridTextColumn Header="{x:Static res:Resources.SignalLevelDBm}" Binding="{Binding Path=SignalLevel_dBm}"></DataGridTextColumn>
                   <DataGridTextColumn Header="{x:Static res:Resources.RollOffFactor}" Binding="{Binding Path=RollOffFactor}"></DataGridTextColumn>
                   <DataGridTextColumn Header="{x:Static res:Resources.StandardBW}" Binding="{Binding Path=StandardBW}"></DataGridTextColumn>
-                  <DataGridTextColumn Header="{x:Static res:Resources.SensorName}" Binding="{Binding Path=SensorName}"></DataGridTextColumn>
+                  <DataGridTextColumn Header="{x:Static res:Resources.SensorName}" Binding="{Binding Path=SensorTitle}"></DataGridTextColumn>
                   <DataGridTextColumn Header="{x:Static res:Resources.SumHitCount}" Binding="{Binding Path=SumHitCount}"></DataGridTextColumn>
                   <DataGridTextColumn Header="{x:Static res:Resources.IcsmID}" Binding="{Binding Path=IcsmID}"></DataGridTextColumn>
                   <DataGridTextColumn Header="{x:Static res:Resources.IcsmTable}" Binding="{Binding Path=IcsmTable}"></DataGridTextColumn>
@@ -182,8 +182,8 @@
               </Grid.RowDefinitions>
               <DataGrid x:Name="GridWorkTimes" Grid.Column="0" ColumnHeaderHeight="30" RowHeight="20" RowBackground="White" VerticalGridLinesBrush="LightBlue" HorizontalGridLinesBrush="LightBlue" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Single" AutoGenerateColumns="False" ItemsSource="{Binding EmittingWorkTimes, NotifyOnTargetUpdated=True, NotifyOnSourceUpdated=True }">
                 <DataGrid.Columns>
-                  <DataGridTextColumn Header="{x:Static res:Resources.StartEmitting}" Binding="{Binding Path=StartEmitting, StringFormat='{}{0:dd.MM.yyyy 0:HH:mm}'}"></DataGridTextColumn>
-                  <DataGridTextColumn Header="{x:Static res:Resources.StopEmitting}" Binding="{Binding Path=StopEmitting, StringFormat='{}{0:dd.MM.yyyy 0:HH:mm}'}"></DataGridTextColumn>
+                  <DataGridTextColumn Header="{x:Static res:Resources.StartEmitting}" Binding="{Binding Path=StartEmitting, StringFormat='{}{0:dd.MM.yyyy HH:mm}'}"></DataGridTextColumn>
+                  <DataGridTextColumn Header="{x:Static res:Resources.StopEmitting}" Binding="{Binding Path=StopEmitting, StringFormat='{}{0:dd.MM.yyyy HH:mm}'}"></DataGridTextColumn>
                   <DataGridTextColumn Header="{x:Static res:Resources.HitCount}" Binding="{Binding Path=HitCount}"></DataGridTextColumn>
                   <DataGridTextColumn Header="{x:Static res:Resources.PersentAvailability}" Binding="{Binding Path=PersentAvailability}"></DataGridTextColumn>
                 </DataGrid.Columns>

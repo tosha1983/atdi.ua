@@ -18,8 +18,6 @@
     <Field Desc="allowableExcess_dB" Title="allowableExcess_dB" Name="allowableExcess_dB" DataType="Double.30.10" SourceName="ALLOW_EXCESS_DB" SourceType="Column" Required="false"/>
     <Field Desc="SignalizationNCount" Title="SignalizationNCount" Name="SignalizationNCount" DataType="Integer.32" SourceName="SIGN_NCOUNT" SourceType="Column" Required="false"/>
     <Field Desc="SignalizationNChenal" Title="SignalizationNChenal" Name="SignalizationNChenal" DataType="Integer.32" SourceName="SIGN_NCHENAL" SourceType="Column" Required="false"/>
-
-
     <Field Desc="CorrelationAnalize" Title="CorrelationAnalize" Name="CorrelationAnalize" DataType="Boolean" SourceName="CORELLATION_ANALIZE" SourceType="Column" Required="false"/>
     <Field Desc="CheckFreqChannel" Title="CheckFreqChannel" Name="CheckFreqChannel" DataType="Boolean" SourceName="CHECK_FREQ_CH" SourceType="Column" Required="false"/>
     <Field Desc="AnalyzeByChannel" Title="AnalyzeByChannel" Name="AnalyzeByChannel" DataType="Boolean" SourceName="ANALIZE_BY_CH" SourceType="Column" Required="false"/>
@@ -42,6 +40,7 @@
     <Field Desc="MinPointForDetailBW" Title="MinPointForDetailBW" Name="MinPointForDetailBW" DataType="Integer.32" SourceName="MIN_POINT_DETAIL_BW" SourceType="Column" Required="false"/>
     <Field Desc="CheckLevelChannel" Title="CheckLevelChannel" Name="CheckLevelChannel" DataType="Boolean" SourceName="CHECK_LEVEL_CHANNEL" SourceType="Column" Required="false"/>
     <Field Desc="CollectEmissionInstrumentalEstimation" Title="Collect emission for instrumental estimation" Name="CollectEmissionInstrumentalEstimation" DataType="Boolean" SourceName="COLLECT_EMISSION_INSTRUM_ESTIM" SourceType="Column" Required="false"/>
+    <Field Desc="IsUseRefSpectrum " Title="Is use Reference spectrum" Name="IsUseRefSpectrum" DataType="Boolean" SourceName="IS_USE_REF_SPECTRUM" SourceType="Column" Required="false"/>
     <Field Name="MEAS_TASK" SourceName="MeasTask" SourceType="Reference" Required="true" Desc="" Title="Relation MeasTaskSignaling to MeasTask"/>
   </Fields>
   <PrimaryKey Clustered="true">

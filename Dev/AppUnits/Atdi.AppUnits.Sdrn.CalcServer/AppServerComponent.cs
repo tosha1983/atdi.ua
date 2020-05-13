@@ -8,6 +8,7 @@ using Atdi.AppUnits.Sdrn.CalcServer.Services;
 using Atdi.Contracts.Api.EventSystem;
 using Atdi.Contracts.Sdrn.CalcServer;
 using Atdi.Contracts.Sdrn.CalcServer.Internal;
+using Atdi.Contracts.Sdrn.DeepServices;
 using Atdi.Platform;
 using Atdi.Platform.AppComponent;
 using Atdi.Platform.AppServer;
@@ -64,10 +65,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 			this.Container.Register<IEventDispatcher, EventDispatcher>(ServiceLifetime.Singleton);
 
 			// шина данных 
+			
 			this.Container.Register<MapBuilder>(ServiceLifetime.Singleton);
 			this.Container.Register<ProcessJob>(ServiceLifetime.Singleton);
 			this.Container.Register<TaskWorkerJob>(ServiceLifetime.Singleton);
-			this.Container.Register<IMapService, MapService>(ServiceLifetime.Singleton);
+			this.Container.Register<IClientContextService, ClientContextService>(ServiceLifetime.Singleton);
+			this.Container.Register<IMapRepository, MapRepository>(ServiceLifetime.Singleton);
 		}
 
 		protected override void OnActivateUnit()
@@ -159,6 +162,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 				}
 			}
 
+			
 
 			// подключаем обработчики событий
 			var eventDispatcher = this.Resolver.Resolve<IEventDispatcher>();

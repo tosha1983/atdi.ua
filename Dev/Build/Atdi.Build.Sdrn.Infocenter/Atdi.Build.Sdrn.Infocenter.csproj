@@ -1,0 +1,134 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B17A068D-03F4-4A96-B879-D7E776F06892}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Atdi.Build.Sdrn.Infocenter</RootNamespace>
+    <AssemblyName>Atdi.Build.Sdrn.Infocenter</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.Infocenter\Atdi.AppUnits.Sdrn.Infocenter.csproj">
+      <Project>{4d714049-70ae-43bb-870d-4b2315dc29e5}</Project>
+      <Name>Atdi.AppUnits.Sdrn.Infocenter</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\CoreServices\Atdi.CoreServices.DataLayer.Assemblies\Atdi.CoreServices.DataLayer.Assemblies.csproj">
+      <Project>{2c09f776-b3b4-48ad-b221-d8b899a679b2}</Project>
+      <Name>Atdi.CoreServices.DataLayer.Assemblies</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\CoreServices\Atdi.CoreServices.DataLayer.Oracle\Atdi.CoreServices.DataLayer.Oracle.csproj">
+      <Project>{73f74f27-6f16-4a46-81fc-f959ea6f1ad7}</Project>
+      <Name>Atdi.CoreServices.DataLayer.Oracle</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\CoreServices\Atdi.CoreServices.DataLayer.SqlServer\Atdi.CoreServices.DataLayer.SqlServer.csproj">
+      <Project>{a65dc15a-e0da-4d33-adbb-b1bcc0758873}</Project>
+      <Name>Atdi.CoreServices.DataLayer.SqlServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\CoreServices\Atdi.CoreServices.DataLayer\Atdi.CoreServices.DataLayer.csproj">
+      <Project>{edda5ccc-25b7-4b50-a8d7-ccb617727497}</Project>
+      <Name>Atdi.CoreServices.DataLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\CoreServices\Atdi.CoreServices.EntityOrm\Atdi.CoreServices.EntityOrm.csproj">
+      <Project>{0284cba5-d336-4a39-8519-3f2c48d433d7}</Project>
+      <Name>Atdi.CoreServices.EntityOrm</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\CoreServices\Atdi.CoreServices.Monitoring\Atdi.CoreServices.Monitoring.csproj">
+      <Project>{29acbf42-27bb-49f0-aa01-6f013bef6e8c}</Project>
+      <Name>Atdi.CoreServices.Monitoring</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Platform\Atdi.Platform.AppServer\Atdi.Platform.AppServer.csproj">
+      <Project>{20d45626-3779-4fc8-a55a-1c919d95649e}</Project>
+      <Name>Atdi.Platform.AppServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Platform\Atdi.Platform.Configurator\Atdi.Platform.Configurator.csproj">
+      <Project>{98e79b80-3176-4cad-b7ba-b5caa6752fab}</Project>
+      <Name>Atdi.Platform.Configurator</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Platform\Atdi.Platform.Logging\Atdi.Platform.Logging.csproj">
+      <Project>{1389b99f-ff39-4671-9789-d2e1aa91527c}</Project>
+      <Name>Atdi.Platform.Logging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Platform\Atdi.Platform.ServicesContainer\Atdi.Platform.ServicesContainer.csproj">
+      <Project>{153006da-1f99-4d33-b490-d3a87e7dfd03}</Project>
+      <Name>Atdi.Platform.ServicesContainer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Platform\Atdi.Platform\Atdi.Platform.csproj">
+      <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
+      <Name>Atdi.Platform</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\WebApiServices\Atdi.WebApiServices.EntityOrm\Atdi.WebApiServices.EntityOrm.csproj">
+      <Project>{676516b5-694d-4edd-a23f-b82816c00f49}</Project>
+      <Name>Atdi.WebApiServices.EntityOrm</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\WebApiServices\Atdi.WebApiServices.Sdrn.Infocenter\Atdi.WebApiServices.Sdrn.Infocenter.csproj">
+      <Project>{8dec1375-189f-42b5-9822-2e626d840992}</Project>
+      <Name>Atdi.WebApiServices.Sdrn.Infocenter</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\WebApiServices\Atdi.WebApiServices.SelfHost\Atdi.WebApiServices.SelfHost.csproj">
+      <Project>{ca3f294b-9c66-433f-84b3-d27ce3ab40f1}</Project>
+      <Name>Atdi.WebApiServices.SelfHost</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+copy "$(TargetDir)Atdi.*.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Infocenter\Bin$(ConfigurationName)"
+
+copy "$(TargetDir)Atdi.AppUnits.*.config" "..\..\..\..\Delivery\Atdi.Sdrn\Infocenter\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.CoreServices.*.config" "..\..\..\..\Delivery\Atdi.Sdrn\Infocenter\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.WebApiServices.*.config" "..\..\..\..\Delivery\Atdi.Sdrn\Infocenter\Bin$(ConfigurationName)"
+
+copy "$(TargetDir)\Castle.Core.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Infocenter\Bin$(ConfigurationName)"
+copy "$(TargetDir)\Castle.Facilities.WcfIntegration.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Infocenter\Bin$(ConfigurationName)"
+copy "$(TargetDir)\Castle.Windsor.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Infocenter\Bin$(ConfigurationName)"
+copy "$(TargetDir)\Newtonsoft.Json.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Infocenter\Bin$(ConfigurationName)"
+copy "$(TargetDir)\RabbitMQ.Client.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Infocenter\Bin$(ConfigurationName)"
+copy "$(TargetDir)\Microsoft.Diagnostics.Tracing.EventSource.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Infocenter\Bin$(ConfigurationName)"
+copy "$(TargetDir)\Oracle.ManagedDataAccess.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Infocenter\Bin$(ConfigurationName)"
+
+
+copy "..\..\..\..\packages\Microsoft.Diagnostics.Tracing.EventSource.Redist.1.1.28\lib\net40\Microsoft.Diagnostics.Tracing.EventSource.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Infocenter\Bin$(ConfigurationName)"</PostBuildEvent>
+  </PropertyGroup>
+</Project>

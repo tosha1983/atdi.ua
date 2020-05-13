@@ -64,6 +64,23 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="task"></param>
+        /// <param name="otherArgs"></param>
+        /// <returns></returns>
+        [OperationContract]
+        CommonOperationResult UpdateMeasTaskParametersAndRecalcResults(MeasTask task);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="task"></param>
+        /// <returns></returns>
+        [OperationContract]
+        CommonOperationResult UpdateMeasTask(MeasTask task);
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="taskId"></param>
         /// <param name="otherArgs"></param>
         /// <returns></returns>

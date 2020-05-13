@@ -85,6 +85,11 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             get { return (string)GetValue(LevelUnitProperty); }
             set { SetValue(LevelUnitProperty, value); }
         }
+        public ADP.KTN6841A.Adapter KSAdapter
+        {
+            get;
+            set;
+        }
         public ADP.RSFPL.Adapter ANAdapter
         {
             get;
@@ -175,7 +180,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 #region Device Drawing
                 #region
 
-                if (this.Name == "DS_AN" || this.Name == "DS_AN2")
+                if (this.Name == "DS_AN2")
                 {
                     if (ANAdapter != null)
                     {
@@ -193,7 +198,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                         {
                             Freq[i] = FreqStart + i * step;
                         }
-                        
+
                         LevelUnit = ((MEN.LevelUnit)ANAdapter.LevelUnit.Id).ToString();
 
                         RefLevel = (double)ANAdapter.RefLevelSpec;
@@ -202,11 +207,12 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                         LowestLevel = RefLevel - Range;
                     }
                 }
-                if (this.Name == "DS_SH")
+                else if (this.Name == "DS_SH")
                 {
                     if (SHAdapter != null)
                     {
                         Level = SHAdapter.LevelArr;// new Equipment.TracePoint[rcv.TracePoints];
+                        LevelLength = ANAdapter.LevelArrLength;
                         FreqCentr = (double)SHAdapter.FreqCentr;
                         FreqSpan = (double)SHAdapter.FreqSpan;
                         FreqStop = (double)SHAdapter.FreqStop;
@@ -221,6 +227,31 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                         LevelUnit = SHAdapter.LevelUnit.ToString();
 
                         RefLevel = (double)SHAdapter.RefLevel;
+
+                        //Range = (double)SHAdapter.Range;
+                        LowestLevel = RefLevel - Range;
+                    }
+                }
+                else if (this.Name == "DS_KS")
+                {
+                    if (KSAdapter != null)
+                    {
+                        Level = KSAdapter.LevelArr;// new Equipment.TracePoint[rcv.TracePoints];
+                        LevelLength = (int)KSAdapter.LevelArrLength;
+                        FreqCentr = (double)KSAdapter.FreqCentr;
+                        FreqSpan = (double)KSAdapter.FreqSpan;
+                        FreqStop = (double)KSAdapter.FreqStop;
+                        FreqStart = (double)KSAdapter.FreqStart;
+
+                        Freq = new double[LevelLength];
+                        double step = FreqSpan / (LevelLength - 1);
+                        for (int i = 0; i < LevelLength; i++)
+                        {
+                            Freq[i] = FreqStart + i * step;
+                        }
+                        LevelUnit = KSAdapter.LevelUnit.ToString();
+
+                        RefLevel = -40;
 
                         //Range = (double)SHAdapter.Range;
                         LowestLevel = RefLevel - Range;
@@ -289,15 +320,21 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
 
                     }
                 }
-
-                if ((this.Name == "DS_AN" || this.Name == "DS_AN2") && ANAdapter != null)
+                if (this.Name == "DS_KS" && KSAdapter != null && Freq.Length >0)
+                {
+                    gl.DrawText((int)w - 210, (int)h - 15, 1.0f, 0.0f, 0.0f, "Segoe UI", 14.0f, Freq.Length.ToString() + "  " +
+                    Math.Round(KSAdapter.RBW, 2) + "  " + Math.Round(Freq[10] - Freq[9], 2) + "   Span " + FreqSpan/1000000);
+                    //gl.DrawText((int)w - 210, (int)h - 50, 1.0f, 0.0f, 0.0f, "Segoe UI", 14.0f, MeasChannelPower(Freq, Level, FreqCentr, 10000000, (double)ANAdapter.RBW).ToString());
+                    gl.Flush();
+                }
+                else if (this.Name == "DS_AN2" && ANAdapter != null)
                 {
                     gl.DrawText((int)w - 210, (int)h - 15, 1.0f, 0.0f, 0.0f, "Segoe UI", 14.0f, Freq.Length.ToString() + "  " +
                     Math.Round(ANAdapter.RBW, 2) + "  " + Math.Round(Freq[10] - Freq[9], 2));
                     gl.DrawText((int)w - 210, (int)h - 50, 1.0f, 0.0f, 0.0f, "Segoe UI", 14.0f, MeasChannelPower(Freq, Level, FreqCentr, 10000000, (double)ANAdapter.RBW).ToString());
                     gl.Flush();
                 }
-                if (this.Name == "DS_SH" && SHAdapter != null)
+                else if(this.Name == "DS_SH" && SHAdapter != null)
                 {
                     gl.DrawText((int)w - 210, (int)h - 15, 1.0f, 0.0f, 0.0f, "Segoe UI", 14.0f, Freq.Length.ToString() + "  " +
                        Math.Round(SHAdapter.RBW, 2) + "  " + Math.Round(Freq[10] - Freq[9], 2));

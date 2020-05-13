@@ -101,9 +101,26 @@ namespace Atdi.Tools.LicenseAnalyzer
 	            sharedSecret = "Atdi.AppServer.AppService.SdrnsController";
             }
 			txtEncryptedOwnerId.Text = Encryptor.EncryptStringAES(txtLicenseOwnerId.Text, sharedSecret);
-            txtEncryptedProductKey.Text = Encryptor.EncryptStringAES(txtLicenseProductKey.Text, sharedSecret);
-            txtEncryptedPassword.Text = Encryptor.EncryptStringAES(txtPassword.Text, sharedSecret);
+			ToolTip tt = new ToolTip();
+			tt.IsBalloon = true;
+			tt.InitialDelay = 0;
+			tt.ShowAlways = true;
+			tt.SetToolTip(txtEncryptedOwnerId, Encryptor.DecryptStringAES(txtEncryptedOwnerId.Text, sharedSecret));
 
-        }
+			txtEncryptedProductKey.Text = Encryptor.EncryptStringAES(txtLicenseProductKey.Text, sharedSecret);
+			tt = new ToolTip();
+			tt.IsBalloon = true;
+			tt.InitialDelay = 0;
+			tt.ShowAlways = true;
+			tt.SetToolTip(txtEncryptedProductKey, Encryptor.DecryptStringAES(txtEncryptedProductKey.Text, sharedSecret));
+
+			txtEncryptedPassword.Text = Encryptor.EncryptStringAES(txtPassword.Text, sharedSecret);
+			tt = new ToolTip();
+			tt.IsBalloon = true;
+			tt.InitialDelay = 0;
+			tt.ShowAlways = true;
+			tt.SetToolTip(txtEncryptedPassword, Encryptor.DecryptStringAES(txtEncryptedPassword.Text, sharedSecret));
+
+		}
     }
 }

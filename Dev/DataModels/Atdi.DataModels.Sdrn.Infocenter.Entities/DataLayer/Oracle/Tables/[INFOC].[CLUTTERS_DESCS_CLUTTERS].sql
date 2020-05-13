@@ -1,0 +1,62 @@
+﻿CREATE TABLE INFOC.CLUTTERS_DESCS_CLUTTERS
+(
+  CLUTTERS_DESC_ID  NUMBER(15)                  NOT NULL,
+  CODE              NUMBER(3)                   NOT NULL,
+  NAME              NVARCHAR2(150)              NOT NULL,
+  NOTE              NCLOB,
+  HEIGHT_M          NUMBER(3)                   NOT NULL
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE UNIQUE INDEX INFOC.CLUTTERS_DESCS_CLUTTERS_PK ON INFOC.CLUTTERS_DESCS_CLUTTERS
+(CLUTTERS_DESC_ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+ALTER TABLE INFOC.CLUTTERS_DESCS_CLUTTERS ADD (
+  CONSTRAINT CLUTTERS_DESCS_CLUTTERS_PK
+ PRIMARY KEY
+ (CLUTTERS_DESC_ID)
+    USING INDEX 
+    TABLESPACE USERS
+    PCTFREE    10
+    INITRANS   2
+    MAXTRANS   255
+    STORAGE    (
+                INITIAL          64K
+                NEXT             1M
+                MINEXTENTS       1
+                MAXEXTENTS       UNLIMITED
+                PCTINCREASE      0
+               ));

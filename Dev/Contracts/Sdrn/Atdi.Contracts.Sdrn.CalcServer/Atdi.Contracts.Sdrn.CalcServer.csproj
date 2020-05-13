@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -45,7 +46,6 @@
     <Compile Include="ICalcEvent.cs" />
     <Compile Include="ICalcServerConfig.cs" />
     <Compile Include="ICalcContextHandle.cs" />
-    <Compile Include="IDeepService.cs" />
     <Compile Include="IIterationHandler.cs" />
     <Compile Include="IIterationsPool.cs" />
     <Compile Include="ITaskContext.cs" />

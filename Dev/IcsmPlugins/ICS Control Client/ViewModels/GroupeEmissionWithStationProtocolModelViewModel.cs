@@ -94,7 +94,7 @@ namespace XICSM.ICSControlClient.ViewModels
         }
         private void CheckEnablePrintCommand()
         {
-            if (this._dataFilter.Freq_MHz.HasValue || (this._dataFilter.DateMeasYear.HasValue && this._dataFilter.DateMeasMonth.HasValue))
+            if (PluginHelper.ConvertStringToDouble(this._dataFilter.FreqStart).HasValue || PluginHelper.ConvertStringToDouble(this._dataFilter.FreqStop).HasValue || (ConvertToShort(this._dataFilter.DateMeasYear).HasValue && ConvertToShort(this._dataFilter.DateMeasMonth).HasValue))
                 IsEnabledPrintAllCommand = true;
             else
                 IsEnabledPrintAllCommand = false;
@@ -106,22 +106,24 @@ namespace XICSM.ICSControlClient.ViewModels
                 this._dataFilter.DateCreated,
                 null,
                 null,
-                this._dataFilter.DateMeasDay,
-                this._dataFilter.DateMeasMonth,
-                this._dataFilter.DateMeasYear,
-                this._dataFilter.Freq_MHz,
+                ConvertToShort(this._dataFilter.DateMeasDay),
+                ConvertToShort(this._dataFilter.DateMeasMonth),
+                ConvertToShort(this._dataFilter.DateMeasYear),
+                PluginHelper.ConvertStringToDouble(this._dataFilter.FreqStart),
+                PluginHelper.ConvertStringToDouble(this._dataFilter.FreqStop),
                 this._dataFilter.Probability,
                 this._dataFilter.Standard,
                 this._dataFilter.Province,
                 this._dataFilter.Owner,
                 this._dataFilter.PermissionNumber,
                 this._dataFilter.PermissionStart,
-                this._dataFilter.PermissionStop);
+                this._dataFilter.PermissionStop,
+                "");
             this._protocols.Source = sdrProtocols;
         }
         private void OnPrintAllCommand(object parameter)
         {
-            if ((_dataFilter.DateMeasYear.HasValue && _dataFilter.DateMeasMonth.HasValue) || _dataFilter.Freq_MHz.HasValue)
+            if ((ConvertToShort(_dataFilter.DateMeasYear).HasValue && ConvertToShort(_dataFilter.DateMeasMonth).HasValue) || PluginHelper.ConvertStringToDouble(_dataFilter.FreqStart).HasValue || PluginHelper.ConvertStringToDouble(_dataFilter.FreqStop).HasValue)
             {
                 if (this._protocols.Source != null && this._protocols.Source.Length > 0)
                 {
@@ -164,7 +166,7 @@ namespace XICSM.ICSControlClient.ViewModels
             var buildSpectrogram = new BuildSpectrogram();
             // заполненеие таблицы XPROTOCOL_REPORT
             IMRecordset rs = new IMRecordset("XPROTOCOL_REPORT", IMRecordset.Mode.ReadWrite);
-            rs.Select("ID,DATE_CREATED,STANDARD_NAME,OWNER_NAME,PERMISSION_NUMBER,PERMISSION_START,PERMISSION_STOP,ADDRESS,LONGITUDE,LATITUDE,SENSOR_LON,SENSOR_LAT,SENSOR_NAME,DATE_MEAS,S_FREQ_MHZ,S_BW,FREQ_MHZ,BW,LEVEL_DBM,DESIG_EMISSION,GLOBAL_SID,CREATED_BY");
+            rs.Select("ID,DATE_CREATED,STANDARD_NAME,OWNER_NAME,PERMISSION_NUMBER,PERMISSION_START,PERMISSION_STOP,ADDRESS,LONGITUDE,LATITUDE,SENSOR_LON,SENSOR_LAT,SENSOR_NAME,DATE_MEAS,S_FREQ_MHZ,S_BW,FREQ_MHZ,BW,LEVEL_DBM,DESIG_EMISSION,GLOBAL_SID,CREATED_BY,VISN");
             rs.Open();
             var id = IM.AllocID("XPROTOCOL_REPORT", 1, -1);
             rs.AddNew();
@@ -175,6 +177,14 @@ namespace XICSM.ICSControlClient.ViewModels
             rs.Put("PERMISSION_NUMBER", row.PermissionNumber);
             rs.Put("PERMISSION_START", row.PermissionStart);
             rs.Put("PERMISSION_STOP", row.PermissionStop);
+            if (row.StatusMeas == "A")
+            {
+                rs.Put("VISN", "Параметри РЕЗ відповідають умовам дозволу на експлуатацію");
+            }
+            else
+            {
+                rs.Put("VISN", "Робота РЕЗ не зафіксована");
+            }
             rs.Put("ADDRESS", row.Address);
             if (row.Longitude.HasValue)
             {
@@ -187,7 +197,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 rs.Put("SENSOR_LAT", ConvertCoordinates.DecToDmsToString(row.Latitude.Value, Coordinates.EnumCoordLine.Lat));
             }
 
-            rs.Put("SENSOR_NAME", row.SensorName);
+            rs.Put("SENSOR_NAME", row.TitleSensor);
             rs.Put("DATE_MEAS", row.DateMeas);
             if (row.Freq_MHz.HasValue)
                 rs.Put("S_FREQ_MHZ", Math.Round(row.Freq_MHz.Value, 3));
@@ -221,9 +231,10 @@ namespace XICSM.ICSControlClient.ViewModels
             if ((row.ProtocolsLinkedWithEmittings != null) && (row.ProtocolsLinkedWithEmittings.Levels_dBm != null) && (row.ProtocolsLinkedWithEmittings.SpectrumStartFreq_MHz != null) && (row.ProtocolsLinkedWithEmittings.SpectrumSteps_kHz != null))
             {
                 recPtr.PrintRTFReport2(InsertSpectrogram.GetDirTemplates("SHDIR-REP") + @"\REPORT_SIGNALING_SPECTR.IRP", "RUS", nameFile, "", true, false);
-                var bm = new System.Drawing.Bitmap(1300, 600);
-                buildSpectrogram.CreateBitmapSpectrogram(row, bm, 1300, 600);
-                InsertSpectrogram.InsertImageToRtf(nameFile, bm, 17000, 8000);
+                var bm = new System.Drawing.Bitmap(1400, 800);
+                buildSpectrogram.CreateBitmapSpectrogram(row, bm, 1300, 700);
+                //bm.Save("C:\\Temp\\Res.jpg", System.Drawing.Imaging.ImageFormat.Jpeg);
+                InsertSpectrogram.InsertImageToRtf(nameFile, bm, 16000, 6800);
                 bm.Dispose();
                 GC.Collect();
             }
@@ -265,6 +276,18 @@ namespace XICSM.ICSControlClient.ViewModels
                 rs.Destroy();
             }
             return retVal;
+        }
+        private short? ConvertToShort(string s)
+        {
+            if (string.IsNullOrEmpty(s))
+                return null;
+
+            short result = 0;
+
+            if (short.TryParse(s, out result))
+                return result;
+            else
+                return null;
         }
     }
 }

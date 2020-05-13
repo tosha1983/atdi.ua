@@ -9,6 +9,8 @@ using VM = XICSM.ICSControlClient.Models.Views;
 using M = XICSM.ICSControlClient.Models;
 using XICSM.ICSControlClient.Environment.Wpf;
 using SVC = XICSM.ICSControlClient.WcfServiceClients;
+using XICSM.ICSControlClient.ViewModels.Reports;
+using XICSM.ICSControlClient.ViewModels.Coordinates;
 
 namespace XICSM.ICSControlClient.Models.WcfDataApadters
 {
@@ -179,6 +181,36 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 source.SignalingMeasTaskParameters.InterruptionParameters = new SDR.SignalingInterruptionParameters();
             }
 
+            string statusFull = PluginHelper.GetFullTaskStatus(source.Status);
+            string measOtherTypeSpectrumOccupationFull = "";
+            switch (source.MeasOther.TypeSpectrumOccupation)
+            {
+                case SDR.SpectrumOccupationType.FreqBandwidthOccupation:
+                    measOtherTypeSpectrumOccupationFull = "Frequency band occupancy";
+                    break;
+                case SDR.SpectrumOccupationType.FreqChannelOccupation:
+                    measOtherTypeSpectrumOccupationFull = "Frequency channel occupancy";
+                    break;
+                default:
+                    break;
+            }
+
+            string measFreqParamModeFull = "";
+            switch (source.MeasFreqParam.Mode)
+            {
+                case SDR.FrequencyMode.FrequencyList:
+                    measFreqParamModeFull = "Frequency List";
+                    break;
+                case SDR.FrequencyMode.FrequencyRange:
+                    measFreqParamModeFull = "Frequency Range";
+                    break;
+                case SDR.FrequencyMode.SingleFrequency:
+                    measFreqParamModeFull = "Single Frequency";
+                    break;
+                default:
+                    break;
+            }
+
             return new VM.MeasTaskViewModel
             {
                 CreatedBy = source.CreatedBy,
@@ -194,23 +226,29 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
 
                 MeasDtParamMeasTime = (source.MeasDtParam.MeasTime.ToNull().HasValue && source.MeasDtParam.MeasTime.Value == 0.001) ? null : source.MeasDtParam.MeasTime.ToNull(),
                 IsAutoMeasDtParamMeasTime = (source.MeasDtParam.MeasTime.ToNull().HasValue && source.MeasDtParam.MeasTime.Value == 0.001),
+                MeasDtParamMeasTimeView = (source.MeasDtParam.MeasTime.HasValue && source.MeasDtParam.MeasTime.Value == 0.001) ? "Auto" : source.MeasDtParam.MeasTime.ToNull().ToString(),
 
                 MeasDtParamPreamplification = (source.MeasDtParam.Preamplification.HasValue && source.MeasDtParam.Preamplification.Value == -1) ? (int?)null : source.MeasDtParam.Preamplification ?? 0,
                 IsAutoMeasDtParamPreamplification = (source.MeasDtParam.Preamplification.HasValue && source.MeasDtParam.Preamplification.Value == -1),
+                MeasDtParamPreamplificationView = (source.MeasDtParam.Preamplification.HasValue && source.MeasDtParam.Preamplification.Value == -1) ? "Auto" : source.MeasDtParam.Preamplification.ToNull().ToString(),
 
                 MeasDtParamRBW = (source.MeasDtParam.RBW.HasValue && source.MeasDtParam.RBW.Value == -1) ? null : source.MeasDtParam.RBW.ToNull(),
                 IsAutoMeasDtParamRBW = (source.MeasDtParam.RBW.HasValue && source.MeasDtParam.RBW.Value == -1),
+                MeasDtParamRBWView = (source.MeasDtParam.RBW.HasValue && source.MeasDtParam.RBW.Value == -1) ? "Auto" : source.MeasDtParam.RBW.ToNull().ToString(),
 
                 MeasDtParamRfAttenuation = (source.MeasDtParam.RfAttenuation.HasValue && source.MeasDtParam.RfAttenuation.Value == -1) ? (double?)null : source.MeasDtParam.RfAttenuation.GetValueOrDefault(),
                 IsAutoMeasDtParamRfAttenuation = (source.MeasDtParam.RfAttenuation.HasValue && source.MeasDtParam.RfAttenuation.Value == -1),
+                MeasDtParamRfAttenuationView = (source.MeasDtParam.RfAttenuation.HasValue && source.MeasDtParam.RfAttenuation.Value == -1) ? "Auto" : source.MeasDtParam.RfAttenuation.ToNull().ToString(),
 
                 MeasDtParamTypeMeasurements = source.MeasDtParam.TypeMeasurements,
 
                 MeasDtParamVBW = (source.MeasDtParam.VBW.HasValue && source.MeasDtParam.VBW.Value == -1) ? null : source.MeasDtParam.VBW.ToNull(),
                 IsAutoMeasDtParamVBW = (source.MeasDtParam.VBW.HasValue && source.MeasDtParam.VBW.Value == -1),
+                MeasDtParamVBWView = (source.MeasDtParam.VBW.HasValue && source.MeasDtParam.VBW.Value == -1) ? "Auto" : source.MeasDtParam.VBW.ToNull().ToString(),
 
                 MeasDtParamReferenceLevel = (source.MeasDtParam.ReferenceLevel.HasValue && source.MeasDtParam.ReferenceLevel.Value == 1000000000) ? null : source.MeasDtParam.ReferenceLevel.ToNull(),
                 IsAutoMeasDtParamReferenceLevel = (source.MeasDtParam.ReferenceLevel.HasValue && source.MeasDtParam.ReferenceLevel.Value == 1000000000),
+                MeasDtParamReferenceLevelView = (source.MeasDtParam.ReferenceLevel.HasValue && source.MeasDtParam.ReferenceLevel.Value == 1000000000) ? "Auto" : source.MeasDtParam.ReferenceLevel.ToNull().ToString(),
 
                 AllowableExcess_dB = source.SignalingMeasTaskParameters.allowableExcess_dB.ToNull(),
                 CompareTraceJustWithRefLevels = source.SignalingMeasTaskParameters.CompareTraceJustWithRefLevels,
@@ -224,8 +262,11 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 CorrelationFactor = source.SignalingMeasTaskParameters.CorrelationFactor.ToNull(),
                 DetailedMeasurementsBWEmission = source.SignalingMeasTaskParameters.DetailedMeasurementsBWEmission,
                 Standard = source.SignalingMeasTaskParameters.Standard,
+
                 triggerLevel_dBm_Hz = (source.SignalingMeasTaskParameters.triggerLevel_dBm_Hz.HasValue && source.SignalingMeasTaskParameters.triggerLevel_dBm_Hz.Value == -999) ? null : source.SignalingMeasTaskParameters.triggerLevel_dBm_Hz,
                 IsAutoTriggerLevel_dBm_Hz = (source.SignalingMeasTaskParameters.triggerLevel_dBm_Hz.HasValue && source.SignalingMeasTaskParameters.triggerLevel_dBm_Hz.Value == -999),
+                triggerLevel_dBm_HzView = (source.SignalingMeasTaskParameters.triggerLevel_dBm_Hz.HasValue && source.SignalingMeasTaskParameters.triggerLevel_dBm_Hz.Value == -999) ? "Auto" : source.SignalingMeasTaskParameters.triggerLevel_dBm_Hz.ToNull().ToString(),
+
                 CollectEmissionInstrumentalEstimation = source.SignalingMeasTaskParameters.CollectEmissionInstrumentalEstimation,
 
                 CrossingBWPercentageForBadSignals = source.SignalingMeasTaskParameters.GroupingParameters.CrossingBWPercentageForBadSignals.ToNull(),
@@ -247,6 +288,7 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
 
                 MeasFreqParamMeasFreqs = (source.MeasFreqParam.MeasFreqs ?? (new SDR.MeasFreq[] { })).Select(i => i.Freq).ToArray(),
                 MeasFreqParamMode = source.MeasFreqParam.Mode,
+                MeasFreqParamModeFull = measFreqParamModeFull,
                 MeasFreqParamRgL = source.MeasFreqParam.RgL.ToNull(),
                 MeasFreqParamRgU = source.MeasFreqParam.RgU.ToNull(),
                 MeasFreqParamStep = source.MeasFreqParam.Step.ToNull(),
@@ -256,7 +298,9 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 MeasOtherNChenal = source.MeasOther.NChenal.ToNull(),
                 MeasOtherSwNumber = source.MeasOther.SwNumber.ToNull(),
                 MeasOtherTypeSpectrumOccupation = source.MeasOther.TypeSpectrumOccupation,
+                MeasOtherTypeSpectrumOccupationFull = measOtherTypeSpectrumOccupationFull,
                 MeasOtherTypeSpectrumScan = source.MeasOther.TypeSpectrumScan,
+                SupportMultyLevel = source.MeasOther.SupportMultyLevel ?? false,
 
                 MeasTimeParamListDays = source.MeasTimeParamList.Days,
                 MeasTimeParamListPerInterval = source.MeasTimeParamList.PerInterval.ToNull(),
@@ -270,6 +314,7 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 Prio = source.Prio.ToNull(),
                 ResultType = source.ResultType,
                 Status = source.Status,
+                StatusFull = statusFull,
                 Task = source.Task,
                 Type = source.Type,
                 StationsForMeasurements = source.StationsForMeasurements,
@@ -309,6 +354,7 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 StationsNumber = source.ResultsMeasStation == null ? (int?)null : source.ResultsMeasStation.Length,
                 PointsNumber = source.MeasurementsResults == null ? (int?)null : source.MeasurementsResults.Length,
                 SensorName = source.SensorName,
+                SensorTitle = source.SensorTitle,
                 SensorTechId = source.SensorTechId,
                 CountStationMeasurements = source.CountStationMeasurements,
                 CountUnknownStationMeasurements = source.CountUnknownStationMeasurements,
@@ -418,6 +464,7 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 Spectrum = source.Spectrum,
                 LevelsDistribution = source.LevelsDistribution,
                 SensorName = source.SensorName,
+                SensorTitle = source.SensorTitle,
                 SumHitCount = source.WorkTimes == null ? 0 : source.WorkTimes.Sum(c => c.HitCount),
                 EmissionFreqMHz = source.Spectrum == null ? 0 : source.Spectrum.SpectrumSteps_kHz * (source.Spectrum.T2 + source.Spectrum.T1)/2000 + source.Spectrum.SpectrumStartFreq_MHz,
                 IcsmID = source.AssociatedStationID,
@@ -551,7 +598,10 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 GlobalSID = source.GlobalSID,
                 Latitude = source.Latitude,
                 Longitude = source.Longitude,
-                Coordinates = (source.Latitude.HasValue ? source.Latitude.Value.ToString() : "") + ", " + (source.Longitude.HasValue ? source.Longitude.Value.ToString() : ""),
+                //Coordinates = (source.Longitude.HasValue ? source.Longitude.Value.ToString() : "") + ", " + (source.Latitude.HasValue ? source.Latitude.Value.ToString() : ""),
+                Coordinates = ConvertCoordinates.DecToDmsToString2(source.Longitude.GetValueOrDefault(), EnumCoordLine.Lon) + ", " + ConvertCoordinates.DecToDmsToString2(source.Latitude.GetValueOrDefault(), EnumCoordLine.Lat),
+                CoordinatesLat = ConvertCoordinates.DecToDmsToString2(source.Latitude.GetValueOrDefault(), EnumCoordLine.Lat),
+                CoordinatesLon = ConvertCoordinates.DecToDmsToString2(source.Longitude.GetValueOrDefault(), EnumCoordLine.Lon),
                 Level_dBm = source.Level_dBm,
                 OwnerName = source.OwnerName,
                 PermissionGlobalSID = source.PermissionGlobalSID,
@@ -563,7 +613,10 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 RadioControlMeasFreq_MHz = source.RadioControlMeasFreq_MHz,
                 SensorLatitude = source.SensorLatitude,
                 SensorLongitude = source.SensorLongitude,
-                SensorCoordinates = (source.SensorLatitude.HasValue ? source.SensorLatitude.Value.ToString() : "") + ", " + (source.SensorLongitude.HasValue ? source.SensorLongitude.Value.ToString() : ""),
+                //SensorCoordinates = (source.SensorLongitude.HasValue ? source.SensorLongitude.Value.ToString() : "") + ", " + (source.SensorLatitude.HasValue ? source.SensorLatitude.Value.ToString() : ""),
+                SensorCoordinates = ConvertCoordinates.DecToDmsToString2(source.SensorLongitude.GetValueOrDefault(), EnumCoordLine.Lon) + ", " + ConvertCoordinates.DecToDmsToString2(source.SensorLatitude.GetValueOrDefault(), EnumCoordLine.Lat),
+                SensorCoordinatesLat = ConvertCoordinates.DecToDmsToString2(source.SensorLatitude.GetValueOrDefault(), EnumCoordLine.Lat),
+                SensorCoordinatesLon = ConvertCoordinates.DecToDmsToString2(source.SensorLongitude.GetValueOrDefault(), EnumCoordLine.Lon),
                 SensorName = source.SensorName,
                 Standard = source.Standard,
                 StandardName = source.StandardName,
@@ -575,7 +628,52 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 ProtocolsLinkedWithEmittings = source.ProtocolsLinkedWithEmittings
             };
         }
-        public static VM.RefSpectrumViewModel Map(SDRI.RefSpectrum source)
+        public static VM.DataSynchronizationProcessViewModel Map(SDRI.HeadProtocols source)
+        {
+            if (source == null)
+                return null;
+
+            string statusMeasStationFull = "-";
+            switch (source.StatusMeasStation)
+            {
+                case "T":
+                    statusMeasStationFull = Properties.Resources.Status_OperatingAccordingToTest;
+                    break;
+                case "A":
+                    statusMeasStationFull = Properties.Resources.Status_OperatingAccordingToLicense;
+                    break;
+                case "U":
+                    statusMeasStationFull = Properties.Resources.Status_TransmitterOperationNotFixed;
+                    break;
+                case "I":
+                    statusMeasStationFull = Properties.Resources.Status_IllegallyOperatedTransmitter;
+                    break;
+                default:
+                    break;
+            }
+
+            return new VM.DataSynchronizationProcessViewModel
+            {
+                GSID = source.PermissionGlobalSID,
+                DateMeas = source.DateMeas,
+                Owner = source.OwnerName,
+                StationAddress = source.Address,
+                //Coordinates = source.Longitude.ToString() + ", " + source.Latitude.ToString(),
+                Coordinates = ConvertCoordinates.DecToDmsToString2(source.Longitude.GetValueOrDefault(), EnumCoordLine.Lon) + ", " + ConvertCoordinates.DecToDmsToString2(source.Latitude.GetValueOrDefault(), EnumCoordLine.Lat),
+                CoordinatesLon = ConvertCoordinates.DecToDmsToString2(source.Longitude.GetValueOrDefault(), EnumCoordLine.Lon),
+                CoordinatesLat = ConvertCoordinates.DecToDmsToString2(source.Latitude.GetValueOrDefault(), EnumCoordLine.Lat),
+                NumberPermission = source.PermissionNumber,
+                PermissionStart = source.PermissionStart,
+                PermissionPeriod = source.PermissionStop,
+                SensorName = source.TitleSensor,
+                StatusMeasStation = source.StatusMeasStation,
+                StatusMeasStationFull = statusMeasStationFull,
+                DetailProtocols = source.DetailProtocols
+            };
+        }
+
+
+    public static VM.RefSpectrumViewModel Map(SDRI.RefSpectrum source)
         {
             if (source == null)
                 return null;
@@ -593,6 +691,31 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 DataRefSpectrum = source.DataRefSpectrum
             };
 
+        }
+        public static VM.ShortMeasTaskViewModel Map(SDR.ShortMeasTask source)
+        {
+            if (source == null)
+                return null;
+            string statusFull = PluginHelper.GetFullTaskStatus(source.Status);
+
+            return new VM.ShortMeasTaskViewModel
+            {
+                CreatedBy = source.CreatedBy,
+                DateCreated = source.DateCreated.ToNull(),
+                ExecutionMode = source.ExecutionMode,
+                Id = source.Id.Value,
+                MaxTimeBs = source.MaxTimeBs.ToNull(),
+                Name = source.Name,
+                OrderId = source.OrderId,
+                Prio = source.Prio.ToNull(),
+                ResultType = source.ResultType,
+                Status = source.Status,
+                StatusFull = statusFull,
+                Task = source.Task,
+                Type = source.Type,
+                TypeMeasurements = source.TypeMeasurements,
+                TypeMeasurementsString = source.TypeMeasurements.ToString()
+            };
         }
     };
 }

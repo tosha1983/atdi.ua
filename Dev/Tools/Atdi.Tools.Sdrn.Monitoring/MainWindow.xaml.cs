@@ -19,6 +19,7 @@ using System.Globalization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Threading;
+using SWF = System.Windows.Forms;
 
 namespace Atdi.Tools.Sdrn.Monitoring
 {
@@ -30,7 +31,9 @@ namespace Atdi.Tools.Sdrn.Monitoring
         const string TAG_CONFIG = "Config";
         const string TAG_LOG_EVENTS = "LogEvents";
         const string TAG_STATISTICS = "Statistics";
-        Dictionary<string, TreeViewItem> statEntryTreeDic = new Dictionary<string, TreeViewItem>();
+        const string TAG_LOG_HEALTH = "HealthLog";
+
+		Dictionary<string, TreeViewItem> statEntryTreeDic = new Dictionary<string, TreeViewItem>();
         Dictionary<string, TreeViewItem> statCounterTreeDic = new Dictionary<string, TreeViewItem>();
         List<StatisticEntryRecord> statEntrysList = new List<StatisticEntryRecord>();
         List<StatisticCounterRecord> statCurrCounterList = new List<StatisticCounterRecord>();
@@ -41,8 +44,9 @@ namespace Atdi.Tools.Sdrn.Monitoring
 
         public MainWindow()
         {
-            Thread.Sleep(5000);
+            Thread.Sleep(1000 * 60);
             InitializeComponent();
+            InitializeDataGrids();
             Task.Run((Action)LoadEnvironmentDescription);
         }
 
@@ -237,7 +241,22 @@ namespace Atdi.Tools.Sdrn.Monitoring
                                 twEndPointItem.Items.Add(twStatisticItem);
                             });
                         }
-                    }
+
+                        // 7. 
+                        var responseHealth = wc.GetAsync(endpointUrl.Value + $"/api/orm/metadata/entity/{ormNamespace}/HealthLog").Result;
+                        if (responseHealth.StatusCode == HttpStatusCode.OK)
+                        {
+	                        UIContext(() =>
+	                        {
+		                        var twHealthItem = new TreeViewItem();
+		                        twHealthItem.Header = "Health Log";
+		                        twHealthItem.Tag = TAG_LOG_HEALTH;
+		                        twHealthItem.IsExpanded = true;
+		                        twHealthItem.Foreground = Brushes.Navy;
+		                        twEndPointItem.Items.Add(twHealthItem);
+	                        });
+                        }
+					}
 
                     UIContext(() => 
                     {
@@ -294,7 +313,9 @@ namespace Atdi.Tools.Sdrn.Monitoring
                             this.ShowLogEvents((item.Parent as TreeViewItem).Tag.ToString());
                         if (item.Tag.ToString() == TAG_STATISTICS)
                             this.ShowStatistics((item.Parent as TreeViewItem).Tag.ToString());
-                    }
+                        if (item.Tag.ToString() == TAG_LOG_HEALTH)
+	                        this.ShowHealthLog((item.Parent as TreeViewItem).Tag.ToString());
+					}
                 }
             }
             catch (Exception er)
@@ -307,7 +328,9 @@ namespace Atdi.Tools.Sdrn.Monitoring
             configTree.Visibility = Visibility.Hidden;
             gridLogEvents.Visibility = Visibility.Hidden;
             groupStatistics.Visibility = Visibility.Hidden;
-        }
+            groupHealthLog.Visibility = Visibility.Hidden;
+
+		}
         private void ShowConfig(string endpointKey)
         {
             configTree.Items.Clear();
@@ -605,6 +628,242 @@ namespace Atdi.Tools.Sdrn.Monitoring
             var item = mainTree.SelectedItem as TreeViewItem;
             if (!string.IsNullOrEmpty((item.Parent as TreeViewItem).Tag.ToString()))
                 this.RefreshStatistics((item.Parent as TreeViewItem).Tag.ToString());
+        }
+        private void cmdRefreshMainTree_Click(object sender, RoutedEventArgs e)
+        {
+            mainTree.Items.Clear();
+            endpointUrls.Clear();
+            _namespaces.Clear();
+            Task.Run((Action)LoadEnvironmentDescription);
+        }
+
+        private void ShowHealthLog(string endpointKey)
+		{
+			using (var wc = new HttpClient())
+			{
+				var logeventData = new List<HealthLogResult>();
+				var ormNamespace = _namespaces[endpointKey];
+				var response = wc.GetAsync(endpointUrls[endpointKey] + $"/api/orm/data/SDRN_Server_DB/{ormNamespace}/HealthLog?select=Id,SenderLogId,SenderTypeCode,SenderTypeName,SenderInstance,SenderHost,SourceTypeCode,SourceTypeName,SourceInstance,SourceTechId,SourceHost,EventCode,EventName,EventNote,DispatchTime,ReceivedTime,ForwardedTime&OrderBy=Id desc&Top=1000").Result;
+				if (response.StatusCode == HttpStatusCode.OK)
+				{
+					var dicFields = new Dictionary<string, int>();
+					var log = JsonConvert.DeserializeObject<DataSetResult>(response.Content.ReadAsStringAsync().Result);
+
+					foreach (var field in log.Fields)
+						dicFields[field.Path] = field.Index;
+
+					foreach (object[] record in log.Records)
+					{
+						var healthLogRecord = new HealthLogResult();
+
+						healthLogRecord.Id = Convert.ToInt64(record[dicFields["Id"]]);
+						healthLogRecord.DispatchTime = (DateTime)record[dicFields["DispatchTime"]];
+						healthLogRecord.ReceivedTime = (DateTime)record[dicFields["ReceivedTime"]];
+						var forwardedTime = record[dicFields["ForwardedTime"]];
+						if (forwardedTime != null)
+						{
+							healthLogRecord.ForwardedTime = (DateTime)forwardedTime;
+						}
+						
+
+						healthLogRecord.SenderLogId = Convert.ToInt64(record[dicFields["SenderLogId"]]);
+						healthLogRecord.SenderHost = (string)(record[dicFields["SenderHost"]]);
+						healthLogRecord.SenderInstance = (string)record[dicFields["SenderInstance"]];
+						healthLogRecord.SenderTypeCode = Convert.ToByte(record[dicFields["SenderTypeCode"]]);
+						healthLogRecord.SenderTypeName = (string)record[dicFields["SenderTypeName"]];
+
+						healthLogRecord.SourceHost = (string)(record[dicFields["SourceHost"]]);
+						healthLogRecord.SourceInstance = (string)record[dicFields["SourceInstance"]];
+						healthLogRecord.SourceTechId = (string)record[dicFields["SourceTechId"]];
+						healthLogRecord.SourceTypeCode = Convert.ToByte(record[dicFields["SourceTypeCode"]]);
+						healthLogRecord.SourceTypeName = (string)record[dicFields["SourceTypeName"]];
+
+						healthLogRecord.EventCode = Convert.ToByte(record[dicFields["EventCode"]]);
+						healthLogRecord.EventName = (string)record[dicFields["EventName"]];
+						healthLogRecord.EventNote = (string)record[dicFields["EventNote"]];
+
+						logeventData.Add(healthLogRecord);
+					}
+					gridHealthLog.ItemsSource = logeventData;
+				}
+			}
+			groupHealthLog.Visibility = Visibility.Visible;
+		}
+
+		private void gridHealthLog_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			System.Diagnostics.Debug.WriteLine($"gridHealthLog_SelectionChanged: {e.AddedItems.Count}");
+			if (e.AddedItems.Count > 0)
+			{
+				var healthId = (e.AddedItems[0] as HealthLogResult).Id;
+				this.ShowHealthDetail(healthId);
+				this.ShowHealthContent(healthId);
+			}
+			
+		}
+
+		private void ShowHealthDetail(long healthId)
+		{
+			var endpointKey = Convert.ToString(((mainTree.SelectedItem as TreeViewItem).Parent as TreeViewItem).Tag);
+			using (var wc = new HttpClient())
+			{
+				var detailResult = new List<HealthLogDetailResult>();
+				var ormNamespace = _namespaces[endpointKey];
+				var response = wc.GetAsync(endpointUrls[endpointKey] + $"/api/orm/data/SDRN_Server_DB/{ormNamespace}/HealthLogDetail?select=Id,CreatedDate,Message,Note,Source,ThreadId,SiteTypeCode,SiteTypeName,SiteInstance,SiteHost&OrderBy=Id&Top=1000&filter=HEALTH.Id eq {healthId}").Result;
+				if (response.StatusCode == HttpStatusCode.OK)
+				{
+					var dicFields = new Dictionary<string, int>();
+					var log = JsonConvert.DeserializeObject<DataSetResult>(response.Content.ReadAsStringAsync().Result);
+
+					foreach (var field in log.Fields)
+						dicFields[field.Path] = field.Index;
+
+					foreach (object[] record in log.Records)
+					{
+						var healthLogRecord = new HealthLogDetailResult();
+
+						healthLogRecord.Id = Convert.ToInt64(record[dicFields["Id"]]);
+						healthLogRecord.CreatedDate = (DateTime)record[dicFields["CreatedDate"]];
+						healthLogRecord.Message = (string)record[dicFields["Message"]];
+						healthLogRecord.Note = (string)record[dicFields["Note"]];
+						healthLogRecord.ThreadId = Convert.ToInt32(record[dicFields["ThreadId"]]);
+						healthLogRecord.Source = (string)record[dicFields["Source"]];
+
+
+						healthLogRecord.SiteHost = (string)(record[dicFields["SiteHost"]]);
+						healthLogRecord.SiteInstance = (string)record[dicFields["SiteInstance"]];
+						healthLogRecord.SiteTypeCode = Convert.ToByte(record[dicFields["SiteTypeCode"]]);
+						healthLogRecord.SiteTypeName = (string)record[dicFields["SiteTypeName"]];
+
+						detailResult.Add(healthLogRecord);
+					}
+					gridHealthDetail.ItemsSource = detailResult;
+				}
+			}
+			
+		}
+
+		private void ShowHealthContent(long healthId)
+		{
+			var endpointKey = Convert.ToString(((mainTree.SelectedItem as TreeViewItem).Parent as TreeViewItem).Tag);
+			using (var wc = new HttpClient())
+			{
+				
+				var ormNamespace = _namespaces[endpointKey];
+				var response = wc.GetAsync(endpointUrls[endpointKey] + $"/api/orm/data/SDRN_Server_DB/{ormNamespace}/HealthLogData?select=JsonData&filter=Id eq {healthId}").Result;
+				if (response.StatusCode == HttpStatusCode.OK)
+				{
+					var dicFields = new Dictionary<string, int>();
+					var log = JsonConvert.DeserializeObject<DataSetResult>(response.Content.ReadAsStringAsync().Result);
+
+					foreach (var field in log.Fields)
+						dicFields[field.Path] = field.Index;
+
+					foreach (object[] record in log.Records)
+					{
+						textHealthContent.Text = FormatJson((string)record[dicFields["JsonData"]]);
+					}
+					
+				}
+			}
+
+		}
+
+		private static string FormatJson(string json)
+		{
+			dynamic parsedJson = JsonConvert.DeserializeObject(json);
+			return JsonConvert.SerializeObject(parsedJson, Formatting.Indented);
+		}
+        void InitializeDataGrids()
+        {
+            PrepareDataGridMenu(gridLogEvents);
+            PrepareDataGridMenu(gridHealthLog);
+            PrepareDataGridMenu(gridHealthDetail);
+            PrepareDataGridMenu(gridCurrentCounter);
+            PrepareDataGridMenu(gridCounterRecords);
+            PrepareDataGridMenu(gridEntryRecords);
+        }
+        void PrepareDataGridMenu(DataGrid grd)
+        {
+            if (grd.ContextMenu == null)
+                grd.ContextMenu = new ContextMenu();
+
+            var itemCSV = new MenuItem() { Header = "Save to CSV", Name = "SaveToCSV" };
+            itemCSV.Click += DataGrid_MenuClick_SaveToCSV;
+            grd.ContextMenu.Items.Add(itemCSV);
+        }
+        void DataGrid_MenuClick_SaveToCSV(object sender, EventArgs e)
+        {
+            var menuItem = sender as MenuItem;
+            var contextMenu = menuItem.Parent as ContextMenu;
+            var grid = contextMenu.PlacementTarget as DataGrid;
+            SWF.SaveFileDialog sfd = new SWF.SaveFileDialog()
+            {
+                Filter = "CSV (*.csv)|*.csv",
+                FileName = $"DataGrid_{DateTime.Now.Year}_{DateTime.Now.Month}_{DateTime.Now.Day}_{DateTime.Now.Hour}_{DateTime.Now.Minute}_{DateTime.Now.Second}.csv"
+            };
+            if (sfd.ShowDialog() == SWF.DialogResult.OK)
+            {
+                int recCount = grid.Items.Count;
+                string[] output = new string[recCount + 1];
+
+                var csvRow = new List<string>();
+                var columnsBindName = new List<string>();
+
+                foreach (var column in grid.Columns)
+                {
+                    var columnName = (((column as DataGridTextColumn).Binding as System.Windows.Data.Binding).Path as PropertyPath).Path;
+                    columnsBindName.Add(columnName);
+                    csvRow.Add(column.Header.ToString());
+                }
+                output[0] += string.Join(";", csvRow);
+
+                int i = 1;
+
+                if (grid.SelectedItems.Count > 1)
+                    foreach (dynamic row in grid.SelectedItems)
+                    {
+                        csvRow = new List<string>();
+
+                        foreach (var columnName in columnsBindName)
+                        {
+                            var cellValue = row.GetType().GetProperty(columnName).GetValue(row, null);
+                            csvRow.Add(cellValue == null ? "" : $"\"{cellValue.ToString()}\"");
+                        }
+                        output[i++] += string.Join(";", csvRow);
+                    }
+                else
+                    foreach (dynamic row in grid.Items)
+                    {
+                        csvRow = new List<string>();
+
+                        foreach (var columnName in columnsBindName)
+                        {
+                            var cellValue = row.GetType().GetProperty(columnName).GetValue(row, null);
+                            csvRow.Add(cellValue == null ? "" : $"\"{cellValue.ToString()}\"");
+                        }
+                        output[i++] += string.Join(";", csvRow);
+                    }
+
+                System.IO.File.WriteAllLines(sfd.FileName, output, System.Text.Encoding.UTF8);
+                System.Windows.MessageBox.Show("Your file was generated and its ready for use.");
+            }
+
+        }
+        public static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
+        {
+            if (depObj != null)
+            {
+                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+                {
+                    DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
+                    if (child != null && child is T)
+                        yield return (T)child;
+
+                    foreach (T childOfChild in FindVisualChildren<T>(child))
+                        yield return childOfChild;
+                }
+            }
         }
     }
 }

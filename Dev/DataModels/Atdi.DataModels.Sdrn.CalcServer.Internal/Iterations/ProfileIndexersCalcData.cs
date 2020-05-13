@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Atdi.DataModels.Sdrn.DeepServices.Gis;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
@@ -12,22 +13,26 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 		/// <summary>
 		/// Буффер, содержащий индексаторы профиля 
 		/// </summary>
-		public Maps.Indexer[] Result;
+		public ProfileIndexer[] Result;
 
 		/// <summary>
 		/// Позиция бокса: Lower Left x and Y
 		/// </summary>
-		public Maps.MapArea Area;
+		public AtdiMapArea Area;
 
 		/// <summary>
 		/// Опорная точка, от которой необходмио считать профели до целевых
 		/// </summary>
-		public Maps.Coordinate Point;
+		public AtdiCoordinate Point;
 
 		/// <summary>
 		/// Коодината целевйо точки
 		/// </summary>
-		public Maps.Coordinate Target;
+		public AtdiCoordinate Target;
+
+		public bool CheckReverse = true;
+
+		public bool HasError = false;
 
 	}
 }

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "CluttersDesc"
+  Title       = "Map Clutter"
+  Desc        = "The clutters description of the map"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>CLUTTERS_DESCS</Name>
+    <Schema>INFOC</Schema>
+  </DataSource>
+  <Fields>
+    <Field Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column" Desc="The id of the map clutter" Title="Clutter Id"/>
+    <Field Name="MAP" SourceName="Map" SourceType="Reference" Required="false" Desc="The map of the clutter" Title="Map"/>
+
+    <Field Name="CreatedDate" DataType="DateTimeOffset" SourceName="CREATED_DATE" SourceType="Column" Desc="The date of the record created" Title="Created date" Required="true"/>
+    
+    <Field Name="Name" DataType="Text.450" SourceName="NAME" SourceType="Column" Desc="The name of the clutter" Title="Name" Required="true"/>
+    <Field Name="Note" DataType="Text.MAX" SourceName="NOTE" SourceType="Column" Desc="The note of the clutter" Title="Note" Required="false"/>
+
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>

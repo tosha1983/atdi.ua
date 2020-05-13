@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "StatisticEntryRecord"
+  Title       = "Counter"
+  Desc        = "The counter of statistic"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="ClrObject" Object="Service">
+    <Name>Atdi.Contracts.CoreServices.Monitoring.IStatisticEntries, Atdi.Contracts.CoreServices.Monitoring, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</Name>
+  </DataSource>
+  <Fields>
+    <Field Name="Name" DataType="String.NTEXT" SourceName="Name" SourceType="Column" Desc="The name of the entry" Title="Entry name" Required="true"/>
+    <Field Name="Data" DataType="CT.Object" SourceName="Data" SourceType="Column" Desc="The value of the entry data" Title="Data" Required="true"/>
+    
+  </Fields>
+</Entity>

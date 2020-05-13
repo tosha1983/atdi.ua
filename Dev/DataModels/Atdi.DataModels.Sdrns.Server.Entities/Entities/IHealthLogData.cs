@@ -10,7 +10,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [EntityPrimaryKeyAttribute]
     public interface IHealthLogData_PK : IHealthLog_PK
 	{
-        long Id { get; set; }
+      
     }
 
     [Entity]

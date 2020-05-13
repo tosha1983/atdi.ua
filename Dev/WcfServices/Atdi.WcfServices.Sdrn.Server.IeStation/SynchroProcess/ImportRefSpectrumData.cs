@@ -196,6 +196,10 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                     for (int i = 0; i < RefSpectrumIdsBySDRN.Length; i++)
                     {
 
+                        var builderDeleteLinkHeadRefSpectrum = this._dataLayer.GetBuilder<MD.ILinkHeadRefSpectrum>().Delete();
+                        builderDeleteLinkHeadRefSpectrum.Where(c => c.HEAD_REF_SPECTRUM.Id, ConditionOperator.Equal, RefSpectrumIdsBySDRN[i]);
+                        scope.Executor.Execute(builderDeleteLinkHeadRefSpectrum);
+
                         var builderDeleteRefSpectrum = this._dataLayer.GetBuilder<MD.IRefSpectrum>().Delete();
                         builderDeleteRefSpectrum.Where(c => c.HEAD_REF_SPECTRUM.Id, ConditionOperator.Equal, RefSpectrumIdsBySDRN[i]);
                         scope.Executor.Execute(builderDeleteRefSpectrum);
@@ -204,6 +208,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                         var builderDeleteHeadRefSpectrum = this._dataLayer.GetBuilder<MD.IHeadRefSpectrum>().Delete();
                         builderDeleteHeadRefSpectrum.Where(c => c.Id, ConditionOperator.Equal, RefSpectrumIdsBySDRN[i]);
                         scope.Executor.Execute(builderDeleteHeadRefSpectrum);
+
                     }
 
                     scope.Commit();

@@ -176,6 +176,11 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server.IeStation
         [DataMember]
         public string CurentStatusStation { get; set; }
         /// <summary>
+        /// Результат радіоконтролю для станции
+        /// </summary>
+        [DataMember]
+        public string StatusMeasStation { get; set; }
+        /// <summary>
         /// Protocols with emittings
         /// </summary>
         [DataMember]

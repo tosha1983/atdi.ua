@@ -26,6 +26,7 @@ namespace XICSM.ICSControlClient
             mainMenu.InsertItem(PluginMetadata.Menu.MainTool, PluginMetadata.Menu.Tools.MeasResults, PluginCommands.OnMeasResultsCommand);
             mainMenu.InsertItem(PluginMetadata.Menu.MainTool, PluginMetadata.Menu.Tools.AnalyzeEmissions, PluginCommands.OnAnalyzeEmissionsCommand);
             mainMenu.InsertItem(PluginMetadata.Menu.MainTool, PluginMetadata.Menu.Tools.GroupeSynchronizationEmissionsWithStationICSM, PluginCommands.OnGroupeSynchronizationEmissionsWithStationICSM);
+            mainMenu.InsertItem(PluginMetadata.Menu.MainTool, PluginMetadata.Menu.Tools.ExportSODatatoCSV, PluginCommands.ExportSODatatoCSV);
             mainMenu.InsertItem(PluginMetadata.Menu.MainTool, PluginMetadata.Menu.Tools.About, PluginCommands.OnAboutCommand);
         }
 

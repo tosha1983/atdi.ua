@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<DataType 
+  Name           = "CT.Object"
+  DataSourceType = "ClrObject"
+  xmlns          =  "http://schemas.atdi.com/orm/entity.xsd">
+  <CodeVarType ClrType="System.Object">ClrType</CodeVarType>
+  <SourceVarType>CLRTYPE</SourceVarType>  
+</DataType>

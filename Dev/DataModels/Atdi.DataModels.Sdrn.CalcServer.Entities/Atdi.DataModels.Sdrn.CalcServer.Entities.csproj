@@ -51,6 +51,27 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Entities\ICalcResult.cs" />
+    <Compile Include="Entities\ICluttersDesc.cs" />
+    <Compile Include="Entities\ICluttersDescClutter.cs" />
+    <Compile Include="Entities\ICluttersDescFreq.cs" />
+    <Compile Include="Entities\ICluttersDescFreqClutter.cs" />
+    <Compile Include="Entities\IContextPlannedCalcTask.cs" />
+    <Compile Include="Entities\IClientContextAbsorption.cs" />
+    <Compile Include="Entities\IClientContextAtmospheric.cs" />
+    <Compile Include="Entities\IClientContextAdditional.cs" />
+    <Compile Include="Entities\IClientContextClutter.cs" />
+    <Compile Include="Entities\IClientContextGlobalParams.cs" />
+    <Compile Include="Entities\IClientContextReflection.cs" />
+    <Compile Include="Entities\IClientContextDucting.cs" />
+    <Compile Include="Entities\IClientContextTropo.cs" />
+    <Compile Include="Entities\IClientContextSubPathDiffraction.cs" />
+    <Compile Include="Entities\IClientContextDiffraction.cs" />
+    <Compile Include="Entities\IClientContextMainBlock.cs" />
+    <Compile Include="Entities\IContextStationCoordinates.cs" />
+    <Compile Include="Entities\Tasks\IPointFieldStrengthArgsDefault.cs" />
+    <Compile Include="Entities\Tasks\IPointFieldStrengthResult.cs" />
+    <Compile Include="Entities\Tasks\IPointFieldStrengthArgsBase.cs" />
+    <Compile Include="Entities\Tasks\IPointFieldStrengthArgs.cs" />
     <Compile Include="Entities\ICoverageProfilesCalcTask.cs" />
     <Compile Include="Entities\ICalcTask.cs" />
     <Compile Include="Entities\IContextStationPattern.cs" />
@@ -78,9 +99,59 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="DataLayer\Oracle\Tables\CALC.CALCRESULTS.sql" />
+    <Content Include="DataLayer\Oracle\Tables\CALC.CALCRESULTS_POINTFIELDSTRENGTH.sql" />
+    <Content Include="DataLayer\Oracle\Tables\CALC.CALCTASKS.sql" />
+    <Content Include="DataLayer\Oracle\Tables\CALC.CALCTASKS_COVERAGEPROFILES.sql" />
+    <Content Include="DataLayer\Oracle\Tables\CALC.CALCTASKS_POINTFIELDSTRENGTH_ARGS.sql" />
+    <Content Include="DataLayer\Oracle\Tables\CALC.CALCTASKS_POINTFIELDSTRENGTH_ARGS_DEF.sql" />
+    <Content Include="DataLayer\Oracle\Tables\CALC.CLIENT_CONTEXTS.sql" />
+    <Content Include="DataLayer\Oracle\Tables\CALC.CLIENT_CONTEXTS_ABSORPTION.sql" />
+    <Content Include="DataLayer\Oracle\Tables\CALC.CLIENT_CONTEXTS_ADDITIONAL.sql" />
+    <Content Include="DataLayer\Oracle\Tables\CALC.CLIENT_CONTEXTS_ATMOSPHERIC.sql" />
+    <Content Include="DataLayer\Oracle\Tables\CALC.CLIENT_CONTEXTS_CLUTTER.sql" />
+    <Content Include="DataLayer\Oracle\Tables\CALC.CLIENT_CONTEXTS_DIFFRACTION.sql" />
+    <Content Include="DataLayer\Oracle\Tables\CALC.CLIENT_CONTEXTS_DUCTING.sql" />
+    <Content Include="DataLayer\Oracle\Tables\CALC.CLIENT_CONTEXTS_GLOBALPARAMS.sql" />
+    <Content Include="DataLayer\Oracle\Tables\CALC.CLIENT_CONTEXTS_MAINBLOCK.sql" />
+    <Content Include="DataLayer\Oracle\Tables\CALC.CLIENT_CONTEXTS_REFLECTION.sql" />
+    <Content Include="DataLayer\Oracle\Tables\CALC.CLIENT_CONTEXTS_SUBPATHDIFFRACTION.sql" />
+    <Content Include="DataLayer\Oracle\Tables\CALC.CLIENT_CONTEXTS_TROPO.sql" />
+    <Content Include="DataLayer\Oracle\Tables\CALC.CLUTTERS_DESCS.sql" />
+    <Content Include="DataLayer\Oracle\Tables\CALC.CLUTTERS_DESCS_CLUTTERS.sql" />
+    <Content Include="DataLayer\Oracle\Tables\CALC.CLUTTERS_DESCS_FREQS.sql" />
+    <Content Include="DataLayer\Oracle\Tables\CALC.CLUTTERS_DESCS_FREQS_CLUTTERS.sql" />
+    <Content Include="DataLayer\Oracle\Tables\CALC.CONTEXT_PLANNEDCALCTASK.sql" />
+    <Content Include="DataLayer\Oracle\Tables\CALC.CONTEXT_STATIONS.sql" />
+    <Content Include="DataLayer\Oracle\Tables\CALC.CONTEXT_STATIONS_ANTENNA.sql" />
+    <Content Include="DataLayer\Oracle\Tables\CALC.CONTEXT_STATIONS_RECEIVER.sql" />
+    <Content Include="DataLayer\Oracle\Tables\CALC.CONTEXT_STATIONS_SITE.sql" />
+    <Content Include="DataLayer\Oracle\Tables\CALC.CONTEXT_STATIONS_TRANSMITTER.sql" />
+    <Content Include="DataLayer\Oracle\Tables\CALC.CONTEXT_STATION_COORDINATES.sql" />
+    <Content Include="DataLayer\Oracle\Tables\CALC.CONTEXT_STATION_PATTERNS.sql" />
+    <Content Include="DataLayer\Oracle\Tables\CALC.PROJECTS.sql" />
+    <Content Include="DataLayer\Oracle\Tables\CALC.PROJECT_MAPS.sql" />
+    <Content Include="DataLayer\Oracle\Tables\CALC.PROJECT_MAP_CONTENTS.sql" />
+    <Content Include="DataLayer\Oracle\Tables\CALC.PROJECT_MAP_CONTENT_SOURCES.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.CALCRESULTS.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.CALCRESULTS_POINTFIELDSTRENGTH.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.CALCTASKS_POINTFIELDSTRENGTH_ARGS_DEF.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.CONTEXT_PLANNEDCALCTASK.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.CALCTASKS_POINTFIELDSTRENGTH_ARGS.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.CALCTASKS_COVERAGEPROFILES.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.CALCTASKS.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.CLIENT_CONTEXTS_ABSORPTION.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.CLIENT_CONTEXTS_ATMOSPHERIC.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.CLIENT_CONTEXTS_ADDITIONAL.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.CLIENT_CONTEXTS_CLUTTER.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.CLIENT_CONTEXTS_GLOBALPARAMS.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.CLIENT_CONTEXTS_REFLECTION.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.CLIENT_CONTEXTS_DUCTING.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.CLIENT_CONTEXTS_TROPO.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.CLIENT_CONTEXTS_SUBPATHDIFFRACTION.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.CLIENT_CONTEXTS_DIFFRACTION.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.CLIENT_CONTEXTS_MAINBLOCK.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.CONTEXT_STATION_COORDINATES.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.CONTEXT_STATION_PATTERNS.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.CONTEXT_STATIONS_ANTENNA.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.CONTEXT_STATIONS_RECEIVER.sql" />
@@ -92,6 +163,10 @@
     <Content Include="DataLayer\SqlServer\Tables\CALC.PROJECT_MAPS.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.PROJECT_MAP_CONTENTS.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.PROJECT_MAP_CONTENT_SOURCES.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.CLUTTERS_DESCS.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.CLUTTERS_DESCS_CLUTTERS.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.CLUTTERS_DESCS_FREQS.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.CLUTTERS_DESCS_FREQS_CLUTTERS.sql" />
     <Content Include="Metadata\DataTypes\ClrObject\CT.Object.xml" />
     <Content Include="Metadata\DataTypes\ClrObject\CT.ReadOnlyDictionary.String.String.xml" />
     <Content Include="Metadata\DataTypes\ClrObject\DateTime.DATETIME.xml" />
@@ -144,6 +219,27 @@
     <Content Include="Metadata\DataTypes\Database\Text.MAX.xml" />
     <Content Include="Metadata\DataTypes\Database\Time.xml" />
     <Content Include="Metadata\Entities\CalcResult.xml" />
+    <Content Include="Metadata\Entities\CluttersDesc.xml" />
+    <Content Include="Metadata\Entities\CluttersDescClutter.xml" />
+    <Content Include="Metadata\Entities\CluttersDescFreq.xml" />
+    <Content Include="Metadata\Entities\CluttersDescFreqClutter.xml" />
+    <Content Include="Metadata\Entities\ContextPlannedCalcTask.xml" />
+    <Content Include="Metadata\Entities\ClientContextAbsorption.xml" />
+    <Content Include="Metadata\Entities\ClientContextAtmospheric.xml" />
+    <Content Include="Metadata\Entities\ClientContextAdditional.xml" />
+    <Content Include="Metadata\Entities\ClientContextGlobalParams.xml" />
+    <Content Include="Metadata\Entities\ClientContextClutter.xml" />
+    <Content Include="Metadata\Entities\ClientContextReflection.xml" />
+    <Content Include="Metadata\Entities\ClientContextDucting.xml" />
+    <Content Include="Metadata\Entities\ClientContextTropo.xml" />
+    <Content Include="Metadata\Entities\ClientContextSubPathDiffraction.xml" />
+    <Content Include="Metadata\Entities\ClientContextDiffraction.xml" />
+    <Content Include="Metadata\Entities\ClientContextMainBlock.xml" />
+    <Content Include="Metadata\Entities\ContextStationCoordinates.xml" />
+    <Content Include="Metadata\Entities\Tasks\PointFieldStrengthArgsBase.xml" />
+    <Content Include="Metadata\Entities\Tasks\PointFieldStrengthArgsDefault.xml" />
+    <Content Include="Metadata\Entities\Tasks\PointFieldStrengthResult.xml" />
+    <Content Include="Metadata\Entities\Tasks\PointFieldStrengthArgs.xml" />
     <Content Include="Metadata\Entities\CoverageProfilesCalcTask.xml" />
     <Content Include="Metadata\Entities\CalcTask.xml" />
     <Content Include="Metadata\Entities\ContextStationPattern.xml" />
@@ -177,7 +273,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DataLayer\Oracle\Functions\" />
-    <Folder Include="DataLayer\Oracle\Tables\" />
     <Folder Include="DataLayer\SqlServer\Functions\" />
   </ItemGroup>
   <ItemGroup />

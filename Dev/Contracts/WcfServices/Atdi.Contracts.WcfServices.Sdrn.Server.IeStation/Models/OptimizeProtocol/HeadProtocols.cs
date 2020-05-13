@@ -92,6 +92,11 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server.IeStation
         [DataMember]
         public string TitleSensor { get; set; }
         /// <summary>
+        /// Результат радіоконтролю для станции
+        /// </summary>
+        [DataMember]
+        public string StatusMeasStation { get; set; }
+        /// <summary>
         /// Назва сенсору
         /// </summary>
         [DataMember]

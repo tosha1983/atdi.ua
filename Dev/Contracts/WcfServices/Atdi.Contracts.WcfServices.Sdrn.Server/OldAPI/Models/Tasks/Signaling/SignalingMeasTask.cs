@@ -45,6 +45,8 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         public SignalingGroupingParameters GroupingParameters { get; set; }
         [DataMember]
         public bool? CollectEmissionInstrumentalEstimation { get; set; } // true значит, что  после отправления результатов матрицы, которые содержат результаты измерений (EmittingSum, EmittingTemp) должны обнуляться,  (по умолчанию false)
+        [DataMember]
+        public bool? IsUseRefSpectrum { get; set; }  // Пользователь на форме выбирает данный флаг, и в зависимости от того выбран он или нет,  перед созданием таска показывают или не показывают доп форму для загрузки реф ситуации
 
     }
 }

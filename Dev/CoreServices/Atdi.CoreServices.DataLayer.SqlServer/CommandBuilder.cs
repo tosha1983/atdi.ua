@@ -498,12 +498,12 @@ namespace Atdi.CoreServices.DataLayer.SqlServer
             return _sql.ToString();
         }
 
-        public string CreateCountLimt(int count)
+        public string CreateCountLimt(long count)
         {
             return $"TOP ({count})";
         }
 
-        public string CreatePercentLimt(int percent)
+        public string CreatePercentLimt(long percent)
         {
             return $"TOP ({percent}) PERCENT";
         }
@@ -513,7 +513,7 @@ namespace Atdi.CoreServices.DataLayer.SqlServer
             return $"DISTINCT";
         }
 
-        public void Select(string[] columns, string from, string[][] joins = null, string where = null, string[] orderBy = null, string distinct = null, string limit = null)
+        public void Select(string[] columns, string from, string[][] joins = null, string where = null, string[] orderBy = null, string distinct = null, string limit = null, long offset = -1, long fetch = -1)
         {
             if (string.IsNullOrEmpty(distinct))
             {
@@ -536,6 +536,18 @@ namespace Atdi.CoreServices.DataLayer.SqlServer
             {
                 _sql.AppendLine($"ORDER BY");
                 _sql.AppendLine($"    {string.Join(", ", orderBy)}");
+                if (offset >= 0)
+                {
+	                _sql.AppendLine($"OFFSET {offset} ROWS");
+	                if (fetch > 0)
+	                {
+		                _sql.AppendLine($"FETCH NEXT {fetch} ROWS ONLY");
+					}
+	                else if (fetch == 0)
+	                {
+		                throw new InvalidOperationException($"Invalid value of fetch rows for FETCH NEXT ... ROWS ONLY SQL Expression");
+					}
+				}
             }
         }
 
@@ -632,25 +644,25 @@ namespace Atdi.CoreServices.DataLayer.SqlServer
                 case MoreOperandsOperator.In:
                     if (operands == null || operands.Length < 1)
                     {
-                        throw new InvalidOperationException($"Invalid numer of operand for IN SQL Expression");
+                        throw new InvalidOperationException($"Invalid numbers of operand for IN SQL Expression");
                     }
                     return $"{testOperand} IN ({string.Join(", ", operands)})";
                 case MoreOperandsOperator.NotIn:
                     if(operands == null || operands.Length < 1)
                     {
-                        throw new InvalidOperationException($"Invalid numer of operand for NOT IN SQL Expression");
+                        throw new InvalidOperationException($"Invalid numbers of operand for NOT IN SQL Expression");
                     }
                     return $"{testOperand} NOT IN ({string.Join(", ", operands)})";
                 case MoreOperandsOperator.Between:
                     if (operands == null || operands.Length != 2)
                     {
-                        throw new InvalidOperationException($"Invalid numer of operand for BETWEEN SQL Expression");
+                        throw new InvalidOperationException($"Invalid numbers of operand for BETWEEN SQL Expression");
                     }
                     return $"{testOperand} BETWEEN {operands[0]} AND {operands[1]}";
                 case MoreOperandsOperator.NotBetween:
                     if (operands == null || operands.Length != 2)
                     {
-                        throw new InvalidOperationException($"Invalid numer of operand for BETWEEN SQL Expression");
+                        throw new InvalidOperationException($"Invalid numbers of operand for BETWEEN SQL Expression");
                     }
                     return $"{testOperand} NOT BETWEEN {operands[0]} AND {operands[1]}";
                 default:

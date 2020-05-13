@@ -20,6 +20,8 @@ create table [ICSC].[RES_LEVELS] (
 	[LIMIT_SPECT]	[float] null,
 	[OCCUPANCY_SPECT]	[real] null,
 	[RES_MEAS_ID]	[bigint] not null,
+	[LEVEL_MIN_ARR] [float] null,
+    [SPECTRUM_OCCUP_ARR]  [varbinary](max) null
 	constraint [PK_RES_LEVELS] primary key clustered ([ID]) on [PRIMARY]  
 ) on [PRIMARY]
 go

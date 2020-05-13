@@ -17,13 +17,35 @@ namespace XICSM.ICSControlClient.ViewModels.Reports
     /// </summary>
     public class BuildSpectrogram
     {
+        private double? GetLeveldBm(PointF[] points, double? val)
+        {
+            double? level_dBm = null;
+            for (int i = 0; i < points.Length; i++)
+            {
+                if (val == points[i].X)
+                {
+                    level_dBm = points[i].Y;
+                }
+                else
+                {
+                    if ((i + 1) < points.Length)
+                    {
+                        if ((val > points[i].X) && (val < points[i + 1].X))
+                        {
+                            level_dBm = (points[i].Y + points[i + 1].Y) / 2;
+                        }
+                    }
+                }
+            }
+            return level_dBm;
+        }
         private ChartOption GetChartOption(DataSynchronizationProcessProtocolsViewModel emit)
         {
             var option = new ChartOption
             {
-                Title = "Ref level",
-                YLabel = "Level (dBm)",
-                XLabel = "Freq (MHz)",
+                Title = "",
+                YLabel = "дБм",
+                XLabel = "Частота (МГц)",
                 ChartType = ChartType.Line,
                 XInnerTickCount = 5,
                 YInnerTickCount = 5,
@@ -53,8 +75,20 @@ namespace XICSM.ICSControlClient.ViewModels.Reports
                 int j = 0;
                 if ((emit.ProtocolsLinkedWithEmittings!=null) && (emit.ProtocolsLinkedWithEmittings.Levels_dBm!= null))
                 {
+                    double? freqMiddle_MHz = null;
                     double constStep = 0;
                     var count = emit.ProtocolsLinkedWithEmittings.Levels_dBm.Count();
+
+                    if (emit.ProtocolsLinkedWithEmittings.Bandwidth_kHz != null)
+                    {
+                        freqMiddle_MHz = (double)(emit.ProtocolsLinkedWithEmittings.SpectrumStartFreq_MHz.Value + emit.ProtocolsLinkedWithEmittings.SpectrumSteps_kHz * ((emit.ProtocolsLinkedWithEmittings.T1.Value + emit.ProtocolsLinkedWithEmittings.T2.Value) / 2000.0));
+                    }
+                    else
+                    {
+                        freqMiddle_MHz = (double)((emit.ProtocolsLinkedWithEmittings.StopFrequency_MHz.Value + emit.ProtocolsLinkedWithEmittings.StartFrequency_MHz.Value) / 2);
+                    }
+
+
                     var points = new List<PointF>();
                     for (int i = 0; i < count; i++)
                     {
@@ -88,21 +122,25 @@ namespace XICSM.ICSControlClient.ViewModels.Reports
                         j++;
                     }
 
-                    pointsList.Add(new ChartPoints() { Points = points.ToArray(), LineColor = new SolidBrush(Color.DarkRed) });
+                    pointsList.Add(new ChartPoints() { Points = points.ToArray(), LineColor = new SolidBrush(Color.Red) });
+                    double? level_dBm = null;
                     if (emit.ProtocolsLinkedWithEmittings.T1 != 0)
                     {
                         var val = (emit.ProtocolsLinkedWithEmittings.SpectrumStartFreq_MHz * 1000000 + emit.ProtocolsLinkedWithEmittings.SpectrumSteps_kHz * 1000 * emit.ProtocolsLinkedWithEmittings.T1) / 1000000;
-                        linesList.Add(new ChartLine() { Point = new PointF { X = (float)val, Y = 0 }, LineColor = new SolidBrush(Color.DarkRed), IsHorizontal = false, IsVertical = true, Name = Math.Round(val.Value, 6).ToString(), LabelLeft = 5, LabelTop = -25 });
+                        level_dBm = GetLeveldBm(points.ToArray(), val);
+                        linesList.Add(new ChartLine() { Point = new PointF { X = (float)val, Y = 0 }, LineColor = new SolidBrush(Color.Black), IsHorizontal = false, IsVertical = true, Name = Math.Round(val.Value, 6).ToString(), Num = "M"+ (linesList.Count+1).ToString(), Freq_Mhz = val.Value, level_dBm = level_dBm.Value, LabelLeft = 5, freqMiddle_MHz = freqMiddle_MHz.Value, LabelTop = -25 });
                     }
                     if (emit.ProtocolsLinkedWithEmittings.T2 != 0)
                     {
                         var val = (emit.ProtocolsLinkedWithEmittings.SpectrumStartFreq_MHz * 1000000 + emit.ProtocolsLinkedWithEmittings.SpectrumSteps_kHz * 1000 * emit.ProtocolsLinkedWithEmittings.T2) / 1000000;
-                        linesList.Add(new ChartLine() { Point = new PointF { X = (float)val, Y = 0 }, LineColor = new SolidBrush(Color.DarkRed), IsHorizontal = false, IsVertical = true, Name = Math.Round(val.Value, 6).ToString(), LabelLeft = 5, LabelTop = -45 });
+                        level_dBm = GetLeveldBm(points.ToArray(), val);
+                        linesList.Add(new ChartLine() { Point = new PointF { X = (float)val, Y = 0 }, LineColor = new SolidBrush(Color.Black), IsHorizontal = false, IsVertical = true, Name = Math.Round(val.Value, 6).ToString(), Num = "M" + (linesList.Count + 1).ToString(), Freq_Mhz = val.Value, level_dBm = level_dBm.Value, LabelLeft = 5, freqMiddle_MHz = freqMiddle_MHz.Value, LabelTop = -45 });
                     }
                     if (emit.ProtocolsLinkedWithEmittings.MarkerIndex != 0)
                     {
                         var val = (emit.ProtocolsLinkedWithEmittings.SpectrumStartFreq_MHz * 1000000 + emit.ProtocolsLinkedWithEmittings.SpectrumSteps_kHz * 1000 * emit.ProtocolsLinkedWithEmittings.MarkerIndex) / 1000000;
-                        linesList.Add(new ChartLine() { Point = new PointF { X = (float)val, Y = 0 }, LineColor = new SolidBrush(Color.DarkRed), IsHorizontal = false, IsVertical = true, Name = Math.Round(val.Value, 6).ToString(), LabelLeft = 5, LabelTop = -35 });
+                        level_dBm = GetLeveldBm(points.ToArray(), val);
+                        linesList.Add(new ChartLine() { Point = new PointF { X = (float)val, Y = 0 }, LineColor = new SolidBrush(Color.Black), IsHorizontal = false, IsVertical = true, Name = Math.Round(val.Value, 6).ToString(), Num = "M" + (linesList.Count+1).ToString(), Freq_Mhz = val.Value, level_dBm = level_dBm.Value, LabelLeft = 5, freqMiddle_MHz = freqMiddle_MHz.Value, LabelTop = -35 });
                     }
                 }
             }
@@ -136,73 +174,56 @@ namespace XICSM.ICSControlClient.ViewModels.Reports
             return result;
         }
 
+        private PointF DeNormalizePoint(PointF pt, double Width, double Height, ChartOption _option)
+        {
+            PointF result = new PointF()
+            {
+                X = (float)(pt.X * (_option.XMax - _option.XMin) / Width) + _option.XMin,
+                Y = (float)(((Height - pt.Y) * (_option.YMax - _option.YMin) + _option.YMin * Height) / Height)
+            };
+            return result;
+        }
+
         public void CreateBitmapSpectrogram(DataSynchronizationProcessProtocolsViewModel emit, Bitmap bm,  int ActualWidth, int ActualHeight)
         {
+            var deltaY = -50;
             var _option = GetChartOption(emit);
             var Width = ActualWidth;
             var Height = ActualHeight;
-            var cnt = 30;
+            var cnt = 40;
             var pt = new PointF();
             float dx, dy;
             using (Graphics gr = Graphics.FromImage(bm))
             {
-                gr.Clear(Color.WhiteSmoke);
+                var linesSignal = new List<float>();
+                foreach (var points in _option.PointsArray)
+                {
+                    for (int i = 0; i < points.Points.Length; i++)
+                    {
+                        linesSignal.Add(points.Points[i].X);
+                    }
+                }
+                linesSignal.Sort();
+                var startFreq = linesSignal[0];
+                var stopFreq = linesSignal[linesSignal.Count - 1];
+                _option.XMin = startFreq;
+                _option.XMax = stopFreq;
+
+                var XMin = NormalizePoint(new PointF(_option.XMin, 0), Width, Height, _option).X;
+                var XMax = NormalizePoint(new PointF(_option.XMax, 0), Width, Height, _option).X;
+
+                gr.Clear(Color.White);
                 gr.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-                var stringFont = new Font("Arial", 8);
+                var stringFont = new Font("Times New Roman", 8);
                 Height = Height - cnt;
-                var chartRect = new Rectangle() { Size = new Size(Width - cnt - 1, Height), X = cnt, Y = 0, Location = new Point(cnt, 0) };
+                var chartRect = new Rectangle() { Size = new Size((int)XMax, Height), X = cnt, Y = -deltaY, Location = new Point(cnt, -deltaY) };
                 gr.DrawRectangle(new Pen(Color.Black, 1), chartRect);
+              
                 // Create vertical gridlines:
 
                 var stepX = (float)(_option.XTick / _option.XInnerTickCount);
 
-                List<float> XVal = new List<float>();
-
-                foreach (var points in _option.PointsArray)
-                {
-                    var line = new List<PointF>();
-                    for (int i = 0; i < points.Points.Length; i++)
-                    {
-                        var point = NormalizePoint(points.Points[i], Width, Height, _option);
-                        XVal.Add(points.Points[i].X);
-                    }
-
-                }
-
-                var minX = XVal.Min();
-                var maxX = XVal.Max();
-
-                var deltaXMin = minX - _option.XMin;
-                var deltaXMax = _option.XMax - maxX;
-                var minVal = Math.Min(deltaXMin, deltaXMax);
-                if (deltaXMin < 0)
-                {
-                    _option.XMin = _option.XMin + deltaXMin;
-                }
-                if (deltaXMax < 0)
-                {
-                    _option.XMax = _option.XMax - deltaXMax;
-                }
-
-                //if (stepX > minVal)
-                //{
-                //_option.XMax = _option.XMax + 3 *stepX;
-                //}
-
-
-                for (dx = _option.XMin + stepX; dx < _option.XMax; dx += stepX)
-                {
-                    var X1 = NormalizePoint(new PointF(dx, _option.YMin), Width, Height, _option).X;
-                    var Y1 = NormalizePoint(new PointF(dx, _option.YMin), Width, Height, _option).Y;
-                    var X2 = NormalizePoint(new PointF(dx, _option.YMax), Width, Height, _option).X;
-                    var Y2 = NormalizePoint(new PointF(dx, _option.YMax), Width, Height, _option).Y;
-                    using (Pen thick_pen = new Pen(Color.Gray, 0.5f))
-                    {
-                        thick_pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
-                        gr.DrawLine(thick_pen, X1 + cnt, Y1, X2 + cnt, Y2);
-                    }
-                }
-                for (dx = _option.XMin + _option.XTick; dx < _option.XMax; dx += _option.XTick)
+                for (dx = _option.XMin + stepX*3; dx < _option.XMax; dx += stepX*3)
                 {
                     var X1 = NormalizePoint(new PointF(dx, _option.YMin), Width, Height, _option).X;
                     var Y1 = NormalizePoint(new PointF(dx, _option.YMin), Width, Height, _option).Y;
@@ -211,7 +232,7 @@ namespace XICSM.ICSControlClient.ViewModels.Reports
                     using (Pen thick_pen = new Pen(Color.Gray, 0.5f))
                     {
                         thick_pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
-                        gr.DrawLine(thick_pen, X1 + cnt, Y1, X2 + cnt, Y2);
+                        gr.DrawLine(thick_pen, X1 + cnt, Y1- deltaY, X2 + cnt, Y2- deltaY);
                     }
                 }
 
@@ -226,8 +247,8 @@ namespace XICSM.ICSControlClient.ViewModels.Reports
                     var Y2 = NormalizePoint(new PointF(_option.XMax, dy), Width, Height, _option).Y;
                     using (Pen thick_pen = new Pen(Color.Gray, 0.5f))
                     {
-                        thick_pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
-                        gr.DrawLine(thick_pen, X1 + cnt, Y1, X2 + cnt, Y2);
+                        thick_pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
+                        gr.DrawLine(thick_pen, X1 + cnt, Y1 - deltaY, X2 + cnt, Y2 - deltaY);
                     }
                 }
 
@@ -240,34 +261,34 @@ namespace XICSM.ICSControlClient.ViewModels.Reports
                     using (Pen thick_pen = new Pen(Color.Gray, 0.5f))
                     {
                         thick_pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
-                        gr.DrawLine(thick_pen, X1 + cnt, Y1, X2 + cnt, Y2);
+                        gr.DrawLine(thick_pen, X1 + cnt, Y1 - deltaY, X2 + cnt, Y2 - deltaY);
                     }
                 }
 
 
 
                 // Create x-axis tick marks:
-                for (dx = _option.XMin; LessOrEqual(dx, _option.XMax); dx += _option.XTick)
+                for (dx = _option.XMin; LessOrEqual(dx, _option.XMax); dx += stepX*3/*_option.XTick*/)
                 {
                     pt = NormalizePoint(new PointF(dx, _option.YMin), Width, Height, _option);
                     using (Pen thick_pen = new Pen(Color.Black, 0.5f))
                     {
                         thick_pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Solid;
-                        gr.DrawLine(thick_pen, pt.X + cnt, pt.Y + 5, pt.X + cnt, pt.Y - 5);
+                        gr.DrawLine(thick_pen, pt.X + cnt, pt.Y + 5 - deltaY, pt.X + cnt, pt.Y - 5 - deltaY);
                     }
 
 
                     if (dx == _option.XMin)
                     {
-                        gr.DrawString(dx.ToString(), stringFont, Brushes.Black, new PointF(pt.X + cnt - 15, pt.Y+5));
+                        gr.DrawString(dx.ToString(), stringFont, Brushes.Black, new PointF(pt.X + cnt - 15, pt.Y+5 - deltaY));
                     }
-                    else if (LessOrEqual((dx + _option.XTick), _option.XMax))
+                    else if (LessOrEqual((dx + stepX*3/*_option.XTick*/), _option.XMax))
                     {
-                        gr.DrawString(dx.ToString(), stringFont, Brushes.Black, new PointF(pt.X + cnt - 15, pt.Y + 5));
+                        gr.DrawString(dx.ToString(), stringFont, Brushes.Black, new PointF(pt.X + cnt - 15, pt.Y + 5 - deltaY));
                     }
                     else
                     {
-                        gr.DrawString(dx.ToString(), stringFont, Brushes.Black, new PointF(pt.X + cnt - 15, pt.Y + 5));
+                        gr.DrawString(dx.ToString(), stringFont, Brushes.Black, new PointF(pt.X + cnt - 15, pt.Y + 5 - deltaY));
                     }
 
                 }
@@ -275,30 +296,28 @@ namespace XICSM.ICSControlClient.ViewModels.Reports
 
 
                 // Create y-axis tick marks:
-                for (dy = _option.YMin; LessOrEqual(dy, _option.YMax); dy += _option.YTick)
+                for (dy = _option.YMin; LessOrEqual(dy, _option.YMax); dy += stepY/*_option.YTick*/)
                 {
                     pt = NormalizePoint(new PointF(_option.XMin, dy), Width, Height, _option);
                     using (Pen thick_pen = new Pen(Color.Black, 0.5f))
                     {
                         thick_pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Solid;
-                        gr.DrawLine(thick_pen, pt.X + cnt - 5, pt.Y, pt.X + cnt + 5, pt.Y);
+                        gr.DrawLine(thick_pen, pt.X + cnt - 5, pt.Y - deltaY, pt.X + cnt + 5, pt.Y - deltaY);
                     }
 
                     if (dy == _option.YMin)
                     {
-                        gr.DrawString(dy.ToString(), stringFont, Brushes.Black, new PointF(pt.X, pt.Y - 5));
+                        gr.DrawString(dy.ToString(), stringFont, Brushes.Black, new PointF(pt.X+10, pt.Y - 8 - deltaY));
                     }
-                    else if (LessOrEqual((dy + _option.YTick), _option.YMax))
+                    else if (LessOrEqual((dy + stepY/*_option.YTick*/), _option.YMax))
                     {
-                        gr.DrawString(dy.ToString(), stringFont, Brushes.Black, new PointF(pt.X, pt.Y));
+                        gr.DrawString(dy.ToString(), stringFont, Brushes.Black, new PointF(pt.X + 10, pt.Y - deltaY));
                     }
                     else
                     {
-                        gr.DrawString(dy.ToString(), stringFont, Brushes.Black, new PointF(pt.X, pt.Y + 5));
+                        gr.DrawString(dy.ToString(), stringFont, Brushes.Black, new PointF(pt.X + 10, pt.Y + 8 - deltaY));
                     }
                 }
-
-
 
                 foreach (var points in _option.PointsArray)
                 {
@@ -307,6 +326,7 @@ namespace XICSM.ICSControlClient.ViewModels.Reports
                     {
                         var point = NormalizePoint(points.Points[i], Width, Height, _option);
                         point.X = point.X + cnt;
+                        point.Y = point.Y - deltaY;
                         line.Add(point);
                     }
                     using (Pen thick_pen = new Pen(points.LineColor, 1))
@@ -314,6 +334,31 @@ namespace XICSM.ICSControlClient.ViewModels.Reports
                         gr.DrawLines(thick_pen, line.ToArray());
                     }
                 }
+
+                double deltaF = -1;
+                var linesSignalM = new List<double>();
+                int NumLine = 1;
+                foreach (var lines in _option.LinesArray)
+                {
+                    gr.DrawString($"{lines.Num}: {lines.Name} МГц", stringFont, lines.LineColor, NumLine * (Width / 4) - 200, 10);
+                    gr.DrawString($"{Math.Round(lines.level_dBm, 6).ToString()} дБм", stringFont, lines.LineColor, NumLine * (Width / 4) - 200, 30);
+                    linesSignalM.Add(lines.Freq_Mhz);
+                    NumLine++;
+                }
+                linesSignalM.Sort();
+                if (linesSignalM.Count>0)
+                {
+                    deltaF = linesSignalM[linesSignalM.Count - 1] - linesSignalM[0];
+                }
+
+                var m1 = _option.LinesArray.ToList().Find(x => x.Num == "M1");
+
+                if (m1!=null)
+                {
+                    gr.DrawString($"△F: {Math.Round(deltaF *1000,6)} КГц", stringFont, m1.LineColor, NumLine * (Width / 4) - 200, 10);
+                    gr.DrawString($"Span: {Math.Round((stopFreq - startFreq) * 1000, 6).ToString()} КГц", stringFont, m1.LineColor, NumLine * (Width / 4) - 200, 30);
+                }
+
 
 
                 foreach (var lines in _option.LinesArray)
@@ -323,18 +368,18 @@ namespace XICSM.ICSControlClient.ViewModels.Reports
                         var line = new List<PointF>();
 
                         var point = this.NormalizePoint(lines.Point, Width, Height, _option);
-                        line.Add(new PointF() { X = 0, Y = point.Y });
-                        line.Add(new PointF() { X = Width, Y = point.Y });
+                        line.Add(new PointF() { X = 0, Y = point.Y - deltaY });
+                        line.Add(new PointF() { X = Width, Y = point.Y - deltaY });
 
-                        using (Pen thick_pen = new Pen(lines.LineColor, 1))
+                        using (Pen thick_pen = new Pen(lines.LineColor, 3))
                         {
                             gr.DrawLines(thick_pen, line.ToArray());
                         }
 
 
-                        if (!string.IsNullOrEmpty(lines.Name))
+                        if (!string.IsNullOrEmpty(lines.Num))
                         {
-                            gr.DrawString(lines.Name, stringFont, lines.LineColor, new PointF((float)(lines.LabelLeft), (float)(point.Y + lines.LabelTop)));
+                            gr.DrawString(lines.Num, stringFont, lines.LineColor, new PointF((float)(lines.LabelLeft), 10- deltaY));
                         }
 
                     }
@@ -343,24 +388,24 @@ namespace XICSM.ICSControlClient.ViewModels.Reports
                         var line = new List<PointF>();
 
                         var point = this.NormalizePoint(lines.Point, Width, Height, _option);
-                        line.Add(new PointF() { X = point.X + cnt, Y = 0 });
-                        line.Add(new PointF() { X = point.X + cnt, Y = Height });
+                        line.Add(new PointF() { X = point.X + cnt, Y = -deltaY });
+                        line.Add(new PointF() { X = point.X + cnt, Y = Height - deltaY });
 
-                        using (Pen thick_pen = new Pen(lines.LineColor, 1))
+                        using (Pen thick_pen = new Pen(lines.LineColor, 3))
                         {
                             gr.DrawLines(thick_pen, line.ToArray());
                         }
 
-                        if (!string.IsNullOrEmpty(lines.Name))
+                        if (!string.IsNullOrEmpty(lines.Num))
                         {
-                            gr.DrawString(lines.Name, stringFont, lines.LineColor, new PointF((float)(point.X + cnt + lines.LabelLeft), (float)(Height + lines.LabelTop)));
+                            gr.DrawString(lines.Num, stringFont, lines.LineColor, new PointF((float)(point.X + cnt + lines.LabelLeft), 10- deltaY));
                         }
                     }
                 }
-                System.Drawing.StringFormat drawFormat = new System.Drawing.StringFormat();
-                drawFormat.FormatFlags = StringFormatFlags.DirectionVertical;
-                gr.DrawString(_option.XLabel, stringFont, Brushes.Black, new PointF((float)Width / 2, Height + 15));
-                gr.DrawString(_option.YLabel, stringFont, Brushes.Black, new PointF(2, ((float)Height / 2)-10), drawFormat);
+                //System.Drawing.StringFormat drawFormat = new System.Drawing.StringFormat();
+                //drawFormat.FormatFlags = StringFormatFlags.DirectionVertical;
+                gr.DrawString(_option.XLabel, stringFont, Brushes.Black, new PointF((float)Width / 2, Height - deltaY + 25));
+                gr.DrawString(_option.YLabel, stringFont, Brushes.Black, new PointF(15, 10));
             }
         }
 

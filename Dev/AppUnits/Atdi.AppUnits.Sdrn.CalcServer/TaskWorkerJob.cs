@@ -71,7 +71,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 					// выполняем расчет
 					try
 					{
+						System.Diagnostics.Debug.WriteLine($"EXECUTED TASK: ResultID=#{state.ResultId}");
+						var timer = System.Diagnostics.Stopwatch.StartNew();
 						handler.Run();
+						timer.Stop();
+						System.Diagnostics.Debug.WriteLine($"EXECUTED TASK: {timer.Elapsed.TotalMilliseconds}ms/{timer.Elapsed.TotalSeconds}sec");
 					}
 					catch (Exception e)
 					{
@@ -166,7 +170,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 					c => c.TASK.StatusCode,
 					c => c.TASK.OwnerTaskId,
 					c => c.TASK.OwnerInstance,
-					c => c.TASK.PROJECT.Id,
+					c => c.TASK.CONTEXT.Id,
+					c => c.TASK.CONTEXT.PROJECT.Id,
 					c => c.TASK.TypeCode,
 					c => c.StatusCode,
 					c => c.CallerResultId,
@@ -186,7 +191,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 						TaskStatus = (CalcTaskStatusCode)reader.GetValue(c => c.TASK.StatusCode),
 						TaskOwnerTaskId = reader.GetValue(c => c.TASK.OwnerTaskId),
 						TaskOwnerInstance = reader.GetValue(c => c.TASK.OwnerInstance),
-						ProjectId = reader.GetValue(c => c.TASK.PROJECT.Id),
+						ContextId = reader.GetValue(c => c.TASK.CONTEXT.Id),
+						ProjectId = reader.GetValue(c => c.TASK.CONTEXT.PROJECT.Id),
 						TaskType = (CalcTaskType)reader.GetValue(c => c.TASK.TypeCode),
 						ResultStatus = (CalcResultStatusCode)reader.GetValue(c => c.StatusCode),
 						CallerResultId = reader.GetValue(c => c.CallerResultId),

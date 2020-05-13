@@ -1,0 +1,62 @@
+﻿CREATE TABLE CALC.CONTEXT_STATION_PATTERNS
+(
+  STATION_ID     NUMBER(15)                     NOT NULL,
+  ANTENNA_PLANE  NVARCHAR2(1)                   NOT NULL,
+  WAVE_PLANE     NVARCHAR2(1)                   NOT NULL,
+  LOSS_DB        BLOB                           NOT NULL,
+  ANGLE_DEG      BLOB                           NOT NULL
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE UNIQUE INDEX CALC.CONTEXT_STATION_PATTERNS_PK ON CALC.CONTEXT_STATION_PATTERNS
+(STATION_ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+ALTER TABLE CALC.CONTEXT_STATION_PATTERNS ADD (
+  CONSTRAINT CONTEXT_STATION_PATTERNS_PK
+ PRIMARY KEY
+ (STATION_ID)
+    USING INDEX 
+    TABLESPACE USERS
+    PCTFREE    10
+    INITRANS   2
+    MAXTRANS   255
+    STORAGE    (
+                INITIAL          64K
+                NEXT             1M
+                MINEXTENTS       1
+                MAXEXTENTS       UNLIMITED
+                PCTINCREASE      0
+               ));

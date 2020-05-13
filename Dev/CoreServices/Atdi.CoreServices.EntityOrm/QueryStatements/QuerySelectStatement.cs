@@ -15,8 +15,8 @@ using Atdi.DataModels;
 
 namespace Atdi.CoreServices.EntityOrm
 {
-    public class QuerySelectStatement : IQuerySelectStatement
-    {
+    public class QuerySelectStatement : IQuerySelectStatement, IQueryPagingStatement
+	{
         private readonly SelectQueryDescriptor _queryDescriptor;
 
         public QuerySelectStatement(IEntityOrm entityOrm, IEntityMetadata entityMetadata)
@@ -24,7 +24,7 @@ namespace Atdi.CoreServices.EntityOrm
             this._queryDescriptor = new SelectQueryDescriptor(entityOrm, entityMetadata);
         }
 
-        public SelectQueryDescriptor SelectDecriptor => this._queryDescriptor;
+        public SelectQueryDescriptor SelectDescriptor => this._queryDescriptor;
 
         public IQuerySelectStatement OnTop(int count)
         {
@@ -36,7 +36,7 @@ namespace Atdi.CoreServices.EntityOrm
             return this;
         }
 
-        public IQuerySelectStatement OrderByAsc(params string[] columns)
+        public IQueryPagingStatement OrderByAsc(params string[] columns)
         {
             if (columns == null)
             {
@@ -54,7 +54,7 @@ namespace Atdi.CoreServices.EntityOrm
             return this;
         }
 
-        public IQuerySelectStatement OrderByDesc(params string[] columns)
+        public IQueryPagingStatement OrderByDesc(params string[] columns)
         {
             if (columns == null)
             {
@@ -105,10 +105,47 @@ namespace Atdi.CoreServices.EntityOrm
             this._queryDescriptor.Distinct();
             return this;
         }
-    }
 
-    internal sealed class QuerySelectStatement<TModel> : QuerySelectStatement, IQuerySelectStatement<TModel>
-    {
+		public IQuerySelectStatement FetchRows(long count)
+		{
+			if (count < 0)
+			{
+				throw new ArgumentOutOfRangeException(nameof(count));
+			}
+			this._queryDescriptor.SetLimit(count, LimitValueType.Records);
+			return this;
+		}
+
+		public IQuerySelectStatement OffsetRows(long count)
+		{
+			if (count < -1)
+			{
+				throw new ArgumentOutOfRangeException(nameof(count));
+			}
+			this._queryDescriptor.SetOffsetRows(count);
+			return this;
+		}
+
+		public IQuerySelectStatement Paginate(long offsetRows, long fetchRows)
+		{
+			if (offsetRows < -1)
+			{
+				throw new ArgumentOutOfRangeException(nameof(offsetRows));
+			}
+			this._queryDescriptor.SetOffsetRows(offsetRows);
+
+			if (fetchRows < 0)
+			{
+				throw new ArgumentOutOfRangeException(nameof(fetchRows));
+			}
+			this._queryDescriptor.SetLimit(fetchRows, LimitValueType.Records);
+
+			return this;
+		}
+	}
+
+    internal sealed class QuerySelectStatement<TModel> : QuerySelectStatement, IQuerySelectStatement<TModel>, IQueryPagingStatement<TModel>
+	{
         public QuerySelectStatement(IEntityOrm entityOrm, IEntityMetadata entityMetadata) 
             : base(entityOrm, entityMetadata)
         {
@@ -120,7 +157,19 @@ namespace Atdi.CoreServices.EntityOrm
             return this;
         }
 
-        IQuerySelectStatement<TModel> IQuerySelectStatement<TModel>.OnPercentTop(int percent)
+		IQuerySelectStatement<TModel> IQuerySelectStatement<TModel>.FetchRows(long count)
+		{
+			this.FetchRows(count);
+			return this;
+		}
+
+		IQuerySelectStatement<TModel> IQueryPagingStatement<TModel>.OffsetRows(long count)
+		{
+			this.OffsetRows(count);
+			return this;
+		}
+
+		IQuerySelectStatement<TModel> IQuerySelectStatement<TModel>.OnPercentTop(int percent)
         {
             this.OnPercentTop(percent);
             return this;
@@ -132,7 +181,7 @@ namespace Atdi.CoreServices.EntityOrm
             return this;
         }
 
-        IQuerySelectStatement<TModel> IQuerySelectStatement<TModel>.OrderByAsc(params Expression<Func<TModel, object>>[] columnsExpressions)
+        IQueryPagingStatement<TModel> IQuerySelectStatement<TModel>.OrderByAsc(params Expression<Func<TModel, object>>[] columnsExpressions)
         {
             if (columnsExpressions == null || columnsExpressions.Length == 0)
             {
@@ -148,7 +197,7 @@ namespace Atdi.CoreServices.EntityOrm
             return this;
         }
 
-        IQuerySelectStatement<TModel> IQuerySelectStatement<TModel>.OrderByDesc(params Expression<Func<TModel, object>>[] columnsExpressions)
+        IQueryPagingStatement<TModel> IQuerySelectStatement<TModel>.OrderByDesc(params Expression<Func<TModel, object>>[] columnsExpressions)
         {
             
             if (columnsExpressions == null || columnsExpressions.Length == 0)
@@ -165,7 +214,13 @@ namespace Atdi.CoreServices.EntityOrm
             return this;
         }
 
-        IQuerySelectStatement<TModel> IQuerySelectStatement<TModel>.Select(params Expression<Func<TModel, object>>[] columnsExpressions)
+		IQuerySelectStatement<TModel> IQueryPagingStatement<TModel>.Paginate(long offsetRows, long fetchRows)
+		{
+			this.Paginate(offsetRows, fetchRows);
+			return this;
+		}
+
+		IQuerySelectStatement<TModel> IQuerySelectStatement<TModel>.Select(params Expression<Func<TModel, object>>[] columnsExpressions)
         {
             if (columnsExpressions == null || columnsExpressions.Length == 0)
             {
