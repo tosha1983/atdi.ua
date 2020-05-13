@@ -41,7 +41,9 @@ namespace XICSM.SdrnCalcServerClient
             mainMenu.SetLocation();
             mainMenu.InsertItem(PluginMetadata.Menu.MainTool, PluginMetadata.Menu.Tools.RunProjectManagerCommand, _menuCommands.OnRunProjectManagerCommand);
             mainMenu.InsertItem(PluginMetadata.Menu.MainTool, PluginMetadata.Menu.Tools.About, _menuCommands.OnAboutCommand);
-        }
+
+            mainMenu.InsertItem(PluginMetadata.Menu.MainTool, "Entity Orm Test", _menuCommands.OnRunEntityOrmTestCommand);
+		}
 
         public bool OtherMessage(string message, object inParam, ref object outParam)
         {

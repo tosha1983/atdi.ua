@@ -57,6 +57,8 @@
   <ItemGroup>
     <Compile Include="AppComponent.cs" />
     <Compile Include="AppComponentConfig.cs" />
+    <Compile Include="Core\DataAdapter.cs" />
+    <Compile Include="Core\DataLayerBase.cs" />
     <Compile Include="Core\ViewCaptionAttribute.cs" />
     <Compile Include="Core\ViewStarter.cs" />
     <Compile Include="Core\ViewXamlAttribute.cs" />
@@ -66,6 +68,8 @@
     <Compile Include="Core\ViewForm.Designer.cs">
       <DependentUpon>ViewForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="DataLayers\InfocenterDataLayer.cs" />
+    <Compile Include="DataLayers\CalcServerDataLayer.cs" />
     <Compile Include="Environment\Extentions.cs" />
     <Compile Include="Environment\Wpf\WpfColumnAttribute.cs" />
     <Compile Include="Environment\Wpf\WpfCommand.cs" />
@@ -89,6 +93,8 @@
     <Compile Include="Metadata\SysLogs.cs" />
     <Compile Include="Models\DataApadters\Mappers.cs" />
     <Compile Include="Models\DataApadters\ProjectDataAdapter.cs" />
+    <Compile Include="ViewModels\EntityOrmTest\Adapters\ProjectDataAdapter.cs" />
+    <Compile Include="ViewModels\EntityOrmTest\Models\ProjectModel.cs" />
     <Compile Include="ViewModels\ProjectManager\Models\ClientContextModel.cs" />
     <Compile Include="ViewModels\ProjectManager\Models\ProjectMapModel.cs" />
     <Compile Include="ViewModels\ProjectManager\Models\ProjectModel.cs" />
@@ -106,6 +112,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\ProjectManager\View.cs" />
+    <Compile Include="ViewModels\EntityOrmTest\View.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Api\Atdi.Api.EntityOrm.WebClient\Atdi.Api.EntityOrm.WebClient.csproj">

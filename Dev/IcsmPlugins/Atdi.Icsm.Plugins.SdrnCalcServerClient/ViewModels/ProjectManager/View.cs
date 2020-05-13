@@ -39,9 +39,9 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
 
         public ProjectModel[] Projects { get; set; }
 
-        public View(ViewStarter _starter, ILogger logger)
+        public View(ViewStarter starter, ILogger logger)
         {
-	        this._starter = _starter;
+	        this._starter = starter;
 	        this._logger = logger;
 
 	        this.ProjectAddCommand = new WpfCommand(this.OnProjectAddCommand);

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Atdi.Platform.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,17 @@ using System.Threading.Tasks;
 
 namespace Atdi.Icsm.Plugins.SdrnCalcServerClient
 {
-    public static class PluginMetadata
+	internal static class Contexts
+	{
+		public static readonly EventContext DataAdapter = "DataAdapter";
+	}
+
+	internal static class Categories
+	{
+		public static readonly EventCategory Refresh = "Refresh";
+	}
+
+	public static class PluginMetadata
     {
         public static readonly string Title = "ICS Calc Server Client";
         public static readonly string Ident = "SdrnCalcServerClient";
@@ -29,7 +40,9 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient
             }
         }
 
-        public static class ContextMenu
+        
+
+		public static class ContextMenu
         {
             //public static class Tour
             //{

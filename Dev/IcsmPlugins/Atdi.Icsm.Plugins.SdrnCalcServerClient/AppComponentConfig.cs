@@ -4,15 +4,32 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Atdi.DataModels.Api.EntityOrm.WebClient;
 
 namespace Atdi.Icsm.Plugins.SdrnCalcServerClient
 {
 	public class AppComponentConfig
 	{
-		[ComponentConfigProperty("EntityOrmClient.Endpoint.BaseAddress")]
-		public string OrmEndpointBaseAddress { get; set; }
+		[ComponentConfigProperty("CalcServer.EntityOrm.Endpoint.BaseAddress")]
+		public string CalcServerEntityOrmEndpointBaseAddress { get; set; }
 
-		[ComponentConfigProperty("EntityOrmClient.Endpoint.ApiUri")]
-		public string OrmEndpointApiUri { get; set; }
+		[ComponentConfigProperty("CalcServer.EntityOrm.Endpoint.ApiUri")]
+		public string CalcServerEntityOrmEndpointApiUri { get; set; }
+
+		[ComponentConfigProperty("CalcServer.EntityOrm.DataContext")]
+		public string CalcServerEntityOrmDataContext { get; set; }
+
+
+		[ComponentConfigProperty("Infocenter.EntityOrm.Endpoint.BaseAddress")]
+		public string InfocenterEntityOrmEndpointBaseAddress { get; set; }
+
+		[ComponentConfigProperty("Infocenter.EntityOrm.Endpoint.ApiUri")]
+		public string InfocenterEntityOrmEndpointApiUri { get; set; }
+
+		[ComponentConfigProperty("Infocenter.EntityOrm.DataContext")]
+		public string InfocenterEntityOrmDataContext { get; set; }
+
+
+
 	}
 }

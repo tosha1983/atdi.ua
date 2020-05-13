@@ -46,5 +46,15 @@ namespace Atdi.Api.EntityOrm.WebClient
 		{
 			throw new NotImplementedException();
 		}
+
+		public IDataReader GetReader(WebApiHttpResponse response)
+		{
+			throw new NotImplementedException();
+		}
+
+		public IDataReader<TEntity> GetReader<TEntity>(WebApiHttpResponse response)
+		{
+			throw new NotImplementedException();
+		}
 	}
 }

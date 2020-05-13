@@ -29,6 +29,8 @@ namespace Atdi.Api.EntityOrm.WebClient
 
 		public long Count => _count;
 
+		public long Position => _currentIndex;
+
 		public TValue GetValue<TValue>(string path)
 		{
 			if (_fields.TryGetValue(path, out var field))
@@ -151,6 +153,20 @@ namespace Atdi.Api.EntityOrm.WebClient
 			throw new InvalidOperationException($"Field with path '{path}' not found");
 		}
 
+		public bool MoveTo(int index)
+		{
+			var records = _response.Records;
+
+			if (index >= 0 && index < records.Length)
+			{
+				_currentIndex = index;
+				_currentRecord = records[_currentIndex];
+				return true;
+			}
+
+			return false;
+		}
+
 		public bool Read()
 		{
 			if (_currentIndex  == _maxIndex)
@@ -175,6 +191,8 @@ namespace Atdi.Api.EntityOrm.WebClient
 
 		public long Count => _reader.Count;
 
+		public long Position => _reader.Position;
+
 		public TValue GetValue<TValue>(System.Linq.Expressions.Expression<Func<TEntity, TValue>> pathExpression)
 		{
 			return _reader.GetValue<TValue>(pathExpression.Body.GetMemberName());
@@ -193,6 +211,11 @@ namespace Atdi.Api.EntityOrm.WebClient
 		public bool IsNull<TValue>(System.Linq.Expressions.Expression<Func<TEntity, TValue>> pathExpression)
 		{
 			return _reader.IsNull(pathExpression.Body.GetMemberName());
+		}
+
+		public bool MoveTo(int index)
+		{
+			return _reader.MoveTo(index);
 		}
 
 		public bool Read()

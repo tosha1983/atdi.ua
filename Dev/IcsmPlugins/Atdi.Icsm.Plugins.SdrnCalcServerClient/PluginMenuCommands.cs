@@ -45,5 +45,18 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient
                 MessageBox.Show(e.ToString());
             }
         }
-    }
+
+        public void OnRunEntityOrmTestCommand()
+        {
+	        try
+	        {
+		        _viewStarter.Start<VM.EntityOrmTest.View>(isModal: true);
+	        }
+	        catch (Exception e)
+	        {
+		        _logger.Exception((EventContext)"PluginMenuCommands", (EventCategory)"OnRunEntityOrmTestCommand", e);
+		        MessageBox.Show(e.ToString());
+	        }
+        }
+	}
 }

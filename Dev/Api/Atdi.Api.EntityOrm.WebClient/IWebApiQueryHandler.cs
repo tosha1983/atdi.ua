@@ -17,6 +17,11 @@ namespace Atdi.Api.EntityOrm.WebClient
 		TResult Handle<TResult>(WebApiHttpResponse response, Func<IDataReader, TResult> handler);
 
 		TResult Handle<TEntity, TResult>(WebApiHttpResponse response, Func<IDataReader<TEntity>, TResult> handler);
+
+		IDataReader GetReader(WebApiHttpResponse response);
+
+		IDataReader<TEntity> GetReader<TEntity>(WebApiHttpResponse response);
+
 	}
 
 	internal interface IWebApiRequestCreator

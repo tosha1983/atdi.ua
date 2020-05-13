@@ -51,5 +51,15 @@ namespace Atdi.Api.EntityOrm.WebClient
 			var field = result.GetType().GetField("PrimaryKey");
 			return (TResult)field.GetValue(result);
 		}
+
+		public IDataReader GetReader(WebApiHttpResponse response)
+		{
+			throw new NotImplementedException();
+		}
+
+		public IDataReader<TEntity> GetReader<TEntity>(WebApiHttpResponse response)
+		{
+			throw new NotImplementedException();
+		}
 	}
 }

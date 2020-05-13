@@ -87,6 +87,17 @@ namespace Atdi.Api.EntityOrm.WebClient
 
 			return result;
 		}
-		
+
+		public IDataReader ExecuteReader(IWebApiQuery webQuery)
+		{
+			var response = this.PostQuery(webQuery, out var queryHandler);
+			return queryHandler.GetReader(response);
+		}
+
+		public IDataReader<TEntity> ExecuteReader<TEntity>(IWebApiQuery<TEntity> webQuery)
+		{
+			var response = this.PostQuery(webQuery, out var queryHandler);
+			return queryHandler.GetReader<TEntity>(response);
+		}
 	}
 }
