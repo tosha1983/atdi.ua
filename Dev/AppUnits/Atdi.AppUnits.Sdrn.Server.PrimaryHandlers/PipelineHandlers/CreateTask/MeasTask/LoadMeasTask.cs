@@ -173,7 +173,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
             builderMeasTaskSignaling.Select(c => c.CheckLevelChannel);
             builderMeasTaskSignaling.Select(c => c.MinPointForDetailBW);
             builderMeasTaskSignaling.Select(c => c.CollectEmissionInstrumentalEstimation);
-            
+            builderMeasTaskSignaling.Select(c => c.IsUseRefSpectrum);
 
 
             builderMeasTaskSignaling.Where(c => c.MEAS_TASK.Id, ConditionOperator.Equal, id);
@@ -200,6 +200,8 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
                     measTaskSignaling.SignalingMeasTaskParameters.SignalizationNCount = readerMeasTaskSignaling.GetValue(c => c.SignalizationNCount);
                     measTaskSignaling.SignalingMeasTaskParameters.AnalyzeByChannel = readerMeasTaskSignaling.GetValue(c => c.AnalyzeByChannel);
                     measTaskSignaling.SignalingMeasTaskParameters.CollectEmissionInstrumentalEstimation = readerMeasTaskSignaling.GetValue(c => c.CollectEmissionInstrumentalEstimation);
+                    measTaskSignaling.SignalingMeasTaskParameters.IsUseRefSpectrum = readerMeasTaskSignaling.GetValue(c => c.IsUseRefSpectrum);
+                    
                     measTaskSignaling.SignalingMeasTaskParameters.AnalyzeSysInfoEmission = readerMeasTaskSignaling.GetValue(c => c.AnalyzeSysInfoEmission);
                     measTaskSignaling.SignalingMeasTaskParameters.DetailedMeasurementsBWEmission = readerMeasTaskSignaling.GetValue(c => c.DetailedMeasurementsBWEmission);
                     measTaskSignaling.SignalingMeasTaskParameters.Standard = readerMeasTaskSignaling.GetValue(c => c.Standard);
