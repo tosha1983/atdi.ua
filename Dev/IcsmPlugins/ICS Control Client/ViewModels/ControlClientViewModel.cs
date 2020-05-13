@@ -1229,11 +1229,13 @@ namespace XICSM.ICSControlClient.ViewModels
                 }
                 else if (this._currentShortMeasTask.TypeMeasurements == SDR.MeasurementType.SpectrumOccupation)
                 {
-                    _measResult = _dataStore.GetMeasurementResultByResId(this.CurrentMeasurementResult.MeasSdrResultsId);
+                    if (this.CurrentMeasurementResult != null)
+                        _measResult = _dataStore.GetMeasurementResultByResId(this.CurrentMeasurementResult.MeasSdrResultsId);
                 }
                 else if (this._currentShortMeasTask.TypeMeasurements == SDR.MeasurementType.Level)
                 {
-                    _measResult = _dataStore.GetMeasurementResultByResId(this.CurrentMeasurementResult.MeasSdrResultsId);
+                    if (this.CurrentMeasurementResult != null)
+                        _measResult = _dataStore.GetMeasurementResultByResId(this.CurrentMeasurementResult.MeasSdrResultsId);
                 }
 
                 var form = new FM.GraphicForm(this._currentShortMeasTask.TypeMeasurements, _measResult, _generalResult, 1);
@@ -1451,6 +1453,11 @@ namespace XICSM.ICSControlClient.ViewModels
 
                 var sdrMeasResults = SVC.SdrnsControllerWcfClient.GetMeasResultsHeaderByTaskId(this.CurrentShortMeasTask.Id);
                 this.MeasResults.Source = sdrMeasResults.OrderByDescending(c => c.Id.MeasSdrResultsId).ToArray();
+
+                ResGetGraphicVisibility = Visibility.Hidden;
+                ResGetCSVVisibility = Visibility.Hidden;
+
+                MessageBox.Show(Properties.Resources.Message_ProcessStartedSuccessfully);
             }
         }
 
