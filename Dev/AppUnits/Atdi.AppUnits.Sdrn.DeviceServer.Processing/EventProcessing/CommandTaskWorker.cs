@@ -267,7 +267,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                         // обновление TaskParameters в БД
                                         this._repositoryTaskParametersByString.Update(tskParam);
 
-                                        this._logger.Info(Contexts.CommandTaskWorker, Categories.Processing, $"New command '{findCommand.DeviceCommand.Command}' for '{findCommand.DeviceCommand.CommandId}' accepted in work");
+                                        this._logger.Info(Contexts.CommandTaskWorker, Categories.Processing, $"New command '{findCommand.DeviceCommand.Command}' for '{findCommand.DeviceCommand.CustTxt1}' accepted in work");
                                     }
 
                                     context.Task.taskParameters = tskParam;
