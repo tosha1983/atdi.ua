@@ -32,6 +32,7 @@ create table [ICSC].[MEAS_TASK_SIGNAL] (
 	[MIN_POINT_DETAIL_BW]	[int] null,
 	[CHECK_LEVEL_CHANNEL]	[bit] null,
 	[COLLECT_EMISSION_INSTRUM_ESTIM] [bit] null,
+	[IS_USE_REF_SPECTRUM]  [bit] null,
 	[MEAS_TASK_ID]	[bigint] null,
 	constraint [PK_MEAS_TASK_SIGNAL] primary key clustered ([ID]) on [PRIMARY]  
 ) on [PRIMARY]

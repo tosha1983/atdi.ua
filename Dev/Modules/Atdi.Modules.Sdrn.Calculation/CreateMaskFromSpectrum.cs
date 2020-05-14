@@ -282,6 +282,14 @@ namespace Atdi.Modules.Sdrn.Calculation
 
             resultMask.Bandwidth_kHz = 1000 * (resultMask.MaskFrequencies_MHz[numberOfMask_pt - 1] - resultMask.MaskFrequencies_MHz[0]);
 
+            //final transformations
+            resultMask.MaskFrequencies_MHz[1] += 0.000001;
+            resultMask.MaskFrequencies_MHz[numberOfMask_pt - 2] -= 0.000001;
+            for (int i = 0; i < resultMask.MaskLevels_dB.Length; i++)
+            {
+                resultMask.MaskLevels_dB[i] -= maxLevel_dBm;
+            }
+
             return resultMask;
 
         }
