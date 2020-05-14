@@ -249,6 +249,27 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                 var tskParam = this._repositoryTaskParametersByString.LoadObject(devCommand.DeviceCommand.CustTxt1);
                                 if (tskParam != null)
                                 {
+                                    var findCommand = devCommandNotFoundTaskParameters.Find(x => x.DeviceCommand.CommandId == devCommand.DeviceCommand.CommandId && x.DeviceCommand.Command == devCommand.DeviceCommand.Command && x.DeviceCommand.CustTxt1 == devCommand.DeviceCommand.CustTxt1 && x.DeviceCommand.EquipmentTechId == devCommand.DeviceCommand.EquipmentTechId && x.DeviceCommand.SdrnServer == devCommand.DeviceCommand.SdrnServer && x.DeviceCommand.SensorName == devCommand.DeviceCommand.SensorName);
+                                    if (findCommand != null)
+                                    {
+                                        if (findCommand.DeviceCommand.Command == TypeMeasTask.RunMeasTask.ToString())
+                                        {
+                                            tskParam.status = StatusTask.A.ToString();
+                                        }
+                                        else if (findCommand.DeviceCommand.Command == TypeMeasTask.DelMeasTask.ToString())
+                                        {
+                                            tskParam.status = StatusTask.Z.ToString();
+                                        }
+                                        else if (findCommand.DeviceCommand.Command == TypeMeasTask.StopMeasTask.ToString())
+                                        {
+                                            tskParam.status = StatusTask.F.ToString();
+                                        }
+                                        // обновление TaskParameters в БД
+                                        this._repositoryTaskParametersByString.Update(tskParam);
+
+                                        this._logger.Info(Contexts.CommandTaskWorker, Categories.Processing, $"New command '{findCommand.DeviceCommand.Command}' for '{findCommand.DeviceCommand.CommandId}' accepted in work");
+                                    }
+
                                     context.Task.taskParameters = tskParam;
                                     if ((tskParam.status == StatusTask.A.ToString()) || (tskParam.status == StatusTask.F.ToString()) || (tskParam.status == StatusTask.Z.ToString()))
                                     {
