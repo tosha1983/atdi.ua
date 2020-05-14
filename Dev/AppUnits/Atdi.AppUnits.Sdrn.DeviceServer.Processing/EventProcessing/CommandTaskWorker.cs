@@ -159,19 +159,19 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
             for (int i = 0; i < loadData.Length; i++)
             {
                 var tskParam = loadData[i];
-                
+
                 context.Task.taskParameters = tskParam;
                 if ((tskParam.status == StatusTask.A.ToString()) || (tskParam.status == StatusTask.F.ToString()) || (tskParam.status == StatusTask.Z.ToString()))
                 {
                     if (tskParam.MeasurementType == MeasType.SpectrumOccupation)
                     {
                         var eventCommand = new CommandHandler<SOTask, SpectrumOccupationProcess>(this._logger, this._repositoryTaskParametersByString, this._config);
-                        var isSuccess = eventCommand.StartCommand(tskParam,  ref context.Process.contextSOTasks, action, ref context.Process.listDeferredTasks, ref listRunTask, loadData.Length);
+                        var isSuccess = eventCommand.StartCommand(tskParam, ref context.Process.contextSOTasks, action, ref context.Process.listDeferredTasks, ref listRunTask, loadData.Length);
                     }
                     else if (tskParam.MeasurementType == MeasType.Signaling)
                     {
                         var eventCommand = new CommandHandler<SignalizationTask, SignalizationProcess>(this._logger, this._repositoryTaskParametersByString, this._config);
-                        var isSuccess = eventCommand.StartCommand(tskParam,ref context.Process.contextSignalizationTasks, action, ref context.Process.listDeferredTasks, ref listRunTask, loadData.Length);
+                        var isSuccess = eventCommand.StartCommand(tskParam, ref context.Process.contextSignalizationTasks, action, ref context.Process.listDeferredTasks, ref listRunTask, loadData.Length);
                     }
                     else if (tskParam.MeasurementType == MeasType.BandwidthMeas)
                     {
@@ -219,18 +219,34 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
 
                 if (activeSensor != null)
                 {
+                    var devCommandNotFoundTaskParameters = new List<DeviceCommandCounter>();
                     while (true)
                     {
                         // приостановка потока на время DurationWaitingCheckNewTasks
                         System.Threading.Thread.Sleep(this._config.DurationWaitingCheckNewTasks);
                         // проверка признака поступления новых тасков в БД
-                        var deviceCommands = this._repositoryDeviceCommand.LoadAllObjects();
+                        var devCommands = this._repositoryDeviceCommand.LoadAllObjects();
+                        if ((devCommands != null) && (devCommands.Length > 0))
+                        {
+                            for (int i = 0; i < devCommands.Length; i++)
+                            {
+                                if ((devCommandNotFoundTaskParameters.Find(x => x.DeviceCommand.CommandId == devCommands[i].CommandId && x.DeviceCommand.Command == devCommands[i].Command && x.DeviceCommand.CustTxt1 == devCommands[i].CustTxt1 && x.DeviceCommand.EquipmentTechId == devCommands[i].EquipmentTechId && x.DeviceCommand.SdrnServer == devCommands[i].SdrnServer && x.DeviceCommand.SensorName == devCommands[i].SensorName)) == null)
+                                {
+                                    devCommandNotFoundTaskParameters.Add(new DeviceCommandCounter()
+                                    {
+                                        Counter = 0,
+                                        DeviceCommand = devCommands[i]
+                                    });
+                                }
+                            }
+                        }
+                        var deviceCommands = devCommandNotFoundTaskParameters.ToArray();
                         if ((deviceCommands != null) && (deviceCommands.Length > 0))
                         {
                             for (int i = 0; i < deviceCommands.Length; i++)
                             {
                                 var devCommand = deviceCommands[i];
-                                var tskParam = this._repositoryTaskParametersByString.LoadObject(devCommand.CustTxt1);
+                                var tskParam = this._repositoryTaskParametersByString.LoadObject(devCommand.DeviceCommand.CustTxt1);
                                 if (tskParam != null)
                                 {
                                     context.Task.taskParameters = tskParam;
@@ -267,6 +283,19 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                                     break;
                                                 }
                                             }
+                                        }
+                                        devCommandNotFoundTaskParameters.RemoveAll(x => x.DeviceCommand.CommandId == devCommand.DeviceCommand.CommandId && x.DeviceCommand.Command == devCommand.DeviceCommand.Command && x.DeviceCommand.CustTxt1 == devCommand.DeviceCommand.CustTxt1 && x.DeviceCommand.EquipmentTechId == devCommand.DeviceCommand.EquipmentTechId && x.DeviceCommand.SdrnServer == devCommand.DeviceCommand.SdrnServer && x.DeviceCommand.SensorName == devCommand.DeviceCommand.SensorName);
+                                    }
+                                }
+                                else
+                                {
+                                    var findCommand = devCommandNotFoundTaskParameters.Find(x => x.DeviceCommand.CommandId == devCommand.DeviceCommand.CommandId && x.DeviceCommand.Command == devCommand.DeviceCommand.Command && x.DeviceCommand.CustTxt1 == devCommand.DeviceCommand.CustTxt1 && x.DeviceCommand.EquipmentTechId == devCommand.DeviceCommand.EquipmentTechId && x.DeviceCommand.SdrnServer == devCommand.DeviceCommand.SdrnServer && x.DeviceCommand.SensorName == devCommand.DeviceCommand.SensorName);
+                                    if (findCommand != null)
+                                    {
+                                        findCommand.Counter++;
+                                        if (findCommand.Counter > 10)
+                                        {
+                                            devCommandNotFoundTaskParameters.RemoveAll(x => x.DeviceCommand.CommandId == devCommand.DeviceCommand.CommandId && x.DeviceCommand.Command == devCommand.DeviceCommand.Command && x.DeviceCommand.CustTxt1 == devCommand.DeviceCommand.CustTxt1 && x.DeviceCommand.EquipmentTechId == devCommand.DeviceCommand.EquipmentTechId && x.DeviceCommand.SdrnServer == devCommand.DeviceCommand.SdrnServer && x.DeviceCommand.SensorName == devCommand.DeviceCommand.SensorName);
                                         }
                                     }
                                 }
