@@ -249,7 +249,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                 var tskParam = this._repositoryTaskParametersByString.LoadObject(devCommand.DeviceCommand.CustTxt1);
                                 if (tskParam != null)
                                 {
-                                    var findCommand = devCommandNotFoundTaskParameters.Find(x => x.DeviceCommand.CommandId == devCommand.DeviceCommand.CommandId && x.DeviceCommand.Command == devCommand.DeviceCommand.Command && x.DeviceCommand.CustTxt1 == devCommand.DeviceCommand.CustTxt1 && x.DeviceCommand.EquipmentTechId == devCommand.DeviceCommand.EquipmentTechId && x.DeviceCommand.SdrnServer == devCommand.DeviceCommand.SdrnServer && x.DeviceCommand.SensorName == devCommand.DeviceCommand.SensorName);
+                                    var findCommand = devCommandNotFoundTaskParameters.Find(x => x.DeviceCommand.Command != "CreateMeasTask" && x.DeviceCommand.CustTxt1 == devCommand.DeviceCommand.CustTxt1);
                                     if (findCommand != null)
                                     {
                                         if (findCommand.DeviceCommand.Command == TypeMeasTask.RunMeasTask.ToString())
