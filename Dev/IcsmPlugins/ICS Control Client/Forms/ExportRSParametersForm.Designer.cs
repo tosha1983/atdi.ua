@@ -55,6 +55,7 @@
             this.cmbCorrEstim.Name = "cmbCorrEstim";
             this.cmbCorrEstim.Size = new System.Drawing.Size(121, 21);
             this.cmbCorrEstim.TabIndex = 6;
+            this.cmbCorrEstim.SelectedIndexChanged += new System.EventHandler(this.cmbFilter_SelectedIndexChanged);
             // 
             // label1
             // 
