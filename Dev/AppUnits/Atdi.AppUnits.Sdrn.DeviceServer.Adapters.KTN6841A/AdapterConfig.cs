@@ -17,9 +17,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
         /// Flattop  = 4     
         /// Uniform  = 8     
         /// </summary>
-        public uint WindowType { get; set; } = 0;
+        public int WindowType { get; set; } = 0;
         public bool UseGNSS { get; set; } = false;
         public bool LockSensorResource { get; set; } = false;
-        public uint SelectedAntenna { get; set; } = 0;
+        public int SelectedAntenna { get; set; } = 0;
     }
 }

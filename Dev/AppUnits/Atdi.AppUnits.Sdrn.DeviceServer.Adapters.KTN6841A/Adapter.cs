@@ -977,6 +977,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
                 {
                     throw new Exception("General sensor data not available. Perhaps the sensor is not on the local network.");
                 }
+                serialNumber = SensorInfo.serialNumber;
+            }
+            else
+            {
+                serialNumber = gSensorName;
             }
 
             err = AgSalLib.salGetSensorCapabilities(gSensorHandle, out gSensorCapabilities);
@@ -1002,7 +1007,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
                     throw new Exception("Unable to block access for other programs (FFT).");
                 }
             }
-
+            
             List<uint> fft = new List<uint> { };
             for (int i = gSensorCapabilities.fftMinBlocksize; i <= gSensorCapabilities.fftMaxBlocksize; i *= 2)
             {
@@ -1287,7 +1292,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
                     {
                         // we have a GUI change - send the stop command
                         AgSalLib.salSendSweepCommand(gMeasHandle, AgSalLib.SweepCommand.SweepCommand_stop);
-                        //System.Diagnostics.Debug.WriteLine("Stop");
                         gMeasState = MeasState.Stopping;
                     }
                     break;
@@ -1556,26 +1560,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
                 PreAmpMin_dB = 0,
                 RefLevelMax_dBm = 0,//(int)RefLevelMax,
                 RefLevelMin_dBm = 0,//(int)RefLevelMin,                
-                RadioPathParameters = rrps
-            };
-            if (sensorInLocalNetwork)
-            {
-                serialNumber = SensorInfo.serialNumber;
-                sdp.EquipmentInfo = new EquipmentInfo()
-                {
-                    AntennaCode = config.AdapterEquipmentInfo.AntennaSN,// "Omni",//S/N  В конфиг
-                    AntennaManufacturer = config.AdapterEquipmentInfo.AntennaManufacturer,//"3anet",//В конфиг
-                    AntennaName = config.AdapterEquipmentInfo.AntennaName,//"BC600",//В конфиг
-                    EquipmentManufacturer = new Atdi.DataModels.Sdrn.DeviceServer.Adapters.InstrManufacrures().Keysight.UI,
-                    EquipmentName = SensorInfo.modelNumber,
-                    EquipmentFamily = "Sensor",//SDR/SpecAn/MonRec
-                    EquipmentCode = serialNumber,//S/N
-                };
-            }
-            else
-            {
-                serialNumber = gSensorName;
-                sdp.EquipmentInfo = new EquipmentInfo()
+                RadioPathParameters = rrps,
+                EquipmentInfo = new EquipmentInfo()
                 {
                     AntennaCode = config.AdapterEquipmentInfo.AntennaSN,// "Omni",//S/N  В конфиг
                     AntennaManufacturer = config.AdapterEquipmentInfo.AntennaManufacturer,//"3anet",//В конфиг
@@ -1584,8 +1570,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
                     EquipmentName = "N6841A",
                     EquipmentFamily = "Sensor",//SDR/SpecAn/MonRec
                     EquipmentCode = serialNumber,//S/N
-                };
-            }
+                }
+            };
+            
 
 
             (double rbwmin, uint numPoints1) = CalcRBWAndNumberPoints(0, fftSize.Length - 1);
