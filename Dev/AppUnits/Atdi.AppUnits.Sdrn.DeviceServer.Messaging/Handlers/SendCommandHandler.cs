@@ -49,16 +49,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
                 if ((message.Data.Command == "StopMeasTask") || (message.Data.Command == "RunMeasTask") || (message.Data.Command == "DelMeasTask"))
                 {
                     DM.DeviceCommand deviceCommand = message.Data;
+                    this._repositoryDeviceCommand.Create(message.Data);
                     if (deviceCommand.CustTxt1 != null)
                     {
                         string idsTask = deviceCommand.CustTxt1;
                         if (!string.IsNullOrEmpty(idsTask))
                         {
-
                             var taskParams = this._repositoryTaskParametersByString.LoadObject(idsTask);
                             if (taskParams != null)
                             {
-                                this._repositoryDeviceCommand.Create(message.Data);
 
                                 if (deviceCommand.Command == TypeMeasTask.RunMeasTask.ToString())
                                 {
