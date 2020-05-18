@@ -18,6 +18,8 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.EntityOrmTest.Adapte
 
 		}
 
+		
+
 		protected override void PrepareQuery(IReadQuery<CS_ES.IProject> query)
 		{
 			query.Select(
@@ -26,6 +28,8 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.EntityOrmTest.Adapte
 				c => c.Note,
 				c => c.CreatedDate
 			);
+
+
 		}
 
 		protected override ProjectModel ReadData(IDataReader<CS_ES.IProject> reader, int index)

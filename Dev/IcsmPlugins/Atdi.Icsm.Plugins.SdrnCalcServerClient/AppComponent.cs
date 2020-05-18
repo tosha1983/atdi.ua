@@ -6,8 +6,10 @@ using Atdi.Platform.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Atdi.Platform.Cqrs;
 
 
 namespace Atdi.Icsm.Plugins.SdrnCalcServerClient
@@ -34,21 +36,26 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient
 			var typeResolver = this.Resolver.Resolve<ITypeResolver>();
 
             // регестрируем все DataAdapters
-            this.Container.Register<ViewModels.EntityOrmTest.Adapters.ProjectTestDataAdapter>(ServiceLifetime.Singleton);
+            //this.Container.Register<ViewModels.EntityOrmTest.Adapters.ProjectTestDataAdapter>(ServiceLifetime.Singleton);
             this.Container.Register<ViewModels.Adapters.ProjectDataAdapter>(ServiceLifetime.Singleton);
             this.Container.Register<ViewModels.Adapters.ProjectMapDataAdapter>(ServiceLifetime.Singleton);
 
-            //var dataAdaptersBaseType = typeof(ViewModels.EntityOrmTest.DataAdapter<,>);
-            //var dataAdapterTypes = typeResolver.ForeachInAllAssemblies(
-            //	(type) =>
-            //	{
-            //		if (!type.IsClass
-            //		    || type.IsAbstract
-            //		    || type.IsInterface
-            //		    || type.IsEnum)
-            //		{
-            //			return false;
-            //		}
+			this.Container.RegisterClassesBasedOn(
+					typeof(AppComponentConfig).Assembly,
+					typeof(DataAdapter<,>),
+					ServiceLifetime.Singleton
+				);
+			//var dataAdaptersBaseType = typeof(ViewModels.EntityOrmTest.DataAdapter<,>);
+			//var dataAdapterTypes = typeResolver.ForeachInAllAssemblies(
+			//	(type) =>
+			//	{
+			//		if (!type.IsClass
+			//		    || type.IsAbstract
+			//		    || type.IsInterface
+			//		    || type.IsEnum)
+			//		{
+			//			return false;
+			//		}
 
             //		var baseType = type.BaseType;
             //		if (baseType == null || !baseType.IsGenericType)
@@ -81,7 +88,16 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient
 
 		protected override void OnActivate()
 		{
-			this.Logger.Info("SdrnCalcServerClient", "AppComponent", "OnActivate");
+
+			// подключаем обработчики комманд
+			var commandDispatcher = this.Resolver.Resolve<ICommandDispatcher>();
+			commandDispatcher.RegisterFrom(Assembly.GetAssembly(typeof(AppComponentConfig)));
+			this.Logger.Info("SdrnCalcServerClient", "AppComponent", "Command Handlers were registered");
+
+			// подключаем ридеры
+			var objectReader = this.Resolver.Resolve<IObjectReader>();
+			objectReader.RegisterFrom(Assembly.GetAssembly(typeof(AppComponentConfig)));
+			this.Logger.Info("SdrnCalcServerClient", "AppComponent", "Read Query Executors were registered");
 		}
 	}
 }
