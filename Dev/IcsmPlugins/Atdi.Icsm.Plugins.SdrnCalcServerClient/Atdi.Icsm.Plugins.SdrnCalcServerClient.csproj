@@ -94,7 +94,6 @@
     <Compile Include="Metadata\SysLogs.cs" />
     <Compile Include="Models\DataApadters\Mappers.cs" />
     <Compile Include="Models\DataApadters\ProjectDataAdapter.cs" />
-    <Compile Include="ViewModels\EntityOrmTest\Adapters\ProjectDataAdapter.cs" />
     <Compile Include="ViewModels\EntityOrmTest\Events\OnCreatedProject.cs" />
     <Compile Include="ViewModels\EntityOrmTest\Adapters\ProjectTestDataAdapter.cs" />
     <Compile Include="ViewModels\EntityOrmTest\Models\ProjectModel.cs" />
