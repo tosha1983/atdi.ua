@@ -29,11 +29,11 @@ namespace XICSM.SdrnCalcServerClient
         public Plugin()
         {
 	        this._platformHost = PlatformConfigurator.GetSingleHost();
-	        var resolver = this._platformHost.Container.GetResolver<IServicesResolver>();
-	        _logger = resolver.Resolve<ILogger>();
-	        _menuCommands = resolver.Resolve<PluginMenuCommands>();
+            var resolver = this._platformHost.Container.GetResolver<IServicesResolver>();
+            _logger = resolver.Resolve<ILogger>();
+            _menuCommands = resolver.Resolve<PluginMenuCommands>();
 
-			_logger.Info("CalcServerClient", "Init", "Plugin loaded");
+            _logger.Info("CalcServerClient", "Init", "Plugin loaded");
         }
 
 		public void GetMainMenu(IMMainMenu mainMenu)

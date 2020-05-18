@@ -17,7 +17,8 @@ namespace Atdi.Modules.Sdrn.Calculation
     public struct SpectrumMask
     {
         public float[] MaskLevels_dB;
-        public double[] MaskFrequencies_MHz;
+        //MaskFrequencies_MHz --> kHz
+        public double[] MaskFrequencies_kHz;
         public double CentralFrequency_MHz;
         public double Power_dBm;
         public double Bandwidth_kHz;
@@ -173,26 +174,26 @@ namespace Atdi.Modules.Sdrn.Calculation
             if (oneTenPartOfSpectrum > 1 && mediumExtension > 1)
             {
                 resultMask.MaskLevels_dB = new float[numberOfMask_pt];
-                resultMask.MaskFrequencies_MHz = new double[numberOfMask_pt];
+                resultMask.MaskFrequencies_kHz = new double[numberOfMask_pt];
 
                 resultMask.CentralFrequency_MHz = spectrumStartFreq_MHz + spectrumSteps_kHz * minBeforeMaxIndex * 0.001 + (spectrumSteps_kHz * minAfterMaxIndex * 0.001 - spectrumSteps_kHz * minBeforeMaxIndex * 0.001) / 2;
                 // First 6 points of mask are found
                 resultMask.MaskLevels_dB[0] = spectrumLevels_dBm[minBeforeMaxIndex];// + maskMargin_dB;
-                resultMask.MaskFrequencies_MHz[0] = -resultMask.CentralFrequency_MHz + spectrumStartFreq_MHz + spectrumSteps_kHz * minBeforeMaxIndex * 0.001;
+                resultMask.MaskFrequencies_kHz[0] = 1000 * (spectrumStartFreq_MHz - resultMask.CentralFrequency_MHz) + spectrumSteps_kHz * minBeforeMaxIndex;
                 resultMask.MaskLevels_dB[1] = MaxInSubArray(in spectrumLevels_dBm, minBeforeMaxIndex, mediumExtension);// + maskMargin_dB;
-                resultMask.MaskFrequencies_MHz[1] = resultMask.MaskFrequencies_MHz[0];
+                resultMask.MaskFrequencies_kHz[1] = resultMask.MaskFrequencies_kHz[0];
 
                 //float cutoffLevel_dBm = Math.Max(spectrumLevels_dBm[cutoffBeforeMaxIndex], spectrumLevels_dBm[cutoffAfterMaxIndex]);
                 resultMask.MaskLevels_dB[(numberOfMask_pt / 2) - 1] = maxLevel_dBm;// cutoffLevel_dBm + initialCutoff_dB;// + maskMargin_dB;
-                resultMask.MaskFrequencies_MHz[(numberOfMask_pt / 2) - 1] = -resultMask.CentralFrequency_MHz + spectrumStartFreq_MHz + spectrumSteps_kHz * (cutoffBeforeMaxIndex - 1) * 0.001;
+                resultMask.MaskFrequencies_kHz[(numberOfMask_pt / 2) - 1] = 1000 * (spectrumStartFreq_MHz - resultMask.CentralFrequency_MHz) + spectrumSteps_kHz * (cutoffBeforeMaxIndex - 1);
                 resultMask.MaskLevels_dB[(numberOfMask_pt / 2)] = maxLevel_dBm;// cutoffLevel_dBm + initialCutoff_dB;// + maskMargin_dB;
-                resultMask.MaskFrequencies_MHz[(numberOfMask_pt / 2)] = -resultMask.CentralFrequency_MHz + spectrumStartFreq_MHz + spectrumSteps_kHz * (cutoffAfterMaxIndex + 1) * 0.001;
+                resultMask.MaskFrequencies_kHz[(numberOfMask_pt / 2)] = 1000 * (spectrumStartFreq_MHz - resultMask.CentralFrequency_MHz) + spectrumSteps_kHz * (cutoffAfterMaxIndex + 1);
 
                 resultMask.MaskLevels_dB[numberOfMask_pt - 2] = MaxInSubArray(in spectrumLevels_dBm, minAfterMaxIndex - mediumExtension, mediumExtension);// + maskMargin_dB;
-                resultMask.MaskFrequencies_MHz[numberOfMask_pt - 2] = -resultMask.CentralFrequency_MHz + spectrumStartFreq_MHz + spectrumSteps_kHz * (minAfterMaxIndex + 1) * 0.001;
+                resultMask.MaskFrequencies_kHz[numberOfMask_pt - 2] = 1000 * (spectrumStartFreq_MHz - resultMask.CentralFrequency_MHz)  + spectrumSteps_kHz * (minAfterMaxIndex + 1) ;
 
                 resultMask.MaskLevels_dB[numberOfMask_pt - 1] = spectrumLevels_dBm[minAfterMaxIndex];//+ maskMargin_dB;
-                resultMask.MaskFrequencies_MHz[numberOfMask_pt - 1] = resultMask.MaskFrequencies_MHz[numberOfMask_pt - 2];
+                resultMask.MaskFrequencies_kHz[numberOfMask_pt - 1] = resultMask.MaskFrequencies_kHz[numberOfMask_pt - 2];
 
                 // If mask should have more than 6 ppoints - transition band divided into equel parts and covers spectrum of emitting
                 if (numberOfMask_pt >= 8)
@@ -201,11 +202,11 @@ namespace Atdi.Modules.Sdrn.Calculation
                     {
                         mediumBeforeCutoffIndex = (i - 1) * (cutoffBeforeMaxIndex - minBeforeMaxIndex) / (numberOfMask_pt / 2 - 2);
                         resultMask.MaskLevels_dB[i] = MaxInSubArray(in spectrumLevels_dBm, mediumBeforeCutoffIndex - mediumExtension, mediumExtension * 2);// + maskMargin_dB;
-                        resultMask.MaskFrequencies_MHz[i] = -resultMask.CentralFrequency_MHz + spectrumStartFreq_MHz + spectrumSteps_kHz * (mediumBeforeCutoffIndex - 1) * 0.001;
+                        resultMask.MaskFrequencies_kHz[i] = 1000 * (spectrumStartFreq_MHz - resultMask.CentralFrequency_MHz)  + spectrumSteps_kHz * (mediumBeforeCutoffIndex - 1);
 
                         mediumAfterCutoffIndex = cutoffAfterMaxIndex + ((i - 1) * (minAfterMaxIndex - cutoffAfterMaxIndex) / (numberOfMask_pt / 2 - 2));
                         resultMask.MaskLevels_dB[i + numberOfMask_pt / 2 - 1] = MaxInSubArray(in spectrumLevels_dBm, mediumAfterCutoffIndex - mediumExtension, 2 * mediumExtension);// + maskMargin_dB;
-                        resultMask.MaskFrequencies_MHz[i + numberOfMask_pt / 2 - 1] = -resultMask.CentralFrequency_MHz + spectrumStartFreq_MHz + spectrumSteps_kHz * (mediumAfterCutoffIndex + 1) * 0.001;
+                        resultMask.MaskFrequencies_kHz[i + numberOfMask_pt / 2 - 1] = 1000 * (spectrumStartFreq_MHz - resultMask.CentralFrequency_MHz)  + spectrumSteps_kHz * (mediumAfterCutoffIndex + 1);
                     }
                 }
             }
@@ -214,40 +215,40 @@ namespace Atdi.Modules.Sdrn.Calculation
                 if (spectrumLevels_dBm.Length > 1)
                 {
                     resultMask.MaskLevels_dB = new float[4];
-                    resultMask.MaskFrequencies_MHz = new double[4];
+                    resultMask.MaskFrequencies_kHz = new double[4];
 
                     resultMask.CentralFrequency_MHz = spectrumStartFreq_MHz + spectrumSteps_kHz * minBeforeMaxIndex * 0.001 + (spectrumSteps_kHz * minAfterMaxIndex * 0.001 - spectrumSteps_kHz * minBeforeMaxIndex * 0.001) / 2;
                     // Mask contains of only 4 points
                     resultMask.MaskLevels_dB[0] = spectrumLevels_dBm[minBeforeMaxIndex];// + maskMargin_dB;
-                    resultMask.MaskFrequencies_MHz[0] = -resultMask.CentralFrequency_MHz + spectrumStartFreq_MHz + spectrumSteps_kHz * minBeforeMaxIndex * 0.001;
+                    resultMask.MaskFrequencies_kHz[0] = 1000 * (spectrumStartFreq_MHz - resultMask.CentralFrequency_MHz)  + spectrumSteps_kHz * minBeforeMaxIndex;
 
-                    resultMask.MaskFrequencies_MHz[1] = resultMask.MaskFrequencies_MHz[0];
+                    resultMask.MaskFrequencies_kHz[1] = resultMask.MaskFrequencies_kHz[0];
                     resultMask.MaskLevels_dB[1] = maxLevel_dBm;// cutoffLevel_dBm + initialCutoff_dB;// + maskMargin_dB;
 
                     resultMask.MaskLevels_dB[2] = maxLevel_dBm;// cutoffLevel_dBm + initialCutoff_dB;// + maskMargin_dB;
-                    resultMask.MaskFrequencies_MHz[2] = -resultMask.CentralFrequency_MHz + spectrumStartFreq_MHz + spectrumSteps_kHz * (minAfterMaxIndex + 1) * 0.001;
+                    resultMask.MaskFrequencies_kHz[2] = 1000 * (spectrumStartFreq_MHz - resultMask.CentralFrequency_MHz)  + spectrumSteps_kHz * (minAfterMaxIndex + 1);
 
-                    resultMask.MaskFrequencies_MHz[3] = resultMask.MaskFrequencies_MHz[2];
+                    resultMask.MaskFrequencies_kHz[3] = resultMask.MaskFrequencies_kHz[2];
                     resultMask.MaskLevels_dB[3] = spectrumLevels_dBm[minAfterMaxIndex];
                     numberOfMask_pt = 4;
                 }
                 else// if (spectrumLevels_dBm.Length == 1)
                 {
                     resultMask.MaskLevels_dB = new float[4];
-                    resultMask.MaskFrequencies_MHz = new double[4];
+                    resultMask.MaskFrequencies_kHz = new double[4];
 
                     resultMask.CentralFrequency_MHz = spectrumStartFreq_MHz;// + spectrumSteps_kHz * minBeforeMaxIndex * 0.001 + (spectrumSteps_kHz * minAfterMaxIndex * 0.001 - spectrumSteps_kHz * minBeforeMaxIndex * 0.001) / 2;
                     // Mask contains of only 4 points
                     resultMask.MaskLevels_dB[0] = maxLevel_dBm - 15;// + maskMargin_dB;
-                    resultMask.MaskFrequencies_MHz[0] = -spectrumStartFreq_MHz;
+                    resultMask.MaskFrequencies_kHz[0] = -spectrumStartFreq_MHz * 1000;
 
-                    resultMask.MaskFrequencies_MHz[1] = resultMask.MaskFrequencies_MHz[0];
+                    resultMask.MaskFrequencies_kHz[1] = resultMask.MaskFrequencies_kHz[0];
                     resultMask.MaskLevels_dB[1] = maxLevel_dBm;// cutoffLevel_dBm + initialCutoff_dB;// + maskMargin_dB;
 
                     resultMask.MaskLevels_dB[2] = maxLevel_dBm;// cutoffLevel_dBm + initialCutoff_dB;// + maskMargin_dB;
-                    resultMask.MaskFrequencies_MHz[2] = spectrumStartFreq_MHz;
+                    resultMask.MaskFrequencies_kHz[2] = spectrumStartFreq_MHz + 1000;
 
-                    resultMask.MaskFrequencies_MHz[3] = resultMask.MaskFrequencies_MHz[2];
+                    resultMask.MaskFrequencies_kHz[3] = resultMask.MaskFrequencies_kHz[2];
                     resultMask.MaskLevels_dB[3] = resultMask.MaskLevels_dB[0];
                     numberOfMask_pt = 4;
                 }
@@ -261,33 +262,35 @@ namespace Atdi.Modules.Sdrn.Calculation
             for (int i = 1; i < resultMask.MaskLevels_dB.Length - 1; i++)
             {
                 double dPower = 0;
+                double dPower_dB = 0;
                 //if (i == resultMask.MaskLevels_dB.Length / 2)
                 if (resultMask.MaskLevels_dB[i] == resultMask.MaskLevels_dB[i-1])
                 {
-                    dPower = Math.Abs(resultMask.MaskFrequencies_MHz[i - 1] - resultMask.MaskFrequencies_MHz[i]) * Math.Pow(10, 0.1 * resultMask.MaskLevels_dB[i]) / spectrumSteps_kHz;
+                    dPower = 0.001 * Math.Abs(resultMask.MaskFrequencies_kHz[i - 1] - resultMask.MaskFrequencies_kHz[i]) * Math.Pow(10, 0.1 * resultMask.MaskLevels_dB[i]) / spectrumSteps_kHz;
                     
                 }
-                else if ((resultMask.MaskFrequencies_MHz[i] - resultMask.MaskFrequencies_MHz[i-1]) != 0 && resultMask.MaskLevels_dB[i] != resultMask.MaskLevels_dB[i - 1])
+                else if ((resultMask.MaskFrequencies_kHz[i] - resultMask.MaskFrequencies_kHz[i-1]) != 0 && resultMask.MaskLevels_dB[i] != resultMask.MaskLevels_dB[i - 1])
                 {
-                    dPower = .5 * Math.Abs(resultMask.MaskFrequencies_MHz[i - 1] - resultMask.MaskFrequencies_MHz[i]) * (Math.Pow(10, 0.1 * resultMask.MaskLevels_dB[i]) + Math.Pow(10, 0.1 * resultMask.MaskLevels_dB[i - 1])) / spectrumSteps_kHz;  
+                    dPower = 0.0005 * Math.Abs(resultMask.MaskFrequencies_kHz[i - 1] - resultMask.MaskFrequencies_kHz[i]) * (Math.Pow(10, 0.1 * resultMask.MaskLevels_dB[i]) + Math.Pow(10, 0.1 * resultMask.MaskLevels_dB[i - 1])) / spectrumSteps_kHz;
                 }
                 power_W += dPower;
                 if (dPower < 0)
                 {
                     dPower += -dPower;
                 }
+                dPower_dB = 10 * Math.Log10(dPower / 0.001);
             }            
 
             resultMask.Power_dBm = 10 * Math.Log10(power_W / 0.001);
 
-            resultMask.Bandwidth_kHz = 1000 * (resultMask.MaskFrequencies_MHz[numberOfMask_pt - 1] - resultMask.MaskFrequencies_MHz[0]);
+            resultMask.Bandwidth_kHz = resultMask.MaskFrequencies_kHz[numberOfMask_pt - 1] - resultMask.MaskFrequencies_kHz[0];
 
             //final transformations
-            resultMask.MaskFrequencies_MHz[1] += 0.000001;
-            resultMask.MaskFrequencies_MHz[numberOfMask_pt - 2] -= 0.000001;
+            resultMask.MaskFrequencies_kHz[1] += 0.001;
+            resultMask.MaskFrequencies_kHz[numberOfMask_pt - 2] -= 0.001;
             for (int i = 0; i < resultMask.MaskLevels_dB.Length; i++)
             {
-                resultMask.MaskLevels_dB[i] -= maxLevel_dBm;
+                resultMask.MaskLevels_dB[i] = maxLevel_dBm - resultMask.MaskLevels_dB[i];
             }
 
             return resultMask;
@@ -329,11 +332,11 @@ namespace Atdi.Modules.Sdrn.Calculation
                 {
                     if (i != j)
                     {
-                        var frqA0 = spectrumMasks[i].CentralFrequency_MHz + spectrumMasks[i].MaskFrequencies_MHz[0];
-                        var frqAL = spectrumMasks[i].CentralFrequency_MHz - spectrumMasks[i].MaskFrequencies_MHz[0];
+                        var frqA0 = spectrumMasks[i].CentralFrequency_MHz + 1000 * spectrumMasks[i].MaskFrequencies_kHz[0];
+                        var frqAL = spectrumMasks[i].CentralFrequency_MHz - 1000 * spectrumMasks[i].MaskFrequencies_kHz[0];
                         var lvlA = spectrumMasks[i].MaskLevels_dB.Max();
-                        var frqB0 = spectrumMasks[j].CentralFrequency_MHz + spectrumMasks[j].MaskFrequencies_MHz[0];
-                        var frqBL = spectrumMasks[j].CentralFrequency_MHz - spectrumMasks[j].MaskFrequencies_MHz[0];
+                        var frqB0 = spectrumMasks[j].CentralFrequency_MHz + 1000 * spectrumMasks[i].MaskFrequencies_kHz[0];
+                        var frqBL = spectrumMasks[j].CentralFrequency_MHz - 1000 * spectrumMasks[i].MaskFrequencies_kHz[0];
                         var lvlB = spectrumMasks[j].MaskLevels_dB.Max();
                         if ((lvlA >= lvlB) && (frqA0 <= frqB0) && (frqAL >= frqBL))
                         {
