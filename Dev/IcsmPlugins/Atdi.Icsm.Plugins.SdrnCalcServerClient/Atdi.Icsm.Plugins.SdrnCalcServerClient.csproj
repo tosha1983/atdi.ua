@@ -92,10 +92,10 @@
     <Compile Include="PluginMenuCommands.cs" />
     <Compile Include="Helpers\PluginHelper.cs" />
     <Compile Include="Metadata\SysLogs.cs" />
-    <Compile Include="Models\DataApadters\Mappers.cs" />
-    <Compile Include="Models\DataApadters\ProjectDataAdapter.cs" />
-    <Compile Include="ViewModels\EntityOrmTest\Adapters\ProjectDataAdapter.cs" />
+    <Compile Include="ViewModels\EntityOrmTest\Adapters\ProjectTestDataAdapter.cs" />
     <Compile Include="ViewModels\EntityOrmTest\Models\ProjectModel.cs" />
+    <Compile Include="ViewModels\ProjectManager\Adapters\ProjectDataAdapter.cs" />
+    <Compile Include="ViewModels\ProjectManager\Adapters\ProjectMapDataAdapter.cs" />
     <Compile Include="ViewModels\ProjectManager\Models\ClientContextModel.cs" />
     <Compile Include="ViewModels\ProjectManager\Models\ProjectMapModel.cs" />
     <Compile Include="ViewModels\ProjectManager\Models\ProjectModel.cs" />
@@ -154,7 +154,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Models\Views\" />
     <Folder Include="Xaml\" />
   </ItemGroup>
   <ItemGroup>

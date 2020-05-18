@@ -23,7 +23,7 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.EntityOrmTest
 		private readonly ILogger _logger;
 
 		public View(
-			ProjectDataAdapter projectDataAdapter, 
+			ProjectTestDataAdapter projectDataAdapter, 
 			ViewStarter starter, 
 			ILogger logger)
 		{
@@ -35,7 +35,7 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.EntityOrmTest
 		}
 
 
-		public ProjectDataAdapter Projects { get; set; }
+		public ProjectTestDataAdapter Projects { get; set; }
 
 	}
 }
