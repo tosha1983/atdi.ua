@@ -35,8 +35,10 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient
 
 			var typeResolver = this.Resolver.Resolve<ITypeResolver>();
 
-			// регестрируем все DataAdapters
-			//this.Container.Register<ViewModels.EntityOrmTest.Adapters.ProjectDataAdapter>(ServiceLifetime.Transient);
+            // регестрируем все DataAdapters
+            //this.Container.Register<ViewModels.EntityOrmTest.Adapters.ProjectTestDataAdapter>(ServiceLifetime.Singleton);
+            this.Container.Register<ViewModels.Adapters.ProjectDataAdapter>(ServiceLifetime.Singleton);
+            this.Container.Register<ViewModels.Adapters.ProjectMapDataAdapter>(ServiceLifetime.Singleton);
 
 			this.Container.RegisterClassesBasedOn(
 					typeof(AppComponentConfig).Assembly,
@@ -55,27 +57,27 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient
 			//			return false;
 			//		}
 
-			//		var baseType = type.BaseType;
-			//		if (baseType == null || !baseType.IsGenericType)
-			//		{
-			//			return false;
-			//		}
+            //		var baseType = type.BaseType;
+            //		if (baseType == null || !baseType.IsGenericType)
+            //		{
+            //			return false;
+            //		}
 
-			//		baseType = baseType.GetGenericTypeDefinition();
-			//		//this.Logger.Info("SdrnCalcServerClient", "AppComponent", $"BaseType = {baseType}");
-			//		return dataAdaptersBaseType == baseType;
-			//	}
-			//).ToArray();
-			//foreach (var dataAdapterType in dataAdapterTypes)
-			//{
-			//	this.Logger.Info("SdrnCalcServerClient", "AppComponent", $"DataAdapterType = {dataAdapterType}");
-			//	this.Container.Register(dataAdapterType, ServiceLifetime.Transient);
-			//}
-			//this.Logger.Info("SdrnCalcServerClient", "AppComponent", $"dataAdapterTypes.Count = {dataAdapterTypes.Length}");
+            //		baseType = baseType.GetGenericTypeDefinition();
+            //		//this.Logger.Info("SdrnCalcServerClient", "AppComponent", $"BaseType = {baseType}");
+            //		return dataAdaptersBaseType == baseType;
+            //	}
+            //).ToArray();
+            //foreach (var dataAdapterType in dataAdapterTypes)
+            //{
+            //	this.Logger.Info("SdrnCalcServerClient", "AppComponent", $"DataAdapterType = {dataAdapterType}");
+            //	this.Container.Register(dataAdapterType, ServiceLifetime.Transient);
+            //}
+            //this.Logger.Info("SdrnCalcServerClient", "AppComponent", $"dataAdapterTypes.Count = {dataAdapterTypes.Length}");
 
-			// регестрируем все View
+            // регестрируем все View
 
-			var viewModelBaseType = typeof(WpfViewModelBase);
+            var viewModelBaseType = typeof(WpfViewModelBase);
 			var viewTypes = typeResolver.ResolveTypes(viewModelBaseType.Assembly, viewModelBaseType);
 			foreach (var viewType in viewTypes)
 			{
