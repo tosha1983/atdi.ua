@@ -10,6 +10,8 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient
 {
 	public class AppComponentConfig
 	{
+		public string Instance { get; set; }
+
 		[ComponentConfigProperty("CalcServer.EntityOrm.Endpoint.BaseAddress")]
 		public string CalcServerEntityOrmEndpointBaseAddress { get; set; }
 

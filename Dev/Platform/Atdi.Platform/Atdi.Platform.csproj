@@ -62,6 +62,14 @@
     <Compile Include="Caching\IDataCache.cs" />
     <Compile Include="Caching\IDataCacheDescriptor.cs" />
     <Compile Include="Caching\IDataCacheSite.cs" />
+    <Compile Include="Cqrs\CommandDispatcher.cs" />
+    <Compile Include="Cqrs\ICommandDispatcher.cs" />
+    <Compile Include="Cqrs\ICommandHandler.cs" />
+    <Compile Include="Cqrs\IObjectReader.cs" />
+    <Compile Include="Cqrs\IObjectReaderBy.cs" />
+    <Compile Include="Cqrs\IReadQueryExecutor.cs" />
+    <Compile Include="Cqrs\ObjectReader.cs" />
+    <Compile Include="Cqrs\ObjectReaderBy.cs" />
     <Compile Include="Cryptography\Encryptor.cs" />
     <Compile Include="Data\IObjectPool.cs" />
     <Compile Include="Data\IObjectPoolSite.cs" />
@@ -76,6 +84,8 @@
     <Compile Include="DependencyInjection\IServicesResolver.cs" />
     <Compile Include="DependencyInjection\IWcfServicesResolver.cs" />
     <Compile Include="DependencyInjection\ServiceLifetime.cs" />
+    <Compile Include="Events\EventBus.cs" />
+    <Compile Include="Events\IEventHandlerToken.cs" />
     <Compile Include="ExceptionText.cs" />
     <Compile Include="IConfigParameter.cs" />
     <Compile Include="IConfigParameters.cs" />
@@ -127,6 +137,7 @@
     <Compile Include="Statistics\StatisticEntry.cs" />
     <Compile Include="Statistics\StatisticEntryKey.cs" />
     <Compile Include="Statistics\Statistics.cs" />
+    <Compile Include="Events\IEventBus.cs" />
     <Compile Include="Workflows\IJobBroker.cs" />
     <Compile Include="Workflows\IJobExecutor.cs" />
     <Compile Include="Workflows\IJobExecutorResolver.cs" />
