@@ -10,13 +10,15 @@ using CS_ES = Atdi.DataModels.Sdrn.CalcServer.Entities;
 
 namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.EntityOrmTest.Adapters
 {
-	public sealed class ProjectDataAdapter : DataAdapter<CS_ES.IProject, ProjectModel>
+	public sealed class ProjectTestDataAdapter : DataAdapter<CS_ES.IProject, ProjectModel>
 	{
-		public ProjectDataAdapter(CalcServerDataLayer dataLayer, ILogger logger)
+		public ProjectTestDataAdapter(CalcServerDataLayer dataLayer, ILogger logger)
 			: base(dataLayer.Origin, logger)
 		{
 
 		}
+
+		
 
 		protected override void PrepareQuery(IReadQuery<CS_ES.IProject> query)
 		{
@@ -26,6 +28,8 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.EntityOrmTest.Adapte
 				c => c.Note,
 				c => c.CreatedDate
 			);
+
+
 		}
 
 		protected override ProjectModel ReadData(IDataReader<CS_ES.IProject> reader, int index)
@@ -34,7 +38,8 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.EntityOrmTest.Adapte
 			{
 				Id = reader.GetValue(c => c.Id),
 				Name = reader.GetValue(c => c.Name),
-				Note = reader.GetValue(c => c.Note)
+				Note = reader.GetValue(c => c.Note),
+                CreatedDate = reader.GetValue(c => c.CreatedDate)
 			};
 		}
 	}

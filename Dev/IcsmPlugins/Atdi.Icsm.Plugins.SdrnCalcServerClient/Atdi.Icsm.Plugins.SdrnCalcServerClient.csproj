@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -93,8 +94,15 @@
     <Compile Include="Metadata\SysLogs.cs" />
     <Compile Include="Models\DataApadters\Mappers.cs" />
     <Compile Include="Models\DataApadters\ProjectDataAdapter.cs" />
-    <Compile Include="ViewModels\EntityOrmTest\Adapters\ProjectDataAdapter.cs" />
+    <Compile Include="ViewModels\EntityOrmTest\Events\OnCreatedProject.cs" />
+    <Compile Include="ViewModels\EntityOrmTest\Adapters\ProjectTestDataAdapter.cs" />
     <Compile Include="ViewModels\EntityOrmTest\Models\ProjectModel.cs" />
+    <Compile Include="ViewModels\EntityOrmTest\Modifiers\CreateProject.cs" />
+    <Compile Include="ViewModels\EntityOrmTest\Modifiers\CreateProjectHandler.cs" />
+    <Compile Include="ViewModels\EntityOrmTest\Queries\GetProjectByOwnerId.cs" />
+    <Compile Include="ViewModels\EntityOrmTest\Queries\GetProjectByOwnerIdExecutor.cs" />
+    <Compile Include="ViewModels\ProjectManager\Adapters\ProjectDataAdapter.cs" />
+    <Compile Include="ViewModels\ProjectManager\Adapters\ProjectMapDataAdapter.cs" />
     <Compile Include="ViewModels\ProjectManager\Models\ClientContextModel.cs" />
     <Compile Include="ViewModels\ProjectManager\Models\ProjectMapModel.cs" />
     <Compile Include="ViewModels\ProjectManager\Models\ProjectModel.cs" />
@@ -153,7 +161,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Events\" />
     <Folder Include="Models\Views\" />
+    <Folder Include="Queries\" />
     <Folder Include="Xaml\" />
   </ItemGroup>
   <ItemGroup>
@@ -171,7 +181,9 @@
     <EmbeddedResource Include="Properties\Resources.uk-UA.resx" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -180,10 +192,9 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy "$(TargetDir)XICSM_SdrnCalcServerClient.dll" "C:\ATDI\ICS Manager"
-copy "$(TargetDir)Atdi.*.dll" "C:\ATDI\ICS Manager"
-copy "$(TargetDir)XICSM_SdrnCalcServerClient.dll" "C:\ATDI\ICS Manager UCRF"
-copy "$(TargetDir)XICSM_SdrnCalcServerClient.dll" "C:\ATDI\ICSM_UCRF_MON_2019_04_18_x_sig_214"
-copy "$(TargetDir)\ru-RU" "C:\ATDI\ICS Manager UCRF\ru-RU\"
-copy "$(TargetDir)\uk-UA" "C:\ATDI\ICS Manager UCRF\uk-UA\"</PostBuildEvent>
+copy "$(TargetDir)Atdi.*.dll"    "C:\ATDI\ICS Manager"
+copy "$(TargetDir)ru-RU\*.*"   "C:\ATDI\ICS Manager\ru-RU"
+copy "$(TargetDir)uk-UA\*.*"  "C:\ATDI\ICS Manager\uk-UA"
+</PostBuildEvent>
   </PropertyGroup>
 </Project>

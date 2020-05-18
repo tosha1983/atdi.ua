@@ -152,7 +152,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                     SmsHostName = "",
                     WindowType = 4,
                     UseGNSS = true,
-                    SensorInLocalNetwork = true,
+                    SensorInLocalNetwork = false,
                     LockSensorResource = false,
                     SelectedAntenna = 2
                     //SerialNumber = "101396",

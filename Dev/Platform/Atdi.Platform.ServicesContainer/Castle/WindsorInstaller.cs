@@ -9,6 +9,7 @@ using Castle.Facilities.TypedFactory;
 using Castle.Facilities.WcfIntegration;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Atdi.Platform.DependencyInjection;
+using Atdi.Platform.Events;
 using Atdi.Platform.Workflows;
 
 namespace Atdi.Platform.ServicesContainer.Castle
@@ -43,8 +44,15 @@ namespace Atdi.Platform.ServicesContainer.Castle
                         .ImplementedBy<WindsorHandlerResolver>()
                         .LifeStyle.Singleton
                 );
+            
 
             container.Register(
+		            Component.For<IEventBus>()
+			            .ImplementedBy<EventBus>()
+			            .LifeStyle.Singleton
+	            );
+
+			container.Register(
                     Component.For<IStatistics>()
                         .ImplementedBy<Statistics>()
                         .LifeStyle.Singleton
@@ -57,6 +65,24 @@ namespace Atdi.Platform.ServicesContainer.Castle
                 );
 
             container.Register(
+		            Component.For<Cqrs.ICommandDispatcher>()
+			            .ImplementedBy<Cqrs.CommandDispatcher>()
+			            .LifeStyle.Singleton
+	            );
+
+            container.Register(
+		            Component.For<Cqrs.IObjectReader>()
+			            .ImplementedBy<Cqrs.ObjectReader>()
+			            .LifeStyle.Singleton
+	            );
+
+            container.Register(
+		            Component.For(typeof(Cqrs.IObjectReaderBy<>))
+			            .ImplementedBy(typeof(Cqrs.ObjectReaderBy<>))
+			            .LifeStyle.Singleton
+	            );
+
+			container.Register(
                     Component.For<IPipelineHandlerFactory>()
                         .ImplementedBy<PipelineHandlerFactory>()
                         .LifeStyle.Singleton

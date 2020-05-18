@@ -262,6 +262,7 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 CorrelationFactor = source.SignalingMeasTaskParameters.CorrelationFactor.ToNull(),
                 DetailedMeasurementsBWEmission = source.SignalingMeasTaskParameters.DetailedMeasurementsBWEmission,
                 Standard = source.SignalingMeasTaskParameters.Standard,
+                IsUseRefSpectrum = source.SignalingMeasTaskParameters.IsUseRefSpectrum.GetValueOrDefault(false),
 
                 triggerLevel_dBm_Hz = (source.SignalingMeasTaskParameters.triggerLevel_dBm_Hz.HasValue && source.SignalingMeasTaskParameters.triggerLevel_dBm_Hz.Value == -999) ? null : source.SignalingMeasTaskParameters.triggerLevel_dBm_Hz,
                 IsAutoTriggerLevel_dBm_Hz = (source.SignalingMeasTaskParameters.triggerLevel_dBm_Hz.HasValue && source.SignalingMeasTaskParameters.triggerLevel_dBm_Hz.Value == -999),

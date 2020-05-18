@@ -246,7 +246,7 @@ namespace XICSM.ICSControlClient.ViewModels
                         }
                     }
                 }
-                else
+                else if (recordCount > 0)
                 {
                     FRM.FolderBrowserDialog folderDialog = new FRM.FolderBrowserDialog();
                     if (folderDialog.ShowDialog() == FRM.DialogResult.OK)
@@ -257,6 +257,10 @@ namespace XICSM.ICSControlClient.ViewModels
                             ReadData(recordCount);
                         }
                     }
+                }
+                else
+                {
+                    MessageBox.Show($"The result of this query in the database is 0 records!", PluginHelper.MessageBoxCaption, MessageBoxButton.OK);
                 }
             }
         }

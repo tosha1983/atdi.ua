@@ -6,8 +6,10 @@ using Atdi.Platform.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Atdi.Platform.Cqrs;
 
 
 namespace Atdi.Icsm.Plugins.SdrnCalcServerClient
@@ -33,9 +35,16 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient
 
 			var typeResolver = this.Resolver.Resolve<ITypeResolver>();
 
-			// регестрируем все DataAdapters
-			this.Container.Register<ViewModels.EntityOrmTest.Adapters.ProjectDataAdapter>(ServiceLifetime.Singleton);
+            // регестрируем все DataAdapters
+            //this.Container.Register<ViewModels.EntityOrmTest.Adapters.ProjectTestDataAdapter>(ServiceLifetime.Singleton);
+            this.Container.Register<ViewModels.Adapters.ProjectDataAdapter>(ServiceLifetime.Singleton);
+            this.Container.Register<ViewModels.Adapters.ProjectMapDataAdapter>(ServiceLifetime.Singleton);
 
+			this.Container.RegisterClassesBasedOn(
+					typeof(AppComponentConfig).Assembly,
+					typeof(DataAdapter<,>),
+					ServiceLifetime.Singleton
+				);
 			//var dataAdaptersBaseType = typeof(ViewModels.EntityOrmTest.DataAdapter<,>);
 			//var dataAdapterTypes = typeResolver.ForeachInAllAssemblies(
 			//	(type) =>
@@ -48,27 +57,27 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient
 			//			return false;
 			//		}
 
-			//		var baseType = type.BaseType;
-			//		if (baseType == null || !baseType.IsGenericType)
-			//		{
-			//			return false;
-			//		}
+            //		var baseType = type.BaseType;
+            //		if (baseType == null || !baseType.IsGenericType)
+            //		{
+            //			return false;
+            //		}
 
-			//		baseType = baseType.GetGenericTypeDefinition();
-			//		//this.Logger.Info("SdrnCalcServerClient", "AppComponent", $"BaseType = {baseType}");
-			//		return dataAdaptersBaseType == baseType;
-			//	}
-			//).ToArray();
-			//foreach (var dataAdapterType in dataAdapterTypes)
-			//{
-			//	this.Logger.Info("SdrnCalcServerClient", "AppComponent", $"DataAdapterType = {dataAdapterType}");
-			//	this.Container.Register(dataAdapterType, ServiceLifetime.Transient);
-			//}
-			//this.Logger.Info("SdrnCalcServerClient", "AppComponent", $"dataAdapterTypes.Count = {dataAdapterTypes.Length}");
+            //		baseType = baseType.GetGenericTypeDefinition();
+            //		//this.Logger.Info("SdrnCalcServerClient", "AppComponent", $"BaseType = {baseType}");
+            //		return dataAdaptersBaseType == baseType;
+            //	}
+            //).ToArray();
+            //foreach (var dataAdapterType in dataAdapterTypes)
+            //{
+            //	this.Logger.Info("SdrnCalcServerClient", "AppComponent", $"DataAdapterType = {dataAdapterType}");
+            //	this.Container.Register(dataAdapterType, ServiceLifetime.Transient);
+            //}
+            //this.Logger.Info("SdrnCalcServerClient", "AppComponent", $"dataAdapterTypes.Count = {dataAdapterTypes.Length}");
 
-			// регестрируем все View
+            // регестрируем все View
 
-			var viewModelBaseType = typeof(WpfViewModelBase);
+            var viewModelBaseType = typeof(WpfViewModelBase);
 			var viewTypes = typeResolver.ResolveTypes(viewModelBaseType.Assembly, viewModelBaseType);
 			foreach (var viewType in viewTypes)
 			{
@@ -79,7 +88,16 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient
 
 		protected override void OnActivate()
 		{
-			this.Logger.Info("SdrnCalcServerClient", "AppComponent", "OnActivate");
+
+			// подключаем обработчики комманд
+			var commandDispatcher = this.Resolver.Resolve<ICommandDispatcher>();
+			commandDispatcher.RegisterFrom(Assembly.GetAssembly(typeof(AppComponentConfig)));
+			this.Logger.Info("SdrnCalcServerClient", "AppComponent", "Command Handlers were registered");
+
+			// подключаем ридеры
+			var objectReader = this.Resolver.Resolve<IObjectReader>();
+			objectReader.RegisterFrom(Assembly.GetAssembly(typeof(AppComponentConfig)));
+			this.Logger.Info("SdrnCalcServerClient", "AppComponent", "Read Query Executors were registered");
 		}
 	}
 }
