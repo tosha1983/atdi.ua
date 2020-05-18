@@ -45,6 +45,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         bool? CheckLevelChannel { get; set; }
         int? MinPointForDetailBW { get; set; }
         bool? CollectEmissionInstrumentalEstimation { get; set; }
+        bool? IsUseRefSpectrum { get; set; }
         IMeasTask MEAS_TASK { get; set; }
     }
 }

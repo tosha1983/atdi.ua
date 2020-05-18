@@ -54,7 +54,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
 
                 if (SetConnect())
                 {
-                    string fileName = "KTN6841A_" + SensorInfo.serialNumber + ".xml";
+                    string fileName = "KTN6841A_" + serialNumber + ".xml";
                     tac = new CFG.ThisAdapterConfig() { };
                     if (!tac.GetThisAdapterConfig(fileName))
                     {
@@ -73,8 +73,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
                         }
                         mainConfig = tac.Main;
                     }
-
-                    ////SetTransducer(mainConfig);
                     (MesureTraceDeviceProperties mtdp, MesureIQStreamDeviceProperties miqdp) = GetProperties(mainConfig);
 
                     IResultPoolDescriptor<COMR.MesureTraceResult>[] rpd = ValidateAdapterTracePoolMainConfig(mainConfig.AdapterTraceResultPools, fileName);
@@ -82,25 +80,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
                     LevelArrTemp = new float[tracePointsMaxPool];
                     LevelArrTemp2 = new float[gSensorCapabilities.fftMaxBlocksize];
 
-
-                    //levelArrTemp = new float[tracePointsMaxPool];
-                    //LevelArrLength = tracePointsMaxPool;
-                    //for (int i = 0; i < LevelArr.Length; i++)
-                    //{
-                    //    LevelArr[i] = -1000;
-                    //    levelArrTemp[i] = -1000;
-                    //}
-
                     if (gSensorCapabilities.supportsFrequencyData != 0)
                     {
-                        //MessageBox.Show("This RF sensor firmware does not support the frequency data interface",
-                        //    "Not supported");
+                        //измерения спектра доступны
                         host.RegisterHandler<COM.MesureTraceCommand, COMR.MesureTraceResult>(MesureTraceCommandHandler, rpd, mtdp);
                     }
-                    //host.RegisterHandler<COM.MesureTraceCommand, COMR.MesureTraceResult>(MesureTraceCommandHandler, rpd, mtdp);
-                    //host.RegisterHandler<COM.MesureIQStreamCommand, COMR.MesureIQStreamResult>(MesureIQStreamCommandHandler, miqdp);
-                    //host.RegisterHandler<COM.MesureTraceCommand, COMR.MesureTraceResult>(EstimateRefLevelCommandHandler, mtdp);
-                    host.RegisterHandler<COM.GpsCommand, COMR.GpsResult>(GPSCommandHandler);
+                    if (useGNSS)
+                    {
+                        host.RegisterHandler<COM.GpsCommand, COMR.GpsResult>(GPSCommandHandler);
+                    }
                 }
                 else
                 {
@@ -207,37 +195,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
                             //алахадбар
                             throw new Exception("Auto TracePoint and Auto RBW not available together.");
                         }
-                        //needStep = FreqSpan / needSweepPoints;
-
-                        ////(double sampleRate, int spanIndex, uint steps, int numFftPointsIndex) = CalcSweepSetting((double)FreqSpan, needRBW, (uint)needSweepPoints);
-                        ////double span = gSpans[spanIndex];
-                        //(int spanIndex, int steps) = ValidateAndFindSpanAndSteps((double)FreqSpan);
-                        //double span = gSpans[spanIndex];
-                        ////if (span > gSensorCapabilities.maxSpan) span = gSensorCapabilities.maxSpan;
-
-                        //double desiredSampleRate = span * gSensorCapabilities.sampleRateToSpanRatio;
-
-                        //// *** WARNING: A workaround for an Electrum BUG... 
-                        //// capabilities.maxSampleRate is wrongly set to 200kSa/s (i.e. DDC max sample rate),
-                        //// while tuner's max sample rate is still 28MSa/s.
-                        ////double sampleRate = gSensorCapabilities.maxSampleRate;
-                        //if (gSensorCapabilities.maxSampleRate == 200.0e3) gSensorCapabilities.maxSampleRate = 28.0e6;
-                        //double sampleRate = gSensorCapabilities.maxSampleRate;
-
-                        //while (sampleRate / desiredSampleRate > 2)
-                        //{
-                        //    sampleRate /= 2;
-                        //}
-
-                        //uint numFftPoints = fftSize[fftSize.Length - 1];
-
-
-                        //double rbw = sampleRate / numFftPoints * windowMult;
-
-                        //uint numPoints = (uint)((double)numFftPoints * (span / sampleRate));
-
-
-                        //(double needSampleRate, int needSpanIndex, uint needsteps, int FftPointsIndex) = CalcSweepSetting((double)FreqSpan, needRBW, (uint)needSweepPoints);
                         //Все настроили, теперь померяем и соберем результат
 
                         string poolKeyName = "";
@@ -253,7 +210,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
                         double freqstep = 0;
                         double freqstart = 0;
                         double freqstop = (double)FreqStop;
-                        FftPoints = fftSize[fftsizeindex];
+                        fftPoints = fftSize[fftsizeindex];
                         fSpan = gSpans[spanindex];
                         resultGPSPublished = false;
                         bool freqResSet = false;
@@ -277,7 +234,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
                                     {
                                         resFreqStart = freqstart;
                                         resFreqStep = freqstep;
-                                        freqResSet = true;                                       
+                                        freqResSet = true;
                                         double ddd = 0;
                                         for (int rf = 0; rf < spansteps * points; rf++)
                                         {
@@ -287,10 +244,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
                                                 resFreqStopIndex = rf;
                                                 break;
                                             }
-                                            //if (steps * points - 1 == rf)
-                                            //{
-
-                                            //}
                                         }
                                     }
                                     if (resFreqStopIndex == 0)
@@ -405,8 +358,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
                                 result.FrequencyStart_Hz = resFreqStart;
                                 result.FrequencyStep_Hz = resFreqStep;
 
-                                result.TimeStamp = timeService.GetGnssUtcTime().Ticks - uTCOffset;// new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;//неюзабельно
-                                                                                                  //result.TimeStamp = DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
+
+                                result.TimeStamp = timeService.GetGnssUtcTime().Ticks - uTCOffset;
+                                //(((long)gDataHeader.timestampSec) * 1000000000 + gDataHeader.timestampNSec)/100;
+                                //var dt = new DateTime(DateTime.UtcNow.Ticks - result.TimeStamp);
+                                //System.Diagnostics.Debug.WriteLine(dt.ToString(@"yyyy MM dd hh\:mm\:ss\.fffffff"));
+                                //timeService.GetGnssUtcTime().Ticks - uTCOffset;// new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;//неюзабельно
+                                //result.TimeStamp = DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
                                 result.Att_dB = (int)AttLevel;
                                 result.PreAmp_dB = preAmp;
                                 result.RefLevel_dBm = 0;
@@ -514,11 +472,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
                 context.Abort(e);
             }
         }
+
         #region Param
         private readonly long uTCOffset = 621355968000000000;
         private string gSensorName = "";
         private string gSmsHostname = "";
-
+        private string serialNumber = "";
+        private bool sensorInLocalNetwork;
+        private bool lockSensorResource;
+        private bool useGNSS;
         // sensorHandle is used to talk to a specific sensor
         IntPtr gSmsHandle = IntPtr.Zero;     // handle to the Sensor Management Server
         IntPtr gSensorHandle = IntPtr.Zero;  // handle to the sensor
@@ -726,6 +688,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
         }
         private void ValidateAndSetAdapterConfig(AdapterConfig config)
         {
+            sensorInLocalNetwork = config.SensorInLocalNetwork;
+            lockSensorResource = config.LockSensorResource;
+            useGNSS = config.UseGNSS;
             if (config.SmsHostName == null)
             {
                 gSmsHostname = "";
@@ -735,9 +700,16 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
                 gSmsHostname = config.SmsHostName;
             }
 
-            if (config.SensorName == null)
+            if (config.SensorName == null || config.SensorName == "")
             {
-                gSensorName = "";//патом найдем первый попавшийся
+                if (sensorInLocalNetwork)
+                {
+                    gSensorName = "";//если на этом SMS сенсор один то можно, потом найдем первый попавшийся
+                }
+                else
+                {
+                    throw new Exception("AdapterConfig.gSensorName must be set to value available");
+                }
             }
             else
             {
@@ -771,6 +743,18 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
                 case AgSalLib.WindowType.Window_gaussTop: windowMult = 2.215349684; break;
                 case AgSalLib.WindowType.Window_flatTop: windowMult = 3.822108760; break;
                 case AgSalLib.WindowType.Window_uniform: windowMult = 1.0; break;
+            }
+            if (config.SelectedAntenna == 1)
+            {
+                antennaType = AgSalLib.AntennaType.Antenna_1;
+            }
+            else if (config.SelectedAntenna == 2)
+            {
+                antennaType = AgSalLib.AntennaType.Antenna_2;
+            }
+            else
+            {
+                throw new Exception("AdapterConfig.SelectedAntenna must be set to value available (1 or 2).");
             }
         }
 
@@ -813,7 +797,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
             {
                 preAmp = 0;
             }
-            else if (preamp > 1)
+            else if (preamp > 0)
             {
                 if (FreqStart >= 750000000 && FreqStop <= 1800000000)
                 {
@@ -929,15 +913,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
 
             return (SpanIndex, Steps);
         }
+
         #endregion ValidateAndSet
 
         private bool SetConnect()
         {
             err = AgSalLib.salOpenSms(out gSmsHandle, gSmsHostname, 0, null);
-            if (SensorError(err, "salOpenSms: hostname = " + gSmsHostname))
+            if (err != AgSalLib.SalError.SAL_ERR_NONE)
             {
-                throw new Exception("There are no salOpenSms available on host 1 " + gSmsHostname);
-                return false;
+                throw new Exception("Host " + gSmsHostname + "(AdapterConfig.SmsHostName) is unavailable " + gSmsHostname);
             }
 
             if (gSensorName == "")//ищем первый попавшийся
@@ -961,91 +945,69 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
                 }
                 else
                 {
-                    throw new Exception("There are no sensors available on host 2 " + gSmsHostname);
+                    throw new Exception("There are no sensors available on host " + gSmsHostname + " (AdapterConfig.SmsHostName)");
                 }
             }
 
 
             err = AgSalLib.salConnectSensor2(out gSensorHandle, gSmsHandle, gSensorName, "Fft Demo", 0);
-            if (SensorError(err, "salConnectSensor"))
+            if (err != AgSalLib.SalError.SAL_ERR_NONE)
             {
-                throw new Exception("There are no sensors available on host 3 " + gSmsHostname);
-                return false;
+                throw new Exception("The " + gSensorName + " sensor is not available.");
             }
 
-            IntPtr discoveredList = IntPtr.Zero;
-            AgSalLib.SensorInfo sensorInfo = new AgSalLib.SensorInfo();
-            UInt32 numSensors2 = 0;
-            err = AgSalLib.salDiscoverSensors(out discoveredList, gSmsHandle, out numSensors2);
-
-            if (numSensors2 > 0)
+            if (sensorInLocalNetwork)
             {
-                for (int i = 0; i < numSensors2; i++)
+                IntPtr discoveredList = IntPtr.Zero;
+                AgSalLib.SensorInfo sensorInfo = new AgSalLib.SensorInfo();
+                UInt32 numSensors2 = 0;
+                err = AgSalLib.salDiscoverSensors(out discoveredList, gSmsHandle, out numSensors2);
+                if (numSensors2 > 0)
                 {
-                    AgSalLib.salGetNextDiscoveredSensor(discoveredList, out sensorInfo);
-                    if (gSensorName == sensorInfo.hostName)
+                    for (int i = 0; i < numSensors2; i++)
                     {
-                        SensorInfo = sensorInfo;
+                        AgSalLib.salGetNextDiscoveredSensor(discoveredList, out sensorInfo);
+                        if (gSensorName == sensorInfo.hostName)
+                        {
+                            SensorInfo = sensorInfo;
+                        }
                     }
                 }
+                else
+                {
+                    throw new Exception("General sensor data not available. Perhaps the sensor is not on the local network.");
+                }
+                serialNumber = SensorInfo.serialNumber;
             }
             else
             {
-                throw new Exception("There are no sensors available on host 4 " + gSmsHostname);
+                serialNumber = gSensorName;
             }
 
             err = AgSalLib.salGetSensorCapabilities(gSensorHandle, out gSensorCapabilities);
-            if (SensorError(err, "salGetSensorCapabilities"))
+            if (err != AgSalLib.SalError.SAL_ERR_NONE)
             {
-                return false;
+                throw new Exception("Sensor data not available, sensor cannot be used.");
             }
 
-            if (gSensorCapabilities.supportsFrequencyData == 0)
+            if (lockSensorResource)
             {
-                //MessageBox.Show("This RF sensor firmware does not support the frequency data interface",
-                //    "Not supported");
-                //return false;
+                // If we are not in monitor mode, we want exclusive access to the
+                // sensor tuner and FFT engine. This keeps us from stopping another user's 
+                // measurement and keeps other users from stopping ours
+                err = AgSalLib.salLockResource(gSensorHandle, AgSalLib.Resource.Tuner);
+                if (err != AgSalLib.SalError.SAL_ERR_NONE)
+                {
+                    throw new Exception("Unable to block access for other programs (Tuner).");
+                }
+
+                err = AgSalLib.salLockResource(gSensorHandle, AgSalLib.Resource.Fft);
+                if (err != AgSalLib.SalError.SAL_ERR_NONE)
+                {
+                    throw new Exception("Unable to block access for other programs (FFT).");
+                }
             }
-
-
-            //err = AgSalLib.salLockResource(gSensorHandle, AgSalLib.Resource.Tuner);
-            //if (SensorError(err, "salLockResource(Tuner)"))
-            //{
-            //    return false;
-            //}
-
-            //err = AgSalLib.salLockResource(gSensorHandle, AgSalLib.Resource.Fft);
-            //if (SensorError(err, "salLockResource(FFT)"))
-            //{
-            //    return false;
-            //}
-            //if (!gEnableMonitorMode)
-            //{
-
-            //    // If we are not in monitor mode, we want exclusive access to the
-            //    // sensor tuner and FFT engine. This keeps us from stopping another user's 
-            //    // measurement and keeps other users from stopping ours
-            //    err = AgSalLib.salLockResource(gSensorHandle, AgSalLib.Resource.Tuner);
-            //    if (sensorError(err, "salLockResource(Tuner)"))
-            //    {
-            //        return false;
-            //    }
-
-            //    err = AgSalLib.salLockResource(gSensorHandle, AgSalLib.Resource.Fft);
-            //    if (sensorError(err, "salLockResource(FFT)"))
-            //    {
-            //        return false;
-            //    }
-            //}
-
-            //initFftSizeGui();
-
-            //ALLOY-2017: The sensor's freq detection range may be different depending on whether or not a user
-            //has connected a freq extender to the sensor. So instead of hardcoding the range of freqs in the GUI,
-            //we set the min/max with the range from the sensor.
-            //guiFrequencyMHz.Minimum = (decimal)(gSensorCapabilities.minFrequency / 1e6);
-            //guiFrequencyMHz.Maximum = (decimal)(gSensorCapabilities.maxFrequency / 1e6);
-
+            
             List<uint> fft = new List<uint> { };
             for (int i = gSensorCapabilities.fftMinBlocksize; i <= gSensorCapabilities.fftMaxBlocksize; i *= 2)
             {
@@ -1054,218 +1016,23 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
             fftSize = fft.ToArray();
             return true;
         }
+
         /// check if there was an error; if there was, print a message and return "true"
         private bool SensorError(AgSalLib.SalError err, string functionName) // return true if there was an error
         {
             string message = "";
             if (err != AgSalLib.SalError.SAL_ERR_NONE)
             {
-
                 if (message.Length == 0)
                 {
                     message = functionName + " returned error " + err + " (" + AgSalLib.salGetErrorString(err, AgSalLib.Localization.English) + ")\n";
                 }
-                //MessageBox.Show(message, "RF Sensor Error");
                 return true;
             }
             else return false;
         }
 
-        private (double sampleRate, int spanIndex, int steps, int numFftPointsIndex) CalcSweepSetting(double needspan, double needrbw, uint needpoints /*, uint numFftPoints*/)
-        {
-            (int spanIndex, int steps) = ValidateAndFindSpanAndSteps((double)needspan);
-            //if (span > gSensorCapabilities.maxSpan) span = gSensorCapabilities.maxSpan;
-
-            double desiredSampleRate = gSpans[spanIndex] * gSensorCapabilities.sampleRateToSpanRatio;
-
-            // *** WARNING: A workaround for an Electrum BUG... 
-            // capabilities.maxSampleRate is wrongly set to 200kSa/s (i.e. DDC max sample rate),
-            // while tuner's max sample rate is still 28MSa/s.
-            //double sampleRate = gSensorCapabilities.maxSampleRate;
-            if (gSensorCapabilities.maxSampleRate == 200.0e3) gSensorCapabilities.maxSampleRate = 28.0e6;
-            double sampleRate = gSensorCapabilities.maxSampleRate;
-
-            while (sampleRate / desiredSampleRate > 2)
-            {
-                sampleRate /= 2;
-            }
-            int numFftPointsIndex = fftSize.Length - 1;
-            uint numFftPoints = fftSize[numFftPointsIndex];
-
-
-            double rbw = sampleRate / numFftPoints * windowMult;
-
-            uint numPointsOnStep = ((uint)((double)numFftPoints * (gSpans[spanIndex] / sampleRate)));
-            bool exitLoop = false;
-            double r = 0;
-
-            while (!exitLoop)
-            {
-                if (needpoints < numPointsOnStep * steps) //мало точек, надо больше
-                {
-                    r = needrbw / rbw;
-                    if (r >= 2)//надо увеличить rbw на один шаг
-                    {
-                        if (numFftPointsIndex > 0)// можем уменьшить fftsize
-                        {
-                            numFftPointsIndex--;
-                            numFftPoints = fftSize[numFftPointsIndex];
-                            steps *= 2;
-                            //spanIndex--;
-                        }
-                        else//неможем уменьшить fftsize, уменьшим спан и увеличим количестко шагов
-                        {
-                            //значит уменьшим спан
-                            spanIndex++;
-                            steps /= 2;//соответственно нужно увеличить количество шагов
-                        }
-                    }
-                    else if (r <= 0.5)//надо уменьшить rbw на один шаг
-                    {
-                        if (numFftPointsIndex < fftSize.Length - 1)//не можем увеличить fftsize
-                        {
-                            //значит уменьшим спан
-                            spanIndex++;
-                            steps *= 2;//соответственно нужно увеличить количество шагов
-                        }
-                        else
-                        {
-                            numFftPointsIndex++;
-                            numFftPoints = fftSize[numFftPointsIndex];
-                            steps /= 2;
-                        }
-                    }
-                }
-                else if (needpoints * 2 > numPointsOnStep * steps)//Много точек, надо меньше
-                {
-                    r = needrbw / rbw;
-                    if (r >= 2)//надо увеличить rbw на один шаг
-                    {
-                        if (numFftPointsIndex == fftSize.Length - 1)//не можем увеличить fftsize
-                        {
-                            //значит уменьшим спан
-                            spanIndex--;
-                            steps *= 2;//соответственно нужно увеличить количество шагов
-                        }
-                        else
-                        {
-                            numFftPointsIndex++;
-                            numFftPoints = fftSize[numFftPointsIndex];
-                        }
-                    }
-                    else if (r <= 0.5)//надо уменьшить rbw на один шаг
-                    {
-                        if (numFftPointsIndex < fftSize.Length - 1)//не можем увеличить fftsize
-                        {
-                            //значит уменьшим спан
-                            spanIndex++;
-                            steps /= 2;//соответственно нужно увеличить количество шагов
-                        }
-                        else
-                        {
-                            numFftPointsIndex--;
-                            numFftPoints = fftSize[numFftPointsIndex];
-                        }
-                    }
-                }
-                else //точек норм, не устраивает RBW
-                {
-                    r = needrbw / rbw;
-
-                }
-                (double rbw2, uint numPoints2) = Calc(spanIndex, numFftPointsIndex);
-                exitLoop = ValSweepSett(needrbw, rbw2, (int)needpoints, (int)(numPoints2 * steps));
-                if (!exitLoop)
-                {
-                    rbw = rbw2;
-                    numPointsOnStep = numPoints2;
-                }
-            }
-            #region
-            //while (!exitLoop)
-            //{
-            //    if (needpoints < numPoints) //мало точек, надо больше
-            //    {
-            //        r = needrbw / rbw;
-            //        if (r >= 2)//надо увеличить rbw на один шаг
-            //        {
-            //            if (numFftPointsIndex == fftSize.Length - 1)//не можем увеличить fftsize
-            //            {
-            //                //значит уменьшим спан
-            //                spanIndex--;
-            //                steps *= 2;//соответственно нужно увеличить количество шагов
-            //            }
-            //            else
-            //            {
-            //                numFftPointsIndex++;
-            //                numFftPoints = fftSize[numFftPointsIndex];
-            //            }
-            //        }
-            //        else if (r <= 0.5)//надо уменьшить rbw на один шаг
-            //        {
-            //            if (numFftPointsIndex < fftSize.Length - 1)//не можем увеличить fftsize
-            //            {
-            //                //значит уменьшим спан
-            //                spanIndex++;
-            //                steps /= 2;//соответственно нужно увеличить количество шагов
-            //            }
-            //            else
-            //            {
-            //                numFftPointsIndex--;
-            //                numFftPoints = fftSize[numFftPointsIndex];
-            //            }
-            //        }
-            //    }
-            //    else if (needpoints * 2 > numPoints)//Много точек, надо меньше
-            //    {
-
-            //    }
-            //    else //точек норм, не устраивает RBW
-            //    {
-            //        r = needrbw / rbw;
-            //        if (r >= 2)//надо увеличить rbw, на один шаг
-            //        {
-            //            if (numFftPointsIndex == fftSize.Length - 1)//не можем увеличить fftsize
-            //            {
-            //                //значит уменьшим спан
-            //                spanIndex--;
-            //                steps *= 2;//соответственно нужно увеличить количество шагов
-            //            }
-            //            else
-            //            {
-            //                numFftPointsIndex++;
-            //                numFftPoints = fftSize[numFftPointsIndex];
-            //            }
-            //        }
-            //        else if (r <= 0.5)//надо уменьшить rbw на один шаг
-            //        {
-            //            if (numFftPointsIndex < fftSize.Length - 1)//не можем увеличить fftsize
-            //            {
-            //                //значит уменьшим спан
-            //                spanIndex++;
-            //                steps /= 2;//соответственно нужно увеличить количество шагов
-            //            }
-            //            else
-            //            {
-            //                numFftPointsIndex--;
-            //                numFftPoints = fftSize[numFftPointsIndex];
-            //            }
-            //        }
-            //        else //RBW норм, по идее все хорошо
-            //        { }
-            //    }
-            //    (double rbw2, uint numPoints2) = Calc(spanIndex, numFftPointsIndex);
-            //    exitLoop = ValSweepSett(needrbw, rbw2, (int)needpoints, (int)(numPoints2 * steps));
-            //    if (!exitLoop)
-            //    {
-            //        rbw = rbw2;
-            //        numPoints = numPoints2;
-            //    }
-            //}
-            #endregion
-            return (sampleRate, spanIndex, steps, numFftPointsIndex);
-        }
-        private (double rbw, uint numPoints) Calc(int spanindex, int numFftPointsIndex)
+        private (double rbw, uint numPoints) CalcRBWAndNumberPoints(int spanindex, int numFftPointsIndex)
         {
             double desiredSampleRate = gSpans[spanindex] * gSensorCapabilities.sampleRateToSpanRatio;
             if (gSensorCapabilities.maxSampleRate == 200.0e3) gSensorCapabilities.maxSampleRate = 28.0e6;
@@ -1282,36 +1049,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
             return (rbw, numPoints);
         }
 
-
-
-        private bool ValSweepSett(double needrbw, double rbw, int needpoints, int points)
-        {
-            if (points / needpoints >= 1 && points / needpoints < 2)
-            {
-                if (rbw / needrbw > 0.5 && rbw / needrbw <= 1)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-
-        /// <summary>
-        /// ищет необходимое RBW при необходимости изменяет спан и количевство шагов
-        /// </summary>
-        /// <param name="needRBW"></param>
-        /// <param name="fftSizeIndex"></param>
-        /// <param name="needSpanIndex"></param>
-        /// <param name="steps"></param>
-        /// <returns></returns>
         private bool FindNeedRBW(double needRBW, ref int fftSizeIndex, ref int needSpanIndex, ref int steps)
         {
             double rbw = 0;
             uint numPoints = 0;
             for (int i = 0; i < fftSize.Length; i++)
             {
-                (rbw, numPoints) = Calc(needSpanIndex, i);
+                (rbw, numPoints) = CalcRBWAndNumberPoints(needSpanIndex, i);
                 if (rbw < needRBW)
                 {
                     fftSizeIndex = i;
@@ -1327,14 +1071,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
             }
             return false;
         }
-        /// <summary>
-        /// ищет необходимое RBW при необходимости изменяет спан и количевство шагов
-        /// </summary>
-        /// <param name="needRBW"></param>
-        /// <param name="fftSizeIndex"></param>
-        /// <param name="needSpanIndex"></param>
-        /// <param name="steps"></param>
-        /// <returns></returns>
+
         private bool FindNeedTracePoints(int tracePonts, ref int fftSizeIndex, ref int needSpanIndex, ref int steps)
         {
             double rbw = 0;
@@ -1346,7 +1083,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
             int pointsonthis = 0;
             for (int i = 0; i < fftSize.Length; i++)
             {
-                (rbw, numPoints) = Calc(needSpanIndex, i);
+                (rbw, numPoints) = CalcRBWAndNumberPoints(needSpanIndex, i);
                 step = gSpans[needSpanIndex] / numPoints;
 
                 for (int rf = 0; rf < steps * numPoints; rf++)
@@ -1490,27 +1227,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
 
                         if (dataHeader.errorNum != AgSalLib.SalError.SAL_ERR_NONE)
                         {
-                            //string message = "Segment data header returned an error: \n\n";
-                            //message += "errorNumber: " + dataHeader.errorNum.ToString() + "\n";
-                            //message += "errorInfo:   " + dataHeader.errorInfo;
-                            //MessageBox.Show(message, "RF Sensor Error");
                             break;
                         }
-
-                        //if (dataHeader.sequenceNumber == 0)
-                        //{
-                        //    // sequence number == 0, so this is a new measurement
-                        //    // force a rescale whenever measurement restarts
-                        //    gSpectrumYMax = double.MinValue;
-                        //    gSpectrumYMin = double.MaxValue;
-                        //    gSweepCount.reset(); // reset our sweep counter/timer
-                        //}
 
                         if (dataHeader.segmentIndex == 0)
                         {
                             // segmentIndex == 0, so this is the beginning of a new sweep
                             numSweepsThisTime++;
-                            //gSweepCount.plusplus();
                         }
 
                         if (dataHeader.numPoints > 0)
@@ -1530,15 +1253,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
                         {
                             gMeasState = MeasState.Stopped;
                             exitLoop = true;
-                            //System.Diagnostics.Debug.WriteLine("Stopped");
                         }
-
-
                         break;
                     case AgSalLib.SalError.SAL_ERR_NO_DATA_AVAILABLE:
                         System.Threading.Thread.Sleep(sleep);
                         // OK, data just not ready
-                        //System.Diagnostics.Debug.WriteLine("SAL_ERR_NO_DATA_AVAILABLE");
                         break;
                     default:
                         // treat other errors as restart
@@ -1553,7 +1272,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
 
                             StartSweep();
                         }
-                        //System.Diagnostics.Debug.WriteLine("default");
                         break;
                 }
 
@@ -1574,7 +1292,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
                     {
                         // we have a GUI change - send the stop command
                         AgSalLib.salSendSweepCommand(gMeasHandle, AgSalLib.SweepCommand.SweepCommand_stop);
-                        //System.Diagnostics.Debug.WriteLine("Stop");
                         gMeasState = MeasState.Stopping;
                     }
                     break;
@@ -1590,11 +1307,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
 
             return res;
         }
+
         double fCentr = 0, fSpan = 0;
-        uint FftPoints = 0;
-        private bool StartSweep() // returns true if no errors
+        uint fftPoints = 0;
+        private bool StartSweep()
         {
-            //System.Diagnostics.Debug.WriteLine("SetNew");
             uint numSegments = 1;
 
             AgSalLib.SalError err;
@@ -1632,27 +1349,34 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
 
             err = AgSalLib.salSetTuner(gSensorHandle, ref tunerParms);
 
-            if (SensorError(err, "salSetTuner"))
+            if (err != AgSalLib.SalError.SAL_ERR_NONE)
             {
-                return false;
+                throw new Exception("Tuner tuning error. err (" + AgSalLib.salGetErrorString(err, AgSalLib.Localization.English) + ")");
             }
 
-            RBW = sampleRate / FftPoints * windowMult;
+            RBW = sampleRate / fftPoints * windowMult;
 
-            uint numPoints = (uint)((double)FftPoints * (fSpan / sampleRate));
+            uint numPoints = (uint)((double)fftPoints * (fSpan / sampleRate));
             if ((numPoints % 2) == 0) numPoints++; // want odd number so CF is in middle of display
 
-            uint firstPoint = (FftPoints - (numPoints - 1)) / 2;
+            uint firstPoint = (fftPoints - (numPoints - 1)) / 2;
 
             for (int i = 0; i < numSegments; i++)
             {
-                fs[i].attenuation = 0;
+                if (preAmp == 1)
+                {
+                    fs[i].attenuation = attMin + AttLevel; //attMin
+                }
+                else if (preAmp == 0)
+                {
+                    fs[i].attenuation = AttLevel;
+                }
                 fs[i].antenna = antennaType;
                 fs[i].centerFrequency = fCentr;
                 fs[i].sampleRate = sampleRate;
                 fs[i].numAverages = 0;// (uint)guiNumAvg.Value;
                 fs[i].averageType = AgSalLib.AverageType.Average_off;
-                fs[i].numFftPoints = FftPoints;
+                fs[i].numFftPoints = fftPoints;
                 fs[i].firstPoint = firstPoint;
                 fs[i].numPoints = numPoints;
                 fs[i].preamp = preAmp;
@@ -1687,9 +1411,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
 
             err = AgSalLib.salStartSweep2(out gMeasHandle, gSensorHandle, ref sweepParms, ref fs, ref flowControl, null);
 
-            if (SensorError(err, "salStartSweep"))
+            if (err != AgSalLib.SalError.SAL_ERR_NONE)
             {
-                return false;
+                throw new Exception("StartSweep error. err (" + AgSalLib.salGetErrorString(err, AgSalLib.Localization.English) + ")");
             }
 
             gSetupChange = false;
@@ -1835,32 +1559,24 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
                 PreAmpMax_dB = 1, //типа включен/выключен
                 PreAmpMin_dB = 0,
                 RefLevelMax_dBm = 0,//(int)RefLevelMax,
-                RefLevelMin_dBm = 0,//(int)RefLevelMin,
+                RefLevelMin_dBm = 0,//(int)RefLevelMin,                
+                RadioPathParameters = rrps,
                 EquipmentInfo = new EquipmentInfo()
                 {
                     AntennaCode = config.AdapterEquipmentInfo.AntennaSN,// "Omni",//S/N  В конфиг
                     AntennaManufacturer = config.AdapterEquipmentInfo.AntennaManufacturer,//"3anet",//В конфиг
                     AntennaName = config.AdapterEquipmentInfo.AntennaName,//"BC600",//В конфиг
                     EquipmentManufacturer = new Atdi.DataModels.Sdrn.DeviceServer.Adapters.InstrManufacrures().Keysight.UI,
-                    EquipmentName = SensorInfo.modelNumber,
-                    EquipmentFamily = "SpectrumAnalyzer",//SDR/SpecAn/MonRec
-                    EquipmentCode = SensorInfo.serialNumber,//S/N
-
-                },
-                RadioPathParameters = rrps
+                    EquipmentName = "N6841A",
+                    EquipmentFamily = "Sensor",//SDR/SpecAn/MonRec
+                    EquipmentCode = serialNumber,//S/N
+                }
             };
-            //if (preAmpAvailable)
-            //{
-            //    sdp.PreAmpMax_dB = 1;
-            //}
-            //else
-            //{
-            //    sdp.PreAmpMax_dB = 0;
-            //}
-            //
+            
 
-            (double rbwmin, uint numPoints1) = Calc(0, fftSize.Length - 1);
-            (double rbwmax, uint numPoints2) = Calc(gSpans.Length -1, 0);
+
+            (double rbwmin, uint numPoints1) = CalcRBWAndNumberPoints(0, fftSize.Length - 1);
+            (double rbwmax, uint numPoints2) = CalcRBWAndNumberPoints(gSpans.Length - 1, 0);
             MesureTraceDeviceProperties mtdp = new MesureTraceDeviceProperties()
             {
                 RBWMax_Hz = rbwmax,
@@ -1877,8 +1593,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
                 //DeviceId ничего не писать, ID этого экземпляра адаптера
                 standartDeviceProperties = sdp,
             };
-
-
             return (mtdp, miqdp);
         }
 
@@ -1900,6 +1614,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
             }
             return rpps;
         }
-        #endregion Adapter Properties
+        #endregion Adapter Properties       
     }
 }

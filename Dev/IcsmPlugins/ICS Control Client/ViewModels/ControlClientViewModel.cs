@@ -981,7 +981,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 if (sfd.ShowDialog() == FRM.DialogResult.OK)
                 {
                     var output = new List<string>();
-                    output.Add("MaskLevels_dB;MaskFrequencies_MHz;CentralFrequency_MHz;Power_dBm;Bandwidth_kHz");
+                    output.Add("MaskLevels_dB;MaskFrequencies_kHz;CentralFrequency_MHz;Power_dBm;Bandwidth_kHz");
 
                     var emittings = new List<EmittingSpectrum>();
                     double spectrumSteps_kHz = 0;
@@ -1003,7 +1003,7 @@ namespace XICSM.ICSControlClient.ViewModels
                     {
                         for (int i = 0; i < res.MaskLevels_dB.Length; i++)
                         {
-                            output.Add($"{res.MaskLevels_dB[i]};{res.MaskFrequencies_MHz[i]};{res.CentralFrequency_MHz};{res.Power_dBm};{res.Bandwidth_kHz}");
+                            output.Add($"{res.MaskLevels_dB[i]};{res.MaskFrequencies_kHz[i]};{res.CentralFrequency_MHz};{res.Power_dBm};{res.Bandwidth_kHz}");
                         }
                     }
 

@@ -148,9 +148,13 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 KSGPSContext = new DummyGPSExecutionContextMy(logger);
                 var adapterConfig = new ADP.KTN6841A.AdapterConfig()
                 {
-                    SensorName = "",
-                    SmsHostName = "192.168.0.3",
-                    WindowType = 8
+                    SensorName = "US50310575",
+                    SmsHostName = "",
+                    WindowType = 4,
+                    UseGNSS = true,
+                    SensorInLocalNetwork = false,
+                    LockSensorResource = false,
+                    SelectedAntenna = 2
                     //SerialNumber = "101396",
                     //IPAddress = "192.168.2.110",
                     //DisplayUpdate = true,
@@ -447,12 +451,12 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 command.Parameter.FreqStart_Hz = 104.750m * 1000000;// 421.5075m * 1000000;// 100000000;421.525m
                 command.Parameter.FreqStop_Hz = 105.250m * 1000000;// 421.5425m * 1000000;//110000000;
                 command.Parameter.PreAmp_dB = 30;
-                command.Parameter.RBW_Hz = 100;
-                command.Parameter.VBW_Hz = 100;
+                command.Parameter.RBW_Hz = -1;
+                command.Parameter.VBW_Hz = -1;
                 command.Parameter.RefLevel_dBm = -40;
                 command.Parameter.SweepTime_s = 0.00001;
-                command.Parameter.TraceCount = 100;
-                command.Parameter.TracePoint = -1;
+                command.Parameter.TraceCount = 10;
+                command.Parameter.TracePoint = 1000;
                 command.Parameter.TraceType = CMD.Parameters.TraceType.MaxHold;
                 command.Parameter.DetectorType = CMD.Parameters.DetectorType.MaxPeak;
                 command.Parameter.LevelUnit = CMD.Parameters.LevelUnit.dBm;
@@ -561,17 +565,17 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 // send command
                 var context = new DummyExecutionContextMy(logger);
                 var command = new CMD.MesureTraceCommand();
-                command.Parameter.Att_dB = 0;
+                command.Parameter.Att_dB = 5;
                 command.Parameter.FreqStart_Hz = 934.95m * 1000000;// 421.5075m * 1000000;// 100000000;421.525m
                 command.Parameter.FreqStop_Hz = 935.45m * 1000000;// 421.5425m * 1000000;//110000000;
-                command.Parameter.PreAmp_dB = 0;
-                command.Parameter.RBW_Hz = 1000;
-                command.Parameter.VBW_Hz = 1000;
+                command.Parameter.PreAmp_dB = 1;
+                command.Parameter.RBW_Hz = -1;
+                command.Parameter.VBW_Hz = -1;
                 command.Parameter.RefLevel_dBm = -40;
                 command.Parameter.SweepTime_s = 0.00001;
                 command.Parameter.TraceCount = 100;
                 command.Parameter.TracePoint = 2000;
-                command.Parameter.TraceType = CMD.Parameters.TraceType.Average;
+                command.Parameter.TraceType = CMD.Parameters.TraceType.ClearWhrite;
                 command.Parameter.DetectorType = CMD.Parameters.DetectorType.MaxPeak;
                 command.Parameter.LevelUnit = CMD.Parameters.LevelUnit.dBm;
 

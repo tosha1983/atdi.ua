@@ -595,6 +595,10 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
                                         {
                                             builderUpdateMeasTaskSignaling.SetValue(c => c.CollectEmissionInstrumentalEstimation, measTaskSignaling.SignalingMeasTaskParameters.CollectEmissionInstrumentalEstimation);
                                         }
+                                        if (measTaskSignaling.SignalingMeasTaskParameters.IsUseRefSpectrum != null)
+                                        {
+                                            builderUpdateMeasTaskSignaling.SetValue(c => c.IsUseRefSpectrum, measTaskSignaling.SignalingMeasTaskParameters.IsUseRefSpectrum);
+                                        }
                                         if (measTaskSignaling.SignalingMeasTaskParameters.AnalyzeSysInfoEmission != null)
                                         {
                                             builderUpdateMeasTaskSignaling.SetValue(c => c.AnalyzeSysInfoEmission, measTaskSignaling.SignalingMeasTaskParameters.AnalyzeSysInfoEmission);

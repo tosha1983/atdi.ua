@@ -569,6 +569,10 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
                                         {
                                             builderInsertMeasTaskSignaling.SetValue(c => c.CollectEmissionInstrumentalEstimation, measTaskSignaling.SignalingMeasTaskParameters.CollectEmissionInstrumentalEstimation);
                                         }
+                                        if (measTaskSignaling.SignalingMeasTaskParameters.IsUseRefSpectrum != null)
+                                        {
+                                            builderInsertMeasTaskSignaling.SetValue(c => c.IsUseRefSpectrum, measTaskSignaling.SignalingMeasTaskParameters.IsUseRefSpectrum);
+                                        }
                                         if (measTaskSignaling.SignalingMeasTaskParameters.AnalyzeSysInfoEmission != null)
                                         {
                                             builderInsertMeasTaskSignaling.SetValue(c => c.AnalyzeSysInfoEmission, measTaskSignaling.SignalingMeasTaskParameters.AnalyzeSysInfoEmission);
@@ -1066,6 +1070,8 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
                                         MTSDR.SignalingMeasTaskParameters.SignalizationNCount = taskSignaling.SignalingMeasTaskParameters.SignalizationNCount;
                                         MTSDR.SignalingMeasTaskParameters.AnalyzeByChannel = taskSignaling.SignalingMeasTaskParameters.AnalyzeByChannel;
                                         MTSDR.SignalingMeasTaskParameters.CollectEmissionInstrumentalEstimation = taskSignaling.SignalingMeasTaskParameters.CollectEmissionInstrumentalEstimation;
+                                        MTSDR.SignalingMeasTaskParameters.IsUseRefSpectrum = taskSignaling.SignalingMeasTaskParameters.IsUseRefSpectrum;
+
                                         MTSDR.SignalingMeasTaskParameters.AnalyzeSysInfoEmission = taskSignaling.SignalingMeasTaskParameters.AnalyzeSysInfoEmission;
                                         MTSDR.SignalingMeasTaskParameters.DetailedMeasurementsBWEmission = taskSignaling.SignalingMeasTaskParameters.DetailedMeasurementsBWEmission;
                                         MTSDR.SignalingMeasTaskParameters.Standard = taskSignaling.SignalingMeasTaskParameters.Standard;

@@ -55,6 +55,7 @@
     <Compile Include="GPS\GPSWorker.cs" />
     <Compile Include="GPS\GPSTaskResultHandler.cs" />
     <Compile Include="EventProcessing\CommandTaskWorker.cs" />
+    <Compile Include="Model\DeviceCommandCounter.cs" />
     <Compile Include="RegistrationSensor\Convertors\SpectrumOccupation\ConvertMesureDFDevicePropertiesToSensor.cs" />
     <Compile Include="RegistrationSensor\Convertors\SpectrumOccupation\ConvertMesureAudioDevicePropertiesToSensor.cs" />
     <Compile Include="RegistrationSensor\Convertors\SpectrumOccupation\ConvertMesureGpsLocationPropertiesToSensor.cs" />

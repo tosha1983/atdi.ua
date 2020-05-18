@@ -252,6 +252,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 measTask.SignalingMeasTaskParameters.allowableExcess_dB = task.SignalingMeasTaskParameters.allowableExcess_dB;
                 measTask.SignalingMeasTaskParameters.AnalyzeByChannel = task.SignalingMeasTaskParameters.AnalyzeByChannel;
                 measTask.SignalingMeasTaskParameters.CollectEmissionInstrumentalEstimation = task.SignalingMeasTaskParameters.CollectEmissionInstrumentalEstimation;
+                measTask.SignalingMeasTaskParameters.IsUseRefSpectrum = task.SignalingMeasTaskParameters.IsUseRefSpectrum;
                 measTask.SignalingMeasTaskParameters.AnalyzeSysInfoEmission = task.SignalingMeasTaskParameters.AnalyzeSysInfoEmission;
                 measTask.SignalingMeasTaskParameters.CheckFreqChannel = task.SignalingMeasTaskParameters.CheckFreqChannel;
                 measTask.SignalingMeasTaskParameters.CompareTraceJustWithRefLevels = task.SignalingMeasTaskParameters.CompareTraceJustWithRefLevels;
