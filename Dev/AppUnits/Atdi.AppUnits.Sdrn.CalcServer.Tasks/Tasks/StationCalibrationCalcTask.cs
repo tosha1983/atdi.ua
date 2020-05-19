@@ -149,7 +149,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 
         private void LoadTaskParameters()
         {
-            var query = _calcServerDataLayer.GetBuilder<IStationCalibrationParametersArgs>()
+            var query = _calcServerDataLayer.GetBuilder<ICalibrationParametersArgs>()
                             .From()
                             .Select(
                                 c => c.AltitudeStation,

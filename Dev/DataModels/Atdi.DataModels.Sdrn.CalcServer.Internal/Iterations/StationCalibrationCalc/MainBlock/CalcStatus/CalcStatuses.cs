@@ -8,9 +8,13 @@ using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
-	public struct CalcStatusSecondStep
+	public struct CalcStatuses
     {
         public string StatusStation;
+
+        public bool Corellation;
+
+        public bool TrustOldResults;
 
         public bool PointForCorrelation;
 

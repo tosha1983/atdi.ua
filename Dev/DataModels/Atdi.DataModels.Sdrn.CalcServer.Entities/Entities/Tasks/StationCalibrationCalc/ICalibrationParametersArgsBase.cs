@@ -9,7 +9,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks
 {
 
     [Entity]
-    public interface IStationCalibrationParametersArgsBase
+    public interface ICalibrationParametersArgsBase
     {
         float? СorrelationThresholdHard { get; set; }
         float? СorrelationThresholdWeak { get; set; }
