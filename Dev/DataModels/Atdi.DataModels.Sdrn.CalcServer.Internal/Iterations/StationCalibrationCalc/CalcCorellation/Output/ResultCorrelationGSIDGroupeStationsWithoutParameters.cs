@@ -8,9 +8,8 @@ using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
-	public class ResultCorrelationGSIDGroupeStations: ResultCorrelationGSIDGroupeStationsBase
+	public class ResultCorrelationGSIDGroupeStationsWithoutParameters: ResultCorrelationGSIDGroupeStationsBase
     {
-        public ParametersStation ParametersStationNew;
-        public ParametersStation ParametersStationOld;
+
     }
 }
