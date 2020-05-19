@@ -51,7 +51,6 @@
     <Compile Include="AppServerComponentConfig.cs" />
     <Compile Include="Iterations\StationCalibration\DetermineStationParametersCalcIteration.cs" />
     <Compile Include="Iterations\StationCalibration\Utils.cs" />
-    <Compile Include="Iterations\StationCalibration\StationCorellationSimpleCalcIteration.cs" />
     <Compile Include="Iterations\StationCalibration\StationCorellationCalcIteration.cs" />
     <Compile Include="Iterations\StationCalibration\StationCalibrationCalcIteration.cs" />
     <Compile Include="Tasks\CoverageProfilesCalcTask.cs" />

@@ -15,7 +15,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 	/// <summary>
     /// 
 	/// </summary>
-	public class StationCorellationCalcIteration : IIterationHandler<StationCalibrationCalcData, ResultCorrelationGSIDGroupeStations>
+	public class StationCorellationCalcIteration : IIterationHandler<StationCalibrationCalcData, bool>
 	{
 		private readonly ILogger _logger;
         private readonly IIterationsPool _iterationsPool;
@@ -29,9 +29,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             _logger = logger;
         }
 
-        public ResultCorrelationGSIDGroupeStations Run(ITaskContext taskContext, StationCalibrationCalcData data)
+        public bool Run(ITaskContext taskContext, StationCalibrationCalcData data)
 		{
-            var calcCorellationResult = new ResultCorrelationGSIDGroupeStations();
             var iterationFieldStrengthCalcData = _iterationsPool.GetIteration<FieldStrengthCalcData, FieldStrengthCalcResult>();
 
             for (int i = 0; i < data.GSIDGroupeStations.Length; i++)
@@ -39,7 +38,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 var resultFieldStrengthCalcData = iterationFieldStrengthCalcData.Run(taskContext, data.FieldStrengthCalcData[i]);
 
             }
-            return calcCorellationResult;
+            return false;
         }
 	}
 }
