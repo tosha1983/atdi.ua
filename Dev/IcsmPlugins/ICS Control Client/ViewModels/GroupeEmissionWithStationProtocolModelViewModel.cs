@@ -134,7 +134,7 @@ namespace XICSM.ICSControlClient.ViewModels
                         {
                             foreach (DataSynchronizationProcessProtocolsViewModel row in this._currentProtocolDetails)
                             {
-                                PrintRow(row, folderDialog.SelectedPath);
+                                PrintRow(row, folderDialog.SelectedPath, true);
                             }
                             MessageBox.Show("Процедура формирования отчетов успешно завершена!");
                         }
@@ -147,21 +147,14 @@ namespace XICSM.ICSControlClient.ViewModels
         }
         private void OnPrintSelectedCommand(object parameter)
         {
-            FRM.FolderBrowserDialog folderDialog = new FRM.FolderBrowserDialog();
-            if (folderDialog.ShowDialog() == FRM.DialogResult.OK)
+            foreach (DataSynchronizationProcessProtocolsViewModel row in this._currentProtocolDetails)
             {
-                if (!string.IsNullOrEmpty(folderDialog.SelectedPath))
-                {
-                    foreach (DataSynchronizationProcessProtocolsViewModel row in this._currentProtocolDetails)
-                    {
-                        PrintRow(row, folderDialog.SelectedPath);
-                    }
-                    MessageBox.Show("Процедура формирования отчетов успешно завершена!");
-                }
+                PrintRow(row, System.IO.Path.GetTempFileName()+".rtf", false);
             }
+            MessageBox.Show("Процедура формирования отчетов успешно завершена!");
         }
 
-        private void PrintRow(DataSynchronizationProcessProtocolsViewModel row, string selectedPath)
+        private void PrintRow(DataSynchronizationProcessProtocolsViewModel row, string selectedPath, bool isPacketProcess)
         {
             var buildSpectrogram = new BuildSpectrogram();
             // заполненеие таблицы XPROTOCOL_REPORT
@@ -225,6 +218,15 @@ namespace XICSM.ICSControlClient.ViewModels
 
             //генерация отчета
             var nameFile = selectedPath + $@"\{row.GlobalSID}_{row.StandardName}_{row.Freq_MHz.ToString().Replace(".", "_").Replace(",", "_")}_{row.OwnerName}_{row.Level_dBm.ToString().Replace(".", "_").Replace(",", "_")}_{row.Id.ToString()}.rtf";
+            if (isPacketProcess==false)
+            {
+                nameFile = selectedPath;
+            }
+            if (System.IO.File.Exists(nameFile))
+            {
+                System.IO.File.Delete(nameFile);
+            }
+
             RecordPtr recPtr;
             recPtr.Table = "XPROTOCOL_REPORT";
             recPtr.Id = id;
@@ -241,6 +243,11 @@ namespace XICSM.ICSControlClient.ViewModels
             else
             {
                 recPtr.PrintRTFReport2(InsertSpectrogram.GetDirTemplates("SHDIR-REP") + @"\REPORT_SIGNALING.IRP", "RUS", nameFile, "", true, false);
+            }
+
+            if (isPacketProcess == false)
+            {
+                System.Diagnostics.Process.Start(nameFile);
             }
 
 
