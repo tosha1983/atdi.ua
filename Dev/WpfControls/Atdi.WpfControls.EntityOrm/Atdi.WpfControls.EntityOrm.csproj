@@ -72,6 +72,12 @@
     </Compile>
     <Compile Include="Controls\OrmCheckBox.cs" />
     <Compile Include="Controls\OrmDataGrid.cs" />
+    <Compile Include="Controls\OrmDateTimePicker.xaml.cs">
+      <DependentUpon>OrmDateTimePicker.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\OrmTextBox.xaml.cs">
+      <DependentUpon>OrmTextBox.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Extentions.cs" />
     <Compile Include="Maps\Map.cs" />
     <Compile Include="Maps\MapData.cs" />
@@ -103,6 +109,14 @@
     <Page Include="Charts\LineChart.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\OrmDateTimePicker.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\OrmTextBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

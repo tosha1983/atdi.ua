@@ -34,7 +34,7 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.EntityOrmTest
 		public View(
 			IObjectReader objectReader,
 			ICommandDispatcher commandDispatcher,
-			ProjectDataAdapter projectDataAdapter, 
+			ProjectTestDataAdapter projectDataAdapter, 
 			ViewStarter starter,
 			IEventBus eventBus,
 			ILogger logger)
@@ -63,7 +63,7 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.EntityOrmTest
 			
 		}
 
-		public ProjectDataAdapter Projects { get; set; }
+		public ProjectTestDataAdapter Projects { get; set; }
 
 		public void Dispose()
 		{
