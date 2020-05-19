@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations
 {
-	public class StationTransmitter
-	{
+	public class StationReceiver
+    {
         public double[] Freqs_MHz;
 
         public double Freq_MHz;
@@ -16,8 +16,10 @@ namespace Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations
 
 		public float Loss_dB;
 
-		public float MaxPower_dBm;
+		public float KTBF_dBm;
 
-		public PolarizationType Polarization;
+        public float Threshold_dBm;
+      
+        public PolarizationType Polarization;
 	}
 }

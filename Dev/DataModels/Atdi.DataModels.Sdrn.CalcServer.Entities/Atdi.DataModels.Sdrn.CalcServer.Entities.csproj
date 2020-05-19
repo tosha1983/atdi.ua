@@ -86,6 +86,9 @@
     <Compile Include="Entities\IProjectMap.cs" />
     <Compile Include="Entities\IProject.cs" />
     <Compile Include="CalcServerEntityOrmContext.cs" />
+    <Compile Include="Entities\Tasks\StationCalibrationCalc\IStationCalibrationParametersArgsDefault.cs" />
+    <Compile Include="Entities\Tasks\StationCalibrationCalc\IStationCalibrationParametersArgsBase.cs" />
+    <Compile Include="Entities\Tasks\StationCalibrationCalc\IStationCalibrationParametersArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
