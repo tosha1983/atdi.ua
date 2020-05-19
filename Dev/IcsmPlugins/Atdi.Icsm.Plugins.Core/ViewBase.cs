@@ -35,9 +35,9 @@ namespace Atdi.Icsm.Plugins.Core
                 action();
             }
         }
-        protected void RegistryCommand(ref WpfCommand commandProperty, Action<object> commandAction)
+        protected void RegistryCommand(ref ViewCommand commandProperty, Action<object> commandAction)
         {
-            commandProperty = new WpfCommand(commandAction);
+            commandProperty = new ViewCommand(commandAction);
         }
 
 		public abstract void Dispose();

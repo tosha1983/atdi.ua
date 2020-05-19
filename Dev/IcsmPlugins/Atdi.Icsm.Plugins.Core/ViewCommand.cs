@@ -7,12 +7,12 @@ using System.Windows.Input;
 
 namespace Atdi.Icsm.Plugins.Core
 {
-    public class WpfCommand : ICommand
+    public class ViewCommand : ICommand
     {
         private readonly Action<object> _commandAction;
         private readonly Func<object, bool> _canExecute;
 
-        public WpfCommand(Action<object> commandAction, Func<object, bool> canExecute = null)
+        public ViewCommand(Action<object> commandAction, Func<object, bool> canExecute = null)
         {
             this._commandAction = commandAction;
             this._canExecute = canExecute;

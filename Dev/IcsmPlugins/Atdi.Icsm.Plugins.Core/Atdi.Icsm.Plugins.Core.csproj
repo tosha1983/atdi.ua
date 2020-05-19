@@ -68,7 +68,7 @@
     </Compile>
     <Compile Include="ViewStarter.cs" />
     <Compile Include="ViewXamlAttribute.cs" />
-    <Compile Include="WpfCommand.cs" />
+    <Compile Include="ViewCommand.cs" />
     <Compile Include="ViewBase.cs" />
   </ItemGroup>
   <ItemGroup>

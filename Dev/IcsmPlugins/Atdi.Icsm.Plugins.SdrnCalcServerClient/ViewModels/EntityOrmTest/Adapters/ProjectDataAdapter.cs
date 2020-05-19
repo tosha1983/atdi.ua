@@ -9,11 +9,12 @@ using Atdi.Icsm.Plugins.Core;
 using Atdi.Contracts.Api.EntityOrm.WebClient;
 using CS_ES = Atdi.DataModels.Sdrn.CalcServer.Entities;
 
+
 namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.EntityOrmTest.Adapters
 {
 	public sealed class ProjectDataAdapter : EntityDataAdapter<CS_ES.IProject, ProjectModel>
 	{
-		public ProjectTestDataAdapter(CalcServerDataLayer dataLayer, ILogger logger)
+		public ProjectDataAdapter(CalcServerDataLayer dataLayer, ILogger logger)
 			: base(dataLayer.Origin, logger)
 		{
 

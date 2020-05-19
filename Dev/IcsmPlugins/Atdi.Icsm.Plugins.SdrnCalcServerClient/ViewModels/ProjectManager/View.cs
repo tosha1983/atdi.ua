@@ -9,6 +9,7 @@ using Atdi.DataModels.Sdrn.CalcServer.Entities;
 using System.Windows;
 using Atdi.Platform.Logging;
 using Atdi.Icsm.Plugins.Core;
+using Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager.Adapters;
 
 namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
 {
@@ -26,32 +27,32 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
         public ProjectDataAdapter Projects { get; set; }
         public ProjectMapDataAdapter ProjectMaps { get; set; }
 
-        public WpfCommand ProjectAddCommand { get; set; }
-        public WpfCommand ProjectModifyCommand { get; set; }
-        public WpfCommand ProjectDeleteCommand { get; set; }
-        public WpfCommand ProjectActivateCommand { get; set; }
-        public WpfCommand ProjectLockCommand { get; set; }
-        public WpfCommand MapCreateNewCommand { get; set; }
-        public WpfCommand MapDeleteCommand { get; set; }
-        public WpfCommand ContextNewCommand { get; set; }
-        public WpfCommand ContextModifyCommand { get; set; }
-        public WpfCommand ContextDeleteCommand { get; set; }
+        public ViewCommand ProjectAddCommand { get; set; }
+        public ViewCommand ProjectModifyCommand { get; set; }
+        public ViewCommand ProjectDeleteCommand { get; set; }
+        public ViewCommand ProjectActivateCommand { get; set; }
+        public ViewCommand ProjectLockCommand { get; set; }
+        public ViewCommand MapCreateNewCommand { get; set; }
+        public ViewCommand MapDeleteCommand { get; set; }
+        public ViewCommand ContextNewCommand { get; set; }
+        public ViewCommand ContextModifyCommand { get; set; }
+        public ViewCommand ContextDeleteCommand { get; set; }
 
         public View(ProjectDataAdapter projectDataAdapter, ProjectMapDataAdapter projectMapDataAdapter, ViewStarter starter, ILogger logger)
         {
 	        this._starter = starter;
 	        this._logger = logger;
 
-	        this.ProjectAddCommand = new WpfCommand(this.OnProjectAddCommand);
-            this.ProjectModifyCommand = new WpfCommand(this.OnProjectModifyCommand);
-            this.ProjectDeleteCommand = new WpfCommand(this.OnProjectDeleteCommand);
-            this.ProjectActivateCommand = new WpfCommand(this.OnProjectActivateCommand);
-            this.ProjectLockCommand = new WpfCommand(this.OnProjectLockCommand);
-            this.MapCreateNewCommand = new WpfCommand(this.OnMapCreateNewCommand);
-            this.MapDeleteCommand = new WpfCommand(this.OnMapDeleteCommand);
-            this.ContextNewCommand = new WpfCommand(this.OnContextNewCommand);
-            this.ContextModifyCommand = new WpfCommand(this.OnContextModifyCommand);
-            this.ContextDeleteCommand = new WpfCommand(this.OnContextDeleteCommand);
+	        this.ProjectAddCommand = new ViewCommand(this.OnProjectAddCommand);
+            this.ProjectModifyCommand = new ViewCommand(this.OnProjectModifyCommand);
+            this.ProjectDeleteCommand = new ViewCommand(this.OnProjectDeleteCommand);
+            this.ProjectActivateCommand = new ViewCommand(this.OnProjectActivateCommand);
+            this.ProjectLockCommand = new ViewCommand(this.OnProjectLockCommand);
+            this.MapCreateNewCommand = new ViewCommand(this.OnMapCreateNewCommand);
+            this.MapDeleteCommand = new ViewCommand(this.OnMapDeleteCommand);
+            this.ContextNewCommand = new ViewCommand(this.OnContextNewCommand);
+            this.ContextModifyCommand = new ViewCommand(this.OnContextModifyCommand);
+            this.ContextDeleteCommand = new ViewCommand(this.OnContextDeleteCommand);
 
             this.Projects = projectDataAdapter;
             this.ProjectMaps = projectMapDataAdapter;
