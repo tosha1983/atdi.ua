@@ -15,7 +15,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 	/// <summary>
     /// 
 	/// </summary>
-	public class DetermineStationParametersCalcIteration : IIterationHandler<StationCalibrationCalcData, ResultCalibration>
+	public class DetermineStationParametersCalcIteration : IIterationHandler<AllStationCorellationCalcData, ResultCalibration>
 	{
 		private readonly ILogger _logger;
         private readonly IIterationsPool _iterationsPool;
@@ -29,43 +29,38 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             _logger = logger;
         }
 
-        public ResultCalibration Run(ITaskContext taskContext, StationCalibrationCalcData data)
-		{
+        public ResultCalibration Run(ITaskContext taskContext, AllStationCorellationCalcData data)
+        {
             var calcCorellationResult = new ResultCalibration();
-
-
-
-            var stationCorellationCalcData = new StationCorellationCalcData()
+            for (int i = 0; i < data.GSIDGroupeStation.Length; i++)
             {
-                GSIDGroupeStations = data.GSIDGroupeStations,
-                CorellationParameters = data.CorellationParameters,
-                GSIDGroupeDriveTests = data.GSIDGroupeDriveTests,
-                FieldStrengthCalcData = data.FieldStrengthCalcData
-            };
+                var stationCorellationCalcData = new StationCorellationCalcData()
+                {
+                    GSIDGroupeStation = data.GSIDGroupeStation[i],
+                    CorellationParameters = data.CorellationParameters,
+                    GSIDGroupeDriveTests = data.GSIDGroupeDriveTests,
+                    FieldStrengthCalcData = data.FieldStrengthCalcData[i],
+                    GeneralParameters = data.GeneralParameters,
+                    CodeProjection = data.CodeProjection
+                };
 
-            var stationCalibrationCalcData = new StationCalibrationCalcData()
-            {
-                GSIDGroupeStations = data.GSIDGroupeStations,
-                CorellationParameters = data.CorellationParameters,
-                GSIDGroupeDriveTests = data.GSIDGroupeDriveTests,
-                FieldStrengthCalcData = data.FieldStrengthCalcData,
-                CalibrationParameters = data.CalibrationParameters
-            };
+                var stationCalibrationCalcData = new StationCalibrationCalcData()
+                {
+                    GSIDGroupeStation = data.GSIDGroupeStation[i],
+                    CorellationParameters = data.CorellationParameters,
+                    GSIDGroupeDriveTests = data.GSIDGroupeDriveTests,
+                    FieldStrengthCalcData = data.FieldStrengthCalcData[i],
+                    CalibrationParameters = data.CalibrationParameters,
+                    GeneralParameters = data.GeneralParameters,
+                    CodeProjection = data.CodeProjection
+                };
 
+                var iterationCorellationCalc = _iterationsPool.GetIteration<StationCorellationCalcData, ResultCorrelationGSIDGroupeStations>();
+                var resultCorellationCalcData = iterationCorellationCalc.Run(taskContext, stationCorellationCalcData);
 
-            var iterationCorellationCalc = _iterationsPool.GetIteration<StationCorellationCalcData, ResultCorrelationGSIDGroupeStations>();
-            var resultCorellationCalcData = iterationCorellationCalc.Run(taskContext, stationCorellationCalcData);
-
-
-
-            var iterationCalibrationCalc = _iterationsPool.GetIteration<StationCalibrationCalcData, ResultCorrelationGSIDGroupeStations>();
-            var resultCalibrationCalcData = iterationCalibrationCalc.Run(taskContext, stationCalibrationCalcData);
-
-
-
-
-
-
+                var iterationCalibrationCalc = _iterationsPool.GetIteration<StationCalibrationCalcData, ResultCorrelationGSIDGroupeStations>();
+                var resultCalibrationCalcData = iterationCalibrationCalc.Run(taskContext, stationCalibrationCalcData);
+            }
             return calcCorellationResult;
         }
 

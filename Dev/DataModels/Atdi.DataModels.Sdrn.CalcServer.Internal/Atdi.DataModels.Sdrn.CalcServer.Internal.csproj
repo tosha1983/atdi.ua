@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Clients\ClientContext.cs" />
+    <Compile Include="Iterations\StationCalibrationCalc\CalcCorellation\Input\AllStationCorellationCalcData.cs" />
     <Compile Include="Iterations\StationCalibrationCalc\CalcCorellation\Input\StationCorellationCalcDataBase.cs" />
     <Compile Include="Iterations\StationCalibrationCalc\CalcCorellation\Output\ResultCorrelationGSIDGroupeStationsBase.cs" />
     <Compile Include="Iterations\StationCalibrationCalc\CalcCorellation\Output\ResultCorrelationGSIDGroupeStationsWithoutParameters.cs" />
