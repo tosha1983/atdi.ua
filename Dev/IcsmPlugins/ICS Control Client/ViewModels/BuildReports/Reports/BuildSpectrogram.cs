@@ -214,7 +214,7 @@ namespace XICSM.ICSControlClient.ViewModels.Reports
 
                 gr.Clear(Color.White);
                 gr.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-                var stringFont = new Font("Times New Roman", 8);
+                var stringFont = new Font("Times New Roman", 10, FontStyle.Bold);
                 Height = Height - cnt;
                 var chartRect = new Rectangle() { Size = new Size((int)XMax, Height), X = cnt, Y = -deltaY, Location = new Point(cnt, -deltaY) };
                 gr.DrawRectangle(new Pen(Color.Black, 1), chartRect);
@@ -307,15 +307,15 @@ namespace XICSM.ICSControlClient.ViewModels.Reports
 
                     if (dy == _option.YMin)
                     {
-                        gr.DrawString(dy.ToString(), stringFont, Brushes.Black, new PointF(pt.X+10, pt.Y - 8 - deltaY));
+                        gr.DrawString(dy.ToString(), stringFont, Brushes.Black, new PointF(pt.X+ 0, pt.Y - 12 - deltaY));
                     }
                     else if (LessOrEqual((dy + stepY/*_option.YTick*/), _option.YMax))
                     {
-                        gr.DrawString(dy.ToString(), stringFont, Brushes.Black, new PointF(pt.X + 10, pt.Y - deltaY));
+                        gr.DrawString(dy.ToString(), stringFont, Brushes.Black, new PointF(pt.X + 0, pt.Y - deltaY));
                     }
                     else
                     {
-                        gr.DrawString(dy.ToString(), stringFont, Brushes.Black, new PointF(pt.X + 10, pt.Y + 8 - deltaY));
+                        gr.DrawString(dy.ToString(), stringFont, Brushes.Black, new PointF(pt.X + 0, pt.Y + 8 - deltaY));
                     }
                 }
 
