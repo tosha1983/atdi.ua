@@ -9,23 +9,14 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
     public class ProjectMapModel
     {
         public long Id { get; set; }
-
         public string MapName { get; set; }
-
         public string MapNote { get; set; }
-
         public string OwnerInstance { get; set; }
-
         public Guid OwnerMapId { get; set; }
-
         public DateTimeOffset CreatedDate { get; set; }
-
         public byte StatusCode { get; set; }
-
         public string StatusName { get; set; }
-
         public string StatusNote { get; set; }
-
         public string StepUnit { get; set; }
     }
 }

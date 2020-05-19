@@ -23,6 +23,9 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
         private ProjectMapModel _currentProjectMap;
         private ClientContextModel _currentProjectContext;
 
+        public ProjectDataAdapter Projects { get; set; }
+        public ProjectMapDataAdapter ProjectMaps { get; set; }
+
         public WpfCommand ProjectAddCommand { get; set; }
         public WpfCommand ProjectModifyCommand { get; set; }
         public WpfCommand ProjectDeleteCommand { get; set; }
@@ -34,9 +37,7 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
         public WpfCommand ContextModifyCommand { get; set; }
         public WpfCommand ContextDeleteCommand { get; set; }
 
-        public ProjectModel[] Projects { get; set; }
-
-        public View(ViewStarter starter, ILogger logger)
+        public View(ProjectDataAdapter projectDataAdapter, ProjectMapDataAdapter projectMapDataAdapter, ViewStarter starter, ILogger logger)
         {
 	        this._starter = starter;
 	        this._logger = logger;
@@ -52,7 +53,8 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
             this.ContextModifyCommand = new WpfCommand(this.OnContextModifyCommand);
             this.ContextDeleteCommand = new WpfCommand(this.OnContextDeleteCommand);
 
-            this.Projects = new List<ProjectModel>().ToArray();
+            this.Projects = projectDataAdapter;
+            this.ProjectMaps = projectMapDataAdapter;
 
             ReloadData();
         }
@@ -85,49 +87,13 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
         }
         private void OnChangedCurrentProjectContext(ClientContextModel project)
         {
-			///TODO:
+
         }
 
         private void ReloadData()
         {
-			///TODO: нужно реализовать ReloadData
-		}
-
-		private void ReloadProjects()
-		{
-			
-
-			var listProjects = new List<ProjectModel>();
-            //var endpoint = PluginHelper.GetEndpoint();
-            var endpoint = new WebApiEndpoint(new Uri("http://10.1.1.195:15020/"), "/appserver/v1");
-            var dataContext = new WebApiDataContext("SDRN_Server_DB");
-            var dataLayer = new WebApiDataLayer();
-            var webQuery = dataLayer.GetBuilder<IProject>()
-                .Read()
-                .Select(c => c.Id, c => c.Name, c => c.Note, c => c.StatusName, c => c.StatusCode, c => c.StatusNote, c => c.CreatedDate, c => c.OwnerInstance, c => c.OwnerProjectId, c => c.Projection);
-            var executor = dataLayer.GetExecutor(endpoint, dataContext);
-            var records = executor.ExecuteAndFetch(webQuery, reader =>
-            {
-                while (reader.Read())
-                {
-                    var project = new ProjectModel()
-                    {
-                        Id = reader.GetValue(c => c.Id),
-                        Name = reader.GetValue(c => c.Name),
-                        Note = reader.GetValue(c => c.Note),
-                        StatusName = reader.GetValue(c => c.StatusName),
-                        StatusCode = reader.GetValue(c => c.StatusCode),
-                        StatusNote = reader.GetValue(c => c.StatusNote),
-                        CreatedDate = reader.GetValue(c => c.CreatedDate),
-                        OwnerInstance = reader.GetValue(c => c.OwnerInstance),
-                        OwnerProjectId = reader.GetValue(c => c.OwnerProjectId),
-                        Projection = reader.GetValue(c => c.Projection),
-                    };
-                    listProjects.Add(project);
-                }
-                return true;
-            });
-            Projects = listProjects.ToArray();
+            this.Projects.Refresh();
+            this.ProjectMaps.Refresh();
         }
         private void ReloadProjectMaps(long projectId)
         {

@@ -13,7 +13,7 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.EntityOrmTest.Adapte
 {
 	public sealed class ProjectDataAdapter : EntityDataAdapter<CS_ES.IProject, ProjectModel>
 	{
-		public ProjectDataAdapter(CalcServerDataLayer dataLayer, ILogger logger)
+		public ProjectTestDataAdapter(CalcServerDataLayer dataLayer, ILogger logger)
 			: base(dataLayer.Origin, logger)
 		{
 
@@ -39,7 +39,8 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.EntityOrmTest.Adapte
 			{
 				Id = reader.GetValue(c => c.Id),
 				Name = reader.GetValue(c => c.Name),
-				Note = reader.GetValue(c => c.Note)
+				Note = reader.GetValue(c => c.Note),
+                CreatedDate = reader.GetValue(c => c.CreatedDate)
 			};
 		}
 	}

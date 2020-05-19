@@ -8,7 +8,9 @@ namespace Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations
 {
 	public class StationTransmitter
 	{
-		public double Freq_MHz;
+        public double[] Freqs_MHz;
+
+        public double Freq_MHz;
 
 		public double BW_kHz;
 

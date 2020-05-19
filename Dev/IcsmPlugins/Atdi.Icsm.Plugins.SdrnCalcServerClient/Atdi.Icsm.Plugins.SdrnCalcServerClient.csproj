@@ -68,6 +68,8 @@
     <Compile Include="ViewModels\EntityOrmTest\Modifiers\CreateProjectHandler.cs" />
     <Compile Include="ViewModels\EntityOrmTest\Queries\GetProjectByOwnerId.cs" />
     <Compile Include="ViewModels\EntityOrmTest\Queries\GetProjectByOwnerIdExecutor.cs" />
+    <Compile Include="ViewModels\ProjectManager\Adapters\ProjectDataAdapter.cs" />
+    <Compile Include="ViewModels\ProjectManager\Adapters\ProjectMapDataAdapter.cs" />
     <Compile Include="ViewModels\ProjectManager\Models\ClientContextModel.cs" />
     <Compile Include="ViewModels\ProjectManager\Models\ProjectMapModel.cs" />
     <Compile Include="ViewModels\ProjectManager\Models\ProjectModel.cs" />
