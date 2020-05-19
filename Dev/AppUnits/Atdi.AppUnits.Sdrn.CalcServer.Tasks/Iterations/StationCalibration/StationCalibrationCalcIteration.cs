@@ -8,6 +8,7 @@ using Atdi.Contracts.Sdrn.DeepServices;
 using Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations;
 using Atdi.DataModels.Sdrn.CalcServer.Internal.Maps;
 using Atdi.DataModels.Sdrn.DeepServices.Gis;
+using Atdi.Contracts.Sdrn.DeepServices.Gis;
 using Atdi.Platform.Logging;
 
 namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
@@ -19,12 +20,17 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 	{
 		private readonly ILogger _logger;
         private readonly IIterationsPool _iterationsPool;
+        private readonly ITransformation _transformation;
 
         /// <summary>
         /// Заказываем у контейнера нужные сервисы
         /// </summary>
-        public StationCalibrationCalcIteration(IIterationsPool iterationsPool, ILogger logger)
+        public StationCalibrationCalcIteration(
+            IIterationsPool iterationsPool,
+            ITransformation transformation,
+            ILogger logger)
 		{
+            _transformation = transformation;
             _iterationsPool = iterationsPool;
             _logger = logger;
 		}
@@ -32,13 +38,20 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 		public ResultCorrelationGSIDGroupeStations Run(ITaskContext taskContext, StationCalibrationCalcData data)
 		{
             var calcCorellationResult = new ResultCorrelationGSIDGroupeStations();
-            var iterationFieldStrengthCalcData = _iterationsPool.GetIteration<FieldStrengthCalcData, FieldStrengthCalcResult>();
 
-            for (int i = 0; i < data.GSIDGroupeStations.Length; i++)
-            {
-                var resultFieldStrengthCalcData = iterationFieldStrengthCalcData.Run(taskContext, data.FieldStrengthCalcData[i]);
-                
-            }
+
+            // ниже просто пример преобразования координат с Dec в метры
+            // подставляем код проекции и координаты с драйв теста в метод преобразования координат с Dec в метры
+            var coordinate_m = _transformation.ConvertCoordinateToEpgs(data.GSIDGroupeDriveTests[0].Points[0].Coordinate, data.CodeProjection);
+
+            // заполняем поля TargetCoordinate и TargetAltitude_m
+            data.FieldStrengthCalcData.TargetCoordinate = coordinate_m;
+            data.FieldStrengthCalcData.TargetAltitude_m = data.GSIDGroupeDriveTests[0].Points[0].Height_m;
+
+            // вызываем механизм расчета FieldStrengthCalcData на основе переданных данных data.FieldStrengthCalcData
+            var iterationFieldStrengthCalcData = _iterationsPool.GetIteration<FieldStrengthCalcData, FieldStrengthCalcResult>();
+            var resultFieldStrengthCalcData = iterationFieldStrengthCalcData.Run(taskContext, data.FieldStrengthCalcData);
+
             return  calcCorellationResult;
 		}
 	}

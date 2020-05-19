@@ -48,7 +48,9 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 
             public CorellationParameters CorellationParameters;
 
-			public string Projection;
+            public GeneralParameters  GeneralParameters;
+
+            public string Projection;
 
 			public string MapName;
 		}
@@ -114,8 +116,6 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                     PropagationModel = _propagationModel,
                     PointCoordinate = this._contextStations[i].Coordinate,
                     PointAltitude_m = this._contextStations[i].Site.Altitude,
-                    TargetCoordinate = this._contextStations[i].Coordinate, 
-                    TargetAltitude_m = this._contextStations[i].Site.Altitude,
                     MapArea = _mapData.Area,
                     BuildingContent = _mapData.BuildingContent,
                     ClutterContent = _mapData.ClutterContent,
@@ -124,17 +124,22 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                     CluttersDesc = _cluttersDesc
                 };
             }
-            var iterationCalibrationCalcData = new StationCalibrationCalcData
+            var iterationAllStationCorellationCalcData = new AllStationCorellationCalcData
             {
-                GSIDGroupeStations = this._contextStations,
+                GSIDGroupeStation = this._contextStations,
                 CalibrationParameters = this._parameters.CalibrationParameters,
                 CorellationParameters = this._parameters.CorellationParameters,
                 GSIDGroupeDriveTests = this._contextDriveTestsResult,
-                FieldStrengthCalcData = fieldStrengthCalcDatas
+                FieldStrengthCalcData = fieldStrengthCalcDatas,
+                GeneralParameters = this._parameters.GeneralParameters,
+                CodeProjection = _transformation.ConvertProjectionToCode(this._parameters.Projection)
             };
 
-            var iterationResultCalibration = _iterationsPool.GetIteration<StationCalibrationCalcData, ResultCalibration>();
-            var resulCalibration = iterationResultCalibration.Run(_taskContext, iterationCalibrationCalcData);
+            
+            
+
+            var iterationResultCalibration = _iterationsPool.GetIteration<AllStationCorellationCalcData, ResultCalibration>();
+            var resulCalibration = iterationResultCalibration.Run(_taskContext, iterationAllStationCorellationCalcData);
 
 
         }
@@ -210,6 +215,15 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 
                 return new TaskParameters()
                 {
+                    GeneralParameters = new GeneralParameters()
+                    {
+                        DistanceAroundContour_km = reader.GetValue(c => c.DistanceAroundContour_km).GetValueOrDefault(),
+                        MinNumberPointForCorrelation = reader.GetValue(c => c.MinNumberPointForCorrelation).GetValueOrDefault(),
+                        TrustOldResults = reader.GetValue(c => c.TrustOldResults).GetValueOrDefault(),
+                        UseMeasurementSameGSID = reader.GetValue(c => c.UseMeasurementSameGSID).GetValueOrDefault(),
+                        СorrelationThresholdHard = reader.GetValue(c => c.СorrelationThresholdHard).GetValueOrDefault(),
+                        СorrelationThresholdWeak = reader.GetValue(c => c.СorrelationThresholdWeak).GetValueOrDefault()
+                    },
                     CorellationParameters = new CorellationParameters()
                     {
                          CorrelationDistance_m = reader.GetValue(c => c.CorrelationDistance_m).GetValueOrDefault(),
