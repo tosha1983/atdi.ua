@@ -6,19 +6,16 @@ using System.Threading.Tasks;
 using Atdi.Api.EntityOrm.WebClient;
 using Atdi.DataModels.Api.EntityOrm.WebClient;
 using Atdi.DataModels.Sdrn.CalcServer.Entities;
-using Atdi.Icsm.Plugins.SdrnCalcServerClient.Environment.Wpf;
-
-using Atdi.Icsm.Plugins.SdrnCalcServerClient.Forms;
 using System.Windows;
-using Atdi.Icsm.Plugins.SdrnCalcServerClient.Core;
 using Atdi.Platform.Logging;
+using Atdi.Icsm.Plugins.Core;
 
 namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
 {
 
 	[ViewXaml("ProjectManager.xaml")]
 	[ViewCaption("Calc Server Client: Project Manager")]
-	public class View : WpfViewModelBase
+	public class View : ViewBase
     {
 	    private readonly ViewStarter _starter;
 	    private readonly ILogger _logger;
@@ -153,7 +150,7 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
 			}
             catch (Exception e)
             {
-                MessageBox.Show(e.ToString());
+                //MessageBox.Show(e.ToString());
 				//_logger.Exception();
             }
         }
@@ -161,9 +158,9 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
         {
             try
             {
-                var mainForm = new WpfStandardForm("ProjectCard.xaml", "ProjectCardViewModel");
-                mainForm.ShowDialog();
-                mainForm.Dispose();
+                //var mainForm = new WpfStandardForm("ProjectCard.xaml", "ProjectCardViewModel");
+                //mainForm.ShowDialog();
+                //mainForm.Dispose();
             }
             catch (Exception e)
             {
@@ -186,9 +183,9 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
         {
             try
             {
-                var mainForm = new WpfStandardForm("ProjectMapCard.xaml", "ProjectMapCardViewModel");
-                mainForm.ShowDialog();
-                mainForm.Dispose();
+                //var mainForm = new WpfStandardForm("ProjectMapCard.xaml", "ProjectMapCardViewModel");
+                //mainForm.ShowDialog();
+                //mainForm.Dispose();
             }
             catch (Exception e)
             {
@@ -203,9 +200,9 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
         {
             try
             {
-                var mainForm = new WpfStandardForm("ProjectContextCard.xaml", "ProjectContextCardViewModel");
-                mainForm.ShowDialog();
-                mainForm.Dispose();
+                //var mainForm = new WpfStandardForm("ProjectContextCard.xaml", "ProjectContextCardViewModel");
+                //mainForm.ShowDialog();
+                //mainForm.Dispose();
             }
             catch (Exception e)
             {
@@ -216,9 +213,9 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
         {
             try
             {
-                var mainForm = new WpfStandardForm("ProjectContextCard.xaml", "ProjectContextCardViewModel");
-                mainForm.ShowDialog();
-                mainForm.Dispose();
+                //var mainForm = new WpfStandardForm("ProjectContextCard.xaml", "ProjectContextCardViewModel");
+                //mainForm.ShowDialog();
+                //mainForm.Dispose();
             }
             catch (Exception e)
             {
@@ -229,14 +226,19 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
         {
             try
             {
-                var mainForm = new WpfStandardForm("ProjectContextCard.xaml", "ProjectContextCardViewModel");
-                mainForm.ShowDialog();
-                mainForm.Dispose();
+                //var mainForm = new WpfStandardForm("ProjectContextCard.xaml", "ProjectContextCardViewModel");
+                //mainForm.ShowDialog();
+                //mainForm.Dispose();
             }
             catch (Exception e)
             {
                 MessageBox.Show(e.ToString());
             }
         }
-    }
+
+		public override void Dispose()
+		{
+			
+		}
+	}
 }

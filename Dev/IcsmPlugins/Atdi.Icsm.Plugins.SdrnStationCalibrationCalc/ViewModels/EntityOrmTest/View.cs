@@ -7,12 +7,12 @@ using Atdi.Icsm.Plugins.Core;
 using Atdi.Platform.Logging;
 using System.Collections.Specialized;
 using System.Collections;
-using Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.EntityOrmTest.Adapters;
-using Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.EntityOrmTest.Queries;
+using Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.EntityOrmTest.Adapters;
+using Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.EntityOrmTest.Queries;
 using Atdi.Platform.Cqrs;
 using Atdi.Platform.Events;
 
-namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.EntityOrmTest
+namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.EntityOrmTest
 {
 
 	[ViewXaml("EntityOrmTest.xaml")]

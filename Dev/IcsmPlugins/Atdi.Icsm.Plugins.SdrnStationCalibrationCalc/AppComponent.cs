@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 using Atdi.Platform.Cqrs;
 using Atdi.Icsm.Plugins.Core;
 
-namespace Atdi.Icsm.Plugins.SdrnCalcServerClient
+namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc
 {
 	public class AppComponent : ComponentBase
 	{
 		public AppComponent() 
-			: base("SdrnCalcServerClient", ComponentType.IcsmPlugin, ComponentBehavior.SingleInstance)
+			: base("SdrnStationCalibrationCalc", ComponentType.IcsmPlugin, ComponentBehavior.SingleInstance)
 		{
 
 		}
@@ -47,14 +47,6 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient
 				typeof(ViewBase),
 				ServiceLifetime.Transient
 			);
-
-			//var viewModelBaseType = typeof(ViewBase);
-			//var viewTypes = typeResolver.ResolveTypes(viewModelBaseType.Assembly, viewModelBaseType);
-			//foreach (var viewType in viewTypes)
-			//{
-			//	this.Container.Register(viewType, ServiceLifetime.Transient);
-			//	this.Logger.Info("SdrnCalcServerClient", "AppComponent", $"ViewType = {viewType}");
-			//}
 		}
 
 		protected override void OnActivate()
@@ -62,7 +54,7 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient
 			// подключаем обработчики комманд
 			var commandDispatcher = this.Resolver.Resolve<ICommandDispatcher>();
 			commandDispatcher.RegisterFrom(Assembly.GetAssembly(typeof(AppComponentConfig)));
-			this.Logger.Info("SdrnCalcServerClient", "AppComponent", "Command Handlers were registered");
+			this.Logger.Info("SdrnStationCalibrationCalc", "AppComponent", "Command Handlers were registered");
 
 			// подключаем ридеры
 			var objectReader = this.Resolver.Resolve<IObjectReader>();

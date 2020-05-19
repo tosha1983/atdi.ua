@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
+namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.EntityOrmTest
 {
-    public class ProjectModel
-    {
+	public class ProjectModel
+	{
 		public long Id { get; set; }
 
 		public string Name { get; set; }
@@ -27,5 +27,5 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
 		public string StatusNote { get; set; }
 
 		public string Projection { get; set; }
-    }
+	}
 }
