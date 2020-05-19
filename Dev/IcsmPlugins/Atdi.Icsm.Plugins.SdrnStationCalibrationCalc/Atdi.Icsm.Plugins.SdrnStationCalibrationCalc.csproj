@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{6F90D378-968F-49BC-89EF-F6FEB12E7332}</ProjectGuid>
+    <ProjectGuid>{1C3E2475-C113-47F5-AAC6-8AE80BC2EC53}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Atdi.Icsm.Plugins.SdrnCalcServerClient</RootNamespace>
-    <AssemblyName>XICSM_SdrnCalcServerClient</AssemblyName>
+    <RootNamespace>Atdi.Icsm.Plugins.SdrnStationCalibrationCalc</RootNamespace>
+    <AssemblyName>XICSM_SdrnStationCalibrationCalc</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -21,7 +21,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -35,32 +34,30 @@
     <Reference Include="NetPlugins">
       <HintPath>..\ICS Control Client\ICSM 6.2.70\NetPlugins.dll</HintPath>
     </Reference>
-    <Reference Include="NetPlugins2">
-      <HintPath>..\ICS Control Client\ICSM 6.2.70\NetPlugins2.dll</HintPath>
-    </Reference>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="WindowsBase" />
-    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppComponent.cs" />
     <Compile Include="AppComponentConfig.cs" />
-    <Compile Include="DataLayers\InfocenterDataLayer.cs" />
     <Compile Include="DataLayers\CalcServerDataLayer.cs" />
+    <Compile Include="DataLayers\InfocenterDataLayer.cs" />
+    <Compile Include="Plugin.cs" />
     <Compile Include="PluginMenuCommands.cs" />
+    <Compile Include="PluginMetadata.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <DependentUpon>Settings.settings</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
     <Compile Include="ViewModels\EntityOrmTest\Adapters\ProjectDataAdapter.cs" />
     <Compile Include="ViewModels\EntityOrmTest\Events\OnCreatedProject.cs" />
     <Compile Include="ViewModels\EntityOrmTest\Models\ProjectModel.cs" />
@@ -68,25 +65,6 @@
     <Compile Include="ViewModels\EntityOrmTest\Modifiers\CreateProjectHandler.cs" />
     <Compile Include="ViewModels\EntityOrmTest\Queries\GetProjectByOwnerId.cs" />
     <Compile Include="ViewModels\EntityOrmTest\Queries\GetProjectByOwnerIdExecutor.cs" />
-    <Compile Include="ViewModels\ProjectManager\Adapters\ProjectDataAdapter.cs" />
-    <Compile Include="ViewModels\ProjectManager\Adapters\ProjectMapDataAdapter.cs" />
-    <Compile Include="ViewModels\ProjectManager\Models\ClientContextModel.cs" />
-    <Compile Include="ViewModels\ProjectManager\Models\ProjectMapModel.cs" />
-    <Compile Include="ViewModels\ProjectManager\Models\ProjectModel.cs" />
-    <Compile Include="Plugin.cs" />
-    <Compile Include="PluginMetadata.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <DependentUpon>Settings.settings</DependentUpon>
-    </Compile>
-    <Compile Include="ViewModels\ProjectManager\View.cs" />
     <Compile Include="ViewModels\EntityOrmTest\View.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -138,17 +116,7 @@
     <Folder Include="Xaml\" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.ru-RU.resx" />
-    <EmbeddedResource Include="Properties\Resources.uk-UA.resx" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="App.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -156,10 +124,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetDir)XICSM_SdrnCalcServerClient.dll" "C:\ATDI\ICS Manager"
-copy "$(TargetDir)Atdi.*.dll"    "C:\ATDI\ICS Manager"
-copy "$(TargetDir)ru-RU\*.*"   "C:\ATDI\ICS Manager\ru-RU"
-copy "$(TargetDir)uk-UA\*.*"  "C:\ATDI\ICS Manager\uk-UA"
-</PostBuildEvent>
+    <PostBuildEvent>copy "$(TargetDir)XICSM_*.dll" "C:\ATDI\ICS Manager"
+copy "$(TargetDir)Atdi.*.dll"    "C:\ATDI\ICS Manager"</PostBuildEvent>
   </PropertyGroup>
 </Project>

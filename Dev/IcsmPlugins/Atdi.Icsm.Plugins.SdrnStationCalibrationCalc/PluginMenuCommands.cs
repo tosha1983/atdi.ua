@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using ICSM;
 using System.Windows.Forms;
-using VM = Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels;
 using Atdi.Platform.Logging;
 using Atdi.Icsm.Plugins.Core;
+using VM = Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels;
 
-namespace Atdi.Icsm.Plugins.SdrnCalcServerClient
+namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc
 {
     public class PluginMenuCommands
     {
@@ -30,19 +30,6 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient
             text.AppendLine("Assembly: " + typeof(PluginMenuCommands).Assembly.FullName);
 
             MessageBox.Show(text.ToString(), @"About Plugin", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
-        public void OnRunProjectManagerCommand()
-        {
-            try
-            {
-                _viewStarter.Start<VM.ProjectManager.View>(isModal: true);
-            }
-            catch (Exception e)
-            {
-				_logger.Exception((EventContext)"PluginMenuCommands", (EventCategory)"OnRunProjectManagerCommand", e);
-                MessageBox.Show(e.ToString());
-            }
         }
 
         public void OnRunEntityOrmTestCommand()

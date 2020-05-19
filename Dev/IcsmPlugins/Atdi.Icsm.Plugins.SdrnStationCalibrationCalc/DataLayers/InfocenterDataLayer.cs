@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Atdi.DataModels.Api.EntityOrm.WebClient;
 using Atdi.Icsm.Plugins.Core;
 
-namespace Atdi.Icsm.Plugins.SdrnCalcServerClient
+namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc
 {
 	public class InfocenterDataLayer : DataLayerBase
 	{
