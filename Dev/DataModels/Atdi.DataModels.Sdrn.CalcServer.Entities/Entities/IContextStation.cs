@@ -27,7 +27,9 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 
 		string StateName { get; set; }
 
-		IContextStationSite SITE { get; set; }
+        string Standard { get; set; }
+
+        IContextStationSite SITE { get; set; }
 
 		IContextStationAntenna ANTENNA { get; set; }
 

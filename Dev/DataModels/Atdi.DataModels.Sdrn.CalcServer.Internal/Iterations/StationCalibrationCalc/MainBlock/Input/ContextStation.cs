@@ -9,11 +9,10 @@ using Atdi.DataModels.Sdrn.CalcServer.Internal.Clients;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
-	public class StationCorellationCalcDataBase
+    public class ContextStation : ClientContextStation
     {
-        public DriveTestsResult[] GSIDGroupeDriveTests;
-        public ContextStation GSIDGroupeStation;
-        public FieldStrengthCalcData FieldStrengthCalcData;
-        public uint CodeProjection;
+        public DateTimeOffset? ModifiedDate;
+        public long? IdStation;
+        public string TableName;
     }
 }

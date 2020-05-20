@@ -11,6 +11,8 @@ using Atdi.DataModels.Sdrn.DeepServices.Gis;
 using Atdi.Platform.AppComponent;
 using Atdi.Platform.Data;
 using Atdi.Platform.DependencyInjection;
+using Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations;
+using Atdi.DataModels.Sdrn.CalcServer.Internal.Clients;
 
 namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 {
@@ -72,7 +74,17 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 				MaxSize = appConfig.ThresholdsGisProfileDataObjectPoolMaxSize.GetValueOrDefault(10),
 				Factory = () => new short[appConfig.ThresholdsGisProfileDataArrayLength.GetValueOrDefault(10_000)]
 			});
-			base.OnActivateUnit();
+
+
+            var driveTestsResultArrayPool = poolSite.Register(new ObjectPoolDescriptor<DriveTestsResult[]>()
+            {
+                Key = ObjectPools.StationCalibrationDriveTestsResultArrayObjectPool,
+                MinSize = appConfig.ThresholdsStationCalibrationObjectPoolMaxSize.GetValueOrDefault(0),
+                MaxSize = appConfig.ThresholdsStationCalibrationObjectPoolMaxSize.GetValueOrDefault(10),
+                Factory = () => new DriveTestsResult[appConfig.ThresholdsStationCalibrationArrayLength.GetValueOrDefault(1_000)]
+            });
+
+            base.OnActivateUnit();
 		}
 	}
 }
