@@ -43,16 +43,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Clients\ClientContext.cs" />
+    <Compile Include="Iterations\StationCalibrationCalc\CalcCorellation\Input\AllStationCorellationCalcData.cs" />
     <Compile Include="Iterations\StationCalibrationCalc\CalcCorellation\Input\StationCorellationCalcDataBase.cs" />
-    <Compile Include="Iterations\StationCalibrationCalc\CalcCorellation\Parameters\GeneralParameters.cs" />
-    <Compile Include="Iterations\StationCalibrationCalc\MainBlock\CalcStatus\CalcStatusSecondStep.cs" />
-    <Compile Include="Iterations\StationCalibrationCalc\MainBlock\CalcStatus\CalcStatusFirstStep.cs" />
-    <Compile Include="Iterations\StationCalibrationCalc\MainBlock\Output\ResultCalibration.cs" />
-    <Compile Include="Iterations\StationCalibrationCalc\MainBlock\Output\GeneralResultCalibration.cs" />
-    <Compile Include="Iterations\StationCalibrationCalc\MainBlock\Output\ResultCalibrationDriveTest.cs" />
-    <Compile Include="Iterations\StationCalibrationCalc\MainBlock\Output\ResultCalibrationStation.cs" />
-    <Compile Include="Iterations\StationCalibrationCalc\CalcCorellation\Output\ResultCorrelationGSIDGroupeStations.cs" />
     <Compile Include="Iterations\StationCalibrationCalc\CalcCorellation\Output\ParametersStation.cs" />
+    <Compile Include="Iterations\StationCalibrationCalc\CalcCorellation\Output\ResultCorrelationGSIDGroupeStationsBase.cs" />
+    <Compile Include="Iterations\StationCalibrationCalc\CalcCorellation\Output\ResultCorrelationGSIDGroupeStationsWithoutParameters.cs" />
+    <Compile Include="Iterations\StationCalibrationCalc\CalcCorellation\Parameters\GeneralParameters.cs" />
+    <Compile Include="Iterations\StationCalibrationCalc\MainBlock\CalcStatus\ModeStatusParameters.cs" />
+    <Compile Include="Iterations\StationCalibrationCalc\MainBlock\CalcStatus\CalibrationStatusParameters.cs" />
+    <Compile Include="Iterations\StationCalibrationCalc\MainBlock\Input\ContextStation.cs" />
+    <Compile Include="Iterations\StationCalibrationCalc\MainBlock\Output\DriveTestStatusResult.cs" />
+    <Compile Include="Iterations\StationCalibrationCalc\MainBlock\Output\StationStatusResult.cs" />
+    <Compile Include="Iterations\StationCalibrationCalc\MainBlock\Output\CalibrationResult.cs" />
+    <Compile Include="Iterations\StationCalibrationCalc\MainBlock\Output\CalibrationDriveTestResult.cs" />
+    <Compile Include="Iterations\StationCalibrationCalc\MainBlock\Output\CalibrationStationResult.cs" />
+    <Compile Include="Iterations\StationCalibrationCalc\CalcCorellation\Output\ResultCorrelationGSIDGroupeStations.cs" />
     <Compile Include="Iterations\StationCalibrationCalc\CalcCorellation\Input\StationCorellationCalcData.cs" />
     <Compile Include="Iterations\StationCalibrationCalc\CalcCorellation\Input\StationCalibrationCalcData.cs" />
     <Compile Include="Iterations\StationCalibrationCalc\MainBlock\Input\DriveTestsResult.cs" />

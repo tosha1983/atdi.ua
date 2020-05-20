@@ -8,16 +8,13 @@ using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
-	public struct CalcStatusSecondStep
+	public enum StationStatusResult
     {
-        public string StatusStation;
-
-        public bool PointForCorrelation;
-
-        public bool ExceptionParameter;
-
-        public string ResultStationStatus;
-
-        public string ResultDriveTestStatus;
+        CS,
+        NS,
+        IT,
+        NF,
+        UN
     }
 }
+

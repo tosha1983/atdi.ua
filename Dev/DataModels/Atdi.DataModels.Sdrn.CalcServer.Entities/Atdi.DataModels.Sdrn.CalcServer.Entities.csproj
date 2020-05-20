@@ -86,9 +86,17 @@
     <Compile Include="Entities\IProjectMap.cs" />
     <Compile Include="Entities\IProject.cs" />
     <Compile Include="CalcServerEntityOrmContext.cs" />
-    <Compile Include="Entities\Tasks\StationCalibrationCalc\IStationCalibrationParametersArgsDefault.cs" />
-    <Compile Include="Entities\Tasks\StationCalibrationCalc\IStationCalibrationParametersArgsBase.cs" />
-    <Compile Include="Entities\Tasks\StationCalibrationCalc\IStationCalibrationParametersArgs.cs" />
+    <Compile Include="Entities\Tasks\StationCalibrationCalc\ICalibrationStationParamBase.cs" />
+    <Compile Include="Entities\Tasks\StationCalibrationCalc\ICalibrationStationOldParamResult.cs" />
+    <Compile Include="Entities\Tasks\StationCalibrationCalc\ICalibrationStationNewParamResult.cs" />
+    <Compile Include="Entities\Tasks\StationCalibrationCalc\ICalibrationStationResult.cs" />
+    <Compile Include="Entities\Tasks\StationCalibrationCalc\ICalibrationDriveTestResult.cs" />
+    <Compile Include="Entities\Tasks\StationCalibrationCalc\ICalibrationResult.cs" />
+    <Compile Include="Entities\Tasks\StationCalibrationCalc\ICalibrationStatusParameters.cs" />
+    <Compile Include="Entities\Tasks\StationCalibrationCalc\ICalibrationParametersArgsDefault.cs" />
+    <Compile Include="Entities\Tasks\StationCalibrationCalc\ICalibrationParametersArgsBase.cs" />
+    <Compile Include="Entities\Tasks\StationCalibrationCalc\ICalibrationParametersArgs.cs" />
+    <Compile Include="Entities\Tasks\StationCalibrationCalc\IContextCalibrationStation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

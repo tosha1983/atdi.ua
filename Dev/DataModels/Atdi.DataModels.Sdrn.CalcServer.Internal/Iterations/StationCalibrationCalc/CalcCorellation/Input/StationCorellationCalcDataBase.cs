@@ -12,7 +12,8 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 	public class StationCorellationCalcDataBase
     {
         public DriveTestsResult[] GSIDGroupeDriveTests;
-        public ClientContextStation[] GSIDGroupeStations;
-        public FieldStrengthCalcData[] FieldStrengthCalcData;
+        public ContextStation GSIDGroupeStation;
+        public FieldStrengthCalcData FieldStrengthCalcData;
+        public uint CodeProjection;
     }
 }

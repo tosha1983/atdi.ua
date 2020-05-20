@@ -8,21 +8,24 @@ using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
-	public struct GeneralResultCalibration
+	public struct CalibrationResult
     {
         public long IdResult;
+        public string Standard;
         public DateTimeOffset TimeStart;
         public string AreaName;
-        public GeneralParameters  GeneralParameters;
-        public int CountStation;
-        public int CountStationInContour;
+        public GeneralParameters GeneralParameters;
+        public int NumberStation;
+        public int NumberStationInContour;
         public int CountStation_CS;
         public int CountStation_NS;
         public int CountStation_IT;
         public int CountStation_NF;
         public int CountStation_UN;
-        public int CountGSID;
-        public int CountGSID_LS;
-        public int CountGSID_IT;
+        public int CountMeasGSID;
+        public int CountMeasGSID_LS;
+        public int CountMeasGSID_IT;
+        public CalibrationStationResult[] ResultCalibrationStation;
+        public CalibrationDriveTestResult[] ResultCalibrationDriveTest;
     }
 }

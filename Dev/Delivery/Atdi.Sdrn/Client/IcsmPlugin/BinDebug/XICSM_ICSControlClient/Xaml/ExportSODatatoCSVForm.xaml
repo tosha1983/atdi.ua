@@ -47,7 +47,7 @@
           <Grid>
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="200"/>
-              <ColumnDefinition Width="200"/>
+              
               <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
@@ -83,7 +83,7 @@
 
             
             <Label Height="40" Grid.Column="1" Grid.Row="6" Content="{x:Static res:Resources.DirectoryNameForExport}"  HorizontalAlignment="Left" VerticalAlignment="Top"/>
-            <Label Height="40" Grid.Column="1" Grid.Row="7" Content="{Binding Path=ExportDirectoryName}"  HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <Label Height="40" Grid.Column="1" Grid.Row="7" Content="{Binding Path=ExportDirectoryName}" ToolTip="{Binding Path=ExportDirectoryName}"  HorizontalAlignment="Left" VerticalAlignment="Top"/>
             
           </Grid>
         </GroupBox>

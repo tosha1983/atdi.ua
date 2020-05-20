@@ -9,8 +9,14 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks
 {
 
     [Entity]
-    public interface IStationCalibrationParametersArgsBase
-    { 
+    public interface ICalibrationParametersArgsBase
+    {
+        float? СorrelationThresholdHard { get; set; }
+        float? СorrelationThresholdWeak { get; set; }
+        float? TrustOldResults { get; set; }
+        bool? UseMeasurementSameGSID { get; set; }
+        int? DistanceAroundContour_km { get; set; }
+        int? MinNumberPointForCorrelation { get; set; }
         float? MinRangeMeasurements_dBmkV { get; set; }
         float? MaxRangeMeasurements_dBmkV { get; set; }
         int? CorrelationDistance_m { get; set; }

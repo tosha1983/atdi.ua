@@ -123,6 +123,10 @@
       <Project>{b26b6bd9-699d-46b8-ba43-0d0ba803087e}</Project>
       <Name>Atdi.DataModels.Sdrn.DeepServices</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.Infocenter.Entities\Atdi.DataModels.Sdrn.Infocenter.Entities.csproj">
+      <Project>{b793c198-41c4-4e9e-9e18-479a8a51b0b0}</Project>
+      <Name>Atdi.DataModels.Sdrn.Infocenter.Entities</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels\Atdi.DataModels.csproj">
       <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
       <Name>Atdi.DataModels</Name>

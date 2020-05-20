@@ -11,6 +11,7 @@ namespace XICSM.ICSControlClient.Forms
         public Dictionary<string, DataGridFilterBool> FiltersBool;
         public Dictionary<string, DataGridFilterNumeric> FiltersNumeric;
         public Dictionary<string, DataGridFilterString> FiltersString;
+        public Dictionary<string, DataGridFilterDate> FiltersDate;
     }
     public class DataGridFilter
     {
@@ -28,5 +29,9 @@ namespace XICSM.ICSControlClient.Forms
     {
         public string Value;
     }
-
+    public class DataGridFilterDate : DataGridFilter
+    {
+        public DateTime? FromValue;
+        public DateTime? ToValue;
+    }
 }

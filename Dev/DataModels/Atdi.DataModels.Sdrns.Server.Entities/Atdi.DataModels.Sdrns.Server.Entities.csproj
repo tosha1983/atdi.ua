@@ -347,6 +347,7 @@
     <Content Include="DataLayer\SqlServer\Tables\ICSC.AMQP_EVENTS.sql" />
     <Content Include="DataLayer\SqlServer\Tables\ICSC.AMQP_MESSAGES.sql" />
     <Content Include="DataLayer\SqlServer\Views\ICSC.UNIT.sql" />
+    <Content Include="DataLayer\SqlServer\Views\ICSC.XV_RES_LEVELS.sql" />
     <Content Include="Metadata\DataTypes\ClrObject\CT.Object.xml" />
     <Content Include="Metadata\DataTypes\ClrObject\CT.ReadOnlyDictionary.String.String.xml" />
     <Content Include="Metadata\DataTypes\ClrObject\Float.FLOAT.xml" />

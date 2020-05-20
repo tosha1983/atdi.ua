@@ -1036,9 +1036,6 @@
     <value>Час від</value>
   </data>
   <data name="TimeMeas" xml:space="preserve">
-    <value>Час</value>
-  </data>
-  <data name="TimeMeas1" xml:space="preserve">
     <value>Час вимірювання</value>
   </data>
   <data name="TimeStart" xml:space="preserve">
@@ -1139,5 +1136,8 @@
   </data>
   <data name="RestrictionsOfExport" xml:space="preserve">
     <value>Обмеження експорту</value>
+  </data>
+  <data name="DataSavedSuccesfully" xml:space="preserve">
+    <value>Дані збережені успішно.</value>
   </data>
 </root>

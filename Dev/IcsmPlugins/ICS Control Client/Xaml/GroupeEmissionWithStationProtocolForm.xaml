@@ -72,7 +72,7 @@
       <DataGrid Grid.Row="1" x:Name="GroupeEmissionProtocol" IsReadOnly="True" Margin="5,30,5,5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding Protocols}" SelectedItem="{Binding CurrentProtocol}">
         <DataGrid.Columns>
           <DataGridTextColumn Header="{x:Static res:Resources.GSID}" Binding="{Binding Path=GSID}"></DataGridTextColumn>
-          <DataGridTextColumn Header="{x:Static res:Resources.DateMeas}" Binding="{Binding Path=DateMeas}"></DataGridTextColumn>
+          <DataGridTextColumn Header="{x:Static res:Resources.DateMeas}" Binding="{Binding Path=DateMeas, StringFormat='{}{0:dd.MM.yyyy}'}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.RadioMonitoringResult}" Binding="{Binding Path=StatusMeasStationFull}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.OwnerOfStation}" Binding="{Binding Path=Owner}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.StationAddress}" Binding="{Binding Path=StationAddress}"></DataGridTextColumn>

@@ -1036,9 +1036,6 @@
     <value>Время от</value>
   </data>
   <data name="TimeMeas" xml:space="preserve">
-    <value>Время</value>
-  </data>
-  <data name="TimeMeas1" xml:space="preserve">
     <value>Время измерения</value>
   </data>
   <data name="TimeStart" xml:space="preserve">
@@ -1139,5 +1136,8 @@
   </data>
   <data name="RestrictionsOfExport" xml:space="preserve">
     <value>Ограничения экспорта</value>
+  </data>
+  <data name="DataSavedSuccesfully" xml:space="preserve">
+    <value>Данные успешно сохранены</value>
   </data>
 </root>

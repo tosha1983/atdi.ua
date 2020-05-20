@@ -27,7 +27,6 @@ namespace Atdi.WpfControls.EntityOrm.Controls
         {
             InitializeComponent();
         }
-
         public double CaptionWith
         {
             get { return _captionWith; }
@@ -61,6 +60,7 @@ namespace Atdi.WpfControls.EntityOrm.Controls
             lblCaption.Width = this._captionWith;
             txtMain.Margin = new Thickness() { Left = CaptionWith, Right = 5, Bottom = 5, Top = 5 };
             txtMain.Width = this.Width > this._captionWith + 10 ? this.Width - this._captionWith - 10 : 0;
+            txtMain.Height = this.Height - 10;
         }
 
         private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
