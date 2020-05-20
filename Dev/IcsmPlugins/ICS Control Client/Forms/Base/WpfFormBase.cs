@@ -116,6 +116,10 @@ namespace XICSM.ICSControlClient.Forms
             {
                 PrepareFilterForm(new FM.gridFilterString(), grd, column);
             }
+            else if (columnType == typeof(DateTime) || columnType == typeof(DateTime?))
+            {
+                PrepareFilterForm(new FM.gridFilterDate(), grd, column);
+            }
             DataGridApplyFilters(grd);
         }
         void DataGrid_MenuClick_ClearAllFilters(object sender, EventArgs e)
@@ -353,6 +357,15 @@ namespace XICSM.ICSControlClient.Forms
                     frm.FilterValue = _dataGridFilters[grd].FiltersString[columnName].Value;
                 }
             }
+            if (form is FM.gridFilterDate)
+            {
+                var frm = form as FM.gridFilterDate;
+                if (_dataGridFilters[grd].FiltersDate.ContainsKey(columnName))
+                {
+                    frm.FilterFromValue = _dataGridFilters[grd].FiltersDate[columnName].FromValue;
+                    frm.FilterToValue = _dataGridFilters[grd].FiltersDate[columnName].ToValue;
+                }
+            }
 
             form.ShowDialog();
             form.Dispose();
@@ -417,7 +430,27 @@ namespace XICSM.ICSControlClient.Forms
                     else if (_dataGridFilters[grd].FiltersString.ContainsKey(columnName))
                         _dataGridFilters[grd].FiltersString.Remove(columnName);
                 }
+                else if (form is FM.gridFilterDate)
+                {
+                    var frm = form as FM.gridFilterDate;
+                    if (frm.FilterFromValue.HasValue || frm.FilterToValue.HasValue)
+                    {
+                        if (!_dataGridFilters[grd].FiltersDate.ContainsKey(columnName))
+                            _dataGridFilters[grd].FiltersDate.Add(columnName, new DataGridFilterDate() { FromValue = frm.FilterFromValue, ToValue = frm.FilterToValue });
+                        else
+                        {
+                            _dataGridFilters[grd].FiltersDate[columnName].FromValue = frm.FilterFromValue;
+                            _dataGridFilters[grd].FiltersDate[columnName].ToValue = frm.FilterToValue;
+                        }
 
+                        if (frm.FilterFromValue.HasValue)
+                            filterText = filterText + " >= " + frm.FilterFromValue.Value.ToString("dd.MM.yyyy") + ";";
+                        if (frm.FilterToValue.HasValue)
+                            filterText = filterText + " <= " + frm.FilterToValue.Value.ToString("dd.MM.yyyy") + ";";
+                    }
+                    else if (_dataGridFilters[grd].FiltersDate.ContainsKey(columnName))
+                        _dataGridFilters[grd].FiltersDate.Remove(columnName);
+                }
                 if (!string.IsNullOrEmpty(filterText))
                 {
                     column.Foreground = new SolidColorBrush(Colors.Green);
@@ -452,7 +485,8 @@ namespace XICSM.ICSControlClient.Forms
                 {
                     FiltersNumeric = new Dictionary<string, DataGridFilterNumeric>(),
                     FiltersBool = new Dictionary<string, DataGridFilterBool>(),
-                    FiltersString = new Dictionary<string, DataGridFilterString>()
+                    FiltersString = new Dictionary<string, DataGridFilterString>(),
+                    FiltersDate = new Dictionary<string, DataGridFilterDate>()
                 });
             }
         }
@@ -489,12 +523,15 @@ namespace XICSM.ICSControlClient.Forms
             if (grid.Name == "GroupeEmissionProtocol")
             {
                 if (columnName == "GSID") return typeof(string);
+                if (columnName == "DateMeas") return typeof(DateTime);
                 if (columnName == "StatusMeasStationFull") return typeof(string);
                 if (columnName == "Owner") return typeof(string);
                 if (columnName == "StationAddress") return typeof(string);
                 if (columnName == "CoordinatesLon") return typeof(string);
                 if (columnName == "CoordinatesLat") return typeof(string);
                 if (columnName == "NumberPermission") return typeof(string);
+                if (columnName == "PermissionStart") return typeof(DateTime);
+                if (columnName == "PermissionPeriod") return typeof(DateTime);
                 if (columnName == "SensorName") return typeof(string);
             }
             if (grid.Name == "GroupeEmissionProtocolDetail")
@@ -509,6 +546,7 @@ namespace XICSM.ICSControlClient.Forms
                 if (columnName == "RadioControlBandWidth_KHz") return typeof(double?);
                 if (columnName == "FieldStrength") return typeof(double?);
                 if (columnName == "Level_dBm") return typeof(double?);
+                if (columnName == "DateMeas_OnlyDate") return typeof(DateTime);
                 if (columnName == "SensorCoordinatesLon") return typeof(string);
                 if (columnName == "SensorCoordinatesLat") return typeof(string);
                 if (columnName == "CoordinatesLon") return typeof(string);
@@ -517,6 +555,8 @@ namespace XICSM.ICSControlClient.Forms
                 if (columnName == "Standard") return typeof(string);
                 if (columnName == "Address") return typeof(string);
                 if (columnName == "PermissionNumber") return typeof(string);
+                if (columnName == "PermissionStart") return typeof(DateTime);
+                if (columnName == "PermissionStop") return typeof(DateTime);
                 if (columnName == "CurentStatusStation") return typeof(string);
                 if (columnName == "TitleSensor") return typeof(string);
             }
@@ -726,6 +766,30 @@ namespace XICSM.ICSControlClient.Forms
                         if (filter.Key == "SensorName" && !c.SensorName.Contains(filter.Value.Value))
                             return false;
                     }
+                    foreach (var filter in _dataGridFilters[grid].FiltersDate)
+                    {
+                        if (filter.Key == "DateMeas")
+                        {
+                            if (filter.Value.FromValue.HasValue && (!c.DateMeas.HasValue || c.DateMeas < filter.Value.FromValue.Value.Date))
+                                return false;
+                            if (filter.Value.ToValue.HasValue && (!c.DateMeas.HasValue || c.DateMeas > filter.Value.ToValue.Value.Date.AddHours(23).AddMinutes(59).AddSeconds(59)))
+                                return false;
+                        }
+                        if (filter.Key == "PermissionStart")
+                        {
+                            if (filter.Value.FromValue.HasValue && (!c.PermissionStart.HasValue || c.PermissionStart < filter.Value.FromValue.Value.Date))
+                                return false;
+                            if (filter.Value.ToValue.HasValue && (!c.PermissionStart.HasValue || c.PermissionStart > filter.Value.ToValue.Value.Date.AddHours(23).AddMinutes(59).AddSeconds(59)))
+                                return false;
+                        }
+                        if (filter.Key == "PermissionPeriod")
+                        {
+                            if (filter.Value.FromValue.HasValue && (!c.PermissionPeriod.HasValue || c.PermissionPeriod < filter.Value.FromValue.Value.Date))
+                                return false;
+                            if (filter.Value.ToValue.HasValue && (!c.PermissionPeriod.HasValue || c.PermissionPeriod > filter.Value.ToValue.Value.Date.AddHours(23).AddMinutes(59).AddSeconds(59)))
+                                return false;
+                        }
+                    }
                     return true;
                 });
             }
@@ -804,6 +868,30 @@ namespace XICSM.ICSControlClient.Forms
                             return false;
                         if (filter.Key == "TitleSensor" && !c.TitleSensor.Contains(filter.Value.Value))
                             return false;
+                    }
+                    foreach (var filter in _dataGridFilters[grid].FiltersDate)
+                    {
+                        if (filter.Key == "DateMeas_OnlyDate")
+                        {
+                            if (filter.Value.FromValue.HasValue && (!c.DateMeas_OnlyDate.HasValue || c.DateMeas_OnlyDate < filter.Value.FromValue.Value.Date))
+                                return false;
+                            if (filter.Value.ToValue.HasValue && (!c.DateMeas_OnlyDate.HasValue || c.DateMeas_OnlyDate > filter.Value.ToValue.Value.Date.AddHours(23).AddMinutes(59).AddSeconds(59)))
+                                return false;
+                        }
+                        if (filter.Key == "PermissionStart")
+                        {
+                            if (filter.Value.FromValue.HasValue && (!c.PermissionStart.HasValue || c.PermissionStart < filter.Value.FromValue.Value.Date))
+                                return false;
+                            if (filter.Value.ToValue.HasValue && (!c.PermissionStart.HasValue || c.PermissionStart > filter.Value.ToValue.Value.Date.AddHours(23).AddMinutes(59).AddSeconds(59)))
+                                return false;
+                        }
+                        if (filter.Key == "PermissionStop")
+                        {
+                            if (filter.Value.FromValue.HasValue && (!c.PermissionStop.HasValue || c.PermissionStop < filter.Value.FromValue.Value.Date))
+                                return false;
+                            if (filter.Value.ToValue.HasValue && (!c.PermissionStop.HasValue || c.PermissionStop > filter.Value.ToValue.Value.Date.AddHours(23).AddMinutes(59).AddSeconds(59)))
+                                return false;
+                        }
                     }
                     return true;
                 });

@@ -138,6 +138,12 @@
     <Compile Include="Forms\ExportSODatatoCSVForm.Designer.cs">
       <DependentUpon>ExportSODatatoCSVForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Base\gridFilterDate.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Base\gridFilterDate.Designer.cs">
+      <DependentUpon>gridFilterDate.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\GroupeEmissionWithStationForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -461,6 +467,9 @@
     <Content Include="ICSM 6.2.70\OrmCs.dll" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Forms\Base\gridFilterDate.resx">
+      <DependentUpon>gridFilterDate.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Base\gridFilterString.resx">
       <DependentUpon>gridFilterString.cs</DependentUpon>
     </EmbeddedResource>

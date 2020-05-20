@@ -97,7 +97,7 @@
             <DataGrid.ContextMenu>
               <ContextMenu>
                 <MenuItem Header="{x:Static res:Resources.ImportFromCSV}" Command="{Binding ImportRefSpectrumFromCSVCommand}"/>
-                <MenuItem Header="{x:Static res:Resources.Delete}" Command="{Binding DeleteRefSpectrumCommand}"/>
+                <MenuItem Header="{x:Static res:Resources.Delete}" Command="{Binding DeleteRefSpectrumCommand}" IsEnabled="{Binding DeleteRefSpectrumEnabled}"/>
               </ContextMenu>
             </DataGrid.ContextMenu>
             <DataGrid.CellStyle>
