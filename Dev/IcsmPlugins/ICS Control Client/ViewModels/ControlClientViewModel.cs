@@ -657,7 +657,6 @@ namespace XICSM.ICSControlClient.ViewModels
         {
             get => this._changeLevelOfMinOccupationEnabled;
             set => this.Set(ref this._changeLevelOfMinOccupationEnabled, value);
-
         }
         private void ReloadShortMeasTasks()
         {
@@ -933,6 +932,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 task.MeasSubTasks = null;
                 task.Id = null;
                 var newTaskId = SVC.SdrnsControllerWcfClient.CreateMeasTask(task);
+                MessageBox.Show(Properties.Resources.DataSavedSuccesfully);
             }
             
         }

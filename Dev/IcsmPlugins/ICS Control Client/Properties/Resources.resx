@@ -1039,9 +1039,6 @@
     <value>Time From</value>
   </data>
   <data name="TimeMeas" xml:space="preserve">
-    <value>Time</value>
-  </data>
-  <data name="TimeMeas1" xml:space="preserve">
     <value>Time Meas</value>
   </data>
   <data name="TimeStart" xml:space="preserve">
@@ -1139,5 +1136,8 @@
   </data>
   <data name="RestrictionsOfExport" xml:space="preserve">
     <value>Restrictions of export</value>
+  </data>
+  <data name="DataSavedSuccesfully" xml:space="preserve">
+    <value>Data saved succesfully</value>
   </data>
 </root>

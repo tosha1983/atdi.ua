@@ -601,6 +601,15 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Data saved succesfully.
+        /// </summary>
+        public static string DataSavedSuccesfully {
+            get {
+                return ResourceManager.GetString("DataSavedSuccesfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Date Created.
         /// </summary>
         public static string DateCreated {
@@ -2897,20 +2906,11 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Time.
+        ///   Looks up a localized string similar to Time Meas.
         /// </summary>
         public static string TimeMeas {
             get {
                 return ResourceManager.GetString("TimeMeas", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Time Meas.
-        /// </summary>
-        public static string TimeMeas1 {
-            get {
-                return ResourceManager.GetString("TimeMeas1", resourceCulture);
             }
         }
         

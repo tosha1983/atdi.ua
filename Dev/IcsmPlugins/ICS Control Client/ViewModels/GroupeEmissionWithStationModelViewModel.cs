@@ -104,6 +104,11 @@ namespace XICSM.ICSControlClient.ViewModels
             {
                 this._currentRefSpectrums = value;
                 CheckEnabledStart();
+
+                if (value != null && value.Count > 0)
+                    DeleteRefSpectrumEnabled = true;
+                else
+                    DeleteRefSpectrumEnabled = false;
             }
         }
         public DateTime? DateStart
@@ -128,6 +133,14 @@ namespace XICSM.ICSControlClient.ViewModels
             else
                 IsEnabledStart = false;
         }
+
+        bool _deleteRefSpectrumEnabled = false;
+        public bool DeleteRefSpectrumEnabled
+        {
+            get => this._deleteRefSpectrumEnabled;
+            set => this.Set(ref this._deleteRefSpectrumEnabled, value);
+        }
+
         private void ReloadData()
         {
             this.DateStart = DateAndTime.DateSerial(DateTime.Today.Year, DateTime.Today.Month, 1);
@@ -252,10 +265,6 @@ namespace XICSM.ICSControlClient.ViewModels
         {
             var spectrums = SVC.SdrnsControllerWcfClientIeStation.GetAllRefSpectrum();
             this._refSpectrums.Source = spectrums.OrderByDescending(o => o.Id).ToArray();
-            if (spectrums.Length == 1)
-            {
-                this._currentRefSpectrums = new List<RefSpectrumViewModel>() { Mappers.Map(spectrums[0]) };
-            }
         }
         private void SelectSensors()
         {
