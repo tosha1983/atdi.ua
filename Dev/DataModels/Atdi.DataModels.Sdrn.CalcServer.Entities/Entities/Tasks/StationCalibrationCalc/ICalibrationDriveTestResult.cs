@@ -17,6 +17,13 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks
 	public interface ICalibrationDriveTestResult : ICalibrationDriveTestResult_PK
     {
         ICalibrationResult CALIBRATION_RESULT { get; set; }
+        long? IdStation { get; set; }
+        string TableName { get; set; }
+        string GSIDByICSM { get; set; }
+        string GSIDByDriveTest { get; set; }
+        string ResultDriveTestStatus { get; set; }
+        int CountPointsInDriveTest { get; set; }
+        double MaxPercentCorellation { get; set; }
     }
 
 }

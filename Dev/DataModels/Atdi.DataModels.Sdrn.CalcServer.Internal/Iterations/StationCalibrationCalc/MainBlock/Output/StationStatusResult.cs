@@ -8,10 +8,13 @@ using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
-	public class ResultCalibration
+	public enum StationStatusResult
     {
-        public GeneralResultCalibration GeneralResultCalibration;
-        public ResultCalibrationStation[] ResultCalibrationStation;
-        public ResultCalibrationDriveTest[] ResultCalibrationDriveTest;
+        CS,
+        NS,
+        IT,
+        NF,
+        UN
     }
 }
+

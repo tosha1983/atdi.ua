@@ -15,7 +15,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
         public float StdDev_dB;
         public float AvErr_dB;
         public string StatusResult;
-        public Clients.ClientContextStation ClientContextStation;
+        public ContextStation ClientContextStation;
         public DriveTestsResult DriveTestsResult;
         public CorrellationPoint[] CorrellationPoints;
     }

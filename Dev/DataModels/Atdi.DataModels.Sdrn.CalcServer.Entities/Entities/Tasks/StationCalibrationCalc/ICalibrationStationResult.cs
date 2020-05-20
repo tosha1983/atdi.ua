@@ -17,6 +17,12 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks
 	public interface ICalibrationStationResult : ICalibrationStationResult_PK
     {
         ICalibrationResult CALIBRATION_RESULT { get; set; }
+        string TableName { get; set; }
+        long? IdStation { get; set; }
+        string GSIDByICSM { get; set; }
+        string GSIDByMeasurement { get; set; }
+        string ResultStationStatus { get; set; }
+        double MaxCorellation { get; set; }
     }
 
 }

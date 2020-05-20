@@ -32,7 +32,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks
 
         string ResultDriveTestStatus { get; set; }
 
-        string BlockName { get; set; }
+        string ModeStatusParameters { get; set; }
     }
 	
 }

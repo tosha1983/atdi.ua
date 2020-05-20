@@ -16,8 +16,9 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 	[Entity]
 	public interface IContextStationTransmitter : IContextStationTransmitter_PK
 	{
+        double[] Freqs_MHz { get; set; }
 
-		double Freq_MHz { get; set; }
+        double Freq_MHz { get; set; }
 
 		double BW_kHz { get; set; }
 

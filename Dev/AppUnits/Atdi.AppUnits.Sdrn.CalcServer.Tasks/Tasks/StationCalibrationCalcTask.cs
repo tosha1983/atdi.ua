@@ -9,6 +9,7 @@ using Atdi.Contracts.CoreServices.DataLayer;
 using Atdi.Contracts.CoreServices.EntityOrm;
 using Atdi.Contracts.Sdrn.CalcServer.Internal;
 using Atdi.DataModels.Sdrn.CalcServer.Entities;
+using IC = Atdi.DataModels.Sdrn.Infocenter.Entities;
 using Atdi.Platform.Logging;
 using Atdi.DataModels.DataConstraint;
 using Atdi.DataModels.Sdrn.CalcServer.Internal.Clients;
@@ -27,22 +28,26 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 	public class StationCalibrationCalcTask : ITaskHandler
 	{
 		private readonly IDataLayer<EntityDataOrm<CalcServerEntityOrmContext>> _calcServerDataLayer;
-		private readonly IClientContextService _contextService;
+        private readonly IDataLayer<EntityDataOrm<IC.InfocenterEntityOrmContext>> _infocenterDataLayer;
+        private readonly IClientContextService _contextService;
 		private readonly IMapRepository _mapRepository;
 		private readonly IIterationsPool _iterationsPool;
         private readonly ITransformation _transformation;
 		private readonly ILogger _logger;
-		private ITaskContext _taskContext;
+        private readonly AppServerComponentConfig _appServerComponentConfig;
+        private ITaskContext _taskContext;
 		private IDataLayerScope _calcDbScope;
 		private TaskParameters _parameters;
-		private ClientContextStation[] _contextStations;
+		private ContextStation[] _contextStations;
         private DriveTestsResult[] _contextDriveTestsResult;
         private PropagationModel _propagationModel;
         private ProjectMapData _mapData;
 		private CluttersDesc _cluttersDesc;
+        
 
 
-		private class TaskParameters
+
+        private class TaskParameters
 		{
             public CalibrationParameters CalibrationParameters;
 
@@ -61,14 +66,18 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 			IMapRepository mapRepository,
 			IIterationsPool iterationsPool,
 			ITransformation transformation,
-			ILogger logger)
+            AppServerComponentConfig appServerComponentConfig,
+            IDataLayer<EntityDataOrm<IC.InfocenterEntityOrmContext>> infocenterDataLayer,
+            ILogger logger)
 		{
 			_calcServerDataLayer = calcServerDataLayer;
 			_contextService = contextService;
 			_mapRepository = mapRepository;
 			_iterationsPool = iterationsPool;
 			_transformation = transformation;
-			_logger = logger;
+            _appServerComponentConfig = appServerComponentConfig;
+            _infocenterDataLayer = infocenterDataLayer;
+            _logger = logger;
 		}
 
 		public void Dispose()
@@ -95,9 +104,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 
             this._propagationModel = _contextService.GetPropagationModel(this._calcDbScope, taskContext.ClientContextId);
 
-            //заполнение this._contextStations (пока не знаю каким способом)
-
-            //заполнение this._contextDriveTestsResult (пока не знаю каким способом)
+           
+            //заполнение this._contextDriveTestsResult (из инфоцентра)
 
             // найти и загрузить карту
             this._mapData = _mapRepository.GetMapByName(this._calcDbScope, this._taskContext.ProjectId, this._parameters.MapName);
@@ -135,13 +143,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                 CodeProjection = _transformation.ConvertProjectionToCode(this._parameters.Projection)
             };
 
-            
-            
-
-            var iterationResultCalibration = _iterationsPool.GetIteration<AllStationCorellationCalcData, ResultCalibration>();
+            var iterationResultCalibration = _iterationsPool.GetIteration<AllStationCorellationCalcData, CalibrationResult>();
             var resulCalibration = iterationResultCalibration.Run(_taskContext, iterationAllStationCorellationCalcData);
-
-
         }
 
 		private void ValidateTaskParameters()
@@ -154,6 +157,184 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 
         private void LoadTaskParameters()
         {
+            // load stations
+            var clientContextStations = new List<ContextStation>();
+            var queryStation = _calcServerDataLayer.GetBuilder<IContextStation>()
+                    .From()
+                    .Select(
+                        c => c.Id,
+                        c => c.CONTEXT.Id,
+                        c => c.StateCode,
+                        c => c.CreatedDate,
+                        c => c.CallSign,
+                        c => c.Name,
+                        c => c.Standard,
+
+                        c => c.SITE.Latitude_DEC,
+                        c => c.SITE.Longitude_DEC,
+                        c => c.SITE.Altitude_m,
+
+                        c => c.COORDINATES.AtdiX,
+                        c => c.COORDINATES.AtdiY,
+
+                        c => c.ANTENNA.Azimuth_deg,
+                        c => c.ANTENNA.Gain_dB,
+                        c => c.ANTENNA.ItuPatternCode,
+                        c => c.ANTENNA.Tilt_deg,
+                        c => c.ANTENNA.XPD_dB,
+
+                        c => c.ANTENNA.HH_PATTERN.StationId,
+                        c => c.ANTENNA.HH_PATTERN.Angle_deg,
+                        c => c.ANTENNA.HH_PATTERN.Loss_dB,
+
+                        c => c.ANTENNA.HV_PATTERN.StationId,
+                        c => c.ANTENNA.HV_PATTERN.Angle_deg,
+                        c => c.ANTENNA.HV_PATTERN.Loss_dB,
+
+                        c => c.ANTENNA.VH_PATTERN.StationId,
+                        c => c.ANTENNA.VH_PATTERN.Angle_deg,
+                        c => c.ANTENNA.VH_PATTERN.Loss_dB,
+
+                        c => c.ANTENNA.VV_PATTERN.StationId,
+                        c => c.ANTENNA.VV_PATTERN.Angle_deg,
+                        c => c.ANTENNA.VV_PATTERN.Loss_dB,
+
+                        c => c.TRANSMITTER.StationId,
+                        c => c.TRANSMITTER.Loss_dB,
+                        c => c.TRANSMITTER.Freq_MHz,
+                        c => c.TRANSMITTER.BW_kHz,
+                        c => c.TRANSMITTER.MaxPower_dBm,
+                        c => c.TRANSMITTER.PolarizationCode,
+                        c => c.TRANSMITTER.Freqs_MHz,
+
+
+                        c => c.RECEIVER.StationId,
+                        c => c.RECEIVER.Loss_dB,
+                        c => c.RECEIVER.Freq_MHz,
+                        c => c.RECEIVER.BW_kHz,
+                        c => c.RECEIVER.KTBF_dBm,
+                        c => c.RECEIVER.Threshold_dBm,
+                        c => c.RECEIVER.PolarizationCode,
+                        c => c.RECEIVER.Freqs_MHz
+                    )
+                    .Where(c => c.CONTEXT.Id, ConditionOperator.Equal, _taskContext.ClientContextId);
+
+            var contextStation = _calcDbScope.Executor.ExecuteAndFetch(queryStation, reader =>
+            {
+                while (reader.Read())
+                {
+
+                    var stationRecord = new ContextStation
+                    {
+                        Id = reader.GetValue(c => c.Id),
+                        ContextId = _taskContext.ClientContextId,
+                        CreatedDate = reader.GetValue(c => c.CreatedDate),
+                        Type = (ClientContextStationType)reader.GetValue(c => c.StateCode),
+                        CallSign = reader.GetValue(c => c.CallSign),
+                        Name = reader.GetValue(c => c.Name),
+                        Standard = reader.GetValue(c => c.Standard),
+                        Site = new Wgs84Site
+                        {
+                            Latitude = reader.GetValue(c => c.SITE.Latitude_DEC),
+                            Longitude = reader.GetValue(c => c.SITE.Longitude_DEC),
+                            Altitude = reader.GetValue(c => c.SITE.Altitude_m)
+                        },
+                        Coordinate = new AtdiCoordinate
+                        {
+                            X = reader.GetValue(c => c.COORDINATES.AtdiX),
+                            Y = reader.GetValue(c => c.COORDINATES.AtdiY)
+                        },
+                        Antenna = new DataModels.Sdrn.DeepServices.RadioSystem.Stations.StationAntenna
+                        {
+                            Gain_dB = reader.GetValue(c => c.ANTENNA.Gain_dB),
+                            XPD_dB = reader.GetValue(c => c.ANTENNA.XPD_dB),
+                            Azimuth_deg = reader.GetValue(c => c.ANTENNA.Azimuth_deg),
+                            ItuPattern = (DataModels.Sdrn.DeepServices.RadioSystem.Stations.AntennaItuPattern)reader.GetValue(c => c.ANTENNA.ItuPatternCode),
+                            Tilt_deg = reader.GetValue(c => c.ANTENNA.Tilt_deg)
+                        },
+
+                    };
+
+                    if (reader.IsNotNull(c => c.TRANSMITTER.StationId))
+                    {
+                        stationRecord.Transmitter = new DataModels.Sdrn.DeepServices.RadioSystem.Stations.StationTransmitter
+                        {
+                            Loss_dB = reader.GetValue(c => c.TRANSMITTER.Loss_dB),
+                            Polarization = (DataModels.Sdrn.DeepServices.RadioSystem.Stations.PolarizationType)reader.GetValue(c => c.TRANSMITTER.PolarizationCode),
+                            MaxPower_dBm = reader.GetValue(c => c.TRANSMITTER.MaxPower_dBm),
+                            BW_kHz = reader.GetValue(c => c.TRANSMITTER.BW_kHz),
+                            Freq_MHz = reader.GetValue(c => c.TRANSMITTER.Freq_MHz),
+                            Freqs_MHz = reader.GetValue(c => c.TRANSMITTER.Freqs_MHz)
+                        };
+                    }
+
+                    if (reader.IsNotNull(c => c.RECEIVER.StationId))
+                    {
+                        stationRecord.Receiver = new DataModels.Sdrn.DeepServices.RadioSystem.Stations.StationReceiver
+                        {
+                            Loss_dB = reader.GetValue(c => c.RECEIVER.Loss_dB),
+                            Polarization = (DataModels.Sdrn.DeepServices.RadioSystem.Stations.PolarizationType)reader.GetValue(c => c.RECEIVER.PolarizationCode),
+                            KTBF_dBm = reader.GetValue(c => c.RECEIVER.KTBF_dBm),
+                            BW_kHz = reader.GetValue(c => c.RECEIVER.BW_kHz),
+                            Freq_MHz = reader.GetValue(c => c.RECEIVER.Freq_MHz),
+                            Threshold_dBm = reader.GetValue(c => c.RECEIVER.Threshold_dBm),
+                            Freqs_MHz = reader.GetValue(c => c.RECEIVER.Freqs_MHz)
+                        };
+                    }
+
+                    if (reader.IsNotNull(c => c.ANTENNA.HH_PATTERN.StationId))
+                    {
+                        stationRecord.Antenna.HhPattern.Angle_deg = reader.GetValue(c => c.ANTENNA.HH_PATTERN.Angle_deg);
+                        stationRecord.Antenna.HhPattern.Loss_dB = reader.GetValue(c => c.ANTENNA.HH_PATTERN.Loss_dB);
+                    }
+                    if (reader.IsNotNull(c => c.ANTENNA.HV_PATTERN.StationId))
+                    {
+                        stationRecord.Antenna.HvPattern.Angle_deg = reader.GetValue(c => c.ANTENNA.HV_PATTERN.Angle_deg);
+                        stationRecord.Antenna.HvPattern.Loss_dB = reader.GetValue(c => c.ANTENNA.HV_PATTERN.Loss_dB);
+                    }
+                    if (reader.IsNotNull(c => c.ANTENNA.VH_PATTERN.StationId))
+                    {
+                        stationRecord.Antenna.VhPattern.Angle_deg = reader.GetValue(c => c.ANTENNA.VH_PATTERN.Angle_deg);
+                        stationRecord.Antenna.VhPattern.Loss_dB = reader.GetValue(c => c.ANTENNA.VH_PATTERN.Loss_dB);
+                    }
+                    if (reader.IsNotNull(c => c.ANTENNA.VV_PATTERN.StationId))
+                    {
+                        stationRecord.Antenna.VvPattern.Angle_deg = reader.GetValue(c => c.ANTENNA.VV_PATTERN.Angle_deg);
+                        stationRecord.Antenna.VvPattern.Loss_dB = reader.GetValue(c => c.ANTENNA.VV_PATTERN.Loss_dB);
+                    }
+                    clientContextStations.Add(stationRecord);
+                    var standards = clientContextStations.Select(c => c.Standard).ToArray();
+                    for (int j=0; j< standards.Length; j++)
+                    {
+                        var fndStations = clientContextStations.FindAll(x => x.Standard == standards[j]);
+                        if (fndStations.Count > _appServerComponentConfig.MaxCountStationsByOneStandard)
+                        {
+                            throw new InvalidOperationException($"Too much station. For standard #{standards[j]} greater {_appServerComponentConfig.MaxCountStationsByOneStandard}. Please select other contour!");
+                        }
+                    }
+                }
+                return true;
+            });
+
+            this._contextStations = clientContextStations.ToArray();
+
+
+            // load drive tests
+            var driveTests = new List<DriveTestsResult>();
+            /*
+            var standards = driveTests.Select(c => c.Standard).ToArray();
+            for (int j = 0; j < standards.Length; j++)
+            {
+                var fndDriveTests = driveTests.FindAll(x => x.Standard == standards[j]);
+                if (fndDriveTests.Count > _appServerComponentConfig.MaxCountDriveTestsByOneStandard)
+                {
+                    throw new InvalidOperationException($"Too much drive tests. For standard #{standards[j]} greater {_appServerComponentConfig.MaxCountDriveTestsByOneStandard}. Please select other contour!");
+                }
+            }
+            */
+            this._contextDriveTestsResult = driveTests.ToArray();
+
+            // load parameters
             var query = _calcServerDataLayer.GetBuilder<ICalibrationParametersArgs>()
                             .From()
                             .Select(
