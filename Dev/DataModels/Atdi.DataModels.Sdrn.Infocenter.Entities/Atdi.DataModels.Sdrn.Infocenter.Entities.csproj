@@ -45,6 +45,9 @@
     <Compile Include="Entities\ICluttersDescFreqClutter.cs" />
     <Compile Include="Entities\ICluttersDescFreq.cs" />
     <Compile Include="Entities\ICluttersDescClutter.cs" />
+    <Compile Include="Entities\SdrnServer\IDriveTest.cs" />
+    <Compile Include="Entities\SdrnServer\IDriveTestPoints.cs" />
+    <Compile Include="Entities\SdrnServer\IMeasResult.cs" />
     <Compile Include="InfocenterEntityOrmContext.cs" />
     <Compile Include="Entities\IMapSector.cs" />
     <Compile Include="Entities\IMap.cs" />
@@ -140,11 +143,20 @@
   <ItemGroup>
     <Folder Include="DataLayer\Oracle\Functions\" />
     <Folder Include="DataLayer\SqlServer\Functions\" />
+    <Folder Include="Metadata\Entities\SdrnServer\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Atdi.DataModels.EntityOrm\Atdi.DataModels.EntityOrm.csproj">
       <Project>{73c8791e-3fc5-4c91-84e5-c19c98096f10}</Project>
       <Name>Atdi.DataModels.EntityOrm</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Atdi.DataModels.Sdrn.DeepServices.Gis\Atdi.DataModels.Sdrn.DeepServices.Gis.csproj">
+      <Project>{d83887b2-4444-4207-a703-c99b94a4c170}</Project>
+      <Name>Atdi.DataModels.Sdrn.DeepServices.Gis</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Atdi.DataModels.Sdrn.DeepServices\Atdi.DataModels.Sdrn.DeepServices.csproj">
+      <Project>{b26b6bd9-699d-46b8-ba43-0d0ba803087e}</Project>
+      <Name>Atdi.DataModels.Sdrn.DeepServices</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
