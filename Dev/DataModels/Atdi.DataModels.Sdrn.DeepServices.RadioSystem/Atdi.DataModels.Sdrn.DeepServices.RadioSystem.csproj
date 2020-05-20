@@ -64,6 +64,7 @@
     <Compile Include="Stations\PolarizationType.cs" />
     <Compile Include="Stations\StationAntenna.cs" />
     <Compile Include="Stations\StationAntennaPattern.cs" />
+    <Compile Include="Stations\StationReceiver.cs" />
     <Compile Include="Stations\StationTransmitter.cs" />
   </ItemGroup>
   <ItemGroup>

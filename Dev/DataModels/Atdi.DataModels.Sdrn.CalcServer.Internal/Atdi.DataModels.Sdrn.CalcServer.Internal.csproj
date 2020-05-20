@@ -43,6 +43,25 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Clients\ClientContext.cs" />
+    <Compile Include="Iterations\StationCalibrationCalc\CalcCorellation\Input\AllStationCorellationCalcData.cs" />
+    <Compile Include="Iterations\StationCalibrationCalc\CalcCorellation\Input\StationCorellationCalcDataBase.cs" />
+    <Compile Include="Iterations\StationCalibrationCalc\CalcCorellation\Output\ResultCorrelationGSIDGroupeStationsBase.cs" />
+    <Compile Include="Iterations\StationCalibrationCalc\CalcCorellation\Output\ResultCorrelationGSIDGroupeStationsWithoutParameters.cs" />
+    <Compile Include="Iterations\StationCalibrationCalc\CalcCorellation\Parameters\GeneralParameters.cs" />
+    <Compile Include="Iterations\StationCalibrationCalc\MainBlock\CalcStatus\CalcStatuses.cs" />
+    <Compile Include="Iterations\StationCalibrationCalc\MainBlock\Output\ResultCalibration.cs" />
+    <Compile Include="Iterations\StationCalibrationCalc\MainBlock\Output\GeneralResultCalibration.cs" />
+    <Compile Include="Iterations\StationCalibrationCalc\MainBlock\Output\ResultCalibrationDriveTest.cs" />
+    <Compile Include="Iterations\StationCalibrationCalc\MainBlock\Output\ResultCalibrationStation.cs" />
+    <Compile Include="Iterations\StationCalibrationCalc\CalcCorellation\Output\ResultCorrelationGSIDGroupeStations.cs" />
+    <Compile Include="Iterations\StationCalibrationCalc\CalcCorellation\Output\ParametersStation.cs" />
+    <Compile Include="Iterations\StationCalibrationCalc\CalcCorellation\Input\StationCorellationCalcData.cs" />
+    <Compile Include="Iterations\StationCalibrationCalc\CalcCorellation\Input\StationCalibrationCalcData.cs" />
+    <Compile Include="Iterations\StationCalibrationCalc\MainBlock\Input\DriveTestsResult.cs" />
+    <Compile Include="Iterations\StationCalibrationCalc\CalcCorellation\Parameters\CalibrationParameters.cs" />
+    <Compile Include="Iterations\StationCalibrationCalc\CalcCorellation\Parameters\CorellationParameters.cs" />
+    <Compile Include="Iterations\StationCalibrationCalc\CalcCorellation\Output\CorrellationPoint.cs" />
+    <Compile Include="Iterations\StationCalibrationCalc\MainBlock\Input\PointFS.cs" />
     <Compile Include="Clients\ClientContextStation.cs" />
     <Compile Include="Iterations\FieldStrengthCalcResult.cs" />
     <Compile Include="Iterations\FieldStrengthCalcData.cs" />

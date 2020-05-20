@@ -58,42 +58,11 @@
   <ItemGroup>
     <Compile Include="AppComponent.cs" />
     <Compile Include="AppComponentConfig.cs" />
-    <Compile Include="Core\DataAdapter.cs" />
-    <Compile Include="Core\DataLayerBase.cs" />
-    <Compile Include="Core\ViewCaptionAttribute.cs" />
-    <Compile Include="Core\ViewStarter.cs" />
-    <Compile Include="Core\ViewXamlAttribute.cs" />
-    <Compile Include="Core\ViewForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Core\ViewForm.Designer.cs">
-      <DependentUpon>ViewForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="DataLayers\InfocenterDataLayer.cs" />
     <Compile Include="DataLayers\CalcServerDataLayer.cs" />
-    <Compile Include="Environment\Extentions.cs" />
-    <Compile Include="Environment\Wpf\WpfColumnAttribute.cs" />
-    <Compile Include="Environment\Wpf\WpfCommand.cs" />
-    <Compile Include="Environment\Wpf\WpfDataAdapter.cs" />
-    <Compile Include="Environment\Wpf\WpfExtensions.cs" />
-    <Compile Include="Environment\Wpf\WpfViewModelBase.cs" />
-    <Compile Include="Forms\Base\WpfFormBase.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Base\WpfFormBase.Designer.cs">
-      <DependentUpon>WpfFormBase.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Base\WpfStandardForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Base\WpfStandardForm.Designer.cs">
-      <DependentUpon>WpfStandardForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="PluginMenuCommands.cs" />
-    <Compile Include="Helpers\PluginHelper.cs" />
-    <Compile Include="Metadata\SysLogs.cs" />
+    <Compile Include="ViewModels\EntityOrmTest\Adapters\ProjectDataAdapter.cs" />
     <Compile Include="ViewModels\EntityOrmTest\Events\OnCreatedProject.cs" />
-    <Compile Include="ViewModels\EntityOrmTest\Adapters\ProjectTestDataAdapter.cs" />
     <Compile Include="ViewModels\EntityOrmTest\Models\ProjectModel.cs" />
     <Compile Include="ViewModels\EntityOrmTest\Modifiers\CreateProject.cs" />
     <Compile Include="ViewModels\EntityOrmTest\Modifiers\CreateProjectHandler.cs" />
@@ -157,20 +126,18 @@
       <Project>{23df4b39-cb83-4c82-8d84-a7fd1e6b6bef}</Project>
       <Name>Atdi.WpfControls.EntityOrm</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Atdi.Icsm.Plugins.Core\Atdi.Icsm.Plugins.Core.csproj">
+      <Project>{259c5365-f07a-4217-8ba9-9d72b3f77f38}</Project>
+      <Name>Atdi.Icsm.Plugins.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Commands\" />
     <Folder Include="Events\" />
-    <Folder Include="Models\Views\" />
     <Folder Include="Queries\" />
     <Folder Include="Xaml\" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Core\ViewForm.resx">
-      <DependentUpon>ViewForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Base\WpfStandardForm.resx">
-      <DependentUpon>WpfStandardForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

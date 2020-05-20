@@ -1,4 +1,4 @@
-﻿using Atdi.Icsm.Plugins.SdrnCalcServerClient.Core;
+﻿using Atdi.Icsm.Plugins.Core;
 using Atdi.Platform.Logging;
 using System;
 using System.Collections.Generic;
@@ -9,9 +9,9 @@ using Atdi.Contracts.Api.EntityOrm.WebClient;
 using CS_ES = Atdi.DataModels.Sdrn.CalcServer.Entities;
 using Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager;
 
-namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.Adapters
+namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager.Adapters
 {
-    public sealed class ProjectMapDataAdapter : DataAdapter<CS_ES.IProjectMap, ProjectMapModel>
+    public sealed class ProjectMapDataAdapter : EntityDataAdapter<CS_ES.IProjectMap, ProjectMapModel>
     {
         public ProjectMapDataAdapter(CalcServerDataLayer dataLayer, ILogger logger) : base(dataLayer.Origin, logger)
         {

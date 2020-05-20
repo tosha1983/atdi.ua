@@ -24,6 +24,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         double? LevelMinOccup { get; set; }
         long TaskId { get; }
         string SensorName { get; }
+        string SensorTitle { get; }
         double? Longitude { get; set; }
         double? Latitude { get; set; }
         double? Step { get; set; }

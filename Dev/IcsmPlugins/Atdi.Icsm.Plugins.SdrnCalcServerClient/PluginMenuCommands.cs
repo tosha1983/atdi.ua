@@ -5,9 +5,8 @@ using System.Text;
 using ICSM;
 using System.Windows.Forms;
 using VM = Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels;
-using Atdi.Icsm.Plugins.SdrnCalcServerClient;
-using Atdi.Icsm.Plugins.SdrnCalcServerClient.Core;
 using Atdi.Platform.Logging;
+using Atdi.Icsm.Plugins.Core;
 
 namespace Atdi.Icsm.Plugins.SdrnCalcServerClient
 {

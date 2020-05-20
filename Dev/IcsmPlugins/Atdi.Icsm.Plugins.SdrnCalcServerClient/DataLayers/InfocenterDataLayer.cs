@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Atdi.DataModels.Api.EntityOrm.WebClient;
-using Atdi.Icsm.Plugins.SdrnCalcServerClient.Core;
+using Atdi.Icsm.Plugins.Core;
 
 namespace Atdi.Icsm.Plugins.SdrnCalcServerClient
 {

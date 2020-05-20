@@ -6,21 +6,17 @@ using System.Threading.Tasks;
 using Atdi.Api.EntityOrm.WebClient;
 using Atdi.DataModels.Api.EntityOrm.WebClient;
 using Atdi.DataModels.Sdrn.CalcServer.Entities;
-using Atdi.Icsm.Plugins.SdrnCalcServerClient.Environment.Wpf;
-
-using Atdi.Icsm.Plugins.SdrnCalcServerClient.Forms;
 using System.Windows;
-using Atdi.Icsm.Plugins.SdrnCalcServerClient.Core;
 using Atdi.Platform.Logging;
-using Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.EntityOrmTest.Adapters;
-using Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.Adapters;
+using Atdi.Icsm.Plugins.Core;
+using Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager.Adapters;
 
 namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
 {
 
 	[ViewXaml("ProjectManager.xaml")]
 	[ViewCaption("Calc Server Client: Project Manager")]
-	public class View : WpfViewModelBase
+	public class View : ViewBase
     {
 	    private readonly ViewStarter _starter;
 	    private readonly ILogger _logger;
@@ -31,32 +27,32 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
         public ProjectDataAdapter Projects { get; set; }
         public ProjectMapDataAdapter ProjectMaps { get; set; }
 
-        public WpfCommand ProjectAddCommand { get; set; }
-        public WpfCommand ProjectModifyCommand { get; set; }
-        public WpfCommand ProjectDeleteCommand { get; set; }
-        public WpfCommand ProjectActivateCommand { get; set; }
-        public WpfCommand ProjectLockCommand { get; set; }
-        public WpfCommand MapCreateNewCommand { get; set; }
-        public WpfCommand MapDeleteCommand { get; set; }
-        public WpfCommand ContextNewCommand { get; set; }
-        public WpfCommand ContextModifyCommand { get; set; }
-        public WpfCommand ContextDeleteCommand { get; set; }
+        public ViewCommand ProjectAddCommand { get; set; }
+        public ViewCommand ProjectModifyCommand { get; set; }
+        public ViewCommand ProjectDeleteCommand { get; set; }
+        public ViewCommand ProjectActivateCommand { get; set; }
+        public ViewCommand ProjectLockCommand { get; set; }
+        public ViewCommand MapCreateNewCommand { get; set; }
+        public ViewCommand MapDeleteCommand { get; set; }
+        public ViewCommand ContextNewCommand { get; set; }
+        public ViewCommand ContextModifyCommand { get; set; }
+        public ViewCommand ContextDeleteCommand { get; set; }
 
         public View(ProjectDataAdapter projectDataAdapter, ProjectMapDataAdapter projectMapDataAdapter, ViewStarter starter, ILogger logger)
         {
 	        this._starter = starter;
 	        this._logger = logger;
 
-	        this.ProjectAddCommand = new WpfCommand(this.OnProjectAddCommand);
-            this.ProjectModifyCommand = new WpfCommand(this.OnProjectModifyCommand);
-            this.ProjectDeleteCommand = new WpfCommand(this.OnProjectDeleteCommand);
-            this.ProjectActivateCommand = new WpfCommand(this.OnProjectActivateCommand);
-            this.ProjectLockCommand = new WpfCommand(this.OnProjectLockCommand);
-            this.MapCreateNewCommand = new WpfCommand(this.OnMapCreateNewCommand);
-            this.MapDeleteCommand = new WpfCommand(this.OnMapDeleteCommand);
-            this.ContextNewCommand = new WpfCommand(this.OnContextNewCommand);
-            this.ContextModifyCommand = new WpfCommand(this.OnContextModifyCommand);
-            this.ContextDeleteCommand = new WpfCommand(this.OnContextDeleteCommand);
+	        this.ProjectAddCommand = new ViewCommand(this.OnProjectAddCommand);
+            this.ProjectModifyCommand = new ViewCommand(this.OnProjectModifyCommand);
+            this.ProjectDeleteCommand = new ViewCommand(this.OnProjectDeleteCommand);
+            this.ProjectActivateCommand = new ViewCommand(this.OnProjectActivateCommand);
+            this.ProjectLockCommand = new ViewCommand(this.OnProjectLockCommand);
+            this.MapCreateNewCommand = new ViewCommand(this.OnMapCreateNewCommand);
+            this.MapDeleteCommand = new ViewCommand(this.OnMapDeleteCommand);
+            this.ContextNewCommand = new ViewCommand(this.OnContextNewCommand);
+            this.ContextModifyCommand = new ViewCommand(this.OnContextModifyCommand);
+            this.ContextDeleteCommand = new ViewCommand(this.OnContextDeleteCommand);
 
             this.Projects = projectDataAdapter;
             this.ProjectMaps = projectMapDataAdapter;
@@ -121,7 +117,7 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
 			}
             catch (Exception e)
             {
-                MessageBox.Show(e.ToString());
+                //MessageBox.Show(e.ToString());
 				//_logger.Exception();
             }
         }
@@ -129,9 +125,9 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
         {
             try
             {
-                var mainForm = new WpfStandardForm("ProjectCard.xaml", "ProjectCardViewModel");
-                mainForm.ShowDialog();
-                mainForm.Dispose();
+                //var mainForm = new WpfStandardForm("ProjectCard.xaml", "ProjectCardViewModel");
+                //mainForm.ShowDialog();
+                //mainForm.Dispose();
             }
             catch (Exception e)
             {
@@ -154,9 +150,9 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
         {
             try
             {
-                var mainForm = new WpfStandardForm("ProjectMapCard.xaml", "ProjectMapCardViewModel");
-                mainForm.ShowDialog();
-                mainForm.Dispose();
+                //var mainForm = new WpfStandardForm("ProjectMapCard.xaml", "ProjectMapCardViewModel");
+                //mainForm.ShowDialog();
+                //mainForm.Dispose();
             }
             catch (Exception e)
             {
@@ -171,9 +167,9 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
         {
             try
             {
-                var mainForm = new WpfStandardForm("ProjectContextCard.xaml", "ProjectContextCardViewModel");
-                mainForm.ShowDialog();
-                mainForm.Dispose();
+                //var mainForm = new WpfStandardForm("ProjectContextCard.xaml", "ProjectContextCardViewModel");
+                //mainForm.ShowDialog();
+                //mainForm.Dispose();
             }
             catch (Exception e)
             {
@@ -184,9 +180,9 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
         {
             try
             {
-                var mainForm = new WpfStandardForm("ProjectContextCard.xaml", "ProjectContextCardViewModel");
-                mainForm.ShowDialog();
-                mainForm.Dispose();
+                //var mainForm = new WpfStandardForm("ProjectContextCard.xaml", "ProjectContextCardViewModel");
+                //mainForm.ShowDialog();
+                //mainForm.Dispose();
             }
             catch (Exception e)
             {
@@ -197,14 +193,19 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
         {
             try
             {
-                var mainForm = new WpfStandardForm("ProjectContextCard.xaml", "ProjectContextCardViewModel");
-                mainForm.ShowDialog();
-                mainForm.Dispose();
+                //var mainForm = new WpfStandardForm("ProjectContextCard.xaml", "ProjectContextCardViewModel");
+                //mainForm.ShowDialog();
+                //mainForm.Dispose();
             }
             catch (Exception e)
             {
                 MessageBox.Show(e.ToString());
             }
         }
-    }
+
+		public override void Dispose()
+		{
+			
+		}
+	}
 }

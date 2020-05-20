@@ -1,17 +1,13 @@
-﻿using Atdi.Icsm.Plugins.SdrnCalcServerClient.Environment.Wpf;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Atdi.Icsm.Plugins.SdrnCalcServerClient.Core;
+using Atdi.Icsm.Plugins.Core;
 using Atdi.Platform.Logging;
 using System.Collections.Specialized;
 using System.Collections;
-using Atdi.Api.EntityOrm.WebClient;
-using Atdi.Contracts.Api.EntityOrm.WebClient;
 using Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.EntityOrmTest.Adapters;
-using Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.EntityOrmTest;
 using Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.EntityOrmTest.Queries;
 using Atdi.Platform.Cqrs;
 using Atdi.Platform.Events;
@@ -21,7 +17,7 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.EntityOrmTest
 
 	[ViewXaml("EntityOrmTest.xaml")]
 	[ViewCaption("Calc Server Client: Entity ORM Test")]
-	public class View : WpfViewModelBase, IDisposable
+	public class View : ViewBase
 	{
 		private readonly IObjectReader _objectReader;
 		private readonly ICommandDispatcher _commandDispatcher;
@@ -34,7 +30,7 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.EntityOrmTest
 		public View(
 			IObjectReader objectReader,
 			ICommandDispatcher commandDispatcher,
-			ProjectTestDataAdapter projectDataAdapter, 
+			ProjectDataAdapter projectDataAdapter, 
 			ViewStarter starter,
 			IEventBus eventBus,
 			ILogger logger)
@@ -63,9 +59,9 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.EntityOrmTest
 			
 		}
 
-		public ProjectTestDataAdapter Projects { get; set; }
+		public ProjectDataAdapter Projects { get; set; }
 
-		public void Dispose()
+		public override void Dispose()
 		{
 			_onCreatedProjectToken?.Dispose();
 			_onCreatedProjectToken = null;
@@ -83,16 +79,6 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.EntityOrmTest
 			
 			_commandDispatcher.Send(projectModifier);
 
-			if (projectModifier.Success)
-			{
-
-			}
-
-			while (!projectModifier.Success)
-			{
-				System.Threading.Thread.Sleep(10000);
-			}
-			
 		}
 
 
