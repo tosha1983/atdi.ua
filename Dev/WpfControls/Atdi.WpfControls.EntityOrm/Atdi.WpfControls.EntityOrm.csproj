@@ -72,8 +72,8 @@
     </Compile>
     <Compile Include="Controls\OrmCheckBox.cs" />
     <Compile Include="Controls\OrmDataGrid.cs" />
-    <Compile Include="Controls\OrmDateTimePicker.xaml.cs">
-      <DependentUpon>OrmDateTimePicker.xaml</DependentUpon>
+    <Compile Include="Controls\OrmDatePicker.xaml.cs">
+      <DependentUpon>OrmDatePicker.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\OrmTextBox.xaml.cs">
       <DependentUpon>OrmTextBox.xaml</DependentUpon>
@@ -110,7 +110,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Controls\OrmDateTimePicker.xaml">
+    <Page Include="Controls\OrmDatePicker.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

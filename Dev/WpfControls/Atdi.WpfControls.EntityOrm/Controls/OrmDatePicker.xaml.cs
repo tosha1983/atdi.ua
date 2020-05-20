@@ -16,14 +16,14 @@ using System.Windows.Shapes;
 namespace Atdi.WpfControls.EntityOrm.Controls
 {
     /// <summary>
-    /// Interaction logic for UserControl1.xaml
+    /// Interaction logic for OrmDatePicker.xaml
     /// </summary>
-    public partial class OrmTextBox : UserControl
+    public partial class OrmDatePicker : UserControl
     {
         double _captionWith = 150;
         string _caption = "";
-        string _text = "";
-        public OrmTextBox()
+        DateTime? _value = null;
+        public OrmDatePicker()
         {
             InitializeComponent();
         }
@@ -45,24 +45,22 @@ namespace Atdi.WpfControls.EntityOrm.Controls
                 lblCaption.Content = this._caption;
             }
         }
-        public string Text
+        public DateTime? SelectedDate
         {
-            get { return _text; }
+            get { return _value; }
             set
             {
-                this._text = value;
-                txtMain.Text = this._text;
+                this._value = value;
+                dtMain.SelectedDate = this._value;
             }
         }
-
         private void RedrawControl()
         {
             lblCaption.Width = this._captionWith;
-            txtMain.Margin = new Thickness() { Left = CaptionWith, Right = 5, Bottom = 5, Top = 5 };
-            txtMain.Width = this.Width > this._captionWith + 10 ? this.Width - this._captionWith - 10 : 0;
-            txtMain.Height = this.Height - 10;
+            dtMain.Margin = new Thickness() { Left = CaptionWith, Right = 5, Bottom = 5, Top = 5 };
+            dtMain.Width = this.Width > this._captionWith + 10 ? this.Width - this._captionWith - 10 : 0;
+            dtMain.Height = this.Height - 10;
         }
-
         private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             RedrawControl();
