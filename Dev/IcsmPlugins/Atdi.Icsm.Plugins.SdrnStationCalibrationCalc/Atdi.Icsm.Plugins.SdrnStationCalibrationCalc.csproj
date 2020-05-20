@@ -124,7 +124,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetDir)XICSM_*.dll" "C:\ATDI\ICS Manager"
-copy "$(TargetDir)Atdi.*.dll"    "C:\ATDI\ICS Manager"</PostBuildEvent>
+    <PostBuildEvent>copy "$(TargetDir)XICSM_*.dll" "c:\ATDI\ICS Manager6_70_VER2\ICS Manager2"
+copy "$(TargetDir)Atdi.*.dll"    "c:\ATDI\ICS Manager6_70_VER2\ICS Manager2"</PostBuildEvent>
   </PropertyGroup>
 </Project>
