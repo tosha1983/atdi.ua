@@ -198,9 +198,7 @@
     <Compile Include="Forms\OnlineMeasurementForm.Designer.cs">
       <DependentUpon>OnlineMeasurementForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\SelectRefSpectrums.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="Forms\SelectRefSpectrums.cs" />
     <Compile Include="Forms\SelectRefSpectrums.Designer.cs">
       <DependentUpon>SelectRefSpectrums.cs</DependentUpon>
     </Compile>
