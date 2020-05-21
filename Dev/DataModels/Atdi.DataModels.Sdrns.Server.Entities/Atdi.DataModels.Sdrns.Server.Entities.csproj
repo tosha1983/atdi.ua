@@ -117,6 +117,7 @@
     <Compile Include="Entities\IStation.cs" />
     <Compile Include="Entities\IStationSite.cs" />
     <Compile Include="Entities\Monitoring\ILogEvent.cs" />
+    <Compile Include="SdrnServerEntityOrmContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
