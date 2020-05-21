@@ -13,32 +13,38 @@ namespace Atdi.DataModels.Sdrn.Infocenter.Entities.Entities.SdrnServer
 
 	public interface IMeasResult : IMeasResult_PK
 	{
+		DateTimeOffset CreatedDate { get; set; }
+
+		byte StatusCode { get; set; }
+
+		string StatusName { get; set; }
+
+		string StatusNote { get; set; }
+
 		DateTime? MeasTime { get; set; }
 
 		string SensorName { get; set; }
 
 		string SensorTitle { get; set; }
 
-		int GsidCount { get; set; }
-
-		double? MinFreq_MHz { get; set; }
-
-		double? MaxFreq_MHz { get; set; }
-
-		/// <summary>
-		/// byte[] == DriveTestStandardStatistic[]
-		/// </summary>
-		byte[] StandardStatistics { get; set; }
-
-		//DriveTestStandardStatistic[] StandardStatistics { get; set; }
-		
-		int MaxPointsCount { get; set; }
+		IMeasResultStats STATS { get; set; }
 	}
 
-	public struct DriveTestStandardStatistic
+	public enum MeasResultStatusCode
 	{
-		public string Standard;
-
-		public int Count;
+		/// <summary>
+		/// создана запись, вложенная структура данных пустая 
+		/// </summary>
+		Created = 0,
+		/// <summary>
+		/// модифицируется - структура данных дополняется
+		/// </summary>
+		Modifying = 1,
+		/// <summary>
+		/// результаты измерения получены полностью и доступны для использования
+		/// </summary>
+		Available = 2,
 	}
+
+	
 }
