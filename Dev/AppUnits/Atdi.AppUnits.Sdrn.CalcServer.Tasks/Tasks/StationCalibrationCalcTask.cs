@@ -476,7 +476,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                         c => c.DRIVE_TEST.PointsCount,
                         c => c.DRIVE_TEST.Standard,
                         c => c.DRIVE_TEST.RESULT.MeasTime,
-                        c => c.Data,
+                        c => c.Points,
                         c => c.Count
                     )
                     .Where(c => c.DRIVE_TEST.RESULT.Id, ConditionOperator.In, partResultIds[i].ToArray());
@@ -485,7 +485,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                 {
                     while (reader.Read())
                     {
-                        var points = reader.GetValue(c => c.Data).Deserialize<DriveTestPoint[]>();
+                        var points = reader.GetValue(c => c.Points).Deserialize<DriveTestPoint[]>();
                         var pointFS = new PointFS[points.Length];
                         for (int j=0; j<points.Length; j++)
                         {
