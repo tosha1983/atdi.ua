@@ -71,6 +71,9 @@
       <DependentUpon>LineChart.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\OrmCheckBox.cs" />
+    <Compile Include="Controls\OrmComboBox.xaml.cs">
+      <DependentUpon>OrmComboBox.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\OrmDataGrid.cs" />
     <Compile Include="Controls\OrmDatePicker.xaml.cs">
       <DependentUpon>OrmDatePicker.xaml</DependentUpon>
@@ -109,6 +112,10 @@
     <Page Include="Charts\LineChart.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\OrmComboBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\OrmDatePicker.xaml">
       <SubType>Designer</SubType>
