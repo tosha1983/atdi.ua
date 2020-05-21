@@ -19,7 +19,7 @@ namespace Atdi.DataModels.Sdrn.Infocenter.Entities.Entities.SdrnServer
 		/// <summary>
 		/// byte[] == DriveTestPoint[]
 		/// </summary>
-		byte[] Data { get; set; }
+		byte[] Points { get; set; }
 
 		int Count { get; set; }
 	}
