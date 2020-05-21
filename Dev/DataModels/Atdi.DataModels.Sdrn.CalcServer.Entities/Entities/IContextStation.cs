@@ -19,7 +19,13 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 
 		DateTimeOffset CreatedDate { get; set; }
 
-		string Name { get; set; }
+        long? StationIdByICSM { get; set; }
+
+        string TableNameByICSM { get; set; }
+
+        DateTimeOffset? ModifiedDate { get; set; }
+
+        string Name { get; set; }
 
 		string CallSign { get; set; }
 

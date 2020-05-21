@@ -10,12 +10,12 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
 	public struct CalibrationDriveTestResult
     {
-        public long? IdStation;
+        public long? StationId;
         public string TableName;
         public string GSIDByICSM;
         public string GSIDByDriveTest;
         public DriveTestStatusResult ResultDriveTestStatus;
         public int CountPointsInDriveTest;
-        public double MaxPercentCorellation;
+        public float MaxPercentCorellation;
     }
 }
