@@ -1,4 +1,4 @@
-﻿CREATE TABLE CALC.CONTEXT_STATIONS
+﻿ChCREATE TABLE CALC.CONTEXT_STATIONS
 (
   ID            NUMBER(15)                      NOT NULL,
   CONTEXT_ID    NUMBER(15)                      NOT NULL,
