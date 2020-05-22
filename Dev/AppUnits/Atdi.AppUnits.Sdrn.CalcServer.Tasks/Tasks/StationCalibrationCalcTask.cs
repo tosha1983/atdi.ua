@@ -25,6 +25,7 @@ using Atdi.Platform;
 using Atdi.Common;
 using Atdi.Common.Extensions;
 using Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations;
+using Atdi.Platform.Data;
 
 namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 {
@@ -38,18 +39,14 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 		private readonly IIterationsPool _iterationsPool;
         private readonly ITransformation _transformation;
 		private readonly ILogger _logger;
+        private readonly IObjectPoolSite _poolSite;
         private readonly AppServerComponentConfig _appServerComponentConfig;
         private ITaskContext _taskContext;
 		private IDataLayerScope _calcDbScope;
 		private TaskParameters _parameters;
 		private ContextStation[] _contextStations;
         private DriveTestsResult[] _contextDriveTestsResult;
-        private PropagationModel _propagationModel;
-        private ProjectMapData _mapData;
-		private CluttersDesc _cluttersDesc;
-        
-
-
+       
 
         private class TaskParameters
 		{
@@ -74,6 +71,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 			IMapRepository mapRepository,
 			IIterationsPool iterationsPool,
 			ITransformation transformation,
+            IObjectPoolSite poolSite,
             AppServerComponentConfig appServerComponentConfig,
             IDataLayer<EntityDataOrm<IC.InfocenterEntityOrmContext>> infocenterDataLayer,
             ILogger logger)
@@ -85,6 +83,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 			_transformation = transformation;
             _appServerComponentConfig = appServerComponentConfig;
             _infocenterDataLayer = infocenterDataLayer;
+            _poolSite = poolSite;
             _logger = logger;
 		}
 
@@ -95,61 +94,34 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 				_calcDbScope.Dispose();
 				_calcDbScope = null;
 			}
-
 			_taskContext = null;
 		}
 
         public void Load(ITaskContext taskContext)
         {
-
             this._taskContext = taskContext;
-
             this._calcDbScope = this._calcServerDataLayer.CreateScope<CalcServerDataContext>();
 
             // загрузить параметры задачи
             this.LoadTaskParameters();
             this.ValidateTaskParameters();
-
-            this._propagationModel = _contextService.GetPropagationModel(this._calcDbScope, taskContext.ClientContextId);
-
-           
-            //заполнение this._contextDriveTestsResult (из инфоцентра)
-
-            // найти и загрузить карту
-            this._mapData = _mapRepository.GetMapByName(this._calcDbScope, this._taskContext.ProjectId, this._parameters.MapName);
-            this._cluttersDesc = _mapRepository.GetCluttersDesc(this._calcDbScope, this._mapData.Id);
         }
 
 
         public void Run()
         {
-            var fieldStrengthCalcDatas = new FieldStrengthCalcData[this._contextStations.Length];
-            for (int i = 0; i < this._contextStations.Length; i++)
-            {
-                fieldStrengthCalcDatas[i] = new FieldStrengthCalcData
-                {
-                    Antenna = this._contextStations[i].Antenna,
-                    PropagationModel = _propagationModel,
-                    PointCoordinate = this._contextStations[i].Coordinate,
-                    PointAltitude_m = this._contextStations[i].Site.Altitude,
-                    MapArea = _mapData.Area,
-                    BuildingContent = _mapData.BuildingContent,
-                    ClutterContent = _mapData.ClutterContent,
-                    ReliefContent = _mapData.ReliefContent,
-                    Transmitter = this._contextStations[i].Transmitter,
-                    CluttersDesc = _cluttersDesc
-                };
-            }
+            var mapData = _mapRepository.GetMapByName(this._calcDbScope, this._taskContext.ProjectId, this._parameters.MapName);
             var iterationAllStationCorellationCalcData = new AllStationCorellationCalcData
             {
                 GSIDGroupeStation = this._contextStations,
                 CalibrationParameters = this._parameters.CalibrationParameters,
                 CorellationParameters = this._parameters.CorellationParameters,
                 GSIDGroupeDriveTests = this._contextDriveTestsResult,
-                FieldStrengthCalcData = fieldStrengthCalcDatas,
-                GeneralParameters = this._parameters.GeneralParameters
+                GeneralParameters = this._parameters.GeneralParameters,
+                MapData = mapData,
+                CluttersDesc = _mapRepository.GetCluttersDesc(this._calcDbScope, mapData.Id),
+                PropagationModel = _contextService.GetPropagationModel(this._calcDbScope, this._taskContext.ClientContextId)
             };
-
             var iterationResultCalibration = _iterationsPool.GetIteration<AllStationCorellationCalcData, CalibrationResult>();
             var resulCalibration = iterationResultCalibration.Run(_taskContext, iterationAllStationCorellationCalcData);
         }

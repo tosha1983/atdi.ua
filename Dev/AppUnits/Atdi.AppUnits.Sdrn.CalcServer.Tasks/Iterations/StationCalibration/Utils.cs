@@ -25,6 +25,44 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             _logger = logger;
         }
 
+        public static bool IsInsideMap(double lon, double lat, double lonMin, double latMin, double lonMax, double latMax)
+        {
+            if (lon > lonMin && lon < lonMin &&
+                lat > latMin && lat < latMin)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        // потом по возможности перенести в UTILS  ет к дублирует метод из Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements  -> class СorrelationСoefficient
+        public static double Pearson(float[] arr1, float[] arr2)
+        { // НЕ ТЕСТИРОВАННО
+            if (arr1.Length != arr2.Length) { return -2; }//Выход с ошибкой
+            int n = arr1.Length;
+            double sumArr1 = 0; double sumArr2 = 0;
+            for (int i = 0; n > i; i++)
+            {
+                sumArr1 = sumArr1 + arr1[i];
+                sumArr2 = sumArr2 + arr2[i];
+            }
+            sumArr1 = sumArr1 / n;
+            sumArr2 = sumArr2 / n;
+            double a1 = 0; double a2 = 0; double a3 = 0;
+            for (var i = 0; n > i; i++)
+            {
+                a1 = a1 + ((arr1[i] - sumArr1) * (arr2[i] - sumArr2));
+                a2 = a2 + ((arr1[i] - sumArr1) * (arr1[i] - sumArr1));
+                a3 = a3 + ((arr2[i] - sumArr2) * (arr2[i] - sumArr2));
+            }
+            return (a1 / (Math.Sqrt(a2 * a3)));
+        }
+
+
+
         public static bool CompareGSID(string GSID1, string GSID2, string Standard)
         {
             if (GSID1 == GSID2)
@@ -35,6 +73,15 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             {
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Метод для предварительной подготовки данных
+        /// </summary>
+        /// <param name="driveTestsResults"></param>
+        public static void PrepareData(ref ContextStation[] contextStations, ref DriveTestsResult[] driveTestsResults)
+        {
+
         }
 
         /// <summary>
@@ -52,7 +99,14 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         /// <param name="pointFs"></param>
         public static void PerforationPoints(ref PointFS[] pointFs)
         {
+            var lstPointFs = new List<PointFS>();
+            for (int i=0; i< pointFs.Length; i+=2)
+            {
+                lstPointFs.Add(pointFs[i]);
+            }
 
+            var orderByCountPoints = from z in lstPointFs orderby z.Coordinate.Y, z.Coordinate.X ascending select z;
+            pointFs = orderByCountPoints.ToArray();
         }
 
 
@@ -153,6 +207,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             }
             return listStations.ToArray();
         }
+
+
 
 
         /// <summary>
@@ -452,19 +508,6 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             return arrayNameGroupGlobalSID.Distinct().ToArray();
         }
 
-        public static void CalcBlockOne(DriveTestsResult[] contextDriveTestsResult, ContextStation[] contextStations)
-        {
-            var allStandards = new List<string>();
-            allStandards.AddRange(GetUniqueArrayStandardsfromStations(contextStations));
-            allStandards.AddRange(GetUniqueArrayStandardsFromDriveTests(contextDriveTestsResult));
-            var arrStandards = allStandards.Distinct().ToArray();
-            for (int i=0; i< arrStandards.Length; i++)
-            {
-                CompareDriveTestAndStation(contextDriveTestsResult, contextStations, arrStandards[i], out DriveTestsResult[][] outDriveTestsResults, out ContextStation[][] outContextStations);
-
-
-
-            }
-        }
+      
     }
 }

@@ -20,7 +20,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
     {
         private readonly ILogger _logger;
         private readonly IIterationsPool _iterationsPool;
-        //private readonly IObjectPool<DriveTestsResult[]> _driveTestsResultArrayPool;
+        private readonly IObjectPool<CalcPoint[]> _calcPointArrayPool;
         private readonly IObjectPoolSite _poolSite;
         private readonly AppServerComponentConfig _appServerComponentConfig;
 
@@ -36,79 +36,153 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             _iterationsPool = iterationsPool;
             _poolSite = poolSite;
             _appServerComponentConfig = appServerComponentConfig;
-            //_driveTestsResultArrayPool = _poolSite.GetPool<DriveTestsResult[]>(ObjectPools.StationCalibrationDriveTestsResultArrayObjectPool);
+            _calcPointArrayPool = _poolSite.GetPool<CalcPoint[]>(ObjectPools.StationCalibrationCalcPointArrayObjectPool);
             _logger = logger;
         }
 
         public CalibrationResult Run(ITaskContext taskContext, AllStationCorellationCalcData data)
         {
             var calcCorellationResult = new CalibrationResult();
-            //var driveTestsResultBuffer = default(DriveTestsResult[]);
+            var calcPointArrayBuffer = default(CalcPoint[]);
+            // вызываем механизм расчета FieldStrengthCalcData на основе переданных данных data.FieldStrengthCalcData
+            var iterationFieldStrengthCalcData = _iterationsPool.GetIteration<FieldStrengthCalcData, FieldStrengthCalcResult>();
+
+
             try
             {
-                //driveTestsResultBuffer = _driveTestsResultArrayPool.Take();
 
-                
-                // Обработка всех DriveTests
-                // включение механизма перфорации DriveTests
+                // предварительная обработка
+                ////////////////////////////////////////////////////////////////////////////////////////////
+                ///
+                /// Усредняем результаты измерения внутри пикселя.  Т.е. берем точки из DriveTestsResult группируем по пикселям карты.
+                /// Далее внутри каждого пикселя вычисляем среднее значение напряженности поля. 
+                /// Т.е. на выходе у нас количество точек в DriveTestsResult может сократиться.
+                /// А координаты уже будут центральные координаты пикселя.
+                /// Должно также быть ограничено количество точек (уже выходных).
+                /// Не более 5000 (данное число в конфигурацию). Если их будет более, то их следует перфорировать.
+                /// Логика перфорации следующая. Перфарируем с коэфициентом 2. Если этого окажеться недостаточно, то перфорацию повторим.
+                /// Все точки PointFS[] Points сортируем по Lat (если есть одинаковые Lat то внутри по Lon)
+                /// Все DriveTests должны пройти это при этом на входе у нас будет большой объём данных, а на выходе контролируемый. 
+                ///////////////////////////////////////////////////////////////////////////////////////////
+                 Utils.PrepareData(ref data.GSIDGroupeStation, ref data.GSIDGroupeDriveTests);
+
+
+                ///////////////////////////////////////////////////////////////////////////////////////////
+                ///    
+                ///     включение механизма перфорации DriveTests
+                /// 
+                ///////////////////////////////////////////////////////////////////////////////////////////
                 Utils.PerforationDriveTestResults(ref data.GSIDGroupeDriveTests);
 
                 for (int i = 0; i < data.GSIDGroupeDriveTests.Length; i++)
                 {
-                    if ((data.GSIDGroupeDriveTests[i].Points!=null) && (data.GSIDGroupeDriveTests[i].Points.Length> _appServerComponentConfig.MaxCountPointInDriveTest))
+                    while (true)
                     {
-                        // включение механизма перфорации по Points в DriveTests'ах
-                        Utils.PerforationPoints(ref data.GSIDGroupeDriveTests[i].Points);
+                        if ((data.GSIDGroupeDriveTests[i].Points != null) && (data.GSIDGroupeDriveTests[i].Points.Length > _appServerComponentConfig.MaxCountPointInDriveTest))
+                        {
+                            // включение механизма перфорации по Points
+                            Utils.PerforationPoints(ref data.GSIDGroupeDriveTests[i].Points);
+                        }
+                        else
+                        {
+                            break;
+                        }
                     }
                 }
-                // включение механизма перфорации по всем станциям
-                var groupeStations = Utils.PerforationStations(data.GSIDGroupeStation);
-                data.GSIDGroupeStation = groupeStations.ToArray();
+
+                ///////////////////////////////////////////////////////////////////////////////////////////
+                ///     
+                ///     включение механизма перфорации по всем станциям
+                /// 
+                ///////////////////////////////////////////////////////////////////////////////////////////
+                var perforationStations = Utils.PerforationStations(data.GSIDGroupeStation);
+                data.GSIDGroupeStation = perforationStations.ToArray();
 
 
-
-                for (int i = 0; i < data.GSIDGroupeStation.Length; i++)
+                ///////////////////////////////////////////////////////////////////////////////////////////
+                ///
+                ///  4.2.1. Формирование соответствий между станциями и результатами измерений (схема бл 1)
+                /// 
+                ///////////////////////////////////////////////////////////////////////////////////////////
+                var allStandards = new List<string>();
+                allStandards.AddRange(Utils.GetUniqueArrayStandardsfromStations(data.GSIDGroupeStation));
+                allStandards.AddRange(Utils.GetUniqueArrayStandardsFromDriveTests(data.GSIDGroupeDriveTests));
+                var arrStandards = allStandards.Distinct().ToArray();
+                for (int v = 0; v < arrStandards.Length; v++)
                 {
-                    for (int j = 0; j < data.GSIDGroupeDriveTests.Length; j++)
+                    var standard = arrStandards[v];
+                    var linkDriveTestAndStations = Utils.CompareDriveTestAndStation(data.GSIDGroupeDriveTests, data.GSIDGroupeStation, standard , out DriveTestsResult[][] outDriveTestsResults, out ContextStation[][] outContextStations);
+
+                    for (int z = 0; z < linkDriveTestAndStations.Length; z++)
                     {
-                        var stationCorellationCalcData = new StationCorellationCalcData()
+                        for (int i = 0; i < linkDriveTestAndStations[z].ContextStation.Length; i++)
                         {
-                            GSIDGroupeStation = data.GSIDGroupeStation[i],
-                            CorellationParameters = data.CorellationParameters,
-                            GSIDGroupeDriveTests = data.GSIDGroupeDriveTests[j],
-                            FieldStrengthCalcData = data.FieldStrengthCalcData[i],
-                            GeneralParameters = data.GeneralParameters
-                        };
+                            for (int j = 0; j < linkDriveTestAndStations[z].DriveTestsResults.Length; j++)
+                            {
+                                var station = linkDriveTestAndStations[z].ContextStation;
+                                var driveTest = linkDriveTestAndStations[z].DriveTestsResults;
+                                for (int h = 0; h < station.Length; h++)
+                                {
+                                    for (int b = 0; b < driveTest.Length; b++)
+                                    {
+                                        var fieldStrengthCalcData = new FieldStrengthCalcData
+                                        {
+                                            Antenna = station[i].Antenna,
+                                            PropagationModel = data.PropagationModel,
+                                            PointCoordinate = station[i].Coordinate,
+                                            PointAltitude_m = station[i].Site.Altitude,
+                                            MapArea = data.MapData.Area,
+                                            BuildingContent = data.MapData.BuildingContent,
+                                            ClutterContent = data.MapData.ClutterContent,
+                                            ReliefContent = data.MapData.ReliefContent,
+                                            Transmitter = station[i].Transmitter,
+                                            CluttersDesc = data.CluttersDesc
+                                        };
 
-                        var stationCalibrationCalcData = new StationCalibrationCalcData()
-                        {
-                            GSIDGroupeStation = data.GSIDGroupeStation[i],
-                            CorellationParameters = data.CorellationParameters,
-                            GSIDGroupeDriveTests = data.GSIDGroupeDriveTests[j],
-                            FieldStrengthCalcData = data.FieldStrengthCalcData[i],
-                            CalibrationParameters = data.CalibrationParameters,
-                            GeneralParameters = data.GeneralParameters,
-                        };
+                                        var stationCorellationCalcData = new StationCorellationCalcData()
+                                        {
+                                            GSIDGroupeStation = station[i],
+                                            CorellationParameters = data.CorellationParameters,
+                                            GSIDGroupeDriveTests = driveTest[b],
+                                            FieldStrengthCalcData = fieldStrengthCalcData,
+                                            GeneralParameters = data.GeneralParameters
+                                        };
 
-                        var iterationCorellationCalc = _iterationsPool.GetIteration<StationCorellationCalcData, ResultCorrelationGSIDGroupeStations>();
-                        var resultCorellationCalcData = iterationCorellationCalc.Run(taskContext, stationCorellationCalcData);
+                                        var stationCalibrationCalcData = new StationCalibrationCalcData()
+                                        {
+                                            CalibrationParameters = data.CalibrationParameters,
+                                            GSIDGroupeStation = station[i],
+                                            CorellationParameters = data.CorellationParameters,
+                                            GSIDGroupeDriveTests = driveTest[b],
+                                            FieldStrengthCalcData = fieldStrengthCalcData,
+                                            GeneralParameters = data.GeneralParameters
+                                        };
 
-                        var iterationCalibrationCalc = _iterationsPool.GetIteration<StationCalibrationCalcData, ResultCorrelationGSIDGroupeStations>();
-                        var resultCalibrationCalcData = iterationCalibrationCalc.Run(taskContext, stationCalibrationCalcData);
+                                        var iterationCorellationCalc = _iterationsPool.GetIteration<StationCorellationCalcData, ResultCorrelationGSIDGroupeStations>();
+                                        var resultCorellationCalcData = iterationCorellationCalc.Run(taskContext, stationCorellationCalcData);
+
+                                        var iterationCalibrationCalc = _iterationsPool.GetIteration<StationCalibrationCalcData, ResultCorrelationGSIDGroupeStations>();
+                                        var resultCalibrationCalcData = iterationCalibrationCalc.Run(taskContext, stationCalibrationCalcData);
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
+
+                
             }
             catch (Exception e)
             {
                 throw;
             }
-            //finally
-            //{
-                ///if (driveTestsResultBuffer != null)
-                //{
-                    //_driveTestsResultArrayPool.Put(driveTestsResultBuffer);
-                //}
-            //}
+            finally
+            {
+                if (calcPointArrayBuffer != null)
+                {
+                    _calcPointArrayPool.Put(calcPointArrayBuffer);
+                }
+            }
             return calcCorellationResult;
         }
     }

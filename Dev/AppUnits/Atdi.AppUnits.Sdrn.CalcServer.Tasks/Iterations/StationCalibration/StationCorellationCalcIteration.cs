@@ -10,7 +10,6 @@ using Atdi.DataModels.Sdrn.CalcServer.Internal.Maps;
 using Atdi.DataModels.Sdrn.DeepServices.Gis;
 using Atdi.Platform.Logging;
 using Atdi.Contracts.Sdrn.DeepServices.Gis;
-using Atdi.Platform.Logging;
 using Atdi.Platform.Data;
 
 
@@ -43,41 +42,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             _logger = logger;
         }
 
-        private bool IsInsideMap(double lon, double lat, double lonMin, double latMin, double lonMax, double latMax)
-        {
-            if (lon > lonMin && lon < lonMin &&
-                lat > latMin && lat < latMin)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        // потом по возможности перенести в UTILS  ет к дублирует метод из Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements  -> class СorrelationСoefficient
-        private static double Pearson(float[] arr1, float[] arr2)
-        { // НЕ ТЕСТИРОВАННО
-            if (arr1.Length != arr2.Length) { return -2; }//Выход с ошибкой
-            int n = arr1.Length;
-            double sumArr1 = 0; double sumArr2 = 0;
-            for (int i = 0; n > i; i++)
-            {
-                sumArr1 = sumArr1 + arr1[i];
-                sumArr2 = sumArr2 + arr2[i];
-            }
-            sumArr1 = sumArr1 / n;
-            sumArr2 = sumArr2 / n;
-            double a1 = 0; double a2 = 0; double a3 = 0;
-            for (var i = 0; n > i; i++)
-            {
-                a1 = a1 + ((arr1[i] - sumArr1) * (arr2[i] - sumArr2));
-                a2 = a2 + ((arr1[i] - sumArr1) * (arr1[i] - sumArr1));
-                a3 = a3 + ((arr2[i] - sumArr2) * (arr2[i] - sumArr2));
-            }
-            return (a1 / (Math.Sqrt(a2 * a3)));
-        }
+     
 
         public ResultCorrelationGSIDGroupeStationsWithoutParameters Run(ITaskContext taskContext, StationCorellationCalcData data)
 		{
@@ -110,7 +75,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 {
                     if (data.GSIDGroupeDriveTests.Points[i].FieldStrength_dBmkVm >= data.CorellationParameters.MinRangeMeasurements_dBmkV &&
                         data.GSIDGroupeDriveTests.Points[i].FieldStrength_dBmkVm <= data.CorellationParameters.MaxRangeMeasurements_dBmkV &&
-                        IsInsideMap(data.GSIDGroupeDriveTests.Points[i].Coordinate.X, data.GSIDGroupeDriveTests.Points[i].Coordinate.Y, lowerLeftCoord_m.X, lowerLeftCoord_m.Y, upperRightCoord_m.X, upperRightCoord_m.Y))
+                       Utils.IsInsideMap(data.GSIDGroupeDriveTests.Points[i].Coordinate.X, data.GSIDGroupeDriveTests.Points[i].Coordinate.Y, lowerLeftCoord_m.X, lowerLeftCoord_m.Y, upperRightCoord_m.X, upperRightCoord_m.Y))
                         {
                         bool isFoubdInBuffer = false;
 
@@ -202,9 +167,6 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                 minMeasCalcFSdifference = FSaroundDif;
                             }
                         }
-
-
-
                     }
                 }
 
