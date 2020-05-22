@@ -13,7 +13,7 @@ namespace Atdi.DataModels.Sdrn.Infocenter.Entities.Entities.SdrnServer
 
 	public interface IDriveTest : IDriveTest_PK
 	{
-		IMeasResult RESULT { get; set; }
+		IStationMonitoring RESULT { get; set; }
 
 		string Gsid { get; set; }
 

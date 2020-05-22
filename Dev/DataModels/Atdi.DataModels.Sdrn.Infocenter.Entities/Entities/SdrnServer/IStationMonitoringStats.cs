@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.Infocenter.Entities.Entities.SdrnServer
 {
-	public interface IMeasResultStats : IMeasResult_PK
+	public interface IStationMonitoringStats : IStationMonitoring_PK
 	{
 		int GsidCount { get; set; }
 
@@ -19,7 +19,7 @@ namespace Atdi.DataModels.Sdrn.Infocenter.Entities.Entities.SdrnServer
 		/// </summary>
 		byte[] StandardStats { get; set; }
 
-		//DriveTestStandardStatistic[] StandardStatistics { get; set; }
+		//DriveTestStandardStats[] StandardStatistics { get; set; }
 
 	}
 

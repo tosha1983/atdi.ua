@@ -48,8 +48,8 @@
     <Compile Include="Entities\IIntegrationLog.cs" />
     <Compile Include="Entities\SdrnServer\IDriveTest.cs" />
     <Compile Include="Entities\SdrnServer\IDriveTestPoints.cs" />
-    <Compile Include="Entities\SdrnServer\IMeasResult.cs" />
-    <Compile Include="Entities\SdrnServer\IMeasResultStats.cs" />
+    <Compile Include="Entities\SdrnServer\IStationMonitoring.cs" />
+    <Compile Include="Entities\SdrnServer\IStationMonitoringStats.cs" />
     <Compile Include="InfocenterEntityOrmContext.cs" />
     <Compile Include="Entities\IMapSector.cs" />
     <Compile Include="Entities\IMap.cs" />
@@ -74,8 +74,8 @@
     <Content Include="DataLayer\SqlServer\Tables\[INFOC].[MAP_SECTORS].sql" />
     <Content Include="DataLayer\SqlServer\Tables\[SDRNSVR].[DRIVE_TESTS_POINTS].sql" />
     <Content Include="DataLayer\SqlServer\Tables\[SDRNSVR].[DRIVE_TESTS].sql" />
-    <Content Include="DataLayer\SqlServer\Tables\[SDRNSVR].[MEAS_RESULTS_STATS].sql" />
-    <Content Include="DataLayer\SqlServer\Tables\[SDRNSVR].[MEAS_RESULTS].sql" />
+    <Content Include="DataLayer\SqlServer\Tables\[SDRNSVR].[SM_MEAS_RESULTS_STATS].sql" />
+    <Content Include="DataLayer\SqlServer\Tables\[SDRNSVR].[SM_MEAS_RESULTS].sql" />
     <Content Include="Metadata\DataTypes\ClrObject\CT.Object.xml" />
     <Content Include="Metadata\DataTypes\ClrObject\CT.ReadOnlyDictionary.String.String.xml" />
     <Content Include="Metadata\DataTypes\ClrObject\DateTime.DATETIME.xml" />
@@ -141,8 +141,8 @@
     <Content Include="Metadata\Entities\Monitoring\StatisticEntryRecord.xml" />
     <Content Include="Metadata\Entities\SdrnServer\DriveTestPoints.xml" />
     <Content Include="Metadata\Entities\SdrnServer\DriveTest.xml" />
-    <Content Include="Metadata\Entities\SdrnServer\MeasResultStats.xml" />
-    <Content Include="Metadata\Entities\SdrnServer\MeasResult.xml" />
+    <Content Include="Metadata\Entities\SdrnServer\StationMonitoringStats.xml" />
+    <Content Include="Metadata\Entities\SdrnServer\StationMonitoring.xml" />
     <Content Include="Metadata\Environment.xml" />
     <Content Include="Metadata\Units\Angle.Degree.xml" />
     <Content Include="Metadata\Units\Frequency.Hz.xml" />
