@@ -16,6 +16,7 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager.Adapt
         public ProjectMapDataAdapter(CalcServerDataLayer dataLayer, ILogger logger) : base(dataLayer.Origin, logger)
         {
         }
+        public long ProjectId;
         protected override void PrepareQuery(IReadQuery<CS_ES.IProjectMap> query)
         {
             query.Select(
@@ -23,7 +24,7 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager.Adapt
                 c => c.MapName,
                 c => c.MapNote,
                 c => c.CreatedDate
-            );
+            ).Filter(f => f.PROJECT.Id, ProjectId);
         }
         protected override ProjectMapModel ReadData(IDataReader<CS_ES.IProjectMap> reader, int index)
         {

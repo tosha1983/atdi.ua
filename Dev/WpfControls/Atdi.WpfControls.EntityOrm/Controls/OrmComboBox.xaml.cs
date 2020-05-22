@@ -54,6 +54,7 @@ namespace Atdi.WpfControls.EntityOrm.Controls
                 cmbMain.ItemsSource = this._value;
             }
         }
+        //public string
         private void RedrawControl()
         {
             lblCaption.Width = this._captionWith;

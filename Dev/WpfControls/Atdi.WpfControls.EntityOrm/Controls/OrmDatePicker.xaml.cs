@@ -45,14 +45,24 @@ namespace Atdi.WpfControls.EntityOrm.Controls
                 lblCaption.Content = this._caption;
             }
         }
+        public static DependencyProperty SelectedDateProperty = DependencyProperty.Register("SelectedDate", typeof(DateTime?), typeof(OrmDatePicker),
+            new FrameworkPropertyMetadata(default(DateTime?), new PropertyChangedCallback(OnPropertyChanged)));
         public DateTime? SelectedDate
         {
             get { return _value; }
             set
             {
+                SetValue(SelectedDateProperty, value);
                 this._value = value;
                 dtMain.SelectedDate = this._value;
             }
+        }
+        private static void OnPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        {
+            var ctr = sender as OrmDatePicker;
+
+            if (e.Property == SelectedDateProperty)
+                ctr.SelectedDate = (DateTime?)e.NewValue;
         }
         private void RedrawControl()
         {

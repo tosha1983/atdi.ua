@@ -165,4 +165,10 @@
   <data name="TypeName" xml:space="preserve">
     <value>Type Name</value>
   </data>
+  <data name="Projection" xml:space="preserve">
+    <value>Projection</value>
+  </data>
+  <data name="StatusNote" xml:space="preserve">
+    <value>Status Note</value>
+  </data>
 </root>
