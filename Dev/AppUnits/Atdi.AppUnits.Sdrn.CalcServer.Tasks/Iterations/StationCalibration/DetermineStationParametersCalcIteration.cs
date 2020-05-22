@@ -62,7 +62,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     }
                 }
                 // включение механизма перфорации по всем станциям
-                var groupeStations = Utils.PerforationStations(in data.GSIDGroupeStation);
+                var groupeStations = Utils.PerforationStations(data.GSIDGroupeStation);
                 data.GSIDGroupeStation = groupeStations.ToArray();
 
 

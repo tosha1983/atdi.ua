@@ -51,7 +51,6 @@
     <Compile Include="Iterations\StationCalibrationCalc\CalcCorellation\Parameters\GeneralParameters.cs" />
     <Compile Include="Iterations\StationCalibrationCalc\MainBlock\CalcStatus\ModeStatusParameters.cs" />
     <Compile Include="Iterations\StationCalibrationCalc\MainBlock\CalcStatus\CalibrationStatusParameters.cs" />
-    <Compile Include="Iterations\StationCalibrationCalc\MainBlock\CalcStatus\StationStatus.cs" />
     <Compile Include="Iterations\StationCalibrationCalc\MainBlock\Input\ContextStation.cs" />
     <Compile Include="Iterations\StationCalibrationCalc\MainBlock\Input\LinkDriveTestsResultAndStation.cs" />
     <Compile Include="Iterations\StationCalibrationCalc\MainBlock\Input\CalcPoint.cs" />
