@@ -45,6 +45,7 @@
     <Compile Include="Entities\ICluttersDescFreqClutter.cs" />
     <Compile Include="Entities\ICluttersDescFreq.cs" />
     <Compile Include="Entities\ICluttersDescClutter.cs" />
+    <Compile Include="Entities\IIntegrationObject.cs" />
     <Compile Include="Entities\IIntegrationLog.cs" />
     <Compile Include="Entities\SdrnServer\IDriveTest.cs" />
     <Compile Include="Entities\SdrnServer\IDriveTestPoints.cs" />
@@ -66,6 +67,8 @@
     <Content Include="DataLayer\Oracle\Tables\[SDRNSVR].[DRIVE_TESTS_POINTS].sql" />
     <Content Include="DataLayer\Oracle\Tables\[SDRNSVR].[MEAS_RESULTS].sql" />
     <Content Include="DataLayer\Oracle\Tables\[SDRNSVR].[MEAS_RESULTS_STATS].sql" />
+    <Content Include="DataLayer\SqlServer\Tables\[INFOC].[INTEGRATION_LOG].sql" />
+    <Content Include="DataLayer\SqlServer\Tables\[INFOC].[INTEGRATION_OBJECTS].sql" />
     <Content Include="DataLayer\SqlServer\Tables\[INFOC].[CLUTTERS_DESCS].sql" />
     <Content Include="DataLayer\SqlServer\Tables\[INFOC].[CLUTTERS_DESCS_CLUTTERS].sql" />
     <Content Include="DataLayer\SqlServer\Tables\[INFOC].[CLUTTERS_DESCS_FREQS].sql" />
@@ -130,6 +133,8 @@
     <Content Include="Metadata\Entities\CluttersDescFreq.xml" />
     <Content Include="Metadata\Entities\CluttersDescClutter.xml" />
     <Content Include="Metadata\Entities\CluttersDesc.xml" />
+    <Content Include="Metadata\Entities\IntegrationLog.xml" />
+    <Content Include="Metadata\Entities\IntegrationObject.xml" />
     <Content Include="Metadata\Entities\MapSector.xml" />
     <Content Include="Metadata\Entities\Map.xml" />
     <Content Include="Metadata\Entities\Monitoring\LogEvent.xml" />

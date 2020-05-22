@@ -13,6 +13,8 @@ namespace Atdi.DataModels.Sdrn.Infocenter.Entities.Entities
 
 	public interface IIntegrationLog : IIntegrationLog_PK
 	{
+		IIntegrationObject OBJECT { get; set; }
+
 		DateTimeOffset CreatedDate { get; set; }
 
 		byte StatusCode { get; set; }
@@ -25,8 +27,35 @@ namespace Atdi.DataModels.Sdrn.Infocenter.Entities.Entities
 
 		DateTimeOffset? FinishTime { get; set; }
 
-		string DataSource { get; set; }
+		string SyncTotal { get; set; }
 
-		string EntityName { get; set; }
+	}
+
+	public enum IntegrationStatusCode
+	{
+		/// <summary>
+		/// Начальная фаза
+		/// </summary>
+		Created = 0,
+
+		/// <summary>
+		/// Иде процесс синхронизации данных
+		/// </summary>
+		Processing = 1,
+
+		/// <summary>
+		/// Процесс завершился удачно
+		/// </summary>
+		Done = 2,
+
+		/// <summary>
+		/// Процесс был оборван ка кправило по причине возникшего ексепшена
+		/// </summary>
+		Aborted = 3,
+		 
+		/// <summary>
+		/// Процесс был остановлен прикладной логикой
+		/// </summary>
+		Cancelled = 4
 	}
 }
