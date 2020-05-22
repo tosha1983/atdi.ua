@@ -76,12 +76,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 			});
 
 
-            var driveTestsResultArrayPool = poolSite.Register(new ObjectPoolDescriptor<DriveTestsResult[]>()
-            {
-                Key = ObjectPools.StationCalibrationDriveTestsResultArrayObjectPool,
+           var driveCalcPointArrayPool = poolSite.Register(new ObjectPoolDescriptor<CalcPoint[]>()
+           {
+                Key = ObjectPools.StationCalibrationCalcPointArrayObjectPool,
                 MinSize = appConfig.ThresholdsStationCalibrationObjectPoolMaxSize.GetValueOrDefault(0),
                 MaxSize = appConfig.ThresholdsStationCalibrationObjectPoolMaxSize.GetValueOrDefault(10),
-                Factory = () => new DriveTestsResult[appConfig.ThresholdsStationCalibrationArrayLength.GetValueOrDefault(1_000)]
+                Factory = () => new CalcPoint[appConfig.ThresholdsStationCalibrationArrayLength.GetValueOrDefault(1_0000)]
             });
 
             base.OnActivateUnit();

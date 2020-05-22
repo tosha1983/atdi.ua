@@ -16,6 +16,10 @@ CREATE TABLE [CALC].[CONTEXT_STATIONS](
 	[STATION_ID_BY_ICSM] [bigint],
 	[TABLE_NAME_BY_ICSM] [nvarchar](50),
 	[MODIFIED_DATE] [datetimeoffset](7),
+	[GLOBAL_SID_BY_ICSM] [nvarchar](250),
+	[GLOBAL_SID_BY_MEAS] [nvarchar](250),
+	[CODE_REGION] [nvarchar](50),
+	[STATUS] [nvarchar](10),
  CONSTRAINT [PK_CONTEXT_STATIONS] PRIMARY KEY CLUSTERED 
 (
 	[ID] ASC

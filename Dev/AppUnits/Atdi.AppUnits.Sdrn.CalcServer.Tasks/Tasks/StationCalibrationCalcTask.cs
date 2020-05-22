@@ -24,6 +24,7 @@ using Atdi.DataModels.Sdrn.Infocenter.Entities.Entities.SdrnServer;
 using Atdi.Platform;
 using Atdi.Common;
 using Atdi.Common.Extensions;
+using Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations;
 
 namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 {
@@ -309,6 +310,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                         c => c.Standard,
                         c => c.ModifiedDate,
 
+                        c => c.GlobalSIDByICSM,
+                        c => c.GlobalSIDByMeasurement,
+                        c => c.CodeRegion,
+                        c => c.Status,
+
+
                         c => c.SITE.Latitude_DEC,
                         c => c.SITE.Longitude_DEC,
                         c => c.SITE.Altitude_m,
@@ -363,6 +370,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                 {
                     while (reader.Read())
                     {
+                        bool isCorrectParseStationStatus = false;
+                        if (Enum.TryParse<StationStatus>(reader.GetValue(c => c.Status), out StationStatus stationStatus))
+                        {
+                            isCorrectParseStationStatus = true;
+                        }
 
                         var stationRecord = new ContextStation
                         {
@@ -376,6 +388,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                             StationIdByICSM = reader.GetValue(c => c.StationIdByICSM),
                             TableNameByICSM = reader.GetValue(c => c.TableNameByICSM),
                             ModifiedDate = reader.GetValue(c => c.ModifiedDate),
+                            GlobalSIDByICSM = reader.GetValue(c => c.GlobalSIDByICSM),
+                            GlobalSIDByMeasurement = reader.GetValue(c => c.GlobalSIDByMeasurement),
+                            CodeRegion = reader.GetValue(c => c.CodeRegion),
+
                             Site = new Wgs84Site
                             {
                                 Latitude = reader.GetValue(c => c.SITE.Latitude_DEC),
@@ -396,6 +412,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                 Tilt_deg = reader.GetValue(c => c.ANTENNA.Tilt_deg)
                             },
                         };
+
+                        if (isCorrectParseStationStatus == true)
+                        {
+                            stationRecord.Status = stationStatus;
+                        }
 
                         if (reader.IsNotNull(c => c.TRANSMITTER.StationId))
                         {
@@ -462,6 +483,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 
 
             // load drive tests
+            int cntRecord = 0;
             var driveTests = new List<DriveTestsResult>();
             var partResultIds = BreakDownElemBlocks.BreakDown(this._parameters.InfocMeasResults);
             for (int i = 0; i < partResultIds.Count; i++)
@@ -500,7 +522,9 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                             Freq_MHz = reader.GetValue(c => c.DRIVE_TEST.Freq_MHz),
                             GSID = reader.GetValue(c => c.DRIVE_TEST.Gsid),
                             Standard = reader.GetValue(c => c.DRIVE_TEST.Standard),
-                            Points = pointFS
+                            Points = pointFS,
+                            Num = cntRecord,
+                            CountPoints = reader.GetValue(c => c.Count)
                         });
 
                         var standards = driveTests.Select(c => c.Standard).ToArray();
@@ -517,6 +541,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                 throw new InvalidOperationException($"Too much drive tests. For standard #{standards[j]} greater {_appServerComponentConfig.MaxCountDriveTestsByOneStandard}. Please select other contour!");
                             }
                         }
+                        cntRecord++;
                     }
                     return true;
                 });

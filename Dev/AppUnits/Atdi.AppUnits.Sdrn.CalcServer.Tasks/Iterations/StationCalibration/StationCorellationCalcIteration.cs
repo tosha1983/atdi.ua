@@ -10,6 +10,8 @@ using Atdi.DataModels.Sdrn.CalcServer.Internal.Maps;
 using Atdi.DataModels.Sdrn.DeepServices.Gis;
 using Atdi.Platform.Logging;
 using Atdi.Contracts.Sdrn.DeepServices.Gis;
+using Atdi.Platform.Logging;
+using Atdi.Platform.Data;
 
 
 namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
@@ -22,6 +24,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 		private readonly ILogger _logger;
         private readonly IIterationsPool _iterationsPool;
         private readonly ITransformation _transformation;
+        private readonly IObjectPool<CalcPoint[]> _calcPointArrayPool;
+        private readonly IObjectPoolSite _poolSite;
 
         /// <summary>
         /// Заказываем у контейнера нужные сервисы
@@ -29,28 +33,38 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         public StationCorellationCalcIteration(
             IIterationsPool iterationsPool,
             ITransformation transformation,
+            IObjectPoolSite poolSite,
             ILogger logger)
         {
             _iterationsPool = iterationsPool;
             _transformation = transformation;
+            _poolSite = poolSite;
+            _calcPointArrayPool = _poolSite.GetPool<CalcPoint[]>(ObjectPools.StationCalibrationCalcPointArrayObjectPool);
             _logger = logger;
         }
 
         public ResultCorrelationGSIDGroupeStationsWithoutParameters Run(ITaskContext taskContext, StationCorellationCalcData data)
 		{
-            var resultCorrelationGSIDGroupeStationsWithoutParameters = new ResultCorrelationGSIDGroupeStationsWithoutParameters();
+            var calcPointArrayBuffer = default(CalcPoint[]);
+            calcPointArrayBuffer = _calcPointArrayPool.Take();
+            try
+            {
+                calcPointArrayBuffer = _calcPointArrayPool.Take();
 
 
-            // заполняем поля TargetCoordinate и TargetAltitude_m (координаты уже преобразованы в метры)
-            data.FieldStrengthCalcData.TargetCoordinate = data.GSIDGroupeDriveTests[0].Points[0].Coordinate;
-            data.FieldStrengthCalcData.TargetAltitude_m = data.GSIDGroupeDriveTests[0].Points[0].Height_m;
-            
-            // вызываем механизм расчета FieldStrengthCalcData на основе переданных данных data.FieldStrengthCalcData
-            var iterationFieldStrengthCalcData = _iterationsPool.GetIteration<FieldStrengthCalcData, FieldStrengthCalcResult>();
-            var resultFieldStrengthCalcData = iterationFieldStrengthCalcData.Run(taskContext, data.FieldStrengthCalcData);
-
-            
-            return resultCorrelationGSIDGroupeStationsWithoutParameters;
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+            finally
+            {
+                if (calcPointArrayBuffer != null)
+                {
+                    _calcPointArrayPool.Put(calcPointArrayBuffer);
+                }
+            }
+            return null;
         }
 	}
 }
