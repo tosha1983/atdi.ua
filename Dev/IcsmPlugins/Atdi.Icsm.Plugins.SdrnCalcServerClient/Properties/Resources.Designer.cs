@@ -169,6 +169,15 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Projection.
+        /// </summary>
+        public static string Projection {
+            get {
+                return ResourceManager.GetString("Projection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Projects.
         /// </summary>
         public static string Projects {
@@ -183,6 +192,15 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.Properties {
         public static string StatusName {
             get {
                 return ResourceManager.GetString("StatusName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Status Note.
+        /// </summary>
+        public static string StatusNote {
+            get {
+                return ResourceManager.GetString("StatusNote", resourceCulture);
             }
         }
         
