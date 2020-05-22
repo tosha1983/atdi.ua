@@ -68,8 +68,10 @@
     <Compile Include="ViewModels\EntityOrmTest\Modifiers\CreateProjectHandler.cs" />
     <Compile Include="ViewModels\EntityOrmTest\Queries\GetProjectByOwnerId.cs" />
     <Compile Include="ViewModels\EntityOrmTest\Queries\GetProjectByOwnerIdExecutor.cs" />
+    <Compile Include="ViewModels\ProjectManager\Adapters\ClientContextDataAdapter.cs" />
     <Compile Include="ViewModels\ProjectManager\Adapters\ProjectDataAdapter.cs" />
     <Compile Include="ViewModels\ProjectManager\Adapters\ProjectMapDataAdapter.cs" />
+    <Compile Include="ViewModels\ProjectManager\Events\OnCreatedProject.cs" />
     <Compile Include="ViewModels\ProjectManager\Models\ClientContextModel.cs" />
     <Compile Include="ViewModels\ProjectManager\Models\ProjectMapModel.cs" />
     <Compile Include="ViewModels\ProjectManager\Models\ProjectModel.cs" />
@@ -86,6 +88,10 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\ProjectManager\Modifiers\CreateProject.cs" />
+    <Compile Include="ViewModels\ProjectManager\Modifiers\CreateProjectHandler.cs" />
+    <Compile Include="ViewModels\ProjectManager\Queries\GetProjectById.cs" />
+    <Compile Include="ViewModels\ProjectManager\Queries\GetProjectByIdExecutor.cs" />
     <Compile Include="ViewModels\ProjectManager\View.cs" />
     <Compile Include="ViewModels\EntityOrmTest\View.cs" />
   </ItemGroup>

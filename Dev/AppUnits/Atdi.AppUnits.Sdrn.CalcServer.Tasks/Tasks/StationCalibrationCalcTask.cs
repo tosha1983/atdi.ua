@@ -300,8 +300,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                     .From()
                     .Select(
                         c => c.Id,
-                        c => c.StationIdByICSM,
-                        c => c.TableNameByICSM,
+                        c => c.ExternalCode,
+                        c => c.ExternalSource,
                         c => c.CONTEXT.Id,
                         c => c.StateCode,
                         c => c.CreatedDate,
@@ -310,10 +310,9 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                         c => c.Standard,
                         c => c.ModifiedDate,
 
-                        c => c.GlobalSIDByICSM,
-                        c => c.GlobalSIDByMeasurement,
-                        c => c.CodeRegion,
-                        c => c.Status,
+                        c => c.LicenseGsid,
+                        c => c.RealGsid,
+                        c => c.RegionCode,
 
 
                         c => c.SITE.Latitude_DEC,
@@ -370,12 +369,6 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                 {
                     while (reader.Read())
                     {
-                        bool isCorrectParseStationStatus = false;
-                        if (Enum.TryParse<StationStatus>(reader.GetValue(c => c.Status), out StationStatus stationStatus))
-                        {
-                            isCorrectParseStationStatus = true;
-                        }
-
                         var stationRecord = new ContextStation
                         {
                             Id = reader.GetValue(c => c.Id),
@@ -385,12 +378,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                             CallSign = reader.GetValue(c => c.CallSign),
                             Name = reader.GetValue(c => c.Name),
                             Standard = reader.GetValue(c => c.Standard),
-                            StationIdByICSM = reader.GetValue(c => c.StationIdByICSM),
-                            TableNameByICSM = reader.GetValue(c => c.TableNameByICSM),
+                            ExternalCode = reader.GetValue(c => c.ExternalCode),
+                            ExternalSource = reader.GetValue(c => c.ExternalSource),
                             ModifiedDate = reader.GetValue(c => c.ModifiedDate),
-                            GlobalSIDByICSM = reader.GetValue(c => c.GlobalSIDByICSM),
-                            GlobalSIDByMeasurement = reader.GetValue(c => c.GlobalSIDByMeasurement),
-                            CodeRegion = reader.GetValue(c => c.CodeRegion),
+                            LicenseGsid = reader.GetValue(c => c.LicenseGsid),
+                            RealGsid = reader.GetValue(c => c.RealGsid),
+                            RegionCode = reader.GetValue(c => c.RegionCode),
 
                             Site = new Wgs84Site
                             {
@@ -412,11 +405,6 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                 Tilt_deg = reader.GetValue(c => c.ANTENNA.Tilt_deg)
                             },
                         };
-
-                        if (isCorrectParseStationStatus == true)
-                        {
-                            stationRecord.Status = stationStatus;
-                        }
 
                         if (reader.IsNotNull(c => c.TRANSMITTER.StationId))
                         {

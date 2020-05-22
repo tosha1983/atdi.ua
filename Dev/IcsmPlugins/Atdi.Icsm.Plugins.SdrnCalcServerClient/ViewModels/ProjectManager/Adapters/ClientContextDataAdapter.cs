@@ -11,34 +11,35 @@ using Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager;
 
 namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager.Adapters
 {
-    public sealed class ProjectDataAdapter : EntityDataAdapter<CS_ES.IProject, ProjectModel>
+    public sealed class ClientContextDataAdapter : EntityDataAdapter<CS_ES.IClientContext, ClientContextModel>
     {
-        public ProjectDataAdapter(CalcServerDataLayer dataLayer, ILogger logger) : base(dataLayer.Origin, logger)
+        public ClientContextDataAdapter(CalcServerDataLayer dataLayer, ILogger logger) : base(dataLayer.Origin, logger)
         {
         }
-        protected override void PrepareQuery(IReadQuery<CS_ES.IProject> query)
+        public long ProjectId;
+        protected override void PrepareQuery(IReadQuery<CS_ES.IClientContext> query)
         {
             query.Select(
                 c => c.Id,
                 c => c.Name,
                 c => c.Note,
                 c => c.CreatedDate,
-                c => c.Projection,
+                c => c.TypeName,
                 c => c.StatusName,
                 c => c.OwnerInstance
-            );
+            ).Filter(f => f.PROJECT.Id, ProjectId);
         }
-        protected override ProjectModel ReadData(IDataReader<CS_ES.IProject> reader, int index)
+        protected override ClientContextModel ReadData(IDataReader<CS_ES.IClientContext> reader, int index)
         {
-            return new ProjectModel
+            return new ClientContextModel
             {
                 Id = reader.GetValue(c => c.Id),
                 Name = reader.GetValue(c => c.Name),
                 Note = reader.GetValue(c => c.Note),
                 CreatedDate = reader.GetValue(c => c.CreatedDate),
-                Projection = reader.GetValue(c => c.Projection),
+                TypeName = reader.GetValue(c => c.TypeName),
                 StatusName = reader.GetValue(c => c.StatusName),
-                OwnerInstance = reader.GetValue(c => c.OwnerInstance)                
+                OwnerInstance = reader.GetValue(c => c.OwnerInstance)
             };
         }
     }

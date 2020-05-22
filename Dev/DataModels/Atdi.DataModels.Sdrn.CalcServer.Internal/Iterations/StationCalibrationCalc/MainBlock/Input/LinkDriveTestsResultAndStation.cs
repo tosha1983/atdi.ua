@@ -12,6 +12,6 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
     {
         public DriveTestsResult[]  DriveTestsResults;
 
-        public ContextStation ContextStation;
+        public ContextStation[] ContextStation;
     }
 }

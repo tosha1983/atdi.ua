@@ -45,16 +45,26 @@ namespace Atdi.WpfControls.EntityOrm.Controls
                 lblCaption.Content = this._caption;
             }
         }
+
+        public static DependencyProperty TextProperty = DependencyProperty.Register("Text", typeof(string), typeof(OrmTextBox),
+            new FrameworkPropertyMetadata(default(string), new PropertyChangedCallback(OnPropertyChanged)));
         public string Text
         {
             get { return _text; }
             set
             {
+                SetValue(TextProperty, value);
                 this._text = value;
                 txtMain.Text = this._text;
             }
         }
+        private static void OnPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        {
+            var ctr = sender as OrmTextBox;
 
+            if (e.Property == TextProperty)
+                ctr.Text = (string)e.NewValue;
+        }
         private void RedrawControl()
         {
             lblCaption.Width = this._captionWith;

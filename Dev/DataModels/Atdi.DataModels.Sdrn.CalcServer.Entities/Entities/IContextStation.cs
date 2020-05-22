@@ -19,17 +19,17 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 
 		DateTimeOffset CreatedDate { get; set; }
 
-        long? StationIdByICSM { get; set; }
+        string ExternalCode { get; set; }
 
-        string TableNameByICSM { get; set; }
+        string ExternalSource { get; set; }
 
         DateTimeOffset? ModifiedDate { get; set; }
 
-        string GlobalSIDByICSM { get; set; }
+        string LicenseGsid { get; set; }
 
-        string GlobalSIDByMeasurement { get; set; }
+        string RealGsid { get; set; }
 
-        string CodeRegion { get; set; }
+        string RegionCode { get; set; }
 
         string Name { get; set; }
 
@@ -40,8 +40,6 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 		string StateName { get; set; }
 
         string Standard { get; set; }
-
-        string Status { get; set; }
 
         IContextStationSite SITE { get; set; }
 
