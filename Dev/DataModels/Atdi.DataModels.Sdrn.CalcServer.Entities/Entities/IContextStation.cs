@@ -25,6 +25,12 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 
         DateTimeOffset? ModifiedDate { get; set; }
 
+        string GlobalSIDByICSM { get; set; }
+
+        string GlobalSIDByMeasurement { get; set; }
+
+        string CodeRegion { get; set; }
+
         string Name { get; set; }
 
 		string CallSign { get; set; }
@@ -34,6 +40,8 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 		string StateName { get; set; }
 
         string Standard { get; set; }
+
+        string Status { get; set; }
 
         IContextStationSite SITE { get; set; }
 

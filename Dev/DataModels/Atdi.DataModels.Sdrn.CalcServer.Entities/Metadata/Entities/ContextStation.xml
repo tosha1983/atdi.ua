@@ -23,8 +23,13 @@
 
     <Field Name="StateCode" SourceType="Column" SourceName="STATE_CODE" DataType="Code.u08" Required="true" Title="Station Type Code" Desc="The code of the type of the station"  />
     <Field Name="StateName" SourceType="Column" SourceName="STATE_NAME" DataType="Text.50" Title="Station Type Name" Desc="The name of the type of the station" />
-   
 
+
+    <Field Name="GlobalSIDByICSM" SourceType="Column" SourceName="GLOBAL_SID_BY_ICSM" DataType="Text.250" Title="GlobalSID by ICSM" Desc="The GlobalSID by ICSM" />
+    <Field Name="GlobalSIDByMeasurement" SourceType="Column" SourceName="GLOBAL_SID_BY_MEAS" DataType="Text.250" Title="GlobalSID by Measurements" Desc="The GlobalSID by Measurements" />
+    <Field Name="CodeRegion" SourceType="Column" SourceName="CODE_REGION" DataType="Text.50" Title="Code Region" Desc="The Code of Region" />
+    <Field Name="Status" SourceType="Column" SourceName="STATUS" DataType="Text.10" Title="Status" Desc="The Status of Station" />
+    
 
     <Field Name="SITE" SourceName="ContextStationSite" SourceType="Extension" Title="Station Site" Required="true"/>
     

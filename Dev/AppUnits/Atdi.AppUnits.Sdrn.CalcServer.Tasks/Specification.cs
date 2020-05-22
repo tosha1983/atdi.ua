@@ -47,5 +47,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 	    public static readonly string GisProfileReliefArrayObjectPool = "CalcServer.Gis.Profile.ReliefArray";
 	    public static readonly string GisProfileHeightArrayObjectPool = "CalcServer.Gis.Profile.HeightArray";
         public static readonly string StationCalibrationDriveTestsResultArrayObjectPool = "CalcServer.StationCalibration.DriveTestsResult";
+        public static readonly string StationCalibrationCalcPointArrayObjectPool = "CalcServer.StationCalibration.CalcPoint";
+        
     }
 }

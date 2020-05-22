@@ -41,8 +41,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
 
             // заполняем поля TargetCoordinate и TargetAltitude_m (координаты уже преобразованы в метры)
-            data.FieldStrengthCalcData.TargetCoordinate = data.GSIDGroupeDriveTests[0].Points[0].Coordinate;
-            data.FieldStrengthCalcData.TargetAltitude_m = data.GSIDGroupeDriveTests[0].Points[0].Height_m;
+            data.FieldStrengthCalcData.TargetCoordinate = data.GSIDGroupeDriveTests.Points[0].Coordinate;
+            data.FieldStrengthCalcData.TargetAltitude_m = data.GSIDGroupeDriveTests.Points[0].Height_m;
 
             // вызываем механизм расчета FieldStrengthCalcData на основе переданных данных data.FieldStrengthCalcData
             var iterationFieldStrengthCalcData = _iterationsPool.GetIteration<FieldStrengthCalcData, FieldStrengthCalcResult>();
