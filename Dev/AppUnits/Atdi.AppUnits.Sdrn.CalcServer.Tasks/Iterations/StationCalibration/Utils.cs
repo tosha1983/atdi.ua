@@ -211,27 +211,29 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             }
 
             var lstGroupContextStations = new List<ContextStation>();
-
-            var Groups = new List<string>();
             for (int k = 0; k < arrUniqueGSID.Length; k++)
             {
-                for (int l = 0; l < lstContextStations[k].Length; l++)
+                var stationOne = lstContextStations[k][0];
+                for (int j = 0; j < arrUniqueGSID.Length; j++)
                 {
-                    var stationOne = lstContextStations[k][l];
-                    for (int j = 0; j < arrUniqueGSID.Length; j++)
+                    var stationTwo = lstContextStations[j][0];
+                    if (CompareGSID(stationOne.LicenseGsid, stationTwo.LicenseGsid, Standard))
                     {
-                        for (int r = 0; r < lstContextStations[j].Length; r++)
+                        for (int v = 0; v < lstContextStations[k].Length; v++)
                         {
-                            var stationTwo = lstContextStations[j][r];
-                            if (CompareGSID(stationOne.LicenseGsid, stationTwo.LicenseGsid, Standard))
+                            lstContextStations[k][v].NameGroupGlobalSID = stationOne.LicenseGsid;
+                            if ((lstGroupContextStations.FindAll(x => x.Id == lstContextStations[k][v].Id).Count == 0))
                             {
-                                stationOne.NameGroupGlobalSID = stationOne.LicenseGsid;
-                                stationTwo.NameGroupGlobalSID = stationOne.LicenseGsid;
+                                lstGroupContextStations.Add(lstContextStations[k][v]);
+                            }
+                        }
 
-                                if ((lstGroupContextStations.FindAll(x => x.Id == stationOne.Id).Count == 0))
-                                {
-                                    lstGroupContextStations.Add(stationOne);
-                                }
+                        for (int v = 0; v < lstContextStations[j].Length; v++)
+                        {
+                            lstContextStations[j][v].NameGroupGlobalSID = stationOne.LicenseGsid;
+                            if ((lstGroupContextStations.FindAll(x => x.Id == lstContextStations[j][v].Id).Count == 0))
+                            {
+                                lstGroupContextStations.Add(lstContextStations[j][v]);
                             }
                         }
                     }
@@ -266,10 +268,6 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 cntRecalcContextStations += stationsByOneGroup.Count;
             }
 
-            //if (lstAllStations.Count != cntRecalcContextStations)
-            //{
-            //    throw new Exception();
-            //}
             return lstRecalcContextStations.ToArray();
         }
 
@@ -292,27 +290,29 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             }
 
             var lstGroupDriveTestsResult = new List<DriveTestsResult>();
-
-            var Groups = new List<string>();
             for (int k = 0; k < arrUniqueGSID.Length; k++)
             {
-                for (int l = 0; l < lstDriveTestsResult[k].Length; l++)
+                var driveTestsOne = lstDriveTestsResult[k][0];
+                for (int j = 0; j < arrUniqueGSID.Length; j++)
                 {
-                    var driveTestsResultOne = lstDriveTestsResult[k][l];
-                    for (int j = 0; j < arrUniqueGSID.Length; j++)
+                    var driveTestsTwo = lstDriveTestsResult[j][0];
+                    if (CompareGSID(driveTestsOne.GSID, driveTestsTwo.GSID, Standard))
                     {
-                        for (int r = 0; r < lstDriveTestsResult[j].Length; r++)
+                        for (int v = 0; v < lstDriveTestsResult[k].Length; v++)
                         {
-                            var driveTestsTwo = lstDriveTestsResult[j][r];
-                            if (CompareGSID(driveTestsResultOne.GSID, driveTestsTwo.GSID, Standard))
+                            lstDriveTestsResult[k][v].NameGroupGlobalSID = driveTestsOne.GSID;
+                            if ((lstGroupDriveTestsResult.FindAll(x => x.Num == lstDriveTestsResult[k][v].Num).Count == 0))
                             {
-                                driveTestsResultOne.NameGroupGlobalSID = driveTestsResultOne.GSID;
-                                driveTestsTwo.NameGroupGlobalSID = driveTestsResultOne.GSID;
+                                lstGroupDriveTestsResult.Add(lstDriveTestsResult[k][v]);
+                            }
+                        }
 
-                                if (lstGroupDriveTestsResult.FindAll(x => x.Num == driveTestsResultOne.Num).Count == 0)
-                                {
-                                    lstGroupDriveTestsResult.Add(driveTestsResultOne);
-                                }
+                        for (int v = 0; v < lstDriveTestsResult[j].Length; v++)
+                        {
+                            lstDriveTestsResult[j][v].NameGroupGlobalSID = driveTestsOne.GSID;
+                            if ((lstGroupDriveTestsResult.FindAll(x => x.Num == lstDriveTestsResult[j][v].Num).Count == 0))
+                            {
+                                lstGroupDriveTestsResult.Add(lstDriveTestsResult[j][v]);
                             }
                         }
                     }
@@ -350,11 +350,6 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 lstRecalcDriveTestsResult.Add(tempDriveTestsByOneGroup);
                 cntRecalcDriveTest += tempDriveTestsByOneGroup.Length;
             }
-
-            //if (lstAllDriveTestsResult.Count!= cntRecalcDriveTest)
-            //{
-                //throw new Exception();
-            //}
 
             return lstRecalcDriveTestsResult.ToArray();
         }
@@ -400,14 +395,18 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 for (int j = 0; j < lstStations.Count; j++)
                 {
                     var station = lstStations[j].ToList();
-                    station.RemoveAll(x => x.Id == forDeleteContextStation[i].Id);
-                    if (station.Count > 0)
+                    if (station.FindAll(x => x.Id == forDeleteContextStation[i].Id).Count > 0)
                     {
-                        lstStations[j] = station.ToArray();
-                    }
-                    else
-                    {
-                        lstStations.RemoveAt(j);
+                        station.RemoveAll(x => x.Id == forDeleteContextStation[i].Id);
+                        if (station.Count > 0)
+                        {
+                            lstStations[j] = station.ToArray();
+                        }
+                        else
+                        {
+                            lstStations.RemoveAt(j);
+                        }
+                        break;
                     }
                 }
             }
@@ -420,19 +419,22 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 for (int j = 0; j < lstDriveTests.Count; j++)
                 {
                     var driveTest = lstDriveTests[j].ToList();
-                    driveTest.RemoveAll(x => x.Num == forDeleteDriveTestsResult[i].Num);
-                    if (driveTest.Count > 0)
+                    if (driveTest.FindAll(x => x.Num == forDeleteDriveTestsResult[i].Num).Count > 0)
                     {
-                        lstDriveTests[j] = driveTest.ToArray();
-                    }
-                    else
-                    {
-                        lstDriveTests.RemoveAt(j);
+                        driveTest.RemoveAll(x => x.Num == forDeleteDriveTestsResult[i].Num);
+                        if (driveTest.Count > 0)
+                        {
+                            lstDriveTests[j] = driveTest.ToArray();
+                        }
+                        else
+                        {
+                            lstDriveTests.RemoveAt(j);
+                        }
+                        break;
                     }
                 }
             }
             outDriveTestsResults = lstDriveTests.ToArray();
-
             return lstLinkDriveTestsResultAndStation.ToArray();
         }
 
@@ -448,6 +450,21 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             var driveTestsRes = driveTestsResult.ToList();
             var arrayNameGroupGlobalSID = driveTestsRes.Select(x => x.NameGroupGlobalSID);
             return arrayNameGroupGlobalSID.Distinct().ToArray();
+        }
+
+        public static void CalcBlockOne(DriveTestsResult[] contextDriveTestsResult, ContextStation[] contextStations)
+        {
+            var allStandards = new List<string>();
+            allStandards.AddRange(GetUniqueArrayStandardsfromStations(contextStations));
+            allStandards.AddRange(GetUniqueArrayStandardsFromDriveTests(contextDriveTestsResult));
+            var arrStandards = allStandards.Distinct().ToArray();
+            for (int i=0; i< arrStandards.Length; i++)
+            {
+                CompareDriveTestAndStation(contextDriveTestsResult, contextStations, arrStandards[i], out DriveTestsResult[][] outDriveTestsResults, out ContextStation[][] outContextStations);
+
+
+
+            }
         }
     }
 }
