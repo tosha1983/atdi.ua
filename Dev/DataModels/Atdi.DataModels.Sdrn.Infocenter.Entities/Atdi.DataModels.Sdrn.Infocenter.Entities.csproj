@@ -62,6 +62,10 @@
     <Content Include="DataLayer\Oracle\Tables\[INFOC].[CLUTTERS_DESCS_FREQS_CLUTTERS].sql" />
     <Content Include="DataLayer\Oracle\Tables\[INFOC].[MAPS].sql" />
     <Content Include="DataLayer\Oracle\Tables\[INFOC].[MAP_SECTORS].sql" />
+    <Content Include="DataLayer\Oracle\Tables\[SDRNSVR].[DRIVE_TESTS].sql" />
+    <Content Include="DataLayer\Oracle\Tables\[SDRNSVR].[DRIVE_TESTS_POINTS].sql" />
+    <Content Include="DataLayer\Oracle\Tables\[SDRNSVR].[MEAS_RESULTS].sql" />
+    <Content Include="DataLayer\Oracle\Tables\[SDRNSVR].[MEAS_RESULTS_STATS].sql" />
     <Content Include="DataLayer\SqlServer\Tables\[INFOC].[CLUTTERS_DESCS].sql" />
     <Content Include="DataLayer\SqlServer\Tables\[INFOC].[CLUTTERS_DESCS_CLUTTERS].sql" />
     <Content Include="DataLayer\SqlServer\Tables\[INFOC].[CLUTTERS_DESCS_FREQS].sql" />

@@ -659,9 +659,7 @@
   <PropertyGroup>
     <PostBuildEvent>copy "$(TargetDir)XICSM_ICSControlClient.dll" "C:\ATDI\ICS Manager"
 copy "$(TargetDir)Atdi.*.dll" "C:\ATDI\ICS Manager"
-copy "$(TargetDir)XICSM_ICSControlClient.dll" "C:\ATDI\ICS Manager UCRF"
-copy "$(TargetDir)XICSM_ICSControlClient.dll" "C:\ATDI\ICSM_UCRF_MON_2019_04_18_x_sig_214"
-copy "$(TargetDir)\ru-RU" "C:\ATDI\ICS Manager UCRF\ru-RU\"
-copy "$(TargetDir)\uk-UA" "C:\ATDI\ICS Manager UCRF\uk-UA\"</PostBuildEvent>
+copy "$(TargetDir)\ru-RU" "C:\ATDI\ICS Manager\ru-RU\"
+copy "$(TargetDir)\uk-UA" "C:\ATDI\ICS Manager\uk-UA\"</PostBuildEvent>
   </PropertyGroup>
 </Project>

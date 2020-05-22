@@ -65,8 +65,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         CorellationParameters = data.CorellationParameters,
                         GSIDGroupeDriveTests = driveTestsResultBuffer,
                         FieldStrengthCalcData = data.FieldStrengthCalcData[i],
-                        GeneralParameters = data.GeneralParameters,
-                        CodeProjection = data.CodeProjection
+                        GeneralParameters = data.GeneralParameters
                     };
 
                     var stationCalibrationCalcData = new StationCalibrationCalcData()
@@ -77,7 +76,6 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         FieldStrengthCalcData = data.FieldStrengthCalcData[i],
                         CalibrationParameters = data.CalibrationParameters,
                         GeneralParameters = data.GeneralParameters,
-                        CodeProjection = data.CodeProjection
                     };
 
                     var iterationCorellationCalc = _iterationsPool.GetIteration<StationCorellationCalcData, ResultCorrelationGSIDGroupeStations>();

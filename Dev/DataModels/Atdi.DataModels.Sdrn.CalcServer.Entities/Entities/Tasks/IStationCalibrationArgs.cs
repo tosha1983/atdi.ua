@@ -8,13 +8,13 @@ using Atdi.DataModels.EntityOrm;
 namespace Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks
 {
 	[EntityPrimaryKey]
-	public interface ICalibrationParametersArgs_PK
+	public interface IStationCalibrationArgs_PK
     {
 		long TaskId { get; set; }
 	}
 
 	[Entity]
-	public interface ICalibrationParametersArgs : ICalibrationParametersArgsBase, ICalibrationParametersArgs_PK
+	public interface IStationCalibrationArgs : IStationCalibrationArgsBase, IStationCalibrationArgs_PK
     {
         ICalcTask TASK { get; set; }
 	}

@@ -10,7 +10,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
 	public enum ModeStatusParameters
     {
-        FirstStatusParameters,
-        SecondStatusParameters
+        FirstStatusParameters = 0,
+        SecondStatusParameter = 1
     }
 }

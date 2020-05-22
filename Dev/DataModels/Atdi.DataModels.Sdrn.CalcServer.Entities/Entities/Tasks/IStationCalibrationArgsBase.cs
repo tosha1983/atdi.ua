@@ -9,8 +9,10 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks
 {
 
     [Entity]
-    public interface ICalibrationParametersArgsBase
+    public interface IStationCalibrationArgsBase
     {
+        long[] InfocMeasResults { get; set; }
+        long[] StationIds { get; set; }
         float? СorrelationThresholdHard { get; set; }
         float? СorrelationThresholdWeak { get; set; }
         float? TrustOldResults { get; set; }
@@ -29,10 +31,10 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks
         int? ShiftAltitudeStationStep_m { get; set; }
         int? MaxDeviationAltitudeStation_m { get; set; }
         bool? TiltStation { get; set; }
-        float? ShiftTiltStationMin_Deg { get; set; }
-        float? ShiftTiltStationMax_Deg { get; set; }
-        float? ShiftTiltStationStep_Deg { get; set; }
-        float? MaxDeviationTiltStationDeg { get; set; }
+        float? ShiftTiltStationMin_deg { get; set; }
+        float? ShiftTiltStationMax_deg { get; set; }
+        float? ShiftTiltStationStep_deg { get; set; }
+        float? MaxDeviationTiltStation_deg { get; set; }
         bool? AzimuthStation { get; set; }
         float? ShiftAzimuthStationMin_deg { get; set; }
         float? ShiftAzimuthStationMax_deg { get; set; }
