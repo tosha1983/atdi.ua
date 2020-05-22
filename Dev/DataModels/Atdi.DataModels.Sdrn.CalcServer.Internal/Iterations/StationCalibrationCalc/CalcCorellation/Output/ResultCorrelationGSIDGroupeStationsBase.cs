@@ -10,7 +10,9 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
 	public class ResultCorrelationGSIDGroupeStationsBase
     {
-        public float Corellation_pc;
+        public float Freq_MHz;
+        public float Delta_dB;
+        public double Corellation_pc;
         public double Corellation_factor;
         public float StdDev_dB;
         public float AvErr_dB;

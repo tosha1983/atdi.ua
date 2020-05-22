@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.Infocenter.Entities.Entities.SdrnServer
 {
-	public interface IMeasResult_PK
+	public interface IStationMonitoring_PK
 	{
 		long Id { get; set; }
 	}
 
-	public interface IMeasResult : IMeasResult_PK
+	public interface IStationMonitoring : IStationMonitoring_PK
 	{
 		DateTimeOffset CreatedDate { get; set; }
 
@@ -27,7 +27,7 @@ namespace Atdi.DataModels.Sdrn.Infocenter.Entities.Entities.SdrnServer
 
 		string SensorTitle { get; set; }
 
-		IMeasResultStats STATS { get; set; }
+		IStationMonitoringStats STATS { get; set; }
 	}
 
 	public enum MeasResultStatusCode

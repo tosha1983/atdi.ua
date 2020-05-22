@@ -10,7 +10,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
 	public struct PointFS
     {
-        public Wgs84Coordinate Coordinate;
+        public EpsgCoordinate Coordinate;
 
         public int Height_m;
 

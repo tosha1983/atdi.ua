@@ -11,7 +11,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 	public struct CalibrationStationResult
     {
         public string TableName;
-        public long IdStation;
+        public long StationId;
         public string GSIDByICSM;
         public string GSIDByMeasurement;
         public StationStatusResult ResultStationStatus;

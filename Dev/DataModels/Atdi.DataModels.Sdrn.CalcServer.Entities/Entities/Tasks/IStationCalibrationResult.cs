@@ -8,19 +8,19 @@ using Atdi.DataModels.EntityOrm;
 namespace Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks
 {
 	[EntityPrimaryKey]
-	public interface ICalibrationResult_PK
+	public interface IStationCalibrationResult_PK
     {
 		long ResultId { get; set; }
 	}
 
 	[Entity]
-	public interface ICalibrationResult : ICalibrationResult_PK
+	public interface IStationCalibrationResult : IStationCalibrationResult_PK
     {
 		ICalcResult RESULT { get; set; }
         DateTimeOffset TimeStart { get; set; }
         string Standard { get; set; }
         string AreaName { get; set; }
-        ICalibrationParametersArgs Parameters { get; set; }
+        IStationCalibrationArgs Parameters { get; set; }
         int NumberStation { get; set; }
         int NumberStationInContour { get; set; }
         int CountStation_CS { get; set; }

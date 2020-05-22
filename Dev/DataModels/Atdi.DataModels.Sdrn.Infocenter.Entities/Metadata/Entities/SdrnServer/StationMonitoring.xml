@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Entity
-  Name        = "MeasResult"
-  Title       = "Measurement Result"
-  Desc        = "The measurement result from SDRN Server"
+  Name        = "StationMonitoring"
+  Title       = "Station Monitoring Measurement Result"
+  Desc        = "The measurement result of th station monitoring from SDRN Server"
   Type        = "Normal"
   xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   <DataSource Type="Database" Object="Table">
-    <Name>MEAS_RESULTS</Name>
+    <Name>SM_MEAS_RESULTS</Name>
     <Schema>SDRNSVR</Schema>
   </DataSource>
   <Fields>
@@ -23,7 +23,7 @@
     <Field Name="SensorName" DataType="Text.150" SourceName="SENSOR_NAME" SourceType="Column" Desc="The name of the sensor" Title="Sensor Name" Required="false"/>
     <Field Name="SensorTitle" DataType="Text.250" SourceName="SENSOR_TITLE" SourceType="Column" Desc="The title of the sensor" Title="Sensor Title" Required="false"/>
 
-    <Field Name="STATS" SourceName="MeasResultStats" SourceType="Extension" Title="Statistics" Required="true"/>
+    <Field Name="STATS" SourceName="StationMonitoringStats" SourceType="Extension" Title="Statistics" Required="true"/>
 
   </Fields>
   <PrimaryKey Clustered="true">

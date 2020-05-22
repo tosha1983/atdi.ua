@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Entity
-  Name        = "MeasResultStats"
-  Title       = "Measurement Result Statistics"
-  Desc        = "The statistics of the measurement result"
+  Name        = "StationMonitoringStats"
+  Title       = "Station Monitoring Measurement Result Statistics"
+  Desc        = "The statistics of the measurement result of the station monitoring"
   Type        = "Extension"
-  BaseEntity  = "MeasResult"
+  BaseEntity  = "StationMonitoring"
   xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   <DataSource Type="Database" Object="Table">
-    <Name>MEAS_RESULTS_STATS</Name>
+    <Name>SM_MEAS_RESULTS_STATS</Name>
     <Schema>SDRNSVR</Schema>
   </DataSource>
   <Fields>

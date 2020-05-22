@@ -12,7 +12,12 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
     public class ContextStation : ClientContextStation
     {
         public DateTimeOffset? ModifiedDate;
-        public long? IdStation;
-        public string TableName;
+        public string GlobalSIDByICSM { get; set; }
+        public string GlobalSIDByMeasurement { get; set; }
+        public string CodeRegion { get; set; }
+        public long? StationIdByICSM { get; set; }
+        public string TableNameByICSM { get; set; }
+        public StationStatus Status { get; set; }
+        public string NameGroupGlobalSID { get; set; }
     }
 }

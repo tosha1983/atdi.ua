@@ -8,20 +8,16 @@ using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
-	public struct DriveTestsResult
+	public struct CalcPoint
     {
-        public string GSID;
+        public float Lon;
 
-        public double Freq_MHz;
+        public float Lat;
 
-        public string Standard;
+        public int Count;
 
-        public PointFS[] Points;
+        public double FSMeas;
 
-        public int CountPoints;
-
-        public string NameGroupGlobalSID;
-
-        public int Num;
+        public double FSCalc;
     }
 }

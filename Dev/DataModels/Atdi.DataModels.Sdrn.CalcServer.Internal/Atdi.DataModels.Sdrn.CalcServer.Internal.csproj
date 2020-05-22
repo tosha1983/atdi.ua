@@ -51,9 +51,12 @@
     <Compile Include="Iterations\StationCalibrationCalc\CalcCorellation\Parameters\GeneralParameters.cs" />
     <Compile Include="Iterations\StationCalibrationCalc\MainBlock\CalcStatus\ModeStatusParameters.cs" />
     <Compile Include="Iterations\StationCalibrationCalc\MainBlock\CalcStatus\CalibrationStatusParameters.cs" />
+    <Compile Include="Iterations\StationCalibrationCalc\MainBlock\CalcStatus\StationStatus.cs" />
     <Compile Include="Iterations\StationCalibrationCalc\MainBlock\Input\ContextStation.cs" />
-    <Compile Include="Iterations\StationCalibrationCalc\MainBlock\Output\DriveTestStatusResult.cs" />
-    <Compile Include="Iterations\StationCalibrationCalc\MainBlock\Output\StationStatusResult.cs" />
+    <Compile Include="Iterations\StationCalibrationCalc\MainBlock\Input\LinkDriveTestsResultAndStation.cs" />
+    <Compile Include="Iterations\StationCalibrationCalc\MainBlock\Input\CalcPoint.cs" />
+    <Compile Include="Iterations\StationCalibrationCalc\MainBlock\Output\Enum\DriveTestStatusResult.cs" />
+    <Compile Include="Iterations\StationCalibrationCalc\MainBlock\Output\Enum\StationStatusResult.cs" />
     <Compile Include="Iterations\StationCalibrationCalc\MainBlock\Output\CalibrationResult.cs" />
     <Compile Include="Iterations\StationCalibrationCalc\MainBlock\Output\CalibrationDriveTestResult.cs" />
     <Compile Include="Iterations\StationCalibrationCalc\MainBlock\Output\CalibrationStationResult.cs" />
