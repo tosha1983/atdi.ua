@@ -16,8 +16,8 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 
         public int Count;
 
-        public ParametersStation FSMeas;
+        public double FSMeas;
 
-        public ParametersStation FSCalc;
+        public double FSCalc;
     }
 }
