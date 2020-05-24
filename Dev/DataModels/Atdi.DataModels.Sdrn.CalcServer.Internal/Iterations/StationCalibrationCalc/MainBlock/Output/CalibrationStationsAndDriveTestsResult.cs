@@ -8,20 +8,9 @@ using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
-	public class DriveTestsResult
+	public class CalibrationStationsAndDriveTestsResult
     {
-        public string GSID;
-
-        public double Freq_MHz;
-
-        public string Standard;
-
-        public PointFS[] Points;
-
-        public int CountPoints;
-
-        public string NameGroupGlobalSID;
-
-        public int Num;
+        public CalibrationStationResult[] ResultCalibrationStation;
+        public CalibrationDriveTestResult[] ResultCalibrationDriveTest;
     }
 }

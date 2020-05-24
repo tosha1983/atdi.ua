@@ -8,7 +8,7 @@ using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
-	public struct LinkDriveTestsResultAndStation
+	public struct LinkGoupDriveTestsAndStations
     {
         public DriveTestsResult[]  DriveTestsResults;
 

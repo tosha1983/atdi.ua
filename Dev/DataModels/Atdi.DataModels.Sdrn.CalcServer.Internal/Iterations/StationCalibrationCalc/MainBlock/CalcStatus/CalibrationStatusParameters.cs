@@ -5,12 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Atdi.DataModels.Sdrn.DeepServices.Gis;
 using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations;
+using Atdi.DataModels.Sdrn.CalcServer.Internal.Clients;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
-	public struct CalibrationStatusParameters
+	public class CalibrationStatusParameters
     {
-        public string StatusStation;
+        public ClientContextStationType StatusStation;
 
         public bool Corellation;
 
@@ -20,9 +21,9 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 
         public bool ExceptionParameter;
 
-        public string ResultStationStatus;
+        public StationStatusResult ResultStationStatus;
 
-        public string ResultDriveTestStatus;
+        public DriveTestStatusResult ResultDriveTestStatus;
 
         public ModeStatusParameters ModeStatusParameters;
     }

@@ -10,17 +10,16 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks
 	[EntityPrimaryKey]
 	public interface IStationCalibrationStaResult_PK
     {
-		long Id { get; set; }
-	}
+        long CalibrationResultId { get; set; }
+    }
 
 	[Entity]
 	public interface IStationCalibrationStaResult : IStationCalibrationStaResult_PK
     {
-        IStationCalibrationResult CALIBRATION_RESULT { get; set; }
-        string TableName { get; set; }
-        long? StationId { get; set; }
-        string GSIDByICSM { get; set; }
-        string GSIDByMeasurement { get; set; }
+        string ExternalSource { get; set; }
+        string ExternalCode { get; set; }
+        string LicenseGsid { get; set; }
+        string RealGsid { get; set; }
         string ResultStationStatus { get; set; }
         float MaxCorellation { get; set; }
         int Old_Altitude_m { get; set; }

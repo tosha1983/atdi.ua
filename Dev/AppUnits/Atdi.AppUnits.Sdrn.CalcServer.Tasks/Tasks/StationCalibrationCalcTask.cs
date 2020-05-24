@@ -120,10 +120,15 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                 GeneralParameters = this._parameters.GeneralParameters,
                 MapData = mapData,
                 CluttersDesc = _mapRepository.GetCluttersDesc(this._calcDbScope, mapData.Id),
-                PropagationModel = _contextService.GetPropagationModel(this._calcDbScope, this._taskContext.ClientContextId)
+                PropagationModel = _contextService.GetPropagationModel(this._calcDbScope, this._taskContext.ClientContextId),
+                Projection = this._parameters.Projection
             };
-            var iterationResultCalibration = _iterationsPool.GetIteration<AllStationCorellationCalcData, CalibrationResult>();
+            var iterationResultCalibration = _iterationsPool.GetIteration<AllStationCorellationCalcData, CalibrationResult[]>();
             var resulCalibration = iterationResultCalibration.Run(_taskContext, iterationAllStationCorellationCalcData);
+            for (int i=0; i< resulCalibration.Length; i++)
+            {
+                SaveTaskResult(resulCalibration[i]);
+            }
         }
 
 		private void ValidateTaskParameters()
@@ -507,6 +512,78 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                 });
             }
             this._contextDriveTestsResult = driveTests.ToArray();
+        }
+
+        private void SaveTaskResult(in CalibrationResult result)
+        {
+            var insertQueryStationCalibrationResult = _calcServerDataLayer.GetBuilder<IStationCalibrationResult>()
+                .Insert()
+                .SetValue(c => c.AreaName, result.AreaName)
+                .SetValue(c => c.CountMeasGSID, result.CountMeasGSID)
+                .SetValue(c => c.CountMeasGSID_IT, result.CountMeasGSID_IT)
+                .SetValue(c => c.CountMeasGSID_LS, result.CountMeasGSID_LS)
+                .SetValue(c => c.CountStation_CS, result.CountStation_CS)
+                .SetValue(c => c.CountStation_IT, result.CountStation_IT)
+                .SetValue(c => c.CountStation_NF, result.CountStation_NF)
+                .SetValue(c => c.CountStation_NS, result.CountStation_NS)
+                .SetValue(c => c.CountStation_UN, result.CountStation_UN)
+                .SetValue(c => c.NumberStation, result.NumberStation)
+                .SetValue(c => c.NumberStationInContour, result.NumberStationInContour)
+                .SetValue(c => c.RESULT.Id, _taskContext.ResultId)
+                .SetValue(c => c.Standard, result.Standard)
+                .SetValue(c => c.TimeStart, result.TimeStart)
+                .SetValue(c => c.PARAMETERS.TaskId, _taskContext.TaskId)
+                ;
+
+            var key = _calcDbScope.Executor.Execute<IStationCalibrationResult_PK>(insertQueryStationCalibrationResult);
+            if (key != null)
+            {
+                for (int z = 0; z < result.ResultCalibrationDriveTest.Length; z++)
+                {
+                    var driveTest = result.ResultCalibrationDriveTest[z];
+                    var insertQueryStationCalibrationDriveTestResult = _calcServerDataLayer.GetBuilder<IStationCalibrationDriveTestResult>()
+                    .Insert()
+                    .SetValue(c => c.CalibrationResultId, key.Id)
+                    .SetValue(c => c.CountPointsInDriveTest, driveTest.CountPointsInDriveTest)
+                    .SetValue(c => c.ExternalCode, driveTest.ExternalCode)
+                    .SetValue(c => c.ExternalSource, driveTest.ExternalSource)
+                    .SetValue(c => c.LicenseGsid, driveTest.Gsid)
+                    .SetValue(c => c.RealGsid, driveTest.GsidFromStation)
+                    .SetValue(c => c.ResultDriveTestStatus, driveTest.ResultDriveTestStatus.ToString())
+                    ;
+                    _calcDbScope.Executor.Execute<IStationCalibrationDriveTestResult_PK>(insertQueryStationCalibrationDriveTestResult);
+                }
+
+                for (int z = 0; z < result.ResultCalibrationStation.Length; z++)
+                {
+                    var station = result.ResultCalibrationStation[z];
+                    var insertQueryStationCalibrationStaResult = _calcServerDataLayer.GetBuilder<IStationCalibrationStaResult>()
+                    .Insert()
+                    .SetValue(c => c.CalibrationResultId, key.Id)
+                    .SetValue(c => c.ExternalCode, station.ExternalCode)
+                    .SetValue(c => c.ExternalSource, station.ExternalSource)
+                    .SetValue(c => c.LicenseGsid, station.LicenseGsid)
+                    .SetValue(c => c.MaxCorellation, station.MaxCorellation)
+                    .SetValue(c => c.New_Altitude_m, station.ParametersStationNew.Altitude_m)
+                    .SetValue(c => c.New_Azimuth_deg, station.ParametersStationNew.Azimuth_deg)
+                    .SetValue(c => c.New_Freq_MHz, station.ParametersStationNew.Freq_MHz)
+                    .SetValue(c => c.New_Lat_deg, station.ParametersStationNew.Lat_deg)
+                    .SetValue(c => c.New_Lon_deg, station.ParametersStationNew.Lon_deg)
+                    .SetValue(c => c.New_Power_dB, station.ParametersStationNew.Power_dB)
+                    .SetValue(c => c.New_Tilt_deg, station.ParametersStationNew.Tilt_Deg)
+                    .SetValue(c => c.Old_Altitude_m, station.ParametersStationOld.Altitude_m)
+                    .SetValue(c => c.Old_Azimuth_deg, station.ParametersStationOld.Azimuth_deg)
+                    .SetValue(c => c.Old_Freq_MHz, station.ParametersStationOld.Freq_MHz)
+                    .SetValue(c => c.Old_Lat_deg, station.ParametersStationOld.Lat_deg)
+                    .SetValue(c => c.Old_Lon_deg, station.ParametersStationOld.Lon_deg)
+                    .SetValue(c => c.Old_Power_dB, station.ParametersStationOld.Power_dB)
+                    .SetValue(c => c.Old_Tilt_deg, station.ParametersStationOld.Tilt_Deg)
+                    .SetValue(c => c.RealGsid, station.RealGsid)
+                    .SetValue(c => c.ResultStationStatus, station.ResultStationStatus.ToString())
+                    ;
+                    _calcDbScope.Executor.Execute<IStationCalibrationStaResult_PK>(insertQueryStationCalibrationStaResult);
+                }
+            }
         }
     }
 }

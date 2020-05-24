@@ -8,12 +8,12 @@ using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
-	public struct CalibrationDriveTestResult
+	public class CalibrationDriveTestResult
     {
-        public long? StationId;
-        public string TableName;
-        public string GSIDByICSM;
-        public string GSIDByDriveTest;
+        public string ExternalCode;
+        public string ExternalSource;
+        public string Gsid;
+        public string GsidFromStation;
         public DriveTestStatusResult ResultDriveTestStatus;
         public int CountPointsInDriveTest;
         public float MaxPercentCorellation;

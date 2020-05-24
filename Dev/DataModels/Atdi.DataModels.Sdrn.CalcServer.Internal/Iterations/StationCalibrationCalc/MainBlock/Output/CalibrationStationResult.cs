@@ -8,12 +8,12 @@ using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
-	public struct CalibrationStationResult
+	public class CalibrationStationResult
     {
-        public string TableName;
-        public long StationId;
-        public string GSIDByICSM;
-        public string GSIDByMeasurement;
+        public string ExternalCode;
+        public string ExternalSource;
+        public string LicenseGsid;
+        public string RealGsid;
         public StationStatusResult ResultStationStatus;
         public ParametersStation ParametersStationNew;
         public ParametersStation ParametersStationOld;

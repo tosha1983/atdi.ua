@@ -19,5 +19,6 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
         public PropagationModel PropagationModel;
         public ProjectMapData MapData;
         public CluttersDesc CluttersDesc;
+        public string Projection;
     }
 }
