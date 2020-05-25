@@ -165,6 +165,11 @@
     <Content Include="DataLayer\SqlServer\Tables\CALC.CONTEXT_STATIONS_SITE.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.CONTEXT_STATIONS.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.CLIENT_CONTEXTS.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.STATION_CALIBRATION_STA_RESULT.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.STATION_CALIBRATION_RESULT.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.STATION_CALIBRATION_DRIVE_TEST_RESULT.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.STATION_CALIBRATION_ARGS_DEF.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.STATION_CALIBRATION_ARGS.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.PROJECTS.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.PROJECT_MAPS.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.PROJECT_MAP_CONTENTS.sql" />
@@ -185,6 +190,7 @@
     <Content Include="Metadata\DataTypes\ClrObject\Time.TIME.xml" />
     <Content Include="Metadata\DataTypes\Database\Array.Double.xml" />
     <Content Include="Metadata\DataTypes\Database\Array.Float.xml" />
+    <Content Include="Metadata\DataTypes\Database\Array.Long.xml" />
     <Content Include="Metadata\DataTypes\Database\Array.Integer.xml" />
     <Content Include="Metadata\DataTypes\Database\Boolean.xml" />
     <Content Include="Metadata\DataTypes\Database\Byte.xml" />
@@ -244,6 +250,12 @@
     <Content Include="Metadata\Entities\ContextStationCoordinates.xml" />
     <Content Include="Metadata\Entities\Tasks\PointFieldStrengthArgsBase.xml" />
     <Content Include="Metadata\Entities\Tasks\PointFieldStrengthArgsDefault.xml" />
+    <Content Include="Metadata\Entities\Tasks\StationCalibrationStaResult.xml" />
+    <Content Include="Metadata\Entities\Tasks\StationCalibrationResult.xml" />
+    <Content Include="Metadata\Entities\Tasks\StationCalibrationDriveTestResult.xml" />
+    <Content Include="Metadata\Entities\Tasks\StationCalibrationArgsDefault.xml" />
+    <Content Include="Metadata\Entities\Tasks\StationCalibrationArgsBase.xml" />
+    <Content Include="Metadata\Entities\Tasks\StationCalibrationArgs.xml" />
     <Content Include="Metadata\Entities\Tasks\PointFieldStrengthResult.xml" />
     <Content Include="Metadata\Entities\Tasks\PointFieldStrengthArgs.xml" />
     <Content Include="Metadata\Entities\CoverageProfilesCalcTask.xml" />

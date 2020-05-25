@@ -8,11 +8,10 @@ using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
-	public enum StationStatus
+	public struct LinkGoupDriveTestsAndStations
     {
-        I,
-        A,
-        P
+        public DriveTestsResult[]  DriveTestsResults;
+
+        public ContextStation[] ContextStation;
     }
 }
-

@@ -19,6 +19,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
         public string StatusResult;
         public ContextStation ClientContextStation;
         public DriveTestsResult DriveTestsResult;
+        public CalibrationStatusParameters CalibrationStatusParameters;
         public CorrellationPoint[] CorrellationPoints;
     }
 }

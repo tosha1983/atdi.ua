@@ -25,6 +25,7 @@ using Atdi.Platform;
 using Atdi.Common;
 using Atdi.Common.Extensions;
 using Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations;
+using Atdi.Platform.Data;
 
 namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 {
@@ -38,18 +39,14 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 		private readonly IIterationsPool _iterationsPool;
         private readonly ITransformation _transformation;
 		private readonly ILogger _logger;
+        private readonly IObjectPoolSite _poolSite;
         private readonly AppServerComponentConfig _appServerComponentConfig;
         private ITaskContext _taskContext;
 		private IDataLayerScope _calcDbScope;
 		private TaskParameters _parameters;
 		private ContextStation[] _contextStations;
         private DriveTestsResult[] _contextDriveTestsResult;
-        private PropagationModel _propagationModel;
-        private ProjectMapData _mapData;
-		private CluttersDesc _cluttersDesc;
-        
-
-
+       
 
         private class TaskParameters
 		{
@@ -74,6 +71,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 			IMapRepository mapRepository,
 			IIterationsPool iterationsPool,
 			ITransformation transformation,
+            IObjectPoolSite poolSite,
             AppServerComponentConfig appServerComponentConfig,
             IDataLayer<EntityDataOrm<IC.InfocenterEntityOrmContext>> infocenterDataLayer,
             ILogger logger)
@@ -85,6 +83,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 			_transformation = transformation;
             _appServerComponentConfig = appServerComponentConfig;
             _infocenterDataLayer = infocenterDataLayer;
+            _poolSite = poolSite;
             _logger = logger;
 		}
 
@@ -95,63 +94,41 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 				_calcDbScope.Dispose();
 				_calcDbScope = null;
 			}
-
 			_taskContext = null;
 		}
 
         public void Load(ITaskContext taskContext)
         {
-
             this._taskContext = taskContext;
-
             this._calcDbScope = this._calcServerDataLayer.CreateScope<CalcServerDataContext>();
 
             // загрузить параметры задачи
             this.LoadTaskParameters();
             this.ValidateTaskParameters();
-
-            this._propagationModel = _contextService.GetPropagationModel(this._calcDbScope, taskContext.ClientContextId);
-
-           
-            //заполнение this._contextDriveTestsResult (из инфоцентра)
-
-            // найти и загрузить карту
-            this._mapData = _mapRepository.GetMapByName(this._calcDbScope, this._taskContext.ProjectId, this._parameters.MapName);
-            this._cluttersDesc = _mapRepository.GetCluttersDesc(this._calcDbScope, this._mapData.Id);
         }
 
 
         public void Run()
         {
-            var fieldStrengthCalcDatas = new FieldStrengthCalcData[this._contextStations.Length];
-            for (int i = 0; i < this._contextStations.Length; i++)
-            {
-                fieldStrengthCalcDatas[i] = new FieldStrengthCalcData
-                {
-                    Antenna = this._contextStations[i].Antenna,
-                    PropagationModel = _propagationModel,
-                    PointCoordinate = this._contextStations[i].Coordinate,
-                    PointAltitude_m = this._contextStations[i].Site.Altitude,
-                    MapArea = _mapData.Area,
-                    BuildingContent = _mapData.BuildingContent,
-                    ClutterContent = _mapData.ClutterContent,
-                    ReliefContent = _mapData.ReliefContent,
-                    Transmitter = this._contextStations[i].Transmitter,
-                    CluttersDesc = _cluttersDesc
-                };
-            }
+            var mapData = _mapRepository.GetMapByName(this._calcDbScope, this._taskContext.ProjectId, this._parameters.MapName);
             var iterationAllStationCorellationCalcData = new AllStationCorellationCalcData
             {
                 GSIDGroupeStation = this._contextStations,
                 CalibrationParameters = this._parameters.CalibrationParameters,
                 CorellationParameters = this._parameters.CorellationParameters,
                 GSIDGroupeDriveTests = this._contextDriveTestsResult,
-                FieldStrengthCalcData = fieldStrengthCalcDatas,
-                GeneralParameters = this._parameters.GeneralParameters
+                GeneralParameters = this._parameters.GeneralParameters,
+                MapData = mapData,
+                CluttersDesc = _mapRepository.GetCluttersDesc(this._calcDbScope, mapData.Id),
+                PropagationModel = _contextService.GetPropagationModel(this._calcDbScope, this._taskContext.ClientContextId),
+                Projection = this._parameters.Projection
             };
-
-            var iterationResultCalibration = _iterationsPool.GetIteration<AllStationCorellationCalcData, CalibrationResult>();
+            var iterationResultCalibration = _iterationsPool.GetIteration<AllStationCorellationCalcData, CalibrationResult[]>();
             var resulCalibration = iterationResultCalibration.Run(_taskContext, iterationAllStationCorellationCalcData);
+            for (int i=0; i< resulCalibration.Length; i++)
+            {
+                SaveTaskResult(resulCalibration[i]);
+            }
         }
 
 		private void ValidateTaskParameters()
@@ -300,8 +277,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                     .From()
                     .Select(
                         c => c.Id,
-                        c => c.StationIdByICSM,
-                        c => c.TableNameByICSM,
+                        c => c.ExternalCode,
+                        c => c.ExternalSource,
                         c => c.CONTEXT.Id,
                         c => c.StateCode,
                         c => c.CreatedDate,
@@ -310,10 +287,9 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                         c => c.Standard,
                         c => c.ModifiedDate,
 
-                        c => c.GlobalSIDByICSM,
-                        c => c.GlobalSIDByMeasurement,
-                        c => c.CodeRegion,
-                        c => c.Status,
+                        c => c.LicenseGsid,
+                        c => c.RealGsid,
+                        c => c.RegionCode,
 
 
                         c => c.SITE.Latitude_DEC,
@@ -370,12 +346,6 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                 {
                     while (reader.Read())
                     {
-                        bool isCorrectParseStationStatus = false;
-                        if (Enum.TryParse<StationStatus>(reader.GetValue(c => c.Status), out StationStatus stationStatus))
-                        {
-                            isCorrectParseStationStatus = true;
-                        }
-
                         var stationRecord = new ContextStation
                         {
                             Id = reader.GetValue(c => c.Id),
@@ -385,12 +355,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                             CallSign = reader.GetValue(c => c.CallSign),
                             Name = reader.GetValue(c => c.Name),
                             Standard = reader.GetValue(c => c.Standard),
-                            StationIdByICSM = reader.GetValue(c => c.StationIdByICSM),
-                            TableNameByICSM = reader.GetValue(c => c.TableNameByICSM),
+                            ExternalCode = reader.GetValue(c => c.ExternalCode),
+                            ExternalSource = reader.GetValue(c => c.ExternalSource),
                             ModifiedDate = reader.GetValue(c => c.ModifiedDate),
-                            GlobalSIDByICSM = reader.GetValue(c => c.GlobalSIDByICSM),
-                            GlobalSIDByMeasurement = reader.GetValue(c => c.GlobalSIDByMeasurement),
-                            CodeRegion = reader.GetValue(c => c.CodeRegion),
+                            LicenseGsid = reader.GetValue(c => c.LicenseGsid),
+                            RealGsid = reader.GetValue(c => c.RealGsid),
+                            RegionCode = reader.GetValue(c => c.RegionCode),
 
                             Site = new Wgs84Site
                             {
@@ -412,11 +382,6 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                 Tilt_deg = reader.GetValue(c => c.ANTENNA.Tilt_deg)
                             },
                         };
-
-                        if (isCorrectParseStationStatus == true)
-                        {
-                            stationRecord.Status = stationStatus;
-                        }
 
                         if (reader.IsNotNull(c => c.TRANSMITTER.StationId))
                         {
@@ -547,6 +512,78 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                 });
             }
             this._contextDriveTestsResult = driveTests.ToArray();
+        }
+
+        private void SaveTaskResult(in CalibrationResult result)
+        {
+            var insertQueryStationCalibrationResult = _calcServerDataLayer.GetBuilder<IStationCalibrationResult>()
+                .Insert()
+                .SetValue(c => c.AreaName, result.AreaName)
+                .SetValue(c => c.CountMeasGSID, result.CountMeasGSID)
+                .SetValue(c => c.CountMeasGSID_IT, result.CountMeasGSID_IT)
+                .SetValue(c => c.CountMeasGSID_LS, result.CountMeasGSID_LS)
+                .SetValue(c => c.CountStation_CS, result.CountStation_CS)
+                .SetValue(c => c.CountStation_IT, result.CountStation_IT)
+                .SetValue(c => c.CountStation_NF, result.CountStation_NF)
+                .SetValue(c => c.CountStation_NS, result.CountStation_NS)
+                .SetValue(c => c.CountStation_UN, result.CountStation_UN)
+                .SetValue(c => c.NumberStation, result.NumberStation)
+                .SetValue(c => c.NumberStationInContour, result.NumberStationInContour)
+                .SetValue(c => c.RESULT.Id, _taskContext.ResultId)
+                .SetValue(c => c.Standard, result.Standard)
+                .SetValue(c => c.TimeStart, result.TimeStart)
+                .SetValue(c => c.PARAMETERS.TaskId, _taskContext.TaskId)
+                ;
+
+            var key = _calcDbScope.Executor.Execute<IStationCalibrationResult_PK>(insertQueryStationCalibrationResult);
+            if (key != null)
+            {
+                for (int z = 0; z < result.ResultCalibrationDriveTest.Length; z++)
+                {
+                    var driveTest = result.ResultCalibrationDriveTest[z];
+                    var insertQueryStationCalibrationDriveTestResult = _calcServerDataLayer.GetBuilder<IStationCalibrationDriveTestResult>()
+                    .Insert()
+                    .SetValue(c => c.CalibrationResultId, key.Id)
+                    .SetValue(c => c.CountPointsInDriveTest, driveTest.CountPointsInDriveTest)
+                    .SetValue(c => c.ExternalCode, driveTest.ExternalCode)
+                    .SetValue(c => c.ExternalSource, driveTest.ExternalSource)
+                    .SetValue(c => c.LicenseGsid, driveTest.Gsid)
+                    .SetValue(c => c.RealGsid, driveTest.GsidFromStation)
+                    .SetValue(c => c.ResultDriveTestStatus, driveTest.ResultDriveTestStatus.ToString())
+                    ;
+                    _calcDbScope.Executor.Execute<IStationCalibrationDriveTestResult_PK>(insertQueryStationCalibrationDriveTestResult);
+                }
+
+                for (int z = 0; z < result.ResultCalibrationStation.Length; z++)
+                {
+                    var station = result.ResultCalibrationStation[z];
+                    var insertQueryStationCalibrationStaResult = _calcServerDataLayer.GetBuilder<IStationCalibrationStaResult>()
+                    .Insert()
+                    .SetValue(c => c.CalibrationResultId, key.Id)
+                    .SetValue(c => c.ExternalCode, station.ExternalCode)
+                    .SetValue(c => c.ExternalSource, station.ExternalSource)
+                    .SetValue(c => c.LicenseGsid, station.LicenseGsid)
+                    .SetValue(c => c.MaxCorellation, station.MaxCorellation)
+                    .SetValue(c => c.New_Altitude_m, station.ParametersStationNew.Altitude_m)
+                    .SetValue(c => c.New_Azimuth_deg, station.ParametersStationNew.Azimuth_deg)
+                    .SetValue(c => c.New_Freq_MHz, station.ParametersStationNew.Freq_MHz)
+                    .SetValue(c => c.New_Lat_deg, station.ParametersStationNew.Lat_deg)
+                    .SetValue(c => c.New_Lon_deg, station.ParametersStationNew.Lon_deg)
+                    .SetValue(c => c.New_Power_dB, station.ParametersStationNew.Power_dB)
+                    .SetValue(c => c.New_Tilt_deg, station.ParametersStationNew.Tilt_Deg)
+                    .SetValue(c => c.Old_Altitude_m, station.ParametersStationOld.Altitude_m)
+                    .SetValue(c => c.Old_Azimuth_deg, station.ParametersStationOld.Azimuth_deg)
+                    .SetValue(c => c.Old_Freq_MHz, station.ParametersStationOld.Freq_MHz)
+                    .SetValue(c => c.Old_Lat_deg, station.ParametersStationOld.Lat_deg)
+                    .SetValue(c => c.Old_Lon_deg, station.ParametersStationOld.Lon_deg)
+                    .SetValue(c => c.Old_Power_dB, station.ParametersStationOld.Power_dB)
+                    .SetValue(c => c.Old_Tilt_deg, station.ParametersStationOld.Tilt_Deg)
+                    .SetValue(c => c.RealGsid, station.RealGsid)
+                    .SetValue(c => c.ResultStationStatus, station.ResultStationStatus.ToString())
+                    ;
+                    _calcDbScope.Executor.Execute<IStationCalibrationStaResult_PK>(insertQueryStationCalibrationStaResult);
+                }
+            }
         }
     }
 }

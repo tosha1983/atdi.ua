@@ -8,10 +8,9 @@ using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
-	public struct LinkDriveTestsResultAndStation
+	public class CalibrationStationsAndDriveTestsResult
     {
-        public DriveTestsResult[]  DriveTestsResults;
-
-        public ContextStation ContextStation;
+        public CalibrationStationResult[] ResultCalibrationStation;
+        public CalibrationDriveTestResult[] ResultCalibrationDriveTest;
     }
 }

@@ -10,17 +10,16 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks
 	[EntityPrimaryKey]
 	public interface IStationCalibrationDriveTestResult_PK
     {
-		long Id { get; set; }
-	}
+        long CalibrationResultId { get; set; }
+    }
 
 	[Entity]
 	public interface IStationCalibrationDriveTestResult : IStationCalibrationDriveTestResult_PK
     {
-        IStationCalibrationResult CALIBRATION_RESULT { get; set; }
-        long? StationId { get; set; }
-        string TableName { get; set; }
-        string GSIDByICSM { get; set; }
-        string GSIDByDriveTest { get; set; }
+        string ExternalSource { get; set; }
+        string ExternalCode { get; set; }
+        string LicenseGsid { get; set; }
+        string RealGsid { get; set; }
         string ResultDriveTestStatus { get; set; }
         int CountPointsInDriveTest { get; set; }
         float MaxPercentCorellation { get; set; }

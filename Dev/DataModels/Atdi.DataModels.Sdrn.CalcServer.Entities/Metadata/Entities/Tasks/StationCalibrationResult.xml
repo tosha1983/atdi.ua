@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "StationCalibrationResult"
+  Title       = "Station calibration result"
+  Desc        = "The station calibration result"
+  Type        = "Normal"
+  BaseEntity  = ""
+  
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>STATION_CALIBRATION_RESULT</Name>
+    <Schema>CALC</Schema>
+  </DataSource>
+  <Fields>
+    <Field Name="Id" SourceType="Column"  SourceName="ID" DataType="Counter.64" Title="Station calibration result ID" Desc="The identifier of the station calibration result"/>
+    <Field Name="ResultId" SourceType="Column" SourceName="RESULT_ID" DataType="Integer.64"  Required="true" Title="Result ID" Desc="The result ID" />
+    <Field Name="TaskId" SourceType="Column" SourceName="TASK_ID" DataType="Integer.64"  Required="true" Title="station calibration Args ID" Desc="The station calibration Args ID" />
+    <Field Name="RESULT" SourceType="Reference" SourceName="Atdi.DataModels.Sdrn.CalcServer.Entities.CalcResult"  Required="true" Title="Calc Result" Desc="The calc result" />
+    <Field Name="PARAMETERS" SourceType="Reference" SourceName="Atdi.DataModels.Sdrn.CalcServer.Entities.StationCalibrationArgs"  Required="true" Title="Station calibration parameters" Desc="The station calibration parameters" />
+    <Field Name="TimeStart" DataType="DateTimeOffset" SourceName="TIME_START" SourceType="Column" Desc="The time start" Title="Time start" Required="false"/>
+    <Field Name="Standard" SourceType="Column" SourceName="STANDARD" DataType="Text.50" Required="false" Title="Standard" Desc="The standard" />
+    <Field Name="AreaName" SourceType="Column" SourceName="AREA_NAME" DataType="Text.50" Required="false" Title="Area name" Desc="The area name" />
+    <Field Name="NumberStation" SourceType="Column" Required="false" SourceName="NUMBER_STATION" DataType="Integer.32" Title="Number station" Desc="The number station"/>
+    <Field Name="NumberStationInContour" SourceType="Column" Required="false" SourceName="NUMBER_STATION_IN_CONTOUR" DataType="Integer.32" Title="Number station in contour" Desc="The Number station in contour"/>
+    <Field Name="CountStation_CS" SourceType="Column" Required="false" SourceName="COUNT_STATION_CS" DataType="Integer.32" Title="Count station with status CS" Desc="The count station with status CS"/>
+    <Field Name="CountStation_NS" SourceType="Column" Required="false" SourceName="COUNT_STATION_NS" DataType="Integer.32" Title="Count station with status NS" Desc="The count station with status NS"/>
+    <Field Name="CountStation_IT" SourceType="Column" Required="false" SourceName="COUNT_STATION_IT" DataType="Integer.32" Title="Count station with status IT" Desc="The count station with status IT"/>
+    <Field Name="CountStation_NF" SourceType="Column" Required="false" SourceName="COUNT_STATION_NF" DataType="Integer.32" Title="Count station with status NF" Desc="The count station with status NF"/>
+    <Field Name="CountStation_UN" SourceType="Column" Required="false" SourceName="COUNT_STATION_UN" DataType="Integer.32" Title="Count station with status UN" Desc="The count station with status UN"/>
+    <Field Name="CountMeasGSID" SourceType="Column" Required="false" SourceName="COUNT_MEAS_GSID" DataType="Integer.32" Title="Count meas GSID" Desc="The count meas GSID"/>
+    <Field Name="CountMeasGSID_LS" SourceType="Column" Required="false" SourceName="COUNT_MEAS_GSID_LS" DataType="Integer.32" Title="Count meas GSID with status LS" Desc="The count meas GSID with status LS"/>
+    <Field Name="CountMeasGSID_IT" SourceType="Column" Required="false" SourceName="COUNT_MEAS_GSID_IT" DataType="Integer.32" Title="Count meas GSID with status IT" Desc="The count meas GSID with status IT"/>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>

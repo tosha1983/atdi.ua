@@ -8,7 +8,7 @@ using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
-	public struct DriveTestsResult
+	public class DriveTestsResult
     {
         public string GSID;
 

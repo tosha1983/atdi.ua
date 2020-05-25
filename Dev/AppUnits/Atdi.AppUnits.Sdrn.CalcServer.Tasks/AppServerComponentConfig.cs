@@ -36,5 +36,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 
         public int? MaxCountDriveTestsByOneStandard { get; set; }
 
+        public int? MinDistanceBetweenDriveTestAndStation_GSM { get; set; }
+
     }
 }

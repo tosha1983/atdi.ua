@@ -15,20 +15,19 @@
     <Field Name="CreatedDate" SourceType="Column" SourceName="CREATED_DATE" DataType="DateTimeOffset"  Required="true" Title="Created date" Desc="The date of the station record created"  />
     <Field Name="Name" SourceType="Column" SourceName="NAME" DataType="Text.250" Required="true" Title="Station Name" Desc="The name of the station of the context" />
     <Field Name="CallSign" SourceType="Column" SourceName="CALL_SIGN" DataType="Text.50" Required="true" Title="Call sign" Desc="The call sign of the station of the context" />
-    <Field Name="Standard" SourceType="Column" SourceName="STANDARD" DataType="Text.50" Required="true" Title="Standard" Desc="The Standard of the station of the context" />
+    <Field Name="Standard" SourceType="Column" SourceName="STANDARD" DataType="Text.50" Required="false" Title="Standard" Desc="The Standard of the station of the context" />
 
-    <Field Name="StationIdByICSM" SourceType="Column" SourceName="STATION_ID_BY_ICSM" DataType="Integer.64" Required="false" Title="Station Id By ICSM" Desc="The station Id By ICSM"  />
-    <Field Name="TableNameByICSM" SourceType="Column" SourceName="TABLE_NAME_BY_ICSM" DataType="Text.50" Required="false" Title="Table name By ICSM" Desc="The table name By ICSM" />
+    <Field Name="ExternalCode" SourceType="Column" SourceName="EXTERNAL_CODE" DataType="Text.50" Required="false" Title="External code" Desc="The external code"  />
+    <Field Name="ExternalSource" SourceType="Column" SourceName="EXTERNAL_SOURCE" DataType="Text.50" Required="false" Title="External source" Desc="The external source" />
     <Field Name="ModifiedDate" SourceType="Column" SourceName="MODIFIED_DATE" DataType="DateTimeOffset"  Required="false" Title="Modified date" Desc="The date of the station record modified"  />
 
     <Field Name="StateCode" SourceType="Column" SourceName="STATE_CODE" DataType="Code.u08" Required="true" Title="Station Type Code" Desc="The code of the type of the station"  />
     <Field Name="StateName" SourceType="Column" SourceName="STATE_NAME" DataType="Text.50" Title="Station Type Name" Desc="The name of the type of the station" />
 
 
-    <Field Name="GlobalSIDByICSM" SourceType="Column" SourceName="GLOBAL_SID_BY_ICSM" DataType="Text.250" Title="GlobalSID by ICSM" Desc="The GlobalSID by ICSM" />
-    <Field Name="GlobalSIDByMeasurement" SourceType="Column" SourceName="GLOBAL_SID_BY_MEAS" DataType="Text.250" Title="GlobalSID by Measurements" Desc="The GlobalSID by Measurements" />
-    <Field Name="CodeRegion" SourceType="Column" SourceName="CODE_REGION" DataType="Text.50" Title="Code Region" Desc="The Code of Region" />
-    <Field Name="Status" SourceType="Column" SourceName="STATUS" DataType="Text.10" Title="Status" Desc="The Status of Station" />
+    <Field Name="LicenseGsid" SourceType="Column" SourceName="LICENSE_GSID" DataType="Text.250" Title="License GSID" Desc="The license GSID of station" />
+    <Field Name="RealGsid" SourceType="Column" SourceName="REAL_GSID" DataType="Text.250" Title="Real GSID" Desc="The real GSID of station" />
+    <Field Name="RegionCode" SourceType="Column" SourceName="REGION_CODE" DataType="Text.50" Title="Region code" Desc="The code of region" />
     
 
     <Field Name="SITE" SourceName="ContextStationSite" SourceType="Extension" Title="Station Site" Required="true"/>

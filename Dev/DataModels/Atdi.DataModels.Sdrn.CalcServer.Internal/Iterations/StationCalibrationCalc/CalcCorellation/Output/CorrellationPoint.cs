@@ -16,8 +16,8 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 
         public double Dist_km;
 
-        public float FSMeas_dBmkVm;
+        public double FSMeas_dBmkVm;
 
-        public float FSCalc_dBmkVm;
+        public double FSCalc_dBmkVm;
     }
 }

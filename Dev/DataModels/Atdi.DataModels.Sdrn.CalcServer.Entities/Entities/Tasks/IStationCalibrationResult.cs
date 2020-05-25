@@ -10,17 +10,17 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks
 	[EntityPrimaryKey]
 	public interface IStationCalibrationResult_PK
     {
-		long ResultId { get; set; }
+		long Id { get; set; }
 	}
 
 	[Entity]
 	public interface IStationCalibrationResult : IStationCalibrationResult_PK
     {
 		ICalcResult RESULT { get; set; }
+        IStationCalibrationArgs PARAMETERS { get; set; }
         DateTimeOffset TimeStart { get; set; }
         string Standard { get; set; }
         string AreaName { get; set; }
-        IStationCalibrationArgs Parameters { get; set; }
         int NumberStation { get; set; }
         int NumberStationInContour { get; set; }
         int CountStation_CS { get; set; }
