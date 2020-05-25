@@ -20,7 +20,7 @@ using Atdi.DataModels.Sdrn.DeepServices.Gis;
 using Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations;
 using Atdi.DataModels.Sdrn.CalcServer.Internal.Maps;
 using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Gis;
-using Atdi.DataModels.Sdrn.Infocenter.Entities.Entities.SdrnServer;
+using Atdi.DataModels.Sdrn.Infocenter.Entities.SdrnServer;
 using Atdi.Platform;
 using Atdi.Common;
 using Atdi.Common.Extensions;

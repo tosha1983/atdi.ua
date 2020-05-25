@@ -34,6 +34,9 @@
     <Reference Include="NetPlugins">
       <HintPath>..\ICS Control Client\ICSM 6.2.70\NetPlugins.dll</HintPath>
     </Reference>
+    <Reference Include="NetPlugins2">
+      <HintPath>..\ICS Control Client\ICSM 6.2.70\NetPlugins2.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Windows.Forms" />
@@ -58,14 +61,16 @@
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="ViewModels\EntityOrmTest\Adapters\ProjectDataAdapter.cs" />
-    <Compile Include="ViewModels\EntityOrmTest\Events\OnCreatedProject.cs" />
-    <Compile Include="ViewModels\EntityOrmTest\Models\ProjectModel.cs" />
-    <Compile Include="ViewModels\EntityOrmTest\Modifiers\CreateProject.cs" />
-    <Compile Include="ViewModels\EntityOrmTest\Modifiers\CreateProjectHandler.cs" />
-    <Compile Include="ViewModels\EntityOrmTest\Queries\GetProjectByOwnerId.cs" />
-    <Compile Include="ViewModels\EntityOrmTest\Queries\GetProjectByOwnerIdExecutor.cs" />
-    <Compile Include="ViewModels\EntityOrmTest\View.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <DependentUpon>Resources.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="ViewModels\StationCalibrationManager\Adapters\ResMeasDataAdapter.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Models\ResMeasModel.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Queries\GetResMeasById.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Queries\GetResMeasByIdExecutor.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\View.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Api\Atdi.Api.EntityOrm.WebClient\Atdi.Api.EntityOrm.WebClient.csproj">
@@ -113,6 +118,8 @@
     <Folder Include="Commands\" />
     <Folder Include="Events\" />
     <Folder Include="Queries\" />
+    <Folder Include="ViewModels\StationCalibrationManager\Events\" />
+    <Folder Include="ViewModels\StationCalibrationManager\Modifiers\" />
     <Folder Include="Xaml\" />
   </ItemGroup>
   <ItemGroup>
@@ -122,9 +129,15 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetDir)XICSM_*.dll" "c:\ATDI\ICS Manager6_70_VER2\ICS Manager2"
-copy "$(TargetDir)Atdi.*.dll"    "c:\ATDI\ICS Manager6_70_VER2\ICS Manager2"</PostBuildEvent>
+    <PostBuildEvent>copy "$(TargetDir)XICSM_*.dll" "c:\ATDI\ICS ManagerCalcServer"
+copy "$(TargetDir)Atdi.*.dll"    "c:\ATDI\ICS ManagerCalcServer"</PostBuildEvent>
   </PropertyGroup>
 </Project>
