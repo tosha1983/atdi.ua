@@ -23,6 +23,7 @@ namespace Atdi.WpfControls.EntityOrm.Controls
         double _captionWith = 150;
         string _caption = "";
         string _text = "";
+        bool _locked = false;
         public OrmTextBox()
         {
             InitializeComponent();
@@ -43,6 +44,18 @@ namespace Atdi.WpfControls.EntityOrm.Controls
             {
                 this._caption = value;
                 lblCaption.Content = this._caption;
+            }
+        }
+        public static DependencyProperty LockedProperty = DependencyProperty.Register("Locked", typeof(bool), typeof(OrmDatePicker),
+            new FrameworkPropertyMetadata(default(bool), new PropertyChangedCallback(OnPropertyChanged)));
+        public bool Locked
+        {
+            get { return _locked; }
+            set
+            {
+                SetValue(LockedProperty, value);
+                this._locked = value;
+                txtMain.IsEnabled = this._locked;
             }
         }
 
@@ -76,6 +89,11 @@ namespace Atdi.WpfControls.EntityOrm.Controls
         private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             RedrawControl();
+        }
+
+        private void TxtMain_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            Text = txtMain.Text;
         }
     }
 }

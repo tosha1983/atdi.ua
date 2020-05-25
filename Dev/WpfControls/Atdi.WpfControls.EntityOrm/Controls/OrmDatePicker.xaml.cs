@@ -23,6 +23,7 @@ namespace Atdi.WpfControls.EntityOrm.Controls
         double _captionWith = 150;
         string _caption = "";
         DateTime? _value = null;
+        bool _locked = false;
         public OrmDatePicker()
         {
             InitializeComponent();
@@ -43,6 +44,18 @@ namespace Atdi.WpfControls.EntityOrm.Controls
             {
                 this._caption = value;
                 lblCaption.Content = this._caption;
+            }
+        }
+        public static DependencyProperty LockedProperty = DependencyProperty.Register("Locked", typeof(bool), typeof(OrmDatePicker),
+            new FrameworkPropertyMetadata(default(bool), new PropertyChangedCallback(OnPropertyChanged)));
+        public bool Locked
+        {
+            get { return _locked; }
+            set
+            {
+                SetValue(LockedProperty, value);
+                this._locked = value;
+                dtMain.IsEnabled = this._locked;
             }
         }
         public static DependencyProperty SelectedDateProperty = DependencyProperty.Register("SelectedDate", typeof(DateTime?), typeof(OrmDatePicker),
@@ -74,6 +87,10 @@ namespace Atdi.WpfControls.EntityOrm.Controls
         private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             RedrawControl();
+        }
+        private void dtMain_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            SelectedDate = dtMain.SelectedDate;
         }
     }
 }
