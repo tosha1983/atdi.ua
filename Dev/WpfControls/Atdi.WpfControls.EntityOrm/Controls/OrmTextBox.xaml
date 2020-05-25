@@ -7,6 +7,6 @@
              mc:Ignorable="d" Height="40" Width="200" SizeChanged="UserControl_SizeChanged">
     <Grid>
         <Label Name="lblCaption" Content="Label" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,0,0" Height="25" Width="55"/>
-        <TextBox Name="txtMain" HorizontalAlignment="Left" Height="25" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" Margin="65,5,5,5"/>
+        <TextBox Name="txtMain" HorizontalAlignment="Left" Height="25" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" Margin="65,5,5,5" TextChanged="TxtMain_TextChanged"/>
     </Grid>
 </UserControl>

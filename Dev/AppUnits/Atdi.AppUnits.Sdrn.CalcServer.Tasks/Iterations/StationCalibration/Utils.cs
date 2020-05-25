@@ -66,16 +66,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
 
 
-        public static bool CompareGSID(string GSID1, string GSID2, string Standard)
-        {
-            if (GSID1 == GSID2)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+        public static bool CompareGSID(string GCID1, string GCID2, string standard)
+        { 
+            var resCompare = GCIDComparison.Compare(standard, GCID1, GCID2);
+            return resCompare;
         }
 
         /// <summary>

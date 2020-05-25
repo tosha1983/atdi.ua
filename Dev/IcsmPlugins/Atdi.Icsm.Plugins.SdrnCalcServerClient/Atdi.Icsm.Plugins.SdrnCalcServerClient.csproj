@@ -61,6 +61,7 @@
     <Compile Include="DataLayers\InfocenterDataLayer.cs" />
     <Compile Include="DataLayers\CalcServerDataLayer.cs" />
     <Compile Include="PluginMenuCommands.cs" />
+    <Compile Include="ViewModels\ClientContext\View.cs" />
     <Compile Include="ViewModels\EntityOrmTest\Adapters\ProjectDataAdapter.cs" />
     <Compile Include="ViewModels\EntityOrmTest\Events\OnCreatedProject.cs" />
     <Compile Include="ViewModels\EntityOrmTest\Models\ProjectModel.cs" />
@@ -68,10 +69,13 @@
     <Compile Include="ViewModels\EntityOrmTest\Modifiers\CreateProjectHandler.cs" />
     <Compile Include="ViewModels\EntityOrmTest\Queries\GetProjectByOwnerId.cs" />
     <Compile Include="ViewModels\EntityOrmTest\Queries\GetProjectByOwnerIdExecutor.cs" />
+    <Compile Include="ViewModels\Layers\View.cs" />
     <Compile Include="ViewModels\ProjectManager\Adapters\ClientContextDataAdapter.cs" />
     <Compile Include="ViewModels\ProjectManager\Adapters\ProjectDataAdapter.cs" />
     <Compile Include="ViewModels\ProjectManager\Adapters\ProjectMapDataAdapter.cs" />
     <Compile Include="ViewModels\ProjectManager\Events\OnCreatedProject.cs" />
+    <Compile Include="ViewModels\ProjectManager\Events\OnDeletedProject.cs" />
+    <Compile Include="ViewModels\ProjectManager\Events\OnEditedProject.cs" />
     <Compile Include="ViewModels\ProjectManager\Models\ClientContextModel.cs" />
     <Compile Include="ViewModels\ProjectManager\Models\ProjectMapModel.cs" />
     <Compile Include="ViewModels\ProjectManager\Models\ProjectModel.cs" />
@@ -90,6 +94,10 @@
     </Compile>
     <Compile Include="ViewModels\ProjectManager\Modifiers\CreateProject.cs" />
     <Compile Include="ViewModels\ProjectManager\Modifiers\CreateProjectHandler.cs" />
+    <Compile Include="ViewModels\ProjectManager\Modifiers\DeleteProject.cs" />
+    <Compile Include="ViewModels\ProjectManager\Modifiers\DeleteProjectHandler.cs" />
+    <Compile Include="ViewModels\ProjectManager\Modifiers\EditProject.cs" />
+    <Compile Include="ViewModels\ProjectManager\Modifiers\EditProjectHandler.cs" />
     <Compile Include="ViewModels\ProjectManager\Queries\GetProjectById.cs" />
     <Compile Include="ViewModels\ProjectManager\Queries\GetProjectByIdExecutor.cs" />
     <Compile Include="ViewModels\ProjectManager\View.cs" />
@@ -141,6 +149,16 @@
     <Folder Include="Commands\" />
     <Folder Include="Events\" />
     <Folder Include="Queries\" />
+    <Folder Include="ViewModels\ClientContext\Adapters\" />
+    <Folder Include="ViewModels\ClientContext\Events\" />
+    <Folder Include="ViewModels\ClientContext\Models\" />
+    <Folder Include="ViewModels\ClientContext\Modifiers\" />
+    <Folder Include="ViewModels\ClientContext\Queries\" />
+    <Folder Include="ViewModels\Layers\Adapters\" />
+    <Folder Include="ViewModels\Layers\Events\" />
+    <Folder Include="ViewModels\Layers\Models\" />
+    <Folder Include="ViewModels\Layers\Modifiers\" />
+    <Folder Include="ViewModels\Layers\Queries\" />
     <Folder Include="Xaml\" />
   </ItemGroup>
   <ItemGroup>
