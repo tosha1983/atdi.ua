@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.DataModels.Sdrn.Infocenter.Entities.Entities.SdrnServer
+namespace Atdi.DataModels.Sdrn.Infocenter.Entities.SdrnServer
 {
 	public interface IDriveTest_PK
 	{
