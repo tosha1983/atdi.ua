@@ -46,13 +46,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
         public CalibrationResult[] Run(ITaskContext taskContext, AllStationCorellationCalcData data)
         {
-            var listCalcCorellationResult = new List<CalibrationResult>();
-
             var calcPointArrayBuffer = default(CalcPoint[]);
-            // вызываем механизм расчета FieldStrengthCalcData на основе переданных данных data.FieldStrengthCalcData
-            var iterationFieldStrengthCalcData = _iterationsPool.GetIteration<FieldStrengthCalcData, FieldStrengthCalcResult>();
 
-
+            // создаем список для хранения результатов обработки
+            var listCalcCorellationResult = new List<CalibrationResult>();
             try
             {
 
@@ -118,8 +115,6 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 // создаем список неповторяющихся значений стандартов
                 var arrStandards = allStandards.Distinct().ToArray();
 
-                var groupDriveTestsResults_NDP = new List<DriveTestsResult[]>();
-                var groupStations_NDP = new List<ContextStation[]>();
                 // цикл по стандартам
                 for (int v = 0; v < arrStandards.Length; v++)
                 {
@@ -142,13 +137,6 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
                     // преобразуем в список массив станций , для которого не найдены соотвествия с драйв тестами (данный список будет пополняться при дальнейшей работе алгоритма)
                     var outListContextStations = outContextStations.ToList();
-
-                    // создаем список для хранения результатов обработки по отдельно взятому стандарту и всем группам GSID
-                    //var groupsResultCorrelationGSIDGroupeStations = new List<ResultCorrelationGSIDGroupeStations[]>();
-
-                    // создаем список для хранения результатов обработки 
-                    var calibrationResultsByStandard = new CalibrationResult();
-
 
                     // создаем список для хранения результатов обработки по отдельно взятому стандарту и заданой группе GSID
                     var calibrationStationsAndDriveTestsResultByGroup = new List<CalibrationStationsAndDriveTestsResult>();
