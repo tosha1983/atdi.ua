@@ -10,16 +10,21 @@
     <Schema>STATIONS</Schema>
   </DataSource>
   <Fields>
-    <Field Name="Id" SourceType="Column"  SourceName="ID" DataType="Counter.64" Title="Record ID" Desc="The identifier of the record of the global identification info"/>
+   
     <Field Name="CreatedDate" SourceType="Column" SourceName="CREATED_DATE" DataType="DateTimeOffset"  Required="true" Title="Created date" Desc="The date of the record created"  />
-    
 
-    <Field Name="LicenseGsid" SourceType="Column" SourceName="LICENSE_GSID" DataType="Text.250" Title="License GSID" Desc="The license GSID of station" Required="false"/>
+
+    <Field Name="RegionCode" SourceType="Column" SourceName="REGION_CODE" DataType="Text.50" Title="Region code" Desc="The code of region" Required="true"/>
+    <Field Name="LicenseGsid" SourceType="Column" SourceName="LICENSE_GSID" DataType="Text.250" Title="License GSID" Desc="The license GSID of station" Required="true"/>
+    <Field Name="Standard" SourceType="Column" SourceName="STANDARD" DataType="Text.50" Title="Standard" Desc="The standard" Required="true"/>
+
     <Field Name="RealGsid" SourceType="Column" SourceName="REAL_GSID" DataType="Text.250" Title="Real GSID" Desc="The real GSID of station" Required="false"/>
-    <Field Name="RegionCode" SourceType="Column" SourceName="REGION_CODE" DataType="Text.50" Title="Region code" Desc="The code of region" Required="false"/>
+    
 
   </Fields>
   <PrimaryKey Clustered="true">
-    <FieldRef Name="Id"/>
+    <FieldRef Name="RegionCode"/>
+    <FieldRef Name="LicenseGsid"/>
+    <FieldRef Name="Standard"/>
   </PrimaryKey>
 </Entity>
