@@ -27,11 +27,11 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager.Modif
         {
             var query = _dataLayer.GetBuilder<IProject>()
                 .Update()
-                .SetValue(c => c.OwnerProjectId, command.OwnerId)
-                .SetValue(c => c.OwnerInstance, _config.Instance)
+                //.SetValue(c => c.OwnerProjectId, command.OwnerId)
+                //.SetValue(c => c.OwnerInstance, _config.Instance)
+                //.SetValue(c => c.StatusCode, (byte)ProjectStatusCode.Created)
+                //.SetValue(c => c.StatusName, "Created")
                 .SetValue(c => c.Projection, command.Projection)
-                .SetValue(c => c.StatusCode, (byte)ProjectStatusCode.Created)
-                .SetValue(c => c.StatusName, "Created")
                 .SetValue(c => c.Name, command.Name)
                 .SetValue(c => c.Note, command.Note)
                 .Filter(c => c.Id, command.Id);
