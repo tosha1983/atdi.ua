@@ -23,7 +23,7 @@ namespace Atdi.WpfControls.EntityOrm.Controls
         double _captionWith = 150;
         string _caption = "";
         DateTime? _value = null;
-        bool _locked = false;
+        bool _enabled = true;
         public OrmDatePicker()
         {
             InitializeComponent();
@@ -46,16 +46,16 @@ namespace Atdi.WpfControls.EntityOrm.Controls
                 lblCaption.Content = this._caption;
             }
         }
-        public static DependencyProperty LockedProperty = DependencyProperty.Register("Locked", typeof(bool), typeof(OrmDatePicker),
+        public static DependencyProperty EnabledProperty = DependencyProperty.Register("Enabled", typeof(bool), typeof(OrmDatePicker),
             new FrameworkPropertyMetadata(default(bool), new PropertyChangedCallback(OnPropertyChanged)));
-        public bool Locked
+        public bool Enabled
         {
-            get { return _locked; }
+            get { return _enabled; }
             set
             {
-                SetValue(LockedProperty, value);
-                this._locked = value;
-                dtMain.IsEnabled = this._locked;
+                SetValue(EnabledProperty, value);
+                this._enabled = value;
+                dtMain.IsEnabled = this._enabled;
             }
         }
         public static DependencyProperty SelectedDateProperty = DependencyProperty.Register("SelectedDate", typeof(DateTime?), typeof(OrmDatePicker),
@@ -76,6 +76,8 @@ namespace Atdi.WpfControls.EntityOrm.Controls
 
             if (e.Property == SelectedDateProperty)
                 ctr.SelectedDate = (DateTime?)e.NewValue;
+            else if (e.Property == EnabledProperty)
+                ctr.Enabled = (bool)e.NewValue;
         }
         private void RedrawControl()
         {
