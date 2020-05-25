@@ -21,7 +21,7 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client
 			Console.WriteLine($"Press any key to start SDRN Calculation Server Client (AK) ...");
 			Console.ReadLine();
 
-			TestWebApiOrm();
+			//TestWebApiOrm();
 			//RunPointFieldStrengthCalcTask();
 
 			Console.ReadLine();
@@ -93,6 +93,16 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client
 		}
 
 		static void RunPointFieldStrengthCalcTask()
+		{
+			var endpoint = new WebApiEndpoint(new Uri("http://localhost:15070/"), "/appserver/v1");
+			var dataContext = new WebApiDataContext("SDRN_CalcServer_DB");
+
+			var dataLayer = new WebApiDataLayer();
+
+			PointFieldStrengthCalcTask.Run(dataLayer, dataLayer.GetExecutor(endpoint, dataContext));
+		}
+
+		static void RunPointMyCalcTask()
 		{
 			var endpoint = new WebApiEndpoint(new Uri("http://localhost:15070/"), "/appserver/v1");
 			var dataContext = new WebApiDataContext("SDRN_CalcServer_DB");

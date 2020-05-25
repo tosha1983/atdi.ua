@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.Contracts.CoreServices.DataLayer
+namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ClientContext
 {
-    
+    class View
+    {
+    }
 }

@@ -8,7 +8,7 @@ using Atdi.Platform.Cqrs;
 
 namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager.Queries
 {
-    public class GetProjectByIdExecutor
+    public class GetProjectByIdExecutor : IReadQueryExecutor<GetProjectById, ProjectModel>
     {
         private readonly AppComponentConfig _config;
         private readonly CalcServerDataLayer _dataLayer;

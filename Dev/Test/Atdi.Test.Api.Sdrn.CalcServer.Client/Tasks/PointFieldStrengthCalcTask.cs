@@ -17,7 +17,7 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client.Tasks
 	{
 		private static readonly string OwnerInstance = "Atdi.Test.Api.Sdrn.CalcServer.Client";
 		private static readonly Guid OwnerProjectId = Guid.Parse("d61ff53f-b655-4d28-8eff-b93f8ed2ee14");
-		private static readonly Guid OwnerMapId = Guid.Parse("d61ff53f-b655-4d28-8eff-b93f8ed2ee2f");
+		private static readonly Guid OwnerMapId = Guid.Parse("d61ff53f-b655-4d28-8eff-b93f8ed2ee25");
 		private static readonly string MainProjectMap = "MainMap";
 
 		public static void Run(WebApiDataLayer dataLayer, IQueryExecutor executor)
