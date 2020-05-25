@@ -11,6 +11,9 @@ using Atdi.Common;
 using Atdi.Common.Extensions;
 using Atdi.DataModels;
 using Atdi.Contracts.CoreServices.EntityOrm.Metadata;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 
 namespace Atdi.CoreServices.EntityOrm
 {
@@ -905,7 +908,7 @@ namespace Atdi.CoreServices.EntityOrm
 			return result;
 		}
 
-
+		
 
 		#endregion
 
