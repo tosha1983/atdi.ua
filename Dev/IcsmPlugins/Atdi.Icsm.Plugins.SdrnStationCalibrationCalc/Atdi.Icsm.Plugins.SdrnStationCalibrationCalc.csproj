@@ -37,6 +37,10 @@
     <Reference Include="NetPlugins2">
       <HintPath>..\ICS Control Client\ICSM 6.2.70\NetPlugins2.dll</HintPath>
     </Reference>
+    <Reference Include="OrmCs, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\ICS Control Client\ICSM 6.2.70\OrmCs.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Windows.Forms" />
@@ -66,10 +70,27 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="ViewModels\StationCalibrationManager\Adapters\ResMeasDataAdapter.cs" />
-    <Compile Include="ViewModels\StationCalibrationManager\Models\ResMeasModel.cs" />
-    <Compile Include="ViewModels\StationCalibrationManager\Queries\GetResMeasById.cs" />
-    <Compile Include="ViewModels\StationCalibrationManager\Queries\GetResMeasByIdExecutor.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Adapters\ParametersDataAdapter.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Adapters\StationMonitoringDataAdapter.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Events\Parameters\OnEditParamsCalculation.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Events\Parameters\OnDeleteParamsCalculation.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Events\Parameters\OnCreatedParamsCalculation.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Models\ICSMStation\MobStationModel.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Models\Parameters\MethodParamsCalculationModel.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Models\Parameters\ParamsCalculationModel.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Models\StationMonitoring\StationMonitoringModel.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Models\StationMonitoring\SelectedStationType.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Modifiers\Parameters\EditParamsCalculationHandler.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Modifiers\Parameters\EditParamsCalculation.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Modifiers\Parameters\DeleteParamsCalculationHandler.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Modifiers\Parameters\DeleteParamsCalculation.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Modifiers\Parameters\ParamsCalculationBase.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Modifiers\Parameters\CreateParamsCalculation.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Modifiers\Parameters\CreateParamsCalculationHandler.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Queries\Parameters\GetParamsCalculationByTaskIdExecutor.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Queries\Parameters\GetParamsCalculationByTaskId.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Queries\StationMonitoring\StationMonitoringModelById.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Queries\StationMonitoring\StationMonitoringModelByIdExecutor.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\View.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -118,8 +139,6 @@
     <Folder Include="Commands\" />
     <Folder Include="Events\" />
     <Folder Include="Queries\" />
-    <Folder Include="ViewModels\StationCalibrationManager\Events\" />
-    <Folder Include="ViewModels\StationCalibrationManager\Modifiers\" />
     <Folder Include="Xaml\" />
   </ItemGroup>
   <ItemGroup>

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibrationManager
 {
-    public class ResMeasModel
+    public class StationMonitoringModel
     {
         public long Id { get; set; }
         public DateTime? Date { get; set; }

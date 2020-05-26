@@ -61,164 +61,407 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Activate.
+        ///   Ищет локализованную строку, похожую на Altitude Station.
         /// </summary>
-        public static string Activate {
+        public static string AltitudeStation {
             get {
-                return ResourceManager.GetString("Activate", resourceCulture);
+                return ResourceManager.GetString("AltitudeStation", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Base client contexts.
+        ///   Ищет локализованную строку, похожую на Azimuth Station.
         /// </summary>
-        public static string BaseClientContexts {
+        public static string AzimuthStation {
             get {
-                return ResourceManager.GetString("BaseClientContexts", resourceCulture);
+                return ResourceManager.GetString("AzimuthStation", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Created Date.
+        ///   Ищет локализованную строку, похожую на Calc Correlation.
         /// </summary>
-        public static string CreatedDate {
+        public static string CalcCorrelation {
             get {
-                return ResourceManager.GetString("CreatedDate", resourceCulture);
+                return ResourceManager.GetString("CalcCorrelation", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Create new.
+        ///   Ищет локализованную строку, похожую на Calibration parameter.
         /// </summary>
-        public static string CreateNew {
+        public static string CalibrationParameter {
             get {
-                return ResourceManager.GetString("CreateNew", resourceCulture);
+                return ResourceManager.GetString("CalibrationParameter", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Delete.
+        ///   Ищет локализованную строку, похожую на Cascade tuning.
         /// </summary>
-        public static string Delete {
+        public static string CascadeTuning {
             get {
-                return ResourceManager.GetString("Delete", resourceCulture);
+                return ResourceManager.GetString("CascadeTuning", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Lock.
+        ///   Ищет локализованную строку, похожую на Coordinates  Station.
         /// </summary>
-        public static string Lock {
+        public static string CoordinatesStation {
             get {
-                return ResourceManager.GetString("Lock", resourceCulture);
+                return ResourceManager.GetString("CoordinatesStation", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Maps.
+        ///   Ищет локализованную строку, похожую на Correlation distance.
         /// </summary>
-        public static string Maps {
+        public static string CorrelationDistance {
             get {
-                return ResourceManager.GetString("Maps", resourceCulture);
+                return ResourceManager.GetString("CorrelationDistance", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Modify.
+        ///   Ищет локализованную строку, похожую на Correlation threshold hard.
         /// </summary>
-        public static string Modify {
+        public static string CorrelationThresholdHard {
             get {
-                return ResourceManager.GetString("Modify", resourceCulture);
+                return ResourceManager.GetString("CorrelationThresholdHard", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Name.
+        ///   Ищет локализованную строку, похожую на Correlation threshold weak.
         /// </summary>
-        public static string Name {
+        public static string CorrelationThresholdWeak {
             get {
-                return ResourceManager.GetString("Name", resourceCulture);
+                return ResourceManager.GetString("CorrelationThresholdWeak", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Note.
+        ///   Ищет локализованную строку, похожую на Delta.
         /// </summary>
-        public static string Note {
+        public static string Delta {
             get {
-                return ResourceManager.GetString("Note", resourceCulture);
+                return ResourceManager.GetString("Delta", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Owner Instance.
+        ///   Ищет локализованную строку, похожую на Detail of cascade.
         /// </summary>
-        public static string OwnerInstance {
+        public static string DetailOfCascade {
             get {
-                return ResourceManager.GetString("OwnerInstance", resourceCulture);
+                return ResourceManager.GetString("DetailOfCascade", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Parameters of project.
+        ///   Ищет локализованную строку, похожую на Distance around contour.
         /// </summary>
-        public static string ParametersOfProject {
+        public static string DistanceAroundContour {
             get {
-                return ResourceManager.GetString("ParametersOfProject", resourceCulture);
+                return ResourceManager.GetString("DistanceAroundContour", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Projection.
+        ///   Ищет локализованную строку, похожую на Drive test block.
         /// </summary>
-        public static string Projection {
+        public static string DriveTestBlock {
             get {
-                return ResourceManager.GetString("Projection", resourceCulture);
+                return ResourceManager.GetString("DriveTestBlock", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Projects.
+        ///   Ищет локализованную строку, похожую на General.
         /// </summary>
-        public static string Projects {
+        public static string General {
             get {
-                return ResourceManager.GetString("Projects", resourceCulture);
+                return ResourceManager.GetString("General", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Status Name.
+        ///   Ищет локализованную строку, похожую на Map.
         /// </summary>
-        public static string StatusName {
+        public static string Map {
             get {
-                return ResourceManager.GetString("StatusName", resourceCulture);
+                return ResourceManager.GetString("Map", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Status Note.
+        ///   Ищет локализованную строку, похожую на Max antennas pattern loss.
         /// </summary>
-        public static string StatusNote {
+        public static string MaxAntennasPatternLoss {
             get {
-                return ResourceManager.GetString("StatusNote", resourceCulture);
+                return ResourceManager.GetString("MaxAntennasPatternLoss", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Step Unit.
+        ///   Ищет локализованную строку, похожую на Max deviation Altitude Station.
         /// </summary>
-        public static string StepUnit {
+        public static string MaxDeviationAltitudeStation {
             get {
-                return ResourceManager.GetString("StepUnit", resourceCulture);
+                return ResourceManager.GetString("MaxDeviationAltitudeStation", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Type Name.
+        ///   Ищет локализованную строку, похожую на Max deviation Azimuth Station.
         /// </summary>
-        public static string TypeName {
+        public static string MaxDeviationAzimuthStation {
             get {
-                return ResourceManager.GetString("TypeName", resourceCulture);
+                return ResourceManager.GetString("MaxDeviationAzimuthStation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Shift Coordinates  Station Step.
+        /// </summary>
+        public static string MaxDeviationCoordinatesStation {
+            get {
+                return ResourceManager.GetString("MaxDeviationCoordinatesStation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Max deviation Tilt Station.
+        /// </summary>
+        public static string MaxDeviationTiltStation {
+            get {
+                return ResourceManager.GetString("MaxDeviationTiltStation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Max range measurements.
+        /// </summary>
+        public static string MaxRangeMeasurements {
+            get {
+                return ResourceManager.GetString("MaxRangeMeasurements", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Measurements from.
+        /// </summary>
+        public static string MeasurementsFrom {
+            get {
+                return ResourceManager.GetString("MeasurementsFrom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Min number point for correlation.
+        /// </summary>
+        public static string MinNumberPointForCorrelation {
+            get {
+                return ResourceManager.GetString("MinNumberPointForCorrelation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Min range measurements.
+        /// </summary>
+        public static string MinRangeMeasurements {
+            get {
+                return ResourceManager.GetString("MinRangeMeasurements", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Number cascade.
+        /// </summary>
+        public static string NumberCascade {
+            get {
+                return ResourceManager.GetString("NumberCascade", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Parameters of task.
+        /// </summary>
+        public static string ParametersOfTask {
+            get {
+                return ResourceManager.GetString("ParametersOfTask", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Power Station.
+        /// </summary>
+        public static string PowerStation {
+            get {
+                return ResourceManager.GetString("PowerStation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Shift Altitude Station Max.
+        /// </summary>
+        public static string ShiftAltitudeStationMax {
+            get {
+                return ResourceManager.GetString("ShiftAltitudeStationMax", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Shift Altitude Station Min.
+        /// </summary>
+        public static string ShiftAltitudeStationMin {
+            get {
+                return ResourceManager.GetString("ShiftAltitudeStationMin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Shift Altitude Station Step.
+        /// </summary>
+        public static string ShiftAltitudeStationStep {
+            get {
+                return ResourceManager.GetString("ShiftAltitudeStationStep", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Shift Azimuth Station Max.
+        /// </summary>
+        public static string ShiftAzimuthStationMax {
+            get {
+                return ResourceManager.GetString("ShiftAzimuthStationMax", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Shift Azimuth Station Min.
+        /// </summary>
+        public static string ShiftAzimuthStationMin {
+            get {
+                return ResourceManager.GetString("ShiftAzimuthStationMin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Shift Azimuth Station Step.
+        /// </summary>
+        public static string ShiftAzimuthStationStep {
+            get {
+                return ResourceManager.GetString("ShiftAzimuthStationStep", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Shift Coordinates  Station.
+        /// </summary>
+        public static string ShiftCoordinatesStation {
+            get {
+                return ResourceManager.GetString("ShiftCoordinatesStation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Shift Power Station Max.
+        /// </summary>
+        public static string ShiftPowerStationMax {
+            get {
+                return ResourceManager.GetString("ShiftPowerStationMax", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Shift Power Station Min.
+        /// </summary>
+        public static string ShiftPowerStationMin {
+            get {
+                return ResourceManager.GetString("ShiftPowerStationMin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Shift Power Station Step.
+        /// </summary>
+        public static string ShiftPowerStationStep {
+            get {
+                return ResourceManager.GetString("ShiftPowerStationStep", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Shift Tilt Station Max.
+        /// </summary>
+        public static string ShiftTiltStationMax {
+            get {
+                return ResourceManager.GetString("ShiftTiltStationMax", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Shift Tilt Station Min.
+        /// </summary>
+        public static string ShiftTiltStationMin {
+            get {
+                return ResourceManager.GetString("ShiftTiltStationMin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Shift Tilt Station Step.
+        /// </summary>
+        public static string ShiftTiltStationStep {
+            get {
+                return ResourceManager.GetString("ShiftTiltStationStep", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Stations block.
+        /// </summary>
+        public static string StationsBlock {
+            get {
+                return ResourceManager.GetString("StationsBlock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Tilt Station.
+        /// </summary>
+        public static string TiltStation {
+            get {
+                return ResourceManager.GetString("TiltStation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на To.
+        /// </summary>
+        public static string To {
+            get {
+                return ResourceManager.GetString("To", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Trust old results.
+        /// </summary>
+        public static string TrustOldResults {
+            get {
+                return ResourceManager.GetString("TrustOldResults", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Use measurement with same GSID.
+        /// </summary>
+        public static string UseMeasurementSameGSID {
+            get {
+                return ResourceManager.GetString("UseMeasurementSameGSID", resourceCulture);
             }
         }
     }

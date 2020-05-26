@@ -11,7 +11,7 @@
   </DataSource>
   <Fields>
     <Field Name="Id" DataType="Integer.64" SourceName="ID" SourceType="Column" Desc="The SDRN ID of the drive test." Title="Id record"/>
-    <Field Name="RESULT" SourceName="StationMonitoring" SourceType="Reference" Title="Station Monitoring Meas Result" Required="true"/>
+    <Field Name="RESULT" SourceName="Atdi.DataModels.Sdrn.Infocenter.Entities.SdrnServer.StationMonitoring" SourceType="Reference" Title="Station Monitoring Meas Result" Required="true"/>
     <Field Name="Gsid" DataType="Text.250" SourceName="GSID" SourceType="Column" Desc="The Global station ID" Title="GSID" Required="false"/>
     <Field Name="Freq_MHz" SourceType="Column" Required="true" SourceName="FREQ_MHZ" DataType="Double.30.10" Title="Min Freq, MHz" Desc="The minimum frequency in MHz"/>
     <Field Name="Standard" DataType="Text.50" SourceName="STANDARD" SourceType="Column" Desc="The standard of station" Title="Standard" Required="false"/>

@@ -117,58 +117,139 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Activate" xml:space="preserve">
-    <value>Activate</value>
+  <data name="AltitudeStation" xml:space="preserve">
+    <value>Altitude Station</value>
   </data>
-  <data name="BaseClientContexts" xml:space="preserve">
-    <value>Base client contexts</value>
+  <data name="AzimuthStation" xml:space="preserve">
+    <value>Azimuth Station</value>
   </data>
-  <data name="CreatedDate" xml:space="preserve">
-    <value>Created Date</value>
+  <data name="CalcCorrelation" xml:space="preserve">
+    <value>Calc Correlation</value>
   </data>
-  <data name="CreateNew" xml:space="preserve">
-    <value>Create new</value>
+  <data name="CalibrationParameter" xml:space="preserve">
+    <value>Calibration parameter</value>
   </data>
-  <data name="Delete" xml:space="preserve">
-    <value>Delete</value>
+  <data name="CascadeTuning" xml:space="preserve">
+    <value>Cascade tuning</value>
   </data>
-  <data name="Lock" xml:space="preserve">
-    <value>Lock</value>
+  <data name="CoordinatesStation" xml:space="preserve">
+    <value>Coordinates  Station</value>
   </data>
-  <data name="Maps" xml:space="preserve">
-    <value>Maps</value>
+  <data name="CorrelationDistance" xml:space="preserve">
+    <value>Correlation distance</value>
   </data>
-  <data name="Modify" xml:space="preserve">
-    <value>Modify</value>
+  <data name="CorrelationThresholdHard" xml:space="preserve">
+    <value>Correlation threshold hard</value>
   </data>
-  <data name="Name" xml:space="preserve">
-    <value>Name</value>
+  <data name="CorrelationThresholdWeak" xml:space="preserve">
+    <value>Correlation threshold weak</value>
   </data>
-  <data name="Note" xml:space="preserve">
-    <value>Note</value>
+  <data name="Delta" xml:space="preserve">
+    <value>Delta</value>
   </data>
-  <data name="OwnerInstance" xml:space="preserve">
-    <value>Owner Instance</value>
+  <data name="DetailOfCascade" xml:space="preserve">
+    <value>Detail of cascade</value>
   </data>
-  <data name="ParametersOfProject" xml:space="preserve">
-    <value>Parameters of project</value>
+  <data name="DistanceAroundContour" xml:space="preserve">
+    <value>Distance around contour</value>
   </data>
-  <data name="Projects" xml:space="preserve">
-    <value>Projects</value>
+  <data name="DriveTestBlock" xml:space="preserve">
+    <value>Drive test block</value>
   </data>
-  <data name="StatusName" xml:space="preserve">
-    <value>Status Name</value>
+  <data name="General" xml:space="preserve">
+    <value>General</value>
   </data>
-  <data name="StepUnit" xml:space="preserve">
-    <value>Step Unit</value>
+  <data name="Map" xml:space="preserve">
+    <value>Map</value>
   </data>
-  <data name="TypeName" xml:space="preserve">
-    <value>Type Name</value>
+  <data name="MaxAntennasPatternLoss" xml:space="preserve">
+    <value>Max antennas pattern loss</value>
   </data>
-  <data name="Projection" xml:space="preserve">
-    <value>Projection</value>
+  <data name="MaxDeviationAltitudeStation" xml:space="preserve">
+    <value>Max deviation Altitude Station</value>
   </data>
-  <data name="StatusNote" xml:space="preserve">
-    <value>Status Note</value>
+  <data name="MaxDeviationAzimuthStation" xml:space="preserve">
+    <value>Max deviation Azimuth Station</value>
+  </data>
+  <data name="MaxDeviationCoordinatesStation" xml:space="preserve">
+    <value>Shift Coordinates  Station Step</value>
+  </data>
+  <data name="MaxDeviationTiltStation" xml:space="preserve">
+    <value>Max deviation Tilt Station</value>
+  </data>
+  <data name="MaxRangeMeasurements" xml:space="preserve">
+    <value>Max range measurements</value>
+  </data>
+  <data name="MeasurementsFrom" xml:space="preserve">
+    <value>Measurements from</value>
+  </data>
+  <data name="MinNumberPointForCorrelation" xml:space="preserve">
+    <value>Min number point for correlation</value>
+  </data>
+  <data name="MinRangeMeasurements" xml:space="preserve">
+    <value>Min range measurements</value>
+  </data>
+  <data name="NumberCascade" xml:space="preserve">
+    <value>Number cascade</value>
+  </data>
+  <data name="ParametersOfTask" xml:space="preserve">
+    <value>Parameters of task</value>
+  </data>
+  <data name="PowerStation" xml:space="preserve">
+    <value>Power Station</value>
+  </data>
+  <data name="ShiftAltitudeStationMax" xml:space="preserve">
+    <value>Shift Altitude Station Max</value>
+  </data>
+  <data name="ShiftAltitudeStationMin" xml:space="preserve">
+    <value>Shift Altitude Station Min</value>
+  </data>
+  <data name="ShiftAltitudeStationStep" xml:space="preserve">
+    <value>Shift Altitude Station Step</value>
+  </data>
+  <data name="ShiftAzimuthStationMax" xml:space="preserve">
+    <value>Shift Azimuth Station Max</value>
+  </data>
+  <data name="ShiftAzimuthStationMin" xml:space="preserve">
+    <value>Shift Azimuth Station Min</value>
+  </data>
+  <data name="ShiftAzimuthStationStep" xml:space="preserve">
+    <value>Shift Azimuth Station Step</value>
+  </data>
+  <data name="ShiftCoordinatesStation" xml:space="preserve">
+    <value>Shift Coordinates  Station</value>
+  </data>
+  <data name="ShiftPowerStationMax" xml:space="preserve">
+    <value>Shift Power Station Max</value>
+  </data>
+  <data name="ShiftPowerStationMin" xml:space="preserve">
+    <value>Shift Power Station Min</value>
+  </data>
+  <data name="ShiftPowerStationStep" xml:space="preserve">
+    <value>Shift Power Station Step</value>
+  </data>
+  <data name="ShiftTiltStationMax" xml:space="preserve">
+    <value>Shift Tilt Station Max</value>
+  </data>
+  <data name="ShiftTiltStationMin" xml:space="preserve">
+    <value>Shift Tilt Station Min</value>
+  </data>
+  <data name="ShiftTiltStationStep" xml:space="preserve">
+    <value>Shift Tilt Station Step</value>
+  </data>
+  <data name="StationsBlock" xml:space="preserve">
+    <value>Stations block</value>
+  </data>
+  <data name="TiltStation" xml:space="preserve">
+    <value>Tilt Station</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>To</value>
+  </data>
+  <data name="TrustOldResults" xml:space="preserve">
+    <value>Trust old results</value>
+  </data>
+  <data name="UseMeasurementSameGSID" xml:space="preserve">
+    <value>Use measurement with same GSID</value>
   </data>
 </root>

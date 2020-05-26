@@ -7,20 +7,21 @@ using Atdi.DataModels.Sdrn.CalcServer.Entities;
 using Atdi.Platform.Cqrs;
 using IC_ES = Atdi.DataModels.Sdrn.Infocenter.Entities.SdrnServer;
 using Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibrationManager;
+using Atdi.DataModels.Sdrn.Infocenter.Entities.SdrnServer;
 
 namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager.Queries
 {
-    public class GetResMeasByIdExecutor
+    public class StationMonitoringModelByIdExecutor
     {
         private readonly AppComponentConfig _config;
         private readonly InfocenterDataLayer _dataLayer;
 
-        public GetResMeasByIdExecutor(AppComponentConfig config, InfocenterDataLayer dataLayer)
+        public StationMonitoringModelByIdExecutor(AppComponentConfig config, InfocenterDataLayer dataLayer)
         {
             _config = config;
             _dataLayer = dataLayer;
         }
-        public ResMeasModel Read(GetResMeasById criterion)
+        public StationMonitoringModel Read(StationMonitoringModel criterion)
         {
             var query = _dataLayer.GetBuilder<IC_ES.IStationMonitoring>()
                 .Read()
@@ -46,17 +47,17 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                 return null;
             }
 
-            return new ResMeasModel()
+            return new StationMonitoringModel()
             {
                 Id = reader.GetValue(c => c.Id),
-                //CountByStandard = reader.GetValue(c => c.STATS.StandardStats),
+                CountByStandard = reader.GetValueAs<DriveTestStandardStats>(c => c.STATS.StandardStats).Count,
                 CountSID = reader.GetValue(c => c.STATS.GsidCount),
                 Date = reader.GetValue(c => c.MeasTime),
                 MaxFreq_MHz = reader.GetValue(c => c.STATS.MaxFreq_MHz),
                 MinFreq_MHz = reader.GetValue(c => c.STATS.MinFreq_MHz),
                 SensorName = reader.GetValue(c => c.SensorName),
                 SensorTitle = reader.GetValue(c => c.SensorTitle),
-                //Standards = reader.GetValue(c => c.STATS.StandardStats),
+                Standards = reader.GetValueAs<DriveTestStandardStats>(c => c.STATS.StandardStats).Standard,
             };
         }
     }
