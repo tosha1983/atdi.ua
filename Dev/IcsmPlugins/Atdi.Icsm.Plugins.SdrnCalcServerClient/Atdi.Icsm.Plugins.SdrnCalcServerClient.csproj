@@ -22,6 +22,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,6 +31,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="NetPlugins">
@@ -69,7 +71,14 @@
     <Compile Include="ViewModels\EntityOrmTest\Modifiers\CreateProjectHandler.cs" />
     <Compile Include="ViewModels\EntityOrmTest\Queries\GetProjectByOwnerId.cs" />
     <Compile Include="ViewModels\EntityOrmTest\Queries\GetProjectByOwnerIdExecutor.cs" />
-    <Compile Include="ViewModels\Layers\View.cs" />
+    <Compile Include="ViewModels\Map\Events\OnCreatedMap.cs" />
+    <Compile Include="ViewModels\Map\Events\OnDeletedMap.cs" />
+    <Compile Include="ViewModels\Map\Models\MapModel.cs" />
+    <Compile Include="ViewModels\Map\Modifiers\CreateMap.cs" />
+    <Compile Include="ViewModels\Map\Modifiers\CreateMapHandler.cs" />
+    <Compile Include="ViewModels\Map\Modifiers\DeleteMap.cs" />
+    <Compile Include="ViewModels\Map\Modifiers\DeleteMapHandler.cs" />
+    <Compile Include="ViewModels\Map\View.cs" />
     <Compile Include="ViewModels\ProjectManager\Adapters\ClientContextDataAdapter.cs" />
     <Compile Include="ViewModels\ProjectManager\Adapters\ProjectDataAdapter.cs" />
     <Compile Include="ViewModels\ProjectManager\Adapters\ProjectMapDataAdapter.cs" />
@@ -154,11 +163,8 @@
     <Folder Include="ViewModels\ClientContext\Models\" />
     <Folder Include="ViewModels\ClientContext\Modifiers\" />
     <Folder Include="ViewModels\ClientContext\Queries\" />
-    <Folder Include="ViewModels\Layers\Adapters\" />
-    <Folder Include="ViewModels\Layers\Events\" />
-    <Folder Include="ViewModels\Layers\Models\" />
-    <Folder Include="ViewModels\Layers\Modifiers\" />
-    <Folder Include="ViewModels\Layers\Queries\" />
+    <Folder Include="ViewModels\Map\Adapters\" />
+    <Folder Include="ViewModels\Map\Queries\" />
     <Folder Include="Xaml\" />
   </ItemGroup>
   <ItemGroup>
