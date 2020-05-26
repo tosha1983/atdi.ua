@@ -4,19 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
+namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.Map
 {
-    public class ProjectMapModel
+    public class MapModel
     {
         public long Id { get; set; }
+        public long ProjectId { get; set; }
         public string MapName { get; set; }
         public string MapNote { get; set; }
-        public string OwnerInstance { get; set; }
-        public Guid OwnerMapId { get; set; }
-        public DateTimeOffset CreatedDate { get; set; }
-        public byte StatusCode { get; set; }
-        public string StatusName { get; set; }
-        public string StatusNote { get; set; }
+        public Guid OwnerId { get; set; }
         public string StepUnit { get; set; }
         public int? OwnerAxisXNumber { get; set; }
         public int? OwnerAxisXStep { get; set; }

@@ -13,6 +13,7 @@ using Atdi.Platform.Cqrs;
 using Atdi.Platform.Events;
 using System.Windows;
 using VM = Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels;
+using MP = Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.Map;
 
 namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
 {
@@ -35,6 +36,7 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
         private IEventHandlerToken<Events.OnCreatedProject> _onCreatedProjectToken;
         private IEventHandlerToken<Events.OnEditedProject> _onEditedProjectToken;
         private IEventHandlerToken<Events.OnDeletedProject> _onDeletedProjectToken;
+        private IEventHandlerToken<MP.Events.OnDeletedMap> _onDeletedMapToken;
 
         public ProjectDataAdapter Projects { get; set; }
         public ProjectMapDataAdapter ProjectMaps { get; set; }
@@ -47,6 +49,7 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
         public ViewCommand ProjectLockCommand { get; set; }
         public ViewCommand MapCreateNewCommand { get; set; }
         public ViewCommand MapDeleteCommand { get; set; }
+        public ViewCommand MapRefreshCommand { get; set; }
         public ViewCommand ContextNewCommand { get; set; }
         public ViewCommand ContextModifyCommand { get; set; }
         public ViewCommand ContextDeleteCommand { get; set; }
@@ -74,6 +77,7 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
             this.ProjectLockCommand = new ViewCommand(this.OnProjectLockCommand);
             this.MapCreateNewCommand = new ViewCommand(this.OnMapCreateNewCommand);
             this.MapDeleteCommand = new ViewCommand(this.OnMapDeleteCommand);
+            this.MapRefreshCommand = new ViewCommand(this.OnMapRefreshCommand);
             this.ContextNewCommand = new ViewCommand(this.OnContextNewCommand);
             this.ContextModifyCommand = new ViewCommand(this.OnContextModifyCommand);
             this.ContextDeleteCommand = new ViewCommand(this.OnContextDeleteCommand);
@@ -84,11 +88,6 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
             this.ProjectContexts = clientContextDataAdapter;
 
             ReloadProjects();
-
-            //_onCreatedProjectToken = _eventBus.Subscribe<Events.OnCreatedProject>(this.OnCreatedProjectHandle);
-
-            //CreateProject(Guid.NewGuid());
-            //CreateProject(Guid.NewGuid());
         }
         private void OnCreatedProjectHandle(Events.OnCreatedProject data)
         {
@@ -127,6 +126,9 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
         {
             try
             {
+                if (CurrentProject == null)
+                    return;
+
                 _onEditedProjectToken = _eventBus.Subscribe<Events.OnEditedProject>(this.OnEditedProjectHandle);
 
                 var projectModifier = new Modifiers.EditProject
@@ -149,6 +151,9 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
         {
             try
             {
+                if (CurrentProject == null)
+                    return;
+
                 _onDeletedProjectToken = _eventBus.Subscribe<Events.OnDeletedProject>(this.OnDeletedProjectHandle);
 
                 var projectModifier = new Modifiers.DeleteProject
@@ -176,49 +181,50 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
         public ProjectMapModel CurrentProjectMap
         {
             get => this._currentProjectMap;
-            set => this.Set(ref this._currentProjectMap, value, () => { this.OnChangedCurrentProjectMap(value); });
+            set => this.Set(ref this._currentProjectMap, value, () => { /*this.OnChangedCurrentProjectMap(value);*/ });
         }
         public ClientContextModel CurrentProjectContext
         {
             get => this._currentProjectContext;
-            set => this.Set(ref this._currentProjectContext, value, () => { this.OnChangedCurrentProjectContext(value); });
+            set => this.Set(ref this._currentProjectContext, value, () => { /*this.OnChangedCurrentProjectContext(value);*/ });
         }
 
         private void OnChangedCurrentProject(ProjectModel project)
         {
-            CurrentProjectCard = _objectReader.Read<ProjectModel>().By(new GetProjectById
-            {
-                Id = project.Id
-            });
-
-            ReloadProjectMaps(project.Id);
-            ReloadProjectContexts(project.Id);
+            this.CurrentProjectCard = _objectReader.Read<ProjectModel>().By(new GetProjectById { Id = project.Id });
+            ReloadProjectMaps();
+            ReloadProjectContexts();
             this.CurrentProjectMap = null;
             this.CurrentProjectContext = null;
         }
-        private void OnChangedCurrentProjectMap(ProjectMapModel project)
-        {
-        }
-        private void OnChangedCurrentProjectContext(ClientContextModel project)
-        {
-
-        }
+        //private void OnChangedCurrentProjectMap(ProjectMapModel project)
+        //{
+        //}
+        //private void OnChangedCurrentProjectContext(ClientContextModel project)
+        //{
+        //}
 
         private void ReloadProjects()
         {
             this.Projects.Refresh();
             this.CurrentProject = null;
-            this.CurrentProjectCard = null;
+            this.CurrentProjectCard = new ProjectModel();
         }
-        private void ReloadProjectMaps(long projectId)
+        private void ReloadProjectMaps()
         {
-            this.ProjectMaps.ProjectId = projectId;
-            this.ProjectMaps.Refresh();
+            if (this.CurrentProject != null)
+            {
+                this.ProjectMaps.ProjectId = this.CurrentProject.Id;
+                this.ProjectMaps.Refresh();
+            }
         }
-        private void ReloadProjectContexts(long projectId)
+        private void ReloadProjectContexts()
         {
-            this.ProjectContexts.ProjectId = projectId;
-            this.ProjectContexts.Refresh();
+            if (this.CurrentProject != null)
+            {
+                this.ProjectContexts.ProjectId = this.CurrentProject.Id;
+                this.ProjectContexts.Refresh();
+            }
         }
         private void OnProjectActivateCommand(object parameter)
         {
@@ -232,7 +238,10 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
         {
             try
             {
-                _starter.Start<VM.Layers.View>(isModal: true);
+                if (CurrentProject == null)
+                    return;
+
+                _starter.Start<VM.Map.View>(isModal: true, f => f.ProjectId = CurrentProject.Id );
             }
             catch (Exception e)
             {
@@ -241,7 +250,32 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
         }
         private void OnMapDeleteCommand(object parameter)
         {
+            try
+            {
+                if (CurrentProjectMap == null)
+                    return;
 
+                _onDeletedMapToken = _eventBus.Subscribe<MP.Events.OnDeletedMap>(this.OnDeletedMapHandle);
+
+                var projectModifier = new MP.Modifiers.DeleteMap
+                {
+                    Id = CurrentProjectMap.Id
+                };
+
+                _commandDispatcher.Send(projectModifier);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString());
+            }
+        }
+        private void OnDeletedMapHandle(MP.Events.OnDeletedMap data)
+        {
+            ReloadProjectMaps();
+        }
+        private void OnMapRefreshCommand(object parameter)
+        {
+            ReloadProjectMaps();
         }
         private void OnContextNewCommand(object parameter)
         {
@@ -287,6 +321,12 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
 		{
             _onCreatedProjectToken?.Dispose();
             _onCreatedProjectToken = null;
+            _onEditedProjectToken?.Dispose();
+            _onEditedProjectToken = null;
+            _onDeletedProjectToken?.Dispose();
+            _onDeletedProjectToken = null;
+            _onDeletedMapToken?.Dispose();
+            _onDeletedMapToken = null;
         }
-	}
+    }
 }
