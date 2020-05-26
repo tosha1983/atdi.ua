@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Atdi.DataModels.Sdrn.DeepServices.Gis;
 
-namespace Atdi.DataModels.Sdrn.Infocenter.Entities.Entities.SdrnServer
+namespace Atdi.DataModels.Sdrn.Infocenter.Entities.SdrnServer
 {
 	public interface IDriveTestPoints_PK
 	{

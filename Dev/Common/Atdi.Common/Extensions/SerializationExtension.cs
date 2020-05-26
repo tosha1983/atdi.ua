@@ -39,7 +39,20 @@ namespace Atdi.Common.Extensions
                 return result as T;
             }
         }
-    }
+        public static T DeserializeAs<T>(this byte[] value)
+        {
+	        if (value == null) return default(T);
+
+	        var binaryFormatter = new BinaryFormatter();
+	        using (var stream = new MemoryStream(value))
+	        {
+		        binaryFormatter.Binder = new DeserializationBinder();
+		        var result = binaryFormatter.Deserialize(stream);
+
+		        return (T) result;
+	        }
+        }
+	}
 
     internal sealed class DeserializationBinder : SerializationBinder
     {

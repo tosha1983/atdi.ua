@@ -8,8 +8,12 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Atdi.Common;
+using Atdi.Common.Extensions;
 using Atdi.DataModels;
 using Atdi.Contracts.CoreServices.EntityOrm.Metadata;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 
 namespace Atdi.CoreServices.EntityOrm
 {
@@ -892,7 +896,19 @@ namespace Atdi.CoreServices.EntityOrm
             return result;
         }
 
+		public TData GetValueAs<TData>(Expression<Func<TModel, byte[]>> columnExpression)
+		{
+			var data = this.GetValue(columnExpression);
+			if (data == null)
+			{
+				return default(TData);
+			}
 
+			var result = data.DeserializeAs<TData>();
+			return result;
+		}
+
+		
 
 		#endregion
 
