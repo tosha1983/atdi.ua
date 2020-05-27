@@ -16,7 +16,7 @@
     <Field Name="ResultId" SourceType="Column" SourceName="RESULT_ID" DataType="Integer.64"  Required="true" Title="Result ID" Desc="The result ID" />
     <Field Name="TaskId" SourceType="Column" SourceName="TASK_ID" DataType="Integer.64"  Required="true" Title="station calibration Args ID" Desc="The station calibration Args ID" />
     <Field Name="RESULT" SourceType="Reference" SourceName="Atdi.DataModels.Sdrn.CalcServer.Entities.CalcResult"  Required="true" Title="Calc Result" Desc="The calc result" />
-    <Field Name="PARAMETERS" SourceType="Reference" SourceName="Atdi.DataModels.Sdrn.CalcServer.Entities.StationCalibrationArgs"  Required="true" Title="Station calibration parameters" Desc="The station calibration parameters" />
+    <Field Name="PARAMETERS" SourceType="Reference" SourceName="Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks.StationCalibrationArgs"  Required="true" Title="Station calibration parameters" Desc="The station calibration parameters" />
     <Field Name="TimeStart" DataType="DateTimeOffset" SourceName="TIME_START" SourceType="Column" Desc="The time start" Title="Time start" Required="false"/>
     <Field Name="Standard" SourceType="Column" SourceName="STANDARD" DataType="Text.50" Required="false" Title="Standard" Desc="The standard" />
     <Field Name="AreaName" SourceType="Column" SourceName="AREA_NAME" DataType="Text.50" Required="false" Title="Area name" Desc="The area name" />

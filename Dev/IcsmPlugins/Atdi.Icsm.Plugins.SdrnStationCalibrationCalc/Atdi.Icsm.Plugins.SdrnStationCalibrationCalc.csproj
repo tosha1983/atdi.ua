@@ -34,6 +34,13 @@
     <Reference Include="NetPlugins">
       <HintPath>..\ICS Control Client\ICSM 6.2.70\NetPlugins.dll</HintPath>
     </Reference>
+    <Reference Include="NetPlugins2">
+      <HintPath>..\ICS Control Client\ICSM 6.2.70\NetPlugins2.dll</HintPath>
+    </Reference>
+    <Reference Include="OrmCs, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\ICS Control Client\ICSM 6.2.70\OrmCs.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Windows.Forms" />
@@ -58,14 +65,33 @@
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="ViewModels\EntityOrmTest\Adapters\ProjectDataAdapter.cs" />
-    <Compile Include="ViewModels\EntityOrmTest\Events\OnCreatedProject.cs" />
-    <Compile Include="ViewModels\EntityOrmTest\Models\ProjectModel.cs" />
-    <Compile Include="ViewModels\EntityOrmTest\Modifiers\CreateProject.cs" />
-    <Compile Include="ViewModels\EntityOrmTest\Modifiers\CreateProjectHandler.cs" />
-    <Compile Include="ViewModels\EntityOrmTest\Queries\GetProjectByOwnerId.cs" />
-    <Compile Include="ViewModels\EntityOrmTest\Queries\GetProjectByOwnerIdExecutor.cs" />
-    <Compile Include="ViewModels\EntityOrmTest\View.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <DependentUpon>Resources.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="ViewModels\StationCalibrationManager\Adapters\ParametersDataAdapter.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Adapters\StationMonitoringDataAdapter.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Events\Parameters\OnEditParamsCalculation.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Events\Parameters\OnDeleteParamsCalculation.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Events\Parameters\OnCreatedParamsCalculation.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Models\ICSMStation\MobStationModel.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Models\Parameters\MethodParamsCalculationModel.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Models\Parameters\ParamsCalculationModel.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Models\StationMonitoring\StationMonitoringModel.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Models\StationMonitoring\SelectedStationType.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Modifiers\Parameters\EditParamsCalculationHandler.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Modifiers\Parameters\EditParamsCalculation.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Modifiers\Parameters\DeleteParamsCalculationHandler.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Modifiers\Parameters\DeleteParamsCalculation.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Modifiers\Parameters\ParamsCalculationBase.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Modifiers\Parameters\CreateParamsCalculation.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Modifiers\Parameters\CreateParamsCalculationHandler.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Queries\Parameters\GetParamsCalculationByTaskIdExecutor.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Queries\Parameters\GetParamsCalculationByTaskId.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Queries\StationMonitoring\StationMonitoringModelById.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Queries\StationMonitoring\StationMonitoringModelByIdExecutor.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\View.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Api\Atdi.Api.EntityOrm.WebClient\Atdi.Api.EntityOrm.WebClient.csproj">
@@ -122,9 +148,15 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetDir)XICSM_*.dll" "c:\ATDI\ICS Manager6_70_VER2\ICS Manager2"
-copy "$(TargetDir)Atdi.*.dll"    "c:\ATDI\ICS Manager6_70_VER2\ICS Manager2"</PostBuildEvent>
+    <PostBuildEvent>copy "$(TargetDir)XICSM_*.dll" "c:\ATDI\ICS ManagerCalcServer"
+copy "$(TargetDir)Atdi.*.dll"    "c:\ATDI\ICS ManagerCalcServer"</PostBuildEvent>
   </PropertyGroup>
 </Project>

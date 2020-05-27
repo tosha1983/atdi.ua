@@ -23,6 +23,15 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager.Adapt
                 c => c.Id,
                 c => c.MapName,
                 c => c.MapNote,
+                c => c.OwnerInstance,
+                c => c.StatusName,
+                c => c.StepUnit,
+                c => c.OwnerAxisXNumber,
+                c => c.OwnerAxisXStep,
+                c => c.OwnerAxisYNumber,
+                c => c.OwnerAxisYStep,
+                c => c.OwnerUpperLeftX,
+                c => c.OwnerUpperLeftY,
                 c => c.CreatedDate
             ).Filter(f => f.PROJECT.Id, ProjectId);
         }
@@ -33,6 +42,15 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager.Adapt
                 Id = reader.GetValue(c => c.Id),
                 MapName = reader.GetValue(c => c.MapName),
                 MapNote = reader.GetValue(c => c.MapNote),
+                OwnerInstance = reader.GetValue(c => c.OwnerInstance),
+                StatusName = reader.GetValue(c => c.StatusName),
+                StepUnit = reader.GetValue(c => c.StepUnit),
+                OwnerAxisXNumber = reader.GetValue(c => c.OwnerAxisXNumber),
+                OwnerAxisXStep = reader.GetValue(c => c.OwnerAxisXStep),
+                OwnerAxisYNumber = reader.GetValue(c => c.OwnerAxisYNumber),
+                OwnerAxisYStep = reader.GetValue(c => c.OwnerAxisYStep),
+                OwnerUpperLeftX = reader.GetValue(c => c.OwnerUpperLeftX),
+                OwnerUpperLeftY = reader.GetValue(c => c.OwnerUpperLeftY),
                 CreatedDate = reader.GetValue(c => c.CreatedDate)
             };
         }

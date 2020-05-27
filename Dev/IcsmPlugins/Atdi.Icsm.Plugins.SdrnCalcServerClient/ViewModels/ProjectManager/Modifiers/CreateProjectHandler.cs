@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Atdi.DataModels.Sdrn.CalcServer.Entities;
-using Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.EntityOrmTest.Events;
+using Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager.Events;
 using Atdi.Platform.Cqrs;
 using Atdi.Platform.Events;
 
@@ -37,11 +37,7 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager.Modif
 
             var projectPk = _dataLayer.Executor.Execute<IProject_PK>(query);
 
-            _eventBus.Send(new OnCreatedProject
-            {
-                ProjectId = projectPk.Id
-            });
-
+            _eventBus.Send(new OnCreatedProject { ProjectId = projectPk.Id });
         }
     }
 }
