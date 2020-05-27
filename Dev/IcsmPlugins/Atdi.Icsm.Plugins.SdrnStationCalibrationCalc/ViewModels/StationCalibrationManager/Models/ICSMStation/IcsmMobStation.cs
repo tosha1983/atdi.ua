@@ -27,21 +27,20 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
 
         public string CallSign { get; set; }
 
-        public byte StateCode { get; set; }
 
         public string StateName { get; set; }
 
         public string Standard { get; set; }
 
-        IcsmMobStationSite SITE { get; set; }
+        public IcsmMobStationSite SITE { get; set; }
 
-        IcsmMobStationAntenna ANTENNA { get; set; }
+        public IcsmMobStationAntenna ANTENNA { get; set; }
 
-        IcsmMobStationTransmitter TRANSMITTER { get; set; }
+        public IcsmMobStationTransmitter TRANSMITTER { get; set; }
 
-        IcsmMobStationReceiver RECEIVER { get; set; }
+        public IcsmMobStationReceiver RECEIVER { get; set; }
 
-        IcsmMobStationCoordinates COORDINATES { get; set; }
+        public IcsmMobStationCoordinates COORDINATES { get; set; }
 
     }
 }

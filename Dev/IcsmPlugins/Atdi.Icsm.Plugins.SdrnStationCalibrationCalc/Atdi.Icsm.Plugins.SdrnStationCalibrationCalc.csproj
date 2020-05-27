@@ -81,6 +81,7 @@
     <Compile Include="ViewModels\StationCalibrationManager\Events\Parameters\OnEditParamsCalculation.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Events\Parameters\OnDeleteParamsCalculation.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Events\Parameters\OnCreatedParamsCalculation.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Models\GlobalIdentity\GCIDDataModel.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Models\ICSMStation\IcsmMobStationReceiver.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Models\ICSMStation\IcsmMobStationCoordinates.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Models\ICSMStation\IcsmMobStationTransmitter.cs" />
@@ -92,6 +93,7 @@
     <Compile Include="ViewModels\StationCalibrationManager\Models\ICSMStation\DataLocationModel.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Models\ICSMStation\AreaModel.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Models\ICSMStation\IcsmStationName.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Models\ICSMStation\MobStationStatus.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Models\Parameters\MethodParamsCalculationModel.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Models\Parameters\ParamsCalculationModel.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Models\StationMonitoring\StationMonitoringModel.cs" />
@@ -103,6 +105,8 @@
     <Compile Include="ViewModels\StationCalibrationManager\Modifiers\Parameters\ParamsCalculationBase.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Modifiers\Parameters\CreateParamsCalculation.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Modifiers\Parameters\CreateParamsCalculationHandler.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Queries\GlobalIdentity\GCIDDataModelByParams.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Queries\GlobalIdentity\GCIDDataModelByParamsExecutor.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Queries\Parameters\GetParamsCalculationByTaskIdExecutor.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Queries\Parameters\GetParamsCalculationByTaskId.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Queries\StationMonitoring\StationMonitoringModelById.cs" />
