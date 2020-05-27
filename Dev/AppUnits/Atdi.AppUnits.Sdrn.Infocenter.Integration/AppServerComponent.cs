@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Atdi.AppUnits.Sdrn.Infocenter.Integration.FilesImport;
+using Atdi.AppUnits.Sdrn.Infocenter.Integration.SdrnServer;
 using Atdi.Contracts.Sdrn.Infocenter;
 using Atdi.Platform;
 using Atdi.Platform.AppComponent;
@@ -27,93 +29,69 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration
 			var componentConfig = this.Config.Extract<AppServerComponentConfig>();
 			this.Container.RegisterInstance(componentConfig, ServiceLifetime.Singleton);
 
-			
 
-			//this.Container.Register<SdrnAutoImportJob>(ServiceLifetime.Singleton);
+
+			this.Container.Register<SdrnServerSyncJob>(ServiceLifetime.Singleton);
+			this.Container.Register<FilesAutoImportJob>(ServiceLifetime.Singleton);
 		}
 
 		protected override void OnActivateUnit()
 		{
-			//var typeResolver = this.Resolver.Resolve<ITypeResolver>();
-			//var appConfig = this.Resolver.Resolve<AppServerComponentConfig>();
+			var typeResolver = this.Resolver.Resolve<ITypeResolver>();
+			var appConfig = this.Resolver.Resolve<AppServerComponentConfig>();
 
-			//// подключаем обработчики событий
-			//var eventDispatcher = this.Resolver.Resolve<IEventDispatcher>();
-			//var eventSubscribeInterfaceType = typeof(IEventSubscriber<>);
+			var pipelineSite = this.Resolver.Resolve<IPipelineSite>();
 
-			//var subscriberTypes = typeResolver.ForeachInAllAssemblies(
-			//		(type) =>
-			//		{
-			//			if (!type.IsClass
-			//			|| type.IsNotPublic
-			//			|| type.IsAbstract
-			//			|| type.IsInterface
-			//			|| type.IsEnum)
-			//			{
-			//				return false;
-			//			}
+			var filesImportPipeline = pipelineSite.Declare<ImportFileInfo, ImportFileResult>("FilesImportPipeline");
+			filesImportPipeline.Register(typeof(Stations.GlobalIdentityPipelineHandler));
 
-			//			var ft = type.GetInterface(eventSubscribeInterfaceType.FullName);
-			//			return ft != null;
-			//		}
-			//	).ToArray();
+			var hostLoader = this.Resolver.Resolve<IServerHostLoader>();
 
-			//foreach (var subscriberType in subscriberTypes)
-			//{
-			//	try
-			//	{
-			//		this.Container.Register(subscriberType, subscriberType, ServiceLifetime.PerThread);
-			//		Logger.Verbouse(Contexts.ThisComponent, Categories.Registration, Events.HandlerTypeWasRegistered.With(subscriberType.AssemblyQualifiedName));
-			//	}
-			//	catch (Exception e)
-			//	{
-			//		Logger.Exception(Contexts.ThisComponent, Categories.Registration, e);
-			//	}
-			//}
+			var jobBroker = this.Resolver.Resolve<IJobBroker>();
+			hostLoader.RegisterTrigger("Running Jobs ...", () =>
+			{
+				var startDelaySeconds = appConfig.AutoImportSdrnServerStartDelay;
+				if (!startDelaySeconds.HasValue)
+				{
+					startDelaySeconds = 0;
+				}
+				var repeatDelaySeconds = appConfig.AutoImportSdrnServerRepeatDelay;
+				if (!repeatDelaySeconds.HasValue)
+				{
+					repeatDelaySeconds = 0;
+				}
+				var sdrnServerJobDef = new JobDefinition<SdrnServerSyncJob>()
+				{
+					Name = "SDRN Server Synchronization Job",
+					Recoverable = true,
+					Repeatable = true,
+					StartDelay = new TimeSpan(TimeSpan.TicksPerSecond * startDelaySeconds.Value),
+					RepeatDelay = new TimeSpan(TimeSpan.TicksPerSecond * repeatDelaySeconds.Value)
+				};
 
+				jobBroker.Run(sdrnServerJobDef);
 
-			//var hostLoader = this.Resolver.Resolve<IServerHostLoader>();
+				startDelaySeconds = appConfig.AutoImportFilesStartDelay;
+				if (!startDelaySeconds.HasValue)
+				{
+					startDelaySeconds = 0;
+				}
+				repeatDelaySeconds = appConfig.AutoImportFilesRepeatDelay;
+				if (!repeatDelaySeconds.HasValue)
+				{
+					repeatDelaySeconds = 0;
+				}
+				var filesJobDef = new JobDefinition<FilesAutoImportJob>()
+				{
+					Name = "Files Auto Import Job",
+					Recoverable = true,
+					Repeatable = true,
+					StartDelay = new TimeSpan(TimeSpan.TicksPerSecond * startDelaySeconds.Value),
+					RepeatDelay = new TimeSpan(TimeSpan.TicksPerSecond * repeatDelaySeconds.Value)
+				};
 
-			//hostLoader.RegisterTrigger("Running Event System Subscribers", () =>
-			//{
-			//	foreach (var subscriberType in subscriberTypes)
-			//	{
-			//		try
-			//		{
-			//			eventDispatcher.Subscribe(subscriberType);
-			//			Logger.Verbouse(Contexts.ThisComponent, Categories.Subscribing, Events.HandlerTypeWasConnected.With(subscriberType.AssemblyQualifiedName));
-			//		}
-			//		catch (Exception e)
-			//		{
-			//			Logger.Exception(Contexts.ThisComponent, Categories.Registration, e);
-			//		}
-			//	}
-			//});
-
-			//var jobBroker = this.Resolver.Resolve<IJobBroker>();
-			//hostLoader.RegisterTrigger("Running Jobs ...", () =>
-			//{
-			//	var startDelaySeconds = appConfig.AutoImportMapsStartDelay;
-			//	if (!startDelaySeconds.HasValue)
-			//	{
-			//		startDelaySeconds = 0;
-			//	}
-			//	var repeatDelaySeconds = appConfig.AutoImportMapsRepeatDelay;
-			//	if (!repeatDelaySeconds.HasValue)
-			//	{
-			//		repeatDelaySeconds = 0;
-			//	}
-			//	var jobDef = new JobDefinition<MapsAutoImportJob>()
-			//	{
-			//		Name = "Maps Auto Import Job",
-			//		Recoverable = true,
-			//		Repeatable = true,
-			//		StartDelay = new TimeSpan(TimeSpan.TicksPerSecond * startDelaySeconds.Value),
-			//		RepeatDelay = new TimeSpan(TimeSpan.TicksPerSecond * repeatDelaySeconds.Value)
-			//	};
-
-			//	jobBroker.Run(jobDef);
-			//});
+				jobBroker.Run(filesJobDef);
+			});
 		}
 	}
 }
