@@ -5,13 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Atdi.Platform.Workflows;
 
-namespace Atdi.AppUnits.Sdrn.Infocenter.Integration.SdrnImport
+namespace Atdi.AppUnits.Sdrn.Infocenter.Integration.SdrnServer
 {
-	internal class SdrnAutoImportJob : IJobExecutor
+	internal class SdrnServerSyncJob : IJobExecutor
 	{
 		public JobExecutionResult Execute(JobExecutionContext context)
 		{
-			throw new NotImplementedException();
+			return JobExecutionResult.Completed;
 		}
 	}
 }

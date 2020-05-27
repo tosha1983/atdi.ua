@@ -43,9 +43,12 @@
   <ItemGroup>
     <Compile Include="AppServerComponent.cs" />
     <Compile Include="AppServerComponentConfig.cs" />
+    <Compile Include="FilesImport\FilesAutoImportJob.cs" />
+    <Compile Include="FilesImport\ImportFileInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SdrnImport\SdrnAutoImportJob.cs" />
+    <Compile Include="SdrnServer\SdrnServerSyncJob.cs" />
     <Compile Include="Specification.cs" />
+    <Compile Include="Stations\GlobalIdentityPipelineHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Common\Atdi.Common\Atdi.Common.csproj">
