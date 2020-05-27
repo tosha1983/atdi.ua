@@ -144,6 +144,12 @@
   <data name="CorrelationThresholdWeak" xml:space="preserve">
     <value>Correlation threshold weak</value>
   </data>
+  <data name="CreatedBy" xml:space="preserve">
+    <value>Created by</value>
+  </data>
+  <data name="DateCreated" xml:space="preserve">
+    <value>Date Created</value>
+  </data>
   <data name="Delta" xml:space="preserve">
     <value>Delta</value>
   </data>
@@ -158,6 +164,9 @@
   </data>
   <data name="General" xml:space="preserve">
     <value>General</value>
+  </data>
+  <data name="Id" xml:space="preserve">
+    <value>Id</value>
   </data>
   <data name="Map" xml:space="preserve">
     <value>Map</value>
@@ -188,6 +197,9 @@
   </data>
   <data name="MinRangeMeasurements" xml:space="preserve">
     <value>Min range measurements</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
   </data>
   <data name="NumberCascade" xml:space="preserve">
     <value>Number cascade</value>
@@ -237,6 +249,15 @@
   <data name="ShiftTiltStationStep" xml:space="preserve">
     <value>Shift Tilt Station Step</value>
   </data>
+  <data name="Standard" xml:space="preserve">
+    <value>Standard</value>
+  </data>
+  <data name="StateForActiveStation" xml:space="preserve">
+    <value>State for active station</value>
+  </data>
+  <data name="StateForNotActiveStation" xml:space="preserve">
+    <value>State for not active station</value>
+  </data>
   <data name="StationsBlock" xml:space="preserve">
     <value>Stations block</value>
   </data>
@@ -248,6 +269,9 @@
   </data>
   <data name="TrustOldResults" xml:space="preserve">
     <value>Trust old results</value>
+  </data>
+  <data name="TypeOfArea" xml:space="preserve">
+    <value>Type of the area</value>
   </data>
   <data name="UseMeasurementSameGSID" xml:space="preserve">
     <value>Use measurement with same GSID</value>

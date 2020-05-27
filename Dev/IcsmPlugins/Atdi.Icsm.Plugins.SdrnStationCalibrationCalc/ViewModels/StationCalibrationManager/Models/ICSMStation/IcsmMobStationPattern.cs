@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibrationManager
 {
-    public class MobStationModel
+    public class IcsmMobStationPattern
     {
-        public long Id { get; set; }
+       public  float[] Loss_dB { get; set; }
+
+        public double[] Angle_deg { get; set; }
 
     }
 }

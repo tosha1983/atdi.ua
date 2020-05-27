@@ -142,6 +142,24 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Created by.
+        /// </summary>
+        public static string CreatedBy {
+            get {
+                return ResourceManager.GetString("CreatedBy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Date Created.
+        /// </summary>
+        public static string DateCreated {
+            get {
+                return ResourceManager.GetString("DateCreated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Delta.
         /// </summary>
         public static string Delta {
@@ -183,6 +201,15 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         public static string General {
             get {
                 return ResourceManager.GetString("General", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Id.
+        /// </summary>
+        public static string Id {
+            get {
+                return ResourceManager.GetString("Id", resourceCulture);
             }
         }
         
@@ -273,6 +300,15 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         public static string MinRangeMeasurements {
             get {
                 return ResourceManager.GetString("MinRangeMeasurements", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Name.
+        /// </summary>
+        public static string Name {
+            get {
+                return ResourceManager.GetString("Name", resourceCulture);
             }
         }
         
@@ -421,6 +457,33 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Standard.
+        /// </summary>
+        public static string Standard {
+            get {
+                return ResourceManager.GetString("Standard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на State for active station.
+        /// </summary>
+        public static string StateForActiveStation {
+            get {
+                return ResourceManager.GetString("StateForActiveStation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на State for not active station.
+        /// </summary>
+        public static string StateForNotActiveStation {
+            get {
+                return ResourceManager.GetString("StateForNotActiveStation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Stations block.
         /// </summary>
         public static string StationsBlock {
@@ -453,6 +516,15 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         public static string TrustOldResults {
             get {
                 return ResourceManager.GetString("TrustOldResults", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Type of the area.
+        /// </summary>
+        public static string TypeOfArea {
+            get {
+                return ResourceManager.GetString("TypeOfArea", resourceCulture);
             }
         }
         

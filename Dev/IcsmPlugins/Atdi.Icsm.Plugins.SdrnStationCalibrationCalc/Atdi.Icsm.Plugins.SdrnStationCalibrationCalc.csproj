@@ -41,8 +41,11 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\ICS Control Client\ICSM 6.2.70\OrmCs.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Windows" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -70,16 +73,29 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="ViewModels\StationCalibrationManager\Adapters\Icsm\MobStationsDataAdapter.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Adapters\Icsm\Base\DataAdapterBase.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Adapters\Icsm\AreasDataAdapter.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Adapters\ParametersDataAdapter.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Adapters\StationMonitoringDataAdapter.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Events\Parameters\OnEditParamsCalculation.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Events\Parameters\OnDeleteParamsCalculation.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Events\Parameters\OnCreatedParamsCalculation.cs" />
-    <Compile Include="ViewModels\StationCalibrationManager\Models\ICSMStation\MobStationModel.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Models\ICSMStation\IcsmMobStationReceiver.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Models\ICSMStation\IcsmMobStationCoordinates.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Models\ICSMStation\IcsmMobStationTransmitter.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Models\ICSMStation\IcsmMobStationPattern.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Models\ICSMStation\IcsmMobStationAntenna.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Models\ICSMStation\IcsmMobStationSite.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Models\ICSMStation\IcsmMobStation.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Models\ICSMStation\GetStationsParamsModel.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Models\ICSMStation\DataLocationModel.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Models\ICSMStation\AreaModel.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Models\ICSMStation\IcsmStationName.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Models\Parameters\MethodParamsCalculationModel.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Models\Parameters\ParamsCalculationModel.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Models\StationMonitoring\StationMonitoringModel.cs" />
-    <Compile Include="ViewModels\StationCalibrationManager\Models\StationMonitoring\SelectedStationType.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Models\ICSMStation\SelectedStationType.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Modifiers\Parameters\EditParamsCalculationHandler.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Modifiers\Parameters\EditParamsCalculation.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Modifiers\Parameters\DeleteParamsCalculationHandler.cs" />
@@ -156,7 +172,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetDir)XICSM_*.dll" "c:\ATDI\ICS ManagerCalcServer"
-copy "$(TargetDir)Atdi.*.dll"    "c:\ATDI\ICS ManagerCalcServer"</PostBuildEvent>
+    <PostBuildEvent>copy "$(TargetDir)XICSM_*.dll" "c:\ATDI\ICS ManagerCalcServer_MSSQL"
+copy "$(TargetDir)Atdi.*.dll"    "c:\ATDI\ICS ManagerCalcServer_MSSQL"</PostBuildEvent>
   </PropertyGroup>
 </Project>

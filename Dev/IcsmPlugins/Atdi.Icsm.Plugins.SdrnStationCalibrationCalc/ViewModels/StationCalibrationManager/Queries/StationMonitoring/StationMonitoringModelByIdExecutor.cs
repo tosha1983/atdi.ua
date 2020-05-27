@@ -21,7 +21,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
             _config = config;
             _dataLayer = dataLayer;
         }
-        public StationMonitoringModel Read(StationMonitoringModel criterion)
+        public StationMonitoringModel Read(StationMonitoringModelById criterion)
         {
             var query = _dataLayer.GetBuilder<IC_ES.IStationMonitoring>()
                 .Read()

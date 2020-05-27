@@ -12,10 +12,16 @@ using Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibration
 using Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibrationManager.Modifiers;
 using Atdi.Platform.Cqrs;
 using Atdi.Platform.Events;
-using System.Windows.Forms;
+
 using System.Windows;
 using MP = Atdi.WpfControls.EntityOrm.Maps;
 using Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibrationManager;
+using ICSM;
+using OrmCs;
+using WC = System.Windows.Controls;
+using System.Data;
+
+
 
 
 namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibrationManager
@@ -25,25 +31,33 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
 	[ViewCaption("Station Calibration calc client")]
 	public class View : ViewBase
     {
+        private bool _isEnabledStart = false;
+        private bool _isEnabledFieldId = false;
+        
         private DateTime? _dateStartLoadDriveTest;
         private DateTime? _dateStopLoadDriveTest;
 
 
         private MP.MapDrawingData _currentMapData;
+        private IList _currentAreas;
         private readonly IObjectReader _objectReader;
         private readonly ICommandDispatcher _commandDispatcher;
         private readonly ViewStarter _starter;
         private readonly IEventBus _eventBus;
         private readonly ILogger _logger;
 
+        private IcsmStationName _selectedIcsmStationName;
         private SelectedStationType _selectedStationType;
         private MethodParamsCalculationModel _methodParamsCalculationModel;
 
 
         private ParamsCalculationModel _currentParamsCalculationModel;
         private StationMonitoringModel _currentStationMonitoringModel;
+        private GetStationsParamsModel _currentGetStationsParameters;
 
 
+
+        private AreasDataAdapter AreasDataAdapter;
         public StationMonitoringDataAdapter StationMonitoringDataAdapter { get; set; }
         public ParametersDataAdapter  ParametersDataAdapter { get; set; }
 
@@ -75,7 +89,9 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             this.LoadDriveTestsCommand = new ViewCommand(this.OnLoadDriveTestsCommand);
 
             this._currentParamsCalculationModel = new ParamsCalculationModel();
+            this._currentGetStationsParameters = new GetStationsParamsModel();
 
+            this.AreasDataAdapter = new AreasDataAdapter();
             this.ParametersDataAdapter = parametersDataAdapter;
             this.StationMonitoringDataAdapter = stationMonitoringDataAdapter;
 
@@ -85,12 +101,34 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             this.RedrawMap();
         }
 
+        public bool IsEnabledStart
+        {
+            get => this._isEnabledStart;
+            set => this.Set(ref this._isEnabledStart, value);
+        }
+
+        public bool IsEnabledFieldId
+        {
+            get => this._isEnabledFieldId;
+            set => this.Set(ref this._isEnabledFieldId, value);
+        }
+        
+        private void CheckEnabledStart()
+        {
+            
+        }
+
+        public AreasDataAdapter Areas => this.AreasDataAdapter;
+
+
         public MP.MapDrawingData CurrentMapData
         {
             get => this._currentMapData;
             set => this.Set(ref this._currentMapData, value);
         }
 
+
+      
         public SelectedStationType SelectedStationTypeVal
         {
             get => this._selectedStationType;
@@ -103,6 +141,28 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             set => this.Set(ref this._methodParamsCalculationModel, value);
         }
 
+        public IcsmStationName SelectedIcsmStationNameVal
+        {
+            get => this._selectedIcsmStationName;
+            set => this.Set(ref this._selectedIcsmStationName, value);
+        }
+
+        //private void ComboBoxSelectedStationType_SelectionChanged(object sender, WC.SelectionChangedEventArgs e)
+        //{
+        //    WC.ComboBox comboBox = (WC.ComboBox)sender;
+        //    if (comboBox.SelectedIndex==0)
+        //    {
+        //        IsEnabledFieldId = true;
+        //    }
+        //    else
+        //    {
+        //        IsEnabledFieldId = false;
+        //    }
+        //}
+
+
+
+        public IList<IcsmStationName> SelectedIcsmStationNameValues => Enum.GetValues(typeof(IcsmStationName)).Cast<IcsmStationName>().ToList();
         public IList<SelectedStationType> SelectedStationTypeValues => Enum.GetValues(typeof(SelectedStationType)).Cast<SelectedStationType>().ToList();
         public IList<MethodParamsCalculationModel> MethodParamsCalculationModelValues => Enum.GetValues(typeof(MethodParamsCalculationModel)).Cast<MethodParamsCalculationModel>().ToList();
 
@@ -110,9 +170,31 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
         {
             var data = new MP.MapDrawingData();
             var points = new List<MP.MapDrawingDataPoint>();
+            var polygons = new List<MP.MapDrawingDataPolygon>();
 
+            if (this._currentAreas != null)
+                foreach (AreaModel area in this._currentAreas)
+                {
+                    if (area.Location != null)
+                    {
+                        var polygonPoints = new List<MP.Location>();
+                        foreach (var point in area.Location)
+                        {
+                            polygonPoints.Add(new MP.Location()
+                            {
+                                Lon = point.Longitude,
+                                Lat = point.Latitude
+                            });
+                        }
+                        polygons.Add(new MP.MapDrawingDataPolygon() {
+                            Points = polygonPoints.ToArray(),
+                            Color = System.Windows.Media.Colors.Red,
+                            Fill = System.Windows.Media.Colors.Red
+                        });
+                    }
+                }
 
-
+            data.Polygons = polygons.ToArray();
             data.Points = points.ToArray();
             this.CurrentMapData = data;
         }
@@ -128,10 +210,37 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             set => this.Set(ref this._dateStopLoadDriveTest, value);
         }
 
+        public IList CurrentAreas
+        {
+            get => this._currentAreas;
+            set
+            {
+                this._currentAreas = value;
+                RedrawMap();
+                CheckEnabledStart();
+            }
+        }
+
         public StationMonitoringModel CurrentStationMonitoringModel
         {
             get => this._currentStationMonitoringModel;
-            set => this.Set(ref this._currentStationMonitoringModel, value, () => { this.OnChangedCurrentResMeas(value); });
+            set => this.Set(ref this._currentStationMonitoringModel, value, () => { this.OnChangedCurrentStationMonitoringModel(value); });
+        }
+
+        private void OnChangedCurrentStationMonitoringModel(StationMonitoringModel  stationMonitoringModel)
+        {
+
+        }
+
+        public GetStationsParamsModel GetStationsParams
+        {
+            get => this._currentGetStationsParameters;
+            set => this.Set(ref this._currentGetStationsParameters, value, () => { this.OnChangedGetStationsParams(value); });
+        }
+
+        private void OnChangedGetStationsParams(GetStationsParamsModel  getStationsParamsModel)
+        {
+
         }
 
         public ParamsCalculationModel CurrentParamsCalculation
@@ -140,12 +249,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             set => this.Set(ref this._currentParamsCalculationModel, value, () => { this.OnChangedParamsCalculation(value); });
         }
 
-        private void OnChangedCurrentResMeas(StationMonitoringModel resMeas)
-        {
 
-        }
-
-        
         private void OnChangedParamsCalculation(ParamsCalculationModel  paramsCalculationModel)
         {
 
@@ -162,10 +266,12 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             return resMeas;
         }
 
+
         private void ReloadData()
         {
             this.DateStartLoadDriveTest = DateTime.Now.AddDays(-30);
             this.DateStopLoadDriveTest = DateTime.Now;
+            this.AreasDataAdapter.Refresh();
         }
 
 
@@ -184,9 +290,18 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
         }
 
 
+        
+
 
         private void OnStartStationCalibrationCommand(object parameter)
         {
+            //var Id = GetStationsParams.Id;
+
+            this.AreasDataAdapter.Refresh();
+
+
+
+           
             // тестовая проверка
             var parameterCalculationModifier = new CreateParamsCalculation()
             {
@@ -233,7 +348,8 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                 TrustOldResults = CurrentParamsCalculation.TrustOldResults,
                 UseMeasurementSameGSID = CurrentParamsCalculation.UseMeasurementSameGSID
             };
-            _commandDispatcher.Send(parameterCalculationModifier);
+            
+             _commandDispatcher.Send(parameterCalculationModifier);
         }
 
         //private void OnCreatedCreateParamsCalculationHandle(Events.OnCreatedParamsCalculation data)
