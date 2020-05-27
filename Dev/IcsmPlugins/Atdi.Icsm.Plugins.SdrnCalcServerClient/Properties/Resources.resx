@@ -171,4 +171,34 @@
   <data name="StatusNote" xml:space="preserve">
     <value>Status Note</value>
   </data>
+  <data name="Refresh" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="CreateMap" xml:space="preserve">
+    <value>Create Map</value>
+  </data>
+  <data name="MapName" xml:space="preserve">
+    <value>Map Name</value>
+  </data>
+  <data name="MapNote" xml:space="preserve">
+    <value>Map Note</value>
+  </data>
+  <data name="OwnerAxisXNumber" xml:space="preserve">
+    <value>AxisXNumber</value>
+  </data>
+  <data name="OwnerAxisXStep" xml:space="preserve">
+    <value>AxisXStep</value>
+  </data>
+  <data name="OwnerAxisYNumber" xml:space="preserve">
+    <value>AxisYNumber</value>
+  </data>
+  <data name="OwnerAxisYStep" xml:space="preserve">
+    <value>AxisYStep</value>
+  </data>
+  <data name="OwnerUpperLeftX" xml:space="preserve">
+    <value>UpperLeftX</value>
+  </data>
+  <data name="OwnerUpperLeftY" xml:space="preserve">
+    <value>UpperLeftY</value>
+  </data>
 </root>

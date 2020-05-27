@@ -14,8 +14,8 @@
   <Fields>
     <Field Name="InfocMeasResults" SourceType="Column" Required="false" SourceName="INFOC_MEAS_RESULTS" DataType="Array.Long" Title="Info center, measurement results identifiers" Desc="The Info center, measurement results identifiers"/>
     <Field Name="StationIds" SourceType="Column" Required="false" SourceName="STATION_IDS" DataType="Array.Long" Title="Context station identifiers" Desc="Context station identifiers"/>
-    <Field Name="CorrelationThresholdHard" SourceType="Column" Required="false" SourceName="СORRELATION_THRESHOLD_HARD" DataType="Float.22.8" Title="CorrelationThresholdHard" Desc="CorrelationThresholdHard"/>
-    <Field Name="CorelationThresholdWeak" SourceType="Column" Required="false" SourceName="СORRELATION_THRESHOLD_WEAK" DataType="Float.22.8" Title="CrrelationThresholdWeak" Desc="CrrelationThresholdWeak"/>
+    <Field Name="CorrelationThresholdHard" SourceType="Column" Required="false" SourceName="CORRELATION_THRESHOLD_HARD" DataType="Float.22.8" Title="CorrelationThresholdHard" Desc="CorrelationThresholdHard"/>
+    <Field Name="CorrelationThresholdWeak" SourceType="Column" Required="false" SourceName="CORRELATION_THRESHOLD_WEAK" DataType="Float.22.8" Title="CrrelationThresholdWeak" Desc="CrrelationThresholdWeak"/>
     <Field Name="TrustOldResults" SourceType="Column" Required="false" SourceName="TRUST_OLD_RESULTS" DataType="Float.22.8" Title="TrustOldResults" Desc="TrustOldResults"/>
     <Field Name="UseMeasurementSameGSID" SourceType="Column" Required="false" SourceName="USE_MEASUREMENT_SAME_GSID" DataType="Boolean" Title="UseMeasurementSameGSID" Desc="UseMeasurementSameGSID"/>
     <Field Name="DistanceAroundContour_km" SourceType="Column" Required="false" SourceName="DISTANCE_AROUND_CONTOUR_KM" DataType="Integer.32" Title="DistanceAroundContour_km" Desc="DistanceAroundContour_km"/>
@@ -45,14 +45,14 @@
     <Field Name="ShiftCoordinatesStation_m" SourceType="Column" Required="false" SourceName="SHIFT_COORDINATES_STATION_M" DataType="Integer.32" Title="ShiftCoordinatesStation_m" Desc="ShiftCoordinatesStation_m"/>
     <Field Name="ShiftCoordinatesStationStep_m" SourceType="Column" Required="false" SourceName="SHIFT_COORDINATES_STATION_STEP_M" DataType="Integer.32" Title="ShiftCoordinatesStationStep_m" Desc="ShiftCoordinatesStationStep_m"/>
     <Field Name="MaxDeviationCoordinatesStation_m" SourceType="Column" Required="false" SourceName="MAX_DEVIATION_COORDINATES_STATION_M" DataType="Integer.32" Title="MaxDeviationCoordinatesStation_m" Desc="MaxDeviationCoordinatesStation_m"/>
-    <Field Name="PowerStation" SourceType="Column" Required="false" SourceName="POWER_STATION" DataType="Boolean" Title="PowerStation" Desc="PowerStation"/>
+    <Field Name="PowerStation" SourceType="Column" Required="false" SourceName="POWER_STATION" DataType="Float.22.8" Title="PowerStation" Desc="PowerStation"/>
     <Field Name="ShiftPowerStationMin_dB" SourceType="Column" Required="false" SourceName="SHIFT_POWER_STATION_MIN_DB" DataType="Float.22.8" Title="ShiftPowerStationMin_dB" Desc="ShiftPowerStationMin_dB"/>
     <Field Name="ShiftPowerStationMax_dB" SourceType="Column" Required="false" SourceName="SHIFT_POWER_STATION_MAX_DB" DataType="Float.22.8" Title="ShiftPowerStationMax_dB" Desc="ShiftPowerStationMax_dB"/>
     <Field Name="ShiftPowerStationStep_dB" SourceType="Column" Required="false" SourceName="SHIFT_POWER_STATION_STEP_DB" DataType="Float.22.8" Title="ShiftPowerStationStep_dB" Desc="ShiftPowerStationStep_dB"/>
     <Field Name="CascadeTuning" SourceType="Column" Required="false" SourceName="CASCADE_TUNING" DataType="Boolean" Title="CascadeTuning" Desc="CascadeTuning"/>
     <Field Name="NumberCascade" SourceType="Column" Required="false" SourceName="NUMBER_CASCADE" DataType="Integer.32" Title="NumberCascade" Desc="NumberCascade"/>
     <Field Name="DetailOfCascade" SourceType="Column" Required="false" SourceName="DETAIL_OF_CASCADE" DataType="Integer.32" Title="DetailOfCascade" Desc="DetailOfCascade"/>
-    <Field Name="Method" SourceType="Column" Required="false" SourceName="DETAIL_OF_CASCADE" DataType="Byte" Title="Method" Desc="Method"/>
+    <Field Name="Method" SourceType="Column" Required="false" SourceName="Method" DataType="Byte" Title="Method" Desc="Method"/>
 
   </Fields>
 

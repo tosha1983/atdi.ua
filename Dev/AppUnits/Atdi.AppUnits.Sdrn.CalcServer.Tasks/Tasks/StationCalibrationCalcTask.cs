@@ -20,7 +20,7 @@ using Atdi.DataModels.Sdrn.DeepServices.Gis;
 using Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations;
 using Atdi.DataModels.Sdrn.CalcServer.Internal.Maps;
 using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Gis;
-using Atdi.DataModels.Sdrn.Infocenter.Entities.Entities.SdrnServer;
+using Atdi.DataModels.Sdrn.Infocenter.Entities.SdrnServer;
 using Atdi.Platform;
 using Atdi.Common;
 using Atdi.Common.Extensions;
@@ -184,8 +184,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                 c => c.MinNumberPointForCorrelation,
                                 c => c.TrustOldResults,
                                 c => c.UseMeasurementSameGSID,
-                                c => c.СorrelationThresholdHard,
-                                c => c.СorrelationThresholdWeak,
+                                c => c.CorrelationThresholdHard,
+                                c => c.CorrelationThresholdWeak,
                                 c => c.InfocMeasResults,
                                 c => c.StationIds
                             )
@@ -216,25 +216,25 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                         DistanceAroundContour_km = reader.GetValue(c => c.DistanceAroundContour_km).GetValueOrDefault(),
                         MinNumberPointForCorrelation = reader.GetValue(c => c.MinNumberPointForCorrelation).GetValueOrDefault(),
                         TrustOldResults = reader.GetValue(c => c.TrustOldResults).GetValueOrDefault(),
-                        UseMeasurementSameGSID = reader.GetValue(c => c.UseMeasurementSameGSID).GetValueOrDefault(),
-                        СorrelationThresholdHard = reader.GetValue(c => c.СorrelationThresholdHard).GetValueOrDefault(),
-                        СorrelationThresholdWeak = reader.GetValue(c => c.СorrelationThresholdWeak).GetValueOrDefault()
+                        UseMeasurementSameGSID = reader.GetValue(c => c.UseMeasurementSameGSID),
+                        СorrelationThresholdHard = reader.GetValue(c => c.CorrelationThresholdHard).GetValueOrDefault(),
+                        СorrelationThresholdWeak = reader.GetValue(c => c.CorrelationThresholdWeak).GetValueOrDefault()
                     },
                     CorellationParameters = new CorellationParameters()
                     {
                         CorrelationDistance_m = reader.GetValue(c => c.CorrelationDistance_m).GetValueOrDefault(),
                         Delta_dB = reader.GetValue(c => c.Delta_dB).GetValueOrDefault(),
-                        Detail = reader.GetValue(c => c.Detail).GetValueOrDefault(),
+                        Detail = reader.GetValue(c => c.Detail),
                         MaxAntennasPatternLoss_dB = reader.GetValue(c => c.MaxAntennasPatternLoss_dB).GetValueOrDefault(),
                         MaxRangeMeasurements_dBmkV = reader.GetValue(c => c.MaxRangeMeasurements_dBmkV).GetValueOrDefault(),
                         MinRangeMeasurements_dBmkV = reader.GetValue(c => c.MinRangeMeasurements_dBmkV).GetValueOrDefault()
                     },
                     CalibrationParameters = new CalibrationParameters()
                     {
-                        AltitudeStation = reader.GetValue(c => c.AltitudeStation).GetValueOrDefault(),
-                        AzimuthStation = reader.GetValue(c => c.AzimuthStation).GetValueOrDefault(),
-                        CascadeTuning = reader.GetValue(c => c.CascadeTuning).GetValueOrDefault(),
-                        CoordinatesStation = reader.GetValue(c => c.CoordinatesStation).GetValueOrDefault(),
+                        AltitudeStation = reader.GetValue(c => c.AltitudeStation),
+                        AzimuthStation = reader.GetValue(c => c.AzimuthStation),
+                        CascadeTuning = reader.GetValue(c => c.CascadeTuning),
+                        CoordinatesStation = reader.GetValue(c => c.CoordinatesStation),
                         DetailOfCascade = reader.GetValue(c => c.DetailOfCascade).GetValueOrDefault(),
                         MaxDeviationAltitudeStation_m = reader.GetValue(c => c.MaxDeviationAltitudeStation_m).GetValueOrDefault(),
                         MaxDeviationAzimuthStation_deg = reader.GetValue(c => c.MaxDeviationAzimuthStation_deg).GetValueOrDefault(),
@@ -257,7 +257,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                         ShiftTiltStationMax_Deg = reader.GetValue(c => c.ShiftTiltStationMax_deg).GetValueOrDefault(),
                         ShiftTiltStationMin_Deg = reader.GetValue(c => c.ShiftTiltStationMin_deg).GetValueOrDefault(),
                         ShiftTiltStationStep_Deg = reader.GetValue(c => c.ShiftTiltStationStep_deg).GetValueOrDefault(),
-                        TiltStation = reader.GetValue(c => c.TiltStation).GetValueOrDefault()
+                        TiltStation = reader.GetValue(c => c.TiltStation)
                     },
                     Projection = reader.GetValue(c => c.TASK.CONTEXT.PROJECT.Projection),
                     MapName = reader.GetValue(c => c.TASK.MapName),
