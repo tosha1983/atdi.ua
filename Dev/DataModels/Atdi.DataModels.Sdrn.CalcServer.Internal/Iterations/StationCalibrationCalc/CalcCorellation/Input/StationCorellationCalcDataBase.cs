@@ -14,5 +14,6 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
         public DriveTestsResult GSIDGroupeDriveTests;
         public ContextStation GSIDGroupeStation;
         public FieldStrengthCalcData FieldStrengthCalcData;
+        public string CodeProjection;
     }
 }

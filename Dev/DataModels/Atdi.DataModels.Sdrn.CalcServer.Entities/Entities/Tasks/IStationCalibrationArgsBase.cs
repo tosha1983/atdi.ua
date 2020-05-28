@@ -44,7 +44,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks
         int? ShiftCoordinatesStation_m { get; set; }
         int? ShiftCoordinatesStationStep_m { get; set; }
         int? MaxDeviationCoordinatesStation_m { get; set; }
-        float? PowerStation { get; set; }
+        bool PowerStation { get; set; }
         float? ShiftPowerStationMin_dB { get; set; }
         float? ShiftPowerStationMax_dB { get; set; }
         float? ShiftPowerStationStep_dB { get; set; }

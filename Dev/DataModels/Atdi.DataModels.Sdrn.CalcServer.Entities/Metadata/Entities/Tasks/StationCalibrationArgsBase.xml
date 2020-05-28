@@ -45,7 +45,7 @@
     <Field Name="ShiftCoordinatesStation_m" SourceType="Column" Required="false" SourceName="SHIFT_COORDINATES_STATION_M" DataType="Integer.32" Title="ShiftCoordinatesStation_m" Desc="ShiftCoordinatesStation_m"/>
     <Field Name="ShiftCoordinatesStationStep_m" SourceType="Column" Required="false" SourceName="SHIFT_COORDINATES_STATION_STEP_M" DataType="Integer.32" Title="ShiftCoordinatesStationStep_m" Desc="ShiftCoordinatesStationStep_m"/>
     <Field Name="MaxDeviationCoordinatesStation_m" SourceType="Column" Required="false" SourceName="MAX_DEVIATION_COORDINATES_STATION_M" DataType="Integer.32" Title="MaxDeviationCoordinatesStation_m" Desc="MaxDeviationCoordinatesStation_m"/>
-    <Field Name="PowerStation" SourceType="Column" Required="false" SourceName="POWER_STATION" DataType="Float.22.8" Title="PowerStation" Desc="PowerStation"/>
+    <Field Name="PowerStation" SourceType="Column" Required="false" SourceName="POWER_STATION" DataType="Boolean" Title="PowerStation" Desc="PowerStation"/>
     <Field Name="ShiftPowerStationMin_dB" SourceType="Column" Required="false" SourceName="SHIFT_POWER_STATION_MIN_DB" DataType="Float.22.8" Title="ShiftPowerStationMin_dB" Desc="ShiftPowerStationMin_dB"/>
     <Field Name="ShiftPowerStationMax_dB" SourceType="Column" Required="false" SourceName="SHIFT_POWER_STATION_MAX_DB" DataType="Float.22.8" Title="ShiftPowerStationMax_dB" Desc="ShiftPowerStationMax_dB"/>
     <Field Name="ShiftPowerStationStep_dB" SourceType="Column" Required="false" SourceName="SHIFT_POWER_STATION_STEP_DB" DataType="Float.22.8" Title="ShiftPowerStationStep_dB" Desc="ShiftPowerStationStep_dB"/>

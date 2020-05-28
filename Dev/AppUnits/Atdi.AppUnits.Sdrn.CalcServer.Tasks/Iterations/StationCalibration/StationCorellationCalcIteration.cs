@@ -204,10 +204,13 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     if (data.CorellationParameters.Detail)
                     {
                         calcCorellationResult.CorrellationPoints[i].Dist_km = GeometricСalculations.GetDistance_km(calcPointArrayBuffer[i].Lon, calcPointArrayBuffer[i].Lat, data.GSIDGroupeStation.Site.Longitude, data.GSIDGroupeStation.Site.Latitude);
-                        calcCorellationResult.CorrellationPoints[i].FSCalc_dBmkVm = (float)calcPointArrayBuffer[i].FSCalc; //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                        calcCorellationResult.CorrellationPoints[i].FSMeas_dBmkVm = (float)calcPointArrayBuffer[i].FSMeas; //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                        calcCorellationResult.CorrellationPoints[i].Lon_DEC = calcPointArrayBuffer[i].Lon;
-                        calcCorellationResult.CorrellationPoints[i].Lat_DEC = calcPointArrayBuffer[i].Lat;
+                        calcCorellationResult.CorrellationPoints[i].FSCalc_dBmkVm = calcPointArrayBuffer[i].FSCalc;
+                        calcCorellationResult.CorrellationPoints[i].FSMeas_dBmkVm = calcPointArrayBuffer[i].FSMeas;
+
+
+                        var coordinateTransform = _transformation.ConvertCoordinateToWgs84(new EpsgCoordinate() { X = calcPointArrayBuffer[i].Lon, Y = calcPointArrayBuffer[i].Lat }, _transformation.ConvertProjectionToCode(data.CodeProjection));
+                        calcCorellationResult.CorrellationPoints[i].Lon_DEC = coordinateTransform.Longitude;
+                        calcCorellationResult.CorrellationPoints[i].Lat_DEC = coordinateTransform.Latitude;
                         //var coord = _transformation.ConvertCoordinateToWgs84(data.FieldStrengthCalcData.MapArea.LowerLeft.X, data.CodeProjection)
                     }
                 }
@@ -225,15 +228,15 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 }
 
                 //-Freq_MHz(частота передатчика станции)
-                calcCorellationResult.Freq_MHz = (float)data.GSIDGroupeStation.Transmitter.Freq_MHz; //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                calcCorellationResult.Freq_MHz = data.GSIDGroupeStation.Transmitter.Freq_MHz;
                 //- Delta_dB(входной параметр)
                 calcCorellationResult.Delta_dB = data.CorellationParameters.Delta_dB;
                 //- Correlation_pc(процент точек где результаты измерений отличаться от расчетного менее чем на Delta_dB)
                 calcCorellationResult.Corellation_pc = diffLessThanDeltaCount / counter;
                 //- StdDev_dB = sqrt(sum(y - x)) / n
-                calcCorellationResult.StdDev_dB = (float) Math.Sqrt(sumDiffCalcMeas) / counter; //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                calcCorellationResult.StdDev_dB = (float)(Math.Sqrt(sumDiffCalcMeas) / counter); 
                 //- AvErr_dB = sum(y - x) / n
-                calcCorellationResult.AvErr_dB = (float)sumDiffCalcMeas / counter; //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                calcCorellationResult.AvErr_dB = (float)(sumDiffCalcMeas / counter); 
                 //- Correl factor(логарифмическая корреляция пирсона у нас реализована)
                 calcCorellationResult.Corellation_factor = a1 / Math.Sqrt(a2 * a3);
 
