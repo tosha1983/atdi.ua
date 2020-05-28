@@ -200,8 +200,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     sumDiffCalcMeas += diffCalcMeas;
 
                     //pierson
-                    meanMeasFS += ConvertdBuVmTouV(calcPointArrayBuffer[i].FSMeas);
-                    meanCalcFS += ConvertdBuVmTouV(calcPointArrayBuffer[i].FSCalc);
+                    meanMeasFS += calcPointArrayBuffer[i].FSMeas;
+                    meanCalcFS += calcPointArrayBuffer[i].FSCalc;
 
                     //- CorreIPoints[](Lon_DEC, Lat_DEC, FSMeas_dBmkVm, FSCalc_dBmkVm, Dist_km) выдаётся только если Detail = true(нам для отладки не плохо было бы это хоть как визуализировать на карте)
                     if (data.CorellationParameters.Detail)
@@ -224,12 +224,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 double a1 = 0; double a2 = 0; double a3 = 0;
                 for (int i = 0; i < counter; i++)
                 {
-                    a1 = a1 + ((ConvertdBuVmTouV(calcPointArrayBuffer[i].FSMeas) - meanMeasFS) * (ConvertdBuVmTouV(calcPointArrayBuffer[i].FSCalc) - meanCalcFS));
-                    a2 = a2 + ((ConvertdBuVmTouV(calcPointArrayBuffer[i].FSMeas) - meanMeasFS) * (ConvertdBuVmTouV(calcPointArrayBuffer[i].FSMeas) - meanMeasFS));
-                    a3 = a3 + ((ConvertdBuVmTouV(calcPointArrayBuffer[i].FSCalc) - meanCalcFS) * (ConvertdBuVmTouV(calcPointArrayBuffer[i].FSCalc) - meanCalcFS));
-                    //a1 = a1 + ((calcPointArrayBuffer[i].FSMeas - meanMeasFS) * (calcPointArrayBuffer[i].FSCalc - meanCalcFS));
-                    //a2 = a2 + ((calcPointArrayBuffer[i].FSMeas - meanMeasFS) * (calcPointArrayBuffer[i].FSMeas - meanMeasFS));
-                    //a3 = a3 + ((calcPointArrayBuffer[i].FSCalc - meanCalcFS) * (calcPointArrayBuffer[i].FSCalc - meanCalcFS));
+                    //a1 = a1 + ((ConvertdBuVmTouV(calcPointArrayBuffer[i].FSMeas) - meanMeasFS) * (ConvertdBuVmTouV(calcPointArrayBuffer[i].FSCalc) - meanCalcFS));
+                    //a2 = a2 + ((ConvertdBuVmTouV(calcPointArrayBuffer[i].FSMeas) - meanMeasFS) * (ConvertdBuVmTouV(calcPointArrayBuffer[i].FSMeas) - meanMeasFS));
+                    //a3 = a3 + ((ConvertdBuVmTouV(calcPointArrayBuffer[i].FSCalc) - meanCalcFS) * (ConvertdBuVmTouV(calcPointArrayBuffer[i].FSCalc) - meanCalcFS));
+                    a1 = a1 + ((calcPointArrayBuffer[i].FSMeas - meanMeasFS) * (calcPointArrayBuffer[i].FSCalc - meanCalcFS));
+                    a2 = a2 + ((calcPointArrayBuffer[i].FSMeas - meanMeasFS) * (calcPointArrayBuffer[i].FSMeas - meanMeasFS));
+                    a3 = a3 + ((calcPointArrayBuffer[i].FSCalc - meanCalcFS) * (calcPointArrayBuffer[i].FSCalc - meanCalcFS));
                 }
 
                 //- Freq_MHz(частота передатчика станции)
