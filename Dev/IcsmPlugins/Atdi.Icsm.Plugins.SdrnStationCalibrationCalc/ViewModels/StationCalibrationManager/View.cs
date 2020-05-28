@@ -352,11 +352,9 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
         {
 
             var stations = ReadStations();
-            var externalSources = stations.Select(x => Convert.ToInt64(x.ExternalCode)).ToArray();
-            this._currentParamsCalculationModel.StationIds = externalSources;
-            this._currentParamsCalculationModel.InfocMeasResults = new long[1] { GetStationsParams.Id };
+            this._currentParamsCalculationModel.InfocMeasResults = new long[1] { CurrentStationMonitoringModel.Id };
 
-            StationCalibrationCalcTask.Run(this._dataLayer.Origin, this._dataLayer.Executor, ReadStations(), this._currentParamsCalculationModel);
+            StationCalibrationCalcTask.Run(this._dataLayer.Origin, this._dataLayer.Executor, stations, this._currentParamsCalculationModel);
             //var res = ReadStations();
 
             //var Id = GetStationsParams.Id;

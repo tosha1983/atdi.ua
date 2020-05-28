@@ -10,17 +10,23 @@ using OrmCs;
 using ICSM;
 using Atdi.Platform.Cqrs;
 using Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibrationManager.Adapters;
+using Atdi.Contracts.Sdrn.DeepServices.RadioSystem;
+
 
 namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager.Queries
 {
     public class MobStationsDataAdapter  
     {
 
+        private readonly ISignalService _signalService;
         public readonly IObjectReader _objectReader;
         public readonly MobStationsLoadModelByParams  _mobStationsLoadModelByParams;
 
-        public MobStationsDataAdapter(MobStationsLoadModelByParams  mobStationsLoadModelByParams, IObjectReader objectReader)
+        public MobStationsDataAdapter(MobStationsLoadModelByParams  mobStationsLoadModelByParams,
+            ISignalService signalService,
+            IObjectReader objectReader)
         {
+            this._signalService = signalService;
             this._objectReader = objectReader;
             this._mobStationsLoadModelByParams = mobStationsLoadModelByParams;
         }
@@ -330,7 +336,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                     mobStationT.m_Antenna.m_diaga = rs.GetS("Antenna.DIAGA");
                     mobStationT.m_Antenna.m_xpd = rs.GetD("Antenna.XPD");
                     mobStationT.m_rec_area = rs.GetS("Position.City.PROVINCE");
-                    mobStationT.m_cust_txt2 = ReadGCIDDataModel(mobStationT.m_cust_txt1, mobStationT.m_rec_area, mobStationT.m_standard);
+                    //mobStationT.m_cust_txt2 = ReadGCIDDataModel(mobStationT.m_cust_txt1, mobStationT.m_rec_area, mobStationT.m_standard);
 
                     for (int w = 0; w < this._mobStationsLoadModelByParams.AreaModel.Length; w++)
                     {
@@ -435,23 +441,23 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                                                   
                                 HH_PATTERN = new IcsmMobStationPattern()
                                 {
-                                    Loss_dB = GetPointFromAntennaPattern(source.m_Antenna.m_diagh, TypeAntennaPattern.HH, source.m_gain).Select(c => c.Loss).ToArray(),
-                                    Angle_deg = GetPointFromAntennaPattern(source.m_Antenna.m_diagh, TypeAntennaPattern.HH, source.m_gain).Select(c => c.Angle).ToArray()
+                                    Loss_dB =   CalculationAntennaPattern(source.m_Antenna.m_diagh, TypeAntennaPattern.HH, source.m_gain).Select(c => c.Loss).ToArray(),
+                                    Angle_deg = CalculationAntennaPattern(source.m_Antenna.m_diagh, TypeAntennaPattern.HH, source.m_gain).Select(c => c.Angle).ToArray()
                                 },
                                 HV_PATTERN = new IcsmMobStationPattern()
                                 {
-                                    Loss_dB = GetPointFromAntennaPattern(source.m_Antenna.m_diagv, TypeAntennaPattern.HV, source.m_gain).Select(c => c.Loss).ToArray(),
-                                    Angle_deg = GetPointFromAntennaPattern(source.m_Antenna.m_diagv, TypeAntennaPattern.HV, source.m_gain).Select(c => c.Angle).ToArray()
+                                    Loss_dB = CalculationAntennaPattern(source.m_Antenna.m_diagv, TypeAntennaPattern.HV, source.m_gain).Select(c => c.Loss).ToArray(),
+                                    Angle_deg = CalculationAntennaPattern(source.m_Antenna.m_diagv, TypeAntennaPattern.HV, source.m_gain).Select(c => c.Angle).ToArray()
                                 },
                                 VH_PATTERN = new IcsmMobStationPattern()
                                 {
-                                    Loss_dB = GetPointFromAntennaPattern(source.m_Antenna.m_diagh, TypeAntennaPattern.VH, source.m_gain).Select(c => c.Loss).ToArray(),
-                                    Angle_deg = GetPointFromAntennaPattern(source.m_Antenna.m_diagh, TypeAntennaPattern.VH, source.m_gain).Select(c => c.Angle).ToArray()
+                                    Loss_dB = CalculationAntennaPattern(source.m_Antenna.m_diagh, TypeAntennaPattern.VH, source.m_gain).Select(c => c.Loss).ToArray(),
+                                    Angle_deg = CalculationAntennaPattern(source.m_Antenna.m_diagh, TypeAntennaPattern.VH, source.m_gain).Select(c => c.Angle).ToArray()
                                 },
                                 VV_PATTERN = new IcsmMobStationPattern()
                                 {
-                                    Loss_dB = GetPointFromAntennaPattern(source.m_Antenna.m_diagv, TypeAntennaPattern.VV, source.m_gain).Select(c => c.Loss).ToArray(),
-                                    Angle_deg = GetPointFromAntennaPattern(source.m_Antenna.m_diagv, TypeAntennaPattern.VV, source.m_gain).Select(c => c.Angle).ToArray()
+                                    Loss_dB = CalculationAntennaPattern(source.m_Antenna.m_diagv, TypeAntennaPattern.VV, source.m_gain).Select(c => c.Loss).ToArray(),
+                                    Angle_deg = CalculationAntennaPattern(source.m_Antenna.m_diagv, TypeAntennaPattern.VV, source.m_gain).Select(c => c.Angle).ToArray()
                                 }
                             },
                             TRANSMITTER = new IcsmMobStationTransmitter()
@@ -525,53 +531,5 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                 return  lstEnum.Find(x => x.ToString() == polar);
             }
         }
-        private PointObject[] GetPointFromAntennaPattern(string poins, TypeAntennaPattern typeAntennaPattern, double gain)
-        {
-            var diag = new AntennaDiagramm();
-            var pointObjects = new List<PointObject>();
-            diag.SetMaximalGain(gain);
-            var patternType = diag.Build(poins);
-            if (patternType== AntennaDiagramm.PatternType.WIEN)
-            {
-                var AnglesH = new int[72] { 0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 125, 130, 135, 140, 145, 150, 155, 160, 165, 170, 175, 180, 185, 190, 195, 200, 205, 210, 215, 220, 225, 230, 235, 240, 245, 250, 255, 260, 265, 270, 275, 280, 285, 290, 295, 300, 305, 310, 315, 320, 325, 330, 335, 340, 345, 350, 355 };
-                var AnglesV = new int[65] { -90, -85, -80, -75, -70, -65, -60, -55, -50, -45, -40, -35, -30 , -28,-26,-24,-22,-20,-18,-16,-14,-12,-10, -9,-8,-7,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,7,8,9,10,  12,14,16,18,20,22,24,26,28,30, 35,40,45,50,55,60,65,70,75,80,85,90  };
-                if ((typeAntennaPattern== TypeAntennaPattern.HH) || (typeAntennaPattern == TypeAntennaPattern.VH))
-                {
-                    for (int i = 0; i < AnglesH.Length; i++)
-                    {
-                        pointObjects.Add(new PointObject()
-                        {
-                            Angle = AnglesH[i],
-                            Loss = (float)diag.GetLossesAmount(AnglesH[i])
-                        });
-                    }
-                }
-                else if ((typeAntennaPattern == TypeAntennaPattern.HV) || (typeAntennaPattern == TypeAntennaPattern.VV))
-                {
-                    for (int i = 0; i < AnglesV.Length; i++)
-                    {
-                        pointObjects.Add(new PointObject()
-                        {
-                            Angle = AnglesV[i],
-                            Loss = (float)diag.GetLossesAmount(AnglesV[i])
-                        });
-                    }
-                }
-              
-            }
-            else
-            {
-                for (int i=0; i<diag.Angles.Count; i++)
-                {
-                    pointObjects.Add(new PointObject()
-                    {
-                        Angle = diag.Angles[i],
-                        Loss = (float)diag.Losses[i]
-                    });
-                }
-            }
-            return pointObjects.ToArray();
-        }
-
     }
 }
