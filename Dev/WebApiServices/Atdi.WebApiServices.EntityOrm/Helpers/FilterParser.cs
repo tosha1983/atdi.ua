@@ -34,6 +34,35 @@ namespace Atdi.WebApiServices.EntityOrm.Helpers
                 while (this._position < _text.Length)
                 {
                     var c = this._text[_position];
+                    if (c == '\'')
+                    {
+	                    _token.Append(c);
+						++_position;
+						while (this._position < _text.Length)
+	                    {
+
+		                    c = this._text[_position];
+		                    if (c == '\'')
+		                    {
+			                    if (this._position + 1 < _text.Length && this._text[_position + 1] == '\'')
+			                    {
+									// экранирование одинарной кавычки
+				                    //_token.Append(c);
+				                    ++_position;
+			                    }
+			                    else
+			                    {
+									// конец строки
+									_token.Append(c);
+									return true;
+								}
+		                    }
+
+		                    _token.Append(c);
+		                    ++_position;
+						}
+						throw new InvalidOperationException("Missing end of string");
+					}
                     if (c == '(')
                     {
                         if (_token.Length > 0)
