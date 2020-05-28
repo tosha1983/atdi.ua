@@ -242,7 +242,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                         MaxDeviationTiltStationDeg = reader.GetValue(c => c.MaxDeviationTiltStation_deg).GetValueOrDefault(),
                         Method = method,
                         NumberCascade = reader.GetValue(c => c.NumberCascade).GetValueOrDefault(),
-                        PowerStation = reader.GetValue(c => c.PowerStation).GetValueOrDefault(),
+                        PowerStation = reader.GetValue(c => c.PowerStation),
                         ShiftAltitudeStationMax_m = reader.GetValue(c => c.ShiftAltitudeStationMax_m).GetValueOrDefault(),
                         ShiftAltitudeStationMin_m = reader.GetValue(c => c.ShiftAltitudeStationMin_m).GetValueOrDefault(),
                         ShiftAltitudeStationStep_m = reader.GetValue(c => c.ShiftAltitudeStationStep_m).GetValueOrDefault(),

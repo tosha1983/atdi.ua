@@ -62,15 +62,15 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             
 
             var altitudeStationMin_m = data.GSIDGroupeStation.Site.Altitude;
-            var altitudeStationStep_m = 1.0;
+            var altitudeStationStep_m = 1.0f;
             var altitudeStationMax_m = data.GSIDGroupeStation.Site.Altitude + altitudeStationStep_m;
 
             var azimuthStationMin = data.GSIDGroupeStation.Antenna.Azimuth_deg;
-            var azimuthStationStep = 1.0;
+            var azimuthStationStep = 1.0f;
             var azimuthStationMax = data.GSIDGroupeStation.Antenna.Azimuth_deg + azimuthStationStep;
 
             var tiltStationMin = data.GSIDGroupeStation.Antenna.Tilt_deg;
-            var tiltStationStep = 1.0;
+            var tiltStationStep = 1.0f;
             var tiltStationMax = data.GSIDGroupeStation.Antenna.Tilt_deg + tiltStationStep;
 
             //координаты, высота, азимут, угол места, мощность
@@ -314,14 +314,14 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
 
             //- Parameters Station Old(Altitude Station, Tilt Station, Azimuth Station, Lat Station, Lon Station, Power Station)
-            calcCalibrationResult.ParametersStationOld.Altitude_m = data.GSIDGroupeStation.Site.Altitude;//////////////!!!!!!!!!!!
+            calcCalibrationResult.ParametersStationOld.Altitude_m = (int)data.GSIDGroupeStation.Site.Altitude;//////////////!!!!!!!!!!!
             calcCalibrationResult.ParametersStationOld.Azimuth_deg = data.GSIDGroupeStation.Antenna.Azimuth_deg;//////////////!!!!!!!!!!!
             calcCalibrationResult.ParametersStationOld.Tilt_Deg = data.GSIDGroupeStation.Antenna.Tilt_deg;//////////////!!!!!!!!!!!
             calcCalibrationResult.ParametersStationOld.Lat_deg = data.GSIDGroupeStation.Site.Latitude;
             calcCalibrationResult.ParametersStationOld.Lon_deg = data.GSIDGroupeStation.Site.Longitude;
             calcCalibrationResult.ParametersStationOld.Power_dB = data.GSIDGroupeStation.Transmitter.MaxPower_dBm;
 
-            var stationCoordX = _transformation.ConvertCoordinateToAtdi(data.GSIDGroupeStation.Site.Latitude, data.CodeProjection);
+            var stationCoordX = _transformation.ConvertCoordinateToAtdi(new Wgs84Coordinate() { Latitude = data.GSIDGroupeStation.Site.Latitude, Longitude = data.GSIDGroupeStation.Site.Longitude }, data.CodeProjection);
             
             if (data.CalibrationParameters.CascadeTuning)
             {

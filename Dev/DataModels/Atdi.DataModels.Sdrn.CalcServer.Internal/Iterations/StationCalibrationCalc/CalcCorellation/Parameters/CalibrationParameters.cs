@@ -29,7 +29,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
         public int ShiftCoordinatesStation_m;
         public int ShiftCoordinatesStationStep_m;
         public int MaxDeviationCoordinatesStation_m;
-        public float PowerStation;
+        public bool PowerStation;
         public float ShiftPowerStationMin_dB;
         public float ShiftPowerStationMax_dB;
         public float ShiftPowerStationStep_dB;
