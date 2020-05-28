@@ -97,22 +97,31 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client
 
 		static void CheckOrmBug()
 		{
-			var endpoint = new WebApiEndpoint(new Uri("http://localhost:15075/"), "/appserver/v1");
-			var dataContext = new WebApiDataContext("SDRN_Infocenter_DB");
+			try
+			{
+				var endpoint = new WebApiEndpoint(new Uri("http://localhost:15075/"), "/appserver/v1");
+				var dataContext = new WebApiDataContext("SDRN_Infocenter_DB");
 
-			var dataLayer = new WebApiDataLayer(endpoint, dataContext);
+				var dataLayer = new WebApiDataLayer(endpoint, dataContext);
 
-			var query = dataLayer.GetBuilder<IGlobalIdentity>()
-				.Read()
-				.Select(c => c.RegionCode)
-				.Select(c => c.LicenseGsid)
-				.Select(c => c.Standard)
-				.Select(c => c.RealGsid)
-				.Filter(c => c.Standard, "UMTS")
-				.Filter(c => c.LicenseGsid, "255 7 00000 1167")
-				.Filter(c => c.RegionCode, "Kiev12");
+				var query = dataLayer.GetBuilder<IGlobalIdentity>()
+					.Read()
+					.Select(c => c.RegionCode)
+					.Select(c => c.LicenseGsid)
+					.Select(c => c.Standard)
+					.Select(c => c.RealGsid)
+					.Filter(c => c.Standard, "UMTS")
+					.Filter(c => c.LicenseGsid, "255 7 00000 1167")
+					.Filter(c => c.RegionCode, "Kiev12");
 
-			var reader = dataLayer.Executor.ExecuteReader(query);
+				var reader = dataLayer.Executor.ExecuteReader(query);
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e);
+				//throw;
+			}
+			
 		}
 
 		static void RunPointFieldStrengthCalcTask()
