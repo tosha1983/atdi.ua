@@ -13,9 +13,9 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 
 		float Gain_dB { get; set; }
 
-		double Tilt_deg { get; set; }
+		float Tilt_deg { get; set; }
 
-		double Azimuth_deg { get; set; }
+		float Azimuth_deg { get; set; }
 
 		float XPD_dB { get; set; }
 

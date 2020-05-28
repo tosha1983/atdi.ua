@@ -8,6 +8,7 @@ using System.Net.Http.Headers;
 using Atdi.Api.EntityOrm.WebClient;
 using Atdi.Test.Api.Sdrn.CalcServer.Client.Tasks;
 using DM = Atdi.DataModels.Sdrn.CalcServer.Entities;
+using Atdi.DataModels.Sdrn.Infocenter.Entities.Stations;
 
 namespace Atdi.Test.Api.Sdrn.CalcServer.Client
 {
@@ -20,6 +21,8 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client
 		{
 			Console.WriteLine($"Press any key to start SDRN Calculation Server Client (AK) ...");
 			Console.ReadLine();
+
+			CheckOrmBug();
 
 			//TestWebApiOrm();
 			//RunPointFieldStrengthCalcTask();
@@ -90,6 +93,35 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client
 			////MapMaker.Make(mapFile, @"C:\Temp\Maps\Out");
 
 			////Console.ReadLine();
+		}
+
+		static void CheckOrmBug()
+		{
+			try
+			{
+				var endpoint = new WebApiEndpoint(new Uri("http://localhost:15075/"), "/appserver/v1");
+				var dataContext = new WebApiDataContext("SDRN_Infocenter_DB");
+
+				var dataLayer = new WebApiDataLayer(endpoint, dataContext);
+
+				var query = dataLayer.GetBuilder<IGlobalIdentity>()
+					.Read()
+					.Select(c => c.RegionCode)
+					.Select(c => c.LicenseGsid)
+					.Select(c => c.Standard)
+					.Select(c => c.RealGsid)
+					.Filter(c => c.Standard, "UMTS")
+					.Filter(c => c.LicenseGsid, "255 7 00000 1167")
+					.Filter(c => c.RegionCode, "Kiev12");
+
+				var reader = dataLayer.Executor.ExecuteReader(query);
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e);
+				//throw;
+			}
+			
 		}
 
 		static void RunPointFieldStrengthCalcTask()
