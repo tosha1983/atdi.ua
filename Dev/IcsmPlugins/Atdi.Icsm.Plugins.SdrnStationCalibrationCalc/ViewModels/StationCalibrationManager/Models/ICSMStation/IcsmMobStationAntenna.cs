@@ -20,13 +20,13 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
 
         public string ItuPatternName { get; set; }
 
-        IcsmMobStationPattern HH_PATTERN { get; set; }
+        public IcsmMobStationPattern HH_PATTERN { get; set; }
 
-        IcsmMobStationPattern HV_PATTERN { get; set; }
+        public IcsmMobStationPattern HV_PATTERN { get; set; }
 
-        IcsmMobStationPattern VH_PATTERN { get; set; }
+        public IcsmMobStationPattern VH_PATTERN { get; set; }
 
-        IcsmMobStationPattern VV_PATTERN { get; set; }
+        public IcsmMobStationPattern VV_PATTERN { get; set; }
 
     }
 }

@@ -73,7 +73,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="ViewModels\StationCalibrationManager\Adapters\Icsm\MobStationsDataAdapter.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\ManageProject\StationCalibrationCalcTask.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Queries\MobStations\AntennaDiagramm.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Queries\MobStations\Position.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Queries\MobStations\AntennaDiagrammClass.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Queries\MobStations\MobStationsDataAdapter.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Adapters\Icsm\Base\DataAdapterBase.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Adapters\Icsm\AreasDataAdapter.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Adapters\ParametersDataAdapter.cs" />
@@ -107,6 +111,8 @@
     <Compile Include="ViewModels\StationCalibrationManager\Modifiers\Parameters\CreateParamsCalculationHandler.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Queries\GlobalIdentity\GCIDDataModelByParams.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Queries\GlobalIdentity\GCIDDataModelByParamsExecutor.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Queries\MobStations\MobStationsLoadExecutor.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Queries\MobStations\MobStationsLoadModelByParams.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Queries\Parameters\GetParamsCalculationByTaskIdExecutor.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Queries\Parameters\GetParamsCalculationByTaskId.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Queries\StationMonitoring\StationMonitoringModelById.cs" />
@@ -176,7 +182,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetDir)XICSM_*.dll" "c:\ATDI\ICS ManagerCalcServer_MSSQL"
-copy "$(TargetDir)Atdi.*.dll"    "c:\ATDI\ICS ManagerCalcServer_MSSQL"</PostBuildEvent>
+    <PostBuildEvent>copy "$(TargetDir)XICSM_*.dll" "c:\ATDI\ICS ManagerCalcServer"
+copy "$(TargetDir)Atdi.*.dll"    "c:\ATDI\ICS ManagerCalcServer"</PostBuildEvent>
   </PropertyGroup>
 </Project>

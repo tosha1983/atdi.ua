@@ -11,7 +11,7 @@ using Atdi.DataModels.Sdrn.Infocenter.Entities.SdrnServer;
 
 namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager.Queries
 {
-    public class StationMonitoringModelByIdExecutor
+    public class StationMonitoringModelByIdExecutor : IReadQueryExecutor<StationMonitoringModelById, StationMonitoringModel>
     {
         private readonly AppComponentConfig _config;
         private readonly InfocenterDataLayer _dataLayer;
@@ -31,7 +31,6 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                     c => c.SensorName,
                     c => c.SensorTitle,
                     c => c.STATS.GsidCount,
-                    c => c.STATS.Id,
                     c => c.STATS.MaxFreq_MHz,
                     c => c.STATS.MinFreq_MHz,
                     c => c.STATS.StandardStats,

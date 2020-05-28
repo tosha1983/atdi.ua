@@ -8,7 +8,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
 {
     public enum IcsmStationName
     {
-        MobStation,
-        MobStation2
+        MOB_STATION,
+        MOB_STATION2
     }
 }

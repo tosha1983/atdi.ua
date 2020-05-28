@@ -12,7 +12,7 @@ using Atdi.DataModels.Sdrn.Infocenter.Entities.SdrnServer;
 
 namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager.Queries
 {
-    public class GetParamsCalculationByTaskIdExecutor
+    public class GetParamsCalculationByTaskIdExecutor : IReadQueryExecutor<GetParamsCalculationByTaskId, ParamsCalculationModel>
     {
         private readonly AppComponentConfig _config;
         private readonly CalcServerDataLayer _dataLayer;

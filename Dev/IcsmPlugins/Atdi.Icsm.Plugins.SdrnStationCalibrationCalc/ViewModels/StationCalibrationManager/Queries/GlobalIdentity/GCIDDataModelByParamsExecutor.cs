@@ -5,13 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Atdi.DataModels.Sdrn.CalcServer.Entities;
 using Atdi.Platform.Cqrs;
-using IC_ES = Atdi.DataModels.Sdrn.Infocenter.Entities.SdrnServer;
+using IC_ES = Atdi.DataModels.Sdrn.Infocenter.Entities;
 using Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibrationManager;
 using Atdi.DataModels.Sdrn.Infocenter.Entities.SdrnServer;
 
 namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager.Queries
 {
-    public class GCIDDataModelByParamsExecutor
+    public class GCIDDataModelByParamsExecutor : IReadQueryExecutor<GCIDDataModelByParams, GCIDDataModel>
     {
         private readonly AppComponentConfig _config;
         private readonly InfocenterDataLayer _dataLayer;
@@ -21,46 +21,38 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
             _config = config;
             _dataLayer = dataLayer;
         }
-        public GCIDDataModel[] Read(GCIDDataModelByParams criterion)
+        public GCIDDataModel Read(GCIDDataModelByParams criterion)
         {
-            //var query = _dataLayer.GetBuilder<IC_ES.>()
-            //    .Read()
-            //    .Select(
-            //        c => c.Id,
-            //        c => c.CreatedDate,
-            //        c => c.SensorName,
-            //        c => c.SensorTitle,
-            //        c => c.STATS.GsidCount,
-            //        c => c.STATS.Id,
-            //        c => c.STATS.MaxFreq_MHz,
-            //        c => c.STATS.MinFreq_MHz,
-            //        c => c.STATS.StandardStats,
-            //        c => c.StatusCode,
-            //        c => c.StatusName,
-            //        c => c.StatusNote
-            //        )
-            //    .Filter(c => c.Id, criterion.Id);
+            var query = _dataLayer.GetBuilder<IC_ES.Stations.IGlobalIdentity>()
+                .Read()
+                .Select(
+                     c => c.CreatedDate,
+                     c => c.RealGsid,
+                     c => c.Standard,
+                     c => c.RegionCode,
+                     c => c.LicenseGsid
+                    )
+                    .BeginFilter()
+                    .Condition(c => c.LicenseGsid, DataModels.Api.EntityOrm.WebClient.FilterOperator.Equal, criterion.LicenseGsid)
+                    .And()
+                    .Condition(c => c.Standard, DataModels.Api.EntityOrm.WebClient.FilterOperator.Equal, criterion.Standard)
+                    .And()
+                    .Condition(c => c.RegionCode, DataModels.Api.EntityOrm.WebClient.FilterOperator.Equal, criterion.RegionCode)
+                    .EndFilter();
 
-            //var reader = _dataLayer.Executor.ExecuteReader(query);
-            //if (!reader.Read())
-            //{
-            //    return null;
-            //}
-
-            //GCIDDataModel
-            //return new StationMonitoringModel()
-            //{
-            //    Id = reader.GetValue(c => c.Id),
-            //    CountByStandard = reader.GetValueAs<DriveTestStandardStats>(c => c.STATS.StandardStats).Count,
-            //    CountSID = reader.GetValue(c => c.STATS.GsidCount),
-            //    Date = reader.GetValue(c => c.MeasTime),
-            //    MaxFreq_MHz = reader.GetValue(c => c.STATS.MaxFreq_MHz),
-            //    MinFreq_MHz = reader.GetValue(c => c.STATS.MinFreq_MHz),
-            //    SensorName = reader.GetValue(c => c.SensorName),
-            //    SensorTitle = reader.GetValue(c => c.SensorTitle),
-            //    Standards = reader.GetValueAs<DriveTestStandardStats>(c => c.STATS.StandardStats).Standard,
-            //};
-            return null;
+            var reader = _dataLayer.Executor.ExecuteReader(query);
+            if (!reader.Read())
+            {
+                return null;
+            }
+            return new GCIDDataModel()
+            {
+                RealGsid = reader.GetValue(c => c.RealGsid),
+                Standard = reader.GetValue(c => c.Standard),
+                CreatedDate = reader.GetValue(c => c.CreatedDate),
+                RegionCode = reader.GetValue(c => c.RegionCode),
+                LicenseGsid = reader.GetValue(c => c.LicenseGsid)
+            };
         }
     }
 }

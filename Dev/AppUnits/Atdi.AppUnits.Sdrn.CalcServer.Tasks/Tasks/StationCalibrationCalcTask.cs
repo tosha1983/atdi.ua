@@ -472,7 +472,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                 {
                     while (reader.Read())
                     {
-                        var points = reader.GetValue(c => c.Points).Deserialize<DriveTestPoint[]>();
+                        var points = reader.GetValueAs<DriveTestPoint[]>(c => c.Points);
                         var pointFS = new PointFS[points.Length];
                         for (int j=0; j<points.Length; j++)
                         {
@@ -543,7 +543,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                     var driveTest = result.ResultCalibrationDriveTest[z];
                     var insertQueryStationCalibrationDriveTestResult = _calcServerDataLayer.GetBuilder<IStationCalibrationDriveTestResult>()
                     .Insert()
-                    .SetValue(c => c.CalibrationResultId, key.Id)
+                    .SetValue(c => c.CalibrationResultId, key.ResultId)
                     .SetValue(c => c.CountPointsInDriveTest, driveTest.CountPointsInDriveTest)
                     .SetValue(c => c.ExternalCode, driveTest.ExternalCode)
                     .SetValue(c => c.ExternalSource, driveTest.ExternalSource)
@@ -559,7 +559,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                     var station = result.ResultCalibrationStation[z];
                     var insertQueryStationCalibrationStaResult = _calcServerDataLayer.GetBuilder<IStationCalibrationStaResult>()
                     .Insert()
-                    .SetValue(c => c.CalibrationResultId, key.Id)
+                    .SetValue(c => c.CalibrationResultId, key.ResultId)
                     .SetValue(c => c.ExternalCode, station.ExternalCode)
                     .SetValue(c => c.ExternalSource, station.ExternalSource)
                     .SetValue(c => c.LicenseGsid, station.LicenseGsid)

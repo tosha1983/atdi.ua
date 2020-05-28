@@ -9,16 +9,9 @@ using System.Collections.Specialized;
 using System.Collections;
 using Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager.Queries;
 using Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibrationManager.Adapters;
-using Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibrationManager.Modifiers;
 using Atdi.Platform.Cqrs;
 using Atdi.Platform.Events;
-
-using System.Windows;
 using MP = Atdi.WpfControls.EntityOrm.Maps;
-using Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibrationManager;
-using ICSM;
-using OrmCs;
-using WC = System.Windows.Controls;
 using System.Data;
 
 
@@ -58,6 +51,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
 
 
         private AreasDataAdapter AreasDataAdapter;
+        //private MobStationsDataAdapter MobStationsDataAdapter;
         public StationMonitoringDataAdapter StationMonitoringDataAdapter { get; set; }
         public ParametersDataAdapter  ParametersDataAdapter { get; set; }
 
@@ -69,7 +63,15 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
 
 
 
+
+        private CalcServerDataLayer _dataLayer { get; set; }
+
+
         public View(
+            CalcServerDataLayer dataLayer,
+            
+
+
             ParametersDataAdapter  parametersDataAdapter,
             StationMonitoringDataAdapter  stationMonitoringDataAdapter,
             IObjectReader objectReader,
@@ -83,6 +85,14 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             _starter = starter;
             _eventBus = eventBus;
             _logger = logger;
+
+
+
+
+
+
+            this._dataLayer = dataLayer;
+
 
 
             this.StartStationCalibrationCommand = new ViewCommand(this.OnStartStationCalibrationCommand);
@@ -115,11 +125,18 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
         
         private void CheckEnabledStart()
         {
-            
+            if (CurrentAreas.Count==0)
+            {
+                IsEnabledStart = false;
+            }
+            else
+            {
+                IsEnabledStart = true;
+            }
         }
 
         public AreasDataAdapter Areas => this.AreasDataAdapter;
-
+        //public MobStationsDataAdapter LoadMobStations => this.MobStationsDataAdapter;
 
         public MP.MapDrawingData CurrentMapData
         {
@@ -266,6 +283,44 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             return resMeas;
         }
 
+        public GCIDDataModel ReadGCIDDataModel(string licenseGsid, string regionCode, string standard)
+        {
+            var resGCID = _objectReader
+                .Read<GCIDDataModel>()
+                .By(new GCIDDataModelByParams()
+                {
+                      LicenseGsid = licenseGsid,
+                      RegionCode = regionCode,
+                      Standard = standard
+                });
+            return resGCID;
+        }
+
+        public IcsmMobStation[] ReadStations()
+        {
+            AreaModel[] selectedAreaModels = new AreaModel[CurrentAreas.Count];
+            int index = 0;
+            foreach (AreaModel areaModel in CurrentAreas)
+            {
+                selectedAreaModels[index] = areaModel;
+                index++;
+            }
+            var resStations = _objectReader
+           .Read<IcsmMobStation[]>()
+           .By(new MobStationsLoadModelByParams()
+           {
+               Standard = GetStationsParams.Standard,
+               DistanceAroundContour_km = CurrentParamsCalculation.DistanceAroundContour_km.Value,
+               IdentifierStation = GetStationsParams.Id,
+               StatusForActiveStation = GetStationsParams.StateForActiveStation,
+               StatusForNotActiveStation = GetStationsParams.StateForNotActiveStation,
+               TableName = SelectedIcsmStationNameVal.ToString().ToUpper(),
+               AreaModel = selectedAreaModels
+           });
+            return resStations;
+        }
+
+        
 
         private void ReloadData()
         {
@@ -290,71 +345,96 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
         }
 
 
-        
+
 
 
         private void OnStartStationCalibrationCommand(object parameter)
         {
+
+            var stations = ReadStations();
+            var externalSources = stations.Select(x => Convert.ToInt64(x.ExternalCode)).ToArray();
+            this._currentParamsCalculationModel.StationIds = externalSources;
+            this._currentParamsCalculationModel.InfocMeasResults = new long[1] { GetStationsParams.Id };
+
+            StationCalibrationCalcTask.Run(this._dataLayer.Origin, this._dataLayer.Executor, ReadStations(), this._currentParamsCalculationModel);
+            //var res = ReadStations();
+
             //var Id = GetStationsParams.Id;
 
-            this.AreasDataAdapter.Refresh();
+            //this.AreasDataAdapter.Refresh();
 
 
 
-           
-            // тестовая проверка
-            var parameterCalculationModifier = new CreateParamsCalculation()
-            {
-                AltitudeStation = CurrentParamsCalculation.AltitudeStation,
-                AzimuthStation = CurrentParamsCalculation.AzimuthStation,
-                TaskId = 1,
-                CorrelationThresholdHard = CurrentParamsCalculation.CorrelationThresholdHard,
-                CascadeTuning = CurrentParamsCalculation.CascadeTuning,
-                CoordinatesStation = CurrentParamsCalculation.CoordinatesStation,
-                CorrelationDistance_m = CurrentParamsCalculation.CorrelationDistance_m,
-                CorrelationThresholdWeak = CurrentParamsCalculation.CorrelationThresholdWeak,
-                Delta_dB = CurrentParamsCalculation.Delta_dB,
-                Detail = CurrentParamsCalculation.Detail,
-                DetailOfCascade = CurrentParamsCalculation.DetailOfCascade,
-                DistanceAroundContour_km = CurrentParamsCalculation.DistanceAroundContour_km,
-                InfocMeasResults = CurrentParamsCalculation.InfocMeasResults,
-                MaxAntennasPatternLoss_dB = CurrentParamsCalculation.MaxAntennasPatternLoss_dB,
-                MaxDeviationAltitudeStation_m = CurrentParamsCalculation.MaxDeviationAltitudeStation_m,
-                MaxDeviationAzimuthStation_deg = CurrentParamsCalculation.MaxDeviationAzimuthStation_deg,
-                MaxDeviationCoordinatesStation_m = CurrentParamsCalculation.MaxDeviationCoordinatesStation_m,
-                MaxDeviationTiltStation_deg = CurrentParamsCalculation.MaxDeviationTiltStation_deg,
-                MaxRangeMeasurements_dBmkV = CurrentParamsCalculation.MaxRangeMeasurements_dBmkV,
-                Method = CurrentParamsCalculation.Method,
-                MinNumberPointForCorrelation = CurrentParamsCalculation.MinNumberPointForCorrelation,
-                MinRangeMeasurements_dBmkV = CurrentParamsCalculation.MinRangeMeasurements_dBmkV,
-                NumberCascade = CurrentParamsCalculation.NumberCascade,
-                PowerStation = CurrentParamsCalculation.PowerStation,
-                ShiftAltitudeStationMax_m = CurrentParamsCalculation.ShiftAltitudeStationMax_m,
-                ShiftAltitudeStationMin_m = CurrentParamsCalculation.ShiftAltitudeStationMin_m,
-                ShiftAltitudeStationStep_m = CurrentParamsCalculation.ShiftAltitudeStationStep_m,
-                ShiftAzimuthStationMax_deg = CurrentParamsCalculation.ShiftAzimuthStationMax_deg,
-                ShiftAzimuthStationMin_deg = CurrentParamsCalculation.ShiftAzimuthStationMin_deg,
-                ShiftAzimuthStationStep_deg = CurrentParamsCalculation.ShiftAzimuthStationStep_deg,
-                ShiftCoordinatesStationStep_m = CurrentParamsCalculation.ShiftCoordinatesStationStep_m,
-                ShiftCoordinatesStation_m = CurrentParamsCalculation.ShiftCoordinatesStation_m,
-                ShiftPowerStationMax_dB = CurrentParamsCalculation.ShiftPowerStationMax_dB,
-                ShiftPowerStationMin_dB = CurrentParamsCalculation.ShiftPowerStationMin_dB,
-                ShiftPowerStationStep_dB = CurrentParamsCalculation.ShiftPowerStationStep_dB,
-                ShiftTiltStationMax_deg = CurrentParamsCalculation.ShiftTiltStationMax_deg,
-                ShiftTiltStationMin_deg = CurrentParamsCalculation.ShiftTiltStationMin_deg,
-                ShiftTiltStationStep_deg = CurrentParamsCalculation.ShiftTiltStationStep_deg,
-                StationIds = CurrentParamsCalculation.StationIds,
-                TiltStation = CurrentParamsCalculation.TiltStation,
-                TrustOldResults = CurrentParamsCalculation.TrustOldResults,
-                UseMeasurementSameGSID = CurrentParamsCalculation.UseMeasurementSameGSID
-            };
-            
-             _commandDispatcher.Send(parameterCalculationModifier);
+            //this.MobStationsDataAdapter.ObjectReader = _objectReader;
+            //this.MobStationsDataAdapter.IdentifierStation = GetStationsParams.Id;
+            //this.MobStationsDataAdapter.TableName = SelectedIcsmStationNameVal.ToString().ToUpper();
+            //this.MobStationsDataAdapter.StatusForActiveStation = GetStationsParams.StateForActiveStation;
+            //this.MobStationsDataAdapter.StatusForNotActiveStation = GetStationsParams.StateForNotActiveStation;
+            //this.MobStationsDataAdapter.DistanceAroundContour_km = CurrentParamsCalculation.DistanceAroundContour_km.Value;
+
+
+
+            //this.MobStationsDataAdapter.Refresh();
+
+            //var tst2 = ReadStationMonitoring(1);
+            //var test = ReadGCIDDataModel("1", "1", "GSM");
+
+
+
+            //// тестовая проверка
+            //var parameterCalculationModifier = new CreateParamsCalculation()
+            //{
+            //    AltitudeStation = CurrentParamsCalculation.AltitudeStation,
+            //    AzimuthStation = CurrentParamsCalculation.AzimuthStation,
+            //    TaskId = 1,
+            //    CorrelationThresholdHard = CurrentParamsCalculation.CorrelationThresholdHard,
+            //    CascadeTuning = CurrentParamsCalculation.CascadeTuning,
+            //    CoordinatesStation = CurrentParamsCalculation.CoordinatesStation,
+            //    CorrelationDistance_m = CurrentParamsCalculation.CorrelationDistance_m,
+            //    CorrelationThresholdWeak = CurrentParamsCalculation.CorrelationThresholdWeak,
+            //    Delta_dB = CurrentParamsCalculation.Delta_dB,
+            //    Detail = CurrentParamsCalculation.Detail,
+            //    DetailOfCascade = CurrentParamsCalculation.DetailOfCascade,
+            //    DistanceAroundContour_km = CurrentParamsCalculation.DistanceAroundContour_km,
+            //    InfocMeasResults = CurrentParamsCalculation.InfocMeasResults,
+            //    MaxAntennasPatternLoss_dB = CurrentParamsCalculation.MaxAntennasPatternLoss_dB,
+            //    MaxDeviationAltitudeStation_m = CurrentParamsCalculation.MaxDeviationAltitudeStation_m,
+            //    MaxDeviationAzimuthStation_deg = CurrentParamsCalculation.MaxDeviationAzimuthStation_deg,
+            //    MaxDeviationCoordinatesStation_m = CurrentParamsCalculation.MaxDeviationCoordinatesStation_m,
+            //    MaxDeviationTiltStation_deg = CurrentParamsCalculation.MaxDeviationTiltStation_deg,
+            //    MaxRangeMeasurements_dBmkV = CurrentParamsCalculation.MaxRangeMeasurements_dBmkV,
+            //    Method = CurrentParamsCalculation.Method,
+            //    MinNumberPointForCorrelation = CurrentParamsCalculation.MinNumberPointForCorrelation,
+            //    MinRangeMeasurements_dBmkV = CurrentParamsCalculation.MinRangeMeasurements_dBmkV,
+            //    NumberCascade = CurrentParamsCalculation.NumberCascade,
+            //    PowerStation = CurrentParamsCalculation.PowerStation,
+            //    ShiftAltitudeStationMax_m = CurrentParamsCalculation.ShiftAltitudeStationMax_m,
+            //    ShiftAltitudeStationMin_m = CurrentParamsCalculation.ShiftAltitudeStationMin_m,
+            //    ShiftAltitudeStationStep_m = CurrentParamsCalculation.ShiftAltitudeStationStep_m,
+            //    ShiftAzimuthStationMax_deg = CurrentParamsCalculation.ShiftAzimuthStationMax_deg,
+            //    ShiftAzimuthStationMin_deg = CurrentParamsCalculation.ShiftAzimuthStationMin_deg,
+            //    ShiftAzimuthStationStep_deg = CurrentParamsCalculation.ShiftAzimuthStationStep_deg,
+            //    ShiftCoordinatesStationStep_m = CurrentParamsCalculation.ShiftCoordinatesStationStep_m,
+            //    ShiftCoordinatesStation_m = CurrentParamsCalculation.ShiftCoordinatesStation_m,
+            //    ShiftPowerStationMax_dB = CurrentParamsCalculation.ShiftPowerStationMax_dB,
+            //    ShiftPowerStationMin_dB = CurrentParamsCalculation.ShiftPowerStationMin_dB,
+            //    ShiftPowerStationStep_dB = CurrentParamsCalculation.ShiftPowerStationStep_dB,
+            //    ShiftTiltStationMax_deg = CurrentParamsCalculation.ShiftTiltStationMax_deg,
+            //    ShiftTiltStationMin_deg = CurrentParamsCalculation.ShiftTiltStationMin_deg,
+            //    ShiftTiltStationStep_deg = CurrentParamsCalculation.ShiftTiltStationStep_deg,
+            //    StationIds = CurrentParamsCalculation.StationIds,
+            //    TiltStation = CurrentParamsCalculation.TiltStation,
+            //    TrustOldResults = CurrentParamsCalculation.TrustOldResults,
+            //    UseMeasurementSameGSID = CurrentParamsCalculation.UseMeasurementSameGSID
+            //};
+
+            // _commandDispatcher.Send(parameterCalculationModifier);
         }
 
         //private void OnCreatedCreateParamsCalculationHandle(Events.OnCreatedParamsCalculation data)
         //{
 
         //}
+
     }
 }
