@@ -247,7 +247,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
             }
 
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }
