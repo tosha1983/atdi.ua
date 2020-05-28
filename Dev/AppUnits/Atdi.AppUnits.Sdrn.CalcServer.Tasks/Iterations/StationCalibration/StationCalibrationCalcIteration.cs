@@ -314,14 +314,15 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
 
             //- Parameters Station Old(Altitude Station, Tilt Station, Azimuth Station, Lat Station, Lon Station, Power Station)
-            calcCalibrationResult.ParametersStationOld.Altitude_m = (int)data.GSIDGroupeStation.Site.Altitude;//////////////!!!!!!!!!!!
-            calcCalibrationResult.ParametersStationOld.Azimuth_deg = (float)data.GSIDGroupeStation.Antenna.Azimuth_deg;//////////////!!!!!!!!!!!
-            calcCalibrationResult.ParametersStationOld.Tilt_Deg = (float)data.GSIDGroupeStation.Antenna.Tilt_deg;//////////////!!!!!!!!!!!
+            calcCalibrationResult.ParametersStationOld.Altitude_m = data.GSIDGroupeStation.Site.Altitude;//////////////!!!!!!!!!!!
+            calcCalibrationResult.ParametersStationOld.Azimuth_deg = data.GSIDGroupeStation.Antenna.Azimuth_deg;//////////////!!!!!!!!!!!
+            calcCalibrationResult.ParametersStationOld.Tilt_Deg = data.GSIDGroupeStation.Antenna.Tilt_deg;//////////////!!!!!!!!!!!
             calcCalibrationResult.ParametersStationOld.Lat_deg = data.GSIDGroupeStation.Site.Latitude;
             calcCalibrationResult.ParametersStationOld.Lon_deg = data.GSIDGroupeStation.Site.Longitude;
             calcCalibrationResult.ParametersStationOld.Power_dB = data.GSIDGroupeStation.Transmitter.MaxPower_dBm;
 
-
+            var stationCoordX = _transformation.ConvertCoordinateToAtdi(data.GSIDGroupeStation.Site.Latitude, data.CodeProjection);
+            
             if (data.CalibrationParameters.CascadeTuning)
             {
                 if (data.CalibrationParameters.Method is Method.ExhaustiveSearch)
@@ -384,8 +385,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
             //- Parameters Station New(Altitude Station, Tilt Station, Azimuth Station, Lat Station, Lon Station, Power Station)
             calcCalibrationResult.ParametersStationNew.Altitude_m = (int)data.GSIDGroupeStation.Site.Altitude;//////////////!!!!!!!!!!!
-            calcCalibrationResult.ParametersStationNew.Azimuth_deg = (float)data.GSIDGroupeStation.Antenna.Azimuth_deg;//////////////!!!!!!!!!!!
-            calcCalibrationResult.ParametersStationNew.Tilt_Deg = (float)data.GSIDGroupeStation.Antenna.Tilt_deg;//////////////!!!!!!!!!!!
+            calcCalibrationResult.ParametersStationNew.Azimuth_deg = data.GSIDGroupeStation.Antenna.Azimuth_deg;//////////////!!!!!!!!!!!
+            calcCalibrationResult.ParametersStationNew.Tilt_Deg = data.GSIDGroupeStation.Antenna.Tilt_deg;//////////////!!!!!!!!!!!
             calcCalibrationResult.ParametersStationNew.Lat_deg = data.GSIDGroupeStation.Site.Latitude;
             calcCalibrationResult.ParametersStationNew.Lon_deg = data.GSIDGroupeStation.Site.Longitude;
             calcCalibrationResult.ParametersStationNew.Power_dB = data.GSIDGroupeStation.Transmitter.MaxPower_dBm;
