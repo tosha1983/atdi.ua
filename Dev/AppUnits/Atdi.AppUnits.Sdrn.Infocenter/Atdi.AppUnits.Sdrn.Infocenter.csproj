@@ -56,6 +56,7 @@
     <Compile Include="EventSystemObserver.cs" />
     <Compile Include="EventSystemSubscriberActivator.cs" />
     <Compile Include="InfocenterConfig.cs" />
+    <Compile Include="IntegrationService.cs" />
     <Compile Include="MapsImport\Compressor.cs" />
     <Compile Include="MapsImport\MapsAutoImportJob.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

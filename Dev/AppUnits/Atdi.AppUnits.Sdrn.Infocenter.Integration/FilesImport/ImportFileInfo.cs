@@ -24,5 +24,7 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration.FilesImport
 		public string FileName;
 
 		public ImportFileResultStatus Status;
+
+		public string Message;
 	}
 }
