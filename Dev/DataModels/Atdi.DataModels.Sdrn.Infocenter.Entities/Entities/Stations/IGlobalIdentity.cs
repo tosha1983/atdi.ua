@@ -15,7 +15,7 @@ namespace Atdi.DataModels.Sdrn.Infocenter.Entities.Stations
 		string Standard { get; set; }
 	}
 	public interface IGlobalIdentity : IGlobalIdentity_PK
-    {
+	{
 		DateTimeOffset CreatedDate { get; set; }
 
 		string RealGsid { get; set; }

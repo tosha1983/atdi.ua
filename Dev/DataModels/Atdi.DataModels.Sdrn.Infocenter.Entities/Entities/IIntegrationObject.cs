@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.DataModels.Sdrn.Infocenter.Entities.Entities
+namespace Atdi.DataModels.Sdrn.Infocenter.Entities
 {
 	public interface IIntegrationObject_PK
 	{

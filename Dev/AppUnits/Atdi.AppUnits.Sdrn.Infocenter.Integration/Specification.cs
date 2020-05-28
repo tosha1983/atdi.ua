@@ -9,7 +9,9 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration
 
     internal static class Categories
     {
-        public static readonly EventCategory Declaring = "Declaring";
+	    public static readonly EventCategory CsvImport = "CsvImport";
+
+		public static readonly EventCategory Declaring = "Declaring";
         public static readonly EventCategory Registration = "Registration";
         public static readonly EventCategory Processing = "Processing";
         public static readonly EventCategory Subscribing = "Subscribing";
@@ -36,5 +38,10 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration
     internal static class Exceptions
     {
         //public static readonly string ServiceHostWasNotInitialized = "The service host was not initialized";
+    }
+
+    internal static class Pipelines
+	{
+	    public static readonly string FilesImport = "FilesImportPipeline";
     }
 }
