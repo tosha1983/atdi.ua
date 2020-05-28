@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Atdi.DataModels.Sdrn.CalcServer.Entities;
 using Atdi.Platform.Cqrs;
-using IC_ES = Atdi.DataModels.Sdrn.Infocenter.Entities.SdrnServer;
 using Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibrationManager;
-using Atdi.DataModels.Sdrn.Infocenter.Entities.SdrnServer;
+using Atdi.Contracts.Sdrn.DeepServices.RadioSystem;
 
 namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager.Queries
 {
@@ -15,7 +13,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
     {
         private readonly AppComponentConfig _config;
         private MobStationsDataAdapter MobStationsDataAdapter;
-        public readonly IObjectReader _objectReader;
+        private readonly IObjectReader _objectReader;
 
 
         public MobStationsLoadExecutor(AppComponentConfig config, IObjectReader objectReader)

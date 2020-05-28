@@ -50,6 +50,82 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Api\Atdi.Api.EntityOrm.WebClient\Atdi.Api.EntityOrm.WebClient.csproj">
+      <Project>{48ace960-6ba0-4a99-b060-4dbb8a182206}</Project>
+      <Name>Atdi.Api.EntityOrm.WebClient</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeepServices.Gis\Atdi.AppUnits.Sdrn.DeepServices.Gis.csproj">
+      <Project>{f1f30ab9-7598-424d-9cde-95412583eccf}</Project>
+      <Name>Atdi.AppUnits.Sdrn.DeepServices.Gis</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeepServices.RadioSystem\Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.csproj">
+      <Project>{b8d91488-2850-46a9-9e32-9d1dd7d02683}</Project>
+      <Name>Atdi.AppUnits.Sdrn.DeepServices.RadioSystem</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeepServices\Atdi.AppUnits.Sdrn.DeepServices.csproj">
+      <Project>{cf434bdc-4cb1-4f7d-b85e-55c86352b4e9}</Project>
+      <Name>Atdi.AppUnits.Sdrn.DeepServices</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits\Atdi.AppUnits.csproj">
+      <Project>{aa445e89-a706-4a2a-b28e-edbae056652b}</Project>
+      <Name>Atdi.AppUnits</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Common\Atdi.Common\Atdi.Common.csproj">
+      <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
+      <Name>Atdi.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Api\Atdi.Contracts.Api.EntityOrm.WebClient\Atdi.Contracts.Api.EntityOrm.WebClient.csproj">
+      <Project>{a252d199-1162-484d-b50a-8c44a4edd670}</Project>
+      <Name>Atdi.Contracts.Api.EntityOrm.WebClient</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeepServices.Gis\Atdi.Contracts.Sdrn.DeepServices.Gis.csproj">
+      <Project>{567b4c34-9ff5-4c05-9e7b-d1ed94eadaaf}</Project>
+      <Name>Atdi.Contracts.Sdrn.DeepServices.Gis</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeepServices.RadioSystem\Atdi.Contracts.Sdrn.DeepServices.RadioSystem.csproj">
+      <Project>{d576643b-fcdb-4873-9f08-abcfbb5e9e8f}</Project>
+      <Name>Atdi.Contracts.Sdrn.DeepServices.RadioSystem</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeepServices\Atdi.Contracts.Sdrn.DeepServices.csproj">
+      <Project>{dbbcbdeb-202d-4068-94f6-bb78bd47d51a}</Project>
+      <Name>Atdi.Contracts.Sdrn.DeepServices</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Api.EntityOrm.WebClient\Atdi.DataModels.Api.EntityOrm.WebClient.csproj">
+      <Project>{36ae7031-fc14-4305-bd04-87c70fda0f25}</Project>
+      <Name>Atdi.DataModels.Api.EntityOrm.WebClient</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.EntityOrm\Atdi.DataModels.EntityOrm.csproj">
+      <Project>{73c8791e-3fc5-4c91-84e5-c19c98096f10}</Project>
+      <Name>Atdi.DataModels.EntityOrm</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.CalcServer.Entities\Atdi.DataModels.Sdrn.CalcServer.Entities.csproj">
+      <Project>{6a72e0c5-f8a4-412f-9395-13abe07367b1}</Project>
+      <Name>Atdi.DataModels.Sdrn.CalcServer.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices.Gis\Atdi.DataModels.Sdrn.DeepServices.Gis.csproj">
+      <Project>{d83887b2-4444-4207-a703-c99b94a4c170}</Project>
+      <Name>Atdi.DataModels.Sdrn.DeepServices.Gis</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices.RadioSystem\Atdi.DataModels.Sdrn.DeepServices.RadioSystem.csproj">
+      <Project>{c67fbe11-fef0-48ad-9912-61bf4c61db03}</Project>
+      <Name>Atdi.DataModels.Sdrn.DeepServices.RadioSystem</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices\Atdi.DataModels.Sdrn.DeepServices.csproj">
+      <Project>{b26b6bd9-699d-46b8-ba43-0d0ba803087e}</Project>
+      <Name>Atdi.DataModels.Sdrn.DeepServices</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.Infocenter.Entities\Atdi.DataModels.Sdrn.Infocenter.Entities.csproj">
+      <Project>{b793c198-41c4-4e9e-9e18-479a8a51b0b0}</Project>
+      <Name>Atdi.DataModels.Sdrn.Infocenter.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels\Atdi.DataModels.csproj">
+      <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
+      <Name>Atdi.DataModels</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\IcsmPlugins\Atdi.Icsm.Plugins.Core\Atdi.Icsm.Plugins.Core.csproj">
+      <Project>{259c5365-f07a-4217-8ba9-9d72b3f77f38}</Project>
+      <Name>Atdi.Icsm.Plugins.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\IcsmPlugins\Atdi.Icsm.Plugins.SdrnStationCalibrationCalc\Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.csproj">
       <Project>{1c3e2475-c113-47f5-aac6-8ae80bc2ec53}</Project>
       <Name>Atdi.Icsm.Plugins.SdrnStationCalibrationCalc</Name>
@@ -73,6 +149,10 @@
     <ProjectReference Include="..\..\Platform\Atdi.Platform\Atdi.Platform.csproj">
       <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
       <Name>Atdi.Platform</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\WpfControls\Atdi.WpfControls.EntityOrm\Atdi.WpfControls.EntityOrm.csproj">
+      <Project>{23df4b39-cb83-4c82-8d84-a7fd1e6b6bef}</Project>
+      <Name>Atdi.WpfControls.EntityOrm</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

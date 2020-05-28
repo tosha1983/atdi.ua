@@ -40,7 +40,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
         public int? ShiftCoordinatesStation_m { get; set; }
         public int? ShiftCoordinatesStationStep_m { get; set; }
         public int? MaxDeviationCoordinatesStation_m { get; set; }
-        public float? PowerStation { get; set; }
+        public bool PowerStation { get; set; }
         public float? ShiftPowerStationMin_dB { get; set; }
         public float? ShiftPowerStationMax_dB { get; set; }
         public float? ShiftPowerStationStep_dB { get; set; }

@@ -125,13 +125,25 @@
       <Project>{b8d91488-2850-46a9-9e32-9d1dd7d02683}</Project>
       <Name>Atdi.AppUnits.Sdrn.DeepServices.RadioSystem</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Common\Atdi.Common\Atdi.Common.csproj">
+      <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
+      <Name>Atdi.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Contracts\Api\Atdi.Contracts.Api.EntityOrm.WebClient\Atdi.Contracts.Api.EntityOrm.WebClient.csproj">
       <Project>{a252d199-1162-484d-b50a-8c44a4edd670}</Project>
       <Name>Atdi.Contracts.Api.EntityOrm.WebClient</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeepServices.Gis\Atdi.Contracts.Sdrn.DeepServices.Gis.csproj">
+      <Project>{567b4c34-9ff5-4c05-9e7b-d1ed94eadaaf}</Project>
+      <Name>Atdi.Contracts.Sdrn.DeepServices.Gis</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeepServices.RadioSystem\Atdi.Contracts.Sdrn.DeepServices.RadioSystem.csproj">
       <Project>{d576643b-fcdb-4873-9f08-abcfbb5e9e8f}</Project>
       <Name>Atdi.Contracts.Sdrn.DeepServices.RadioSystem</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeepServices\Atdi.Contracts.Sdrn.DeepServices.csproj">
+      <Project>{dbbcbdeb-202d-4068-94f6-bb78bd47d51a}</Project>
+      <Name>Atdi.Contracts.Sdrn.DeepServices</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Api.EntityOrm.WebClient\Atdi.DataModels.Api.EntityOrm.WebClient.csproj">
       <Project>{36ae7031-fc14-4305-bd04-87c70fda0f25}</Project>
@@ -141,6 +153,18 @@
       <Project>{6a72e0c5-f8a4-412f-9395-13abe07367b1}</Project>
       <Name>Atdi.DataModels.Sdrn.CalcServer.Entities</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices.Gis\Atdi.DataModels.Sdrn.DeepServices.Gis.csproj">
+      <Project>{d83887b2-4444-4207-a703-c99b94a4c170}</Project>
+      <Name>Atdi.DataModels.Sdrn.DeepServices.Gis</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices.RadioSystem\Atdi.DataModels.Sdrn.DeepServices.RadioSystem.csproj">
+      <Project>{c67fbe11-fef0-48ad-9912-61bf4c61db03}</Project>
+      <Name>Atdi.DataModels.Sdrn.DeepServices.RadioSystem</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices\Atdi.DataModels.Sdrn.DeepServices.csproj">
+      <Project>{b26b6bd9-699d-46b8-ba43-0d0ba803087e}</Project>
+      <Name>Atdi.DataModels.Sdrn.DeepServices</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.Infocenter.Entities\Atdi.DataModels.Sdrn.Infocenter.Entities.csproj">
       <Project>{b793c198-41c4-4e9e-9e18-479a8a51b0b0}</Project>
       <Name>Atdi.DataModels.Sdrn.Infocenter.Entities</Name>
@@ -148,6 +172,10 @@
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels\Atdi.DataModels.csproj">
       <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
       <Name>Atdi.DataModels</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Platform\Atdi.Platform.AppServer\Atdi.Platform.AppServer.csproj">
+      <Project>{20d45626-3779-4fc8-a55a-1c919d95649e}</Project>
+      <Name>Atdi.Platform.AppServer</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Platform\Atdi.Platform.Configurator\Atdi.Platform.Configurator.csproj">
       <Project>{98e79b80-3176-4cad-b7ba-b5caa6752fab}</Project>
