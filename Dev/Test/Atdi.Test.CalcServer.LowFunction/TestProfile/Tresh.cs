@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.Test.CalcServer.LowFunction.TestProfile
+namespace Atdi.Test.CalcServer.LowFunction
 {
 
     // при условии что IResMeas.TypeMeasurements (плохо что данное поле не енумка) == Monitoring Station

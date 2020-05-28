@@ -57,6 +57,8 @@ namespace Atdi.AppUnits.Sdrn.Infocenter
 			this.Container.Register<IEventEmitter, EventEmitter>(ServiceLifetime.PerThread);
 			this.Container.Register<IEventDispatcher, EventDispatcher>(ServiceLifetime.Singleton);
 
+			this.Container.Register<IIntegrationService, IntegrationService>(ServiceLifetime.Singleton);
+
 			this.Container.Register<MapsAutoImportJob>(ServiceLifetime.Singleton);
 		}
 

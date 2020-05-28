@@ -41,11 +41,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IIntegrationService.cs" />
     <Compile Include="InfocenterDataContext.cs" />
     <Compile Include="IInfocenterConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\DataModels\Atdi.DataModels.Sdrn.Infocenter.Entities\Atdi.DataModels.Sdrn.Infocenter.Entities.csproj">
+      <Project>{B793C198-41C4-4E9E-9E18-479A8A51B0B0}</Project>
+      <Name>Atdi.DataModels.Sdrn.Infocenter.Entities</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\DataModels\Atdi.DataModels.Sdrn.Infocenter\Atdi.DataModels.Sdrn.Infocenter.csproj">
       <Project>{9872dc9a-13ab-4d3f-90b9-c16096a12418}</Project>
       <Name>Atdi.DataModels.Sdrn.Infocenter</Name>

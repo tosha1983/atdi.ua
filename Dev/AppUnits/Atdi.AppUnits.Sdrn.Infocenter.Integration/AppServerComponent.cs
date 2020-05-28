@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Atdi.AppUnits.Sdrn.Infocenter.Integration.FilesImport;
 using Atdi.AppUnits.Sdrn.Infocenter.Integration.SdrnServer;
+using Atdi.AppUnits.Sdrn.Infocenter.Integration.Stations;
 using Atdi.Contracts.Sdrn.Infocenter;
 using Atdi.Platform;
 using Atdi.Platform.AppComponent;
@@ -25,14 +26,16 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration
 
 		protected override void OnInstallUnit()
 		{
-			// конфигурация
+			// Configuration ...
 			var componentConfig = this.Config.Extract<AppServerComponentConfig>();
 			this.Container.RegisterInstance(componentConfig, ServiceLifetime.Singleton);
 
-
-
+			// Jobs ...
 			this.Container.Register<SdrnServerSyncJob>(ServiceLifetime.Singleton);
 			this.Container.Register<FilesAutoImportJob>(ServiceLifetime.Singleton);
+
+			// Pipelines ...
+			this.Container.Register<GlobalIdentityPipelineHandler>(ServiceLifetime.Singleton);
 		}
 
 		protected override void OnActivateUnit()
@@ -42,7 +45,11 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration
 
 			var pipelineSite = this.Resolver.Resolve<IPipelineSite>();
 
-			var filesImportPipeline = pipelineSite.Declare<ImportFileInfo, ImportFileResult>("FilesImportPipeline");
+			var filesImportPipeline = pipelineSite.Declare<ImportFileInfo, ImportFileResult>(Pipelines.FilesImport, new ImportFileResult
+			{
+				Status = ImportFileResultStatus.NotProcessed
+			});
+
 			filesImportPipeline.Register(typeof(Stations.GlobalIdentityPipelineHandler));
 
 			var hostLoader = this.Resolver.Resolve<IServerHostLoader>();
