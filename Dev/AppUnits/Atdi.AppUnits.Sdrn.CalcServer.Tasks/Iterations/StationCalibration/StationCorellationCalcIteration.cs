@@ -42,7 +42,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             _logger = logger;
         }
 
-     
+        public static double ConvertdBuVmTouV (double dBuVm)
+        {
+            return Math.Pow(10, 0.05 * dBuVm);
+        }
 
         public ResultCorrelationGSIDGroupeStationsWithoutParameters Run(ITaskContext taskContext, StationCorellationCalcData data)
 		{
@@ -207,7 +210,6 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         calcCorellationResult.CorrellationPoints[i].FSCalc_dBmkVm = calcPointArrayBuffer[i].FSCalc;
                         calcCorellationResult.CorrellationPoints[i].FSMeas_dBmkVm = calcPointArrayBuffer[i].FSMeas;
 
-
                         var coordinateTransform = _transformation.ConvertCoordinateToWgs84(new EpsgCoordinate() { X = calcPointArrayBuffer[i].Lon, Y = calcPointArrayBuffer[i].Lat }, _transformation.ConvertProjectionToCode(data.CodeProjection));
                         calcCorellationResult.CorrellationPoints[i].Lon_DEC = coordinateTransform.Longitude;
                         calcCorellationResult.CorrellationPoints[i].Lat_DEC = coordinateTransform.Latitude;
@@ -222,12 +224,15 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 double a1 = 0; double a2 = 0; double a3 = 0;
                 for (int i = 0; i < counter; i++)
                 {
+                    //a1 = a1 + ((ConvertdBuVmTouV(calcPointArrayBuffer[i].FSMeas) - meanMeasFS) * (ConvertdBuVmTouV(calcPointArrayBuffer[i].FSCalc) - meanCalcFS));
+                    //a2 = a2 + ((ConvertdBuVmTouV(calcPointArrayBuffer[i].FSMeas) - meanMeasFS) * (ConvertdBuVmTouV(calcPointArrayBuffer[i].FSMeas) - meanMeasFS));
+                    //a3 = a3 + ((ConvertdBuVmTouV(calcPointArrayBuffer[i].FSCalc) - meanCalcFS) * (ConvertdBuVmTouV(calcPointArrayBuffer[i].FSCalc) - meanCalcFS));
                     a1 = a1 + ((calcPointArrayBuffer[i].FSMeas - meanMeasFS) * (calcPointArrayBuffer[i].FSCalc - meanCalcFS));
                     a2 = a2 + ((calcPointArrayBuffer[i].FSMeas - meanMeasFS) * (calcPointArrayBuffer[i].FSMeas - meanMeasFS));
                     a3 = a3 + ((calcPointArrayBuffer[i].FSCalc - meanCalcFS) * (calcPointArrayBuffer[i].FSCalc - meanCalcFS));
                 }
 
-                //-Freq_MHz(частота передатчика станции)
+                //- Freq_MHz(частота передатчика станции)
                 calcCorellationResult.Freq_MHz = data.GSIDGroupeStation.Transmitter.Freq_MHz;
                 //- Delta_dB(входной параметр)
                 calcCorellationResult.Delta_dB = data.CorellationParameters.Delta_dB;
@@ -239,8 +244,6 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 calcCorellationResult.AvErr_dB = (float)(sumDiffCalcMeas / counter); 
                 //- Correl factor(логарифмическая корреляция пирсона у нас реализована)
                 calcCorellationResult.Corellation_factor = a1 / Math.Sqrt(a2 * a3);
-
-
 
             }
 
