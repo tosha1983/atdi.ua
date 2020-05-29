@@ -201,4 +201,13 @@
   <data name="OwnerUpperLeftY" xml:space="preserve">
     <value>UpperLeftY</value>
   </data>
+  <data name="ClientContext" xml:space="preserve">
+    <value>Client Context</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Type</value>
+  </data>
 </root>

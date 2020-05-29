@@ -8,29 +8,30 @@ using Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.Map.Events;
 using Atdi.Platform.Cqrs;
 using Atdi.Platform.Events;
 
-
 namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.Map.Modifiers
 {
-    public class DeleteMapHandler : ICommandHandler<DeleteMap>
+    public class ChangeStateMapHandler : ICommandHandler<ChangeStateMap>
     {
         private readonly AppComponentConfig _config;
         private readonly CalcServerDataLayer _dataLayer;
         private readonly IEventBus _eventBus;
 
-        public DeleteMapHandler(AppComponentConfig config, CalcServerDataLayer dataLayer, IEventBus eventBus)
+        public ChangeStateMapHandler(AppComponentConfig config, CalcServerDataLayer dataLayer, IEventBus eventBus)
         {
             _config = config;
             _dataLayer = dataLayer;
             _eventBus = eventBus;
         }
-        public void Handle(DeleteMap command)
+        public void Handle(ChangeStateMap command)
         {
             var query = _dataLayer.GetBuilder<IProjectMap>()
-                .Delete()
+                .Update()
+                .SetValue(c => c.StatusCode, (byte)command.StatusCode)
+                .SetValue(c => c.StatusName, Enum.GetValues(typeof(ProjectMapStatusCode)).GetValue(command.StatusCode).ToString())
                 .Filter(c => c.Id, command.Id);
             _dataLayer.Executor.Execute(query);
 
-            _eventBus.Send(new OnDeletedMap { MapId = command.Id });
+            _eventBus.Send(new OnEditedMap { MapId = command.Id });
         }
     }
 }

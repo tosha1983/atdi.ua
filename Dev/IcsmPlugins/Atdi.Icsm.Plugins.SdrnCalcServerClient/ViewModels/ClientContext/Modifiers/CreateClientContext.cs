@@ -4,17 +4,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager.Modifiers
+namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ClientContext.Modifiers
 {
-    public class EditProject
+    public class CreateClientContext
     {
-        public long Id;
+        public long ProjectId;
+
+        public Guid OwnerId;
 
         public string Name;
 
         public string Note;
 
-        public string Projection;
+        public byte TypeCode;
 
         public bool Success;
     }

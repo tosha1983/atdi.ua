@@ -12,8 +12,10 @@ using Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager.Queries;
 using Atdi.Platform.Cqrs;
 using Atdi.Platform.Events;
 using System.Windows;
+using Atdi.DataModels.Sdrn.CalcServer.Entities;
 using VM = Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels;
 using MP = Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.Map;
+using CT = Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ClientContext;
 
 namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
 {
@@ -36,7 +38,12 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
         private IEventHandlerToken<Events.OnCreatedProject> _onCreatedProjectToken;
         private IEventHandlerToken<Events.OnEditedProject> _onEditedProjectToken;
         private IEventHandlerToken<Events.OnDeletedProject> _onDeletedProjectToken;
+        private IEventHandlerToken<MP.Events.OnCreatedMap> _onCreatedMapToken;
+        private IEventHandlerToken<MP.Events.OnEditedMap> _onEditedMapToken;
         private IEventHandlerToken<MP.Events.OnDeletedMap> _onDeletedMapToken;
+        private IEventHandlerToken<CT.Events.OnCreatedClientContext> _onCreatedClientContextToken;
+        private IEventHandlerToken<CT.Events.OnEditedClientContext> _onEditedClientContextToken;
+        private IEventHandlerToken<CT.Events.OnDeletedClientContext> _onDeletedClientContextToken;
 
         public ProjectDataAdapter Projects { get; set; }
         public ProjectMapDataAdapter ProjectMaps { get; set; }
@@ -89,85 +96,6 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
 
             ReloadProjects();
         }
-        private void OnCreatedProjectHandle(Events.OnCreatedProject data)
-        {
-            ReloadProjects();
-        }
-        private void OnEditedProjectHandle(Events.OnEditedProject data)
-        {
-            ReloadProjects();
-        }
-        private void OnDeletedProjectHandle(Events.OnDeletedProject data)
-        {
-            ReloadProjects();
-        }
-        private void OnProjectAddCommand(object parameter)
-        {
-            try
-            {
-                _onCreatedProjectToken = _eventBus.Subscribe<Events.OnCreatedProject>(this.OnCreatedProjectHandle);
-
-                var projectModifier = new Modifiers.CreateProject
-                {
-                    Name = CurrentProjectCard.Name,
-                    Note = CurrentProjectCard.Note,
-                    OwnerId = Guid.NewGuid(),
-                    Projection = CurrentProjectCard.Projection
-                };
-
-                _commandDispatcher.Send(projectModifier);
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.ToString());
-            }
-        }
-        private void OnProjectModifyCommand(object parameter)
-        {
-            try
-            {
-                if (CurrentProject == null)
-                    return;
-
-                _onEditedProjectToken = _eventBus.Subscribe<Events.OnEditedProject>(this.OnEditedProjectHandle);
-
-                var projectModifier = new Modifiers.EditProject
-                {
-                    Id = CurrentProject.Id,
-                    Name = CurrentProjectCard.Name,
-                    Note = CurrentProjectCard.Note,
-                    OwnerId = Guid.NewGuid(),
-                    Projection = CurrentProjectCard.Projection
-                };
-
-                _commandDispatcher.Send(projectModifier);
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.ToString());
-            }
-        }
-        private void OnProjectDeleteCommand(object parameter)
-        {
-            try
-            {
-                if (CurrentProject == null)
-                    return;
-
-                _onDeletedProjectToken = _eventBus.Subscribe<Events.OnDeletedProject>(this.OnDeletedProjectHandle);
-
-                var projectModifier = new Modifiers.DeleteProject
-                {
-                    Id = CurrentProject.Id
-                };
-
-                _commandDispatcher.Send(projectModifier);
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.ToString());
-            }
-        }
         public ProjectModel CurrentProject
         {
             get => this._currentProject;
@@ -176,7 +104,7 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
         public ProjectModel CurrentProjectCard
         {
             get => this._currentProjectCard;
-            set => this.Set(ref this._currentProjectCard, value, () => { /*this.OnChangedCurrentProject(value);*/ });
+            set => this.Set(ref this._currentProjectCard, value);
         }
         public ProjectMapModel CurrentProjectMap
         {
@@ -226,13 +154,117 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
                 this.ProjectContexts.Refresh();
             }
         }
+
+        #region WPF commands
+        private void OnProjectAddCommand(object parameter)
+        {
+            try
+            {
+                _onCreatedProjectToken = _eventBus.Subscribe<Events.OnCreatedProject>(this.OnCreatedProjectHandle);
+
+                var projectModifier = new Modifiers.CreateProject
+                {
+                    Name = CurrentProjectCard.Name,
+                    Note = CurrentProjectCard.Note,
+                    OwnerId = Guid.NewGuid(),
+                    Projection = CurrentProjectCard.Projection
+                };
+
+                _commandDispatcher.Send(projectModifier);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString());
+            }
+        }
+        private void OnProjectModifyCommand(object parameter)
+        {
+            try
+            {
+                if (CurrentProject == null)
+                    return;
+
+                _onEditedProjectToken = _eventBus.Subscribe<Events.OnEditedProject>(this.OnEditedProjectHandle);
+
+                var projectModifier = new Modifiers.EditProject
+                {
+                    Id = CurrentProject.Id,
+                    Name = CurrentProjectCard.Name,
+                    Note = CurrentProjectCard.Note,
+                    Projection = CurrentProjectCard.Projection
+                };
+
+                _commandDispatcher.Send(projectModifier);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString());
+            }
+        }
+        private void OnProjectDeleteCommand(object parameter)
+        {
+            try
+            {
+                if (CurrentProject == null)
+                    return;
+
+                _onDeletedProjectToken = _eventBus.Subscribe<Events.OnDeletedProject>(this.OnDeletedProjectHandle);
+
+                var projectModifier = new Modifiers.DeleteProject
+                {
+                    Id = CurrentProject.Id
+                };
+
+                _commandDispatcher.Send(projectModifier);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString());
+            }
+        }
         private void OnProjectActivateCommand(object parameter)
         {
+            try
+            {
+                if (CurrentProject == null)
+                    return;
 
+                _onEditedProjectToken = _eventBus.Subscribe<Events.OnEditedProject>(this.OnEditedProjectHandle);
+
+                var projectModifier = new Modifiers.ChangeStateProject
+                {
+                    Id = CurrentProject.Id,
+                    StatusCode = (byte)ProjectStatusCode.Available
+                };
+
+                _commandDispatcher.Send(projectModifier);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString());
+            }
         }
         private void OnProjectLockCommand(object parameter)
         {
+            try
+            {
+                if (CurrentProject == null)
+                    return;
 
+                _onEditedProjectToken = _eventBus.Subscribe<Events.OnEditedProject>(this.OnEditedProjectHandle);
+
+                var projectModifier = new Modifiers.ChangeStateProject
+                {
+                    Id = CurrentProject.Id,
+                    StatusCode = (byte)ProjectStatusCode.Locked
+                };
+
+                _commandDispatcher.Send(projectModifier);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString());
+            }
         }
         private void OnMapCreateNewCommand(object parameter)
         {
@@ -241,6 +273,8 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
                 if (CurrentProject == null)
                     return;
 
+                _onCreatedMapToken = _eventBus.Subscribe<MP.Events.OnCreatedMap>(this.OnCreatedMapHandle);
+                _onEditedMapToken = _eventBus.Subscribe<MP.Events.OnEditedMap>(this.OnEditedMapHandle);
                 _starter.Start<VM.Map.View>(isModal: true, f => f.ProjectId = CurrentProject.Id );
             }
             catch (Exception e)
@@ -269,10 +303,6 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
                 MessageBox.Show(e.ToString());
             }
         }
-        private void OnDeletedMapHandle(MP.Events.OnDeletedMap data)
-        {
-            ReloadProjectMaps();
-        }
         private void OnMapRefreshCommand(object parameter)
         {
             ReloadProjectMaps();
@@ -281,9 +311,11 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
         {
             try
             {
-                //var mainForm = new WpfStandardForm("ProjectContextCard.xaml", "ProjectContextCardViewModel");
-                //mainForm.ShowDialog();
-                //mainForm.Dispose();
+                if (CurrentProject == null)
+                    return;
+
+                _onCreatedClientContextToken = _eventBus.Subscribe<CT.Events.OnCreatedClientContext>(this.OnCreatedClientContextHandle);
+                _starter.Start<VM.ClientContext.View>(isModal: true, f => { f.ProjectId = CurrentProject.Id; });
             }
             catch (Exception e)
             {
@@ -294,9 +326,11 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
         {
             try
             {
-                //var mainForm = new WpfStandardForm("ProjectContextCard.xaml", "ProjectContextCardViewModel");
-                //mainForm.ShowDialog();
-                //mainForm.Dispose();
+                if (CurrentProject == null || CurrentProjectContext == null)
+                    return;
+
+                _onEditedClientContextToken = _eventBus.Subscribe<CT.Events.OnEditedClientContext>(this.OnEditedClientContextHandle);
+                _starter.Start<VM.ClientContext.View>(isModal: true, f => { f.ContextId = CurrentProjectContext.Id; });
             }
             catch (Exception e)
             {
@@ -307,17 +341,64 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
         {
             try
             {
-                //var mainForm = new WpfStandardForm("ProjectContextCard.xaml", "ProjectContextCardViewModel");
-                //mainForm.ShowDialog();
-                //mainForm.Dispose();
+                if (CurrentProjectContext == null)
+                    return;
+
+                _onDeletedClientContextToken = _eventBus.Subscribe<CT.Events.OnDeletedClientContext>(this.OnDeletedClientContextHandle);
+
+                var projectModifier = new CT.Modifiers.DeleteClientContext
+                {
+                    Id = CurrentProjectContext.Id
+                };
+
+                _commandDispatcher.Send(projectModifier);
             }
             catch (Exception e)
             {
                 MessageBox.Show(e.ToString());
             }
         }
+        #endregion
 
-		public override void Dispose()
+        #region Handlers
+        private void OnCreatedProjectHandle(Events.OnCreatedProject data)
+        {
+            ReloadProjects();
+        }
+        private void OnEditedProjectHandle(Events.OnEditedProject data)
+        {
+            ReloadProjects();
+        }
+        private void OnDeletedProjectHandle(Events.OnDeletedProject data)
+        {
+            ReloadProjects();
+        }
+        private void OnCreatedMapHandle(MP.Events.OnCreatedMap data)
+        {
+            ReloadProjectMaps();
+        }
+        private void OnEditedMapHandle(MP.Events.OnEditedMap data)
+        {
+            ReloadProjectMaps();
+        }
+        private void OnDeletedMapHandle(MP.Events.OnDeletedMap data)
+        {
+            ReloadProjectMaps();
+        }
+        private void OnCreatedClientContextHandle(CT.Events.OnCreatedClientContext data)
+        {
+            ReloadProjectContexts();
+        }
+        private void OnEditedClientContextHandle(CT.Events.OnEditedClientContext data)
+        {
+            ReloadProjectContexts();
+        }
+        private void OnDeletedClientContextHandle(CT.Events.OnDeletedClientContext data)
+        {
+            ReloadProjectContexts();
+        }
+        #endregion
+        public override void Dispose()
 		{
             _onCreatedProjectToken?.Dispose();
             _onCreatedProjectToken = null;
@@ -325,8 +406,18 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
             _onEditedProjectToken = null;
             _onDeletedProjectToken?.Dispose();
             _onDeletedProjectToken = null;
+            _onCreatedMapToken?.Dispose();
+            _onCreatedMapToken = null;
+            _onEditedMapToken?.Dispose();
+            _onEditedMapToken = null;
             _onDeletedMapToken?.Dispose();
             _onDeletedMapToken = null;
+            _onCreatedClientContextToken?.Dispose();
+            _onCreatedClientContextToken = null;
+            _onEditedClientContextToken?.Dispose();
+            _onEditedClientContextToken = null;
+            _onDeletedClientContextToken?.Dispose();
+            _onDeletedClientContextToken = null;
         }
     }
 }

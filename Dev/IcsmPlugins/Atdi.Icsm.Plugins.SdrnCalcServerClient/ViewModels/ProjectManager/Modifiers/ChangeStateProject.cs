@@ -6,15 +6,11 @@ using System.Threading.Tasks;
 
 namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager.Modifiers
 {
-    public class EditProject
+    public class ChangeStateProject
     {
         public long Id;
 
-        public string Name;
-
-        public string Note;
-
-        public string Projection;
+        public byte StatusCode;
 
         public bool Success;
     }
