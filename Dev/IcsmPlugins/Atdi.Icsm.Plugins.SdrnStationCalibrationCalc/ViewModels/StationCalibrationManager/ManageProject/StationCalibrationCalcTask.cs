@@ -475,12 +475,13 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
 
         private static long CreateClientContextStation(WebApiDataLayer dataLayer, IQueryExecutor executor, long contextId, IcsmMobStation icsmMobStation)
         {
+            var enumStateCode = Enum.GetValues(typeof(StationStateCode)).Cast<StationStateCode>().ToList();
             var insQuery = dataLayer.GetBuilder<IContextStation>()
                 .Create()
                 .SetValue(c => c.CreatedDate, icsmMobStation.CreatedDate)
                 .SetValue(c => c.CONTEXT.Id, contextId)
                 .SetValue(c => c.Name, icsmMobStation.Name)
-                .SetValue(c => c.StateCode, (byte)StationStateCode.A)
+                .SetValue(c => c.StateCode, (byte)enumStateCode.Find(x => x.ToString() == icsmMobStation.StateName))
                 .SetValue(c => c.StateName, icsmMobStation.StateName)
                 .SetValue(c => c.CallSign, icsmMobStation.CallSign)
 
@@ -496,8 +497,8 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                 .SetValue(c => c.SITE.Latitude_DEC, icsmMobStation.SITE.Latitude_DEC)
                 .SetValue(c => c.SITE.Altitude_m, icsmMobStation.SITE.Altitude_m)
 
-                .SetValue(c => c.ANTENNA.ItuPatternCode, (byte)ItuPattern.None)
-                .SetValue(c => c.ANTENNA.ItuPatternName, "None")
+                .SetValue(c => c.ANTENNA.ItuPatternCode, icsmMobStation.ANTENNA.ItuPatternCode)
+                .SetValue(c => c.ANTENNA.ItuPatternName, icsmMobStation.ANTENNA.ItuPatternName)
                 .SetValue(c => c.ANTENNA.XPD_dB, icsmMobStation.ANTENNA.XPD_dB)
                 .SetValue(c => c.ANTENNA.Gain_dB, icsmMobStation.ANTENNA.Gain_dB)
                 .SetValue(c => c.ANTENNA.Tilt_deg, icsmMobStation.ANTENNA.Tilt_deg)

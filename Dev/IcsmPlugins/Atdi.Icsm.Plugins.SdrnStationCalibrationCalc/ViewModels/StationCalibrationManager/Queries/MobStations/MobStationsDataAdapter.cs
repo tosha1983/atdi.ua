@@ -15,22 +15,22 @@ using Atdi.Contracts.Sdrn.DeepServices;
 using Atdi.DataModels.Sdrn.DeepServices.RadioSystem;
 using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.AntennaPattern;
 using Atdi.DataModels.Sdrn.DeepServices;
-using Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.AntennaPattern;
-using Atdi.AppUnits.Sdrn.DeepServices.RadioSystem;
+//using Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.AntennaPattern;
+//using Atdi.AppUnits.Sdrn.DeepServices.RadioSystem;
 
 namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager.Queries
 {
     public class MobStationsDataAdapter  
     {
 
-        public readonly SignalService _signalService; 
+        //public readonly SignalService _signalService; 
         public readonly IObjectReader _objectReader;
         public readonly MobStationsLoadModelByParams  _mobStationsLoadModelByParams;
 
         public MobStationsDataAdapter(MobStationsLoadModelByParams  mobStationsLoadModelByParams,
             IObjectReader objectReader)
         {
-            this._signalService = new SignalService();
+            //this._signalService = new SignalService();
             this._objectReader = objectReader;
             this._mobStationsLoadModelByParams = mobStationsLoadModelByParams;
         }
@@ -143,16 +143,16 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
             return hit;
         }
 
-        public const double re = 6371;
-        public static double GetDistance_km(double x1, double y1, double x2, double y2)
-        {
-            double d = 0;
-            double dlon = x2 - x1;
-            double r = Math.Sin(y1 * Math.PI / 180) * Math.Sin(y2 * Math.PI / 180) + Math.Cos(y1 * Math.PI / 180) * Math.Cos(y2 * Math.PI / 180) * Math.Cos(dlon * Math.PI / 180);
-            double angle = 180 * Math.Acos(r) / Math.PI;
-            d = angle * re;
-            return d;
-        }
+        //public const double re = 6371;
+        //public static double GetDistance_km(double x1, double y1, double x2, double y2)
+        //{
+        //    double d = 0;
+        //    double dlon = x2 - x1;
+        //    double r = Math.Sin(y1 * Math.PI / 180) * Math.Sin(y2 * Math.PI / 180) + Math.Cos(y1 * Math.PI / 180) * Math.Cos(y2 * Math.PI / 180) * Math.Cos(dlon * Math.PI / 180);
+        //    double angle = 180 * Math.Acos(r) / Math.PI;
+        //    d = angle * re;
+        //    return d;
+        //}
 
         public static string GetGlobalSID(string okpo, string stationName)
         {
@@ -184,7 +184,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
             {
                 throw new Exception();
             }
-            if ((this._mobStationsLoadModelByParams.IdentifierStation != null) && (this._mobStationsLoadModelByParams.IdentifierStation !=0))
+            if (((this._mobStationsLoadModelByParams.IdentifierStation != null) && (this._mobStationsLoadModelByParams.IdentifierStation !=0)) && (this._mobStationsLoadModelByParams.SelectedStationType== SelectedStationType.OneStation))
             {
                 if (string.IsNullOrEmpty(this._mobStationsLoadModelByParams.TableName))
                 {
@@ -198,7 +198,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
 
             for (int v = 0; v < arrayTables.Length; v++)
             {
-                if (((this._mobStationsLoadModelByParams.IdentifierStation != null) && (this._mobStationsLoadModelByParams.IdentifierStation != 0)) && (!string.IsNullOrEmpty(this._mobStationsLoadModelByParams.TableName)))
+                if ((((this._mobStationsLoadModelByParams.IdentifierStation != null) && (this._mobStationsLoadModelByParams.IdentifierStation != 0)) && (!string.IsNullOrEmpty(this._mobStationsLoadModelByParams.TableName)) && (this._mobStationsLoadModelByParams.SelectedStationType == SelectedStationType.OneStation)))
                 {
                     if (arrayTables[v] != this._mobStationsLoadModelByParams.TableName)
                     {
@@ -208,7 +208,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
 
                 var rs = new IMRecordset(arrayTables[v], IMRecordset.Mode.ReadOnly);
                 rs.Select("ID,AZIMUTH,STANDARD,STATUS,CALL_SIGN,Position.LATITUDE,Position.LONGITUDE,Position.ASL,NAME,Owner.CODE,DATE_MODIFIED,DATE_CREATED,BW,RX_LOSSES,TX_LOSSES,PWR_ANT,Equipment.KTBF,Equipment.RXTH_6,Antenna.POLARIZATION,GAIN,Antenna.DIAGV,Antenna.DIAGH,Antenna.DIAGA,ELEVATION,Antenna.XPD,Position.City.PROVINCE");
-                if ((this._mobStationsLoadModelByParams.IdentifierStation != null) && (this._mobStationsLoadModelByParams.IdentifierStation != 0))
+                if (((this._mobStationsLoadModelByParams.IdentifierStation != null) && (this._mobStationsLoadModelByParams.IdentifierStation != 0) && (this._mobStationsLoadModelByParams.SelectedStationType == SelectedStationType.OneStation)))
                 {
                     rs.SetWhere("ID", IMRecordset.Operation.Eq, this._mobStationsLoadModelByParams.IdentifierStation.Value);
                 }
@@ -220,7 +220,21 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                     }
                     rs.SetWhere("STANDARD", IMRecordset.Operation.Eq, this._mobStationsLoadModelByParams.Standard);
                 }
-
+                var allStatuses = new List<string>();
+                var newactiveStationStatuses = new string[activeStationStatuses.Length];
+                var newnotActiveStationStatuses = new string[notActiveStationStatuses.Length];
+                for (int s=0;s< activeStationStatuses.Length; s++)
+                {
+                    newactiveStationStatuses[s] = "'" + activeStationStatuses[s] + "'";
+                }
+                for (int s = 0; s < notActiveStationStatuses.Length; s++)
+                {
+                    newnotActiveStationStatuses[s] = "'" + notActiveStationStatuses[s] + "'";
+                }
+                allStatuses.AddRange(newactiveStationStatuses);
+                allStatuses.AddRange(newnotActiveStationStatuses);
+                var filter = string.Format("[STATUS] in ({0})", string.Join(",", allStatuses.ToArray()));
+                rs.SetAdditional(filter);
                 for (rs.Open(); !rs.IsEOF(); rs.MoveNext())
                 {
                     // если статус очередной станции не найден в параметрах для поиска, которые задал клиент тогда пропускаем станцию
@@ -239,6 +253,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                     mobStationT.m_date_created = rs.GetT("DATE_CREATED");
 
                     mobStationT.m_Position = new YPosition();
+                    mobStationT.m_Position.Format("*");
                     mobStationT.m_Position.m_longitude = rs.GetD("Position.LONGITUDE");
                     mobStationT.m_Position.m_latitude = rs.GetD("Position.LATITUDE");
                     mobStationT.m_Position.m_asl = rs.GetD("Position.ASL");
@@ -342,41 +357,52 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                     mobStationT.m_rec_area = rs.GetS("Position.City.PROVINCE");
                     mobStationT.m_cust_txt2 = ReadGCIDDataModel(mobStationT.m_cust_txt1, mobStationT.m_rec_area, mobStationT.m_standard);
 
-                    for (int w = 0; w < this._mobStationsLoadModelByParams.AreaModel.Length; w++)
+                    bool correctStation = false;
+                    if (notActiveStationStatuses.Contains(rs.GetS("STATUS")))
                     {
-                        // если станция попадает в контур, тогда выставляем для нее статус P
-                        if (CheckHitting(this._mobStationsLoadModelByParams.AreaModel[w].Location, mobStationT.m_Position))
+                        correctStation = true;
+                        mobStationT.m_status = MobStationStatus.I.ToString();
+                    }
+                    else if (activeStationStatuses.Contains(rs.GetS("STATUS")))
+                    {
+                        for (int w = 0; w < this._mobStationsLoadModelByParams.AreaModel.Length; w++)
                         {
-                            
-                            mobStationT.m_status = MobStationStatus.A.ToString();
-                        }
-                        else
-                        {
-                            // здесь вычисляем расстояние станции до точек контура. Если найдено расстояние меньше чем параметр DistanceAroundContour, тогда выставляем статус P
-                            bool isFindPositionWithDistanceAroundContour = false;
-                            for (int i = 0; i < this._mobStationsLoadModelByParams.AreaModel[w].Location.Length - 1; i++)
+                            // если станция попадает в контур, тогда выставляем для нее статус P
+                            if (CheckHitting(this._mobStationsLoadModelByParams.AreaModel[w].Location, mobStationT.m_Position))
                             {
-                                var loc = this._mobStationsLoadModelByParams.AreaModel[w].Location[i];
-                                if (GetDistance_km(loc.Longitude, loc.Latitude, mobStationT.m_Position.m_longitude, mobStationT.m_Position.m_latitude) < this._mobStationsLoadModelByParams.DistanceAroundContour_km)
+                                mobStationT.m_status = MobStationStatus.A.ToString();
+                                correctStation = true;
+                            }
+                            else
+                            {
+                                // если станция попадает во "внешний" контур, тогда выставляем для нее статус P (т.е. когда рассточние до границы заданного контура "Location" менее чем DistanceAroundContour_km)
+                                bool isFindPositionWithDistanceAroundContour = false;
+
+                                if (CheckHitting(this._mobStationsLoadModelByParams.AreaModel[w].ExternalContour, mobStationT.m_Position))
                                 {
                                     isFindPositionWithDistanceAroundContour = true;
                                     break;
                                 }
-                            }
 
-                            if (isFindPositionWithDistanceAroundContour)
-                            {
-                                mobStationT.m_status = MobStationStatus.P.ToString();
-                            }
-                            else
-                            {
-                                // для всех остальных случаев выставляем статус I
-                                mobStationT.m_status = MobStationStatus.I.ToString();
+                                if (isFindPositionWithDistanceAroundContour)
+                                {
+                                    mobStationT.m_status = MobStationStatus.P.ToString();
+                                    correctStation = true;
+                                }
+                                else
+                                {
+                                    // для всех остальных случаев выставляем статус I
+                                    mobStationT.m_status = MobStationStatus.I.ToString();
+                                    correctStation = false;
+                                }
                             }
                         }
                     }
-
-
+                    // если станция не попадает в заданный регион и в область за регионом, которая отстоит на расстоянии DistanceAroundContour_km от границы точек региона, тогда просто пропускаем станцию
+                    if (correctStation==false)
+                    {
+                        continue;
+                    }
 
                     //  Проверка - станция должна отправляться один раз (дуликатов быть не должно)
                     var fndStation = listMobStationT.Find(x => x.m_id == mobStationT.m_id);
@@ -419,48 +445,48 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                         IcsmMobStationPattern vh_pattern = null;
                         IcsmMobStationPattern vv_pattern = null;
 
-                        var patt_HH = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagh, AntennaPatternType.HH, source.m_gain);
-                        if (patt_HH != null)
-                        {
-                            hh_pattern = new IcsmMobStationPattern();
-                            hh_pattern.Loss_dB = patt_HH.Select(c => c.Loss).ToArray();
-                            hh_pattern.Angle_deg = patt_HH.Select(c => c.Angle).ToArray();
-                        };
+                        //var patt_HH = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagh, AntennaPatternType.HH, source.m_gain);
+                        //if (patt_HH != null)
+                        //{
+                        //    hh_pattern = new IcsmMobStationPattern();
+                        //    hh_pattern.Loss_dB = patt_HH.Select(c => c.Loss).ToArray();
+                        //    hh_pattern.Angle_deg = patt_HH.Select(c => c.Angle).ToArray();
+                        //};
 
-                        var patt_HV = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagv, AntennaPatternType.HV, source.m_gain);
-                        if (patt_HV != null)
-                        {
-                            hv_pattern = new IcsmMobStationPattern();
-                            hv_pattern.Loss_dB = patt_HV.Select(c => c.Loss).ToArray();
-                            hv_pattern.Angle_deg = patt_HV.Select(c => c.Angle).ToArray();
-                        };
+                        //var patt_HV = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagv, AntennaPatternType.HV, source.m_gain);
+                        //if (patt_HV != null)
+                        //{
+                        //    hv_pattern = new IcsmMobStationPattern();
+                        //    hv_pattern.Loss_dB = patt_HV.Select(c => c.Loss).ToArray();
+                        //    hv_pattern.Angle_deg = patt_HV.Select(c => c.Angle).ToArray();
+                        //};
 
-                        var patt_VH = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagh, AntennaPatternType.VH, source.m_gain);
-                        if (patt_VH != null)
-                        {
-                            vh_pattern = new IcsmMobStationPattern();
-                            vh_pattern.Loss_dB = patt_VH.Select(c => c.Loss).ToArray();
-                            vh_pattern.Angle_deg = patt_VH.Select(c => c.Angle).ToArray();
-                        };
+                        //var patt_VH = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagh, AntennaPatternType.VH, source.m_gain);
+                        //if (patt_VH != null)
+                        //{
+                        //    vh_pattern = new IcsmMobStationPattern();
+                        //    vh_pattern.Loss_dB = patt_VH.Select(c => c.Loss).ToArray();
+                        //    vh_pattern.Angle_deg = patt_VH.Select(c => c.Angle).ToArray();
+                        //};
 
-                        var patt_VV = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagv, AntennaPatternType.VV, source.m_gain);
-                        if (patt_VV != null)
-                        {
-                            vv_pattern = new IcsmMobStationPattern();
-                            vv_pattern.Loss_dB = patt_VV.Select(c => c.Loss).ToArray();
-                            vv_pattern.Angle_deg = patt_VV.Select(c => c.Angle).ToArray();
-                        };
+                        //var patt_VV = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagv, AntennaPatternType.VV, source.m_gain);
+                        //if (patt_VV != null)
+                        //{
+                        //    vv_pattern = new IcsmMobStationPattern();
+                        //    vv_pattern.Loss_dB = patt_VV.Select(c => c.Loss).ToArray();
+                        //    vv_pattern.Angle_deg = patt_VV.Select(c => c.Angle).ToArray();
+                        //};
 
-                        var VH_PATTERN = new IcsmMobStationPattern()
-                        {
-                            Loss_dB = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagh, AntennaPatternType.VH, source.m_gain).Select(c => c.Loss).ToArray(),
-                            Angle_deg = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagh, AntennaPatternType.VH, source.m_gain).Select(c => c.Angle).ToArray()
-                        };
-                        var VV_PATTERN = new IcsmMobStationPattern()
-                        {
-                            Loss_dB = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagv, AntennaPatternType.VV, source.m_gain).Select(c => c.Loss).ToArray(),
-                            Angle_deg = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagv, AntennaPatternType.VV, source.m_gain).Select(c => c.Angle).ToArray()
-                        };
+                        //var VH_PATTERN = new IcsmMobStationPattern()
+                        //{
+                        //    Loss_dB = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagh, AntennaPatternType.VH, source.m_gain).Select(c => c.Loss).ToArray(),
+                        //    Angle_deg = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagh, AntennaPatternType.VH, source.m_gain).Select(c => c.Angle).ToArray()
+                        //};
+                        //var VV_PATTERN = new IcsmMobStationPattern()
+                        //{
+                        //    Loss_dB = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagv, AntennaPatternType.VV, source.m_gain).Select(c => c.Loss).ToArray(),
+                        //    Angle_deg = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagv, AntennaPatternType.VV, source.m_gain).Select(c => c.Angle).ToArray()
+                        //};
 
                         listIcsmMobStation.Add(new IcsmMobStation
                         {
@@ -487,9 +513,8 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                                 Azimuth_deg = source.m_azimuth,
                                 Tilt_deg = source.m_elevation,
                                 XPD_dB = (float)source.m_Antenna.m_xpd,
-                                ItuPatternCode = (byte)AntennaItuPattern.None, // ?????????????????????????????????????????????????????
+                                ItuPatternCode = (byte)AntennaItuPattern.None, 
                                 //ItuPatternName ?????????????????????????????????
-
                                 HH_PATTERN = hh_pattern,
                                 HV_PATTERN = hv_pattern,
                                 VH_PATTERN = vh_pattern,

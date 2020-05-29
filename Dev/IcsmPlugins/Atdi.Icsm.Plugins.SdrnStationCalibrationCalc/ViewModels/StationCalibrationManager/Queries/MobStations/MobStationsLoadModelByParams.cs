@@ -15,6 +15,6 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
         public int? IdentifierStation;
         public string TableName;
         public AreaModel[] AreaModel;
-        public int DistanceAroundContour_km;
+        public SelectedStationType  SelectedStationType;
     }
 }

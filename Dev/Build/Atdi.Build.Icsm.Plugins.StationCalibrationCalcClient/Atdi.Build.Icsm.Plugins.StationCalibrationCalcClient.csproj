@@ -54,10 +54,6 @@
       <Project>{48ace960-6ba0-4a99-b060-4dbb8a182206}</Project>
       <Name>Atdi.Api.EntityOrm.WebClient</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeepServices.Gis\Atdi.AppUnits.Sdrn.DeepServices.Gis.csproj">
-      <Project>{f1f30ab9-7598-424d-9cde-95412583eccf}</Project>
-      <Name>Atdi.AppUnits.Sdrn.DeepServices.Gis</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeepServices.RadioSystem\Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.csproj">
       <Project>{b8d91488-2850-46a9-9e32-9d1dd7d02683}</Project>
       <Name>Atdi.AppUnits.Sdrn.DeepServices.RadioSystem</Name>
@@ -78,10 +74,6 @@
       <Project>{a252d199-1162-484d-b50a-8c44a4edd670}</Project>
       <Name>Atdi.Contracts.Api.EntityOrm.WebClient</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeepServices.Gis\Atdi.Contracts.Sdrn.DeepServices.Gis.csproj">
-      <Project>{567b4c34-9ff5-4c05-9e7b-d1ed94eadaaf}</Project>
-      <Name>Atdi.Contracts.Sdrn.DeepServices.Gis</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeepServices.RadioSystem\Atdi.Contracts.Sdrn.DeepServices.RadioSystem.csproj">
       <Project>{d576643b-fcdb-4873-9f08-abcfbb5e9e8f}</Project>
       <Name>Atdi.Contracts.Sdrn.DeepServices.RadioSystem</Name>
@@ -101,10 +93,6 @@
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.CalcServer.Entities\Atdi.DataModels.Sdrn.CalcServer.Entities.csproj">
       <Project>{6a72e0c5-f8a4-412f-9395-13abe07367b1}</Project>
       <Name>Atdi.DataModels.Sdrn.CalcServer.Entities</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices.Gis\Atdi.DataModels.Sdrn.DeepServices.Gis.csproj">
-      <Project>{d83887b2-4444-4207-a703-c99b94a4c170}</Project>
-      <Name>Atdi.DataModels.Sdrn.DeepServices.Gis</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices.RadioSystem\Atdi.DataModels.Sdrn.DeepServices.RadioSystem.csproj">
       <Project>{c67fbe11-fef0-48ad-9912-61bf4c61db03}</Project>

@@ -20,5 +20,6 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
 
         public DataLocationModel[] Location { get; set; }
 
+        public DataLocationModel[] ExternalContour { get; set; }
     }
 }

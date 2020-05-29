@@ -8,7 +8,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
 {
     public class GetStationsParamsModel
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
         public string StateForActiveStation { get; set; }
         public string StateForNotActiveStation { get; set; }
         public string Standard { get; set; }

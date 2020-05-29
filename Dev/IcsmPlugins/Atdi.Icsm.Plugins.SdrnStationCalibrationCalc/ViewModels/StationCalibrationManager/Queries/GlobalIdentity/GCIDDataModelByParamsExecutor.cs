@@ -32,13 +32,10 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                      c => c.RegionCode,
                      c => c.LicenseGsid
                     )
-                    .BeginFilter()
-                    .Condition(c => c.LicenseGsid, DataModels.Api.EntityOrm.WebClient.FilterOperator.Equal, criterion.LicenseGsid)
-                    .And()
-                    .Condition(c => c.Standard, DataModels.Api.EntityOrm.WebClient.FilterOperator.Equal, criterion.Standard)
-                    .And()
-                    .Condition(c => c.RegionCode, DataModels.Api.EntityOrm.WebClient.FilterOperator.Equal, criterion.RegionCode)
-                    .EndFilter();
+                    .Filter(c => c.LicenseGsid, DataModels.Api.EntityOrm.WebClient.FilterOperator.Equal, criterion.LicenseGsid)
+                    .Filter(c => c.Standard, DataModels.Api.EntityOrm.WebClient.FilterOperator.Equal, criterion.Standard)
+                    .Filter(c => c.RegionCode, DataModels.Api.EntityOrm.WebClient.FilterOperator.Equal, criterion.RegionCode)
+                    ;
 
             var reader = _dataLayer.Executor.ExecuteReader(query);
             if (!reader.Read())
