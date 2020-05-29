@@ -13,7 +13,7 @@ using Atdi.Platform.Cqrs;
 using Atdi.Platform.Events;
 using MP = Atdi.WpfControls.EntityOrm.Maps;
 using System.Data;
-using Atdi.Contracts.Sdrn.DeepServices.RadioSystem;
+
 
 
 
@@ -34,7 +34,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
         private MP.MapDrawingData _currentMapData;
         private IList _currentAreas;
 
-        private readonly ISignalService  _signalService;
+
         private readonly IObjectReader _objectReader;
         private readonly ICommandDispatcher _commandDispatcher;
         private readonly ViewStarter _starter;
@@ -76,7 +76,6 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             ICommandDispatcher commandDispatcher,
             ViewStarter starter,
             IEventBus eventBus,
-            ISignalService signalService,
             ILogger logger)
         {
             _objectReader = objectReader;

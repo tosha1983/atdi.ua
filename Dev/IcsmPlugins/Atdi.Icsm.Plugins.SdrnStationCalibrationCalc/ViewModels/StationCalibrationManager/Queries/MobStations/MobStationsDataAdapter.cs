@@ -15,22 +15,22 @@ using Atdi.Contracts.Sdrn.DeepServices;
 using Atdi.DataModels.Sdrn.DeepServices.RadioSystem;
 using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.AntennaPattern;
 using Atdi.DataModels.Sdrn.DeepServices;
-//using Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.AntennaPattern;
-//using Atdi.AppUnits.Sdrn.DeepServices.RadioSystem;
+
 
 namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager.Queries
 {
     public class MobStationsDataAdapter  
     {
 
-        //public readonly SignalService _signalService; 
+        public readonly ISignalService _signalService; 
         public readonly IObjectReader _objectReader;
         public readonly MobStationsLoadModelByParams  _mobStationsLoadModelByParams;
 
         public MobStationsDataAdapter(MobStationsLoadModelByParams  mobStationsLoadModelByParams,
+            ISignalService signalService,
             IObjectReader objectReader)
         {
-            //this._signalService = new SignalService();
+            this._signalService = signalService;
             this._objectReader = objectReader;
             this._mobStationsLoadModelByParams = mobStationsLoadModelByParams;
         }
@@ -445,48 +445,48 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                         IcsmMobStationPattern vh_pattern = null;
                         IcsmMobStationPattern vv_pattern = null;
 
-                        //var patt_HH = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagh, AntennaPatternType.HH, source.m_gain);
-                        //if (patt_HH != null)
-                        //{
-                        //    hh_pattern = new IcsmMobStationPattern();
-                        //    hh_pattern.Loss_dB = patt_HH.Select(c => c.Loss).ToArray();
-                        //    hh_pattern.Angle_deg = patt_HH.Select(c => c.Angle).ToArray();
-                        //};
+                        var patt_HH = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagh, AntennaPatternType.HH, source.m_gain);
+                        if (patt_HH != null)
+                        {
+                            hh_pattern = new IcsmMobStationPattern();
+                            hh_pattern.Loss_dB = patt_HH.Select(c => c.Loss).ToArray();
+                            hh_pattern.Angle_deg = patt_HH.Select(c => c.Angle).ToArray();
+                        };
 
-                        //var patt_HV = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagv, AntennaPatternType.HV, source.m_gain);
-                        //if (patt_HV != null)
-                        //{
-                        //    hv_pattern = new IcsmMobStationPattern();
-                        //    hv_pattern.Loss_dB = patt_HV.Select(c => c.Loss).ToArray();
-                        //    hv_pattern.Angle_deg = patt_HV.Select(c => c.Angle).ToArray();
-                        //};
+                        var patt_HV = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagv, AntennaPatternType.HV, source.m_gain);
+                        if (patt_HV != null)
+                        {
+                            hv_pattern = new IcsmMobStationPattern();
+                            hv_pattern.Loss_dB = patt_HV.Select(c => c.Loss).ToArray();
+                            hv_pattern.Angle_deg = patt_HV.Select(c => c.Angle).ToArray();
+                        };
 
-                        //var patt_VH = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagh, AntennaPatternType.VH, source.m_gain);
-                        //if (patt_VH != null)
-                        //{
-                        //    vh_pattern = new IcsmMobStationPattern();
-                        //    vh_pattern.Loss_dB = patt_VH.Select(c => c.Loss).ToArray();
-                        //    vh_pattern.Angle_deg = patt_VH.Select(c => c.Angle).ToArray();
-                        //};
+                        var patt_VH = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagh, AntennaPatternType.VH, source.m_gain);
+                        if (patt_VH != null)
+                        {
+                            vh_pattern = new IcsmMobStationPattern();
+                            vh_pattern.Loss_dB = patt_VH.Select(c => c.Loss).ToArray();
+                            vh_pattern.Angle_deg = patt_VH.Select(c => c.Angle).ToArray();
+                        };
 
-                        //var patt_VV = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagv, AntennaPatternType.VV, source.m_gain);
-                        //if (patt_VV != null)
-                        //{
-                        //    vv_pattern = new IcsmMobStationPattern();
-                        //    vv_pattern.Loss_dB = patt_VV.Select(c => c.Loss).ToArray();
-                        //    vv_pattern.Angle_deg = patt_VV.Select(c => c.Angle).ToArray();
-                        //};
+                        var patt_VV = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagv, AntennaPatternType.VV, source.m_gain);
+                        if (patt_VV != null)
+                        {
+                            vv_pattern = new IcsmMobStationPattern();
+                            vv_pattern.Loss_dB = patt_VV.Select(c => c.Loss).ToArray();
+                            vv_pattern.Angle_deg = patt_VV.Select(c => c.Angle).ToArray();
+                        };
 
-                        //var VH_PATTERN = new IcsmMobStationPattern()
-                        //{
-                        //    Loss_dB = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagh, AntennaPatternType.VH, source.m_gain).Select(c => c.Loss).ToArray(),
-                        //    Angle_deg = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagh, AntennaPatternType.VH, source.m_gain).Select(c => c.Angle).ToArray()
-                        //};
-                        //var VV_PATTERN = new IcsmMobStationPattern()
-                        //{
-                        //    Loss_dB = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagv, AntennaPatternType.VV, source.m_gain).Select(c => c.Loss).ToArray(),
-                        //    Angle_deg = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagv, AntennaPatternType.VV, source.m_gain).Select(c => c.Angle).ToArray()
-                        //};
+                        var VH_PATTERN = new IcsmMobStationPattern()
+                        {
+                            Loss_dB = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagh, AntennaPatternType.VH, source.m_gain).Select(c => c.Loss).ToArray(),
+                            Angle_deg = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagh, AntennaPatternType.VH, source.m_gain).Select(c => c.Angle).ToArray()
+                        };
+                        var VV_PATTERN = new IcsmMobStationPattern()
+                        {
+                            Loss_dB = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagv, AntennaPatternType.VV, source.m_gain).Select(c => c.Loss).ToArray(),
+                            Angle_deg = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagv, AntennaPatternType.VV, source.m_gain).Select(c => c.Angle).ToArray()
+                        };
 
                         listIcsmMobStation.Add(new IcsmMobStation
                         {
