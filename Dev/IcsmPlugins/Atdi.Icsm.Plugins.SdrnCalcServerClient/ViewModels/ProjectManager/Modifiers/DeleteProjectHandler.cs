@@ -22,7 +22,6 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager.Modif
             _dataLayer = dataLayer;
             _eventBus = eventBus;
         }
-
         public void Handle(DeleteProject command)
         {
             var query = _dataLayer.GetBuilder<IProject>()
@@ -30,11 +29,7 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager.Modif
                 .Filter(c => c.Id, command.Id);
             _dataLayer.Executor.Execute(query);
 
-            _eventBus.Send(new OnDeletedProject
-            {
-                ProjectId = command.Id
-            });
-
+            _eventBus.Send(new OnDeletedProject { ProjectId = command.Id });
         }
     }
 }

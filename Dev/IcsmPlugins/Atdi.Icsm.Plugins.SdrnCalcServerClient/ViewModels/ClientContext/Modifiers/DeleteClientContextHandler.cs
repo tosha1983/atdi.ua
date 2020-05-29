@@ -4,33 +4,32 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Atdi.DataModels.Sdrn.CalcServer.Entities;
-using Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.Map.Events;
+using Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ClientContext.Events;
 using Atdi.Platform.Cqrs;
 using Atdi.Platform.Events;
 
-
-namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.Map.Modifiers
+namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ClientContext.Modifiers
 {
-    public class DeleteMapHandler : ICommandHandler<DeleteMap>
+    public class DeleteClientContextHandler : ICommandHandler<DeleteClientContext>
     {
         private readonly AppComponentConfig _config;
         private readonly CalcServerDataLayer _dataLayer;
         private readonly IEventBus _eventBus;
 
-        public DeleteMapHandler(AppComponentConfig config, CalcServerDataLayer dataLayer, IEventBus eventBus)
+        public DeleteClientContextHandler(AppComponentConfig config, CalcServerDataLayer dataLayer, IEventBus eventBus)
         {
             _config = config;
             _dataLayer = dataLayer;
             _eventBus = eventBus;
         }
-        public void Handle(DeleteMap command)
+        public void Handle(DeleteClientContext command)
         {
-            var query = _dataLayer.GetBuilder<IProjectMap>()
+            var query = _dataLayer.GetBuilder<IClientContext>()
                 .Delete()
                 .Filter(c => c.Id, command.Id);
             _dataLayer.Executor.Execute(query);
 
-            _eventBus.Send(new OnDeletedMap { MapId = command.Id });
+            _eventBus.Send(new OnDeletedClientContext { ClientContextId = command.Id });
         }
     }
 }
