@@ -32,15 +32,15 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc
             MessageBox.Show(text.ToString(), @"About Plugin", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        public void OnRunEntityOrmTestCommand()
+        public void OnRunCalibrationStationsMeasurementsCommand()
         {
 	        try
 	        {
-		        _viewStarter.Start<VM.EntityOrmTest.View>(isModal: true);
+		        _viewStarter.Start<VM.StationCalibrationManager.View>(isModal: true);
 	        }
 	        catch (Exception e)
 	        {
-		        _logger.Exception((EventContext)"PluginMenuCommands", (EventCategory)"OnRunEntityOrmTestCommand", e);
+		        _logger.Exception((EventContext)"PluginMenuCommands", (EventCategory)"OnRunCalibrationStationsMeasurementsCommand", e);
 		        MessageBox.Show(e.ToString());
 	        }
         }

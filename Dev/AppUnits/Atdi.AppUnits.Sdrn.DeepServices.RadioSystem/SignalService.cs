@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.PropagationModels;
+using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.AntennaPattern;
+using Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.AntennaPattern;
 
 namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem
 {
@@ -23,7 +25,12 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem
             result = Signal.PropagationLoss.Calc(args);
 		}
 
-		private void CalcMainBlock(in MainCalcBlock block)
+        public DiagrammPoint[] CalcAntennaPattern(string points,  AntennaPatternType antennaPatternType, double gain)
+        {
+            return CalculationAntennaPattern.Calc(points, antennaPatternType, gain);
+        }
+
+        private void CalcMainBlock(in MainCalcBlock block)
 		{
 
 		}
@@ -32,5 +39,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem
 		{
 			
 		}
-	}
+
+
+    }
 }

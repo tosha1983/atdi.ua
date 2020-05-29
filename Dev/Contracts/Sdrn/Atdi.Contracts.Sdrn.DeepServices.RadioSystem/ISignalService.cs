@@ -1,4 +1,5 @@
 ﻿using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.SignalService;
+using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.AntennaPattern;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,5 +18,9 @@ namespace Atdi.Contracts.Sdrn.DeepServices.RadioSystem
 
 		double CalcAntennaGain(in CalcAntennaGainArgs args);
 
-	}
+
+        DiagrammPoint[] CalcAntennaPattern(string points, AntennaPatternType  antennaPatternType, double gain);
+
+
+    }
 }

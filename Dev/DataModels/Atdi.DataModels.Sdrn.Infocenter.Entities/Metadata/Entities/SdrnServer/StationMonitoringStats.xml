@@ -4,7 +4,7 @@
   Title       = "Station Monitoring Measurement Result Statistics"
   Desc        = "The statistics of the measurement result of the station monitoring"
   Type        = "Extension"
-  BaseEntity  = "StationMonitoring"
+  BaseEntity  = "Atdi.DataModels.Sdrn.Infocenter.Entities.SdrnServer.StationMonitoring"
   xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   <DataSource Type="Database" Object="Table">
     <Name>SM_MEAS_RESULTS_STATS</Name>

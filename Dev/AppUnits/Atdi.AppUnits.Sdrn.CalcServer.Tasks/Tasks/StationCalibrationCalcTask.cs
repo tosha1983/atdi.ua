@@ -1,5 +1,6 @@
 ﻿using Atdi.Contracts.Sdrn.CalcServer;
 using Atdi.DataModels.Sdrn.CalcServer;
+using Atdi.Contracts.Sdrn.Infocenter;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,7 @@ using Atdi.DataModels.Sdrn.DeepServices.Gis;
 using Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations;
 using Atdi.DataModels.Sdrn.CalcServer.Internal.Maps;
 using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Gis;
-using Atdi.DataModels.Sdrn.Infocenter.Entities.Entities.SdrnServer;
+using Atdi.DataModels.Sdrn.Infocenter.Entities.SdrnServer;
 using Atdi.Platform;
 using Atdi.Common;
 using Atdi.Common.Extensions;
@@ -43,7 +44,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
         private readonly AppServerComponentConfig _appServerComponentConfig;
         private ITaskContext _taskContext;
 		private IDataLayerScope _calcDbScope;
-		private TaskParameters _parameters;
+        private IDataLayerScope _infoDbScope;
+        private TaskParameters _parameters;
 		private ContextStation[] _contextStations;
         private DriveTestsResult[] _contextDriveTestsResult;
        
@@ -77,12 +79,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
             ILogger logger)
 		{
 			_calcServerDataLayer = calcServerDataLayer;
-			_contextService = contextService;
+            _infocenterDataLayer = infocenterDataLayer;
+            _contextService = contextService;
 			_mapRepository = mapRepository;
 			_iterationsPool = iterationsPool;
 			_transformation = transformation;
             _appServerComponentConfig = appServerComponentConfig;
-            _infocenterDataLayer = infocenterDataLayer;
             _poolSite = poolSite;
             _logger = logger;
 		}
@@ -94,13 +96,19 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 				_calcDbScope.Dispose();
 				_calcDbScope = null;
 			}
-			_taskContext = null;
+            if (_infoDbScope != null)
+            {
+                _infoDbScope.Dispose();
+                _infoDbScope = null;
+            }
+            _taskContext = null;
 		}
 
         public void Load(ITaskContext taskContext)
         {
             this._taskContext = taskContext;
             this._calcDbScope = this._calcServerDataLayer.CreateScope<CalcServerDataContext>();
+            this._infoDbScope = this._infocenterDataLayer.CreateScope<InfocenterDataContext>();
 
             // загрузить параметры задачи
             this.LoadTaskParameters();
@@ -184,8 +192,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                 c => c.MinNumberPointForCorrelation,
                                 c => c.TrustOldResults,
                                 c => c.UseMeasurementSameGSID,
-                                c => c.СorrelationThresholdHard,
-                                c => c.СorrelationThresholdWeak,
+                                c => c.CorrelationThresholdHard,
+                                c => c.CorrelationThresholdWeak,
                                 c => c.InfocMeasResults,
                                 c => c.StationIds
                             )
@@ -216,25 +224,25 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                         DistanceAroundContour_km = reader.GetValue(c => c.DistanceAroundContour_km).GetValueOrDefault(),
                         MinNumberPointForCorrelation = reader.GetValue(c => c.MinNumberPointForCorrelation).GetValueOrDefault(),
                         TrustOldResults = reader.GetValue(c => c.TrustOldResults).GetValueOrDefault(),
-                        UseMeasurementSameGSID = reader.GetValue(c => c.UseMeasurementSameGSID).GetValueOrDefault(),
-                        СorrelationThresholdHard = reader.GetValue(c => c.СorrelationThresholdHard).GetValueOrDefault(),
-                        СorrelationThresholdWeak = reader.GetValue(c => c.СorrelationThresholdWeak).GetValueOrDefault()
+                        UseMeasurementSameGSID = reader.GetValue(c => c.UseMeasurementSameGSID),
+                        СorrelationThresholdHard = reader.GetValue(c => c.CorrelationThresholdHard).GetValueOrDefault(),
+                        СorrelationThresholdWeak = reader.GetValue(c => c.CorrelationThresholdWeak).GetValueOrDefault()
                     },
                     CorellationParameters = new CorellationParameters()
                     {
                         CorrelationDistance_m = reader.GetValue(c => c.CorrelationDistance_m).GetValueOrDefault(),
                         Delta_dB = reader.GetValue(c => c.Delta_dB).GetValueOrDefault(),
-                        Detail = reader.GetValue(c => c.Detail).GetValueOrDefault(),
+                        Detail = reader.GetValue(c => c.Detail),
                         MaxAntennasPatternLoss_dB = reader.GetValue(c => c.MaxAntennasPatternLoss_dB).GetValueOrDefault(),
                         MaxRangeMeasurements_dBmkV = reader.GetValue(c => c.MaxRangeMeasurements_dBmkV).GetValueOrDefault(),
                         MinRangeMeasurements_dBmkV = reader.GetValue(c => c.MinRangeMeasurements_dBmkV).GetValueOrDefault()
                     },
                     CalibrationParameters = new CalibrationParameters()
                     {
-                        AltitudeStation = reader.GetValue(c => c.AltitudeStation).GetValueOrDefault(),
-                        AzimuthStation = reader.GetValue(c => c.AzimuthStation).GetValueOrDefault(),
-                        CascadeTuning = reader.GetValue(c => c.CascadeTuning).GetValueOrDefault(),
-                        CoordinatesStation = reader.GetValue(c => c.CoordinatesStation).GetValueOrDefault(),
+                        AltitudeStation = reader.GetValue(c => c.AltitudeStation),
+                        AzimuthStation = reader.GetValue(c => c.AzimuthStation),
+                        CascadeTuning = reader.GetValue(c => c.CascadeTuning),
+                        CoordinatesStation = reader.GetValue(c => c.CoordinatesStation),
                         DetailOfCascade = reader.GetValue(c => c.DetailOfCascade).GetValueOrDefault(),
                         MaxDeviationAltitudeStation_m = reader.GetValue(c => c.MaxDeviationAltitudeStation_m).GetValueOrDefault(),
                         MaxDeviationAzimuthStation_deg = reader.GetValue(c => c.MaxDeviationAzimuthStation_deg).GetValueOrDefault(),
@@ -242,7 +250,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                         MaxDeviationTiltStationDeg = reader.GetValue(c => c.MaxDeviationTiltStation_deg).GetValueOrDefault(),
                         Method = method,
                         NumberCascade = reader.GetValue(c => c.NumberCascade).GetValueOrDefault(),
-                        PowerStation = reader.GetValue(c => c.PowerStation).GetValueOrDefault(),
+                        PowerStation = reader.GetValue(c => c.PowerStation),
                         ShiftAltitudeStationMax_m = reader.GetValue(c => c.ShiftAltitudeStationMax_m).GetValueOrDefault(),
                         ShiftAltitudeStationMin_m = reader.GetValue(c => c.ShiftAltitudeStationMin_m).GetValueOrDefault(),
                         ShiftAltitudeStationStep_m = reader.GetValue(c => c.ShiftAltitudeStationStep_m).GetValueOrDefault(),
@@ -257,7 +265,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                         ShiftTiltStationMax_Deg = reader.GetValue(c => c.ShiftTiltStationMax_deg).GetValueOrDefault(),
                         ShiftTiltStationMin_Deg = reader.GetValue(c => c.ShiftTiltStationMin_deg).GetValueOrDefault(),
                         ShiftTiltStationStep_Deg = reader.GetValue(c => c.ShiftTiltStationStep_deg).GetValueOrDefault(),
-                        TiltStation = reader.GetValue(c => c.TiltStation).GetValueOrDefault()
+                        TiltStation = reader.GetValue(c => c.TiltStation)
                     },
                     Projection = reader.GetValue(c => c.TASK.CONTEXT.PROJECT.Projection),
                     MapName = reader.GetValue(c => c.TASK.MapName),
@@ -453,8 +461,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
             var partResultIds = BreakDownElemBlocks.BreakDown(this._parameters.InfocMeasResults);
             for (int i = 0; i < partResultIds.Count; i++)
             {
-
-                var queryDriveTestPoints = _infocenterDataLayer.GetBuilder<IDriveTestPoints>()
+                    var queryDriveTestPoints = _infocenterDataLayer.GetBuilder<IDriveTestPoints>()
                     .From()
                     .Select(
                         c => c.Id,
@@ -468,11 +475,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                     )
                     .Where(c => c.DRIVE_TEST.RESULT.Id, ConditionOperator.In, partResultIds[i].ToArray());
 
-                var contextDriveTestsResults = _calcDbScope.Executor.ExecuteAndFetch(queryDriveTestPoints, reader =>
+                var contextDriveTestsResults = _infoDbScope.Executor.ExecuteAndFetch(queryDriveTestPoints, reader =>
                 {
                     while (reader.Read())
                     {
-                        var points = reader.GetValue(c => c.Points).Deserialize<DriveTestPoint[]>();
+                        var points = reader.GetValueAs<DriveTestPoint[]>(c => c.Points);
                         var pointFS = new PointFS[points.Length];
                         for (int j=0; j<points.Length; j++)
                         {
@@ -543,7 +550,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                     var driveTest = result.ResultCalibrationDriveTest[z];
                     var insertQueryStationCalibrationDriveTestResult = _calcServerDataLayer.GetBuilder<IStationCalibrationDriveTestResult>()
                     .Insert()
-                    .SetValue(c => c.CalibrationResultId, key.Id)
+                    .SetValue(c => c.CalibrationResultId, key.ResultId)
                     .SetValue(c => c.CountPointsInDriveTest, driveTest.CountPointsInDriveTest)
                     .SetValue(c => c.ExternalCode, driveTest.ExternalCode)
                     .SetValue(c => c.ExternalSource, driveTest.ExternalSource)
@@ -559,7 +566,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                     var station = result.ResultCalibrationStation[z];
                     var insertQueryStationCalibrationStaResult = _calcServerDataLayer.GetBuilder<IStationCalibrationStaResult>()
                     .Insert()
-                    .SetValue(c => c.CalibrationResultId, key.Id)
+                    .SetValue(c => c.CalibrationResultId, key.ResultId)
                     .SetValue(c => c.ExternalCode, station.ExternalCode)
                     .SetValue(c => c.ExternalSource, station.ExternalSource)
                     .SetValue(c => c.LicenseGsid, station.LicenseGsid)
