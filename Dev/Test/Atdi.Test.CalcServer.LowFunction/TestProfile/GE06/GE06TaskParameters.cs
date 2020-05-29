@@ -14,6 +14,8 @@ namespace Atdi.Test.CalcServer.LowFunction.TestProfile
         public bool CoutureByFieldStrength;
         public int[] FieldStrength;
         public int SubscribersHeight;
+        public double PercentageTime;
+        bool UseEffectiveHeight;
         public CalculationType CalculationType;
     }
     public enum CalculationType
