@@ -93,6 +93,7 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.Map
             };
 
             _commandDispatcher.Send(mapModifier);
+            _starter.Stop(this);
         }
         public override void Dispose()
         {

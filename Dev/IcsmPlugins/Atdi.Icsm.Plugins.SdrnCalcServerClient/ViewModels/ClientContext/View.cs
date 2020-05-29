@@ -100,6 +100,7 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ClientContext
 
                     _commandDispatcher.Send(contextModifier);
                 }
+                _starter.Stop(this);
             }
             catch (Exception e)
             {
