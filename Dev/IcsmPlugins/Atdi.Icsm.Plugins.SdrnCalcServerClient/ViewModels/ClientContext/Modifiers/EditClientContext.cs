@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager.Modifiers
+namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ClientContext.Modifiers
 {
-    public class EditProject
+    public class EditClientContext
     {
         public long Id;
 
@@ -14,7 +14,7 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager.Modif
 
         public string Note;
 
-        public string Projection;
+        public byte TypeCode;
 
         public bool Success;
     }

@@ -10,6 +10,7 @@ using System.Collections;
 using Atdi.Platform.Cqrs;
 using Atdi.Platform.Events;
 using System.Windows;
+using Atdi.DataModels.Sdrn.CalcServer.Entities;
 
 namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.Map
 {
@@ -85,7 +86,13 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.Map
         }
         private void OnCreatedMapHandle(Events.OnCreatedMap data)
         {
-            
+            var mapModifier = new Modifiers.ChangeStateMap
+            {
+                Id = data.MapId,
+                StatusCode = (byte)ProjectMapStatusCode.Pending
+            };
+
+            _commandDispatcher.Send(mapModifier);
         }
         public override void Dispose()
         {
