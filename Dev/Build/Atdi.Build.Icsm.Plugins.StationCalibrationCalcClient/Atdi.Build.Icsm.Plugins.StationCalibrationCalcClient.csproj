@@ -66,10 +66,6 @@
       <Project>{aa445e89-a706-4a2a-b28e-edbae056652b}</Project>
       <Name>Atdi.AppUnits</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Common\Atdi.Common\Atdi.Common.csproj">
-      <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
-      <Name>Atdi.Common</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Contracts\Api\Atdi.Contracts.Api.EntityOrm.WebClient\Atdi.Contracts.Api.EntityOrm.WebClient.csproj">
       <Project>{a252d199-1162-484d-b50a-8c44a4edd670}</Project>
       <Name>Atdi.Contracts.Api.EntityOrm.WebClient</Name>
@@ -118,10 +114,6 @@
       <Project>{1c3e2475-c113-47f5-aac6-8ae80bc2ec53}</Project>
       <Name>Atdi.Icsm.Plugins.SdrnStationCalibrationCalc</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Platform\Atdi.Platform.AppServer\Atdi.Platform.AppServer.csproj">
-      <Project>{20d45626-3779-4fc8-a55a-1c919d95649e}</Project>
-      <Name>Atdi.Platform.AppServer</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Platform\Atdi.Platform.Configurator\Atdi.Platform.Configurator.csproj">
       <Project>{98e79b80-3176-4cad-b7ba-b5caa6752fab}</Project>
       <Name>Atdi.Platform.Configurator</Name>
@@ -129,10 +121,6 @@
     <ProjectReference Include="..\..\Platform\Atdi.Platform.Logging\Atdi.Platform.Logging.csproj">
       <Project>{1389b99f-ff39-4671-9789-d2e1aa91527c}</Project>
       <Name>Atdi.Platform.Logging</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Platform\Atdi.Platform.ServicesContainer\Atdi.Platform.ServicesContainer.csproj">
-      <Project>{153006da-1f99-4d33-b490-d3a87e7dfd03}</Project>
-      <Name>Atdi.Platform.ServicesContainer</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Platform\Atdi.Platform\Atdi.Platform.csproj">
       <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
