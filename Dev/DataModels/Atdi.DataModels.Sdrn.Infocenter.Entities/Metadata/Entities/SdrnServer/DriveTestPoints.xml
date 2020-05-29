@@ -11,7 +11,7 @@
   </DataSource>
   <Fields>
     <Field Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column" Desc="The Id record." Title="Id record"/>
-    <Field Name="DRIVE_TEST" SourceName="DriveTest" SourceType="Reference" Title="Drive Test" Required="true"/>
+    <Field Name="DRIVE_TEST" SourceName="Atdi.DataModels.Sdrn.Infocenter.Entities.SdrnServer.DriveTest" SourceType="Reference" Title="Drive Test" Required="true"/>
     <Field Name="Points" DataType="Bytes.MAX" SourceName="POINTS_ARRAY" SourceType="Column" Desc="The array of statistic level car points" Title="Data" Required="true"/>
     <Field Name="Count" SourceType="Column" SourceName="POINTS_COUNT" DataType="Integer.32" Required="true" Title="Points Count" Desc="The points count in the array"  />
   </Fields>

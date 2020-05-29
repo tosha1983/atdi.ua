@@ -96,6 +96,10 @@
       <Project>{dbbcbdeb-202d-4068-94f6-bb78bd47d51a}</Project>
       <Name>Atdi.Contracts.Sdrn.DeepServices</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.Infocenter\Atdi.Contracts.Sdrn.Infocenter.csproj">
+      <Project>{b1074928-0e74-4230-a326-2a387d4d1a12}</Project>
+      <Name>Atdi.Contracts.Sdrn.Infocenter</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.EntityOrm\Atdi.DataModels.EntityOrm.csproj">
       <Project>{73C8791E-3FC5-4C91-84E5-C19C98096F10}</Project>
       <Name>Atdi.DataModels.EntityOrm</Name>

@@ -10,7 +10,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks
 	[EntityPrimaryKey]
 	public interface IStationCalibrationResult_PK
     {
-		long Id { get; set; }
+		long ResultId { get; set; }
 	}
 
 	[Entity]

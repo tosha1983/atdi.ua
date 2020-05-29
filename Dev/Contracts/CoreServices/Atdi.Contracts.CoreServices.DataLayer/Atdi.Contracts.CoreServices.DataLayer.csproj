@@ -60,7 +60,6 @@
     <Compile Include="IDataReader.cs" />
     <Compile Include="IEngineExecuter.cs" />
     <Compile Include="IEngineDataReader.cs" />
-    <Compile Include="IEngineExecutionResult.cs" />
     <Compile Include="IEngineQueryPattern.cs" />
     <Compile Include="IEngineSyntax.cs" />
     <Compile Include="IQueryDeleteStatement.cs" />

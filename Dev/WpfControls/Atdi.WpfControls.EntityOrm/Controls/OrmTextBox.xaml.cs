@@ -23,6 +23,7 @@ namespace Atdi.WpfControls.EntityOrm.Controls
         double _captionWith = 150;
         string _caption = "";
         string _text = "";
+        bool _enabled = true;
         public OrmTextBox()
         {
             InitializeComponent();
@@ -45,6 +46,18 @@ namespace Atdi.WpfControls.EntityOrm.Controls
                 lblCaption.Content = this._caption;
             }
         }
+        public static DependencyProperty EnabledProperty = DependencyProperty.Register("Enabled", typeof(bool), typeof(OrmDatePicker),
+            new FrameworkPropertyMetadata(default(bool), new PropertyChangedCallback(OnPropertyChanged)));
+        public bool Enabled
+        {
+            get { return _enabled; }
+            set
+            {
+                SetValue(EnabledProperty, value);
+                this._enabled = value;
+                txtMain.IsEnabled = this._enabled;
+            }
+        }
 
         public static DependencyProperty TextProperty = DependencyProperty.Register("Text", typeof(string), typeof(OrmTextBox),
             new FrameworkPropertyMetadata(default(string), new PropertyChangedCallback(OnPropertyChanged)));
@@ -64,6 +77,8 @@ namespace Atdi.WpfControls.EntityOrm.Controls
 
             if (e.Property == TextProperty)
                 ctr.Text = (string)e.NewValue;
+            else if (e.Property == EnabledProperty)
+                ctr.Enabled = (bool)e.NewValue;
         }
         private void RedrawControl()
         {
@@ -76,6 +91,11 @@ namespace Atdi.WpfControls.EntityOrm.Controls
         private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             RedrawControl();
+        }
+
+        private void TxtMain_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            Text = txtMain.Text;
         }
     }
 }

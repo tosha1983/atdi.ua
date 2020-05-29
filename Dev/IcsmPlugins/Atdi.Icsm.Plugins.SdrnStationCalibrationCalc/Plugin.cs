@@ -20,7 +20,7 @@ namespace XICSM.SdrnStationCalibrationCalc
 		{
 			mainMenu.InsertItem(PluginMetadata.Menu.MainTool, PluginMetadata.Menu.Tools.About, _menuCommands.OnAboutCommand);
 
-			mainMenu.InsertItem(PluginMetadata.Menu.MainTool, "Entity Orm Test", _menuCommands.OnRunEntityOrmTestCommand);
+			mainMenu.InsertItem(PluginMetadata.Menu.MainTool, "Calibration of stations according measurements", _menuCommands.OnRunCalibrationStationsMeasurementsCommand);
 		}
 	}
 }

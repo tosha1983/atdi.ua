@@ -10,9 +10,9 @@ namespace Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations
 	{
 		public float Gain_dB;
 
-		public double Tilt_deg;
+		public float Tilt_deg;
 
-		public double Azimuth_deg;
+		public float Azimuth_deg;
 
 		public float XPD_dB;
 

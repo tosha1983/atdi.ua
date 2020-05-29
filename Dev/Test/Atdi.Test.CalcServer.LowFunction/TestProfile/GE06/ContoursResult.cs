@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.Test.CalcServer.LowFunction.TestProfile.GE06
+namespace Atdi.Test.CalcServer.LowFunction.GE06
 {
     public class AffectedADMResult
     {
