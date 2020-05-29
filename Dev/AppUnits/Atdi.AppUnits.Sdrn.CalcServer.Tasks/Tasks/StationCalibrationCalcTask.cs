@@ -1,5 +1,6 @@
 ﻿using Atdi.Contracts.Sdrn.CalcServer;
 using Atdi.DataModels.Sdrn.CalcServer;
+using Atdi.Contracts.Sdrn.Infocenter;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,7 +44,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
         private readonly AppServerComponentConfig _appServerComponentConfig;
         private ITaskContext _taskContext;
 		private IDataLayerScope _calcDbScope;
-		private TaskParameters _parameters;
+        private IDataLayerScope _infoDbScope;
+        private TaskParameters _parameters;
 		private ContextStation[] _contextStations;
         private DriveTestsResult[] _contextDriveTestsResult;
        
@@ -77,12 +79,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
             ILogger logger)
 		{
 			_calcServerDataLayer = calcServerDataLayer;
-			_contextService = contextService;
+            _infocenterDataLayer = infocenterDataLayer;
+            _contextService = contextService;
 			_mapRepository = mapRepository;
 			_iterationsPool = iterationsPool;
 			_transformation = transformation;
             _appServerComponentConfig = appServerComponentConfig;
-            _infocenterDataLayer = infocenterDataLayer;
             _poolSite = poolSite;
             _logger = logger;
 		}
@@ -94,13 +96,19 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 				_calcDbScope.Dispose();
 				_calcDbScope = null;
 			}
-			_taskContext = null;
+            if (_infoDbScope != null)
+            {
+                _infoDbScope.Dispose();
+                _infoDbScope = null;
+            }
+            _taskContext = null;
 		}
 
         public void Load(ITaskContext taskContext)
         {
             this._taskContext = taskContext;
             this._calcDbScope = this._calcServerDataLayer.CreateScope<CalcServerDataContext>();
+            this._infoDbScope = this._infocenterDataLayer.CreateScope<InfocenterDataContext>();
 
             // загрузить параметры задачи
             this.LoadTaskParameters();
@@ -453,8 +461,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
             var partResultIds = BreakDownElemBlocks.BreakDown(this._parameters.InfocMeasResults);
             for (int i = 0; i < partResultIds.Count; i++)
             {
-
-                var queryDriveTestPoints = _infocenterDataLayer.GetBuilder<IDriveTestPoints>()
+                    var queryDriveTestPoints = _infocenterDataLayer.GetBuilder<IDriveTestPoints>()
                     .From()
                     .Select(
                         c => c.Id,
@@ -468,11 +475,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                     )
                     .Where(c => c.DRIVE_TEST.RESULT.Id, ConditionOperator.In, partResultIds[i].ToArray());
 
-                var contextDriveTestsResults = _calcDbScope.Executor.ExecuteAndFetch(queryDriveTestPoints, reader =>
+                var contextDriveTestsResults = _infoDbScope.Executor.ExecuteAndFetch(queryDriveTestPoints, reader =>
                 {
                     while (reader.Read())
                     {
-                        var points = reader.GetValue(c => c.Points).Deserialize<DriveTestPoint[]>();
+                        var points = reader.GetValueAs<DriveTestPoint[]>(c => c.Points);
                         var pointFS = new PointFS[points.Length];
                         for (int j=0; j<points.Length; j++)
                         {
@@ -543,7 +550,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                     var driveTest = result.ResultCalibrationDriveTest[z];
                     var insertQueryStationCalibrationDriveTestResult = _calcServerDataLayer.GetBuilder<IStationCalibrationDriveTestResult>()
                     .Insert()
-                    .SetValue(c => c.CalibrationResultId, key.Id)
+                    .SetValue(c => c.CalibrationResultId, key.ResultId)
                     .SetValue(c => c.CountPointsInDriveTest, driveTest.CountPointsInDriveTest)
                     .SetValue(c => c.ExternalCode, driveTest.ExternalCode)
                     .SetValue(c => c.ExternalSource, driveTest.ExternalSource)
@@ -559,7 +566,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                     var station = result.ResultCalibrationStation[z];
                     var insertQueryStationCalibrationStaResult = _calcServerDataLayer.GetBuilder<IStationCalibrationStaResult>()
                     .Insert()
-                    .SetValue(c => c.CalibrationResultId, key.Id)
+                    .SetValue(c => c.CalibrationResultId, key.ResultId)
                     .SetValue(c => c.ExternalCode, station.ExternalCode)
                     .SetValue(c => c.ExternalSource, station.ExternalSource)
                     .SetValue(c => c.LicenseGsid, station.LicenseGsid)

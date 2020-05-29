@@ -10,8 +10,6 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager.Modif
     {
         public long Id;
 
-        public Guid OwnerId;
-
         public string Name;
 
         public string Note;

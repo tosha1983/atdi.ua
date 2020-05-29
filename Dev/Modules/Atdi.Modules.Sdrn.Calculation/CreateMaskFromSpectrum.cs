@@ -74,7 +74,7 @@ namespace Atdi.Modules.Sdrn.Calculation
                 
                 
             }
-            catch (Exception e)
+            catch (Exception)
             {
             }
             return maxValue.Value;

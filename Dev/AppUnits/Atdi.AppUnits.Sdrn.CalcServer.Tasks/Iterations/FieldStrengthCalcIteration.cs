@@ -344,7 +344,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     Level_dBm = Level_dBm
                 };
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }

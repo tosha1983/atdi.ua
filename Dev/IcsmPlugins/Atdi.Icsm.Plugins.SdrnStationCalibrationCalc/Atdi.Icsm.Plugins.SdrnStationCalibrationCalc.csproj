@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -41,8 +42,11 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\ICS Control Client\ICSM 6.2.70\OrmCs.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Windows" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -70,16 +74,33 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="ViewModels\StationCalibrationManager\ManageProject\StationCalibrationCalcTask.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Models\StationMonitoring\RoutesStationMonitoringModel.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Queries\MobStations\MobStationsDataAdapter.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Adapters\Icsm\Base\DataAdapterBase.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Adapters\Icsm\AreasDataAdapter.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Adapters\ParametersDataAdapter.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Adapters\StationMonitoringDataAdapter.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Events\Parameters\OnEditParamsCalculation.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Events\Parameters\OnDeleteParamsCalculation.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Events\Parameters\OnCreatedParamsCalculation.cs" />
-    <Compile Include="ViewModels\StationCalibrationManager\Models\ICSMStation\MobStationModel.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Models\GlobalIdentity\GCIDDataModel.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Models\ICSMStation\IcsmMobStationReceiver.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Models\ICSMStation\IcsmMobStationCoordinates.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Models\ICSMStation\IcsmMobStationTransmitter.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Models\ICSMStation\IcsmMobStationPattern.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Models\ICSMStation\IcsmMobStationAntenna.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Models\ICSMStation\IcsmMobStationSite.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Models\ICSMStation\IcsmMobStation.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Models\ICSMStation\GetStationsParamsModel.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Models\ICSMStation\DataLocationModel.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Models\ICSMStation\AreaModel.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Models\ICSMStation\IcsmStationName.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Models\ICSMStation\MobStationStatus.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Models\Parameters\MethodParamsCalculationModel.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Models\Parameters\ParamsCalculationModel.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Models\StationMonitoring\StationMonitoringModel.cs" />
-    <Compile Include="ViewModels\StationCalibrationManager\Models\StationMonitoring\SelectedStationType.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Models\ICSMStation\SelectedStationType.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Modifiers\Parameters\EditParamsCalculationHandler.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Modifiers\Parameters\EditParamsCalculation.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Modifiers\Parameters\DeleteParamsCalculationHandler.cs" />
@@ -87,9 +108,15 @@
     <Compile Include="ViewModels\StationCalibrationManager\Modifiers\Parameters\ParamsCalculationBase.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Modifiers\Parameters\CreateParamsCalculation.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Modifiers\Parameters\CreateParamsCalculationHandler.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Queries\GlobalIdentity\GCIDDataModelByParams.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Queries\GlobalIdentity\GCIDDataModelByParamsExecutor.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Queries\MobStations\MobStationsLoadExecutor.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Queries\MobStations\MobStationsLoadModelByParams.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Queries\Parameters\GetParamsCalculationByTaskIdExecutor.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Queries\Parameters\GetParamsCalculationByTaskId.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Queries\StationMonitoring\RoutesStationMonitoringModelById.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Queries\StationMonitoring\StationMonitoringModelById.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Queries\StationMonitoring\RoutesStationMonitoringModelByIdExecutor.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Queries\StationMonitoring\StationMonitoringModelByIdExecutor.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\View.cs" />
   </ItemGroup>
@@ -102,6 +129,14 @@
       <Project>{a252d199-1162-484d-b50a-8c44a4edd670}</Project>
       <Name>Atdi.Contracts.Api.EntityOrm.WebClient</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeepServices.RadioSystem\Atdi.Contracts.Sdrn.DeepServices.RadioSystem.csproj">
+      <Project>{d576643b-fcdb-4873-9f08-abcfbb5e9e8f}</Project>
+      <Name>Atdi.Contracts.Sdrn.DeepServices.RadioSystem</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeepServices\Atdi.Contracts.Sdrn.DeepServices.csproj">
+      <Project>{dbbcbdeb-202d-4068-94f6-bb78bd47d51a}</Project>
+      <Name>Atdi.Contracts.Sdrn.DeepServices</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Api.EntityOrm.WebClient\Atdi.DataModels.Api.EntityOrm.WebClient.csproj">
       <Project>{36ae7031-fc14-4305-bd04-87c70fda0f25}</Project>
       <Name>Atdi.DataModels.Api.EntityOrm.WebClient</Name>
@@ -110,6 +145,14 @@
       <Project>{6a72e0c5-f8a4-412f-9395-13abe07367b1}</Project>
       <Name>Atdi.DataModels.Sdrn.CalcServer.Entities</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices.RadioSystem\Atdi.DataModels.Sdrn.DeepServices.RadioSystem.csproj">
+      <Project>{c67fbe11-fef0-48ad-9912-61bf4c61db03}</Project>
+      <Name>Atdi.DataModels.Sdrn.DeepServices.RadioSystem</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices\Atdi.DataModels.Sdrn.DeepServices.csproj">
+      <Project>{b26b6bd9-699d-46b8-ba43-0d0ba803087e}</Project>
+      <Name>Atdi.DataModels.Sdrn.DeepServices</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.Infocenter.Entities\Atdi.DataModels.Sdrn.Infocenter.Entities.csproj">
       <Project>{b793c198-41c4-4e9e-9e18-479a8a51b0b0}</Project>
       <Name>Atdi.DataModels.Sdrn.Infocenter.Entities</Name>
@@ -117,6 +160,10 @@
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels\Atdi.DataModels.csproj">
       <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
       <Name>Atdi.DataModels</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Platform\Atdi.Platform.AppServer\Atdi.Platform.AppServer.csproj">
+      <Project>{20d45626-3779-4fc8-a55a-1c919d95649e}</Project>
+      <Name>Atdi.Platform.AppServer</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Platform\Atdi.Platform.Configurator\Atdi.Platform.Configurator.csproj">
       <Project>{98e79b80-3176-4cad-b7ba-b5caa6752fab}</Project>
@@ -156,7 +203,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetDir)XICSM_*.dll" "c:\ATDI\ICS ManagerCalcServer"
-copy "$(TargetDir)Atdi.*.dll"    "c:\ATDI\ICS ManagerCalcServer"</PostBuildEvent>
+    <PostBuildEvent>copy "$(TargetDir)ru-RU\*.*"   "C:\ATDI\ICS ManagerCalcServer\ru-RU"
+copy "$(TargetDir)uk-UA\*.*"  "C:\ATDI\ICS ManagerCalcServer\uk-UA"
+</PostBuildEvent>
   </PropertyGroup>
 </Project>

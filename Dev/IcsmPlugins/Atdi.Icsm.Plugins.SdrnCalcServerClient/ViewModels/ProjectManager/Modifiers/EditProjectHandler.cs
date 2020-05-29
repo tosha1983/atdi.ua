@@ -22,26 +22,17 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager.Modif
             _dataLayer = dataLayer;
             _eventBus = eventBus;
         }
-
         public void Handle(EditProject command)
         {
             var query = _dataLayer.GetBuilder<IProject>()
                 .Update()
-                //.SetValue(c => c.OwnerProjectId, command.OwnerId)
-                //.SetValue(c => c.OwnerInstance, _config.Instance)
-                //.SetValue(c => c.StatusCode, (byte)ProjectStatusCode.Created)
-                //.SetValue(c => c.StatusName, "Created")
                 .SetValue(c => c.Projection, command.Projection)
                 .SetValue(c => c.Name, command.Name)
                 .SetValue(c => c.Note, command.Note)
                 .Filter(c => c.Id, command.Id);
             _dataLayer.Executor.Execute(query);
 
-            _eventBus.Send(new OnEditedProject
-            {
-                ProjectId = command.Id
-            });
-
+            _eventBus.Send(new OnEditedProject { ProjectId = command.Id });
         }
     }
 }

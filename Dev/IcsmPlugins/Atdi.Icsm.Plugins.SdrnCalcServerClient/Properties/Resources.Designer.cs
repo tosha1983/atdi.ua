@@ -79,6 +79,15 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Client Context.
+        /// </summary>
+        public static string ClientContext {
+            get {
+                return ResourceManager.GetString("ClientContext", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Created Date.
         /// </summary>
         public static string CreatedDate {
@@ -277,6 +286,15 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Save.
+        /// </summary>
+        public static string Save {
+            get {
+                return ResourceManager.GetString("Save", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Status Name.
         /// </summary>
         public static string StatusName {
@@ -300,6 +318,15 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.Properties {
         public static string StepUnit {
             get {
                 return ResourceManager.GetString("StepUnit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type.
+        /// </summary>
+        public static string Type {
+            get {
+                return ResourceManager.GetString("Type", resourceCulture);
             }
         }
         

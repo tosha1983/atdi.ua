@@ -10,7 +10,7 @@ namespace Atdi.DataModels.Sdrn.DeepServices.RadioSystem.AntennaPattern
     public class DiagrammPoint
     {
         public double Angle;
-        public double Loss;
+        public float Loss;
     }
 }
 

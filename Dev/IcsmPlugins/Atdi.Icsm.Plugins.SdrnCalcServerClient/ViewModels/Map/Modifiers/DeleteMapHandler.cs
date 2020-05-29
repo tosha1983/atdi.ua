@@ -23,7 +23,6 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.Map.Modifiers
             _dataLayer = dataLayer;
             _eventBus = eventBus;
         }
-
         public void Handle(DeleteMap command)
         {
             var query = _dataLayer.GetBuilder<IProjectMap>()
@@ -31,11 +30,7 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.Map.Modifiers
                 .Filter(c => c.Id, command.Id);
             _dataLayer.Executor.Execute(query);
 
-            _eventBus.Send(new OnDeletedMap
-            {
-                MapId = command.Id
-            });
-
+            _eventBus.Send(new OnDeletedMap { MapId = command.Id });
         }
     }
 }

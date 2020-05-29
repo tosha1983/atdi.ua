@@ -48,6 +48,16 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         {
             var calcPointArrayBuffer = default(CalcPoint[]);
 
+
+            if (data.GSIDGroupeDriveTests.Length==0)
+            {
+                throw new Exception("The number of drive tests is 0!");
+            }
+            if (data.GSIDGroupeStation.Length == 0)
+            {
+                throw new Exception("The number of stations is 0!");
+            }
+
             // создаем список для хранения результатов обработки
             var listCalcCorellationResult = new List<CalibrationResult>();
             try
@@ -600,7 +610,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     listCalcCorellationResult.Add(calcCorellationResult);
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }

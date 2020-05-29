@@ -92,6 +92,7 @@
                     <DataGridTextColumn Header="{x:Static res:Resources.OwnerInstance}" Binding="{Binding Path=OwnerInstance}"></DataGridTextColumn>
                     <DataGridTextColumn Header="{x:Static res:Resources.CreatedDate}" Binding="{Binding Path=CreatedDate, StringFormat='{}{0:dd.MM.yyyy HH:mm}'}"></DataGridTextColumn>
                     <DataGridTextColumn Header="{x:Static res:Resources.StatusName}" Binding="{Binding Path=StatusName}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="{x:Static res:Resources.StatusNote}" Binding="{Binding Path=StatusNote}"></DataGridTextColumn>
                     <DataGridTextColumn Header="{x:Static res:Resources.StepUnit}" Binding="{Binding Path=StepUnit}"></DataGridTextColumn>
                     <DataGridTextColumn Header="{x:Static res:Resources.OwnerAxisXNumber}" Binding="{Binding Path=OwnerAxisXNumber}"></DataGridTextColumn>
                     <DataGridTextColumn Header="{x:Static res:Resources.OwnerAxisXStep}" Binding="{Binding Path=OwnerAxisXStep}"></DataGridTextColumn>
