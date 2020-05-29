@@ -30,6 +30,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
         private DateTime? _dateStartLoadDriveTest;
         private DateTime? _dateStopLoadDriveTest;
 
+        private long _taskId;
 
         private MP.MapDrawingData _currentMapData;
         private IList _currentAreas;
@@ -115,6 +116,12 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
         {
             get => this._isEnabledFieldId;
             set => this.Set(ref this._isEnabledFieldId, value);
+        }
+
+        public long TaskId
+        {
+            get => this._taskId;
+            set => this.Set(ref this._taskId, value);
         }
 
         private void CheckEnabledStart()

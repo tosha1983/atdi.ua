@@ -205,32 +205,6 @@
   <PropertyGroup>
     <PostBuildEvent>copy "$(TargetDir)ru-RU\*.*"   "C:\ATDI\ICS ManagerCalcServer\ru-RU"
 copy "$(TargetDir)uk-UA\*.*"  "C:\ATDI\ICS ManagerCalcServer\uk-UA"
-
-copy "..\..\..\..\Build\Atdi.Build.Icsm.Plugins.StationCalibrationCalcClient\bin\Debug\Atdi.Platform.ServicesContainer.dll"    "C:\ATDI\ICS ManagerCalcServer"
-copy "..\..\..\..\Build\Atdi.Build.Icsm.Plugins.StationCalibrationCalcClient\bin\Debug\Atdi.Platform.Logging.dll"    "C:\ATDI\ICS ManagerCalcServer"
-copy "..\..\..\..\Build\Atdi.Build.Icsm.Plugins.StationCalibrationCalcClient\bin\Debug\Atdi.AppUnits.dll"    "C:\ATDI\ICS ManagerCalcServer"
-copy "..\..\..\..\Build\Atdi.Build.Icsm.Plugins.StationCalibrationCalcClient\bin\Debug\Atdi.AppUnits.Sdrn.DeepServices.dll"    "C:\ATDI\ICS ManagerCalcServer"
-copy "..\..\..\..\Build\Atdi.Build.Icsm.Plugins.StationCalibrationCalcClient\bin\Debug\Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.dll"    "C:\ATDI\ICS ManagerCalcServer"
-copy "..\..\..\..\Build\Atdi.Build.Icsm.Plugins.StationCalibrationCalcClient\bin\Debug\XICSM_SdrnStationCalibrationCalc.dll"    "C:\ATDI\ICS ManagerCalcServer"
-copy "..\..\..\..\Build\Atdi.Build.Icsm.Plugins.StationCalibrationCalcClient\bin\Debug\Atdi.DataModels.Api.EntityOrm.WebClient.dll"    "C:\ATDI\ICS ManagerCalcServer"
-copy "..\..\..\..\Build\Atdi.Build.Icsm.Plugins.StationCalibrationCalcClient\bin\Debug\Atdi.DataModels.Sdrn.DeepServices.dll"    "C:\ATDI\ICS ManagerCalcServer"
-copy "..\..\..\..\Build\Atdi.Build.Icsm.Plugins.StationCalibrationCalcClient\bin\Debug\Atdi.Platform.dll"    "C:\ATDI\ICS ManagerCalcServer"
-copy "..\..\..\..\Build\Atdi.Build.Icsm.Plugins.StationCalibrationCalcClient\bin\Debug\Atdi.DataModels.EntityOrm.dll"    "C:\ATDI\ICS ManagerCalcServer"
-copy "..\..\..\..\Build\Atdi.Build.Icsm.Plugins.StationCalibrationCalcClient\bin\Debug\Atdi.DataModels.dll"    "C:\ATDI\ICS ManagerCalcServer"
-copy "..\..\..\..\Build\Atdi.Build.Icsm.Plugins.StationCalibrationCalcClient\bin\Debug\Atdi.Contracts.Api.EntityOrm.WebClient.dll"    "C:\ATDI\ICS ManagerCalcServer"
-copy "..\..\..\..\Build\Atdi.Build.Icsm.Plugins.StationCalibrationCalcClient\bin\Debug\Atdi.Contracts.Sdrn.DeepServices.dll"    "C:\ATDI\ICS ManagerCalcServer"
-copy "..\..\..\..\Build\Atdi.Build.Icsm.Plugins.StationCalibrationCalcClient\bin\Debug\Atdi.DataModels.Sdrn.DeepServices.RadioSystem.dll"    "C:\ATDI\ICS ManagerCalcServer"
-copy "..\..\..\..\Build\Atdi.Build.Icsm.Plugins.StationCalibrationCalcClient\bin\Debug\Atdi.Platform.AppServer.dll"    "C:\ATDI\ICS ManagerCalcServer"
-copy "..\..\..\..\Build\Atdi.Build.Icsm.Plugins.StationCalibrationCalcClient\bin\Debug\Atdi.Platform.Configurator.dll"    "C:\ATDI\ICS ManagerCalcServer"
-copy "..\..\..\..\Build\Atdi.Build.Icsm.Plugins.StationCalibrationCalcClient\bin\Debug\Atdi.Api.EntityOrm.WebClient.dll"    "C:\ATDI\ICS ManagerCalcServer"
-copy "..\..\..\..\Build\Atdi.Build.Icsm.Plugins.StationCalibrationCalcClient\bin\Debug\Atdi.DataModels.Sdrn.CalcServer.Entities.dll"    "C:\ATDI\ICS ManagerCalcServer"
-copy "..\..\..\..\Build\Atdi.Build.Icsm.Plugins.StationCalibrationCalcClient\bin\Debug\Atdi.Contracts.Sdrn.DeepServices.RadioSystem.dll"    "C:\ATDI\ICS ManagerCalcServer"
-copy "..\..\..\..\Build\Atdi.Build.Icsm.Plugins.StationCalibrationCalcClient\bin\Debug\Atdi.DataModels.Sdrn.Infocenter.Entities.dll"    "C:\ATDI\ICS ManagerCalcServer"
-copy "..\..\..\..\Build\Atdi.Build.Icsm.Plugins.StationCalibrationCalcClient\bin\Debug\Atdi.WpfControls.EntityOrm.dll"    "C:\ATDI\ICS ManagerCalcServer"
-copy "..\..\..\..\Build\Atdi.Build.Icsm.Plugins.StationCalibrationCalcClient\bin\Debug\Atdi.Icsm.Plugins.Core.dll"    "C:\ATDI\ICS ManagerCalcServer"
-copy "..\..\..\..\Build\Atdi.Build.Icsm.Plugins.StationCalibrationCalcClient\bin\Debug\Atdi.AppUnits.dll"    "C:\ATDI\ICS ManagerCalcServer"
-copy "..\..\..\..\Build\Atdi.Build.Icsm.Plugins.StationCalibrationCalcClient\bin\Debug\Atdi.AppUnits.Sdrn.DeepServices.dll"    "C:\ATDI\ICS ManagerCalcServer"
-copy "..\..\..\..\Build\Atdi.Build.Icsm.Plugins.StationCalibrationCalcClient\bin\Debug\Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.dll"    "C:\ATDI\ICS ManagerCalcServer"
-copy "..\..\..\..\Build\Atdi.Build.Icsm.Plugins.StationCalibrationCalcClient\bin\Debug\Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.dll" "C:\ATDI\ICS ManagerCalcServer"</PostBuildEvent>
+</PostBuildEvent>
   </PropertyGroup>
 </Project>
