@@ -109,6 +109,18 @@ namespace Atdi.Contracts.CoreServices.DataLayer
                         Value = ((GuidValueOperand)value).Value
                     };
                     break;
+                case DataType.ClrType:
+                    result = new ClrTypeColumnValue
+                    {
+                        Value = ((ClrTypeValueOperand)value).Value
+                    };
+                    break;
+                case DataType.ClrEnum:
+                    result = new ClrEnumColumnValue
+                    {
+                        Value = ((ClrEnumValueOperand)value).Value
+                    };
+                    break;
                 default:
                     throw new InvalidOperationException($"Unsupported data type with name '{value.DataType}'");
             }

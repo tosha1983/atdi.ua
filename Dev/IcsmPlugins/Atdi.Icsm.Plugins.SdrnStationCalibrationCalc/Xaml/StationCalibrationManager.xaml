@@ -40,7 +40,8 @@
           <RowDefinition Height="Auto"></RowDefinition>
           <RowDefinition Height="45*" MinHeight="100"></RowDefinition>
         </Grid.RowDefinitions>
-        
+
+        <ScrollViewer>
       <GroupBox Grid.Row="0" Header="{x:Static res:Resources.ParametersOfTask}" Margin="5, 5, 5, 5" Grid.Column="0" VerticalAlignment="Top" Height="Auto"  HorizontalAlignment="Left">
 
 
@@ -66,7 +67,7 @@
           </Grid.RowDefinitions>
         
         
-        <GroupBox Grid.Row="0" Header="{x:Static res:Resources.General}" Margin="5, 5, 5, 5" Grid.Column="0" Height="150" Width="350" HorizontalAlignment="Left" VerticalAlignment="Top">
+        <GroupBox Grid.Row="0" Header="{x:Static res:Resources.General}" Margin="5, 5, 5, 5" Grid.Column="0" Height="180" Width="350" HorizontalAlignment="Left" VerticalAlignment="Top">
         <Grid>
           <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -83,7 +84,7 @@
         </Grid>
         </GroupBox>
           
-        <GroupBox Grid.Row="1" Header="{x:Static res:Resources.CalcCorrelation}" Margin="5, 5, 5, 5" Grid.Column="0" Height="150" Width="350" HorizontalAlignment="Left" VerticalAlignment="Top">
+        <GroupBox Grid.Row="1" Header="{x:Static res:Resources.CalcCorrelation}" Margin="5, 5, 5, 5" Grid.Column="0" Height="180" Width="350" HorizontalAlignment="Left" VerticalAlignment="Top">
           <Grid>
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="*"/>
@@ -136,9 +137,12 @@
 
 
               <CheckBox Grid.Column="0" Grid.Row="0" Content="{x:Static res:Resources.CoordinatesStation}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="8,383,5,5"  IsChecked="{Binding Path=CurrentParamsCalculation.CoordinatesStation, Mode=TwoWay}"/>
-              <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="180" Width="300" Height="25" Caption="{x:Static res:Resources.ShiftCoordinatesStation}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,405,5,5"  Text="{Binding Path=CurrentParamsCalculation.ShiftCoordinatesStation, Mode=TwoWay}"/>
+              <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="180" Width="300" Height="25" Caption="{x:Static res:Resources.ShiftCoordinatesStation}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,405,5,5"  Text="{Binding Path=CurrentParamsCalculation.ShiftCoordinatesStation_m, Mode=TwoWay}"/>
               <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="180" Width="300" Height="25" Caption="{x:Static res:Resources.MaxDeviationCoordinatesStation}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,430,5,5"  Text="{Binding Path=CurrentParamsCalculation.MaxDeviationCoordinatesStation_m, Mode=TwoWay}"/>
-              <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="180" Width="300" Height="25" Caption="{x:Static res:Resources.PowerStation}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,455,5,5"  Text="{Binding Path=CurrentParamsCalculation.PowerStation, Mode=TwoWay}"/>
+              <!--<cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="180" Width="300" Height="25" Caption="{x:Static res:Resources.PowerStation}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,455,5,5"  Text="{Binding Path=CurrentParamsCalculation.PowerStation, Mode=TwoWay}"/>-->
+              <CheckBox Grid.Column="0" Grid.Row="0" Content="{x:Static res:Resources.PowerStation}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,455,5,5"  IsChecked="{Binding Path=CurrentParamsCalculation.PowerStation, Mode=TwoWay}"/>
+              
+              
               <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="180" Width="300" Height="25" Caption="{x:Static res:Resources.ShiftPowerStationMin}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,480,5,5"  Text="{Binding Path=CurrentParamsCalculation.ShiftPowerStationMin_dB, Mode=TwoWay}"/>
               <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="180" Width="300" Height="25" Caption="{x:Static res:Resources.ShiftPowerStationMax}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,505,5,5"  Text="{Binding Path=CurrentParamsCalculation.ShiftPowerStationMax_dB, Mode=TwoWay}"/>
               <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="180" Width="300" Height="25" Caption="{x:Static res:Resources.ShiftPowerStationStep}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,530,5,5"  Text="{Binding Path=CurrentParamsCalculation.ShiftPowerStationStep_dB, Mode=TwoWay}"/>
@@ -158,6 +162,7 @@
         </Grid>
         
       </GroupBox>
+          </ScrollViewer>
       
       <GridSplitter Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center" Background="#FFB4B1B1"/>
       

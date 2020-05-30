@@ -18,6 +18,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks
     {
 		ICalcResult RESULT { get; set; }
         IStationCalibrationArgs PARAMETERS { get; set; }
+        //long ParametersId { get; set; }
         DateTimeOffset TimeStart { get; set; }
         string Standard { get; set; }
         string AreaName { get; set; }

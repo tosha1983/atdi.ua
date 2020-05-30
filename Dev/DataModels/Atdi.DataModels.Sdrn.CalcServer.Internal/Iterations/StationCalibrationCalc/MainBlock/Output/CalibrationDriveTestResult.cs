@@ -10,6 +10,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
 	public class CalibrationDriveTestResult
     {
+        public long DriveTestId;
         public string ExternalCode;
         public string ExternalSource;
         public string Gsid;
@@ -17,5 +18,6 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
         public DriveTestStatusResult ResultDriveTestStatus;
         public int CountPointsInDriveTest;
         public float MaxPercentCorellation;
+        public long LinkToStationMonitoringId;
     }
 }

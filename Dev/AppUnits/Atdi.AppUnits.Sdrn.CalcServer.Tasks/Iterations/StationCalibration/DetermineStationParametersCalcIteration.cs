@@ -719,6 +719,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 var iterationCalibrationCalc = _iterationsPool.GetIteration<StationCalibrationCalcData, ResultCorrelationGSIDGroupeStations>();
 
                 var resultCalibrationCalcData = iterationCalibrationCalc.Run(taskContext, stationCalibrationCalcData);
+                resultCalibrationCalcData.DriveTestsResult.LinkToStationMonitoringId = resultCalibrationCalcData.ClientContextStation.Id;
 
                 resultCorrelationGSIDGroupeStations.Add(resultCalibrationCalcData);
             }

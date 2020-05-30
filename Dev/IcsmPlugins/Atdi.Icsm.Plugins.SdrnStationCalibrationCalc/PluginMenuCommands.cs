@@ -36,7 +36,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc
         {
 	        try
 	        {
-		        _viewStarter.Start<VM.StationCalibrationManager.View>(isModal: true);
+		        _viewStarter.Start<VM.StationCalibrationManager.View>(isModal: false, f=>f.TaskId = 52);
 	        }
 	        catch (Exception e)
 	        {
@@ -44,5 +44,18 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc
 		        MessageBox.Show(e.ToString());
 	        }
         }
-	}
+
+        public void OnRunCalibrationStationsResultCommand()
+        {
+            try
+            {
+                _viewStarter.Start<VM.StationCalibrationResult.View>(isModal: false, f => f.ResultId =  10058 );
+            }
+            catch (Exception e)
+            {
+                _logger.Exception((EventContext)"PluginMenuCommands", (EventCategory)"OnRunCalibrationStationsResultCommand", e);
+                MessageBox.Show(e.ToString());
+            }
+        }
+    }
 }

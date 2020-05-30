@@ -120,6 +120,9 @@
   <data name="AltitudeStation" xml:space="preserve">
     <value>Altitude Station</value>
   </data>
+  <data name="AreaName" xml:space="preserve">
+    <value>Area name</value>
+  </data>
   <data name="AzimuthStation" xml:space="preserve">
     <value>Azimuth Station</value>
   </data>
@@ -144,6 +147,30 @@
   <data name="CorrelationThresholdWeak" xml:space="preserve">
     <value>Correlation threshold weak</value>
   </data>
+  <data name="CountMeasGSID" xml:space="preserve">
+    <value>Count meas GSID</value>
+  </data>
+  <data name="CountMeasGSID_IT" xml:space="preserve">
+    <value>CountMeasGSID in IT status</value>
+  </data>
+  <data name="CountMeasGSID_LS" xml:space="preserve">
+    <value>CountMeasGSID in LS status</value>
+  </data>
+  <data name="CountStation_CS" xml:space="preserve">
+    <value>CountStation in CS status</value>
+  </data>
+  <data name="CountStation_IT" xml:space="preserve">
+    <value>Count station in IT status</value>
+  </data>
+  <data name="CountStation_NF" xml:space="preserve">
+    <value>Count station in UN status</value>
+  </data>
+  <data name="CountStation_NS" xml:space="preserve">
+    <value>Count station in NS status</value>
+  </data>
+  <data name="CountStation_UN" xml:space="preserve">
+    <value>Count station in UN status</value>
+  </data>
   <data name="CreatedBy" xml:space="preserve">
     <value>Created by</value>
   </data>
@@ -152,6 +179,9 @@
   </data>
   <data name="Delta" xml:space="preserve">
     <value>Delta</value>
+  </data>
+  <data name="Detail" xml:space="preserve">
+    <value>Detail</value>
   </data>
   <data name="DetailOfCascade" xml:space="preserve">
     <value>Detail of cascade</value>
@@ -192,6 +222,9 @@
   <data name="MeasurementsFrom" xml:space="preserve">
     <value>Measurements from</value>
   </data>
+  <data name="Method" xml:space="preserve">
+    <value>Method</value>
+  </data>
   <data name="MinNumberPointForCorrelation" xml:space="preserve">
     <value>Min number point for correlation</value>
   </data>
@@ -203,6 +236,12 @@
   </data>
   <data name="NumberCascade" xml:space="preserve">
     <value>Number cascade</value>
+  </data>
+  <data name="NumberStation" xml:space="preserve">
+    <value>Number station</value>
+  </data>
+  <data name="NumberStationInContour" xml:space="preserve">
+    <value>Number station in contour</value>
   </data>
   <data name="ParametersOfTask" xml:space="preserve">
     <value>Parameters of task</value>
@@ -230,6 +269,9 @@
   </data>
   <data name="ShiftCoordinatesStation" xml:space="preserve">
     <value>Shift Coordinates  Station</value>
+  </data>
+  <data name="ShiftCoordinatesStationStep" xml:space="preserve">
+    <value>Shift coordinates station step</value>
   </data>
   <data name="ShiftPowerStationMax" xml:space="preserve">
     <value>Shift Power Station Max</value>
@@ -263,6 +305,9 @@
   </data>
   <data name="TiltStation" xml:space="preserve">
     <value>Tilt Station</value>
+  </data>
+  <data name="TimeStart" xml:space="preserve">
+    <value>Time start</value>
   </data>
   <data name="To" xml:space="preserve">
     <value>To</value>

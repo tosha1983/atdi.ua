@@ -21,50 +21,39 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
         private static readonly Guid OwnerMapId = Guid.Parse("00efd40f-95c1-4a14-b00d-9f077ddb665a");
         private static readonly string MainProjectMap = "MapSdrnStationCalibrationCalc";
 
-        public static void Run(WebApiDataLayer dataLayer, IQueryExecutor executor, IcsmMobStation[] icsmMobStations, ParamsCalculationModel paramsCalculationModel)
+        public static void Run(WebApiDataLayer dataLayer, IQueryExecutor executor, IcsmMobStation[] icsmMobStations, ParamsCalculationModel paramsCalculationModel, long contextCalcTaskId)
         {
             try
             {
-                // определяем проект
-                var projectId = DefineProject(dataLayer, executor);
+                var clientContextId = GetClientContextIdByTaskId(dataLayer, executor, contextCalcTaskId);
+                if (clientContextId != 0)
+                {
+                    UpdateClientContext(dataLayer, executor, icsmMobStations, paramsCalculationModel, clientContextId);
 
-                // определяем карту
-                var mapId = DefineMap(dataLayer, executor, projectId);
+                    // станции из контекста
+                    var stations = GetClientContextStations(dataLayer, executor, clientContextId);
 
-                //если мы проект менять больше не собираемся, делаем проект доступным
-                MakeProjectAvailable(dataLayer, executor, projectId);
+                    // обновление данных в тасках
+                    var calcTaskUpdated = CreateCalcTask(dataLayer, executor, clientContextId, paramsCalculationModel, contextCalcTaskId);
 
+                    // делаем задачу доступной для расчета
+                    MakeCalcTaskAvailable(dataLayer, executor, contextCalcTaskId, clientContextId);
 
-                // определяем контекст
-                var ownerClientContextId = Guid.NewGuid();
-                var clientContextId = DefineClientContext(dataLayer, executor, projectId, ownerClientContextId, icsmMobStations, paramsCalculationModel);
+                    // создаем запись для результатов
+                    var calcResultId = CreateCalcTaskResult(dataLayer, executor, contextCalcTaskId);
 
+                   // CreateResult(dataLayer, executor, calcResultId);
 
+                    // запускаем расчет
+                    RunCalcTask(dataLayer, executor, contextCalcTaskId, calcResultId);
 
-
-                // станции из контекста
-                var stations = GetClientContextStations(dataLayer, executor, clientContextId);
-
-                var calcTaskId = CreateCalcTask(dataLayer, executor, clientContextId, paramsCalculationModel);
-
-
-
-
-                // делаем задачу доступной для расчета
-                MakeCalcTaskAvailable(dataLayer, executor, calcTaskId, clientContextId);
-
-                // создаем запись для результатов
-                var calcResultId = CreateCalcTaskResult(dataLayer, executor, calcTaskId);
-
-                CreateResult(dataLayer, executor, calcResultId);
-
-                // запускаем расчет
-                RunCalcTask(dataLayer, executor, calcTaskId, calcResultId);
-
-                // ожидаем результат
-                var calcResultObject = WaitForCalcResult(dataLayer, executor, calcTaskId, calcResultId);
-
-
+                    // ожидаем результат
+                    //var calcResultObject = WaitForCalcResult(dataLayer, executor, contextCalcTaskId, calcResultId);
+                }
+                else
+                {
+                    throw new Exception("Client context Id is 0!");
+                }
             }
             catch (Exception)
             {
@@ -133,185 +122,168 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             }
         }
 
-        private static long DefineMap(WebApiDataLayer dataLayer, IQueryExecutor executor, long projectId)
-        {
-            var selQuery = dataLayer.GetBuilder<IProjectMap>()
-                .Read()
-                .Select(c => c.Id)
-                .Filter(c => c.OwnerInstance, OwnerInstance)
-                .Filter(c => c.OwnerMapId, OwnerMapId)
-                .Filter(c => c.PROJECT.Id, projectId)
-                .Filter(c => c.MapName, MainProjectMap);
+        //private static long DefineMap(WebApiDataLayer dataLayer, IQueryExecutor executor, long projectId)
+        //{
+        //    var selQuery = dataLayer.GetBuilder<IProjectMap>()
+        //        .Read()
+        //        .Select(c => c.Id)
+        //        .Filter(c => c.OwnerInstance, OwnerInstance)
+        //        .Filter(c => c.OwnerMapId, OwnerMapId)
+        //        .Filter(c => c.PROJECT.Id, projectId)
+        //        .Filter(c => c.MapName, MainProjectMap);
 
-            var mapId = executor.ExecuteAndFetch(selQuery, reader =>
+        //    var mapId = executor.ExecuteAndFetch(selQuery, reader =>
+        //    {
+        //        if (reader.Count == 0 || !reader.Read())
+        //        {
+        //            return (long)0;
+        //        }
+
+        //        var id = reader.GetValue(c => c.Id);
+        //        return id;
+        //    });
+
+        //    if (mapId == 0)
+        //    {
+        //        var insQuery = dataLayer.GetBuilder<IProjectMap>()
+        //            .Create()
+        //            .SetValue(c => c.MapName, MainProjectMap)
+        //            .SetValue(c => c.CreatedDate, DateTimeOffset.Now)
+        //            .SetValue(c => c.OwnerInstance, OwnerInstance)
+        //            .SetValue(c => c.OwnerMapId, OwnerMapId)
+        //            .SetValue(c => c.StatusCode, (byte)ProjectMapStatusCode.Created)
+        //            .SetValue(c => c.StatusName, "Created")
+        //            .SetValue(c => c.StatusNote, "The new map was created")
+        //            .SetValue(c => c.PROJECT.Id, projectId)
+        //            .SetValue(c => c.MapNote,
+        //                "A project map was created")
+        //            .SetValue(c => c.OwnerUpperLeftX, 276_328)
+        //            .SetValue(c => c.OwnerUpperLeftY, 5_532_476)
+        //            .SetValue(c => c.StepUnit, "M")
+        //            .SetValue(c => c.OwnerAxisXNumber, 4122)
+        //            .SetValue(c => c.OwnerAxisXStep, 5)
+        //            .SetValue(c => c.OwnerAxisYNumber, 3340)
+        //            .SetValue(c => c.OwnerAxisYStep, 5)
+        //            ;
+        //        var projectMapPk = executor.Execute<IProjectMap_PK>(insQuery);
+        //        mapId = projectMapPk.Id;
+
+        //        // меняем статус
+        //        var updQuery = dataLayer.GetBuilder<IProjectMap>()
+        //            .Update()
+        //            .SetValue(c => c.StatusCode, (byte)ProjectMapStatusCode.Pending)
+        //            .SetValue(c => c.StatusName, "Pending")
+        //            .SetValue(c => c.StatusNote, "")
+        //            .Filter(c => c.Id, mapId);
+
+        //        executor.Execute(updQuery);
+
+        //        // ожидаем расчет карты
+        //        var cancel = false;
+        //        while (!cancel)
+        //        {
+        //            System.Threading.Thread.Sleep(5 * 1000);
+
+        //            var checkQuery = dataLayer.GetBuilder<IProjectMap>()
+        //                .Read()
+        //                .Select(c => c.StatusCode)
+        //                .Select(c => c.StatusNote)
+        //                .Filter(c => c.Id, mapId);
+
+        //            cancel = executor.ExecuteAndFetch(checkQuery, reader =>
+        //            {
+        //                if (reader.Count == 0 || !reader.Read())
+        //                {
+        //                    throw new InvalidOperationException($"A map not found by ID #{mapId}");
+        //                }
+
+        //                var status = (ProjectMapStatusCode)reader.GetValue(c => c.StatusCode);
+        //                var statusNote = reader.GetValue(c => c.StatusNote);
+
+        //                if (status == ProjectMapStatusCode.Failed)
+        //                {
+        //                    throw new InvalidOperationException($"Error preparing map with ID #{mapId}: {statusNote}");
+        //                }
+        //                return status == ProjectMapStatusCode.Prepared;
+        //            });
+        //        }
+        //    }
+        //    return mapId;
+        //}
+
+        private static long GetClientContextIdByTaskId(WebApiDataLayer dataLayer, IQueryExecutor executor, long contextTaskId)
+        {
+            var readQuery = dataLayer.GetBuilder<ICalcTask>()
+                    .Read()
+                    .Select(c => c.Id)
+                    .Select(c => c.CONTEXT.Id)
+                    .Filter(c => c.Id, contextTaskId);
+                    ;
+            var clientContextIdBy = executor.ExecuteAndFetch(readQuery, reader =>
             {
                 if (reader.Count == 0 || !reader.Read())
                 {
                     return (long)0;
                 }
-
-                var id = reader.GetValue(c => c.Id);
-                return id;
+                var contextId = reader.GetValue(c => c.CONTEXT.Id);
+                return contextId;
             });
-
-            if (mapId == 0)
-            {
-                var insQuery = dataLayer.GetBuilder<IProjectMap>()
-                    .Create()
-                    .SetValue(c => c.MapName, MainProjectMap)
-                    .SetValue(c => c.CreatedDate, DateTimeOffset.Now)
-                    .SetValue(c => c.OwnerInstance, OwnerInstance)
-                    .SetValue(c => c.OwnerMapId, OwnerMapId)
-                    .SetValue(c => c.StatusCode, (byte)ProjectMapStatusCode.Created)
-                    .SetValue(c => c.StatusName, "Created")
-                    .SetValue(c => c.StatusNote, "The new map was created")
-                    .SetValue(c => c.PROJECT.Id, projectId)
-                    .SetValue(c => c.MapNote,
-                        "A project map was created")
-                    .SetValue(c => c.OwnerUpperLeftX, 276_328)
-                    .SetValue(c => c.OwnerUpperLeftY, 5_532_476)
-                    .SetValue(c => c.StepUnit, "M")
-                    .SetValue(c => c.OwnerAxisXNumber, 4122)
-                    .SetValue(c => c.OwnerAxisXStep, 5)
-                    .SetValue(c => c.OwnerAxisYNumber, 3340)
-                    .SetValue(c => c.OwnerAxisYStep, 5)
-                    ;
-                var projectMapPk = executor.Execute<IProjectMap_PK>(insQuery);
-                mapId = projectMapPk.Id;
-
-                // меняем статус
-                var updQuery = dataLayer.GetBuilder<IProjectMap>()
-                    .Update()
-                    .SetValue(c => c.StatusCode, (byte)ProjectMapStatusCode.Pending)
-                    .SetValue(c => c.StatusName, "Pending")
-                    .SetValue(c => c.StatusNote, "")
-                    .Filter(c => c.Id, mapId);
-
-                executor.Execute(updQuery);
-
-                // ожидаем расчет карты
-                var cancel = false;
-                while (!cancel)
-                {
-                    System.Threading.Thread.Sleep(5 * 1000);
-
-                    var checkQuery = dataLayer.GetBuilder<IProjectMap>()
-                        .Read()
-                        .Select(c => c.StatusCode)
-                        .Select(c => c.StatusNote)
-                        .Filter(c => c.Id, mapId);
-
-                    cancel = executor.ExecuteAndFetch(checkQuery, reader =>
-                    {
-                        if (reader.Count == 0 || !reader.Read())
-                        {
-                            throw new InvalidOperationException($"A map not found by ID #{mapId}");
-                        }
-
-                        var status = (ProjectMapStatusCode)reader.GetValue(c => c.StatusCode);
-                        var statusNote = reader.GetValue(c => c.StatusNote);
-
-                        if (status == ProjectMapStatusCode.Failed)
-                        {
-                            throw new InvalidOperationException($"Error preparing map with ID #{mapId}: {statusNote}");
-                        }
-                        return status == ProjectMapStatusCode.Prepared;
-                    });
-                }
-            }
-            return mapId;
+            return clientContextIdBy;
         }
 
-        private static long DefineClientContext(WebApiDataLayer dataLayer, IQueryExecutor executor, long projectId, Guid ownerContextId, IcsmMobStation[] icsmMobStations, ParamsCalculationModel paramsCalculationModel)
+        private static long UpdateClientContext(WebApiDataLayer dataLayer, IQueryExecutor executor, IcsmMobStation[] icsmMobStations, ParamsCalculationModel paramsCalculationModel, long contextId)
         {
-            var selQuery = dataLayer.GetBuilder<IClientContext>()
-                .Read()
-                .Select(c => c.Id)
-                .Filter(c => c.OwnerInstance, OwnerInstance)
-                .Filter(c => c.OwnerContextId, ownerContextId)
-                .Filter(c => c.PROJECT.Id, projectId);
-
-            var contextId = executor.ExecuteAndFetch(selQuery, reader =>
+            CreateClientContextPropagationModels(dataLayer, executor, contextId);
+            var stations = new long[icsmMobStations.Length];
+            for (var i = 0; i < icsmMobStations.Length; i++)
             {
-                if (reader.Count == 0 || !reader.Read())
-                {
-                    return (long)0;
-                }
+                stations[i] = CreateClientContextStation(dataLayer, executor, contextId, icsmMobStations[i]);
+                // планируемые задачи для каждой станции
+            }
+            paramsCalculationModel.StationIds = stations;
+            //CreatePlannedCalcTask(dataLayer, executor, contextId, paramsCalculationModel);
 
-                var id = reader.GetValue(c => c.Id);
-                return id;
-            });
+            // меняем статус
+            var updQuery = dataLayer.GetBuilder<IClientContext>()
+                .Update()
+                .SetValue(c => c.StatusCode, (byte)ClientContextStatusCode.Pending)
+                .SetValue(c => c.StatusName, "Pending")
+                .SetValue(c => c.StatusNote, "")
+                .Filter(c => c.Id, contextId);
 
-            if (contextId == 0)
+            executor.Execute(updQuery);
+
+            // ожидаем расчет контекста
+            var cancel = false;
+            while (!cancel)
             {
-                var insQuery = dataLayer.GetBuilder<IClientContext>()
-                    .Create()
-                    .SetValue(c => c.CreatedDate, DateTimeOffset.Now)
-                    .SetValue(c => c.OwnerInstance, OwnerInstance)
-                    .SetValue(c => c.OwnerContextId, ownerContextId)
-                    .SetValue(c => c.StatusCode, (byte)ClientContextStatusCode.Created)
-                    .SetValue(c => c.StatusName, ClientContextStatusCode.Created.ToString())
-                    .SetValue(c => c.StatusNote, "The new context was created")
-                    .SetValue(c => c.PROJECT.Id, projectId)
-                    .SetValue(c => c.TypeCode, (byte)ClientContextTypeCode.Client)
-                    .SetValue(c => c.TypeName, ClientContextTypeCode.Client.ToString())
-                    .SetValue(c => c.Name, "Test client context")
-                    .SetValue(c => c.Note, "The client context to SdrnStationCalibrationCalc")
-                    ;
-                var contextPk = executor.Execute<IClientContext_PK>(insQuery);
-                contextId = contextPk.Id;
+                //System.Threading.Thread.Sleep(20 * 1000);
 
-                CreateClientContextPropagationModels(dataLayer, executor, contextId);
-                var stations = new long[icsmMobStations.Length];
-                for (var i = 0; i < icsmMobStations.Length; i++)
-                {
-                    stations[i] = CreateClientContextStation(dataLayer, executor, contextId, icsmMobStations[i]);
-                    // планируемые задачи для каждой станции
-                }
-                paramsCalculationModel.StationIds = stations;
-                CreatePlannedCalcTask(dataLayer, executor, contextId, paramsCalculationModel);
-
-                // меняем статус
-                var updQuery = dataLayer.GetBuilder<IClientContext>()
-                    .Update()
-                    .SetValue(c => c.StatusCode, (byte)ClientContextStatusCode.Pending)
-                    .SetValue(c => c.StatusName, "Pending")
-                    .SetValue(c => c.StatusNote, "")
+                var checkQuery = dataLayer.GetBuilder<IClientContext>()
+                    .Read()
+                    .Select(c => c.StatusCode)
+                    .Select(c => c.StatusNote)
                     .Filter(c => c.Id, contextId);
 
-                executor.Execute(updQuery);
-
-                // ожидаем расчет контекста
-                var cancel = false;
-                while (!cancel)
+                cancel = executor.ExecuteAndFetch(checkQuery, reader =>
                 {
-                    System.Threading.Thread.Sleep(20 * 1000);
-
-                    var checkQuery = dataLayer.GetBuilder<IClientContext>()
-                        .Read()
-                        .Select(c => c.StatusCode)
-                        .Select(c => c.StatusNote)
-                        .Filter(c => c.Id, contextId);
-
-                    cancel = executor.ExecuteAndFetch(checkQuery, reader =>
+                    if (reader.Count == 0 || !reader.Read())
                     {
-                        if (reader.Count == 0 || !reader.Read())
-                        {
-                            throw new InvalidOperationException($"A client context not found by ID #{contextId}");
-                        }
+                        throw new InvalidOperationException($"A client context not found by ID #{contextId}");
+                    }
 
-                        var status = (ClientContextStatusCode)reader.GetValue(c => c.StatusCode);
-                        var statusNote = reader.GetValue(c => c.StatusNote);
+                    var status = (ClientContextStatusCode)reader.GetValue(c => c.StatusCode);
+                    var statusNote = reader.GetValue(c => c.StatusNote);
 
 
-                        if (status == ClientContextStatusCode.Failed)
-                        {
-                            throw new InvalidOperationException($"Error preparing client context with ID #{contextId}: {statusNote}");
-                        }
-                        return status == ClientContextStatusCode.Prepared;
-                    });
-                }
+                    if (status == ClientContextStatusCode.Failed)
+                    {
+                        throw new InvalidOperationException($"Error preparing client context with ID #{contextId}: {statusNote}");
+                    }
+                    return status == ClientContextStatusCode.Prepared;
+                });
             }
+
             return contextId;
         }
 
@@ -578,78 +550,94 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             executor.Execute(paternQuery);
             return stationId;
         }
-       
 
-        private static long CreateCalcTask(WebApiDataLayer dataLayer, IQueryExecutor executor, long contextId, ParamsCalculationModel command)
+
+        private static bool CreateCalcTask(WebApiDataLayer dataLayer, IQueryExecutor executor, long contextId, ParamsCalculationModel command, long contextCalcTaskId)
         {
-            var insQuery = dataLayer.GetBuilder<ICalcTask>()
-                .Create()
-                .SetValue(c => c.CreatedDate, DateTimeOffset.Now)
-                .SetValue(c => c.CONTEXT.Id, contextId)
-                .SetValue(c => c.MapName, MainProjectMap)
-                .SetValue(c => c.OwnerInstance, OwnerInstance)
-                .SetValue(c => c.OwnerTaskId, Guid.NewGuid())
-                .SetValue(c => c.StatusCode, (byte)CalcTaskStatusCode.Created)
-                .SetValue(c => c.StatusName, CalcTaskStatusCode.Created.ToString())
-                .SetValue(c => c.StatusNote, "The task was created")
-                .SetValue(c => c.TypeCode, (byte)CalcTaskType.StationCalibrationCalcTask)
-                .SetValue(c => c.TypeName, CalcTaskType.StationCalibrationCalcTask.ToString())
-                ;
-            var taskPk = executor.Execute<ICalcTask_PK>(insQuery);
+            bool isSuccessUpdate = false;
+            try
+            {
+                var updateQueryCalcTask = dataLayer.GetBuilder<ICalcTask>()
+                    .Update()
+                    .SetValue(c => c.CreatedDate, DateTimeOffset.Now)
+                    //.SetValue(c => c.CONTEXT.Id, contextId)
+                    .SetValue(c => c.MapName, MainProjectMap)
+                    .SetValue(c => c.OwnerInstance, OwnerInstance)
+                    .SetValue(c => c.OwnerTaskId, Guid.NewGuid())
+                    .SetValue(c => c.StatusCode, (byte)CalcTaskStatusCode.Modifying)
+                    .SetValue(c => c.StatusName, CalcTaskStatusCode.Modifying.ToString())
+                    .SetValue(c => c.StatusNote, "The task was modified")
+                    .SetValue(c => c.TypeCode, (byte)CalcTaskType.StationCalibrationCalcTask)
+                    .SetValue(c => c.TypeName, CalcTaskType.StationCalibrationCalcTask.ToString())
+                    .Filter(c => c.Id, contextCalcTaskId)
+                    ;
+
+                executor.Execute(updateQueryCalcTask);
 
 
-            var query = dataLayer.GetBuilder<IStationCalibrationArgs>()
-              .Create()
-              .SetValue(c => c.AltitudeStation, command.AltitudeStation)
-              .SetValue(c => c.AzimuthStation, command.AzimuthStation)
-              .SetValue(c => c.CascadeTuning, command.CascadeTuning)
-              .SetValue(c => c.CoordinatesStation, command.CoordinatesStation)
-              .SetValue(c => c.CorrelationDistance_m, command.CorrelationDistance_m)
-              .SetValue(c => c.Delta_dB, command.Delta_dB)
-              .SetValue(c => c.Detail, command.Detail)
-              .SetValue(c => c.DetailOfCascade, command.DetailOfCascade)
-              .SetValue(c => c.DistanceAroundContour_km, command.DistanceAroundContour_km)
-              .SetValue(c => c.InfocMeasResults, command.InfocMeasResults)
-              .SetValue(c => c.MaxAntennasPatternLoss_dB, command.MaxAntennasPatternLoss_dB)
-              .SetValue(c => c.MaxDeviationAltitudeStation_m, command.MaxDeviationAltitudeStation_m)
-              .SetValue(c => c.MaxDeviationAzimuthStation_deg, command.MaxDeviationAzimuthStation_deg)
-              .SetValue(c => c.MaxDeviationCoordinatesStation_m, command.MaxDeviationCoordinatesStation_m)
-              .SetValue(c => c.MaxDeviationTiltStation_deg, command.MaxDeviationTiltStation_deg)
-              .SetValue(c => c.MaxRangeMeasurements_dBmkV, command.MaxRangeMeasurements_dBmkV)
-              .SetValue(c => c.Method, command.Method)
-              .SetValue(c => c.MinNumberPointForCorrelation, command.MinNumberPointForCorrelation)
-              .SetValue(c => c.MinRangeMeasurements_dBmkV, command.MinRangeMeasurements_dBmkV)
-              .SetValue(c => c.NumberCascade, command.NumberCascade)
-              .SetValue(c => c.PowerStation, command.PowerStation)
-              .SetValue(c => c.ShiftAltitudeStationMax_m, command.ShiftAltitudeStationMax_m)
-              .SetValue(c => c.ShiftAltitudeStationMin_m, command.ShiftAltitudeStationMin_m)
-              .SetValue(c => c.ShiftAltitudeStationStep_m, command.ShiftAltitudeStationStep_m)
-              .SetValue(c => c.ShiftAzimuthStationMax_deg, command.ShiftAzimuthStationMax_deg)
-              .SetValue(c => c.ShiftAzimuthStationMin_deg, command.ShiftAzimuthStationMin_deg)
-              .SetValue(c => c.ShiftAzimuthStationStep_deg, command.ShiftAzimuthStationStep_deg)
-              .SetValue(c => c.ShiftCoordinatesStationStep_m, command.ShiftCoordinatesStationStep_m)
-              .SetValue(c => c.ShiftCoordinatesStation_m, command.ShiftCoordinatesStation_m)
-              .SetValue(c => c.ShiftPowerStationMax_dB, command.ShiftPowerStationMax_dB)
-              .SetValue(c => c.ShiftPowerStationMin_dB, command.ShiftPowerStationMin_dB)
-              .SetValue(c => c.ShiftPowerStationStep_dB, command.ShiftPowerStationStep_dB)
-              .SetValue(c => c.ShiftTiltStationMax_deg, command.ShiftTiltStationMax_deg)
-              .SetValue(c => c.ShiftTiltStationMin_deg, command.ShiftTiltStationMin_deg)
-              .SetValue(c => c.ShiftTiltStationStep_deg, command.ShiftTiltStationStep_deg)
-              .SetValue(c => c.StationIds, command.StationIds)
-              .SetValue(c => c.TaskId, taskPk.Id)
-              .SetValue(c => c.TiltStation, command.TiltStation)
-              .SetValue(c => c.TrustOldResults, command.TrustOldResults)
-              .SetValue(c => c.UseMeasurementSameGSID, command.UseMeasurementSameGSID)
-              .SetValue(c => c.CorrelationThresholdHard, command.CorrelationThresholdHard)
-              .SetValue(c => c.CorrelationThresholdWeak, command.CorrelationThresholdWeak)
-              ;
-            var stationCalibrationArgsPk = dataLayer.Executor.Execute<IStationCalibrationArgs_PK>(query);
-            return taskPk.Id;
+                var queryStationCalibrationArgs = dataLayer.GetBuilder<IStationCalibrationArgs>()
+                  .Update()
+                  .SetValue(c => c.AltitudeStation, command.AltitudeStation)
+                  .SetValue(c => c.AzimuthStation, command.AzimuthStation)
+                  .SetValue(c => c.CascadeTuning, command.CascadeTuning)
+                  .SetValue(c => c.CoordinatesStation, command.CoordinatesStation)
+                  .SetValue(c => c.CorrelationDistance_m, command.CorrelationDistance_m)
+                  .SetValue(c => c.Delta_dB, command.Delta_dB)
+                  .SetValue(c => c.Detail, command.Detail)
+                  .SetValue(c => c.DetailOfCascade, command.DetailOfCascade)
+                  .SetValue(c => c.DistanceAroundContour_km, command.DistanceAroundContour_km)
+                  .SetValue(c => c.MaxAntennasPatternLoss_dB, command.MaxAntennasPatternLoss_dB)
+                  .SetValue(c => c.MaxDeviationAltitudeStation_m, command.MaxDeviationAltitudeStation_m)
+                  .SetValue(c => c.MaxDeviationAzimuthStation_deg, command.MaxDeviationAzimuthStation_deg)
+                  .SetValue(c => c.MaxDeviationCoordinatesStation_m, command.MaxDeviationCoordinatesStation_m)
+                  .SetValue(c => c.MaxDeviationTiltStation_deg, command.MaxDeviationTiltStation_deg)
+                  .SetValue(c => c.MaxRangeMeasurements_dBmkV, command.MaxRangeMeasurements_dBmkV)
+                  .SetValue(c => c.Method, command.Method)
+                  .SetValue(c => c.MinNumberPointForCorrelation, command.MinNumberPointForCorrelation)
+                  .SetValue(c => c.MinRangeMeasurements_dBmkV, command.MinRangeMeasurements_dBmkV)
+                  .SetValue(c => c.NumberCascade, command.NumberCascade)
+                  .SetValue(c => c.PowerStation, command.PowerStation)
+                  .SetValue(c => c.ShiftAltitudeStationMax_m, command.ShiftAltitudeStationMax_m)
+                  .SetValue(c => c.ShiftAltitudeStationMin_m, command.ShiftAltitudeStationMin_m)
+                  .SetValue(c => c.ShiftAltitudeStationStep_m, command.ShiftAltitudeStationStep_m)
+                  .SetValue(c => c.ShiftAzimuthStationMax_deg, command.ShiftAzimuthStationMax_deg)
+                  .SetValue(c => c.ShiftAzimuthStationMin_deg, command.ShiftAzimuthStationMin_deg)
+                  .SetValue(c => c.ShiftAzimuthStationStep_deg, command.ShiftAzimuthStationStep_deg)
+                  .SetValue(c => c.ShiftCoordinatesStationStep_m, command.ShiftCoordinatesStationStep_m)
+                  .SetValue(c => c.ShiftCoordinatesStation_m, command.ShiftCoordinatesStation_m)
+                  .SetValue(c => c.ShiftPowerStationMax_dB, command.ShiftPowerStationMax_dB)
+                  .SetValue(c => c.ShiftPowerStationMin_dB, command.ShiftPowerStationMin_dB)
+                  .SetValue(c => c.ShiftPowerStationStep_dB, command.ShiftPowerStationStep_dB)
+                  .SetValue(c => c.ShiftTiltStationMax_deg, command.ShiftTiltStationMax_deg)
+                  .SetValue(c => c.ShiftTiltStationMin_deg, command.ShiftTiltStationMin_deg)
+                  .SetValue(c => c.ShiftTiltStationStep_deg, command.ShiftTiltStationStep_deg);
+                   if (command.StationIds != null)
+                   {
+                        queryStationCalibrationArgs.SetValue(c => c.StationIds, command.StationIds);
+                   }
+                    if (command.InfocMeasResults != null)
+                    {
+                        queryStationCalibrationArgs.SetValue(c => c.InfocMeasResults, command.InfocMeasResults);
+                    }
+                queryStationCalibrationArgs.SetValue(c => c.TiltStation, command.TiltStation)
+                  .SetValue(c => c.TrustOldResults, command.TrustOldResults)
+                  .SetValue(c => c.UseMeasurementSameGSID, command.UseMeasurementSameGSID)
+                  .SetValue(c => c.CorrelationThresholdHard, command.CorrelationThresholdHard)
+                  .SetValue(c => c.CorrelationThresholdWeak, command.CorrelationThresholdWeak)
+                  .Filter(c => c.TASK.Id, contextCalcTaskId)
+                  ;
+                dataLayer.Executor.Execute(queryStationCalibrationArgs);
+                isSuccessUpdate = true;
+            }
+            catch (Exception ex)
+            {
+                isSuccessUpdate = false;
+            }
+            return isSuccessUpdate;
         }
 
         private static long CreatePlannedCalcTask(WebApiDataLayer dataLayer, IQueryExecutor executor, long contextId, ParamsCalculationModel command)
         {
-            var rand = new Random();
             var insQuery = dataLayer.GetBuilder<IContextPlannedCalcTask>()
                     .Create()
                     .SetValue(c => c.CONTEXT.Id, contextId)
@@ -812,101 +800,101 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             }
         }
 
-        private static IStationCalibrationResult WaitForCalcResult(WebApiDataLayer dataLayer, IQueryExecutor executor, long calcTaskId, long calcResultId)
-        {
-            var cancel = false;
-            var resultObject = dataLayer.ProxyInstanceFactory.Create<IStationCalibrationResult>();
-            resultObject.RESULT = dataLayer.ProxyInstanceFactory.Create<ICalcResult>();
+        //private static IStationCalibrationResult WaitForCalcResult(WebApiDataLayer dataLayer, IQueryExecutor executor, long calcTaskId, long calcResultId)
+        //{
+        //    var cancel = false;
+        //    var resultObject = dataLayer.ProxyInstanceFactory.Create<IStationCalibrationResult>();
+        //    resultObject.RESULT = dataLayer.ProxyInstanceFactory.Create<ICalcResult>();
 
-            while (!cancel)
-            {
-                System.Threading.Thread.Sleep(5 * 1000);
+        //    while (!cancel)
+        //    {
+        //        System.Threading.Thread.Sleep(5 * 1000);
 
-                var checkQuery = dataLayer.GetBuilder<ICalcResult>()
-                    .Read()
-                    .Select(c => c.Id)
-                    .Select(c => c.CreatedDate)
-                    .Select(c => c.StatusCode)
-                    .Select(c => c.StatusName)
-                    .Select(c => c.StatusNote)
-                    .Select(c => c.StartTime)
-                    .Select(c => c.FinishTime)
-                    .Filter(c => c.Id, calcResultId);
+        //        var checkQuery = dataLayer.GetBuilder<ICalcResult>()
+        //            .Read()
+        //            .Select(c => c.Id)
+        //            .Select(c => c.CreatedDate)
+        //            .Select(c => c.StatusCode)
+        //            .Select(c => c.StatusName)
+        //            .Select(c => c.StatusNote)
+        //            .Select(c => c.StartTime)
+        //            .Select(c => c.FinishTime)
+        //            .Filter(c => c.Id, calcResultId);
 
-                cancel = executor.ExecuteAndFetch(checkQuery, reader =>
-                {
-                    if (reader.Count == 0 || !reader.Read())
-                    {
-                        throw new InvalidOperationException($"A calc result not found by ID #{calcResultId}");
-                    }
+        //        cancel = executor.ExecuteAndFetch(checkQuery, reader =>
+        //        {
+        //            if (reader.Count == 0 || !reader.Read())
+        //            {
+        //                throw new InvalidOperationException($"A calc result not found by ID #{calcResultId}");
+        //            }
 
-                    var status = (CalcResultStatusCode)reader.GetValue(c => c.StatusCode);
-                    var statusNote = reader.GetValue(c => c.StatusNote);
+        //            var status = (CalcResultStatusCode)reader.GetValue(c => c.StatusCode);
+        //            var statusNote = reader.GetValue(c => c.StatusNote);
 
 
-                    if (status != CalcResultStatusCode.Pending
-                    && status != CalcResultStatusCode.Processing)
-                    {
-                        resultObject.RESULT.Id = reader.GetValue(c => c.Id);
-                        resultObject.RESULT.StatusCode = reader.GetValue(c => c.StatusCode);
-                        resultObject.RESULT.StatusName = reader.GetValue(c => c.StatusName);
-                        resultObject.RESULT.StatusNote = reader.GetValue(c => c.StatusNote);
-                        resultObject.RESULT.CreatedDate = reader.GetValue(c => c.CreatedDate);
-                        resultObject.RESULT.StartTime = reader.GetValue(c => c.StartTime);
-                        resultObject.RESULT.FinishTime = reader.GetValue(c => c.FinishTime);
+        //            if (status != CalcResultStatusCode.Pending
+        //            && status != CalcResultStatusCode.Processing)
+        //            {
+        //                resultObject.RESULT.Id = reader.GetValue(c => c.Id);
+        //                resultObject.RESULT.StatusCode = reader.GetValue(c => c.StatusCode);
+        //                resultObject.RESULT.StatusName = reader.GetValue(c => c.StatusName);
+        //                resultObject.RESULT.StatusNote = reader.GetValue(c => c.StatusNote);
+        //                resultObject.RESULT.CreatedDate = reader.GetValue(c => c.CreatedDate);
+        //                resultObject.RESULT.StartTime = reader.GetValue(c => c.StartTime);
+        //                resultObject.RESULT.FinishTime = reader.GetValue(c => c.FinishTime);
 
-                        var resultQuery = dataLayer.GetBuilder<IStationCalibrationResult>()
-                            .Read()
-                            .Select(c => c.NumberStation)
-                            .Select(c => c.NumberStationInContour)
-                            .Select(c => c.AreaName)
-                            .Select(c => c.CountMeasGSID)
-                            .Select(c => c.CountMeasGSID_IT)
-                            .Select(c => c.CountMeasGSID_LS)
-                            .Select(c => c.CountStation_CS)
-                            .Select(c => c.CountStation_IT)
-                            .Select(c => c.CountStation_NF)
-                            .Select(c => c.CountStation_NS)
-                            .Select(c => c.CountStation_UN)
-                            .Select(c => c.Standard)
-                            .Select(c => c.TimeStart)
-                            .Filter(c => c.ResultId, calcResultId);
+        //                var resultQuery = dataLayer.GetBuilder<IStationCalibrationResult>()
+        //                    .Read()
+        //                    .Select(c => c.NumberStation)
+        //                    .Select(c => c.NumberStationInContour)
+        //                    .Select(c => c.AreaName)
+        //                    .Select(c => c.CountMeasGSID)
+        //                    .Select(c => c.CountMeasGSID_IT)
+        //                    .Select(c => c.CountMeasGSID_LS)
+        //                    .Select(c => c.CountStation_CS)
+        //                    .Select(c => c.CountStation_IT)
+        //                    .Select(c => c.CountStation_NF)
+        //                    .Select(c => c.CountStation_NS)
+        //                    .Select(c => c.CountStation_UN)
+        //                    .Select(c => c.Standard)
+        //                    .Select(c => c.TimeStart)
+        //                    .Filter(c => c.ResultId, calcResultId);
 
-                        var rs = executor.ExecuteAndRead(resultQuery, r =>
-                        {
-                            resultObject.Standard = r.GetValue(c => c.Standard);
-                            resultObject.TimeStart = r.GetValue(c => c.TimeStart);
-                            return resultObject;
-                        });
+        //                var rs = executor.ExecuteAndRead(resultQuery, r =>
+        //                {
+        //                    resultObject.Standard = r.GetValue(c => c.Standard);
+        //                    resultObject.TimeStart = r.GetValue(c => c.TimeStart);
+        //                    return resultObject;
+        //                });
 
-                    }
+        //            }
 
-                    if (status == CalcResultStatusCode.Failed)
-                    {
-                        return true;
-                    }
+        //            if (status == CalcResultStatusCode.Failed)
+        //            {
+        //                return true;
+        //            }
 
-                    if (status == CalcResultStatusCode.Completed)
-                    {
-                        return true;
-                    }
+        //            if (status == CalcResultStatusCode.Completed)
+        //            {
+        //                return true;
+        //            }
 
-                    if (status == CalcResultStatusCode.Aborted)
-                    {
-                        return true;
-                    }
+        //            if (status == CalcResultStatusCode.Aborted)
+        //            {
+        //                return true;
+        //            }
 
-                    if (status == CalcResultStatusCode.Canceled)
-                    {
-                        return true;
-                    }
+        //            if (status == CalcResultStatusCode.Canceled)
+        //            {
+        //                return true;
+        //            }
 
-                    return false;
-                });
-            }
+        //            return false;
+        //        });
+        //    }
 
-            return resultObject;
-        }
+        //    return resultObject;
+        //}
     }
 
     public enum CalcTaskType
