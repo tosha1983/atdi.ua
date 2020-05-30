@@ -245,7 +245,7 @@
             <Label Height="40" Grid.Column="0" Grid.Row="0" Margin="215,5,5,5" Content="{x:Static res:Resources.To}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
             <DatePicker Grid.Column="1" Grid.Row="0" Margin="240,5,5,5" Height="20" Width="100" HorizontalAlignment="Left" VerticalAlignment="Top" SelectedDate="{Binding Path=DateStopLoadDriveTest, StringFormat='{}{0:dd.MM.yyyy}'}"/>
             <Button Grid.Column="0" Grid.Row="0" Margin="350,5,5,5" Content="Load" Command="{Binding LoadDriveTestsCommand}" Width="70" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-            <cdg:OrmDataGrid Grid.Column="0" Grid.Row="1" IsReadOnly="True" Margin="5, 5, 5, 5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding StationMonitoringDataAdapter}" SelectedItem="{Binding CurrentStationMonitoringModel, Mode=TwoWay}">
+             <cdg:OrmDataGrid Grid.Column="0" Grid.Row="1" IsReadOnly="True" Margin="5, 5, 5, 5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding StationMonitoringDataAdapter}" SelectedItemsList="{Binding CurrentStationMonitoringModel, Mode=TwoWay}" >
                 <DataGrid.Columns>
                   <DataGridTextColumn Header="ID" Binding="{Binding Path=Id}"></DataGridTextColumn>
                   <DataGridTextColumn Header="Date" Binding="{Binding Path=Date, StringFormat='{}{0:dd.MM.yyyy HH:mm}'}"></DataGridTextColumn>

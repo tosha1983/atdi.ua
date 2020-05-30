@@ -77,7 +77,7 @@
     <Compile Include="ViewModels\StationCalibrationManager\ManageProject\StationCalibrationCalcTask.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Models\StationMonitoring\RoutesStationMonitoringModel.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Queries\MobStations\MobStationsDataAdapter.cs" />
-    <Compile Include="ViewModels\StationCalibrationManager\Adapters\Icsm\Base\DataAdapterBase.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Adapters\DataAdapterBase.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Adapters\Icsm\AreasDataAdapter.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Adapters\ParametersDataAdapter.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Adapters\StationMonitoringDataAdapter.cs" />

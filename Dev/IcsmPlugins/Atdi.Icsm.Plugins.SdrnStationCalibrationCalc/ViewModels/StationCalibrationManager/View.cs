@@ -51,7 +51,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
 
 
         private ParamsCalculationModel _currentParamsCalculationModel;
-        private StationMonitoringModel _currentStationMonitoringModel;
+        private IList _currentStationMonitoringModel;
         private GetStationsParamsModel _currentGetStationsParameters;
 
 
@@ -60,13 +60,8 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
         public StationMonitoringDataAdapter StationMonitoringDataAdapter { get; set; }
         public ParametersDataAdapter ParametersDataAdapter { get; set; }
 
-
         public ViewCommand StartStationCalibrationCommand { get; set; }
         public ViewCommand LoadDriveTestsCommand { get; set; }
-
-
-
-
 
 
         private CalcServerDataLayer _dataLayer { get; set; }
@@ -107,7 +102,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             this.ReloadData();
             this.RedrawMap();
 
-            
+
         }
 
         public bool IsEnabledStart
@@ -136,11 +131,12 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                 MethodParamsCalculationModelVal = (MethodParamsCalculationModel)this._currentParamsCalculationModel.Method;
             }
         }
-   
+
 
         private void CheckEnabledStart()
         {
-            if (CurrentAreas.Count == 0)
+            if (((CurrentAreas == null) || ((CurrentAreas != null) && (CurrentAreas.Count == 0)))
+                || ((CurrentStationMonitoringModel == null) || ((CurrentStationMonitoringModel != null) && (CurrentStationMonitoringModel.Count == 0))))
             {
                 IsEnabledStart = false;
             }
@@ -211,25 +207,27 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             var polygons = new List<MP.MapDrawingDataPolygon>();
 
 
-
             if (CurrentStationMonitoringModel != null)
             {
-                var routes = GetRoutesByIdStationMonitoring(CurrentStationMonitoringModel.Id);
-                for (int i = 0; i < routes.Length; i++)
+                foreach (StationMonitoringModel model in this._currentStationMonitoringModel)
                 {
-                    points.Add(new MP.MapDrawingDataPoint()
+                    var routes = GetRoutesByIdStationMonitoring(model.Id);
+                    for (int i = 0; i < routes.Length; i++)
                     {
-                        Location = new MP.Location()
+                        points.Add(new MP.MapDrawingDataPoint()
                         {
-                            Lat = routes[i].Latitude,
-                            Lon = routes[i].Longitude
-                        },
-                        Color = System.Windows.Media.Brushes.Green,
-                        Fill = System.Windows.Media.Brushes.ForestGreen,
-                        Opacity = 0.85,
-                        Width = 10,
-                        Height = 10
-                    });
+                            Location = new MP.Location()
+                            {
+                                Lat = routes[i].Latitude,
+                                Lon = routes[i].Longitude
+                            },
+                            Color = System.Windows.Media.Brushes.Green,
+                            Fill = System.Windows.Media.Brushes.ForestGreen,
+                            Opacity = 0.85,
+                            Width = 10,
+                            Height = 10
+                        });
+                    }
                 }
             }
 
@@ -285,55 +283,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                         lY.Add(ouY6);
                         lY.Add(ouY8);
 
-
-                        //area.ExternalContour = new DataLocationModel[4];
-                        //area.ExternalContour[0] = new DataLocationModel()
-                        //{
-                        //    Longitude = lX.Min(),
-                        //    Latitude = lY.Min()
-                        //};
-                        //area.ExternalContour[1] = new DataLocationModel()
-                        //{
-                        //    Longitude = lX.Max(),
-                        //    Latitude = lY.Min()
-                        //};
-                        //area.ExternalContour[2] = new DataLocationModel()
-                        //{
-                        //    Longitude = lX.Max(),
-                        //    Latitude = lY.Max()
-                        //};
-                        //area.ExternalContour[3] = new DataLocationModel()
-                        //{
-                        //    Longitude = lX.Min(),
-                        //    Latitude = lY.Max()
-                        //};
-
-
-                        //polygonPointsAnother.Add(new MP.Location()
-                        //{
-                        //    Lon = lX.Min(),
-                        //    Lat = lY.Min()
-                        //});
-
-                        //polygonPointsAnother.Add(new MP.Location()
-                        //{
-                        //    Lon = lX.Max(),
-                        //    Lat = lY.Min()
-                        //});
-
-                        //polygonPointsAnother.Add(new MP.Location()
-                        //{
-                        //    Lon = lX.Max(),
-                        //    Lat = lY.Max()
-                        //});
-
-                        //polygonPointsAnother.Add(new MP.Location()
-                        //{
-                        //    Lon = lX.Min(),
-                        //    Lat = lY.Max()
-                        //});
-
-
+                         
                         area.ExternalContour = new DataLocationModel[4];
                         area.ExternalContour[0] = new DataLocationModel()
                         {
@@ -424,7 +374,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
 
         public IList CurrentAreas
         {
-            get => this._currentAreas;
+            get { return this._currentAreas; }
             set
             {
                 this._currentAreas = value;
@@ -437,21 +387,17 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             }
         }
 
-        public StationMonitoringModel CurrentStationMonitoringModel
+        public IList CurrentStationMonitoringModel
         {
-            get => this._currentStationMonitoringModel;
-            set => this.Set(ref this._currentStationMonitoringModel, value, () => { this.OnChangedCurrentStationMonitoringModel(value); });
+            get { return this._currentStationMonitoringModel; }
+            set
+            {
+                this._currentStationMonitoringModel = value;
+                RedrawMap();
+            }
         }
 
-        
 
-
-
-
-        private void OnChangedCurrentStationMonitoringModel(StationMonitoringModel stationMonitoringModel)
-        {
-            RedrawMap();
-        }
 
         public GetStationsParamsModel GetStationsParams
         {
@@ -607,7 +553,13 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             var stations = ReadStations();
             if (stations.Length > 0)
             {
-                this._currentParamsCalculationModel.InfocMeasResults = new long[1] { CurrentStationMonitoringModel.Id };
+                var listStationMonitoringModel = new List<long>();
+                foreach (StationMonitoringModel x in CurrentStationMonitoringModel)
+                {
+                    listStationMonitoringModel.Add(x.Id);
+                }
+
+                this._currentParamsCalculationModel.InfocMeasResults = listStationMonitoringModel.ToArray();
                 this._currentParamsCalculationModel.StationIds = stations.Select(x => Convert.ToInt64(x.ExternalCode)).ToArray();
                 StationCalibrationCalcTask.SaveTask(this._dataLayer.Origin, this._dataLayer.Executor, stations, this._currentParamsCalculationModel, TaskId);
                 //StationCalibrationCalcTask.RunTask(this._dataLayer.Origin, this._dataLayer.Executor, TaskId);
