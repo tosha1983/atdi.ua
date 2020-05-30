@@ -249,6 +249,7 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration.SdrnServer
 							c => c.RES_MEAS_STATION.Frequency,
 							c => c.RES_MEAS_STATION.MeasGlobalSID)
 						.Where(c => c.RES_MEAS_STATION.RES_MEAS.Id, ConditionOperator.Equal, resultId)
+						.Where(c => c.RES_MEAS_STATION.Standard, ConditionOperator.IsNotNull)
 						.OrderByAsc(c => c.RES_MEAS_STATION.Id, c => c.Id)
 						.Paginate(offsetRows, fetchRows);
 
@@ -257,11 +258,15 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration.SdrnServer
 						// достигли конца потока данных?
 						if (!reader.Read())
 						{
-							// в маиссиве есть данные, нужно слить в БД остаток
-							if (pointsIndex >= 0)
+							if (prevMeasStationId > 0)
 							{
-								this.CreateDriveTestPoints(infocDbScope, prevMeasStationId, pointsBuffer, pointsIndex + 1);
-								pointsIndex = -1;
+								// в маиссиве есть данные, нужно слить в БД остаток
+								if (pointsIndex >= 0)
+								{
+									this.CreateDriveTestPoints(infocDbScope, prevMeasStationId, pointsBuffer, pointsIndex + 1);
+									pointsIndex = -1;
+								}
+								this.UpdateStatsDriveTest(infocDbScope, prevMeasStationId, numberOfReadPoints);
 							}
 							
 							return true;
@@ -361,16 +366,21 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration.SdrnServer
 
 
 				// тут импортируем все потраха
+				var updStsQuery = _infocDataLayer.GetBuilder<ES_IC.SdrnServer.IStationMonitoringStats>()
+					.Update()
+						.SetValue(c => c.GsidCount, gsidCount)
+						.SetValue(c => c.MaxFreq_MHz, maxFreq_MHz)
+						.SetValue(c => c.MinFreq_MHz, minFreq_MHz)
+						.SetValue(c => c.StandardStats, dtsStats.Values.ToArray().Serialize())
+					.Where(c => c.Id, ConditionOperator.Equal, sdrnMeasResult.Id);
 
 				var updQuery = _infocDataLayer.GetBuilder<ES_IC.SdrnServer.IStationMonitoring>()
 					.Update()
 						.SetValue(c => c.StatusCode, (byte) ES_IC.SdrnServer.StationMonitoringStatusCode.Available)
 						.SetValue(c => c.StatusName, "Available")
-						.SetValue(c => c.STATS.GsidCount, gsidCount)
-						.SetValue(c => c.STATS.MaxFreq_MHz, maxFreq_MHz)
-						.SetValue(c => c.STATS.MinFreq_MHz, minFreq_MHz)
-						.SetValue(c => c.STATS.StandardStats, dtsStats.Values.ToArray().Serialize())
 					.Where(c => c.Id, ConditionOperator.Equal, sdrnMeasResult.Id);
+
+				infocDbScope.Executor.Execute(updStsQuery);
 				infocDbScope.Executor.Execute(updQuery);
 
 				message = null;
