@@ -70,6 +70,15 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Area name.
+        /// </summary>
+        public static string AreaName {
+            get {
+                return ResourceManager.GetString("AreaName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Azimuth Station.
         /// </summary>
         public static string AzimuthStation {
@@ -142,6 +151,78 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Count meas GSID.
+        /// </summary>
+        public static string CountMeasGSID {
+            get {
+                return ResourceManager.GetString("CountMeasGSID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на CountMeasGSID in IT status.
+        /// </summary>
+        public static string CountMeasGSID_IT {
+            get {
+                return ResourceManager.GetString("CountMeasGSID_IT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на CountMeasGSID in LS status.
+        /// </summary>
+        public static string CountMeasGSID_LS {
+            get {
+                return ResourceManager.GetString("CountMeasGSID_LS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на CountStation in CS status.
+        /// </summary>
+        public static string CountStation_CS {
+            get {
+                return ResourceManager.GetString("CountStation_CS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Count station in IT status.
+        /// </summary>
+        public static string CountStation_IT {
+            get {
+                return ResourceManager.GetString("CountStation_IT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Count station in UN status.
+        /// </summary>
+        public static string CountStation_NF {
+            get {
+                return ResourceManager.GetString("CountStation_NF", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Count station in NS status.
+        /// </summary>
+        public static string CountStation_NS {
+            get {
+                return ResourceManager.GetString("CountStation_NS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Count station in UN status.
+        /// </summary>
+        public static string CountStation_UN {
+            get {
+                return ResourceManager.GetString("CountStation_UN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Created by.
         /// </summary>
         public static string CreatedBy {
@@ -165,6 +246,15 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         public static string Delta {
             get {
                 return ResourceManager.GetString("Delta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Detail.
+        /// </summary>
+        public static string Detail {
+            get {
+                return ResourceManager.GetString("Detail", resourceCulture);
             }
         }
         
@@ -286,6 +376,15 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Method.
+        /// </summary>
+        public static string Method {
+            get {
+                return ResourceManager.GetString("Method", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Min number point for correlation.
         /// </summary>
         public static string MinNumberPointForCorrelation {
@@ -318,6 +417,24 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         public static string NumberCascade {
             get {
                 return ResourceManager.GetString("NumberCascade", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Number station.
+        /// </summary>
+        public static string NumberStation {
+            get {
+                return ResourceManager.GetString("NumberStation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Number station in contour.
+        /// </summary>
+        public static string NumberStationInContour {
+            get {
+                return ResourceManager.GetString("NumberStationInContour", resourceCulture);
             }
         }
         
@@ -399,6 +516,15 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         public static string ShiftCoordinatesStation {
             get {
                 return ResourceManager.GetString("ShiftCoordinatesStation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Shift coordinates station step.
+        /// </summary>
+        public static string ShiftCoordinatesStationStep {
+            get {
+                return ResourceManager.GetString("ShiftCoordinatesStationStep", resourceCulture);
             }
         }
         
@@ -498,6 +624,15 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         public static string TiltStation {
             get {
                 return ResourceManager.GetString("TiltStation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Time start.
+        /// </summary>
+        public static string TimeStart {
+            get {
+                return ResourceManager.GetString("TimeStart", resourceCulture);
             }
         }
         

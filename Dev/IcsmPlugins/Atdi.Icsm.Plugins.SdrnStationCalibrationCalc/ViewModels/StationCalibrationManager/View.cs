@@ -13,7 +13,10 @@ using Atdi.Platform.Cqrs;
 using Atdi.Platform.Events;
 using MP = Atdi.WpfControls.EntityOrm.Maps;
 using System.Data;
-using Atdi.Contracts.Sdrn.DeepServices.RadioSystem;
+using System.Windows;
+using WPF =  System.Windows.Controls;
+
+
 
 
 
@@ -30,11 +33,12 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
         private DateTime? _dateStartLoadDriveTest;
         private DateTime? _dateStopLoadDriveTest;
 
+        private long _taskId;
 
         private MP.MapDrawingData _currentMapData;
         private IList _currentAreas;
 
-        private readonly ISignalService  _signalService;
+
         private readonly IObjectReader _objectReader;
         private readonly ICommandDispatcher _commandDispatcher;
         private readonly ViewStarter _starter;
@@ -76,7 +80,6 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             ICommandDispatcher commandDispatcher,
             ViewStarter starter,
             IEventBus eventBus,
-            ISignalService signalService,
             ILogger logger)
         {
             _objectReader = objectReader;
@@ -84,7 +87,6 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             _starter = starter;
             _eventBus = eventBus;
             _logger = logger;
-
 
 
             this._dataLayer = dataLayer;
@@ -104,6 +106,8 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
 
             this.ReloadData();
             this.RedrawMap();
+
+            
         }
 
         public bool IsEnabledStart
@@ -117,6 +121,22 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             get => this._isEnabledFieldId;
             set => this.Set(ref this._isEnabledFieldId, value);
         }
+
+        public long TaskId
+        {
+            get => this._taskId;
+            set => this.Set(ref this._taskId, value, () => { this.OnChangedTaskIdParams(value); });
+        }
+
+        private void OnChangedTaskIdParams(long taskId)
+        {
+            this._currentParamsCalculationModel = ReadParamsCalculationByTaskId(this._taskId);
+            if (this._currentParamsCalculationModel.Method != null)
+            {
+                MethodParamsCalculationModelVal = (MethodParamsCalculationModel)this._currentParamsCalculationModel.Method;
+            }
+        }
+   
 
         private void CheckEnabledStart()
         {
@@ -218,16 +238,27 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                 {
                     if (area.Location != null)
                     {
+                        var dataLocationModels = new DataLocationModel[area.Location.Length];
+                        for (int i=0;i< area.Location.Length; i++)
+                        {
+                            dataLocationModels[i] = new DataLocationModel()
+                            {
+                                Longitude = ICSM.IMPosition.Dms2Dec(area.Location[i].Longitude),
+                                Latitude = ICSM.IMPosition.Dms2Dec(area.Location[i].Latitude)
+                            };
+
+                        }
+
                         var polygonPoints = new List<MP.Location>();
                         var polygonPointsAnother = new List<MP.Location>();
 
                         var lX = new List<double>();
                         var lY = new List<double>();
 
-                        var minX = area.Location.Select(x => x.Longitude).Min();
-                        var maxX = area.Location.Select(x => x.Longitude).Max();
-                        var minY = area.Location.Select(x => x.Latitude).Min();
-                        var maxY = area.Location.Select(x => x.Latitude).Max();
+                        var minX = dataLocationModels.Select(x => x.Longitude).Min();
+                        var maxX = dataLocationModels.Select(x => x.Longitude).Max();
+                        var minY = dataLocationModels.Select(x => x.Latitude).Min();
+                        var maxY = dataLocationModels.Select(x => x.Latitude).Max();
 
 
 
@@ -255,53 +286,100 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                         lY.Add(ouY8);
 
 
+                        //area.ExternalContour = new DataLocationModel[4];
+                        //area.ExternalContour[0] = new DataLocationModel()
+                        //{
+                        //    Longitude = lX.Min(),
+                        //    Latitude = lY.Min()
+                        //};
+                        //area.ExternalContour[1] = new DataLocationModel()
+                        //{
+                        //    Longitude = lX.Max(),
+                        //    Latitude = lY.Min()
+                        //};
+                        //area.ExternalContour[2] = new DataLocationModel()
+                        //{
+                        //    Longitude = lX.Max(),
+                        //    Latitude = lY.Max()
+                        //};
+                        //area.ExternalContour[3] = new DataLocationModel()
+                        //{
+                        //    Longitude = lX.Min(),
+                        //    Latitude = lY.Max()
+                        //};
+
+
+                        //polygonPointsAnother.Add(new MP.Location()
+                        //{
+                        //    Lon = lX.Min(),
+                        //    Lat = lY.Min()
+                        //});
+
+                        //polygonPointsAnother.Add(new MP.Location()
+                        //{
+                        //    Lon = lX.Max(),
+                        //    Lat = lY.Min()
+                        //});
+
+                        //polygonPointsAnother.Add(new MP.Location()
+                        //{
+                        //    Lon = lX.Max(),
+                        //    Lat = lY.Max()
+                        //});
+
+                        //polygonPointsAnother.Add(new MP.Location()
+                        //{
+                        //    Lon = lX.Min(),
+                        //    Lat = lY.Max()
+                        //});
+
+
                         area.ExternalContour = new DataLocationModel[4];
                         area.ExternalContour[0] = new DataLocationModel()
                         {
                             Longitude = lX.Min(),
-                            Latitude = lY.Min()
+                            Latitude = lY.Max()
                         };
                         area.ExternalContour[1] = new DataLocationModel()
                         {
                             Longitude = lX.Max(),
-                            Latitude = lY.Min()
+                            Latitude = lY.Max()
                         };
                         area.ExternalContour[2] = new DataLocationModel()
                         {
                             Longitude = lX.Max(),
-                            Latitude = lY.Max()
+                            Latitude = lY.Min()
                         };
                         area.ExternalContour[3] = new DataLocationModel()
                         {
                             Longitude = lX.Min(),
-                            Latitude = lY.Max()
+                            Latitude = lY.Min()
                         };
 
 
                         polygonPointsAnother.Add(new MP.Location()
                         {
                             Lon = lX.Min(),
-                            Lat = lY.Min()
-                        });
-
-                        polygonPointsAnother.Add(new MP.Location()
-                        {
-                            Lon = lX.Max(),
-                            Lat = lY.Min()
+                            Lat = lY.Max()
                         });
 
                         polygonPointsAnother.Add(new MP.Location()
                         {
                             Lon = lX.Max(),
                             Lat = lY.Max()
+                        });
+
+                        polygonPointsAnother.Add(new MP.Location()
+                        {
+                            Lon = lX.Max(),
+                            Lat = lY.Min()
                         });
 
                         polygonPointsAnother.Add(new MP.Location()
                         {
                             Lon = lX.Min(),
-                            Lat = lY.Max()
+                            Lat = lY.Min()
                         });
-
 
 
 
@@ -312,7 +390,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                             Fill = System.Windows.Media.Colors.Aqua
                         });
 
-                        foreach (var point in area.Location)
+                        foreach (var point in dataLocationModels)
                         {
                             polygonPoints.Add(new MP.Location()
                             {
@@ -365,6 +443,8 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             set => this.Set(ref this._currentStationMonitoringModel, value, () => { this.OnChangedCurrentStationMonitoringModel(value); });
         }
 
+        
+
 
 
 
@@ -394,6 +474,17 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
         private void OnChangedParamsCalculation(ParamsCalculationModel paramsCalculationModel)
         {
 
+        }
+
+        public ParamsCalculationModel ReadParamsCalculationByTaskId(long taskId)
+        {
+            var resMeas = _objectReader
+                .Read<ParamsCalculationModel>()
+                .By(new GetParamsCalculationByTaskId()
+                {
+                     TaskId = taskId
+                });
+            return resMeas;
         }
 
         public StationMonitoringModel ReadStationMonitoring(long id)
@@ -514,8 +605,16 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             }
 
             var stations = ReadStations();
-            this._currentParamsCalculationModel.InfocMeasResults = new long[1] { CurrentStationMonitoringModel.Id };
-            StationCalibrationCalcTask.Run(this._dataLayer.Origin, this._dataLayer.Executor, stations, this._currentParamsCalculationModel);
+            if (stations.Length > 0)
+            {
+                this._currentParamsCalculationModel.InfocMeasResults = new long[1] { CurrentStationMonitoringModel.Id };
+                this._currentParamsCalculationModel.StationIds = stations.Select(x => Convert.ToInt64(x.ExternalCode)).ToArray();
+                StationCalibrationCalcTask.Run(this._dataLayer.Origin, this._dataLayer.Executor, stations, this._currentParamsCalculationModel, TaskId);
+            }
+            else
+            {
+                System.Windows.MessageBox.Show("No stations with suitable parameters!");
+            }
         }
 
     }

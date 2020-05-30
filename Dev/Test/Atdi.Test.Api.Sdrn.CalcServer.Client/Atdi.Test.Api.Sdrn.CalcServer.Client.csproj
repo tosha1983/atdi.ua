@@ -61,6 +61,8 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tasks\PointFieldStrengthCalcTask.cs" />
+    <Compile Include="Tasks\PointFieldStrengthCalcTask_Lviv.cs" />
+    <Compile Include="Tasks\StationCorrelationCalcTask.cs" />
     <Compile Include="Test\TestDataGenerator.cs" />
   </ItemGroup>
   <ItemGroup>

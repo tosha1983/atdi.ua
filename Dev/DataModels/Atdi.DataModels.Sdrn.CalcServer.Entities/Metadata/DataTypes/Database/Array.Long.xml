@@ -3,7 +3,7 @@
   Name           = "Array.Long"
   DataSourceType = "Database"
   xmlns          =  "http://schemas.atdi.com/orm/entity.xsd">
- 
+
   <CodeVarType ClrType="System.Int64[]">ClrType</CodeVarType>
   <StoreContentType>Binary</StoreContentType>
   <SourceVarType>BLOB</SourceVarType>  

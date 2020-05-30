@@ -133,10 +133,67 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
             };
             var iterationResultCalibration = _iterationsPool.GetIteration<AllStationCorellationCalcData, CalibrationResult[]>();
             var resulCalibration = iterationResultCalibration.Run(_taskContext, iterationAllStationCorellationCalcData);
-            for (int i=0; i< resulCalibration.Length; i++)
+            for (int i = 0; i < resulCalibration.Length; i++)
             {
                 SaveTaskResult(resulCalibration[i]);
             }
+            //CalibrationResult resulCalibration1 = new CalibrationResult()
+            //{
+
+            //    AreaName = "Area",
+            //    CountMeasGSID = 1,
+            //    IdResult = 67,
+            //    GeneralParameters = new GeneralParameters()
+            //    {
+            //        DistanceAroundContour_km = 22,
+            //        TrustOldResults = 1
+            //    },
+            //    ResultCalibrationDriveTest = new CalibrationDriveTestResult[2]
+            //              {
+            //                   new CalibrationDriveTestResult()
+            //                   {
+            //                         DriveTestId = 1,
+            //                        CountPointsInDriveTest=1,
+            //                         Gsid="22",
+            //                          ResultDriveTestStatus = DriveTestStatusResult.LS,
+            //                           LinkToStationMonitoringId = 4325
+            //                   },
+            //                   new CalibrationDriveTestResult()
+            //                   {
+            //                         DriveTestId = 1,
+            //                        CountPointsInDriveTest=1,
+            //                         Gsid="23",
+            //                          ResultDriveTestStatus = DriveTestStatusResult.UN,
+            //                           LinkToStationMonitoringId = 4325
+            //                   }
+            //              },
+            //    ResultCalibrationStation = new CalibrationStationResult[2]
+            //               {
+            //                    new CalibrationStationResult()
+            //                    {
+            //                         StationMonitoringId = 4325,
+            //                         ExternalCode="2",
+            //                          ExternalSource = "MOB_STATION",
+            //                           RealGsid="RG2",
+            //                            ResultStationStatus = StationStatusResult.CS,
+
+
+            //                    },
+            //                    new CalibrationStationResult()
+            //                    {
+            //                         StationMonitoringId = 4325,
+            //                         ExternalCode="3",
+            //                          ExternalSource = "MOB_STATION",
+            //                           RealGsid="RG1",
+            //                            ResultStationStatus = StationStatusResult.NF,
+
+
+            //                    }
+            //               }
+
+            //};
+            //SaveTaskResult(in resulCalibration1);
+
         }
 
 		private void ValidateTaskParameters()
@@ -465,6 +522,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                     .From()
                     .Select(
                         c => c.Id,
+                        c => c.DRIVE_TEST.Id,
                         c => c.DRIVE_TEST.Freq_MHz,
                         c => c.DRIVE_TEST.Gsid,
                         c => c.DRIVE_TEST.PointsCount,
@@ -479,18 +537,22 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                 {
                     while (reader.Read())
                     {
+                        PointFS[] pointFS = null;
                         var points = reader.GetValueAs<DriveTestPoint[]>(c => c.Points);
-                        var pointFS = new PointFS[points.Length];
-                        for (int j=0; j<points.Length; j++)
+                        if (points != null)
                         {
-                            pointFS[j].Coordinate = _transformation.ConvertCoordinateToEpgs(points[j].Coordinate, _transformation.ConvertProjectionToCode(this._parameters.Projection));
-                            pointFS[j].FieldStrength_dBmkVm = points[j].FieldStrength_dBmkVm;
-                            pointFS[j].Height_m = points[j].Height_m;
-                            pointFS[j].Level_dBm = points[j].Level_dBm;
+                            pointFS = new PointFS[points.Length];
+                            for (int j = 0; j < points.Length; j++)
+                            {
+                                pointFS[j].Coordinate = _transformation.ConvertCoordinateToEpgs(points[j].Coordinate, _transformation.ConvertProjectionToCode(this._parameters.Projection));
+                                pointFS[j].FieldStrength_dBmkVm = points[j].FieldStrength_dBmkVm;
+                                pointFS[j].Height_m = points[j].Height_m;
+                                pointFS[j].Level_dBm = points[j].Level_dBm;
+                            }
                         }
-
                         driveTests.Add(new DriveTestsResult()
                         {
+                            DriveTestId = reader.GetValue(c => c.DRIVE_TEST.Id),
                             Freq_MHz = reader.GetValue(c => c.DRIVE_TEST.Freq_MHz),
                             GSID = reader.GetValue(c => c.DRIVE_TEST.Gsid),
                             Standard = reader.GetValue(c => c.DRIVE_TEST.Standard),
@@ -523,7 +585,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 
         private void SaveTaskResult(in CalibrationResult result)
         {
-            var insertQueryStationCalibrationResult = _calcServerDataLayer.GetBuilder<IStationCalibrationResult>()
+            var updateQueryStationCalibrationResult = _calcServerDataLayer.GetBuilder<IStationCalibrationResult>()
                 .Insert()
                 .SetValue(c => c.AreaName, result.AreaName)
                 .SetValue(c => c.CountMeasGSID, result.CountMeasGSID)
@@ -536,14 +598,16 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                 .SetValue(c => c.CountStation_UN, result.CountStation_UN)
                 .SetValue(c => c.NumberStation, result.NumberStation)
                 .SetValue(c => c.NumberStationInContour, result.NumberStationInContour)
-                .SetValue(c => c.RESULT.Id, _taskContext.ResultId)
                 .SetValue(c => c.Standard, result.Standard)
                 .SetValue(c => c.TimeStart, result.TimeStart)
+                //.SetValue(c => c.ParametersId, _taskContext.TaskId)
                 .SetValue(c => c.PARAMETERS.TaskId, _taskContext.TaskId)
+                .SetValue(c => c.ResultId, _taskContext.ResultId)
+                //.Where(c=>c.RESULT.Id, ConditionOperator.Equal, _taskContext.ResultId)
                 ;
 
-            var key = _calcDbScope.Executor.Execute<IStationCalibrationResult_PK>(insertQueryStationCalibrationResult);
-            if (key != null)
+            var key = _calcDbScope.Executor.Execute<IStationCalibrationResult_PK>(updateQueryStationCalibrationResult);
+            if (key.ResultId > 0)
             {
                 for (int z = 0; z < result.ResultCalibrationDriveTest.Length; z++)
                 {
@@ -556,6 +620,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                     .SetValue(c => c.ExternalSource, driveTest.ExternalSource)
                     .SetValue(c => c.LicenseGsid, driveTest.Gsid)
                     .SetValue(c => c.RealGsid, driveTest.GsidFromStation)
+                    .SetValue(c => c.DriveTestId, driveTest.DriveTestId)
+                    .SetValue(c => c.LinkToStationMonitoringId, driveTest.LinkToStationMonitoringId)
                     .SetValue(c => c.ResultDriveTestStatus, driveTest.ResultDriveTestStatus.ToString())
                     ;
                     _calcDbScope.Executor.Execute<IStationCalibrationDriveTestResult_PK>(insertQueryStationCalibrationDriveTestResult);
@@ -566,6 +632,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                     var station = result.ResultCalibrationStation[z];
                     var insertQueryStationCalibrationStaResult = _calcServerDataLayer.GetBuilder<IStationCalibrationStaResult>()
                     .Insert()
+                    .SetValue(c => c.StationMonitoringId, station.StationMonitoringId)
                     .SetValue(c => c.CalibrationResultId, key.ResultId)
                     .SetValue(c => c.ExternalCode, station.ExternalCode)
                     .SetValue(c => c.ExternalSource, station.ExternalSource)

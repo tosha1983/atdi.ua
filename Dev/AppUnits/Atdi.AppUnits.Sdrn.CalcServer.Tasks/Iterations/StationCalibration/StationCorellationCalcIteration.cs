@@ -73,7 +73,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 double latStep_dec = data.FieldStrengthCalcData.MapArea.AxisY.Step;
 
                 int counter = 0;
-                // 0, 1
+                // 0 - приведение координат к центру условного "пикселя" карты, 
+                // 1 - усреднение FS по одним координатам
                 for (int i = 0; i < data.GSIDGroupeDriveTests.Points.Length; i++)
                 {
                     if (data.GSIDGroupeDriveTests.Points[i].FieldStrength_dBmkVm >= data.CorellationParameters.MinRangeMeasurements_dBmkV &&
@@ -84,18 +85,16 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
                         if (counter > 0)
                         {
+                            // Сравнение следующих координат с приведенными к центру пикселя,
                             for (int j = 0; j < counter; j++)
                             {
                                 bool isInsidePixelLon = Math.Abs(data.GSIDGroupeDriveTests.Points[i].Coordinate.X - calcPointArrayBuffer[j].Lon) < data.FieldStrengthCalcData.MapArea.AxisX.Step;
                                 bool isInsidePixelLat = Math.Abs(data.GSIDGroupeDriveTests.Points[i].Coordinate.Y - calcPointArrayBuffer[j].Lat) < data.FieldStrengthCalcData.MapArea.AxisY.Step;
                                 if (isInsidePixelLon && isInsidePixelLat)
                                 {
-                                    
+                                    //  в случае если по координатам уже есть изменерия, напряжённость усредняется
                                     calcPointArrayBuffer[j].Lon = (int)data.GSIDGroupeDriveTests.Points[i].Coordinate.X + data.FieldStrengthCalcData.MapArea.AxisX.Step / 2;
                                     calcPointArrayBuffer[j].Lat = (int)data.GSIDGroupeDriveTests.Points[i].Coordinate.Y + data.FieldStrengthCalcData.MapArea.AxisY.Step / 2;
-
-                                    
-                                    //calcPointArrayBuffer[j].FSCalc = 
 
                                     calcPointArrayBuffer[j].FSMeas = 20 * Math.Log10((calcPointArrayBuffer[j].Count * Math.Pow(10, 0.05 * calcPointArrayBuffer[j].FSMeas) + Math.Pow(10, 0.05 * data.GSIDGroupeDriveTests.Points[i].FieldStrength_dBmkVm)) / (calcPointArrayBuffer[j].Count + 1));//data.GSIDGroupeDriveTests.Points[i].FieldStrength_dBmkVm;
                                     calcPointArrayBuffer[j].Count += 1;
@@ -106,6 +105,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         }
                         else if (isFoubdInBuffer == false || counter == 0)
                         {
+                            // выполняется для первой итерации и в случае если по координатам не было измерений
                             calcPointArrayBuffer[counter].Count += 1;
                             calcPointArrayBuffer[counter].Lon = (int)data.GSIDGroupeDriveTests.Points[i].Coordinate.X + data.FieldStrengthCalcData.MapArea.AxisX.Step / 2;
                             calcPointArrayBuffer[counter].Lat = (int)data.GSIDGroupeDriveTests.Points[i].Coordinate.Y + data.FieldStrengthCalcData.MapArea.AxisY.Step / 2;
@@ -125,7 +125,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     }
                 }
 
-                // 2
+                // 2 - расчёт напряжённости в окрестности точки
                 for (int i = 0; i < counter; i++)
                 {
                     if (data.CorellationParameters.CorrelationDistance_m > data.FieldStrengthCalcData.MapArea.AxisX.Step)
@@ -135,46 +135,32 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         int lonAroundStop = calcPointArrayBuffer[i].Lon + data.CorellationParameters.CorrelationDistance_m / 2;
                         int latAroundStop = calcPointArrayBuffer[i].Lat + data.CorellationParameters.CorrelationDistance_m / 2;
                        
-                        double measCalcFSdifference = Math.Abs(calcPointArrayBuffer[i].FSMeas - calcPointArrayBuffer[i].FSCalc);
+                        double measCalcFSdifference = (calcPointArrayBuffer[i].FSMeas - calcPointArrayBuffer[i].FSCalc);
                         double minMeasCalcFSdifference = measCalcFSdifference;
 
                         for (int lonPointAround = lonAroundStart; lonPointAround < lonAroundStop; lonPointAround += data.FieldStrengthCalcData.MapArea.AxisX.Step)
                         {
-                            data.FieldStrengthCalcData.TargetCoordinate.X = lonPointAround;
-                            data.FieldStrengthCalcData.TargetCoordinate.Y = latAroundStart;
-                            double FSaroundTopDiff = Math.Abs(calcPointArrayBuffer[i].FSMeas - iterationFieldStrengthCalcData.Run(taskContext, data.FieldStrengthCalcData).FS_dBuVm.Value);
-
-                            data.FieldStrengthCalcData.TargetCoordinate.X = lonPointAround;
-                            data.FieldStrengthCalcData.TargetCoordinate.Y = latAroundStart;
-                            double FSaroundBottomDiff = Math.Abs(calcPointArrayBuffer[i].FSMeas - iterationFieldStrengthCalcData.Run(taskContext, data.FieldStrengthCalcData).FS_dBuVm.Value);
-
-                            var FSaroundDif = Math.Min(FSaroundTopDiff, FSaroundBottomDiff);
-                            if (FSaroundDif < minMeasCalcFSdifference)
+                            for (int latPointAround = latAroundStart; latPointAround < latAroundStop; latPointAround += data.FieldStrengthCalcData.MapArea.AxisY.Step)
                             {
-                                minMeasCalcFSdifference = FSaroundDif;
+                                data.FieldStrengthCalcData.TargetCoordinate.X = lonPointAround;
+                                data.FieldStrengthCalcData.TargetCoordinate.Y = latPointAround;
+                                double FSaroundDif = (calcPointArrayBuffer[i].FSMeas - iterationFieldStrengthCalcData.Run(taskContext, data.FieldStrengthCalcData).FS_dBuVm.Value);
+
+                                if (Math.Abs(FSaroundDif) < Math.Abs(minMeasCalcFSdifference))
+                                {
+                                    minMeasCalcFSdifference = FSaroundDif;
+                                }
                             }
                         }
-                        for (int latPointAround = latAroundStart; latPointAround < latAroundStop; latPointAround += data.FieldStrengthCalcData.MapArea.AxisY.Step)
-                        {
-                            data.FieldStrengthCalcData.TargetCoordinate.X = lonAroundStart;
-                            data.FieldStrengthCalcData.TargetCoordinate.Y = latPointAround;
-                            double FSaroundLeftDiff = Math.Abs(calcPointArrayBuffer[i].FSMeas - iterationFieldStrengthCalcData.Run(taskContext, data.FieldStrengthCalcData).FS_dBuVm.Value);
+                        // если находится точка с расчётной напряжённостью ближе к измеренной - запоминается это значение
+                        calcPointArrayBuffer[i].FSCalc = calcPointArrayBuffer[i].FSMeas - minMeasCalcFSdifference;
 
-                            data.FieldStrengthCalcData.TargetCoordinate.X = lonAroundStop;
-                            data.FieldStrengthCalcData.TargetCoordinate.Y = latPointAround;
-                            double FSaroundRightDiff = Math.Abs(calcPointArrayBuffer[i].FSMeas - iterationFieldStrengthCalcData.Run(taskContext, data.FieldStrengthCalcData).FS_dBuVm.Value);
 
-                            var FSaroundDif = Math.Min(FSaroundLeftDiff, FSaroundRightDiff);
-                            if (FSaroundLeftDiff < FSaroundRightDiff)
-                            {
-                                minMeasCalcFSdifference = FSaroundDif;
-                            }
-                        }
                     }
                 }
 
 
-                //// 3
+                //// 3 - расчёт корреляционных параметров, подготовка результата
                 
 
                 if (data.CorellationParameters.Detail)

@@ -14,16 +14,20 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
         private readonly AppComponentConfig _config;
         private MobStationsDataAdapter MobStationsDataAdapter;
         private readonly IObjectReader _objectReader;
+        public readonly ISignalService _signalService;
 
 
-        public MobStationsLoadExecutor(AppComponentConfig config, IObjectReader objectReader)
+        public MobStationsLoadExecutor(AppComponentConfig config,
+            ISignalService signalService,
+            IObjectReader objectReader)
         {
             this._config = config;
+            this._signalService = signalService;
             this._objectReader = objectReader;
         }
         public IcsmMobStation[] Read(MobStationsLoadModelByParams criterion)
         {
-            MobStationsDataAdapter = new MobStationsDataAdapter(criterion, this._objectReader);
+            MobStationsDataAdapter = new MobStationsDataAdapter(criterion, this._signalService, this._objectReader);
             return MobStationsDataAdapter.LoadStations();
         }
     }

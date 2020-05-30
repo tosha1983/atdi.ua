@@ -12,10 +12,14 @@
     <Schema>CALC</Schema>
   </DataSource>
   <Fields>
-    <Field Name="CALIBRATION_RESULT" SourceType="Reference" SourceName="Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks.StationCalibrationResult"  Required="true" Title="Station calibration result" Desc="The Station calibration result" />
+
+    <Field Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column" Desc="The Id record." Title="Id record"/>
+    <Field Name="DriveTestId" SourceType="Column" SourceName="DRIVE_TEST_ID" DataType="Integer.64"  Required="false" Title="Drive test ID" Desc="The drive test ID" />
+    <!--<Field Name="CALIBRATION_RES" SourceType="Reference" SourceName="Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks.StationCalibrationResult"  Required="true" Title="Station calibration result" Desc="The Station calibration result" />-->
+    <Field Name="LinkToStationMonitoringId" SourceType="Column" SourceName="LINK_STATION_MONITORING_ID" DataType="Integer.64" Required="false" Title="Station calibration result link" Desc="The Station calibration result link" />
     <Field Name="CalibrationResultId" SourceType="Column" SourceName="STATION_CALIBRATION_RESULT_ID" DataType="Integer.64"  Required="true" Title="calibration result ID" Desc="The calibration result ID" />
     <Field Name="ExternalSource" SourceType="Column" SourceName="EXTERNAL_SOURCE" DataType="Text.50" Required="false" Title="External source" Desc="The external source" />
-    <Field Name="ExternalCode" SourceType="Column" SourceName="EXTERNAL_SOURCE" DataType="Text.50" Required="false" Title="External code" Desc="The external code" />
+    <Field Name="ExternalCode" SourceType="Column" SourceName="EXTERNAL_CODE" DataType="Text.50" Required="false" Title="External code" Desc="The external code" />
     <Field Name="LicenseGsid" SourceType="Column" SourceName="LICENSE_GSID" DataType="Text.100" Required="false" Title="License gsid" Desc="The license gsid" />
     <Field Name="RealGsid" SourceType="Column" SourceName="REAL_GSID" DataType="Text.100" Required="false" Title="Real Gsid" Desc="The real Gsid" />
     <Field Name="ResultDriveTestStatus" SourceType="Column" SourceName="RESULT_DRIVE_TEST_STATUS" DataType="Text.50" Required="false" Title="Result drive test status" Desc="The result drive test status" />
@@ -23,7 +27,7 @@
     <Field Name="CountPointsInDriveTest" SourceType="Column" Required="false" SourceName="COUNT_POINTS_IN_DRIVE_TEST" DataType="Integer.32" Title="Count points in drive test" Desc="The count points in drive test"/>
   </Fields>
   <PrimaryKey Clustered="true">
-    <FieldRef Name="CalibrationResultId"/>
+    <FieldRef Name="Id"/>
   </PrimaryKey>
 </Entity>
 

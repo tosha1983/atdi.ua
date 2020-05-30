@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -118,15 +119,25 @@
     <Compile Include="ViewModels\StationCalibrationManager\Queries\StationMonitoring\RoutesStationMonitoringModelByIdExecutor.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Queries\StationMonitoring\StationMonitoringModelByIdExecutor.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\View.cs" />
+    <Compile Include="ViewModels\StationCalibrationResult\Adapters\StationCalibrationStaDataAdapter.cs" />
+    <Compile Include="ViewModels\StationCalibrationResult\Adapters\StationCalibrationDriveTestsDataAdapter.cs" />
+    <Compile Include="ViewModels\StationCalibrationResult\Adapters\StationCalibrationResultDataAdapter.cs" />
+    <Compile Include="ViewModels\StationCalibrationResult\Models\StationCalibrationDriveTests\StationCalibrationDriveTestsModel.cs" />
+    <Compile Include="ViewModels\StationCalibrationResult\Models\StationCalibrationResult\StationCalibrationResultModel.cs" />
+    <Compile Include="ViewModels\StationCalibrationResult\Models\StationCalibrationSta\RoutesStationMonitoringModel.cs" />
+    <Compile Include="ViewModels\StationCalibrationResult\Models\StationCalibrationSta\StationCalibrationStaModel.cs" />
+    <Compile Include="ViewModels\StationCalibrationResult\Queries\StationCalibrationDriveTestsModelById.cs" />
+    <Compile Include="ViewModels\StationCalibrationResult\Queries\StationCalibrationDriveTestsModelByIdExecutor.cs" />
+    <Compile Include="ViewModels\StationCalibrationResult\Queries\StationCalibrationStaModelByIdExecutor.cs" />
+    <Compile Include="ViewModels\StationCalibrationResult\Queries\StationCalibrationStaModelById.cs" />
+    <Compile Include="ViewModels\StationCalibrationResult\Queries\RoutesStationMonitoringModelById.cs" />
+    <Compile Include="ViewModels\StationCalibrationResult\Queries\RoutesStationMonitoringModelByIdExecutor.cs" />
+    <Compile Include="ViewModels\StationCalibrationResult\View.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Api\Atdi.Api.EntityOrm.WebClient\Atdi.Api.EntityOrm.WebClient.csproj">
       <Project>{48ace960-6ba0-4a99-b060-4dbb8a182206}</Project>
       <Name>Atdi.Api.EntityOrm.WebClient</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Common\Atdi.Common\Atdi.Common.csproj">
-      <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
-      <Name>Atdi.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Contracts\Api\Atdi.Contracts.Api.EntityOrm.WebClient\Atdi.Contracts.Api.EntityOrm.WebClient.csproj">
       <Project>{a252d199-1162-484d-b50a-8c44a4edd670}</Project>
@@ -172,10 +183,6 @@
       <Project>{98e79b80-3176-4cad-b7ba-b5caa6752fab}</Project>
       <Name>Atdi.Platform.Configurator</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Platform\Atdi.Platform.ServicesContainer\Atdi.Platform.ServicesContainer.csproj">
-      <Project>{153006da-1f99-4d33-b490-d3a87e7dfd03}</Project>
-      <Name>Atdi.Platform.ServicesContainer</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Platform\Atdi.Platform\Atdi.Platform.csproj">
       <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
       <Name>Atdi.Platform</Name>
@@ -193,6 +200,8 @@
     <Folder Include="Commands\" />
     <Folder Include="Events\" />
     <Folder Include="Queries\" />
+    <Folder Include="ViewModels\StationCalibrationResult\Events\" />
+    <Folder Include="ViewModels\StationCalibrationResult\Modifiers\" />
     <Folder Include="Xaml\" />
   </ItemGroup>
   <ItemGroup>
@@ -210,7 +219,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetDir)XICSM_*.dll" "c:\ATDI\ICS ManagerCalcServer"
-copy "$(TargetDir)Atdi.*.dll"    "c:\ATDI\ICS ManagerCalcServer"</PostBuildEvent>
+    <PostBuildEvent>copy "$(TargetDir)ru-RU\*.*"   "C:\ATDI\ICS ManagerCalcServer\ru-RU"
+copy "$(TargetDir)uk-UA\*.*"  "C:\ATDI\ICS ManagerCalcServer\uk-UA"
+</PostBuildEvent>
   </PropertyGroup>
 </Project>
