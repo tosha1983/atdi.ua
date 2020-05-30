@@ -522,6 +522,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                     .From()
                     .Select(
                         c => c.Id,
+                        c => c.DRIVE_TEST.Id,
                         c => c.DRIVE_TEST.Freq_MHz,
                         c => c.DRIVE_TEST.Gsid,
                         c => c.DRIVE_TEST.PointsCount,
@@ -536,16 +537,19 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                 {
                     while (reader.Read())
                     {
+                        PointFS[] pointFS = null;
                         var points = reader.GetValueAs<DriveTestPoint[]>(c => c.Points);
-                        var pointFS = new PointFS[points.Length];
-                        for (int j=0; j<points.Length; j++)
+                        if (points != null)
                         {
-                            pointFS[j].Coordinate = _transformation.ConvertCoordinateToEpgs(points[j].Coordinate, _transformation.ConvertProjectionToCode(this._parameters.Projection));
-                            pointFS[j].FieldStrength_dBmkVm = points[j].FieldStrength_dBmkVm;
-                            pointFS[j].Height_m = points[j].Height_m;
-                            pointFS[j].Level_dBm = points[j].Level_dBm;
+                            pointFS = new PointFS[points.Length];
+                            for (int j = 0; j < points.Length; j++)
+                            {
+                                pointFS[j].Coordinate = _transformation.ConvertCoordinateToEpgs(points[j].Coordinate, _transformation.ConvertProjectionToCode(this._parameters.Projection));
+                                pointFS[j].FieldStrength_dBmkVm = points[j].FieldStrength_dBmkVm;
+                                pointFS[j].Height_m = points[j].Height_m;
+                                pointFS[j].Level_dBm = points[j].Level_dBm;
+                            }
                         }
-
                         driveTests.Add(new DriveTestsResult()
                         {
                             DriveTestId = reader.GetValue(c => c.DRIVE_TEST.Id),
