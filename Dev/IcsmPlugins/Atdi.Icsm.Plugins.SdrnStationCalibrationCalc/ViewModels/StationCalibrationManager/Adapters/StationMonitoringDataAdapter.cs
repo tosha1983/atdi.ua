@@ -35,7 +35,8 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                 c => c.StatusCode,
                 c => c.StatusName,
                 c => c.StatusNote
-            ).Filter(f => f.MeasTime, DataModels.Api.EntityOrm.WebClient.FilterOperator.Between, StartDateTime, StopDateTime);
+            ).Filter(f => f.MeasTime, DataModels.Api.EntityOrm.WebClient.FilterOperator.GreaterEqual, StartDateTime.Date)
+            .Filter(f => f.MeasTime, DataModels.Api.EntityOrm.WebClient.FilterOperator.LessEqual, StopDateTime.Date);
         }
         protected override StationMonitoringModel ReadData(IDataReader<IC_ES.IStationMonitoring> reader, int index)
         {

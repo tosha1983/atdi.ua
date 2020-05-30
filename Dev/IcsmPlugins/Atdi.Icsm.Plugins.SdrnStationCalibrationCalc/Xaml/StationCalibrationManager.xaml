@@ -284,7 +284,7 @@
 
             <maps:Map Grid.Row="0" DrawingData="{Binding CurrentMapData}"></maps:Map>
             
-            <Button Grid.Column="0" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Content="Start" Width="70" Height="20" Command="{Binding StartStationCalibrationCommand}"/>
+            <Button Grid.Column="0" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Content="Save" Width="70" Height="20" Command="{Binding StartStationCalibrationCommand}"/>
           </Grid>
         </GroupBox>
       </Grid>
