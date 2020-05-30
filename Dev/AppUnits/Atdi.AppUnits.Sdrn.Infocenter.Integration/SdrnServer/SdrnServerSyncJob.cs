@@ -249,6 +249,7 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration.SdrnServer
 							c => c.RES_MEAS_STATION.Frequency,
 							c => c.RES_MEAS_STATION.MeasGlobalSID)
 						.Where(c => c.RES_MEAS_STATION.RES_MEAS.Id, ConditionOperator.Equal, resultId)
+						.Where(c => c.RES_MEAS_STATION.Standard, ConditionOperator.IsNotNull)
 						.OrderByAsc(c => c.RES_MEAS_STATION.Id, c => c.Id)
 						.Paginate(offsetRows, fetchRows);
 
