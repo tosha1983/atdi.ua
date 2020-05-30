@@ -188,7 +188,7 @@ namespace Atdi.Test.Platform
 
         private static void Test_SelectPagingPatterns(IDataLayer<EntityDataOrm> dataLayer)
         {
-	        var offsetRows = 10;
+	       // var offsetRows = 10;
 	        var fetchRows = 7;
 	        var refQuery = dataLayer.GetBuilder<ITestEntityRef1>()
 			        .From()

@@ -43,6 +43,31 @@ namespace Atdi.AppUnits.Sdrn.Infocenter
 					.Where(c => c.Id, ConditionOperator.Equal, token);
 
 				dbScope.Executor.Execute(updQuery);
+
+				var findQuery = _integrationLogQueryBuilder
+					.From()
+					.Select(c => c.OBJECT.Id)
+					.Where(c => c.Id, ConditionOperator.Equal, token);
+				var objectId = dbScope.Executor.ExecuteAndFetch(findQuery, reader =>
+				{
+					if (reader.Read())
+					{
+						return reader.GetValue(c => c.OBJECT.Id);
+					}
+
+					return 0;
+				});
+
+				if (objectId == 0)
+				{
+					throw new InvalidOperationException($"Incorrect log token #{token}");
+				}
+
+				var updObjectQuery = _integrationObjectQueryBuilder
+					.Update()
+					.SetValue(c => c.LastSyncTime, DateTimeOffset.Now)
+					.Where(c => c.Id, ConditionOperator.Equal, objectId);
+				dbScope.Executor.Execute(updObjectQuery);
 			}
 		}
 
@@ -82,11 +107,50 @@ namespace Atdi.AppUnits.Sdrn.Infocenter
 
 				var updObjectQuery = _integrationObjectQueryBuilder
 					.Update()
-					.SetValue(c => c.SyncKeyType, typeof(TSyncKey).ToString())
+					.SetValue(c => c.SyncKeyType, typeof(TSyncKey).AssemblyQualifiedName)
 					.SetValue(c => c.SyncKeyNote, Convert.ToString(syncKey))
 					.SetValue(c => c.SyncKeyContent, syncKey?.Serialize())
+					.SetValue(c => c.LastSyncTime, DateTimeOffset.Now)
 					.Where(c => c.Id, ConditionOperator.Equal, objectId);
 				dbScope.Executor.Execute(updObjectQuery);
+			}
+		}
+
+		public TSyncKey GetSyncKey<TSyncKey>(string source, string objectName)
+		{
+			using (var dbScope = this._dataLayer.CreateScope<InfocenterDataContext>())
+			{
+				var findQuery = _integrationObjectQueryBuilder
+					.From()
+					.Select(c => c.SyncKeyType)
+					.Select(c => c.SyncKeyContent)
+					.Where(c => c.DataSource, ConditionOperator.Equal, source)
+					.Where(c => c.ObjectName, ConditionOperator.Equal, objectName);
+
+				var result = dbScope.Executor.ExecuteAndFetch(findQuery, reader =>
+				{
+					if (reader.Read())
+					{
+						var syncKeyType = reader.GetValue(c => c.SyncKeyType);
+						var assemblyQualifiedName = typeof(TSyncKey).AssemblyQualifiedName;
+						if (assemblyQualifiedName == null || !assemblyQualifiedName.Equals(syncKeyType,
+							    StringComparison.OrdinalIgnoreCase))
+						{
+							return default(TSyncKey);
+						}
+						var syncKeyContent = reader.GetValue(c => c.SyncKeyContent);
+						if (syncKeyContent == null)
+						{
+							return default(TSyncKey);
+						}
+
+						return syncKeyContent.DeserializeAs<TSyncKey>();
+					}
+
+					return default(TSyncKey);
+				});
+
+				return result;
 			}
 		}
 

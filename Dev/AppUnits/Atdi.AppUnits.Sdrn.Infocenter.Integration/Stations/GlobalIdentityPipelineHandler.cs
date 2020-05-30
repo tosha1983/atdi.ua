@@ -149,7 +149,7 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration.Stations
 						return result;
 					}
 
-					var token = _integrationService.Start("CSV-file", "GlobalIdentity");
+					var token = _integrationService.Start(DataSource.CsvFile, IntegrationObjects.GlobalIdentity);
 
 					//  local statistics
 					var row = 0;

@@ -24,6 +24,7 @@ namespace Atdi.DataModels.Sdrn.Infocenter.Entities.SdrnServer
 		int Count { get; set; }
 	}
 
+	[Serializable]
 	public struct DriveTestPoint
 	{
 		public Wgs84Coordinate Coordinate;

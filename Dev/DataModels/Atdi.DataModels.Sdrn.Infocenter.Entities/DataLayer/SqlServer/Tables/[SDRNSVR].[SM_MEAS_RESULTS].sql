@@ -10,7 +10,7 @@ CREATE TABLE [SDRNSVR].[SM_MEAS_RESULTS](
 	[STATUS_NAME] [nvarchar](50) NOT NULL,
 	[STATUS_NOTE] [nvarchar](max) NULL,
 	[CREATED_DATE] [datetimeoffset](7) NOT NULL,
-	[MEAS_TIME] [datetimeoffset](7) NULL,
+	[MEAS_TIME] [datetime] NULL,
 	[SENSOR_NAME] [nvarchar](150) NULL,
 	[SENSOR_TITLE] [nvarchar](250) NULL,
  CONSTRAINT [PK_SM_MEAS_RESULTS] PRIMARY KEY CLUSTERED 
