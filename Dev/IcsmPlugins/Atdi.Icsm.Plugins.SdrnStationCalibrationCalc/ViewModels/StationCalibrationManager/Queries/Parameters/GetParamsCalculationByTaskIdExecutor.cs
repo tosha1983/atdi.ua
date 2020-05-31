@@ -27,7 +27,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
             var query = _dataLayer.GetBuilder<CS_ES.Tasks.IStationCalibrationArgs>()
                 .Read()
                 .Select(
-                    c => c.TASK.Id,
+                c => c.TASK.Id,
                 c => c.AltitudeStation,
                 c => c.AzimuthStation,
                 c => c.CascadeTuning,

@@ -105,7 +105,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                 AltitudeStation = reader.GetValue(c => c.PARAMETERS.AltitudeStation),
                  AzimuthStation = reader.GetValue(c => c.PARAMETERS.AzimuthStation),
                  CascadeTuning = reader.GetValue(c => c.PARAMETERS.CascadeTuning),
-                  UseMeasurementSameGSID = reader.GetValue(c => c.PARAMETERS.UseMeasurementSameGSID),
+                 UseMeasurementSameGSID = reader.GetValue(c => c.PARAMETERS.UseMeasurementSameGSID),
                  TrustOldResults = reader.GetValue(c => c.PARAMETERS.TrustOldResults),
                  TiltStation = reader.GetValue(c => c.PARAMETERS.TiltStation),
                  ShiftTiltStationStep_deg = reader.GetValue(c => c.PARAMETERS.ShiftTiltStationStep_deg),

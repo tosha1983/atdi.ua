@@ -280,7 +280,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                     {
                         DistanceAroundContour_km = reader.GetValue(c => c.DistanceAroundContour_km).GetValueOrDefault(),
                         MinNumberPointForCorrelation = reader.GetValue(c => c.MinNumberPointForCorrelation).GetValueOrDefault(),
-                        TrustOldResults = reader.GetValue(c => c.TrustOldResults).GetValueOrDefault(),
+                        TrustOldResults = reader.GetValue(c => c.TrustOldResults),
                         UseMeasurementSameGSID = reader.GetValue(c => c.UseMeasurementSameGSID),
                         СorrelationThresholdHard = reader.GetValue(c => c.CorrelationThresholdHard).GetValueOrDefault(),
                         СorrelationThresholdWeak = reader.GetValue(c => c.CorrelationThresholdWeak).GetValueOrDefault()

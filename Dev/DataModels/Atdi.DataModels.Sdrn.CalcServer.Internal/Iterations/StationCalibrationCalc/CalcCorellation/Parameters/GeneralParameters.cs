@@ -12,7 +12,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
     {
         public float СorrelationThresholdHard;
         public float СorrelationThresholdWeak;
-        public float TrustOldResults;
+        public bool TrustOldResults;
         public bool UseMeasurementSameGSID;
         public int DistanceAroundContour_km;
         public int MinNumberPointForCorrelation;

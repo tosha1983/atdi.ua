@@ -33,6 +33,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="gdalconst_csharp, Version=1.0.7372.36899, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\GDAL.2.4.4\lib\net40\gdalconst_csharp.dll</HintPath>
+    </Reference>
+    <Reference Include="gdal_csharp, Version=1.0.7372.36899, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\GDAL.2.4.4\lib\net40\gdal_csharp.dll</HintPath>
+    </Reference>
+    <Reference Include="ogr_csharp, Version=1.0.7372.36898, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\GDAL.2.4.4\lib\net40\ogr_csharp.dll</HintPath>
+    </Reference>
+    <Reference Include="osr_csharp, Version=1.0.7372.36898, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\GDAL.2.4.4\lib\net40\osr_csharp.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -48,11 +60,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Api\Atdi.Api.EntityOrm.WebClient\Atdi.Api.EntityOrm.WebClient.csproj">
       <Project>{48ace960-6ba0-4a99-b060-4dbb8a182206}</Project>
       <Name>Atdi.Api.EntityOrm.WebClient</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeepServices.Gis\Atdi.AppUnits.Sdrn.DeepServices.Gis.csproj">
+      <Project>{f1f30ab9-7598-424d-9cde-95412583eccf}</Project>
+      <Name>Atdi.AppUnits.Sdrn.DeepServices.Gis</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeepServices.RadioSystem\Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.csproj">
       <Project>{b8d91488-2850-46a9-9e32-9d1dd7d02683}</Project>
@@ -158,6 +175,11 @@ copy "$(TargetDir)Atdi.Icsm.Plugins.Core.dll"    "C:\ATDI\ICS ManagerCalcServer"
 copy "$(TargetDir)Atdi.AppUnits.dll"    "C:\ATDI\ICS ManagerCalcServer"
 copy "$(TargetDir)Atdi.AppUnits.Sdrn.DeepServices.dll"    "C:\ATDI\ICS ManagerCalcServer"
 copy "$(TargetDir)Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.dll"    "C:\ATDI\ICS ManagerCalcServer"
-copy "$(TargetDir)Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.dll" "C:\ATDI\ICS ManagerCalcServer"</PostBuildEvent>
+copy "$(TargetDir)Atdi.AppUnits.Sdrn.DeepServices.Gis.dll" "C:\ATDI\ICS ManagerCalcServer"
+
+copy "$(TargetDir)gdal_csharp.dll" "C:\ATDI\ICS ManagerCalcServer"
+copy "$(TargetDir)gdalconst_csharp.dll" "C:\ATDI\ICS ManagerCalcServer"
+copy "$(TargetDir)ogr_csharp.dll" "C:\ATDI\ICS ManagerCalcServer"
+copy "$(TargetDir)osr_csharp.dll" "C:\ATDI\ICS ManagerCalcServer"</PostBuildEvent>
   </PropertyGroup>
 </Project>

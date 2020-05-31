@@ -102,6 +102,8 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             var cancel = false;
             while (!cancel)
             {
+                System.Threading.Thread.Sleep(5 * 1000);
+
                 var checkQuery = dataLayer.GetBuilder<IClientContext>()
                     .Read()
                     .Select(c => c.StatusCode)
