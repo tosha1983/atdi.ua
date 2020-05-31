@@ -9,6 +9,7 @@ namespace Atdi.DataModels.Sdrn.DeepServices.Gis
 	/// <summary>
 	/// Координаты WGS84 в DEC
 	/// </summary>
+	[Serializable]
 	public struct Wgs84Coordinate
 	{
 		public double Longitude;

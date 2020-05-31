@@ -220,332 +220,342 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                     }
                     rs.SetWhere("STANDARD", IMRecordset.Operation.Eq, this._mobStationsLoadModelByParams.Standard);
                 }
-                var allStatuses = new List<string>();
-                var newactiveStationStatuses = new string[activeStationStatuses.Length];
-                var newnotActiveStationStatuses = new string[notActiveStationStatuses.Length];
-                for (int s=0;s< activeStationStatuses.Length; s++)
+                for (int z = 0; z < this._mobStationsLoadModelByParams.AreaModel.Length; z++)
                 {
-                    newactiveStationStatuses[s] = "'" + activeStationStatuses[s] + "'";
-                }
-                for (int s = 0; s < notActiveStationStatuses.Length; s++)
-                {
-                    newnotActiveStationStatuses[s] = "'" + notActiveStationStatuses[s] + "'";
-                }
-                allStatuses.AddRange(newactiveStationStatuses);
-                allStatuses.AddRange(newnotActiveStationStatuses);
-                var filter = string.Format("[STATUS] in ({0})", string.Join(",", allStatuses.ToArray()));
-                rs.SetAdditional(filter);
-                for (rs.Open(); !rs.IsEOF(); rs.MoveNext())
-                {
-                    // если статус очередной станции не найден в параметрах для поиска, которые задал клиент тогда пропускаем станцию
-                    if (((activeStationStatuses.Contains(rs.GetS("STATUS"))) || (notActiveStationStatuses.Contains(rs.GetS("STATUS")))) == false)
+                    rs.SetWhere("Position.LATITUDE", IMRecordset.Operation.Le, this._mobStationsLoadModelByParams.AreaModel[z].ExternalContour[1].Latitude);
+                    rs.SetWhere("Position.LATITUDE", IMRecordset.Operation.Ge, this._mobStationsLoadModelByParams.AreaModel[z].ExternalContour[2].Latitude);
+
+                    rs.SetWhere("Position.LONGITUDE", IMRecordset.Operation.Ge, this._mobStationsLoadModelByParams.AreaModel[z].ExternalContour[0].Longitude);
+                    rs.SetWhere("Position.LONGITUDE", IMRecordset.Operation.Le, this._mobStationsLoadModelByParams.AreaModel[z].ExternalContour[1].Longitude);
+
+
+                    var allStatuses = new List<string>();
+                    var newactiveStationStatuses = new string[activeStationStatuses.Length];
+                    var newnotActiveStationStatuses = new string[notActiveStationStatuses.Length];
+                    for (int s = 0; s < activeStationStatuses.Length; s++)
                     {
-                        continue;
+                        newactiveStationStatuses[s] = "'" + activeStationStatuses[s] + "'";
                     }
-
-                    var mobStationT = new YMobStationT();
-                    mobStationT.Format("*,Position(*),AssignedFrequencies(*),Equipment(*),Antenna(*)");
-                    mobStationT.m_call_sign = rs.GetS("CALL_SIGN");
-                    mobStationT.m_standard = rs.GetS("STANDARD");
-                    mobStationT.m_status = rs.GetS("STATUS");
-                    mobStationT.m_id = rs.GetI("ID");
-                    mobStationT.m_date_modified = rs.GetT("DATE_MODIFIED");
-                    mobStationT.m_date_created = rs.GetT("DATE_CREATED");
-
-                    mobStationT.m_Position = new YPosition();
-                    mobStationT.m_Position.Format("*");
-                    mobStationT.m_Position.m_longitude = rs.GetD("Position.LONGITUDE");
-                    mobStationT.m_Position.m_latitude = rs.GetD("Position.LATITUDE");
-                    mobStationT.m_Position.m_asl = rs.GetD("Position.ASL");
-
-                    // Генерация GSID
-                    mobStationT.m_cust_txt1 = GetGlobalSID(rs.GetS("Owner.CODE"), rs.GetS("NAME"));
-
-
-
-                    string mobstafreq = "";
-                    if (arrayTables[v] == "MOB_STATION")
+                    for (int s = 0; s < notActiveStationStatuses.Length; s++)
                     {
-                        mobstafreq = mobstafreq_table;
+                        newnotActiveStationStatuses[s] = "'" + notActiveStationStatuses[s] + "'";
                     }
-                    else if (arrayTables[v] == "MOB_STATION2")
+                    allStatuses.AddRange(newactiveStationStatuses);
+                    allStatuses.AddRange(newnotActiveStationStatuses);
+                    var filter = string.Format("[STATUS] in ({0})", string.Join(",", allStatuses.ToArray()));
+                    rs.SetAdditional(filter);
+                    for (rs.Open(); !rs.IsEOF(); rs.MoveNext())
                     {
-                        mobstafreq = mobstafreq_table2;
-                    }
-
-
-                    List<YMobstaFreqsT> yMobStationTxRx = new List<YMobstaFreqsT>();
-                    var rssta = new IMRecordset(mobstafreq, IMRecordset.Mode.ReadOnly);
-                    rssta.Select("ID,TX_FREQ,RX_FREQ,ChannelTx.CHANNEL");
-                    rssta.SetWhere("STA_ID", IMRecordset.Operation.Eq, mobStationT.m_id);
-                    for (rssta.Open(); !rssta.IsEOF(); rssta.MoveNext())
-                    {
-                        var txfrq = rssta.GetD("TX_FREQ");
-                        if (txfrq != IM.NullD)
+                        // если статус очередной станции не найден в параметрах для поиска, которые задал клиент тогда пропускаем станцию
+                        if (((activeStationStatuses.Contains(rs.GetS("STATUS"))) || (notActiveStationStatuses.Contains(rs.GetS("STATUS")))) == false)
                         {
-                            var rsTx = new YMobstaFreqsT();
-                            rsTx.Format("*");
-                            rsTx.Table = mobstafreq;
-                            rsTx.m_tx_freq = txfrq;
-                            rsTx.m_status = "Tx";
-
-                            yMobStationTxRx.Add(rsTx);
-
+                            continue;
                         }
-                        var rxfrq = rssta.GetD("RX_FREQ");
-                        if (rxfrq != IM.NullD)
+
+                        var mobStationT = new YMobStationT();
+                        mobStationT.Format("*,Position(*),AssignedFrequencies(*),Equipment(*),Antenna(*)");
+                        mobStationT.m_call_sign = rs.GetS("CALL_SIGN");
+                        mobStationT.m_standard = rs.GetS("STANDARD");
+                        mobStationT.m_status = rs.GetS("STATUS");
+                        mobStationT.m_id = rs.GetI("ID");
+                        mobStationT.m_date_modified = rs.GetT("DATE_MODIFIED");
+                        mobStationT.m_date_created = rs.GetT("DATE_CREATED");
+
+                        mobStationT.m_Position = new YPosition();
+                        mobStationT.m_Position.Format("*");
+                        mobStationT.m_Position.m_longitude = rs.GetD("Position.LONGITUDE");
+                        mobStationT.m_Position.m_latitude = rs.GetD("Position.LATITUDE");
+                        mobStationT.m_Position.m_asl = rs.GetD("Position.ASL");
+
+                        // Генерация GSID
+                        mobStationT.m_cust_txt1 = GetGlobalSID(rs.GetS("Owner.CODE"), rs.GetS("NAME"));
+
+
+
+                        string mobstafreq = "";
+                        if (arrayTables[v] == "MOB_STATION")
                         {
-                            var rsRx = new YMobstaFreqsT();
-                            rsRx.Format("*");
-                            rsRx.Table = mobstafreq;
-                            rsRx.m_rx_freq = txfrq;
-                            rsRx.m_status = "Rx";
-                            yMobStationTxRx.Add(rsRx);
+                            mobstafreq = mobstafreq_table;
                         }
-                    }
-                    if (rssta.IsOpen())
-                        rssta.Close();
-                    rssta.Destroy();
-
-
-                    
-                    mobStationT.Tag = yMobStationTxRx;
-
-
-                    var txFreqList = yMobStationTxRx.Where(x => x.m_status == "Tx");
-                    var rxFreqList = yMobStationTxRx.Where(x => x.m_status == "Rx");
-
-                    if (txFreqList != null)
-                    {
-                        var selectFreqTx = txFreqList.Select(x => x.m_tx_freq);
-                        if ((selectFreqTx != null) && (selectFreqTx.Count() > 0))
+                        else if (arrayTables[v] == "MOB_STATION2")
                         {
-                            mobStationT.m_tx_low_freq = selectFreqTx.Min();
+                            mobstafreq = mobstafreq_table2;
                         }
-                    }
-                    if (rxFreqList != null)
-                    {
-                        var selectFreqRx = rxFreqList.Select(x => x.m_rx_freq);
-                        if ((selectFreqRx != null) && (selectFreqRx.Count() > 0))
+
+
+                        List<YMobstaFreqsT> yMobStationTxRx = new List<YMobstaFreqsT>();
+                        var rssta = new IMRecordset(mobstafreq, IMRecordset.Mode.ReadOnly);
+                        rssta.Select("ID,TX_FREQ,RX_FREQ,ChannelTx.CHANNEL");
+                        rssta.SetWhere("STA_ID", IMRecordset.Operation.Eq, mobStationT.m_id);
+                        for (rssta.Open(); !rssta.IsEOF(); rssta.MoveNext())
                         {
-                            mobStationT.m_rx_low_freq = selectFreqRx.Min();
-                        }
-                    }
-                    mobStationT.m_bw = rs.GetD("BW");
-                    mobStationT.m_rx_losses = rs.GetD("RX_LOSSES");
-                    mobStationT.m_tx_losses = rs.GetD("TX_LOSSES");
-                    mobStationT.m_power = rs.GetD("PWR_ANT");
-                    mobStationT.m_elevation = rs.GetD("ELEVATION");
-
-
-                    mobStationT.m_gain = rs.GetD("GAIN");
-                    mobStationT.m_azimuth = rs.GetD("AZIMUTH");
-                    mobStationT.m_polar = rs.GetS("Antenna.POLARIZATION");
-
-                    mobStationT.m_Equipment = new YEquipt();
-                    mobStationT.m_Equipment.Format("*");
-                    mobStationT.m_Equipment.m_ktbf = rs.GetD("Equipment.KTBF");
-                    mobStationT.m_Equipment.m_rxth_6 = rs.GetD("Equipment.RXTH_6");
-
-
-                    mobStationT.m_Antenna = new YAntennat();
-                    mobStationT.m_Antenna.Format("*");
-                    mobStationT.m_Antenna.m_diagh = rs.GetS("Antenna.DIAGH");
-                    mobStationT.m_Antenna.m_diagv = rs.GetS("Antenna.DIAGV");
-                    mobStationT.m_Antenna.m_diaga = rs.GetS("Antenna.DIAGA");
-                    mobStationT.m_Antenna.m_xpd = rs.GetD("Antenna.XPD");
-                    mobStationT.m_rec_area = rs.GetS("Position.City.PROVINCE");
-                    mobStationT.m_cust_txt2 = ReadGCIDDataModel(mobStationT.m_cust_txt1, mobStationT.m_rec_area, mobStationT.m_standard);
-
-                    bool correctStation = false;
-                    if (notActiveStationStatuses.Contains(rs.GetS("STATUS")))
-                    {
-                        correctStation = true;
-                        mobStationT.m_status = MobStationStatus.I.ToString();
-                    }
-                    else if (activeStationStatuses.Contains(rs.GetS("STATUS")))
-                    {
-                        for (int w = 0; w < this._mobStationsLoadModelByParams.AreaModel.Length; w++)
-                        {
-                            // если станция попадает в контур, тогда выставляем для нее статус P
-                            if (CheckHitting(this._mobStationsLoadModelByParams.AreaModel[w].Location, mobStationT.m_Position))
+                            var txfrq = rssta.GetD("TX_FREQ");
+                            if (txfrq != IM.NullD)
                             {
-                                mobStationT.m_status = MobStationStatus.A.ToString();
-                                correctStation = true;
+                                var rsTx = new YMobstaFreqsT();
+                                rsTx.Format("*");
+                                rsTx.Table = mobstafreq;
+                                rsTx.m_tx_freq = txfrq;
+                                rsTx.m_status = "Tx";
+
+                                yMobStationTxRx.Add(rsTx);
+
                             }
-                            else
+                            var rxfrq = rssta.GetD("RX_FREQ");
+                            if (rxfrq != IM.NullD)
                             {
-                                // если станция попадает во "внешний" контур, тогда выставляем для нее статус P (т.е. когда рассточние до границы заданного контура "Location" менее чем DistanceAroundContour_km)
-                                bool isFindPositionWithDistanceAroundContour = false;
+                                var rsRx = new YMobstaFreqsT();
+                                rsRx.Format("*");
+                                rsRx.Table = mobstafreq;
+                                rsRx.m_rx_freq = txfrq;
+                                rsRx.m_status = "Rx";
+                                yMobStationTxRx.Add(rsRx);
+                            }
+                        }
+                        if (rssta.IsOpen())
+                            rssta.Close();
+                        rssta.Destroy();
 
-                                if (CheckHitting(this._mobStationsLoadModelByParams.AreaModel[w].ExternalContour, mobStationT.m_Position))
-                                {
-                                    isFindPositionWithDistanceAroundContour = true;
-                                    break;
-                                }
 
-                                if (isFindPositionWithDistanceAroundContour)
+
+                        mobStationT.Tag = yMobStationTxRx;
+
+
+                        var txFreqList = yMobStationTxRx.Where(x => x.m_status == "Tx");
+                        var rxFreqList = yMobStationTxRx.Where(x => x.m_status == "Rx");
+
+                        if (txFreqList != null)
+                        {
+                            var selectFreqTx = txFreqList.Select(x => x.m_tx_freq);
+                            if ((selectFreqTx != null) && (selectFreqTx.Count() > 0))
+                            {
+                                mobStationT.m_tx_low_freq = selectFreqTx.Min();
+                            }
+                        }
+                        if (rxFreqList != null)
+                        {
+                            var selectFreqRx = rxFreqList.Select(x => x.m_rx_freq);
+                            if ((selectFreqRx != null) && (selectFreqRx.Count() > 0))
+                            {
+                                mobStationT.m_rx_low_freq = selectFreqRx.Min();
+                            }
+                        }
+                        mobStationT.m_bw = rs.GetD("BW");
+                        mobStationT.m_rx_losses = rs.GetD("RX_LOSSES");
+                        mobStationT.m_tx_losses = rs.GetD("TX_LOSSES");
+                        mobStationT.m_power = rs.GetD("PWR_ANT");
+                        mobStationT.m_elevation = rs.GetD("ELEVATION");
+
+
+                        mobStationT.m_gain = rs.GetD("GAIN");
+                        mobStationT.m_azimuth = rs.GetD("AZIMUTH");
+                        mobStationT.m_polar = rs.GetS("Antenna.POLARIZATION");
+
+                        mobStationT.m_Equipment = new YEquipt();
+                        mobStationT.m_Equipment.Format("*");
+                        mobStationT.m_Equipment.m_ktbf = rs.GetD("Equipment.KTBF");
+                        mobStationT.m_Equipment.m_rxth_6 = rs.GetD("Equipment.RXTH_6");
+
+
+                        mobStationT.m_Antenna = new YAntennat();
+                        mobStationT.m_Antenna.Format("*");
+                        mobStationT.m_Antenna.m_diagh = rs.GetS("Antenna.DIAGH");
+                        mobStationT.m_Antenna.m_diagv = rs.GetS("Antenna.DIAGV");
+                        mobStationT.m_Antenna.m_diaga = rs.GetS("Antenna.DIAGA");
+                        mobStationT.m_Antenna.m_xpd = rs.GetD("Antenna.XPD");
+                        mobStationT.m_rec_area = rs.GetS("Position.City.PROVINCE");
+                        mobStationT.m_cust_txt2 = ReadGCIDDataModel(mobStationT.m_cust_txt1, mobStationT.m_rec_area, mobStationT.m_standard);
+
+                        bool correctStation = false;
+                        if (notActiveStationStatuses.Contains(rs.GetS("STATUS")))
+                        {
+                            correctStation = true;
+                            mobStationT.m_status = MobStationStatus.I.ToString();
+                        }
+                        else if (activeStationStatuses.Contains(rs.GetS("STATUS")))
+                        {
+                            for (int w = 0; w < this._mobStationsLoadModelByParams.AreaModel.Length; w++)
+                            {
+                                // если станция попадает в контур, тогда выставляем для нее статус P
+                                if (CheckHitting(this._mobStationsLoadModelByParams.AreaModel[w].Location, mobStationT.m_Position))
                                 {
-                                    mobStationT.m_status = MobStationStatus.P.ToString();
+                                    mobStationT.m_status = MobStationStatus.A.ToString();
                                     correctStation = true;
                                 }
                                 else
                                 {
-                                    // для всех остальных случаев выставляем статус I
-                                    mobStationT.m_status = MobStationStatus.I.ToString();
-                                    correctStation = false;
+                                    // если станция попадает во "внешний" контур, тогда выставляем для нее статус P (т.е. когда рассточние до границы заданного контура "Location" менее чем DistanceAroundContour_km)
+                                    bool isFindPositionWithDistanceAroundContour = false;
+
+                                    if (CheckHitting(this._mobStationsLoadModelByParams.AreaModel[w].ExternalContour, mobStationT.m_Position))
+                                    {
+                                        isFindPositionWithDistanceAroundContour = true;
+                                        break;
+                                    }
+
+                                    if (isFindPositionWithDistanceAroundContour)
+                                    {
+                                        mobStationT.m_status = MobStationStatus.P.ToString();
+                                        correctStation = true;
+                                    }
+                                    else
+                                    {
+                                        // для всех остальных случаев выставляем статус I
+                                        mobStationT.m_status = MobStationStatus.I.ToString();
+                                        correctStation = false;
+                                    }
                                 }
                             }
                         }
-                    }
-                    // если станция не попадает в заданный регион и в область за регионом, которая отстоит на расстоянии DistanceAroundContour_km от границы точек региона, тогда просто пропускаем станцию
-                    if (correctStation==false)
-                    {
-                        continue;
-                    }
-
-                    //  Проверка - станция должна отправляться один раз (дуликатов быть не должно)
-                    var fndStation = listMobStationT.Find(x => x.m_id == mobStationT.m_id);
-                    if (fndStation == null)
-                    {
-                        listMobStationT.Add(mobStationT);
-                        var source = mobStationT;
-
-                        
-                        double[] TxFreq = null;
-                        double[] RxFreq = null;
-
-                        if (source.Tag != null)
+                        // если станция не попадает в заданный регион и в область за регионом, которая отстоит на расстоянии DistanceAroundContour_km от границы точек региона, тогда просто пропускаем станцию
+                        if (correctStation == false)
                         {
-                            var temptxFreqList = ((List<YMobstaFreqsT>)source.Tag).Where(x => x.m_status == "Tx");
-                            var temprxFreqList = ((List<YMobstaFreqsT>)source.Tag).Where(x => x.m_status == "Rx");
-
-                            if (temptxFreqList != null)
-                            {
-                                var selectFreqTx = temptxFreqList.Select(x => x.m_tx_freq);
-                                if (selectFreqTx != null)
-                                {
-                                    TxFreq = selectFreqTx.ToArray();
-                                }
-
-                            }
-                            if (temprxFreqList != null)
-                            {
-                                var selectFreqRx = temprxFreqList.Select(x => x.m_rx_freq);
-                                if (selectFreqRx != null)
-                                {
-                                    RxFreq = selectFreqRx.ToArray();
-                                }
-                            }
+                            continue;
                         }
 
-
-                        IcsmMobStationPattern hh_pattern = null;
-                        IcsmMobStationPattern hv_pattern = null;
-                        IcsmMobStationPattern vh_pattern = null;
-                        IcsmMobStationPattern vv_pattern = null;
-
-                        var patt_HH = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagh, AntennaPatternType.HH, source.m_gain);
-                        if (patt_HH != null)
+                        //  Проверка - станция должна отправляться один раз (дуликатов быть не должно)
+                        var fndStation = listMobStationT.Find(x => x.m_id == mobStationT.m_id);
+                        if (fndStation == null)
                         {
-                            hh_pattern = new IcsmMobStationPattern();
-                            hh_pattern.Loss_dB = patt_HH.Select(c => c.Loss).ToArray();
-                            hh_pattern.Angle_deg = patt_HH.Select(c => c.Angle).ToArray();
-                        };
+                            listMobStationT.Add(mobStationT);
+                            var source = mobStationT;
 
-                        var patt_HV = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagv, AntennaPatternType.HV, source.m_gain);
-                        if (patt_HV != null)
-                        {
-                            hv_pattern = new IcsmMobStationPattern();
-                            hv_pattern.Loss_dB = patt_HV.Select(c => c.Loss).ToArray();
-                            hv_pattern.Angle_deg = patt_HV.Select(c => c.Angle).ToArray();
-                        };
 
-                        var patt_VH = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagh, AntennaPatternType.VH, source.m_gain);
-                        if (patt_VH != null)
-                        {
-                            vh_pattern = new IcsmMobStationPattern();
-                            vh_pattern.Loss_dB = patt_VH.Select(c => c.Loss).ToArray();
-                            vh_pattern.Angle_deg = patt_VH.Select(c => c.Angle).ToArray();
-                        };
+                            double[] TxFreq = null;
+                            double[] RxFreq = null;
 
-                        var patt_VV = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagv, AntennaPatternType.VV, source.m_gain);
-                        if (patt_VV != null)
-                        {
-                            vv_pattern = new IcsmMobStationPattern();
-                            vv_pattern.Loss_dB = patt_VV.Select(c => c.Loss).ToArray();
-                            vv_pattern.Angle_deg = patt_VV.Select(c => c.Angle).ToArray();
-                        };
-
-                        var VH_PATTERN = new IcsmMobStationPattern()
-                        {
-                            Loss_dB = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagh, AntennaPatternType.VH, source.m_gain).Select(c => c.Loss).ToArray(),
-                            Angle_deg = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagh, AntennaPatternType.VH, source.m_gain).Select(c => c.Angle).ToArray()
-                        };
-                        var VV_PATTERN = new IcsmMobStationPattern()
-                        {
-                            Loss_dB = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagv, AntennaPatternType.VV, source.m_gain).Select(c => c.Loss).ToArray(),
-                            Angle_deg = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagv, AntennaPatternType.VV, source.m_gain).Select(c => c.Angle).ToArray()
-                        };
-
-                        listIcsmMobStation.Add(new IcsmMobStation
-                        {
-                            CallSign = source.m_call_sign,
-                            ExternalCode = source.m_id.ToString(),
-                            ExternalSource = source.m_table_name,
-                            Standard = source.m_standard,
-                            StateName = source.m_status,
-                            Name = source.m_name,
-                            LicenseGsid = source.m_cust_txt1,
-                            RealGsid = source.m_cust_txt2,
-                            ModifiedDate = source.m_date_modified,
-                            CreatedDate = source.m_date_created,
-                            RegionCode = source.m_rec_area,
-                            SITE = new IcsmMobStationSite()
+                            if (source.Tag != null)
                             {
-                                Altitude_m = source.m_Position.m_asl,
-                                Longitude_DEC = source.m_Position.m_longitude,
-                                Latitude_DEC = source.m_Position.m_latitude
-                            },
-                            ANTENNA = new IcsmMobStationAntenna()
-                            {
-                                Gain_dB = (float)source.m_Antenna.m_gain,
-                                Azimuth_deg = source.m_azimuth,
-                                Tilt_deg = source.m_elevation,
-                                XPD_dB = (float)source.m_Antenna.m_xpd,
-                                ItuPatternCode = (byte)AntennaItuPattern.None, 
-                                //ItuPatternName ?????????????????????????????????
-                                HH_PATTERN = hh_pattern,
-                                HV_PATTERN = hv_pattern,
-                                VH_PATTERN = vh_pattern,
-                                VV_PATTERN = vv_pattern
-                            },
-                            TRANSMITTER = new IcsmMobStationTransmitter()
-                            {
-                                BW_kHz = source.m_bw,
-                                Freq_MHz = source.m_tx_low_freq,
-                                Loss_dB = (float)source.m_tx_losses,
-                                MaxPower_dBm = (float)source.m_power,
-                                PolarizationCode = (byte)GetPolarizationCode(source.m_polar),
-                                Freqs_MHz = TxFreq,
-                            },
-                            RECEIVER = new IcsmMobStationReceiver()
-                            {
-                                BW_kHz = source.m_bw,
-                                Freq_MHz = source.m_rx_low_freq,
-                                Loss_dB = (float)source.m_rx_losses,
-                                KTBF_dBm = (float)source.m_Equipment.m_ktbf,
-                                Threshold_dBm = (float)source.m_Equipment.m_rxth_6,
-                                PolarizationCode = (byte)GetPolarizationCode(source.m_polar),
-                                Freqs_MHz = RxFreq
+                                var temptxFreqList = ((List<YMobstaFreqsT>)source.Tag).Where(x => x.m_status == "Tx");
+                                var temprxFreqList = ((List<YMobstaFreqsT>)source.Tag).Where(x => x.m_status == "Rx");
+
+                                if (temptxFreqList != null)
+                                {
+                                    var selectFreqTx = temptxFreqList.Select(x => x.m_tx_freq);
+                                    if (selectFreqTx != null)
+                                    {
+                                        TxFreq = selectFreqTx.ToArray();
+                                    }
+
+                                }
+                                if (temprxFreqList != null)
+                                {
+                                    var selectFreqRx = temprxFreqList.Select(x => x.m_rx_freq);
+                                    if (selectFreqRx != null)
+                                    {
+                                        RxFreq = selectFreqRx.ToArray();
+                                    }
+                                }
                             }
-                        });
-                    }
 
+
+                            IcsmMobStationPattern hh_pattern = null;
+                            IcsmMobStationPattern hv_pattern = null;
+                            IcsmMobStationPattern vh_pattern = null;
+                            IcsmMobStationPattern vv_pattern = null;
+
+                            var patt_HH = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagh, AntennaPatternType.HH, source.m_gain);
+                            if (patt_HH != null)
+                            {
+                                hh_pattern = new IcsmMobStationPattern();
+                                hh_pattern.Loss_dB = patt_HH.Select(c => c.Loss).ToArray();
+                                hh_pattern.Angle_deg = patt_HH.Select(c => c.Angle).ToArray();
+                            };
+
+                            var patt_HV = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagv, AntennaPatternType.HV, source.m_gain);
+                            if (patt_HV != null)
+                            {
+                                hv_pattern = new IcsmMobStationPattern();
+                                hv_pattern.Loss_dB = patt_HV.Select(c => c.Loss).ToArray();
+                                hv_pattern.Angle_deg = patt_HV.Select(c => c.Angle).ToArray();
+                            };
+
+                            var patt_VH = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagh, AntennaPatternType.VH, source.m_gain);
+                            if (patt_VH != null)
+                            {
+                                vh_pattern = new IcsmMobStationPattern();
+                                vh_pattern.Loss_dB = patt_VH.Select(c => c.Loss).ToArray();
+                                vh_pattern.Angle_deg = patt_VH.Select(c => c.Angle).ToArray();
+                            };
+
+                            var patt_VV = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagv, AntennaPatternType.VV, source.m_gain);
+                            if (patt_VV != null)
+                            {
+                                vv_pattern = new IcsmMobStationPattern();
+                                vv_pattern.Loss_dB = patt_VV.Select(c => c.Loss).ToArray();
+                                vv_pattern.Angle_deg = patt_VV.Select(c => c.Angle).ToArray();
+                            };
+
+                            var VH_PATTERN = new IcsmMobStationPattern()
+                            {
+                                Loss_dB = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagh, AntennaPatternType.VH, source.m_gain).Select(c => c.Loss).ToArray(),
+                                Angle_deg = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagh, AntennaPatternType.VH, source.m_gain).Select(c => c.Angle).ToArray()
+                            };
+                            var VV_PATTERN = new IcsmMobStationPattern()
+                            {
+                                Loss_dB = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagv, AntennaPatternType.VV, source.m_gain).Select(c => c.Loss).ToArray(),
+                                Angle_deg = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagv, AntennaPatternType.VV, source.m_gain).Select(c => c.Angle).ToArray()
+                            };
+
+                            listIcsmMobStation.Add(new IcsmMobStation
+                            {
+                                CallSign = source.m_call_sign,
+                                ExternalCode = source.m_id.ToString(),
+                                ExternalSource = source.m_table_name,
+                                Standard = source.m_standard,
+                                StateName = source.m_status,
+                                Name = source.m_name,
+                                LicenseGsid = source.m_cust_txt1,
+                                RealGsid = source.m_cust_txt2,
+                                ModifiedDate = source.m_date_modified,
+                                CreatedDate = source.m_date_created,
+                                RegionCode = source.m_rec_area,
+                                SITE = new IcsmMobStationSite()
+                                {
+                                    Altitude_m = source.m_Position.m_asl,
+                                    Longitude_DEC = source.m_Position.m_longitude,
+                                    Latitude_DEC = source.m_Position.m_latitude
+                                },
+                                ANTENNA = new IcsmMobStationAntenna()
+                                {
+                                    Gain_dB = (float)source.m_Antenna.m_gain,
+                                    Azimuth_deg = source.m_azimuth,
+                                    Tilt_deg = source.m_elevation,
+                                    XPD_dB = (float)source.m_Antenna.m_xpd,
+                                    ItuPatternCode = (byte)AntennaItuPattern.None,
+                                    //ItuPatternName ?????????????????????????????????
+                                    HH_PATTERN = hh_pattern,
+                                    HV_PATTERN = hv_pattern,
+                                    VH_PATTERN = vh_pattern,
+                                    VV_PATTERN = vv_pattern
+                                },
+                                TRANSMITTER = new IcsmMobStationTransmitter()
+                                {
+                                    BW_kHz = source.m_bw,
+                                    Freq_MHz = source.m_tx_low_freq,
+                                    Loss_dB = (float)source.m_tx_losses,
+                                    MaxPower_dBm = (float)source.m_power,
+                                    PolarizationCode = (byte)GetPolarizationCode(source.m_polar),
+                                    Freqs_MHz = TxFreq,
+                                },
+                                RECEIVER = new IcsmMobStationReceiver()
+                                {
+                                    BW_kHz = source.m_bw,
+                                    Freq_MHz = source.m_rx_low_freq,
+                                    Loss_dB = (float)source.m_rx_losses,
+                                    KTBF_dBm = (float)source.m_Equipment.m_ktbf,
+                                    Threshold_dBm = (float)source.m_Equipment.m_rxth_6,
+                                    PolarizationCode = (byte)GetPolarizationCode(source.m_polar),
+                                    Freqs_MHz = RxFreq
+                                }
+                            });
+                        }
+
+                    }
+                    if (rs.IsOpen())
+                        rs.Close();
+                    rs.Destroy();
                 }
-                if (rs.IsOpen())
-                    rs.Close();
-                rs.Destroy();
             }
             return listIcsmMobStation.ToArray();
         }

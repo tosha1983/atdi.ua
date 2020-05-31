@@ -30,7 +30,7 @@ namespace Atdi.DataModels.Sdrn.Infocenter.Entities.SdrnServer
 		IStationMonitoringStats STATS { get; set; }
 	}
 
-	public enum MeasResultStatusCode
+	public enum StationMonitoringStatusCode
 	{
 		/// <summary>
 		/// создана запись, вложенная структура данных пустая 

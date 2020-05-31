@@ -16,6 +16,18 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration
 		[ComponentConfigProperty("AutoImport.SdrnServer.RepeatDelay")]
 		public int? AutoImportSdrnServerRepeatDelay { get; set; }
 
+		[ComponentConfigProperty("AutoImport.SdrnServer.StationMonitoring.FetchRows")]
+		public int? AutoImportSdrnServerStationMonitoringFetchRows { get; set; }
+
+		[ComponentConfigProperty("AutoImport.SdrnServer.StationMonitoring.Period")]
+		public int? AutoImportSdrnServerStationMonitoringPeriod { get; set; }
+
+		[ComponentConfigProperty("AutoImport.SdrnServer.StationMonitoring.Points.FetchRows")]
+		public int? AutoImportSdrnServerStationMonitoringPointsFetchRows { get; set; }
+
+		[ComponentConfigProperty("AutoImport.SdrnServer.StationMonitoring.Points.BufferSize")]
+		public int? AutoImportSdrnServerStationMonitoringPointsBufferSize { get; set; }
+
 
 		[ComponentConfigProperty("AutoImport.Files.Folder")]
 		public string AutoImportFilesFolder { get; set; }
@@ -25,6 +37,8 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration
 
 		[ComponentConfigProperty("AutoImport.Files.RepeatDelay")]
 		public int? AutoImportFilesRepeatDelay { get; set; }
+
+
 
 	}
 }

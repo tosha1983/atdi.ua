@@ -23,6 +23,7 @@ namespace Atdi.DataModels.Sdrn.Infocenter.Entities.SdrnServer
 
 	}
 
+	[Serializable]
 	public struct DriveTestStandardStats
 	{
 		public string Standard;

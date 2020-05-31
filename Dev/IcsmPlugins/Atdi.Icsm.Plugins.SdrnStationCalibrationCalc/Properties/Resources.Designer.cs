@@ -79,7 +79,16 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Azimuth Station.
+        ///   Ищет локализованную строку, похожую на Area name.
+        /// </summary>
+        public static string AreaName {
+            get {
+                return ResourceManager.GetString("AreaName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Azimuth Station.
         /// </summary>
         public static string AzimuthStation {
             get {
@@ -169,7 +178,79 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Created by.
+        ///   Ищет локализованную строку, похожую на Count meas GSID.
+        /// </summary>
+        public static string CountMeasGSID {
+            get {
+                return ResourceManager.GetString("CountMeasGSID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на CountMeasGSID in IT status.
+        /// </summary>
+        public static string CountMeasGSID_IT {
+            get {
+                return ResourceManager.GetString("CountMeasGSID_IT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на CountMeasGSID in LS status.
+        /// </summary>
+        public static string CountMeasGSID_LS {
+            get {
+                return ResourceManager.GetString("CountMeasGSID_LS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на CountStation in CS status.
+        /// </summary>
+        public static string CountStation_CS {
+            get {
+                return ResourceManager.GetString("CountStation_CS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Count station in IT status.
+        /// </summary>
+        public static string CountStation_IT {
+            get {
+                return ResourceManager.GetString("CountStation_IT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Count station in UN status.
+        /// </summary>
+        public static string CountStation_NF {
+            get {
+                return ResourceManager.GetString("CountStation_NF", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Count station in NS status.
+        /// </summary>
+        public static string CountStation_NS {
+            get {
+                return ResourceManager.GetString("CountStation_NS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Count station in UN status.
+        /// </summary>
+        public static string CountStation_UN {
+            get {
+                return ResourceManager.GetString("CountStation_UN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Created by.
         /// </summary>
         public static string CreatedBy {
             get {
@@ -223,7 +304,16 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Detail of cascade.
+        ///   Ищет локализованную строку, похожую на Detail.
+        /// </summary>
+        public static string Detail {
+            get {
+                return ResourceManager.GetString("Detail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Detail of cascade.
         /// </summary>
         public static string DetailOfCascade {
             get {
@@ -358,7 +448,16 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Min number point for correlation.
+        ///   Ищет локализованную строку, похожую на Method.
+        /// </summary>
+        public static string Method {
+            get {
+                return ResourceManager.GetString("Method", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Min number point for correlation.
         /// </summary>
         public static string MinNumberPointForCorrelation {
             get {
@@ -412,7 +511,25 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Owner Instance.
+        ///   Ищет локализованную строку, похожую на Number station.
+        /// </summary>
+        public static string NumberStation {
+            get {
+                return ResourceManager.GetString("NumberStation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Number station in contour.
+        /// </summary>
+        public static string NumberStationInContour {
+            get {
+                return ResourceManager.GetString("NumberStationInContour", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Parameters of task.
         /// </summary>
         public static string OwnerInstance {
             get {
@@ -520,7 +637,16 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Shift Power Station Max.
+        ///   Ищет локализованную строку, похожую на Shift coordinates station step.
+        /// </summary>
+        public static string ShiftCoordinatesStationStep {
+            get {
+                return ResourceManager.GetString("ShiftCoordinatesStationStep", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Shift Power Station Max.
         /// </summary>
         public static string ShiftPowerStationMax {
             get {
@@ -655,7 +781,16 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to To.
+        ///   Ищет локализованную строку, похожую на Time start.
+        /// </summary>
+        public static string TimeStart {
+            get {
+                return ResourceManager.GetString("TimeStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на To.
         /// </summary>
         public static string To {
             get {

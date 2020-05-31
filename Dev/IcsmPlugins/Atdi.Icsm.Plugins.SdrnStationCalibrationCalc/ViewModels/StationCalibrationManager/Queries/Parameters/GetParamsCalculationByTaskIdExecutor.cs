@@ -66,7 +66,9 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                 c => c.TrustOldResults,
                 c => c.UseMeasurementSameGSID,
                 c => c.CorrelationThresholdHard,
-                c => c.CorrelationThresholdWeak
+                c => c.CorrelationThresholdWeak,
+                c => c.InfocMeasResults,
+                c => c.StationIds
                     )
                 .Filter(c => c.TASK.Id, criterion.TaskId);
 
@@ -118,8 +120,8 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                 UseMeasurementSameGSID = reader.GetValue(c => c.UseMeasurementSameGSID),
                 CorrelationThresholdHard = reader.GetValue(c => c.CorrelationThresholdHard),
                 CorrelationThresholdWeak = reader.GetValue(c => c.CorrelationThresholdWeak),
-                InfocMeasResults = reader.GetValue(c => c.InfocMeasResults),
-                StationIds = reader.GetValue(c => c.StationIds)
+                //InfocMeasResults = reader.GetValue(c => c.InfocMeasResults),
+                //StationIds = reader.GetValue(c => c.StationIds)
             };
         }
     }

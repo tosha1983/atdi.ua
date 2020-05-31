@@ -10,6 +10,7 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration
     internal static class Categories
     {
 	    public static readonly EventCategory CsvImport = "CsvImport";
+	    public static readonly EventCategory Synchronization = "Synchronization";
 
 		public static readonly EventCategory Declaring = "Declaring";
         public static readonly EventCategory Registration = "Registration";
@@ -43,5 +44,16 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration
     internal static class Pipelines
 	{
 	    public static readonly string FilesImport = "FilesImportPipeline";
+    }
+
+    internal static class DataSource
+    {
+	    public static readonly string SdrnServer = "SDRN Server";
+		public static readonly string CsvFile = "CSV File";
+    }
+    internal static class IntegrationObjects
+    {
+	    public static readonly string GlobalIdentity = "GlobalIdentity";
+	    public static readonly string StationMonitoring = "StationMonitoring";
     }
 }

@@ -107,7 +107,7 @@
     <Compile Include="ViewModels\StationCalibrationManager\ManageProject\StationCalibrationCalcTask.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Models\StationMonitoring\RoutesStationMonitoringModel.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Queries\MobStations\MobStationsDataAdapter.cs" />
-    <Compile Include="ViewModels\StationCalibrationManager\Adapters\Icsm\Base\DataAdapterBase.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Adapters\DataAdapterBase.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Adapters\Icsm\AreasDataAdapter.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Adapters\ParametersDataAdapter.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Adapters\StationMonitoringDataAdapter.cs" />
@@ -149,6 +149,20 @@
     <Compile Include="ViewModels\StationCalibrationManager\Queries\StationMonitoring\RoutesStationMonitoringModelByIdExecutor.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Queries\StationMonitoring\StationMonitoringModelByIdExecutor.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\View.cs" />
+    <Compile Include="ViewModels\StationCalibrationResult\Adapters\StationCalibrationStaDataAdapter.cs" />
+    <Compile Include="ViewModels\StationCalibrationResult\Adapters\StationCalibrationDriveTestsDataAdapter.cs" />
+    <Compile Include="ViewModels\StationCalibrationResult\Adapters\StationCalibrationResultDataAdapter.cs" />
+    <Compile Include="ViewModels\StationCalibrationResult\Models\StationCalibrationDriveTests\StationCalibrationDriveTestsModel.cs" />
+    <Compile Include="ViewModels\StationCalibrationResult\Models\StationCalibrationResult\StationCalibrationResultModel.cs" />
+    <Compile Include="ViewModels\StationCalibrationResult\Models\StationCalibrationSta\RoutesStationMonitoringModel.cs" />
+    <Compile Include="ViewModels\StationCalibrationResult\Models\StationCalibrationSta\StationCalibrationStaModel.cs" />
+    <Compile Include="ViewModels\StationCalibrationResult\Queries\StationCalibrationDriveTestsModelById.cs" />
+    <Compile Include="ViewModels\StationCalibrationResult\Queries\StationCalibrationDriveTestsModelByIdExecutor.cs" />
+    <Compile Include="ViewModels\StationCalibrationResult\Queries\StationCalibrationStaModelByIdExecutor.cs" />
+    <Compile Include="ViewModels\StationCalibrationResult\Queries\StationCalibrationStaModelById.cs" />
+    <Compile Include="ViewModels\StationCalibrationResult\Queries\RoutesStationMonitoringModelById.cs" />
+    <Compile Include="ViewModels\StationCalibrationResult\Queries\RoutesStationMonitoringModelByIdExecutor.cs" />
+    <Compile Include="ViewModels\StationCalibrationResult\View.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Api\Atdi.Api.EntityOrm.WebClient\Atdi.Api.EntityOrm.WebClient.csproj">
@@ -216,6 +230,8 @@
     <Folder Include="Commands\" />
     <Folder Include="Events\" />
     <Folder Include="Queries\" />
+    <Folder Include="ViewModels\StationCalibrationResult\Events\" />
+    <Folder Include="ViewModels\StationCalibrationResult\Modifiers\" />
     <Folder Include="Xaml\" />
   </ItemGroup>
   <ItemGroup>

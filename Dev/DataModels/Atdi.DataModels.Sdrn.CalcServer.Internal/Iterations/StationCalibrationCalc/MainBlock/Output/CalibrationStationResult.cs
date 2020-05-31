@@ -10,6 +10,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
 	public class CalibrationStationResult
     {
+        public long StationMonitoringId;
         public string ExternalCode;
         public string ExternalSource;
         public string LicenseGsid;
