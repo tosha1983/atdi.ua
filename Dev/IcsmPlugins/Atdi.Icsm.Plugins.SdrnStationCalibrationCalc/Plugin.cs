@@ -19,8 +19,10 @@ namespace XICSM.SdrnStationCalibrationCalc
 		protected override void ConnectToMenu(IMMainMenu mainMenu)
 		{
 			mainMenu.InsertItem(PluginMetadata.Menu.MainTool, PluginMetadata.Menu.Tools.About, _menuCommands.OnAboutCommand);
-			mainMenu.InsertItem(PluginMetadata.Menu.MainTool, "Calibration of stations according measurements", _menuCommands.OnRunCalibrationStationsMeasurementsCommand);
-            mainMenu.InsertItem(PluginMetadata.Menu.MainTool, "Results calibration of stations measurements", _menuCommands.OnRunCalibrationStationsResultCommand);
+
+            mainMenu.InsertItem(PluginMetadata.Menu.MainTool, "Calibration of stations according measurements", _menuCommands.OnRunCalibrationStationsMeasurementsCommand);
+            mainMenu.InsertItem(PluginMetadata.Menu.MainTool, "Management of tasks for calibration of parameters stations", _menuCommands.OnRunManagementTasksCalibrationCommand);
+            //mainMenu.InsertItem(PluginMetadata.Menu.MainTool, "Results calibration of stations measurements", _menuCommands.OnRunCalibrationStationsResultCommand);
         }
 	}
 }

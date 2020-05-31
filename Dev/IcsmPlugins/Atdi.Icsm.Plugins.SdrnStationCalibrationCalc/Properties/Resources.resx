@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Activate" xml:space="preserve">
+    <value>Activate</value>
+  </data>
   <data name="AltitudeStation" xml:space="preserve">
     <value>Altitude Station</value>
   </data>
@@ -126,6 +129,9 @@
   <data name="AzimuthStation" xml:space="preserve">
     <value>Azimuth Station</value>
   </data>
+  <data name="BaseContexts" xml:space="preserve">
+    <value>Base Contexts</value>
+  </data>
   <data name="CalcCorrelation" xml:space="preserve">
     <value>Calc Correlation</value>
   </data>
@@ -134,6 +140,9 @@
   </data>
   <data name="CascadeTuning" xml:space="preserve">
     <value>Cascade tuning</value>
+  </data>
+  <data name="Contexts" xml:space="preserve">
+    <value>Contexts</value>
   </data>
   <data name="CoordinatesStation" xml:space="preserve">
     <value>Coordinates  Station</value>
@@ -174,8 +183,17 @@
   <data name="CreatedBy" xml:space="preserve">
     <value>Created by</value>
   </data>
+  <data name="CreatedDate" xml:space="preserve">
+    <value>Created Date</value>
+  </data>
+  <data name="CreateNew" xml:space="preserve">
+    <value>Create new</value>
+  </data>
   <data name="DateCreated" xml:space="preserve">
     <value>Date Created</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Delete</value>
   </data>
   <data name="Delta" xml:space="preserve">
     <value>Delta</value>
@@ -197,6 +215,9 @@
   </data>
   <data name="Id" xml:space="preserve">
     <value>Id</value>
+  </data>
+  <data name="Lock" xml:space="preserve">
+    <value>Lock</value>
   </data>
   <data name="Map" xml:space="preserve">
     <value>Map</value>
@@ -231,8 +252,14 @@
   <data name="MinRangeMeasurements" xml:space="preserve">
     <value>Min range measurements</value>
   </data>
+  <data name="Modify" xml:space="preserve">
+    <value>Modify</value>
+  </data>
   <data name="Name" xml:space="preserve">
     <value>Name</value>
+  </data>
+  <data name="Note" xml:space="preserve">
+    <value>Note</value>
   </data>
   <data name="NumberCascade" xml:space="preserve">
     <value>Number cascade</value>
@@ -243,11 +270,20 @@
   <data name="NumberStationInContour" xml:space="preserve">
     <value>Number station in contour</value>
   </data>
+  <data name="OwnerInstance" xml:space="preserve">
+    <value>Owner Instance</value>
+  </data>
   <data name="ParametersOfTask" xml:space="preserve">
     <value>Parameters of task</value>
   </data>
   <data name="PowerStation" xml:space="preserve">
     <value>Power Station</value>
+  </data>
+  <data name="Projection" xml:space="preserve">
+    <value>Projection</value>
+  </data>
+  <data name="Projects" xml:space="preserve">
+    <value>Projects</value>
   </data>
   <data name="ShiftAltitudeStationMax" xml:space="preserve">
     <value>Shift Altitude Station Max</value>
@@ -291,8 +327,14 @@
   <data name="ShiftTiltStationStep" xml:space="preserve">
     <value>Shift Tilt Station Step</value>
   </data>
+  <data name="ShowResult" xml:space="preserve">
+    <value>Show result</value>
+  </data>
   <data name="Standard" xml:space="preserve">
     <value>Standard</value>
+  </data>
+  <data name="StartCalc" xml:space="preserve">
+    <value>Start calc</value>
   </data>
   <data name="StateForActiveStation" xml:space="preserve">
     <value>State for active station</value>
@@ -302,6 +344,12 @@
   </data>
   <data name="StationsBlock" xml:space="preserve">
     <value>Stations block</value>
+  </data>
+  <data name="StatusName" xml:space="preserve">
+    <value>Status Name</value>
+  </data>
+  <data name="StatusNote" xml:space="preserve">
+    <value>Status Note</value>
   </data>
   <data name="TiltStation" xml:space="preserve">
     <value>Tilt Station</value>
@@ -315,10 +363,19 @@
   <data name="TrustOldResults" xml:space="preserve">
     <value>Trust old results</value>
   </data>
+  <data name="Type" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="TypeName" xml:space="preserve">
+    <value>Type Name</value>
+  </data>
   <data name="TypeOfArea" xml:space="preserve">
     <value>Type of the area</value>
   </data>
   <data name="UseMeasurementSameGSID" xml:space="preserve">
     <value>Use measurement with same GSID</value>
+  </data>
+  <data name="MapName" xml:space="preserve">
+    <value>Map Name</value>
   </data>
 </root>

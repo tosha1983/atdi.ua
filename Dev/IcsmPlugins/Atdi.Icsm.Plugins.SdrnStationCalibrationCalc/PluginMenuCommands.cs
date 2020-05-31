@@ -44,16 +44,15 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc
 		        MessageBox.Show(e.ToString());
 	        }
         }
-
-        public void OnRunCalibrationStationsResultCommand()
+        public void OnRunManagementTasksCalibrationCommand()
         {
             try
             {
-                _viewStarter.Start<VM.StationCalibrationResult.View>(isModal: false, f => f.ResultId =  10058 );
+                _viewStarter.Start<VM.ManagementTasksCalibration.View>(isModal: true);
             }
             catch (Exception e)
             {
-                _logger.Exception((EventContext)"PluginMenuCommands", (EventCategory)"OnRunCalibrationStationsResultCommand", e);
+                _logger.Exception((EventContext)"PluginMenuCommands", (EventCategory)"OnRunManagementTasksCalibrationCommand", e);
                 MessageBox.Show(e.ToString());
             }
         }

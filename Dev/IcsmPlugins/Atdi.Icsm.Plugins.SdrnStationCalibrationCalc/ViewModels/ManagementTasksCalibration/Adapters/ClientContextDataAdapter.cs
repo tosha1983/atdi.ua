@@ -5,11 +5,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Atdi.DataModels.Api.EntityOrm.WebClient;
 using Atdi.Contracts.Api.EntityOrm.WebClient;
 using CS_ES = Atdi.DataModels.Sdrn.CalcServer.Entities;
-using Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager;
 
-namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager.Adapters
+namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTasksCalibration.Adapters
 {
     public sealed class ClientContextDataAdapter : EntityDataAdapter<CS_ES.IClientContext, ClientContextModel>
     {
@@ -27,8 +27,9 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager.Adapt
                 c => c.TypeName,
                 c => c.StatusName,
                 c => c.StatusNote,
-                c => c.OwnerInstance
-            ).Filter(f => f.PROJECT.Id, ProjectId);
+                c => c.OwnerInstance)
+            .Filter(f => f.PROJECT.Id, ProjectId)
+            .Filter(f => f.TypeCode, FilterOperator.NotEqual, 1);
         }
         protected override ClientContextModel ReadData(IDataReader<CS_ES.IClientContext> reader, int index)
         {
