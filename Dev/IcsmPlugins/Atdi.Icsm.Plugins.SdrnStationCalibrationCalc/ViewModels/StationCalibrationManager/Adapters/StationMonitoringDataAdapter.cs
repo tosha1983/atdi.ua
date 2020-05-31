@@ -40,17 +40,18 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
         }
         protected override StationMonitoringModel ReadData(IDataReader<IC_ES.IStationMonitoring> reader, int index)
         {
+            //var standardStats = reader.GetValueAs<DriveTestStandardStats>(c => c.STATS.StandardStats);
             return new StationMonitoringModel
             {
                 Id = reader.GetValue(c => c.Id),
                 Date  = reader.GetValue(c => c.MeasTime),
-                CountByStandard = reader.GetValueAs<DriveTestStandardStats>(c => c.STATS.StandardStats).Count,
+                //CountByStandard = standardStats.Count,
                 CountSID = reader.GetValue(c => c.STATS.GsidCount),
                 MaxFreq_MHz = reader.GetValue(c => c.STATS.MaxFreq_MHz),
                 MinFreq_MHz = reader.GetValue(c => c.STATS.MinFreq_MHz),
                 SensorName = reader.GetValue(c => c.SensorName),
                 SensorTitle = reader.GetValue(c => c.SensorTitle),
-                Standards = reader.GetValueAs<DriveTestStandardStats>(c => c.STATS.StandardStats).Standard,
+                //Standards = standardStats.Standard,
             };
         }
     }

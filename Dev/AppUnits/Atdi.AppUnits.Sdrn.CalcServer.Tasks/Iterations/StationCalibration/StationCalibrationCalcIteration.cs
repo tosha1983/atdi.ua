@@ -23,7 +23,6 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         private readonly ITransformation _transformation;
 
         //
-        private readonly Platform.Data.IObjectPool<CalcPoint[]> _calcPointArrayPool;
         private readonly Platform.Data.IObjectPoolSite _poolSite;
 
         /// <summary>
@@ -32,10 +31,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         public StationCalibrationCalcIteration(
             IIterationsPool iterationsPool,
             ITransformation transformation,
+            Platform.Data.IObjectPoolSite poolSite,
             ILogger logger)
 		{
             _transformation = transformation;
             _iterationsPool = iterationsPool;
+            _poolSite = poolSite;
             _logger = logger;
 		}
 

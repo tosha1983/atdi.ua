@@ -96,8 +96,50 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             set => this.Set(ref this._currentMapData, value);
         }
 
+        /// <summary>
+        /// Координаты станции
+        /// </summary>
+        private void RedrawMapStationCalibrationStaModel()
+        {
+            var data = new MP.MapDrawingData();
+            var points = new List<MP.MapDrawingDataPoint>();
+            var polygonsByStations = new List<MP.MapDrawingDataPolygon>();
 
-        private void RedrawMap()
+            if (this._currentStationCalibrationStaModel != null)
+            {
+                foreach (StationCalibrationStaModel v in this._currentStationCalibrationStaModel)
+                {
+                    var sta = GetStationCalibrationStaById(v.Id);
+                    if (sta != null)
+                    {
+                        for (int i = 0; i < sta.Length; i++)
+                        {
+                            points.Add(new MP.MapDrawingDataPoint()
+                            {
+                                Location = new MP.Location()
+                                {
+                                    Lon = sta[i].New_Lon_deg,
+                                    Lat = sta[i].New_Lat_deg
+                                },
+                                Color = System.Windows.Media.Brushes.Blue,
+                                Fill = System.Windows.Media.Brushes.DarkBlue,
+
+                                Opacity = 0.85,
+                                Width = 10,
+                                Height = 10
+                            });
+                        }
+                    }
+                }
+            }
+            data.Points = points.ToArray();
+            this.CurrentMapData = data;
+        }
+
+        /// <summary>
+        /// Маршруты драйв тестов
+        /// </summary>
+        private void RedrawStationCalibrationDriveTestsModel()
         {
             var data = new MP.MapDrawingData();
             var points = new List<MP.MapDrawingDataPoint>();
@@ -107,9 +149,9 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             {
                 foreach (StationCalibrationDriveTestsModel v in this._currentStationCalibrationDriveTestsModel)
                 {
-                    if (v.LinkToStationMonitoringId > 0)
+                    if (v.DriveTestId > 0)
                     {
-                        var routes = GetRoutesByIdStationMonitoring(v.LinkToStationMonitoringId);
+                        var routes = GetRoutesByIdStationMonitoring(v.DriveTestId);
                         for (int i = 0; i < routes.Length; i++)
                         {
                             points.Add(new MP.MapDrawingDataPoint()
@@ -130,35 +172,24 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                 }
             }
 
-            if (this._currentStationCalibrationStaModel != null)
-            {
-                foreach (StationCalibrationStaModel v in this._currentStationCalibrationStaModel)
-                {
-                    var routes = GetRoutesByIdStationMonitoring(v.StationMonitoringId);
-                    for (int i = 0; i < routes.Length; i++)
-                    {
-                        points.Add(new MP.MapDrawingDataPoint()
-                        {
-                            Location = new MP.Location()
-                            {
-                                Lat = routes[i].Latitude,
-                                Lon = routes[i].Longitude
-                            },
-                            Color = System.Windows.Media.Brushes.Green,
-                            Fill = System.Windows.Media.Brushes.ForestGreen,
-                            Opacity = 0.85,
-                            Width = 10,
-                            Height = 10
-                        });
-                    }
-                }
-            }
+            data.Points = points.ToArray();
+            this.CurrentMapData = data;
+        }
+
+        /// <summary>
+        /// Координаты станции и маршруты драйв тестов
+        /// </summary>
+        private void RedrawMap()
+        {
+            var data = new MP.MapDrawingData();
+            var points = new List<MP.MapDrawingDataPoint>();
+            var polygonsByStations = new List<MP.MapDrawingDataPolygon>();
 
             if (this._currentStationCalibrationResultModel!=null)
             {
                 foreach (StationCalibrationResultModel v in this._currentStationCalibrationResultModel)
                 {
-                    var sta = GetStationCalibrationSta(v.ResultId);
+                    var sta = GetStationCalibrationStaByResId(v.ResultId);
                     if (sta != null)
                     {
                         for (int i = 0; i < sta.Length; i++)
@@ -182,9 +213,9 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                     var resDriveTests = GetDriveTests(v.ResultId);
                     for (int k = 0; k < resDriveTests.Length; k++)
                     {
-                        if (resDriveTests[k].LinkToStationMonitoringId > 0)
+                        if (resDriveTests[k].DriveTestId > 0)
                         {
-                            var routes = GetRoutesByIdStationMonitoring(resDriveTests[k].LinkToStationMonitoringId);
+                            var routes = GetRoutesByIdStationMonitoring(resDriveTests[k].DriveTestId);
                             for (int i = 0; i < routes.Length; i++)
                             {
                                 points.Add(new MP.MapDrawingDataPoint()
@@ -245,16 +276,28 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             return resRoutes;
         }
 
-        public StationCalibrationStaModel[] GetStationCalibrationSta(long ResId)
+        public StationCalibrationStaModel[] GetStationCalibrationStaByResId(long ResId)
         {
             var resRoutes = _objectReader
                 .Read<StationCalibrationStaModel[]>()
-                .By(new StationCalibrationStaModelById()
+                .By(new StationCalibrationStaModelByResultId()
                 {
                     ResultId = ResId
                 });
             return resRoutes;
         }
+
+        public StationCalibrationStaModel[] GetStationCalibrationStaById(long Id)
+        {
+            var resRoutes = _objectReader
+                .Read<StationCalibrationStaModel[]>()
+                .By(new StationCalibrationStaModelById()
+                {
+                     Id = Id
+                });
+            return resRoutes;
+        }
+
 
         public StationCalibrationDriveTestsModel[] GetDriveTests(long ResId)
         {
@@ -273,7 +316,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             set
             {
                 this._currentStationCalibrationDriveTestsModel = value;
-                this.RedrawMap();
+                this.RedrawStationCalibrationDriveTestsModel();
             }
         }
 
@@ -284,7 +327,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             set
             {
                 this._currentStationCalibrationStaModel = value;
-                this.RedrawMap();
+                this.RedrawMapStationCalibrationStaModel();
             }
         }
 

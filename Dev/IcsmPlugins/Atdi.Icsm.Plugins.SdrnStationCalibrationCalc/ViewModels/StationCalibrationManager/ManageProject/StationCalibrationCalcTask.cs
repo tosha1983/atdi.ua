@@ -40,34 +40,6 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             }
         }
 
-        public static void RunTask(WebApiDataLayer dataLayer, IQueryExecutor executor, long contextCalcTaskId)
-        {
-            var clientContextId = GetClientContextIdByTaskId(dataLayer, executor, contextCalcTaskId);
-            if (clientContextId != 0)
-            {
-
-                string OwnerInstance = "AF53CC81-4781-4FF1-8F24-49629480D79C";
-
-                // делаем задачу доступной для расчета
-                MakeCalcTaskAvailable(dataLayer, executor, contextCalcTaskId, clientContextId, OwnerInstance);
-
-                // создаем запись для результатов
-                var calcResultId = CreateCalcTaskResult(dataLayer, executor, contextCalcTaskId, OwnerInstance);
-
-                // запускаем расчет
-                RunCalcTask(dataLayer, executor, contextCalcTaskId, calcResultId, OwnerInstance);
-
-                // ожидаем результат
-                //var calcResultObject = WaitForCalcResult(dataLayer, executor, contextCalcTaskId, calcResultId);
-            }
-            else
-            {
-                throw new Exception("Client context Id is 0!");
-            }
-
-        }
-
-
         private static long GetClientContextIdByTaskId(WebApiDataLayer dataLayer, IQueryExecutor executor, long contextTaskId)
         {
             var readQuery = dataLayer.GetBuilder<ICalcTask>()
@@ -102,6 +74,8 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             var cancel = false;
             while (!cancel)
             {
+                System.Threading.Thread.Sleep(5 * 1000);
+
                 var checkQuery = dataLayer.GetBuilder<IClientContext>()
                     .Read()
                     .Select(c => c.StatusCode)
@@ -312,57 +286,6 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                 isSuccessUpdate = false;
             }
             return isSuccessUpdate;
-        }
-
-        private static void MakeCalcTaskAvailable(WebApiDataLayer dataLayer, IQueryExecutor executor, long taskId, long contextId, string ownerInstance)
-        {
-            var updQuery = dataLayer.GetBuilder<ICalcTask>()
-                .Update()
-                .SetValue(c => c.StatusCode, (byte)CalcTaskStatusCode.Available)
-                .SetValue(c => c.StatusName, CalcTaskStatusCode.Available.ToString())
-                .SetValue(c => c.StatusNote, "The task was was made available")
-                .Filter(c => c.Id, taskId);
-
-            var count = executor.Execute(updQuery);
-            if (count == 0)
-            {
-                throw new InvalidOperationException($"Can't make the task with ID #{taskId} Available");
-            }
-        }
-
-        private static long CreateCalcTaskResult(WebApiDataLayer dataLayer, IQueryExecutor executor, long taskId, string ownerInstance)
-        {
-            var insQuery = dataLayer.GetBuilder<ICalcResult>()
-                .Create()
-                .SetValue(c => c.CreatedDate, DateTimeOffset.Now)
-                .SetValue(c => c.TASK.Id, taskId)
-                .SetValue(c => c.CallerInstance, ownerInstance)
-                .SetValue(c => c.CallerResultId, Guid.NewGuid())
-                .SetValue(c => c.StatusCode, (byte)CalcResultStatusCode.Created)
-                .SetValue(c => c.StatusName, CalcResultStatusCode.Created.ToString())
-                .SetValue(c => c.StatusNote, "The result was created by the client")
-                ;
-            var resultPk = executor.Execute<ICalcResult_PK>(insQuery);
-            return resultPk.Id;
-        }
-
-
-        private static void RunCalcTask(WebApiDataLayer dataLayer, IQueryExecutor executor, long taskId, long resultId, string ownerInstance)
-        {
-            var updQuery = dataLayer.GetBuilder<ICalcResult>()
-                .Update()
-                .SetValue(c => c.StatusCode, (byte)CalcResultStatusCode.Pending)
-                .SetValue(c => c.StatusName, CalcResultStatusCode.Pending.ToString())
-                .SetValue(c => c.StatusNote, "The result was ran by the client")
-                .Filter(c => c.CallerInstance, ownerInstance)
-                .Filter(c => c.TASK.Id, taskId)
-                .Filter(c => c.Id, resultId);
-
-            var count = executor.Execute(updQuery);
-            if (count == 0)
-            {
-                throw new InvalidOperationException($"Can't run the task with ID #{taskId} (result ID #{resultId})");
-            }
         }
     }
 }

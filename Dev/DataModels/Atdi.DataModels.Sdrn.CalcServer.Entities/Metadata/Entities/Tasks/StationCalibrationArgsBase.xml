@@ -16,7 +16,7 @@
     <Field Name="StationIds" SourceType="Column" Required="false" SourceName="STATION_IDS" DataType="Array.Long" Title="Context station identifiers" Desc="Context station identifiers"/>
     <Field Name="CorrelationThresholdHard" SourceType="Column" Required="false" SourceName="CORRELATION_THRESHOLD_HARD" DataType="Float.22.8" Title="CorrelationThresholdHard" Desc="CorrelationThresholdHard"/>
     <Field Name="CorrelationThresholdWeak" SourceType="Column" Required="false" SourceName="CORRELATION_THRESHOLD_WEAK" DataType="Float.22.8" Title="CrrelationThresholdWeak" Desc="CrrelationThresholdWeak"/>
-    <Field Name="TrustOldResults" SourceType="Column" Required="false" SourceName="TRUST_OLD_RESULTS" DataType="Float.22.8" Title="TrustOldResults" Desc="TrustOldResults"/>
+    <Field Name="TrustOldResults" SourceType="Column" Required="false" SourceName="TRUST_OLD_RESULTS" DataType="Boolean" Title="TrustOldResults" Desc="TrustOldResults"/>
     <Field Name="UseMeasurementSameGSID" SourceType="Column" Required="false" SourceName="USE_MEASUREMENT_SAME_GSID" DataType="Boolean" Title="UseMeasurementSameGSID" Desc="UseMeasurementSameGSID"/>
     <Field Name="DistanceAroundContour_km" SourceType="Column" Required="false" SourceName="DISTANCE_AROUND_CONTOUR_KM" DataType="Integer.32" Title="DistanceAroundContour_km" Desc="DistanceAroundContour_km"/>
     <Field Name="MinNumberPointForCorrelation" SourceType="Column" Required="false" SourceName="MIN_NUMBER_POINT_FOR_CORRELATION" DataType="Integer.32" Title="MinNumberPointForCorrelation" Desc="MinNumberPointForCorrelation"/>

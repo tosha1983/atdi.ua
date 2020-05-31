@@ -45,110 +45,64 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         static string localTeck;
         public static bool Compare(string tech, string GCIDFromRadio, string GCIDFromDB)
         {
-            string[] sr = GCIDFromRadio.Split(' ');
-            string[] sdb = GCIDFromDB.Split(' ');
-            if (sr.Length == 4)
+            try
             {
-                if (sdb.Length == 4)
+                string[] sr = GCIDFromRadio.Split(' ');
+                string[] sdb = GCIDFromDB.Split(' ');
+                if (sr.Length == 4)
                 {
-                    localTeck = ReturnLetter(tech).ToLower();
-                    if (localTeck != techSelected.Name.ToLower())
+                    if (sdb.Length == 4)
                     {
-                        for (i = 0; i < techInfos.Length; i++)
+                        localTeck = ReturnLetter(tech).ToLower();
+                        if (localTeck != techSelected.Name.ToLower())
                         {
-                            if (localTeck == techInfos[i].Name.ToLower())
+                            for (i = 0; i < techInfos.Length; i++)
                             {
-                                techSelected = techInfos[i];
-                                param0 = techSelected.Parametrs[0];
-                                param1 = techSelected.Parametrs[1];
-                                param2 = techSelected.Parametrs[2];
-                                param3 = techSelected.Parametrs[3];
-                                break;
+                                if (localTeck == techInfos[i].Name.ToLower())
+                                {
+                                    techSelected = techInfos[i];
+                                    param0 = techSelected.Parametrs[0];
+                                    param1 = techSelected.Parametrs[1];
+                                    param2 = techSelected.Parametrs[2];
+                                    param3 = techSelected.Parametrs[3];
+                                    break;
+                                }
                             }
                         }
-                    }
 
-                    for (i = 0; i < info.Operators.Length; i++)
-                    {
-                        b0 = false;
-                        b1 = false;
-                        b2 = false;
-                        b3 = false;
-                        for (k = 0; k < info.Operators[i].TechName.Length; k++)
+                        for (i = 0; i < info.Operators.Length; i++)
                         {
-                            if (localTeck == info.Operators[i].TechName[k].ToLower())
+                            b0 = false;
+                            b1 = false;
+                            b2 = false;
+                            b3 = false;
+                            for (k = 0; k < info.Operators[i].TechName.Length; k++)
                             {
-                                if (info.Operators[i].S0.Use != null && info.Operators[i].S0.Use.Length > 0)
+                                if (localTeck == info.Operators[i].TechName[k].ToLower())
                                 {
-                                    GetParametr(info.Operators[i].S0.Name, ref param0);
-                                    if (param0 != null)
+                                    if (info.Operators[i].S0.Use != null && info.Operators[i].S0.Use.Length > 0)
                                     {
-                                        // надо просматривать через настройки
-                                        if (info.Operators[i].S0.ValueInDB != null && info.Operators[i].S0.ValueInRadio != null &&
-                                        info.Operators[i].S0.ValueInDB.Length > 0 && info.Operators[i].S0.ValueInRadio.Length > 0)
-                                        {
-                                            t01 = comp(param0.Length, info.Operators[i].S0.Use, Convert.ToInt32(sdb[ReturnInt(info.Operators[i].S0.CompareWith)]));
-                                            for (int ds00 = 0; ds00 < info.Operators[i].S0.ValueInDB.Length; ds00++)
-                                            {
-                                                t02 = comp(param0.Length, param0.All, info.Operators[i].S0.ValueInDB[ds00]);
-                                                if (t01 == t02)
-                                                {
-                                                    t03 = comp(param0.Length, info.Operators[i].S0.Use, Convert.ToInt32(sr[0]));
-                                                    for (int ds01 = 0; ds01 < info.Operators[i].S0.ValueInRadio.Length; ds01++)
-                                                    {
-                                                        t04 = comp(param0.Length, param0.All, info.Operators[i].S0.ValueInRadio[ds01]);
-                                                        if (t03 == t04)
-                                                        {
-                                                            b0 = true;
-
-                                                            break;
-                                                        }
-                                                    }
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                        else //сравниваем одно с другим лоб в лоб
-                                        {
-                                            t01 = comp(param0.Length, param0.All, Convert.ToInt32(sdb[ReturnInt(info.Operators[i].S0.CompareWith)]));
-                                            t03 = comp(param0.Length, info.Operators[i].S0.Use, Convert.ToInt32(sr[0]));
-                                            if (t01 == t03)//нашли оператора по идее
-                                            {
-                                                b0 = true;
-                                            }
-                                        }
-                                    }
-                                    else
-                                    {
-                                        throw new Exception("unknown parameter " + info.Operators[i].S0.Name);
-                                    }
-                                }
-                                else { b0 = true; }
-
-                                if (b0)
-                                {
-                                    if (info.Operators[i].S1.Use != null && info.Operators[i].S1.Use.Length > 0)
-                                    {
-                                        GetParametr(info.Operators[i].S1.Name, ref param1);
-                                        if (param1 != null)
+                                        GetParametr(info.Operators[i].S0.Name, ref param0);
+                                        if (param0 != null)
                                         {
                                             // надо просматривать через настройки
-                                            if (info.Operators[i].S1.ValueInDB != null && info.Operators[i].S1.ValueInRadio != null &&
-                                            info.Operators[i].S1.ValueInDB.Length > 0 && info.Operators[i].S1.ValueInRadio.Length > 0)
+                                            if (info.Operators[i].S0.ValueInDB != null && info.Operators[i].S0.ValueInRadio != null &&
+                                            info.Operators[i].S0.ValueInDB.Length > 0 && info.Operators[i].S0.ValueInRadio.Length > 0)
                                             {
-                                                t11 = comp(param1.Length, info.Operators[i].S1.Use, Convert.ToInt32(sdb[ReturnInt(info.Operators[i].S1.CompareWith)]));
-                                                for (int ds10 = 0; ds10 < info.Operators[i].S1.ValueInDB.Length; ds10++)//поищем такую страну по бд (S0)
+                                                t01 = comp(param0.Length, info.Operators[i].S0.Use, Convert.ToInt32(sdb[ReturnInt(info.Operators[i].S0.CompareWith)]));
+                                                for (int ds00 = 0; ds00 < info.Operators[i].S0.ValueInDB.Length; ds00++)
                                                 {
-                                                    t12 = comp(param1.Length, param1.All, info.Operators[i].S1.ValueInDB[ds10]);
-                                                    if (t11 == t12)//нашли такую страну по идее в бд и настройках
+                                                    t02 = comp(param0.Length, param0.All, info.Operators[i].S0.ValueInDB[ds00]);
+                                                    if (t01 == t02)
                                                     {
-                                                        t13 = comp(param1.Length, info.Operators[i].S1.Use, Convert.ToInt32(sr[1]));
-                                                        for (int ds11 = 0; ds11 < info.Operators[i].S1.ValueInRadio.Length; ds11++)//поищем такого оператора по бд (S0)
+                                                        t03 = comp(param0.Length, info.Operators[i].S0.Use, Convert.ToInt32(sr[0]));
+                                                        for (int ds01 = 0; ds01 < info.Operators[i].S0.ValueInRadio.Length; ds01++)
                                                         {
-                                                            t14 = comp(param1.Length, param1.All, info.Operators[i].S1.ValueInRadio[ds11]);
-                                                            if (t13 == t14)//нашли оператора по идее
+                                                            t04 = comp(param0.Length, param0.All, info.Operators[i].S0.ValueInRadio[ds01]);
+                                                            if (t03 == t04)
                                                             {
-                                                                b1 = true;
+                                                                b0 = true;
+
                                                                 break;
                                                             }
                                                         }
@@ -158,46 +112,45 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                             }
                                             else //сравниваем одно с другим лоб в лоб
                                             {
-                                                t11 = comp(param1.Length, param1.All, Convert.ToInt32(sdb[ReturnInt(info.Operators[i].S1.CompareWith)]));
-                                                t13 = comp(param1.Length, info.Operators[i].S1.Use, Convert.ToInt32(sr[1]));
-                                                if (t11 == t13)//нашли оператора по идее
+                                                t01 = comp(param0.Length, param0.All, Convert.ToInt32(sdb[ReturnInt(info.Operators[i].S0.CompareWith)]));
+                                                t03 = comp(param0.Length, info.Operators[i].S0.Use, Convert.ToInt32(sr[0]));
+                                                if (t01 == t03)//нашли оператора по идее
                                                 {
-                                                    b1 = true;
+                                                    b0 = true;
                                                 }
                                             }
                                         }
                                         else
                                         {
-                                            throw new Exception("unknown parameter " + info.Operators[i].S1.Name);
+                                            throw new Exception("unknown parameter " + info.Operators[i].S0.Name);
                                         }
                                     }
-                                    else { b1 = true; }
+                                    else { b0 = true; }
 
-
-                                    if (b1)
+                                    if (b0)
                                     {
-                                        if (info.Operators[i].S2.Use != null && info.Operators[i].S2.Use.Length > 0)
+                                        if (info.Operators[i].S1.Use != null && info.Operators[i].S1.Use.Length > 0)
                                         {
-                                            GetParametr(info.Operators[i].S2.Name, ref param2);
-                                            if (param2 != null)
+                                            GetParametr(info.Operators[i].S1.Name, ref param1);
+                                            if (param1 != null)
                                             {
                                                 // надо просматривать через настройки
-                                                if (info.Operators[i].S2.ValueInDB != null && info.Operators[i].S2.ValueInRadio != null &&
-                                                info.Operators[i].S2.ValueInDB.Length > 0 && info.Operators[i].S2.ValueInRadio.Length > 0)
+                                                if (info.Operators[i].S1.ValueInDB != null && info.Operators[i].S1.ValueInRadio != null &&
+                                                info.Operators[i].S1.ValueInDB.Length > 0 && info.Operators[i].S1.ValueInRadio.Length > 0)
                                                 {
-                                                    t21 = comp(param2.Length, info.Operators[i].S2.Use, Convert.ToInt32(sdb[ReturnInt(info.Operators[i].S2.CompareWith)]));
-                                                    for (int ds20 = 0; ds20 < info.Operators[i].S2.ValueInDB.Length; ds20++)//поищем такую страну по бд (S0)
+                                                    t11 = comp(param1.Length, info.Operators[i].S1.Use, Convert.ToInt32(sdb[ReturnInt(info.Operators[i].S1.CompareWith)]));
+                                                    for (int ds10 = 0; ds10 < info.Operators[i].S1.ValueInDB.Length; ds10++)//поищем такую страну по бд (S0)
                                                     {
-                                                        t22 = comp(param2.Length, param2.All, info.Operators[i].S2.ValueInDB[ds20]);
-                                                        if (t21 == t22)//нашли такую страну по идее в бд и настройках
+                                                        t12 = comp(param1.Length, param1.All, info.Operators[i].S1.ValueInDB[ds10]);
+                                                        if (t11 == t12)//нашли такую страну по идее в бд и настройках
                                                         {
-                                                            t23 = comp(param2.Length, info.Operators[i].S2.Use, Convert.ToInt32(sr[2]));
-                                                            for (int ds21 = 0; ds21 < info.Operators[i].S2.ValueInRadio.Length; ds21++)//поищем такого оператора по бд (S0)
+                                                            t13 = comp(param1.Length, info.Operators[i].S1.Use, Convert.ToInt32(sr[1]));
+                                                            for (int ds11 = 0; ds11 < info.Operators[i].S1.ValueInRadio.Length; ds11++)//поищем такого оператора по бд (S0)
                                                             {
-                                                                t24 = comp(param2.Length, param2.All, info.Operators[i].S2.ValueInRadio[ds21]);
-                                                                if (t23 == t24)//нашли оператора по идее
+                                                                t14 = comp(param1.Length, param1.All, info.Operators[i].S1.ValueInRadio[ds11]);
+                                                                if (t13 == t14)//нашли оператора по идее
                                                                 {
-                                                                    b2 = true;
+                                                                    b1 = true;
                                                                     break;
                                                                 }
                                                             }
@@ -207,44 +160,46 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                 }
                                                 else //сравниваем одно с другим лоб в лоб
                                                 {
-                                                    t21 = comp(param2.Length, param2.All, Convert.ToInt32(sdb[ReturnInt(info.Operators[i].S2.CompareWith)]));
-                                                    t23 = comp(param2.Length, info.Operators[i].S2.Use, Convert.ToInt32(sr[2]));
-                                                    if (t21 == t23)//нашли оператора по идее
+                                                    t11 = comp(param1.Length, param1.All, Convert.ToInt32(sdb[ReturnInt(info.Operators[i].S1.CompareWith)]));
+                                                    t13 = comp(param1.Length, info.Operators[i].S1.Use, Convert.ToInt32(sr[1]));
+                                                    if (t11 == t13)//нашли оператора по идее
                                                     {
-                                                        b2 = true;
+                                                        b1 = true;
                                                     }
                                                 }
                                             }
                                             else
                                             {
-                                                throw new Exception("unknown parameter " + info.Operators[i].S2.Name);
+                                                throw new Exception("unknown parameter " + info.Operators[i].S1.Name);
                                             }
                                         }
-                                        else { b2 = true; }
+                                        else { b1 = true; }
 
-                                        if (b2)
+
+                                        if (b1)
                                         {
-                                            if (info.Operators[i].S3.Use != null && info.Operators[i].S3.Use.Length > 0)
+                                            if (info.Operators[i].S2.Use != null && info.Operators[i].S2.Use.Length > 0)
                                             {
-                                                GetParametr(info.Operators[i].S3.Name, ref param3);
-                                                if (param3 != null)
+                                                GetParametr(info.Operators[i].S2.Name, ref param2);
+                                                if (param2 != null)
                                                 {
-                                                    if (info.Operators[i].S3.ValueInDB != null && info.Operators[i].S3.ValueInRadio != null &&
-                                                   info.Operators[i].S3.ValueInDB.Length > 0 && info.Operators[i].S3.ValueInRadio.Length > 0)
+                                                    // надо просматривать через настройки
+                                                    if (info.Operators[i].S2.ValueInDB != null && info.Operators[i].S2.ValueInRadio != null &&
+                                                    info.Operators[i].S2.ValueInDB.Length > 0 && info.Operators[i].S2.ValueInRadio.Length > 0)
                                                     {
-                                                        t31 = comp(param3.Length, info.Operators[i].S3.Use, Convert.ToInt32(sdb[ReturnInt(info.Operators[i].S3.CompareWith)]));
-                                                        for (int ds30 = 0; ds30 < info.Operators[i].S3.ValueInDB.Length; ds30++)//поищем такую страну по бд (S0)
+                                                        t21 = comp(param2.Length, info.Operators[i].S2.Use, Convert.ToInt32(sdb[ReturnInt(info.Operators[i].S2.CompareWith)]));
+                                                        for (int ds20 = 0; ds20 < info.Operators[i].S2.ValueInDB.Length; ds20++)//поищем такую страну по бд (S0)
                                                         {
-                                                            t32 = comp(param3.Length, param3.All, info.Operators[i].S3.ValueInDB[ds30]);
-                                                            if (t31 == t32)//нашли такую страну по идее в бд и настройках
+                                                            t22 = comp(param2.Length, param2.All, info.Operators[i].S2.ValueInDB[ds20]);
+                                                            if (t21 == t22)//нашли такую страну по идее в бд и настройках
                                                             {
-                                                                t33 = comp(param3.Length, info.Operators[i].S3.Use, Convert.ToInt32(sr[3]));
-                                                                for (int ds31 = 0; ds31 < info.Operators[i].S3.ValueInRadio.Length; ds31++)//поищем такого оператора по бд (S0)
+                                                                t23 = comp(param2.Length, info.Operators[i].S2.Use, Convert.ToInt32(sr[2]));
+                                                                for (int ds21 = 0; ds21 < info.Operators[i].S2.ValueInRadio.Length; ds21++)//поищем такого оператора по бд (S0)
                                                                 {
-                                                                    t34 = comp(param3.Length, param3.All, info.Operators[i].S3.ValueInRadio[ds31]);
-                                                                    if (t33 == t34)//нашли оператора по идее
+                                                                    t24 = comp(param2.Length, param2.All, info.Operators[i].S2.ValueInRadio[ds21]);
+                                                                    if (t23 == t24)//нашли оператора по идее
                                                                     {
-                                                                        b3 = true;
+                                                                        b2 = true;
                                                                         break;
                                                                     }
                                                                 }
@@ -254,42 +209,94 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                     }
                                                     else //сравниваем одно с другим лоб в лоб
                                                     {
-                                                        t31 = comp(param3.Length, param3.All, Convert.ToInt32(sdb[ReturnInt(info.Operators[i].S3.CompareWith)]));
-                                                        t33 = comp(param3.Length, info.Operators[i].S3.Use, Convert.ToInt32(sr[3]));
-                                                        if (t31 == t33)//нашли оператора по идее
+                                                        t21 = comp(param2.Length, param2.All, Convert.ToInt32(sdb[ReturnInt(info.Operators[i].S2.CompareWith)]));
+                                                        t23 = comp(param2.Length, info.Operators[i].S2.Use, Convert.ToInt32(sr[2]));
+                                                        if (t21 == t23)//нашли оператора по идее
                                                         {
-                                                            b3 = true;
-                                                            t33 = comp(param3.Length, info.Operators[i].S3.Use, Convert.ToInt32(sr[ReturnInt(info.Operators[i].S3.CompareWith)]));
+                                                            b2 = true;
                                                         }
                                                     }
                                                 }
                                                 else
                                                 {
-                                                    throw new Exception("unknown parameter " + info.Operators[i].S3.Name);
+                                                    throw new Exception("unknown parameter " + info.Operators[i].S2.Name);
                                                 }
                                             }
-                                            else { b3 = true; }
+                                            else { b2 = true; }
+
+                                            if (b2)
+                                            {
+                                                if (info.Operators[i].S3.Use != null && info.Operators[i].S3.Use.Length > 0)
+                                                {
+                                                    GetParametr(info.Operators[i].S3.Name, ref param3);
+                                                    if (param3 != null)
+                                                    {
+                                                        if (info.Operators[i].S3.ValueInDB != null && info.Operators[i].S3.ValueInRadio != null &&
+                                                       info.Operators[i].S3.ValueInDB.Length > 0 && info.Operators[i].S3.ValueInRadio.Length > 0)
+                                                        {
+                                                            t31 = comp(param3.Length, info.Operators[i].S3.Use, Convert.ToInt32(sdb[ReturnInt(info.Operators[i].S3.CompareWith)]));
+                                                            for (int ds30 = 0; ds30 < info.Operators[i].S3.ValueInDB.Length; ds30++)//поищем такую страну по бд (S0)
+                                                            {
+                                                                t32 = comp(param3.Length, param3.All, info.Operators[i].S3.ValueInDB[ds30]);
+                                                                if (t31 == t32)//нашли такую страну по идее в бд и настройках
+                                                                {
+                                                                    t33 = comp(param3.Length, info.Operators[i].S3.Use, Convert.ToInt32(sr[3]));
+                                                                    for (int ds31 = 0; ds31 < info.Operators[i].S3.ValueInRadio.Length; ds31++)//поищем такого оператора по бд (S0)
+                                                                    {
+                                                                        t34 = comp(param3.Length, param3.All, info.Operators[i].S3.ValueInRadio[ds31]);
+                                                                        if (t33 == t34)//нашли оператора по идее
+                                                                        {
+                                                                            b3 = true;
+                                                                            break;
+                                                                        }
+                                                                    }
+                                                                    break;
+                                                                }
+                                                            }
+                                                        }
+                                                        else //сравниваем одно с другим лоб в лоб
+                                                        {
+                                                            t31 = comp(param3.Length, param3.All, Convert.ToInt32(sdb[ReturnInt(info.Operators[i].S3.CompareWith)]));
+                                                            t33 = comp(param3.Length, info.Operators[i].S3.Use, Convert.ToInt32(sr[3]));
+                                                            if (t31 == t33)//нашли оператора по идее
+                                                            {
+                                                                b3 = true;
+                                                                t33 = comp(param3.Length, info.Operators[i].S3.Use, Convert.ToInt32(sr[ReturnInt(info.Operators[i].S3.CompareWith)]));
+                                                            }
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        throw new Exception("unknown parameter " + info.Operators[i].S3.Name);
+                                                    }
+                                                }
+                                                else { b3 = true; }
+                                            }
                                         }
                                     }
-                                }
-                                if (b0 && b1 && b2 && b3)
-                                {
-                                    return true;
+                                    if (b0 && b1 && b2 && b3)
+                                    {
+                                        return true;
+                                    }
                                 }
                             }
                         }
                     }
+                    else
+                    {
+                        throw new Exception($"The GCIDFromDB({GCIDFromDB}) parameter does not have four groups of digits.");
+                    }
                 }
                 else
                 {
-                    throw new Exception($"The GCIDFromDB({GCIDFromDB}) parameter does not have four groups of digits.");
+                    throw new Exception($"The GCIDFromRadio({GCIDFromRadio}) parameter does not have four groups of digits.");
                 }
+                return false;
             }
-            else
+            catch (Exception)
             {
-                throw new Exception($"The GCIDFromRadio({GCIDFromRadio}) parameter does not have four groups of digits.");
+                return false;
             }
-            return false;
         }
 
         public static void Load()

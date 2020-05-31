@@ -56,5 +56,20 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc
                 MessageBox.Show(e.ToString());
             }
         }
+
+        public void OnRunCalibrationStationsResultCommand()
+        {
+            try
+            {
+                _viewStarter.Start<VM.StationCalibrationResult.View>(isModal: true, f=>f.ResultId = 10073);
+            }
+            catch (Exception e)
+            {
+                _logger.Exception((EventContext)"PluginMenuCommands", (EventCategory)"OnRunCalibrationStationsResultCommand", e);
+                MessageBox.Show(e.ToString());
+            }
+        }
+
+        
     }
 }

@@ -31,7 +31,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
 
         public float? CorrelationThresholdHard { get; set; }
         public float? CorrelationThresholdWeak { get; set; }
-        public float? TrustOldResults { get; set; }
+        public bool TrustOldResults { get; set; }
         public bool UseMeasurementSameGSID { get; set; }
         public int? DistanceAroundContour_km { get; set; }
         public int? MinNumberPointForCorrelation { get; set; }

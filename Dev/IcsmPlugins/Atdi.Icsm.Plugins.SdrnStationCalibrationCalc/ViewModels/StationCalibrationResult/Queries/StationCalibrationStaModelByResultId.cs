@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibrationResult.Queries
 {
-    public class StationCalibrationStaModelById
+    public class StationCalibrationStaModelByResultId
     {
-        public long Id;
+        public long ResultId;
     }
 }

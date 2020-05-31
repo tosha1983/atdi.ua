@@ -15,7 +15,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks
         long[] StationIds { get; set; }
         float? CorrelationThresholdHard { get; set; }
         float? CorrelationThresholdWeak { get; set; }
-        float? TrustOldResults { get; set; }
+        bool TrustOldResults { get; set; }
         bool UseMeasurementSameGSID { get; set; }
         int? DistanceAroundContour_km { get; set; }
         int? MinNumberPointForCorrelation { get; set; }

@@ -80,14 +80,17 @@
     <Compile Include="ViewModels\ManagementTasksCalibration\Adapters\ProjectDataAdapter.cs" />
     <Compile Include="ViewModels\ManagementTasksCalibration\Events\OnCreatedCalcTask.cs" />
     <Compile Include="ViewModels\ManagementTasksCalibration\Events\OnCreatedClientContext.cs" />
+    <Compile Include="ViewModels\ManagementTasksCalibration\Events\OnRunCalcTask.cs" />
     <Compile Include="ViewModels\ManagementTasksCalibration\Events\OnDeletedCalcTask.cs" />
     <Compile Include="ViewModels\ManagementTasksCalibration\Events\OnDeletedClientContext.cs" />
     <Compile Include="ViewModels\ManagementTasksCalibration\Events\OnEditedCalcTask.cs" />
     <Compile Include="ViewModels\ManagementTasksCalibration\Events\OnEditedClientContext.cs" />
+    <Compile Include="ViewModels\ManagementTasksCalibration\Models\CalcResultModel.cs" />
     <Compile Include="ViewModels\ManagementTasksCalibration\Models\CalcTaskModel.cs" />
     <Compile Include="ViewModels\ManagementTasksCalibration\Models\ClientContextModel.cs" />
     <Compile Include="ViewModels\ManagementTasksCalibration\Models\ProjectModel.cs" />
     <Compile Include="ViewModels\ManagementTasksCalibration\Modifiers\CreateCalcTask.cs" />
+    <Compile Include="ViewModels\ManagementTasksCalibration\Modifiers\RunCalcTaskHandler.cs" />
     <Compile Include="ViewModels\ManagementTasksCalibration\Modifiers\CreateCalcTaskHandler.cs" />
     <Compile Include="ViewModels\ManagementTasksCalibration\Modifiers\CreateClientContext.cs" />
     <Compile Include="ViewModels\ManagementTasksCalibration\Modifiers\CreateClientContextHandler.cs" />
@@ -95,11 +98,14 @@
     <Compile Include="ViewModels\ManagementTasksCalibration\Modifiers\DeleteCalcTaskHandler.cs" />
     <Compile Include="ViewModels\ManagementTasksCalibration\Modifiers\DeleteClientContext.cs" />
     <Compile Include="ViewModels\ManagementTasksCalibration\Modifiers\DeleteClientContextHandler.cs" />
+    <Compile Include="ViewModels\ManagementTasksCalibration\Modifiers\RunCalcTask.cs" />
     <Compile Include="ViewModels\ManagementTasksCalibration\Modifiers\EditCalcTask.cs" />
     <Compile Include="ViewModels\ManagementTasksCalibration\Modifiers\EditCalcTaskHandler.cs" />
     <Compile Include="ViewModels\ManagementTasksCalibration\Modifiers\EditClientContext.cs" />
     <Compile Include="ViewModels\ManagementTasksCalibration\Modifiers\EditClientContextHandler.cs" />
+    <Compile Include="ViewModels\ManagementTasksCalibration\Queries\GetCalcResultById.cs" />
     <Compile Include="ViewModels\ManagementTasksCalibration\Queries\GetCalcTaskById.cs" />
+    <Compile Include="ViewModels\ManagementTasksCalibration\Queries\GetCalcResultByIdExecutor.cs" />
     <Compile Include="ViewModels\ManagementTasksCalibration\Queries\GetCalcTaskByIdExecutor.cs" />
     <Compile Include="ViewModels\ManagementTasksCalibration\Queries\GetClientContextById.cs" />
     <Compile Include="ViewModels\ManagementTasksCalibration\Queries\GetClientContextByIdExecutor.cs" />
@@ -158,6 +164,8 @@
     <Compile Include="ViewModels\StationCalibrationResult\Models\StationCalibrationSta\StationCalibrationStaModel.cs" />
     <Compile Include="ViewModels\StationCalibrationResult\Queries\StationCalibrationDriveTestsModelById.cs" />
     <Compile Include="ViewModels\StationCalibrationResult\Queries\StationCalibrationDriveTestsModelByIdExecutor.cs" />
+    <Compile Include="ViewModels\StationCalibrationResult\Queries\StationCalibrationStaModelByResultId.cs" />
+    <Compile Include="ViewModels\StationCalibrationResult\Queries\StationCalibrationStaModelByResultIdExecutor.cs" />
     <Compile Include="ViewModels\StationCalibrationResult\Queries\StationCalibrationStaModelByIdExecutor.cs" />
     <Compile Include="ViewModels\StationCalibrationResult\Queries\StationCalibrationStaModelById.cs" />
     <Compile Include="ViewModels\StationCalibrationResult\Queries\RoutesStationMonitoringModelById.cs" />
@@ -172,6 +180,10 @@
     <ProjectReference Include="..\..\Contracts\Api\Atdi.Contracts.Api.EntityOrm.WebClient\Atdi.Contracts.Api.EntityOrm.WebClient.csproj">
       <Project>{a252d199-1162-484d-b50a-8c44a4edd670}</Project>
       <Name>Atdi.Contracts.Api.EntityOrm.WebClient</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeepServices.Gis\Atdi.Contracts.Sdrn.DeepServices.Gis.csproj">
+      <Project>{567b4c34-9ff5-4c05-9e7b-d1ed94eadaaf}</Project>
+      <Name>Atdi.Contracts.Sdrn.DeepServices.Gis</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeepServices.RadioSystem\Atdi.Contracts.Sdrn.DeepServices.RadioSystem.csproj">
       <Project>{d576643b-fcdb-4873-9f08-abcfbb5e9e8f}</Project>
@@ -188,6 +200,10 @@
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.CalcServer.Entities\Atdi.DataModels.Sdrn.CalcServer.Entities.csproj">
       <Project>{6a72e0c5-f8a4-412f-9395-13abe07367b1}</Project>
       <Name>Atdi.DataModels.Sdrn.CalcServer.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices.Gis\Atdi.DataModels.Sdrn.DeepServices.Gis.csproj">
+      <Project>{d83887b2-4444-4207-a703-c99b94a4c170}</Project>
+      <Name>Atdi.DataModels.Sdrn.DeepServices.Gis</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices.RadioSystem\Atdi.DataModels.Sdrn.DeepServices.RadioSystem.csproj">
       <Project>{c67fbe11-fef0-48ad-9912-61bf4c61db03}</Project>
