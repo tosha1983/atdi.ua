@@ -18,10 +18,15 @@ namespace Atdi.DataModels.Sdrn.CalcServer
 		/// </summary>
 		PointFieldStrengthCalc = 2,
 
-		/// <summary>
-		/// Первая тестовая расчетная задача
-		/// </summary>
-		FirstExampleTask = 101,
+        /// <summary>
+        /// Определение параметров станций по результатам измерений мобильной компоненты
+        /// </summary>
+        StationCalibrationCalcTask = 3,
+
+        /// <summary>
+        /// Первая тестовая расчетная задача
+        /// </summary>
+        FirstExampleTask = 101,
 
 		/// <summary>
 		/// Вторая тестовая расчетная задача
@@ -33,10 +38,6 @@ namespace Atdi.DataModels.Sdrn.CalcServer
 		/// </summary>
 		ThirdExampleTask = 103,
 
-        /// <summary>
-        /// Определение параметров станций по результатам измерений мобильной компоненты
-        /// </summary>
-        StationCalibrationCalcTask = 104
 
     }
 }
