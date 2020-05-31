@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Management;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
@@ -249,6 +250,16 @@ namespace Atdi.Modules.Licensing
         public static string EncodeYear(ushort year)
         {
             return Encryptor.EncryptStringAES(year.ToString(), key);
+        }
+
+        public static string GetHostKey()
+        {
+			var info = new StringBuilder();
+
+			var systemDrive = Environment.GetFolderPath(Environment.SpecialFolder.System).Substring(0, 1);
+			ManagementObject disk = new ManagementObject("win32_logicaldisk.deviceid=\"" + systemDrive + ":\"");
+
+			return info.ToString();
         }
     }
 }
