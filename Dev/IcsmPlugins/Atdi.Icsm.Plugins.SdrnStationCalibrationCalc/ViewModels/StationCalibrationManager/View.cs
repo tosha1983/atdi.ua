@@ -266,7 +266,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                 var polygons = new List<MP.MapDrawingDataPolygon>();
 
 
-                if (CurrentStationMonitoringModel != null)
+                if (this._currentStationMonitoringModel != null)
                 {
                     foreach (StationMonitoringModel model in this._currentStationMonitoringModel)
                     {

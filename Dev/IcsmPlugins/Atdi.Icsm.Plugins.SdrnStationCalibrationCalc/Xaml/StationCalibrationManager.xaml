@@ -252,8 +252,8 @@
                   <DataGridTextColumn Header="Date" Binding="{Binding Path=Date, StringFormat='{}{0:dd.MM.yyyy HH:mm}'}"></DataGridTextColumn>
                   <DataGridTextColumn Header="Sensor Name" Binding="{Binding Path=SensorName}"></DataGridTextColumn>
                   <DataGridTextColumn Header="Sensor Title" Binding="{Binding Path=SensorTitle}"></DataGridTextColumn>
-                  <DataGridTextColumn Header="Standards" Binding="{Binding Path=Standards}"></DataGridTextColumn>
-                  <DataGridTextColumn Header="CountByStandard" Binding="{Binding Path=CountByStandard}"></DataGridTextColumn>
+                  <DataGridTextColumn Header="Standards and Count" Binding="{Binding Path=StandardStats}"></DataGridTextColumn>
+                  <!--<DataGridTextColumn Header="CountByStandard" Binding="{Binding Path=CountByStandard}"></DataGridTextColumn>-->
                   <DataGridTextColumn Header="Count SID" Binding="{Binding Path=CountSID}"></DataGridTextColumn>
                   <DataGridTextColumn Header="Frequency min" Binding="{Binding Path=MinFreq_MHz}"></DataGridTextColumn>
                   <DataGridTextColumn Header="Frequency max" Binding="{Binding Path=MaxFreq_MHz}"></DataGridTextColumn>
