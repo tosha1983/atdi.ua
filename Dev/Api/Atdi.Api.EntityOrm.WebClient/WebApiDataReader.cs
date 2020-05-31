@@ -53,6 +53,11 @@ namespace Atdi.Api.EntityOrm.WebClient
 					return (TValue)value;
 				}
 
+				if (type == typeof(byte[]))
+				{
+					var bytes = Convert.FromBase64String(Convert.ToString(value));
+					return (TValue)(object)bytes;
+				}
 				if (type == typeof(byte) || type == typeof(byte?))
 				{
 					return (TValue)(object)Convert.ToByte(value);

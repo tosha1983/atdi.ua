@@ -9,6 +9,7 @@ using Atdi.Api.EntityOrm.WebClient;
 using Atdi.Test.Api.Sdrn.CalcServer.Client.Tasks;
 using DM = Atdi.DataModels.Sdrn.CalcServer.Entities;
 using Atdi.DataModels.Sdrn.Infocenter.Entities.Stations;
+using Atdi.DataModels.Sdrn.Infocenter.Entities.SdrnServer;
 
 namespace Atdi.Test.Api.Sdrn.CalcServer.Client
 {
@@ -104,17 +105,21 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client
 
 				var dataLayer = new WebApiDataLayer(endpoint, dataContext);
 
-				var query = dataLayer.GetBuilder<IGlobalIdentity>()
+				var query = dataLayer.GetBuilder<IStationMonitoringStats>()
 					.Read()
-					.Select(c => c.RegionCode)
-					.Select(c => c.LicenseGsid)
-					.Select(c => c.Standard)
-					.Select(c => c.RealGsid)
-					.Filter(c => c.Standard, "UMTS")
-					.Filter(c => c.LicenseGsid, "255 7 00000 1167")
-					.Filter(c => c.RegionCode, "Kiev12");
+					.Select(c => c.StandardStats)
+					.Select(c => c.GsidCount)
+					.Select(c => c.MaxFreq_MHz)
+					.Select(c => c.MinFreq_MHz)
+					.Filter(c => c.Id, 1);
 
 				var reader = dataLayer.Executor.ExecuteReader(query);
+				if (reader.Read())
+				{
+					var v1 = reader.GetValue(c => c.GsidCount);
+					var v2 = reader.GetValue(c => c.StandardStats);
+					var v3 = reader.GetValueAs<DriveTestStandardStats[]>(c => c.StandardStats);
+				}
 			}
 			catch (Exception e)
 			{

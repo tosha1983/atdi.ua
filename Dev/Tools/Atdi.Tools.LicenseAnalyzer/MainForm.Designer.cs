@@ -66,7 +66,6 @@
 			this.label8 = new System.Windows.Forms.Label();
 			this.txtNumber = new System.Windows.Forms.TextBox();
 			this.label9 = new System.Windows.Forms.Label();
-			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.cmbConfigType = new System.Windows.Forms.ComboBox();
 			this.label17 = new System.Windows.Forms.Label();
 			this.txtEncryptedPassword = new System.Windows.Forms.TextBox();
@@ -77,9 +76,17 @@
 			this.label13 = new System.Windows.Forms.Label();
 			this.txtEncryptedOwnerId = new System.Windows.Forms.TextBox();
 			this.label14 = new System.Windows.Forms.Label();
+			this.tabControl1 = new System.Windows.Forms.TabControl();
+			this.tabPage1 = new System.Windows.Forms.TabPage();
+			this.tabPage2 = new System.Windows.Forms.TabPage();
+			this.textBox1 = new System.Windows.Forms.TextBox();
+			this.button4 = new System.Windows.Forms.Button();
+			this.button5 = new System.Windows.Forms.Button();
 			this.groupBox1.SuspendLayout();
 			this.groupBox3.SuspendLayout();
-			this.groupBox2.SuspendLayout();
+			this.tabControl1.SuspendLayout();
+			this.tabPage1.SuspendLayout();
+			this.tabPage2.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// groupBox1
@@ -437,26 +444,6 @@
 			this.label9.TabIndex = 6;
 			this.label9.Text = "Number";
 			// 
-			// groupBox2
-			// 
-			this.groupBox2.Controls.Add(this.cmbConfigType);
-			this.groupBox2.Controls.Add(this.label17);
-			this.groupBox2.Controls.Add(this.txtEncryptedPassword);
-			this.groupBox2.Controls.Add(this.txtPassword);
-			this.groupBox2.Controls.Add(this.label16);
-			this.groupBox2.Controls.Add(this.button3);
-			this.groupBox2.Controls.Add(this.txtEncryptedProductKey);
-			this.groupBox2.Controls.Add(this.label13);
-			this.groupBox2.Controls.Add(this.txtEncryptedOwnerId);
-			this.groupBox2.Controls.Add(this.label14);
-			this.groupBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.groupBox2.Location = new System.Drawing.Point(12, 399);
-			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(479, 164);
-			this.groupBox2.TabIndex = 4;
-			this.groupBox2.TabStop = false;
-			this.groupBox2.Text = "Encrypted:";
-			// 
 			// cmbConfigType
 			// 
 			this.cmbConfigType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -470,7 +457,7 @@
             "ICS Control Client (Monitoring or other)",
             "SDRN Calc Server",
             "SDRN Infocentr Server"});
-			this.cmbConfigType.Location = new System.Drawing.Point(81, 27);
+			this.cmbConfigType.Location = new System.Drawing.Point(77, 17);
 			this.cmbConfigType.Name = "cmbConfigType";
 			this.cmbConfigType.Size = new System.Drawing.Size(303, 21);
 			this.cmbConfigType.TabIndex = 23;
@@ -479,7 +466,7 @@
 			// 
 			this.label17.AutoSize = true;
 			this.label17.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.label17.Location = new System.Drawing.Point(11, 30);
+			this.label17.Location = new System.Drawing.Point(7, 20);
 			this.label17.Name = "label17";
 			this.label17.Size = new System.Drawing.Size(60, 13);
 			this.label17.TabIndex = 22;
@@ -488,7 +475,7 @@
 			// txtEncryptedPassword
 			// 
 			this.txtEncryptedPassword.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.txtEncryptedPassword.Location = new System.Drawing.Point(81, 80);
+			this.txtEncryptedPassword.Location = new System.Drawing.Point(77, 70);
 			this.txtEncryptedPassword.Name = "txtEncryptedPassword";
 			this.txtEncryptedPassword.ReadOnly = true;
 			this.txtEncryptedPassword.Size = new System.Drawing.Size(377, 20);
@@ -497,7 +484,7 @@
 			// txtPassword
 			// 
 			this.txtPassword.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.txtPassword.Location = new System.Drawing.Point(81, 54);
+			this.txtPassword.Location = new System.Drawing.Point(77, 44);
 			this.txtPassword.Name = "txtPassword";
 			this.txtPassword.Size = new System.Drawing.Size(303, 20);
 			this.txtPassword.TabIndex = 19;
@@ -507,7 +494,7 @@
 			// 
 			this.label16.AutoSize = true;
 			this.label16.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.label16.Location = new System.Drawing.Point(10, 57);
+			this.label16.Location = new System.Drawing.Point(6, 47);
 			this.label16.Name = "label16";
 			this.label16.Size = new System.Drawing.Size(53, 13);
 			this.label16.TabIndex = 18;
@@ -515,7 +502,7 @@
 			// 
 			// button3
 			// 
-			this.button3.Location = new System.Drawing.Point(390, 24);
+			this.button3.Location = new System.Drawing.Point(386, 14);
 			this.button3.Name = "button3";
 			this.button3.Size = new System.Drawing.Size(75, 46);
 			this.button3.TabIndex = 17;
@@ -526,7 +513,7 @@
 			// txtEncryptedProductKey
 			// 
 			this.txtEncryptedProductKey.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.txtEncryptedProductKey.Location = new System.Drawing.Point(81, 132);
+			this.txtEncryptedProductKey.Location = new System.Drawing.Point(77, 122);
 			this.txtEncryptedProductKey.Name = "txtEncryptedProductKey";
 			this.txtEncryptedProductKey.ReadOnly = true;
 			this.txtEncryptedProductKey.Size = new System.Drawing.Size(377, 20);
@@ -536,7 +523,7 @@
 			// 
 			this.label13.AutoSize = true;
 			this.label13.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.label13.Location = new System.Drawing.Point(10, 135);
+			this.label13.Location = new System.Drawing.Point(6, 125);
 			this.label13.Name = "label13";
 			this.label13.Size = new System.Drawing.Size(65, 13);
 			this.label13.TabIndex = 15;
@@ -545,7 +532,7 @@
 			// txtEncryptedOwnerId
 			// 
 			this.txtEncryptedOwnerId.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.txtEncryptedOwnerId.Location = new System.Drawing.Point(81, 106);
+			this.txtEncryptedOwnerId.Location = new System.Drawing.Point(77, 96);
 			this.txtEncryptedOwnerId.Name = "txtEncryptedOwnerId";
 			this.txtEncryptedOwnerId.ReadOnly = true;
 			this.txtEncryptedOwnerId.Size = new System.Drawing.Size(377, 20);
@@ -555,18 +542,88 @@
 			// 
 			this.label14.AutoSize = true;
 			this.label14.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.label14.Location = new System.Drawing.Point(10, 109);
+			this.label14.Location = new System.Drawing.Point(6, 99);
 			this.label14.Name = "label14";
 			this.label14.Size = new System.Drawing.Size(52, 13);
 			this.label14.TabIndex = 13;
 			this.label14.Text = "Owner ID";
 			// 
+			// tabControl1
+			// 
+			this.tabControl1.Controls.Add(this.tabPage1);
+			this.tabControl1.Controls.Add(this.tabPage2);
+			this.tabControl1.Location = new System.Drawing.Point(12, 393);
+			this.tabControl1.Name = "tabControl1";
+			this.tabControl1.SelectedIndex = 0;
+			this.tabControl1.Size = new System.Drawing.Size(479, 188);
+			this.tabControl1.TabIndex = 5;
+			// 
+			// tabPage1
+			// 
+			this.tabPage1.Controls.Add(this.cmbConfigType);
+			this.tabPage1.Controls.Add(this.label17);
+			this.tabPage1.Controls.Add(this.label14);
+			this.tabPage1.Controls.Add(this.txtEncryptedPassword);
+			this.tabPage1.Controls.Add(this.txtEncryptedOwnerId);
+			this.tabPage1.Controls.Add(this.txtPassword);
+			this.tabPage1.Controls.Add(this.label13);
+			this.tabPage1.Controls.Add(this.label16);
+			this.tabPage1.Controls.Add(this.txtEncryptedProductKey);
+			this.tabPage1.Controls.Add(this.button3);
+			this.tabPage1.Location = new System.Drawing.Point(4, 22);
+			this.tabPage1.Name = "tabPage1";
+			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage1.Size = new System.Drawing.Size(471, 162);
+			this.tabPage1.TabIndex = 0;
+			this.tabPage1.Text = "Encrypted";
+			this.tabPage1.UseVisualStyleBackColor = true;
+			// 
+			// tabPage2
+			// 
+			this.tabPage2.Controls.Add(this.button5);
+			this.tabPage2.Controls.Add(this.button4);
+			this.tabPage2.Controls.Add(this.textBox1);
+			this.tabPage2.Location = new System.Drawing.Point(4, 22);
+			this.tabPage2.Name = "tabPage2";
+			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage2.Size = new System.Drawing.Size(471, 162);
+			this.tabPage2.TabIndex = 1;
+			this.tabPage2.Text = "Host Key";
+			this.tabPage2.UseVisualStyleBackColor = true;
+			// 
+			// textBox1
+			// 
+			this.textBox1.Location = new System.Drawing.Point(6, 6);
+			this.textBox1.Multiline = true;
+			this.textBox1.Name = "textBox1";
+			this.textBox1.ReadOnly = true;
+			this.textBox1.Size = new System.Drawing.Size(370, 150);
+			this.textBox1.TabIndex = 0;
+			// 
+			// button4
+			// 
+			this.button4.Location = new System.Drawing.Point(389, 6);
+			this.button4.Name = "button4";
+			this.button4.Size = new System.Drawing.Size(75, 46);
+			this.button4.TabIndex = 18;
+			this.button4.Text = "Generate";
+			this.button4.UseVisualStyleBackColor = true;
+			// 
+			// button5
+			// 
+			this.button5.Location = new System.Drawing.Point(389, 58);
+			this.button5.Name = "button5";
+			this.button5.Size = new System.Drawing.Size(75, 46);
+			this.button5.TabIndex = 19;
+			this.button5.Text = "Copy";
+			this.button5.UseVisualStyleBackColor = true;
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(503, 574);
-			this.Controls.Add(this.groupBox2);
+			this.ClientSize = new System.Drawing.Size(503, 593);
+			this.Controls.Add(this.tabControl1);
 			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.groupBox1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -579,8 +636,11 @@
 			this.groupBox1.PerformLayout();
 			this.groupBox3.ResumeLayout(false);
 			this.groupBox3.PerformLayout();
-			this.groupBox2.ResumeLayout(false);
-			this.groupBox2.PerformLayout();
+			this.tabControl1.ResumeLayout(false);
+			this.tabPage1.ResumeLayout(false);
+			this.tabPage1.PerformLayout();
+			this.tabPage2.ResumeLayout(false);
+			this.tabPage2.PerformLayout();
 			this.ResumeLayout(false);
 
         }
@@ -617,7 +677,6 @@
         private System.Windows.Forms.TextBox txtNumber;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label15;
-        private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.TextBox txtEncryptedProductKey;
         private System.Windows.Forms.Label label13;
@@ -636,6 +695,12 @@
         private System.Windows.Forms.Label label20;
         private System.Windows.Forms.TextBox txtAssembly;
         private System.Windows.Forms.Label label21;
-    }
+		private System.Windows.Forms.TabControl tabControl1;
+		private System.Windows.Forms.TabPage tabPage1;
+		private System.Windows.Forms.TabPage tabPage2;
+		private System.Windows.Forms.Button button5;
+		private System.Windows.Forms.Button button4;
+		private System.Windows.Forms.TextBox textBox1;
+	}
 }
 
