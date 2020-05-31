@@ -86,7 +86,12 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 		/// <summary>
 		/// Треться тестовая расчетная задачи
 		/// </summary>
-		ThirdExampleTask = 103
+		ThirdExampleTask = 103,
 
-	}
+        /// <summary>
+        /// Определение параметров станций по результатам измерений мобильной компоненты
+        /// </summary>
+        StationCalibrationCalcTask = 104
+
+    }
 }

@@ -40,6 +40,9 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
         public ViewCommand TaskAddCommand { get; set; }
         public ViewCommand TaskModifyCommand { get; set; }
         public ViewCommand TaskDeleteCommand { get; set; }
+        public ViewCommand TaskStartCalcCommand { get; set; }
+        public ViewCommand TaskShowResultCommand { get; set; }
+
 
         public ProjectDataAdapter Projects { get; set; }
         public BaseClientContextDataAdapter BaseClientContexts { get; set; }
@@ -52,6 +55,9 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
         private IEventHandlerToken<Events.OnCreatedCalcTask> _onCreatedCalcTaskToken;
         private IEventHandlerToken<Events.OnEditedCalcTask> _onEditedCalcTaskToken;
         private IEventHandlerToken<Events.OnDeletedCalcTask> _onDeletedCalcTaskToken;
+        private IEventHandlerToken<Events.OnRunCalcTask> _onOnRunCalcTaskToken;
+
+
 
         public View(
             ProjectDataAdapter projectDataAdapter,
@@ -77,6 +83,9 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
             this.TaskAddCommand = new ViewCommand(this.OnTaskAddCommand);
             this.TaskModifyCommand = new ViewCommand(this.OnTaskModifyCommand);
             this.TaskDeleteCommand = new ViewCommand(this.OnTaskDeleteCommand);
+
+            this.TaskStartCalcCommand = new ViewCommand(this.OnTaskStartCalcCommand);
+            this.TaskShowResultCommand = new ViewCommand(this.OnTaskShowResultCommand);
 
             this.CurrentClientContextCard = new ClientContextModel();
             this.CurrentCalcTaskCard = new CalcTaskModel();
@@ -300,6 +309,51 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
                 MessageBox.Show(e.ToString());
             }
         }
+        private void OnTaskStartCalcCommand(object parameter)
+        {
+            try
+            {
+                if (TaskStartCalcCommand == null)
+                    return;
+
+                _onOnRunCalcTaskToken = _eventBus.Subscribe<Events.OnRunCalcTask>(this.OnRunCalcTaskHandle);
+
+                var modifier = new Modifiers.RunCalcTask
+                {
+                    Id = CurrentCalcTask.Id
+                };
+
+                _commandDispatcher.Send(modifier);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString());
+            }
+        }
+
+        private void OnTaskShowResultCommand(object parameter)
+        {
+            try
+            {
+                if (TaskShowResultCommand == null)
+                    return;
+
+                var resultModel = _objectReader.Read<CalcResultModel>().By(new GetCalcResultById { Id = CurrentCalcTask.Id });
+                if (resultModel != null)
+                {
+                    _starter.Start<VM.StationCalibrationResult.View>(isModal: true, f => { f.ResultId = resultModel.Id; });
+                }
+                else
+                {
+                    MessageBox.Show("For selected task not found information in ICalcResults!");
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString());
+            }
+        }
+
         private void OnCreatedClientContextHandle(Events.OnCreatedClientContext data)
         {
             ReloadClientContext();
@@ -322,6 +376,10 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
             ReloadCalcTask();
         }
         private void OnDeletedCalcTaskHandle(Events.OnDeletedCalcTask data)
+        {
+            ReloadCalcTask();
+        }
+        private void OnRunCalcTaskHandle(Events.OnRunCalcTask data)
         {
             ReloadCalcTask();
         }

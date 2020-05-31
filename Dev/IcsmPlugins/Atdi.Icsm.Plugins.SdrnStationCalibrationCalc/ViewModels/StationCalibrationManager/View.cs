@@ -36,6 +36,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
 
         private long _taskId;
 
+        private readonly ViewStarter _viewStarter;
         private MP.MapDrawingData _currentMapData;
         private IList _currentAreas;
 
@@ -55,7 +56,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
         private ParamsCalculationModel _currentParamsCalculationModel;
         private IList _currentStationMonitoringModel;
         private GetStationsParamsModel _currentGetStationsParameters;
-
+       
 
 
         private AreasDataAdapter AreasDataAdapter;
@@ -70,6 +71,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
 
 
         public View(
+            ViewStarter viewStarter,
             CalcServerDataLayer dataLayer,
             ParametersDataAdapter parametersDataAdapter,
             StationMonitoringDataAdapter stationMonitoringDataAdapter,
@@ -85,6 +87,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             _starter = starter;
             _eventBus = eventBus;
             _logger = logger;
+            _viewStarter = viewStarter;
 
 
             this._dataLayer = dataLayer;
@@ -635,6 +638,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             {
                 System.Windows.MessageBox.Show("No stations with suitable parameters!");
             }
+            _viewStarter.Stop(this);
         }
 
     }

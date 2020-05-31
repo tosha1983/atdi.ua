@@ -54,6 +54,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             return new StationCalibrationStaModel
             {
                 Id = reader.GetValue(c => c.Id),
+                ResultId = reader.GetValue(c => c.CalibrationResultId),
                 LicenseGsid = reader.GetValue(c => c.LicenseGsid),
                 ExternalSource = reader.GetValue(c => c.ExternalSource),
                 ExternalCode  = reader.GetValue(c => c.ExternalCode),

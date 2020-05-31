@@ -12,17 +12,17 @@ using Atdi.DataModels.Sdrn.Infocenter.Entities.SdrnServer;
 
 namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibrationResult.Queries
 {
-    public class StationCalibrationStaModelByIdExecutor : IReadQueryExecutor<StationCalibrationStaModelById, StationCalibrationStaModel[]>
+    public class StationCalibrationStaModelByResultIdExecutor : IReadQueryExecutor<StationCalibrationStaModelByResultId, StationCalibrationStaModel[]>
     {
         private readonly AppComponentConfig _config;
         private readonly CalcServerDataLayer _dataLayer;
 
-        public StationCalibrationStaModelByIdExecutor(AppComponentConfig config, CalcServerDataLayer dataLayer)
+        public StationCalibrationStaModelByResultIdExecutor(AppComponentConfig config, CalcServerDataLayer dataLayer)
         {
             _config = config;
             _dataLayer = dataLayer;
         }
-        public StationCalibrationStaModel[] Read(StationCalibrationStaModelById criterion)
+        public StationCalibrationStaModel[] Read(StationCalibrationStaModelByResultId criterion)
         {
             var listStationCalibrationStaModel = new List<StationCalibrationStaModel>();
 
@@ -52,7 +52,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                  c => c.Old_Power_dB,
                  c => c.Old_Tilt_deg,
                  c => c.StationMonitoringId
-             ).Filter(f => f.Id, DataModels.Api.EntityOrm.WebClient.FilterOperator.Equal, criterion.Id);
+             ).Filter(f => f.CalibrationResultId, DataModels.Api.EntityOrm.WebClient.FilterOperator.Equal, criterion.ResultId);
 
             var reader = _dataLayer.Executor.ExecuteReader(query);
             while (reader.Read())
