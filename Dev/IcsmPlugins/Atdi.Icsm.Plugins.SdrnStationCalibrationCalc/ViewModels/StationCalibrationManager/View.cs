@@ -259,168 +259,176 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
 
         private void RedrawMap()
         {
-            var data = new MP.MapDrawingData();
-            var points = new List<MP.MapDrawingDataPoint>();
-            var polygons = new List<MP.MapDrawingDataPolygon>();
-
-
-            if (CurrentStationMonitoringModel != null)
+            try
             {
-                foreach (StationMonitoringModel model in this._currentStationMonitoringModel)
+                var data = new MP.MapDrawingData();
+                var points = new List<MP.MapDrawingDataPoint>();
+                var polygons = new List<MP.MapDrawingDataPolygon>();
+
+
+                if (CurrentStationMonitoringModel != null)
                 {
-                    var routes = GetRoutesByIdStationMonitoring(model.Id);
-                    for (int i = 0; i < routes.Length; i++)
+                    foreach (StationMonitoringModel model in this._currentStationMonitoringModel)
                     {
-                        points.Add(new MP.MapDrawingDataPoint()
+                        var routes = GetRoutesByIdStationMonitoring(model.Id);
+                        for (int i = 0; i < routes.Length; i++)
                         {
-                            Location = new MP.Location()
+                            points.Add(new MP.MapDrawingDataPoint()
                             {
-                                Lat = routes[i].Latitude,
-                                Lon = routes[i].Longitude
-                            },
-                            Color = System.Windows.Media.Brushes.Green,
-                            Fill = System.Windows.Media.Brushes.ForestGreen,
-                            Opacity = 0.85,
-                            Width = 10,
-                            Height = 10
-                        });
-                    }
-                }
-            }
-
-            if (this._currentAreas != null)
-                foreach (AreaModel area in this._currentAreas)
-                {
-                    if (area.Location != null)
-                    {
-                        var dataLocationModels = new DataLocationModel[area.Location.Length];
-                        for (int i=0;i< area.Location.Length; i++)
-                        {
-                            dataLocationModels[i] = new DataLocationModel()
-                            {
-                                Longitude = ICSM.IMPosition.Dms2Dec(area.Location[i].Longitude),
-                                Latitude = ICSM.IMPosition.Dms2Dec(area.Location[i].Latitude)
-                            };
-
-                        }
-
-                        var polygonPoints = new List<MP.Location>();
-                        var polygonPointsAnother = new List<MP.Location>();
-                        var lX = new List<double>();
-                        var lY = new List<double>();
-                        var minX = dataLocationModels.Select(x => x.Longitude).Min();
-                        var maxX = dataLocationModels.Select(x => x.Longitude).Max();
-                        var minY = dataLocationModels.Select(x => x.Latitude).Min();
-                        var maxY = dataLocationModels.Select(x => x.Latitude).Max();
-
-
-                        var valX1 = CalcCoordinateDistance(minX, maxY, -CurrentParamsCalculation.DistanceAroundContour_km.Value, TypeCoord.RecalcLongitude);
-                        var valY1 = CalcCoordinateDistance(minX, maxY, CurrentParamsCalculation.DistanceAroundContour_km.Value, TypeCoord.RecalcLatitude);
-
-                        var valX2 = CalcCoordinateDistance(maxX, maxY, CurrentParamsCalculation.DistanceAroundContour_km.Value, TypeCoord.RecalcLongitude);
-                        var valY2 = CalcCoordinateDistance(maxX, maxY, CurrentParamsCalculation.DistanceAroundContour_km.Value, TypeCoord.RecalcLatitude);
-
-                        var valX3 = CalcCoordinateDistance(maxX, minY, CurrentParamsCalculation.DistanceAroundContour_km.Value, TypeCoord.RecalcLongitude);
-                        var valY3 = CalcCoordinateDistance(maxX, minY, -CurrentParamsCalculation.DistanceAroundContour_km.Value, TypeCoord.RecalcLatitude);
-
-                        var valX4 = CalcCoordinateDistance(minX, minY, -CurrentParamsCalculation.DistanceAroundContour_km.Value, TypeCoord.RecalcLongitude);
-                        var valY4 = CalcCoordinateDistance(minX, minY, -CurrentParamsCalculation.DistanceAroundContour_km.Value, TypeCoord.RecalcLatitude);
-
-
-                        lX.Add(valX1.Longitude);
-                        lX.Add(valY1.Longitude);
-                        lX.Add(valX2.Longitude);
-                        lX.Add(valY2.Longitude);
-                        lX.Add(valX3.Longitude);
-                        lX.Add(valY3.Longitude);
-                        lX.Add(valX4.Longitude);
-                        lX.Add(valY4.Longitude);
-
-
-                        lY.Add(valX1.Latitude);
-                        lY.Add(valY1.Latitude);
-                        lY.Add(valX2.Latitude);
-                        lY.Add(valY2.Latitude);
-                        lY.Add(valX3.Latitude);
-                        lY.Add(valY3.Latitude);
-                        lY.Add(valX4.Latitude);
-                        lY.Add(valY4.Latitude);
-
-                        area.ExternalContour = new DataLocationModel[4];
-                        area.ExternalContour[0] = new DataLocationModel()
-                        {
-                            Longitude = lX.Min(),
-                            Latitude = lY.Max()
-                        };
-                        area.ExternalContour[1] = new DataLocationModel()
-                        {
-                            Longitude = lX.Max(),
-                            Latitude = lY.Max()
-                        };
-                        area.ExternalContour[2] = new DataLocationModel()
-                        {
-                            Longitude = lX.Max(),
-                            Latitude = lY.Min()
-                        };
-                        area.ExternalContour[3] = new DataLocationModel()
-                        {
-                            Longitude = lX.Min(),
-                            Latitude = lY.Min()
-                        };
-
-
-                        polygonPointsAnother.Add(new MP.Location()
-                        {
-                            Lon = lX.Min(),
-                            Lat = lY.Max()
-                        });
-
-                        polygonPointsAnother.Add(new MP.Location()
-                        {
-                            Lon = lX.Max(),
-                            Lat = lY.Max()
-                        });
-
-                        polygonPointsAnother.Add(new MP.Location()
-                        {
-                            Lon = lX.Max(),
-                            Lat = lY.Min()
-                        });
-
-                        polygonPointsAnother.Add(new MP.Location()
-                        {
-                            Lon = lX.Min(),
-                            Lat = lY.Min()
-                        });
-
-
-
-                        polygons.Add(new MP.MapDrawingDataPolygon()
-                        {
-                            Points = polygonPointsAnother.ToArray(),
-                            Color = System.Windows.Media.Colors.Aqua,
-                            Fill = System.Windows.Media.Colors.Aqua
-                        });
-
-                        foreach (var point in dataLocationModels)
-                        {
-                            polygonPoints.Add(new MP.Location()
-                            {
-                                Lon = point.Longitude,
-                                Lat = point.Latitude
+                                Location = new MP.Location()
+                                {
+                                    Lat = routes[i].Latitude,
+                                    Lon = routes[i].Longitude
+                                },
+                                Color = System.Windows.Media.Brushes.Green,
+                                Fill = System.Windows.Media.Brushes.ForestGreen,
+                                Opacity = 0.85,
+                                Width = 10,
+                                Height = 10
                             });
                         }
-                        polygons.Add(new MP.MapDrawingDataPolygon() {
-                            Points = polygonPoints.ToArray(),
-                            Color = System.Windows.Media.Colors.Red,
-                            Fill = System.Windows.Media.Colors.Red
-                        });
                     }
                 }
 
-            data.Polygons = polygons.ToArray();
-            data.Points = points.ToArray();
-            this.CurrentMapData = data;
+                if (this._currentAreas != null)
+                    foreach (AreaModel area in this._currentAreas)
+                    {
+                        if (area.Location != null)
+                        {
+                            var dataLocationModels = new DataLocationModel[area.Location.Length];
+                            for (int i = 0; i < area.Location.Length; i++)
+                            {
+                                dataLocationModels[i] = new DataLocationModel()
+                                {
+                                    Longitude = ICSM.IMPosition.Dms2Dec(area.Location[i].Longitude),
+                                    Latitude = ICSM.IMPosition.Dms2Dec(area.Location[i].Latitude)
+                                };
+
+                            }
+
+                            var polygonPoints = new List<MP.Location>();
+                            var polygonPointsAnother = new List<MP.Location>();
+                            var lX = new List<double>();
+                            var lY = new List<double>();
+                            var minX = dataLocationModels.Select(x => x.Longitude).Min();
+                            var maxX = dataLocationModels.Select(x => x.Longitude).Max();
+                            var minY = dataLocationModels.Select(x => x.Latitude).Min();
+                            var maxY = dataLocationModels.Select(x => x.Latitude).Max();
+
+
+                            var valX1 = CalcCoordinateDistance(minX, maxY, -CurrentParamsCalculation.DistanceAroundContour_km.Value, TypeCoord.RecalcLongitude);
+                            var valY1 = CalcCoordinateDistance(minX, maxY, CurrentParamsCalculation.DistanceAroundContour_km.Value, TypeCoord.RecalcLatitude);
+
+                            var valX2 = CalcCoordinateDistance(maxX, maxY, CurrentParamsCalculation.DistanceAroundContour_km.Value, TypeCoord.RecalcLongitude);
+                            var valY2 = CalcCoordinateDistance(maxX, maxY, CurrentParamsCalculation.DistanceAroundContour_km.Value, TypeCoord.RecalcLatitude);
+
+                            var valX3 = CalcCoordinateDistance(maxX, minY, CurrentParamsCalculation.DistanceAroundContour_km.Value, TypeCoord.RecalcLongitude);
+                            var valY3 = CalcCoordinateDistance(maxX, minY, -CurrentParamsCalculation.DistanceAroundContour_km.Value, TypeCoord.RecalcLatitude);
+
+                            var valX4 = CalcCoordinateDistance(minX, minY, -CurrentParamsCalculation.DistanceAroundContour_km.Value, TypeCoord.RecalcLongitude);
+                            var valY4 = CalcCoordinateDistance(minX, minY, -CurrentParamsCalculation.DistanceAroundContour_km.Value, TypeCoord.RecalcLatitude);
+
+
+                            lX.Add(valX1.Longitude);
+                            lX.Add(valY1.Longitude);
+                            lX.Add(valX2.Longitude);
+                            lX.Add(valY2.Longitude);
+                            lX.Add(valX3.Longitude);
+                            lX.Add(valY3.Longitude);
+                            lX.Add(valX4.Longitude);
+                            lX.Add(valY4.Longitude);
+
+
+                            lY.Add(valX1.Latitude);
+                            lY.Add(valY1.Latitude);
+                            lY.Add(valX2.Latitude);
+                            lY.Add(valY2.Latitude);
+                            lY.Add(valX3.Latitude);
+                            lY.Add(valY3.Latitude);
+                            lY.Add(valX4.Latitude);
+                            lY.Add(valY4.Latitude);
+
+                            area.ExternalContour = new DataLocationModel[4];
+                            area.ExternalContour[0] = new DataLocationModel()
+                            {
+                                Longitude = lX.Min(),
+                                Latitude = lY.Max()
+                            };
+                            area.ExternalContour[1] = new DataLocationModel()
+                            {
+                                Longitude = lX.Max(),
+                                Latitude = lY.Max()
+                            };
+                            area.ExternalContour[2] = new DataLocationModel()
+                            {
+                                Longitude = lX.Max(),
+                                Latitude = lY.Min()
+                            };
+                            area.ExternalContour[3] = new DataLocationModel()
+                            {
+                                Longitude = lX.Min(),
+                                Latitude = lY.Min()
+                            };
+
+
+                            polygonPointsAnother.Add(new MP.Location()
+                            {
+                                Lon = lX.Min(),
+                                Lat = lY.Max()
+                            });
+
+                            polygonPointsAnother.Add(new MP.Location()
+                            {
+                                Lon = lX.Max(),
+                                Lat = lY.Max()
+                            });
+
+                            polygonPointsAnother.Add(new MP.Location()
+                            {
+                                Lon = lX.Max(),
+                                Lat = lY.Min()
+                            });
+
+                            polygonPointsAnother.Add(new MP.Location()
+                            {
+                                Lon = lX.Min(),
+                                Lat = lY.Min()
+                            });
+
+
+
+                            polygons.Add(new MP.MapDrawingDataPolygon()
+                            {
+                                Points = polygonPointsAnother.ToArray(),
+                                Color = System.Windows.Media.Colors.Aqua,
+                                Fill = System.Windows.Media.Colors.Aqua
+                            });
+
+                            foreach (var point in dataLocationModels)
+                            {
+                                polygonPoints.Add(new MP.Location()
+                                {
+                                    Lon = point.Longitude,
+                                    Lat = point.Latitude
+                                });
+                            }
+                            polygons.Add(new MP.MapDrawingDataPolygon()
+                            {
+                                Points = polygonPoints.ToArray(),
+                                Color = System.Windows.Media.Colors.Red,
+                                Fill = System.Windows.Media.Colors.Red
+                            });
+                        }
+                    }
+
+                data.Polygons = polygons.ToArray();
+                data.Points = points.ToArray();
+                this.CurrentMapData = data;
+            }
+            catch (Exception e)
+            {
+                this._logger.Exception(Exceptions.StationCalibrationCalculation, e);
+            }
         }
 
         public DateTime? DateStartLoadDriveTest
@@ -545,12 +553,20 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
 
         public RoutesStationMonitoringModel[] GetRoutesByIdStationMonitoring(long Id)
         {
-            var resRoutes = _objectReader
+            RoutesStationMonitoringModel[] resRoutes = null;
+            try
+            {
+                 resRoutes = _objectReader
                 .Read<RoutesStationMonitoringModel[]>()
                 .By(new RoutesStationMonitoringModelById()
                 {
                     Id = Id
                 });
+            }
+            catch (Exception e)
+            {
+                this._logger.Exception(Exceptions.StationCalibrationCalculation, e);
+            }
             return resRoutes;
         }
 
@@ -558,9 +574,16 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
 
         private void ReloadData()
         {
-            this.DateStartLoadDriveTest = DateTime.Now.AddDays(-30);
-            this.DateStopLoadDriveTest = DateTime.Now;
-            this.AreasDataAdapter.Refresh();
+            try
+            {
+                this.DateStartLoadDriveTest = DateTime.Now.AddDays(-30);
+                this.DateStopLoadDriveTest = DateTime.Now;
+                this.AreasDataAdapter.Refresh();
+            }
+            catch (Exception e)
+            {
+                this._logger.Exception(Exceptions.StationCalibrationCalculation, e);
+            }
         }
 
 
@@ -573,72 +596,86 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
 
         private void OnLoadDriveTestsCommand(object parameter)
         {
-            this.StationMonitoringDataAdapter.StartDateTime = this.DateStartLoadDriveTest.Value;
-            this.StationMonitoringDataAdapter.StopDateTime = this.DateStopLoadDriveTest.Value;
-            this.StationMonitoringDataAdapter.Refresh();
+            try
+            {
+                this.StationMonitoringDataAdapter.StartDateTime = this.DateStartLoadDriveTest.Value;
+                this.StationMonitoringDataAdapter.StopDateTime = this.DateStopLoadDriveTest.Value;
+                this.StationMonitoringDataAdapter.Refresh();
+            }
+            catch (Exception e)
+            {
+                this._logger.Exception(Exceptions.StationCalibrationCalculation, e);
+            }
         }
 
         private void OnStartStationCalibrationCommand(object parameter)
         {
 
-            if (((CurrentAreas!=null) && (CurrentAreas.Count == 0))  || (CurrentAreas==null))
+            try
             {
-                System.Windows.Forms.MessageBox.Show("Please select area!");
-                return;
-            }
-            if ((CurrentParamsCalculation.DistanceAroundContour_km == null) || ((CurrentParamsCalculation.DistanceAroundContour_km !=null) && (CurrentParamsCalculation.DistanceAroundContour_km ==0)))
-            {
-                System.Windows.Forms.MessageBox.Show("Please fill parameter 'DistanceAroundContour_km'");
-                return;
-            }
-            if (string.IsNullOrEmpty(GetStationsParams.StateForActiveStation))
-            {
-                System.Windows.Forms.MessageBox.Show("Please fill 'StateForActiveStation'");
-                return;
-            }
-            if (string.IsNullOrEmpty(GetStationsParams.StateForNotActiveStation))
-            {
-                System.Windows.Forms.MessageBox.Show("Please fill 'StateForNotActiveStation'");
-                return;
-            }
-            if ((GetStationsParams.Id == null) && (SelectedStationTypeVal== SelectedStationType.OneStation))
-            {
-                System.Windows.Forms.MessageBox.Show("Please fill 'Id'");
-                return;
-            }
-            if (string.IsNullOrEmpty(GetStationsParams.Standard))
-            {
-                System.Windows.Forms.MessageBox.Show("Please fill 'Standard'");
-                return;
-            }
-            if ((CurrentStationMonitoringModel==null) || ((CurrentStationMonitoringModel !=null) && (CurrentStationMonitoringModel.Count==0)))
-            {
-                System.Windows.Forms.MessageBox.Show("Please select 'Drive tests'");
-                return;
-            }
-
-
-            var stations = ReadStations();
-            if (stations.Length > 0)
-            {
-                var listStationMonitoringModel = new List<long>();
-                foreach (StationMonitoringModel x in CurrentStationMonitoringModel)
+                if (((CurrentAreas != null) && (CurrentAreas.Count == 0)) || (CurrentAreas == null))
                 {
-                    listStationMonitoringModel.Add(x.Id);
+                    System.Windows.Forms.MessageBox.Show("Please select area!");
+                    return;
+                }
+                if ((CurrentParamsCalculation.DistanceAroundContour_km == null) || ((CurrentParamsCalculation.DistanceAroundContour_km != null) && (CurrentParamsCalculation.DistanceAroundContour_km == 0)))
+                {
+                    System.Windows.Forms.MessageBox.Show("Please fill parameter 'DistanceAroundContour_km'");
+                    return;
+                }
+                if (string.IsNullOrEmpty(GetStationsParams.StateForActiveStation))
+                {
+                    System.Windows.Forms.MessageBox.Show("Please fill 'StateForActiveStation'");
+                    return;
+                }
+                if (string.IsNullOrEmpty(GetStationsParams.StateForNotActiveStation))
+                {
+                    System.Windows.Forms.MessageBox.Show("Please fill 'StateForNotActiveStation'");
+                    return;
+                }
+                if ((GetStationsParams.Id == null) && (SelectedStationTypeVal == SelectedStationType.OneStation))
+                {
+                    System.Windows.Forms.MessageBox.Show("Please fill 'Id'");
+                    return;
+                }
+                if (string.IsNullOrEmpty(GetStationsParams.Standard))
+                {
+                    System.Windows.Forms.MessageBox.Show("Please fill 'Standard'");
+                    return;
+                }
+                if ((CurrentStationMonitoringModel == null) || ((CurrentStationMonitoringModel != null) && (CurrentStationMonitoringModel.Count == 0)))
+                {
+                    System.Windows.Forms.MessageBox.Show("Please select 'Drive tests'");
+                    return;
                 }
 
-                this._currentParamsCalculationModel.InfocMeasResults = listStationMonitoringModel.ToArray();
-                this._currentParamsCalculationModel.StationIds = stations.Select(x => Convert.ToInt64(x.ExternalCode)).ToArray();
-                StationCalibrationCalcTask.SaveTask(this._dataLayer.Origin, this._dataLayer.Executor, stations, this._currentParamsCalculationModel, TaskId);
-                //StationCalibrationCalcTask.RunTask(this._dataLayer.Origin, this._dataLayer.Executor, TaskId);
 
-                System.Windows.MessageBox.Show($"Task saved with {this._currentParamsCalculationModel.StationIds.Length} stations and {CurrentStationMonitoringModel.Count} drive tests");
+                var stations = ReadStations();
+                if (stations.Length > 0)
+                {
+                    var listStationMonitoringModel = new List<long>();
+                    foreach (StationMonitoringModel x in CurrentStationMonitoringModel)
+                    {
+                        listStationMonitoringModel.Add(x.Id);
+                    }
+
+                    this._currentParamsCalculationModel.InfocMeasResults = listStationMonitoringModel.ToArray();
+                    this._currentParamsCalculationModel.StationIds = stations.Select(x => Convert.ToInt64(x.ExternalCode)).ToArray();
+                    StationCalibrationCalcTask.SaveTask(this._dataLayer.Origin, this._dataLayer.Executor, stations, this._currentParamsCalculationModel, TaskId);
+                    //StationCalibrationCalcTask.RunTask(this._dataLayer.Origin, this._dataLayer.Executor, TaskId);
+
+                    System.Windows.MessageBox.Show($"Task saved with {this._currentParamsCalculationModel.StationIds.Length} stations and {CurrentStationMonitoringModel.Count} drive tests");
+                }
+                else
+                {
+                    System.Windows.MessageBox.Show("No stations with suitable parameters!");
+                }
+                _viewStarter.Stop(this);
             }
-            else
+            catch (Exception e)
             {
-                System.Windows.MessageBox.Show("No stations with suitable parameters!");
+                this._logger.Exception(Exceptions.StationCalibrationCalculation, e);
             }
-            _viewStarter.Stop(this);
         }
 
     }
