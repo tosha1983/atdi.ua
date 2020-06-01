@@ -211,9 +211,9 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy "$(TargetDir)XICSM_SdrnCalcServerClient.dll" "C:\ATDI\ICS Manager"
-copy "$(TargetDir)Atdi.*.dll"    "C:\ATDI\ICS Manager"
-copy "$(TargetDir)ru-RU\*.*"   "C:\ATDI\ICS Manager\ru-RU"
-copy "$(TargetDir)uk-UA\*.*"  "C:\ATDI\ICS Manager\uk-UA"
+copy "$(TargetDir)Atdi.*.dll"    "C:\ATDI\ICS ManagerCalcServer"
+copy "$(TargetDir)ru-RU\*.*"   "C:\ATDI\ICS ManagerCalcServer\ru-RU"
+copy "$(TargetDir)uk-UA\*.*"  "C:\ATDI\ICS ManagerCalcServer\uk-UA"
 </PostBuildEvent>
   </PropertyGroup>
 </Project>
