@@ -31,7 +31,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
                 .SetValue(c => c.OwnerTaskId, command.OwnerId)
                 .SetValue(c => c.OwnerInstance, _config.Instance)
                 .SetValue(c => c.MapName, command.MapName)
-                .SetValue(c => c.TypeCode, 104)
+                .SetValue(c => c.TypeCode, (byte)CalcTaskTypeCode.StationCalibrationCalcTask)
                 .SetValue(c => c.TypeName, "StationCalibrationCalcTask")
                 .SetValue(c => c.StatusCode, (byte)CalcTaskStatusCode.Created)
                 .SetValue(c => c.StatusName, "Created");
