@@ -271,21 +271,24 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                     foreach (StationMonitoringModel model in this._currentStationMonitoringModel)
                     {
                         var routes = GetRoutesByIdStationMonitoring(model.Id);
-                        for (int i = 0; i < routes.Length; i++)
+                        if ((routes != null) && (routes.Length > 0))
                         {
-                            points.Add(new MP.MapDrawingDataPoint()
+                            for (int i = 0; i < routes.Length; i++)
                             {
-                                Location = new MP.Location()
+                                points.Add(new MP.MapDrawingDataPoint()
                                 {
-                                    Lat = routes[i].Latitude,
-                                    Lon = routes[i].Longitude
-                                },
-                                Color = System.Windows.Media.Brushes.Green,
-                                Fill = System.Windows.Media.Brushes.ForestGreen,
-                                Opacity = 0.85,
-                                Width = 10,
-                                Height = 10
-                            });
+                                    Location = new MP.Location()
+                                    {
+                                        Lat = routes[i].Latitude,
+                                        Lon = routes[i].Longitude
+                                    },
+                                    Color = System.Windows.Media.Brushes.Green,
+                                    Fill = System.Windows.Media.Brushes.ForestGreen,
+                                    Opacity = 0.85,
+                                    Width = 10,
+                                    Height = 10
+                                });
+                            }
                         }
                     }
                 }
@@ -293,7 +296,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                 if (this._currentAreas != null)
                     foreach (AreaModel area in this._currentAreas)
                     {
-                        if (area.Location != null)
+                        if ((area.Location != null) && (area.Location.Length>0))
                         {
                             var dataLocationModels = new DataLocationModel[area.Location.Length];
                             for (int i = 0; i < area.Location.Length; i++)
@@ -529,12 +532,13 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
 
         public IcsmMobStation[] ReadStations()
         {
-            AreaModel[] selectedAreaModels = new AreaModel[CurrentAreas.Count];
-            int index = 0;
+            var selectedAreaModels = new List<AreaModel>();
             foreach (AreaModel areaModel in CurrentAreas)
             {
-                selectedAreaModels[index] = areaModel;
-                index++;
+                if ((areaModel.Location != null) && (areaModel.Location.Length > 0))
+                {
+                    selectedAreaModels.Add(areaModel);
+                }
             }
             var resStations = _objectReader
            .Read<IcsmMobStation[]>()
@@ -545,7 +549,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                StatusForActiveStation = GetStationsParams.StateForActiveStation,
                StatusForNotActiveStation = GetStationsParams.StateForNotActiveStation,
                TableName = SelectedIcsmStationNameVal.ToString().ToUpper(),
-               AreaModel = selectedAreaModels,
+               AreaModel = selectedAreaModels.ToArray(),
                SelectedStationType = SelectedStationTypeVal
            });
             return resStations;
@@ -662,15 +666,13 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                     this._currentParamsCalculationModel.InfocMeasResults = listStationMonitoringModel.ToArray();
                     this._currentParamsCalculationModel.StationIds = stations.Select(x => Convert.ToInt64(x.ExternalCode)).ToArray();
                     StationCalibrationCalcTask.SaveTask(this._dataLayer.Origin, this._dataLayer.Executor, stations, this._currentParamsCalculationModel, TaskId);
-                    //StationCalibrationCalcTask.RunTask(this._dataLayer.Origin, this._dataLayer.Executor, TaskId);
-
                     System.Windows.MessageBox.Show($"Task saved with {this._currentParamsCalculationModel.StationIds.Length} stations and {CurrentStationMonitoringModel.Count} drive tests");
+                    _viewStarter.Stop(this);
                 }
                 else
                 {
                     System.Windows.MessageBox.Show("No stations with suitable parameters!");
                 }
-                _viewStarter.Stop(this);
             }
             catch (Exception e)
             {

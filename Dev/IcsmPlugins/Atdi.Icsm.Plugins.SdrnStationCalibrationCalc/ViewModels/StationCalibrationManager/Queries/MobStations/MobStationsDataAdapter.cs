@@ -22,14 +22,17 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
     public class MobStationsDataAdapter  
     {
 
+        private readonly ILogger _logger;
         public readonly ISignalService _signalService; 
         public readonly IObjectReader _objectReader;
         public readonly MobStationsLoadModelByParams  _mobStationsLoadModelByParams;
 
         public MobStationsDataAdapter(MobStationsLoadModelByParams  mobStationsLoadModelByParams,
+            ILogger logger,
             ISignalService signalService,
             IObjectReader objectReader)
         {
+            this._logger = logger;
             this._signalService = signalService;
             this._objectReader = objectReader;
             this._mobStationsLoadModelByParams = mobStationsLoadModelByParams;
@@ -176,19 +179,19 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
             var listIcsmMobStation = new List<IcsmMobStation>();
 
 
-            if ((this._mobStationsLoadModelByParams.AreaModel==null) || ((this._mobStationsLoadModelByParams.AreaModel != null) && (this._mobStationsLoadModelByParams.AreaModel.Length==0)))
+            if ((this._mobStationsLoadModelByParams.AreaModel == null) || ((this._mobStationsLoadModelByParams.AreaModel != null) && (this._mobStationsLoadModelByParams.AreaModel.Length == 0)))
             {
-                throw new Exception();
+                throw new Exception("'Areas' is null or contains 0 elements");
             }
             if ((string.IsNullOrEmpty(this._mobStationsLoadModelByParams.StatusForActiveStation)) || (string.IsNullOrEmpty(this._mobStationsLoadModelByParams.StatusForNotActiveStation)))
             {
-                throw new Exception();
+                throw new Exception("'StatusForActiveStation' or 'StatusForNotActiveStation' is null or empty");
             }
-            if (((this._mobStationsLoadModelByParams.IdentifierStation != null) && (this._mobStationsLoadModelByParams.IdentifierStation !=0)) && (this._mobStationsLoadModelByParams.SelectedStationType== SelectedStationType.OneStation))
+            if (((this._mobStationsLoadModelByParams.IdentifierStation != null) && (this._mobStationsLoadModelByParams.IdentifierStation != 0)) && (this._mobStationsLoadModelByParams.SelectedStationType == SelectedStationType.OneStation))
             {
                 if (string.IsNullOrEmpty(this._mobStationsLoadModelByParams.TableName))
                 {
-                    throw new Exception();
+                    throw new Exception("'TableName' is null or empty");
                 }
             }
 
@@ -206,27 +209,29 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                     }
                 }
 
-                var rs = new IMRecordset(arrayTables[v], IMRecordset.Mode.ReadOnly);
-                rs.Select("ID,AZIMUTH,STANDARD,STATUS,CALL_SIGN,Position.LATITUDE,Position.LONGITUDE,Position.ASL,NAME,Owner.CODE,DATE_MODIFIED,DATE_CREATED,BW,RX_LOSSES,TX_LOSSES,PWR_ANT,Equipment.KTBF,Equipment.RXTH_6,Antenna.POLARIZATION,GAIN,Antenna.DIAGV,Antenna.DIAGH,Antenna.DIAGA,ELEVATION,Antenna.XPD,Position.City.PROVINCE");
-                if (((this._mobStationsLoadModelByParams.IdentifierStation != null) && (this._mobStationsLoadModelByParams.IdentifierStation != 0) && (this._mobStationsLoadModelByParams.SelectedStationType == SelectedStationType.OneStation)))
-                {
-                    rs.SetWhere("ID", IMRecordset.Operation.Eq, this._mobStationsLoadModelByParams.IdentifierStation.Value);
-                }
-                else
-                {
-                    if (string.IsNullOrEmpty(this._mobStationsLoadModelByParams.Standard))
-                    {
-                        throw new Exception();
-                    }
-                    rs.SetWhere("STANDARD", IMRecordset.Operation.Eq, this._mobStationsLoadModelByParams.Standard);
-                }
                 for (int z = 0; z < this._mobStationsLoadModelByParams.AreaModel.Length; z++)
                 {
+                    var rs = new IMRecordset(arrayTables[v], IMRecordset.Mode.ReadOnly);
+                    rs.Select("ID,AZIMUTH,STANDARD,STATUS,CALL_SIGN,Position.LATITUDE,Position.LONGITUDE,Position.ASL,NAME,Owner.CODE,DATE_MODIFIED,DATE_CREATED,BW,RX_LOSSES,TX_LOSSES,PWR_ANT,Equipment.KTBF,Equipment.RXTH_6,Antenna.POLARIZATION,GAIN,Antenna.DIAGV,Antenna.DIAGH,Antenna.DIAGA,ELEVATION,Antenna.XPD,Position.City.PROVINCE");
+                    if (((this._mobStationsLoadModelByParams.IdentifierStation != null) && (this._mobStationsLoadModelByParams.IdentifierStation != 0) && (this._mobStationsLoadModelByParams.SelectedStationType == SelectedStationType.OneStation)))
+                    {
+                        rs.SetWhere("ID", IMRecordset.Operation.Eq, this._mobStationsLoadModelByParams.IdentifierStation.Value);
+                    }
+                    else
+                    {
+                        if (string.IsNullOrEmpty(this._mobStationsLoadModelByParams.Standard))
+                        {
+                            throw new Exception("'Standard' is null or empty");
+                        }
+                        rs.SetWhere("STANDARD", IMRecordset.Operation.Eq, this._mobStationsLoadModelByParams.Standard);
+                    }
+
                     rs.SetWhere("Position.LATITUDE", IMRecordset.Operation.Le, this._mobStationsLoadModelByParams.AreaModel[z].ExternalContour[1].Latitude);
                     rs.SetWhere("Position.LATITUDE", IMRecordset.Operation.Ge, this._mobStationsLoadModelByParams.AreaModel[z].ExternalContour[2].Latitude);
 
                     rs.SetWhere("Position.LONGITUDE", IMRecordset.Operation.Ge, this._mobStationsLoadModelByParams.AreaModel[z].ExternalContour[0].Longitude);
                     rs.SetWhere("Position.LONGITUDE", IMRecordset.Operation.Le, this._mobStationsLoadModelByParams.AreaModel[z].ExternalContour[1].Longitude);
+
 
 
                     var allStatuses = new List<string>();
@@ -407,11 +412,11 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                                 }
                             }
                         }
-                        // если станция не попадает в заданный регион и в область за регионом, которая отстоит на расстоянии DistanceAroundContour_km от границы точек региона, тогда просто пропускаем станцию
-                        if (correctStation == false)
-                        {
-                            continue;
-                        }
+                        //// если станция не попадает в заданный регион и в область за регионом, которая отстоит на расстоянии DistanceAroundContour_km от границы точек региона, тогда просто пропускаем станцию
+                        //if (correctStation == false)
+                        //{
+                        //    continue;
+                        //}
 
                         //  Проверка - станция должна отправляться один раз (дуликатов быть не должно)
                         var fndStation = listMobStationT.Find(x => x.m_id == mobStationT.m_id);

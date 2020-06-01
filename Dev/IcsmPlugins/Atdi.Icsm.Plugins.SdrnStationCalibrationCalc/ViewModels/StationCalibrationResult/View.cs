@@ -152,21 +152,24 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                     if (v.DriveTestId > 0)
                     {
                         var routes = GetRoutesByIdStationMonitoring(v.DriveTestId);
-                        for (int i = 0; i < routes.Length; i++)
+                        if (routes != null)
                         {
-                            points.Add(new MP.MapDrawingDataPoint()
+                            for (int i = 0; i < routes.Length; i++)
                             {
-                                Location = new MP.Location()
+                                points.Add(new MP.MapDrawingDataPoint()
                                 {
-                                    Lat = routes[i].Latitude,
-                                    Lon = routes[i].Longitude
-                                },
-                                Color = System.Windows.Media.Brushes.Green,
-                                Fill = System.Windows.Media.Brushes.ForestGreen,
-                                Opacity = 0.85,
-                                Width = 10,
-                                Height = 10
-                            });
+                                    Location = new MP.Location()
+                                    {
+                                        Lat = routes[i].Latitude,
+                                        Lon = routes[i].Longitude
+                                    },
+                                    Color = System.Windows.Media.Brushes.Green,
+                                    Fill = System.Windows.Media.Brushes.ForestGreen,
+                                    Opacity = 0.85,
+                                    Width = 10,
+                                    Height = 10
+                                });
+                            }
                         }
                     }
                 }
@@ -211,26 +214,29 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                         }
                     }
                     var resDriveTests = GetDriveTests(v.ResultId);
-                    for (int k = 0; k < resDriveTests.Length; k++)
+                    if (resDriveTests != null)
                     {
-                        if (resDriveTests[k].DriveTestId > 0)
+                        for (int k = 0; k < resDriveTests.Length; k++)
                         {
-                            var routes = GetRoutesByIdStationMonitoring(resDriveTests[k].DriveTestId);
-                            for (int i = 0; i < routes.Length; i++)
+                            if (resDriveTests[k].DriveTestId > 0)
                             {
-                                points.Add(new MP.MapDrawingDataPoint()
+                                var routes = GetRoutesByIdStationMonitoring(resDriveTests[k].DriveTestId);
+                                for (int i = 0; i < routes.Length; i++)
                                 {
-                                    Location = new MP.Location()
+                                    points.Add(new MP.MapDrawingDataPoint()
                                     {
-                                        Lat = routes[i].Latitude,
-                                        Lon = routes[i].Longitude
-                                    },
-                                    Color = System.Windows.Media.Brushes.Green,
-                                    Fill = System.Windows.Media.Brushes.ForestGreen,
-                                    Opacity = 0.85,
-                                    Width = 10,
-                                    Height = 10
-                                });
+                                        Location = new MP.Location()
+                                        {
+                                            Lat = routes[i].Latitude,
+                                            Lon = routes[i].Longitude
+                                        },
+                                        Color = System.Windows.Media.Brushes.Green,
+                                        Fill = System.Windows.Media.Brushes.ForestGreen,
+                                        Opacity = 0.85,
+                                        Width = 10,
+                                        Height = 10
+                                    });
+                                }
                             }
                         }
                     }
