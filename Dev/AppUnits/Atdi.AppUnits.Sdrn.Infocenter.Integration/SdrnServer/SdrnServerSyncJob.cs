@@ -207,6 +207,9 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration.SdrnServer
 				var maxFreq_MHz = double.MinValue;
 				var minFreq_MHz = double.MaxValue;
 
+				//
+				this.CleanStationMonitoring(infocDbScope, resultId);
+
 				var insQuery = _infocDataLayer.GetBuilder<ES_IC.SdrnServer.IStationMonitoring>()
 						.Insert()
 						.SetValue(c => c.Id, sdrnMeasResult.Id)
@@ -392,6 +395,47 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration.SdrnServer
 				message = e.Message;
 				return false;
 			}
+		}
+
+		private void CleanStationMonitoring(IDataLayerScope infocDbScope, long resultId)
+		{
+			var findQuery = _infocDataLayer.GetBuilder<ES_IC.SdrnServer.IStationMonitoring>()
+					.From()
+					.Select(c => c.Id)
+					.Where(c => c.Id, ConditionOperator.Equal, resultId)
+				;
+			var count = infocDbScope.Executor.Execute(findQuery);
+
+			if (count == 0)
+			{
+				return;
+			}
+
+			var delPointsQuery = _infocDataLayer.GetBuilder<ES_IC.SdrnServer.IDriveTestPoints>()
+				.Delete()
+				.Where(c => c.DRIVE_TEST.RESULT.Id, ConditionOperator.Equal, resultId);
+
+			var delDriveTestsQuery = _infocDataLayer.GetBuilder<ES_IC.SdrnServer.IDriveTest>()
+				.Delete()
+				.Where(c => c.RESULT.Id, ConditionOperator.Equal, resultId);
+
+			var delDriveRoutesQuery = _infocDataLayer.GetBuilder<ES_IC.SdrnServer.IDriveRoute>()
+				.Delete()
+				.Where(c => c.RESULT.Id, ConditionOperator.Equal, resultId);
+
+			var delSmStatsQuery = _infocDataLayer.GetBuilder<ES_IC.SdrnServer.IStationMonitoringStats>()
+				.Delete()
+				.Where(c => c.Id, ConditionOperator.Equal, resultId);
+
+			var delSmQuery = _infocDataLayer.GetBuilder<ES_IC.SdrnServer.IStationMonitoring>()
+				.Delete()
+				.Where(c => c.Id, ConditionOperator.Equal, resultId);
+
+			count = infocDbScope.Executor.Execute(delPointsQuery);
+			count = infocDbScope.Executor.Execute(delDriveTestsQuery);
+			count = infocDbScope.Executor.Execute(delDriveRoutesQuery);
+			count = infocDbScope.Executor.Execute(delSmStatsQuery);
+			count = infocDbScope.Executor.Execute(delSmQuery);
 		}
 
 		private void CreateDriveTestPoints(IDataLayerScope infocDbScope, long driveTestId, DriveTestPoint[] pointsBuffer, int count)
