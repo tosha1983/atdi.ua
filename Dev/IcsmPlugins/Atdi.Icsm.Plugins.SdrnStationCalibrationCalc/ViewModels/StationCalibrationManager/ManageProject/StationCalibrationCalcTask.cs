@@ -120,7 +120,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                 .SetValue(c => c.Standard, icsmMobStation.Standard)
                 .SetValue(c => c.RealGsid, icsmMobStation.RealGsid)
                 .SetValue(c => c.RegionCode, icsmMobStation.RegionCode)
-                .SetValue(c => c.ModifiedDate, icsmMobStation.ModifiedDate)
+                //.SetValue(c => c.ModifiedDate, icsmMobStation.ModifiedDate)
                 .SetValue(c => c.ExternalSource, icsmMobStation.ExternalSource)
                 .SetValue(c => c.ExternalCode, icsmMobStation.ExternalCode)
 
