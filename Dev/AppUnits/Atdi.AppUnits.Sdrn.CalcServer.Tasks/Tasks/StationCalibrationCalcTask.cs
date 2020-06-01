@@ -198,11 +198,131 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 
 		private void ValidateTaskParameters()
 		{
-			if (this._parameters == null)
-			{
-				throw new InvalidOperationException("Undefined a task parameters");
-			}
-		}
+            if (this._parameters != null)
+            {
+                // General parameter
+                if (((this._parameters.GeneralParameters.СorrelationThresholdHard >= 0) || (this._parameters.GeneralParameters.СorrelationThresholdHard <= 100)) == false)
+                {
+                    throw new InvalidOperationException("General parameter 'СorrelationThresholdHard' incorrect");
+                }
+                if (((this._parameters.GeneralParameters.СorrelationThresholdWeak >= 0) || (this._parameters.GeneralParameters.СorrelationThresholdWeak <= 100)) == false)
+                {
+                    throw new InvalidOperationException("General parameter 'СorrelationThresholdWeak' incorrect");
+                }
+                if (((this._parameters.GeneralParameters.DistanceAroundContour_km >= 0) || (this._parameters.GeneralParameters.DistanceAroundContour_km <= 50)) == false)
+                {
+                    throw new InvalidOperationException("General parameter 'DistanceAroundContour_km' incorrect");
+                }
+                if (((this._parameters.GeneralParameters.MinNumberPointForCorrelation >= 1) || (this._parameters.GeneralParameters.MinNumberPointForCorrelation <= 1000)) == false)
+                {
+                    throw new InvalidOperationException("General parameter 'MinNumberPointForCorrelation' incorrect");
+                }
+
+                // Correlation parameter
+                if (((this._parameters.CorellationParameters.MinRangeMeasurements_dBmkV >= -200) || (this._parameters.CorellationParameters.MinRangeMeasurements_dBmkV <= 200)) == false)
+                {
+                    throw new InvalidOperationException("Correlation  parameter 'MinRangeMeasurements_dBmkV' incorrect");
+                }
+                if (((this._parameters.CorellationParameters.MaxRangeMeasurements_dBmkV >= -200) || (this._parameters.CorellationParameters.MaxRangeMeasurements_dBmkV <= 200)) == false)
+                {
+                    throw new InvalidOperationException("Correlation  parameter 'MaxRangeMeasurements_dBmkV' incorrect");
+                }
+                if (((this._parameters.CorellationParameters.CorrelationDistance_m >= 0) || (this._parameters.CorellationParameters.CorrelationDistance_m <= 100)) == false)
+                {
+                    throw new InvalidOperationException("Correlation  parameter 'CorrelationDistance_m' incorrect");
+                }
+                if (((this._parameters.CorellationParameters.Delta_dB >= 0) || (this._parameters.CorellationParameters.Delta_dB <= 20)) == false)
+                {
+                    throw new InvalidOperationException("Correlation  parameter 'Delta_dB' incorrect");
+                }
+                if (((this._parameters.CorellationParameters.MaxAntennasPatternLoss_dB >= 0) || (this._parameters.CorellationParameters.MaxAntennasPatternLoss_dB <= 200)) == false)
+                {
+                    throw new InvalidOperationException("Correlation  parameter 'MaxAntennasPatternLoss_dB' incorrect");
+                }
+
+                // Calibration parameter
+                if (((this._parameters.CalibrationParameters.ShiftAltitudeStationMin_m >= -100) || (this._parameters.CalibrationParameters.ShiftAltitudeStationMin_m <= 100)) == false)
+                {
+                    throw new InvalidOperationException("CalibrationParameters  parameter 'ShiftAltitudeStationMin_m' incorrect");
+                }
+                if (((this._parameters.CalibrationParameters.ShiftAltitudeStationMax_m >= -100) || (this._parameters.CalibrationParameters.ShiftAltitudeStationMax_m <= 100)) == false)
+                {
+                    throw new InvalidOperationException("CalibrationParameters  parameter 'ShiftAltitudeStationMax_m' incorrect");
+                }
+                if (((this._parameters.CalibrationParameters.ShiftAltitudeStationStep_m >= 1) || (this._parameters.CalibrationParameters.ShiftAltitudeStationStep_m <= 10)) == false)
+                {
+                    throw new InvalidOperationException("CalibrationParameters  parameter 'ShiftAltitudeStationStep_m' incorrect");
+                }
+                if (((this._parameters.CalibrationParameters.MaxDeviationAltitudeStation_m >= 0) || (this._parameters.CalibrationParameters.MaxDeviationAltitudeStation_m <= 100)) == false)
+                {
+                    throw new InvalidOperationException("CalibrationParameters  parameter 'MaxDeviationAltitudeStation_m' incorrect");
+                }
+                if (((this._parameters.CalibrationParameters.ShiftTiltStationMin_Deg >= 0) || (this._parameters.CalibrationParameters.ShiftTiltStationMin_Deg <= 100)) == false)
+                {
+                    throw new InvalidOperationException("CalibrationParameters  parameter 'ShiftTiltStationMin_Deg' incorrect");
+                }
+                if (((this._parameters.CalibrationParameters.ShiftTiltStationMax_Deg >= 0) || (this._parameters.CalibrationParameters.ShiftTiltStationMax_Deg <= 100)) == false)
+                {
+                    throw new InvalidOperationException("CalibrationParameters  parameter 'ShiftTiltStationMax_Deg' incorrect");
+                }
+                if (((this._parameters.CalibrationParameters.ShiftTiltStationStep_Deg >= 1) || (this._parameters.CalibrationParameters.ShiftTiltStationStep_Deg <= 10)) == false)
+                {
+                    throw new InvalidOperationException("CalibrationParameters  parameter 'ShiftTiltStationStep_Deg' incorrect");
+                }
+                if (((this._parameters.CalibrationParameters.MaxDeviationTiltStationDeg >= 0) || (this._parameters.CalibrationParameters.MaxDeviationTiltStationDeg <= 100)) == false)
+                {
+                    throw new InvalidOperationException("CalibrationParameters  parameter 'MaxDeviationTiltStationDeg' incorrect");
+                }
+                if (((this._parameters.CalibrationParameters.ShiftAzimuthStationMin_deg >= -200) || (this._parameters.CalibrationParameters.ShiftAzimuthStationMin_deg <= 200)) == false)
+                {
+                    throw new InvalidOperationException("CalibrationParameters  parameter 'ShiftAzimuthStationMin_deg' incorrect");
+                }
+                if (((this._parameters.CalibrationParameters.ShiftAzimuthStationMax_deg >= -200) || (this._parameters.CalibrationParameters.ShiftAzimuthStationMax_deg <= 200)) == false)
+                {
+                    throw new InvalidOperationException("CalibrationParameters  parameter 'ShiftAzimuthStationMax_deg' incorrect");
+                }
+                if (((this._parameters.CalibrationParameters.ShiftAzimuthStationStep_deg >= 1) || (this._parameters.CalibrationParameters.ShiftAzimuthStationStep_deg <= 10)) == false)
+                {
+                    throw new InvalidOperationException("CalibrationParameters  parameter 'ShiftAzimuthStationStep_deg' incorrect");
+                }
+                if (((this._parameters.CalibrationParameters.MaxDeviationAzimuthStation_deg >= 0) || (this._parameters.CalibrationParameters.MaxDeviationAzimuthStation_deg <= 200)) == false)
+                {
+                    throw new InvalidOperationException("CalibrationParameters  parameter 'MaxDeviationAzimuthStation_deg' incorrect");
+                }
+                if (((this._parameters.CalibrationParameters.ShiftCoordinatesStation_m >= 0) || (this._parameters.CalibrationParameters.ShiftCoordinatesStation_m <= 1000)) == false)
+                {
+                    throw new InvalidOperationException("CalibrationParameters  parameter 'ShiftCoordinatesStation_m' incorrect");
+                }
+                if (((this._parameters.CalibrationParameters.ShiftCoordinatesStationStep_m >= 1) || (this._parameters.CalibrationParameters.ShiftCoordinatesStationStep_m <= 100)) == false)
+                {
+                    throw new InvalidOperationException("CalibrationParameters  parameter 'ShiftCoordinatesStationStep_m' incorrect");
+                }
+                if (((this._parameters.CalibrationParameters.MaxDeviationCoordinatesStation_m >= 0) || (this._parameters.CalibrationParameters.MaxDeviationCoordinatesStation_m <= 1000)) == false)
+                {
+                    throw new InvalidOperationException("CalibrationParameters  parameter 'MaxDeviationCoordinatesStation_m' incorrect");
+                }
+                if (((this._parameters.CalibrationParameters.ShiftPowerStationMin_dB >= -50) || (this._parameters.CalibrationParameters.ShiftPowerStationMin_dB <= 50)) == false)
+                {
+                    throw new InvalidOperationException("CalibrationParameters  parameter 'ShiftPowerStationMin_dB' incorrect");
+                }
+                if (((this._parameters.CalibrationParameters.ShiftPowerStationMax_dB >= -50) || (this._parameters.CalibrationParameters.ShiftPowerStationMax_dB <= 50)) == false)
+                {
+                    throw new InvalidOperationException("CalibrationParameters  parameter 'ShiftPowerStationMax_dB' incorrect");
+                }
+                if (((this._parameters.CalibrationParameters.ShiftPowerStationStep_dB >= 0) || (this._parameters.CalibrationParameters.ShiftPowerStationStep_dB <= 5)) == false)
+                {
+                    throw new InvalidOperationException("CalibrationParameters  parameter 'ShiftPowerStationStep_dB' incorrect");
+                }
+                if (((this._parameters.CalibrationParameters.NumberCascade >= 1) || (this._parameters.CalibrationParameters.NumberCascade <= 5)) == false)
+                {
+                    throw new InvalidOperationException("CalibrationParameters  parameter 'NumberCascade' incorrect");
+                }
+                if (((this._parameters.CalibrationParameters.DetailOfCascade >= 2) || (this._parameters.CalibrationParameters.DetailOfCascade <= 10)) == false)
+                {
+                    throw new InvalidOperationException("CalibrationParameters  parameter 'DetailOfCascade' incorrect");
+                }
+            }
+        }
 
         private void LoadTaskParameters()
         {
@@ -658,6 +778,15 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                     _calcDbScope.Executor.Execute<IStationCalibrationStaResult_PK>(insertQueryStationCalibrationStaResult);
                 }
             }
+
+            var updQuery = _calcServerDataLayer.GetBuilder<ICalcResult>()
+                .Update()
+                .SetValue(c => c.StatusCode, (byte)CalcResultStatusCode.Completed)
+                .SetValue(c => c.StatusName, CalcResultStatusCode.Completed.ToString())
+                .SetValue(c => c.StatusNote, "The calc  result completed")
+                .Where(c => c.TASK.Id, ConditionOperator.Equal, _taskContext.TaskId)
+                .Where(c => c.Id, ConditionOperator.Equal, _taskContext.ResultId);
+                _calcDbScope.Executor.Execute(updQuery);
         }
     }
 }
