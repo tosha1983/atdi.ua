@@ -74,7 +74,7 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.Map
                     OwnerAxisYNumber = CurrentMapCard.OwnerAxisYNumber.GetValueOrDefault(),
                     OwnerAxisYStep = CurrentMapCard.OwnerAxisYStep.GetValueOrDefault(),
                     OwnerUpperLeftX = CurrentMapCard.OwnerUpperLeftX.GetValueOrDefault(),
-                    OwnerUpperLeftY = CurrentMapCard.OwnerUpperLeftX.GetValueOrDefault()
+                    OwnerUpperLeftY = CurrentMapCard.OwnerUpperLeftY.GetValueOrDefault()
                 };
 
                 _commandDispatcher.Send(mapModifier);
