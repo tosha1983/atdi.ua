@@ -148,13 +148,13 @@
     <value>Coordinates  Station</value>
   </data>
   <data name="CorrelationDistance" xml:space="preserve">
-    <value>Correlation distance</value>
+    <value>Correlation distance, m</value>
   </data>
   <data name="CorrelationThresholdHard" xml:space="preserve">
-    <value>Correlation threshold hard</value>
+    <value>Correlation threshold hard, %</value>
   </data>
   <data name="CorrelationThresholdWeak" xml:space="preserve">
-    <value>Correlation threshold weak</value>
+    <value>Correlation threshold weak, %</value>
   </data>
   <data name="CountMeasGSID" xml:space="preserve">
     <value>Count meas GSID</value>
@@ -196,7 +196,7 @@
     <value>Delete</value>
   </data>
   <data name="Delta" xml:space="preserve">
-    <value>Delta</value>
+    <value>Delta, dB</value>
   </data>
   <data name="Detail" xml:space="preserve">
     <value>Detail</value>
@@ -205,7 +205,7 @@
     <value>Detail of cascade</value>
   </data>
   <data name="DistanceAroundContour" xml:space="preserve">
-    <value>Distance around contour</value>
+    <value>Distance around contour, km</value>
   </data>
   <data name="DriveTestBlock" xml:space="preserve">
     <value>Drive test block</value>
@@ -223,22 +223,22 @@
     <value>Map</value>
   </data>
   <data name="MaxAntennasPatternLoss" xml:space="preserve">
-    <value>Max antennas pattern loss</value>
+    <value>Max antennas pattern loss, dB</value>
   </data>
   <data name="MaxDeviationAltitudeStation" xml:space="preserve">
-    <value>Max deviation Altitude Station</value>
+    <value>Max deviation Altitude Station, m</value>
   </data>
   <data name="MaxDeviationAzimuthStation" xml:space="preserve">
-    <value>Max deviation Azimuth Station</value>
+    <value>Max deviation Azimuth Station, deg</value>
   </data>
   <data name="MaxDeviationCoordinatesStation" xml:space="preserve">
-    <value>Shift Coordinates  Station Step</value>
+    <value>Shift Coordinates  Station Step, m</value>
   </data>
   <data name="MaxDeviationTiltStation" xml:space="preserve">
-    <value>Max deviation Tilt Station</value>
+    <value>Max deviation Tilt Station, deg</value>
   </data>
   <data name="MaxRangeMeasurements" xml:space="preserve">
-    <value>Max range measurements</value>
+    <value>Max range measurements, dBmkV/m</value>
   </data>
   <data name="MeasurementsFrom" xml:space="preserve">
     <value>Measurements from</value>
@@ -250,7 +250,7 @@
     <value>Min number point for correlation</value>
   </data>
   <data name="MinRangeMeasurements" xml:space="preserve">
-    <value>Min range measurements</value>
+    <value>Min range measurements, dBmkV/m</value>
   </data>
   <data name="Modify" xml:space="preserve">
     <value>Modify</value>
@@ -286,46 +286,46 @@
     <value>Projects</value>
   </data>
   <data name="ShiftAltitudeStationMax" xml:space="preserve">
-    <value>Shift Altitude Station Max</value>
+    <value>Shift Altitude Station Max, m</value>
   </data>
   <data name="ShiftAltitudeStationMin" xml:space="preserve">
-    <value>Shift Altitude Station Min</value>
+    <value>Shift Altitude Station Min, m</value>
   </data>
   <data name="ShiftAltitudeStationStep" xml:space="preserve">
-    <value>Shift Altitude Station Step</value>
+    <value>Shift Altitude Station Step, m</value>
   </data>
   <data name="ShiftAzimuthStationMax" xml:space="preserve">
-    <value>Shift Azimuth Station Max</value>
+    <value>Shift Azimuth Station Max, deg</value>
   </data>
   <data name="ShiftAzimuthStationMin" xml:space="preserve">
-    <value>Shift Azimuth Station Min</value>
+    <value>Shift Azimuth Station Min, deg</value>
   </data>
   <data name="ShiftAzimuthStationStep" xml:space="preserve">
-    <value>Shift Azimuth Station Step</value>
+    <value>Shift Azimuth Station Step, deg</value>
   </data>
   <data name="ShiftCoordinatesStation" xml:space="preserve">
-    <value>Shift Coordinates  Station</value>
+    <value>Shift Coordinates  Station, m</value>
   </data>
   <data name="ShiftCoordinatesStationStep" xml:space="preserve">
-    <value>Shift coordinates station step</value>
+    <value>Shift coordinates station step, m</value>
   </data>
   <data name="ShiftPowerStationMax" xml:space="preserve">
-    <value>Shift Power Station Max</value>
+    <value>Shift Power Station Max, dB</value>
   </data>
   <data name="ShiftPowerStationMin" xml:space="preserve">
-    <value>Shift Power Station Min</value>
+    <value>Shift Power Station Min, dB</value>
   </data>
   <data name="ShiftPowerStationStep" xml:space="preserve">
-    <value>Shift Power Station Step</value>
+    <value>Shift Power Station Step, dB</value>
   </data>
   <data name="ShiftTiltStationMax" xml:space="preserve">
-    <value>Shift Tilt Station Max</value>
+    <value>Shift Tilt Station Max, deg</value>
   </data>
   <data name="ShiftTiltStationMin" xml:space="preserve">
-    <value>Shift Tilt Station Min</value>
+    <value>Shift Tilt Station Min, deg</value>
   </data>
   <data name="ShiftTiltStationStep" xml:space="preserve">
-    <value>Shift Tilt Station Step</value>
+    <value>Shift Tilt Station Step, deg</value>
   </data>
   <data name="ShowResult" xml:space="preserve">
     <value>Show result</value>

@@ -46,18 +46,26 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                 return null;
             }
 
-            //var standardStats = reader.GetValueAs<DriveTestStandardStats>(c => c.STATS.StandardStats);
+            string standardStatistatics = "";
+            var standardStats = reader.GetValueAs<DriveTestStandardStats[]>(c => c.STATS.StandardStats);
+            if (standardStats != null)
+            {
+                for (int i = 0; i < standardStats.Length; i++)
+                {
+                    standardStatistatics += $"{standardStats[i].Standard}-{standardStats[i].Count};";
+                }
+
+            }
             return new StationMonitoringModel()
             {
                 Id = reader.GetValue(c => c.Id),
-                //CountByStandard = standardStats.Count,
+                StandardStats = standardStatistatics,
                 CountSID = reader.GetValue(c => c.STATS.GsidCount),
                 Date = reader.GetValue(c => c.MeasTime),
                 MaxFreq_MHz = reader.GetValue(c => c.STATS.MaxFreq_MHz),
                 MinFreq_MHz = reader.GetValue(c => c.STATS.MinFreq_MHz),
                 SensorName = reader.GetValue(c => c.SensorName),
                 SensorTitle = reader.GetValue(c => c.SensorTitle),
-                //Standards = standardStats.Standard,
             };
         }
     }
