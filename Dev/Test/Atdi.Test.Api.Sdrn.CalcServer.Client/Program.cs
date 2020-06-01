@@ -6,6 +6,7 @@ using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using Atdi.Api.EntityOrm.WebClient;
+using Atdi.DataModels.Sdrn.Infocenter.Entities;
 using Atdi.Test.Api.Sdrn.CalcServer.Client.Tasks;
 using DM = Atdi.DataModels.Sdrn.CalcServer.Entities;
 using Atdi.DataModels.Sdrn.Infocenter.Entities.Stations;
@@ -104,22 +105,20 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client
 				var dataContext = new WebApiDataContext("SDRN_Infocenter_DB");
 
 				var dataLayer = new WebApiDataLayer(endpoint, dataContext);
+				var d = new DateTime();
+				var d2 = DateTime.SpecifyKind(d, DateTimeKind.Unspecified);
+				var query = dataLayer.GetBuilder<IIntegrationLog>()
+					.Create();
+					query.SetValue( c => c.CreatedDate, d)
+					;
 
-				var query = dataLayer.GetBuilder<IStationMonitoringStats>()
-					.Read()
-					.Select(c => c.StandardStats)
-					.Select(c => c.GsidCount)
-					.Select(c => c.MaxFreq_MHz)
-					.Select(c => c.MinFreq_MHz)
-					.Filter(c => c.Id, 1);
-
-				var reader = dataLayer.Executor.ExecuteReader(query);
-				if (reader.Read())
-				{
-					var v1 = reader.GetValue(c => c.GsidCount);
-					var v2 = reader.GetValue(c => c.StandardStats);
-					var v3 = reader.GetValueAs<DriveTestStandardStats[]>(c => c.StandardStats);
-				}
+				//var reader = dataLayer.Executor.ExecuteReader(query);
+				//if (reader.Read())
+				//{
+				//	var v1 = reader.GetValue(c => c.GsidCount);
+				//	var v2 = reader.GetValue(c => c.StandardStats);
+				//	var v3 = reader.GetValueAs<DriveTestStandardStats[]>(c => c.StandardStats);
+				//}
 			}
 			catch (Exception e)
 			{
