@@ -30,8 +30,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
         public static bool IsInsideMap(double lon, double lat, double lonMin, double latMin, double lonMax, double latMax)
         {
-            if (lon > lonMin && lon < lonMin &&
-                lat > latMin && lat < latMin)
+            if (lon > lonMin && lon < lonMax &&
+                lat > latMin && lat < latMax)
             {
                 return true;
             }
@@ -67,9 +67,17 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
 
         public static bool CompareGSID(string GCID1, string GCID2, string standard)
-        { 
-            var resCompare = GCIDComparison.Compare(standard, GCID1, GCID2);
-            return resCompare;
+        {
+            //var resCompare = GCIDComparison.Compare(standard, GCID1, GCID2);
+            if (GCID2 == GCID2)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+            //return resCompare;
         }
 
         /// <summary>
