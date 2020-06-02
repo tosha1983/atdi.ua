@@ -378,4 +378,76 @@
   <data name="MapName" xml:space="preserve">
     <value>Map Name</value>
   </data>
+  <data name="CalibrationResultId" xml:space="preserve">
+    <value>Calibration result Id</value>
+  </data>
+  <data name="CountPointsInDriveTest" xml:space="preserve">
+    <value>Count points in drive test</value>
+  </data>
+  <data name="DriveTestId" xml:space="preserve">
+    <value>Drive test Id</value>
+  </data>
+  <data name="ExternalCode" xml:space="preserve">
+    <value>External code</value>
+  </data>
+  <data name="ExternalSource" xml:space="preserve">
+    <value>External source</value>
+  </data>
+  <data name="LicenseGsid" xml:space="preserve">
+    <value>License Gsid</value>
+  </data>
+  <data name="MaxCorellation" xml:space="preserve">
+    <value>Maximum corellation</value>
+  </data>
+  <data name="MaxPercentCorellation" xml:space="preserve">
+    <value>Maximum percent corellation</value>
+  </data>
+  <data name="New_Altitude_m" xml:space="preserve">
+    <value>New altitude, m</value>
+  </data>
+  <data name="New_Azimuth_deg" xml:space="preserve">
+    <value>New azimuth, deg</value>
+  </data>
+  <data name="New_Freq_MHz" xml:space="preserve">
+    <value>New freq, MHz</value>
+  </data>
+  <data name="New_Lat_deg" xml:space="preserve">
+    <value>New lat, deg</value>
+  </data>
+  <data name="New_Lon_deg" xml:space="preserve">
+    <value>New lon, deg</value>
+  </data>
+  <data name="New_Power_dB" xml:space="preserve">
+    <value>New power,  dB</value>
+  </data>
+  <data name="New_Tilt_deg" xml:space="preserve">
+    <value>New tilt, deg</value>
+  </data>
+  <data name="OldFreq_MHz" xml:space="preserve">
+    <value>Old freq, MHz</value>
+  </data>
+  <data name="Old_Altitude_m" xml:space="preserve">
+    <value>Old altitude, m</value>
+  </data>
+  <data name="Old_Azimuth_deg" xml:space="preserve">
+    <value>Old azimuth, deg</value>
+  </data>
+  <data name="Old_Lat_deg" xml:space="preserve">
+    <value>Old lat, deg</value>
+  </data>
+  <data name="Old_Lon_deg" xml:space="preserve">
+    <value>Old lon, deg</value>
+  </data>
+  <data name="Old_Power_dB" xml:space="preserve">
+    <value>Old power, dB</value>
+  </data>
+  <data name="Old_Tilt_deg" xml:space="preserve">
+    <value>Old tilt, deg</value>
+  </data>
+  <data name="ResultDriveTestStatus" xml:space="preserve">
+    <value>Result drive test status</value>
+  </data>
+  <data name="RealGsid" xml:space="preserve">
+    <value>Real Gsid</value>
+  </data>
 </root>

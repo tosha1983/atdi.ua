@@ -137,6 +137,16 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
             {
                 SaveTaskResult(resulCalibration[i]);
             }
+            // переводим результат в статус "Completed"
+            var updQuery = _calcServerDataLayer.GetBuilder<ICalcResult>()
+               .Update()
+               .SetValue(c => c.StatusCode, (byte)CalcResultStatusCode.Completed)
+               .SetValue(c => c.StatusName, CalcResultStatusCode.Completed.ToString())
+               .SetValue(c => c.StatusNote, "The calc  result completed")
+               .Where(c => c.TASK.Id, ConditionOperator.Equal, _taskContext.TaskId)
+               .Where(c => c.Id, ConditionOperator.Equal, _taskContext.ResultId);
+            _calcDbScope.Executor.Execute(updQuery);
+
             //CalibrationResult resulCalibration1 = new CalibrationResult()
             //{
 
@@ -146,7 +156,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
             //    GeneralParameters = new GeneralParameters()
             //    {
             //        DistanceAroundContour_km = 22,
-            //        TrustOldResults = 1
+            //        TrustOldResults = true
             //    },
             //    ResultCalibrationDriveTest = new CalibrationDriveTestResult[2]
             //              {
@@ -193,10 +203,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 
             //};
             //SaveTaskResult(in resulCalibration1);
-
+            //SaveTaskResult(in resulCalibration1);
+            //SaveTaskResult(in resulCalibration1);
         }
 
-		private void ValidateTaskParameters()
+        private void ValidateTaskParameters()
 		{
             if (this._parameters != null)
             {
@@ -722,19 +733,19 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                 .SetValue(c => c.TimeStart, result.TimeStart)
                 //.SetValue(c => c.ParametersId, _taskContext.TaskId)
                 .SetValue(c => c.PARAMETERS.TaskId, _taskContext.TaskId)
-                .SetValue(c => c.ResultId, _taskContext.ResultId)
+                .SetValue(c => c.RESULT.Id, _taskContext.ResultId)
                 //.Where(c=>c.RESULT.Id, ConditionOperator.Equal, _taskContext.ResultId)
                 ;
 
             var key = _calcDbScope.Executor.Execute<IStationCalibrationResult_PK>(updateQueryStationCalibrationResult);
-            if (key.ResultId > 0)
+            if (key.Id > 0)
             {
                 for (int z = 0; z < result.ResultCalibrationDriveTest.Length; z++)
                 {
                     var driveTest = result.ResultCalibrationDriveTest[z];
                     var insertQueryStationCalibrationDriveTestResult = _calcServerDataLayer.GetBuilder<IStationCalibrationDriveTestResult>()
                     .Insert()
-                    .SetValue(c => c.CalibrationResultId, key.ResultId)
+                    .SetValue(c => c.CalibrationResultId, key.Id)
                     .SetValue(c => c.CountPointsInDriveTest, driveTest.CountPointsInDriveTest)
                     .SetValue(c => c.ExternalCode, driveTest.ExternalCode)
                     .SetValue(c => c.ExternalSource, driveTest.ExternalSource)
@@ -753,7 +764,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                     var insertQueryStationCalibrationStaResult = _calcServerDataLayer.GetBuilder<IStationCalibrationStaResult>()
                     .Insert()
                     .SetValue(c => c.StationMonitoringId, station.StationMonitoringId)
-                    .SetValue(c => c.CalibrationResultId, key.ResultId)
+                    .SetValue(c => c.CalibrationResultId, key.Id)
                     .SetValue(c => c.ExternalCode, station.ExternalCode)
                     .SetValue(c => c.ExternalSource, station.ExternalSource)
                     .SetValue(c => c.LicenseGsid, station.LicenseGsid)
@@ -778,15 +789,6 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                     _calcDbScope.Executor.Execute<IStationCalibrationStaResult_PK>(insertQueryStationCalibrationStaResult);
                 }
             }
-
-            var updQuery = _calcServerDataLayer.GetBuilder<ICalcResult>()
-                .Update()
-                .SetValue(c => c.StatusCode, (byte)CalcResultStatusCode.Completed)
-                .SetValue(c => c.StatusName, CalcResultStatusCode.Completed.ToString())
-                .SetValue(c => c.StatusNote, "The calc  result completed")
-                .Where(c => c.TASK.Id, ConditionOperator.Equal, _taskContext.TaskId)
-                .Where(c => c.Id, ConditionOperator.Equal, _taskContext.ResultId);
-                _calcDbScope.Executor.Execute(updQuery);
         }
     }
 }

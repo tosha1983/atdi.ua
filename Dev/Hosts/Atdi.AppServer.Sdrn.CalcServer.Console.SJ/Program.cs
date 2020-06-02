@@ -11,7 +11,7 @@ namespace Atdi.AppServer.Sdrn.CalcServer
     {
         static void Main(string[] args)
         {
-            Console.WriteLine($"Press any key to start SDRN Calculation App Server (SG) ...");
+            Console.WriteLine($"Press any key to start SDRN Calculation App Server (jerzy) ...");
             //Console.ReadLine();
 
             using (var host = PlatformConfigurator.BuildHost())
@@ -30,7 +30,7 @@ namespace Atdi.AppServer.Sdrn.CalcServer
 
                 //Thread.Sleep(30000);
 
-                Console.WriteLine($"Press any key to stop SDRN Calculation App Server (SG) ...");
+                Console.WriteLine($"Press any key to stop SDRN Calculation App Server (jerzy) ...");
                 Console.ReadLine();
 
                 host.Stop("Normal completion");

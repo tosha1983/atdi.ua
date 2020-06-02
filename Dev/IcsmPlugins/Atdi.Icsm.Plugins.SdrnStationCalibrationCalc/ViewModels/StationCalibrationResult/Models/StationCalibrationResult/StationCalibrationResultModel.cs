@@ -8,6 +8,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
 {
     public class StationCalibrationResultModel
     {
+        public long Id { get; set; }
         public long ResultId { get; set; }
 
         public long ParametersId { get; set; }

@@ -72,9 +72,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 double lonStep_dec = data.FieldStrengthCalcData.MapArea.AxisX.Step;//_transformation.ConvertCoordinateToWgs84(data.FieldStrengthCalcData.MapArea.LowerLeft.X, data.CodeProjection);
                 double latStep_dec = data.FieldStrengthCalcData.MapArea.AxisY.Step;
 
-                int counter = 0;
+
+                // 
+
                 // 0 - приведение координат к центру условного "пикселя" карты, 
                 // 1 - усреднение FS по одним координатам
+                int counter = 0;
                 for (int i = 0; i < data.GSIDGroupeDriveTests.Points.Length; i++)
                 {
                     if (data.GSIDGroupeDriveTests.Points[i].FieldStrength_dBmkVm >= data.CorellationParameters.MinRangeMeasurements_dBmkV &&
@@ -99,7 +102,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                     calcPointArrayBuffer[j].FSMeas = 20 * Math.Log10((calcPointArrayBuffer[j].Count * Math.Pow(10, 0.05 * calcPointArrayBuffer[j].FSMeas) + Math.Pow(10, 0.05 * data.GSIDGroupeDriveTests.Points[i].FieldStrength_dBmkVm)) / (calcPointArrayBuffer[j].Count + 1));//data.GSIDGroupeDriveTests.Points[i].FieldStrength_dBmkVm;
                                     calcPointArrayBuffer[j].Count += 1;
                                     isFoubdInBuffer = true;
-                                    break;
+                                    //break;//??
                                 }
                             }
                         }
@@ -112,12 +115,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
                             data.FieldStrengthCalcData.TargetCoordinate.X = calcPointArrayBuffer[counter].Lon;
                             data.FieldStrengthCalcData.TargetCoordinate.Y = calcPointArrayBuffer[counter].Lon;
-                            var FSCalc = iterationFieldStrengthCalcData.Run(taskContext, data.FieldStrengthCalcData).FS_dBuVm;
-                            if (FSCalc != null)
-                            {
-                                calcPointArrayBuffer[counter].FSCalc = FSCalc.Value;
-                            }
-                            //calcPointArrayBuffer[counter].FSCalc = iterationFieldStrengthCalcData.Run(taskContext, data.FieldStrengthCalcData).FS_dBuVm.Value;
+
+                            calcPointArrayBuffer[counter].FSCalc = iterationFieldStrengthCalcData.Run(taskContext, data.FieldStrengthCalcData).FS_dBuVm.Value;
                             calcPointArrayBuffer[counter].FSMeas = data.GSIDGroupeDriveTests.Points[i].FieldStrength_dBmkVm;
 
                             counter++;

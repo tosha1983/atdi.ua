@@ -32,8 +32,8 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
                 .SetValue(c => c.OwnerInstance, _config.Instance)
                 .SetValue(c => c.Name, command.Name)
                 .SetValue(c => c.Note, command.Note)
-                .SetValue(c => c.TypeCode, (byte)command.TypeCode)
-                .SetValue(c => c.TypeName, Enum.GetValues(typeof(ClientContextTypeCode)).GetValue(command.TypeCode).ToString())
+                .SetValue(c => c.TypeCode, (byte)ClientContextTypeCode.Client)
+                .SetValue(c => c.TypeName, "Client")
                 .SetValue(c => c.StatusCode, (byte)ClientContextStatusCode.Created)
                 .SetValue(c => c.StatusName, "Created");
 

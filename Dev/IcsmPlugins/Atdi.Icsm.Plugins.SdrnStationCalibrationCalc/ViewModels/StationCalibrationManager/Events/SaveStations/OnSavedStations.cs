@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibrationManager.Events
 {
-    public class OnEditParamsCalculation
+    public class OnSavedStations
     {
         public long ClientContextId { get; set; }
-        public bool IsSuccessUpdateParameters;
+        public long[] ContextStationIds { get; set; }
     }
 }

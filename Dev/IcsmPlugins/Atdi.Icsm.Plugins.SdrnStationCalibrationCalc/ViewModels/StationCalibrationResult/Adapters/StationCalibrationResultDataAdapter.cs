@@ -19,10 +19,13 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
         {
         }
         public long resultId;
+        public DateTimeOffset? dateTimeStart;
+        public DateTimeOffset? dateTimeStop;
 
         protected override void PrepareQuery(IReadQuery<CS_ES.IStationCalibrationResult> query)
         {
             query.Select(
+                c => c.Id,
                 c => c.RESULT.Id,
                 c => c.AreaName,
                 c => c.CountMeasGSID,
@@ -36,7 +39,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                 c => c.NumberStation,
                 c => c.NumberStationInContour,
                 c => c.PARAMETERS.TaskId,
-                c => c.ResultId,
+                c => c.RESULT.Id,
                 c => c.Standard,
                 c => c.TimeStart,
                 c => c.PARAMETERS.AltitudeStation,
@@ -80,12 +83,19 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                 c => c.PARAMETERS.TrustOldResults,
                 c => c.PARAMETERS.UseMeasurementSameGSID
 
-            ).Filter(f => f.RESULT.Id, DataModels.Api.EntityOrm.WebClient.FilterOperator.Equal, resultId);
+            )
+            .Filter(f => f.RESULT.Id, DataModels.Api.EntityOrm.WebClient.FilterOperator.Equal, resultId);
+            if ((dateTimeStart!=null) && (dateTimeStop != null))
+            {
+                query.Filter(f => f.TimeStart, DataModels.Api.EntityOrm.WebClient.FilterOperator.GreaterEqual, dateTimeStart);
+                query.Filter(f => f.TimeStart, DataModels.Api.EntityOrm.WebClient.FilterOperator.LessEqual, dateTimeStop);
+            }
         }
         protected override StationCalibrationResultModel ReadData(IDataReader<CS_ES.IStationCalibrationResult> reader, int index)
         {
             return new StationCalibrationResultModel
             {
+                Id = reader.GetValue(c => c.Id),
                 ResultId = reader.GetValue(c => c.RESULT.Id),
                 AreaName = reader.GetValue(c => c.AreaName),
                 CountMeasGSID = reader.GetValue(c => c.CountMeasGSID),

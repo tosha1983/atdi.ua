@@ -98,8 +98,7 @@
         <Button Grid.Row="2" Margin="165,5,5,5" HorizontalAlignment="Left" VerticalAlignment="Top" Content="{x:Static res:Resources.Delete}" Width="70" Height="20" Command="{Binding ContextDeleteCommand}"/>
         <cdg:OrmTextBox Grid.Row="2" Margin="5,30,5,5"  HorizontalAlignment="Left" VerticalAlignment="Top" CaptionWith="100" Width="300" Height="35" Caption="{x:Static res:Resources.Name}" Text ="{Binding Path=CurrentClientContextCard.Name, Mode=TwoWay}"/>
         <cdg:OrmTextBox Grid.Row="2" Margin="5,60,5,5" HorizontalAlignment="Left" VerticalAlignment="Top" CaptionWith="100" Width="300" Height="35" Caption="{x:Static res:Resources.Note}" Text ="{Binding Path=CurrentClientContextCard.Note, Mode=TwoWay}"/>
-        <cdg:OrmTextBox Grid.Row="2" Margin="5,90,5,5" HorizontalAlignment="Left" VerticalAlignment="Top" CaptionWith="100" Width="300" Height="35" Caption="{x:Static res:Resources.Type}" Text ="{Binding Path=CurrentClientContextCard.TypeCode, Mode=TwoWay}"/>
-        <cdg:OrmDataGrid Grid.Row="2" IsReadOnly="True" Margin="5, 125, 5, 5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding ClientContexts}" SelectedItem="{Binding CurrentClientContext}">
+        <cdg:OrmDataGrid Grid.Row="2" IsReadOnly="True" Margin="5, 95, 5, 5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding ClientContexts}" SelectedItem="{Binding CurrentClientContext}">
           <DataGrid.Columns>
             <DataGridTextColumn Header="{x:Static res:Resources.Name}" Binding="{Binding Path=Name}"></DataGridTextColumn>
             <DataGridTextColumn Header="{x:Static res:Resources.Note}" Binding="{Binding Path=Note}"></DataGridTextColumn>

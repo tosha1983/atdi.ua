@@ -29,7 +29,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
                 c => c.StatusNote,
                 c => c.OwnerInstance)
             .Filter(f => f.PROJECT.Id, ProjectId)
-            .Filter(f => f.TypeCode, FilterOperator.NotEqual, 1);
+            .Filter(f => f.TypeCode, (byte)CS_ES.ClientContextTypeCode.Client);
         }
         protected override ClientContextModel ReadData(IDataReader<CS_ES.IClientContext> reader, int index)
         {
