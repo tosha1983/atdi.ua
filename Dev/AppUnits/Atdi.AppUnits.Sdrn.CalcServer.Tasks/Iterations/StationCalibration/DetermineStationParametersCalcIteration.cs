@@ -662,8 +662,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     CodeProjection = data.Projection
                 };
 
-
-                var iterationCorellationCalc = _iterationsPool.GetIteration<StationCorellationCalcData, ResultCorrelationGSIDGroupeStations>();
+                var iterationCorellationCalc = _iterationsPool.GetIteration<StationCorellationCalcData, ResultCorrelationGSIDGroupeStationsWithoutParameters>();
                 var resultCorellationCalcData = iterationCorellationCalc.Run(taskContext, stationCorellationCalcData);
 
                 // Если максимальная корреляция превысит(или равна) Сorrelation threshold weak то возвращаем True
