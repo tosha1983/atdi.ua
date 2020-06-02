@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibrationManager.Modifiers
 {
-    public class CreateParamsCalculation: ParamsCalculationModel
+    public class UpdateClientContext 
     {
-     
+        public long ClientContextId { get; set; }
     }
 }

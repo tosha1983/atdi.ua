@@ -9,9 +9,12 @@ using System.Collections.Specialized;
 using System.Collections;
 using Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager.Queries;
 using Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibrationManager.Adapters;
+using Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibrationManager.Modifiers;
 using Atdi.Platform.Cqrs;
 using Atdi.Platform.Events;
 using MP = Atdi.WpfControls.EntityOrm.Maps;
+using Atdi.DataModels.Sdrn.CalcServer.Entities;
+
 using System.Data;
 using System.Windows;
 using WPF =  System.Windows.Controls;
@@ -40,7 +43,9 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
         private MP.MapDrawingData _currentMapData;
         private IList _currentAreas;
 
-
+        
+        private IEventHandlerToken<Events.OnEditParamsCalculation> _onEditParamsCalculationToken;
+        private IEventHandlerToken<Events.OnSavedStations> _onSavedStationsToken;
         private readonly IObjectReader _objectReader;
         private readonly ICommandDispatcher _commandDispatcher;
         private readonly ViewStarter _starter;
@@ -662,10 +667,24 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                     {
                         listStationMonitoringModel.Add(x.Id);
                     }
-
                     this._currentParamsCalculationModel.InfocMeasResults = listStationMonitoringModel.ToArray();
                     this._currentParamsCalculationModel.StationIds = stations.Select(x => Convert.ToInt64(x.ExternalCode)).ToArray();
-                    StationCalibrationCalcTask.SaveTask(this._dataLayer.Origin, this._dataLayer.Executor, stations, this._currentParamsCalculationModel, TaskId);
+                    _onEditParamsCalculationToken = _eventBus.Subscribe<Events.OnEditParamsCalculation>(this.OnEditParamsCalculationsHandle);
+                    _onSavedStationsToken = _eventBus.Subscribe<Events.OnSavedStations>(this.OnSavedStationsHandle);
+                    var clientContextId = _objectReader.Read<long?>().By(new CalcTaskModelByContextId() { TaskId = TaskId });
+                    if ((clientContextId != null) && (clientContextId != 0))
+                    {
+                        var createClientContextStations = new CreateClientContextStations()
+                        {
+                            ClientContextId = clientContextId.Value,
+                            IcsmMobStation = stations
+                        };
+                        _commandDispatcher.Send(createClientContextStations);
+                    }
+                    else
+                    {
+                        throw new Exception("Client context Id is 0!");
+                    }
                     System.Windows.MessageBox.Show($"Task saved with {this._currentParamsCalculationModel.StationIds.Length} stations and {CurrentStationMonitoringModel.Count} drive tests");
                     _viewStarter.Stop(this);
                 }
@@ -680,6 +699,79 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             }
         }
 
+        private void OnSavedStationsHandle(Events.OnSavedStations data)
+        {
+            if (data != null)
+            {
+                if (data.ContextStationIds != null)
+                {
+                    var modifierEditParamsCalculation = new EditParamsCalculation
+                    {
+                        ClientContextId = data.ClientContextId,
+                        TaskId = TaskId,
+                        AltitudeStation = this._currentParamsCalculationModel.AltitudeStation,
+                        AzimuthStation = this._currentParamsCalculationModel.AzimuthStation,
+                        CascadeTuning = this._currentParamsCalculationModel.CascadeTuning,
+                        CoordinatesStation = this._currentParamsCalculationModel.CoordinatesStation,
+                        CorrelationDistance_m = this._currentParamsCalculationModel.CorrelationDistance_m,
+                        CorrelationThresholdHard = this._currentParamsCalculationModel.CorrelationThresholdHard,
+                        CorrelationThresholdWeak = this._currentParamsCalculationModel.CorrelationThresholdWeak,
+                        Delta_dB = this._currentParamsCalculationModel.Delta_dB,
+                        Detail = this._currentParamsCalculationModel.Detail,
+                        DetailOfCascade = this._currentParamsCalculationModel.DetailOfCascade,
+                        DistanceAroundContour_km = this._currentParamsCalculationModel.DistanceAroundContour_km,
+                        InfocMeasResults = this._currentParamsCalculationModel.InfocMeasResults,
+                        MaxAntennasPatternLoss_dB = this._currentParamsCalculationModel.MaxAntennasPatternLoss_dB,
+                        MaxDeviationAltitudeStation_m = this._currentParamsCalculationModel.MaxDeviationAltitudeStation_m,
+                        MaxDeviationAzimuthStation_deg = this._currentParamsCalculationModel.MaxDeviationAzimuthStation_deg,
+                        MaxDeviationCoordinatesStation_m = this._currentParamsCalculationModel.MaxDeviationCoordinatesStation_m,
+                        MaxDeviationTiltStation_deg = this._currentParamsCalculationModel.MaxDeviationTiltStation_deg,
+                        MaxRangeMeasurements_dBmkV = this._currentParamsCalculationModel.MaxRangeMeasurements_dBmkV,
+                        Method = this._currentParamsCalculationModel.Method,
+                        MinNumberPointForCorrelation = this._currentParamsCalculationModel.MinNumberPointForCorrelation,
+                        MinRangeMeasurements_dBmkV = this._currentParamsCalculationModel.MinRangeMeasurements_dBmkV,
+                        NumberCascade = this._currentParamsCalculationModel.NumberCascade,
+                        PowerStation = this._currentParamsCalculationModel.PowerStation,
+                        ShiftAltitudeStationMax_m = this._currentParamsCalculationModel.ShiftAltitudeStationMax_m,
+                        ShiftAltitudeStationMin_m = this._currentParamsCalculationModel.ShiftAltitudeStationMin_m,
+                        ShiftAltitudeStationStep_m = this._currentParamsCalculationModel.ShiftAltitudeStationStep_m,
+                        ShiftAzimuthStationMax_deg = this._currentParamsCalculationModel.ShiftAzimuthStationMax_deg,
+                        ShiftAzimuthStationMin_deg = this._currentParamsCalculationModel.ShiftAzimuthStationMin_deg,
+                        ShiftAzimuthStationStep_deg = this._currentParamsCalculationModel.ShiftAzimuthStationStep_deg,
+                        ShiftCoordinatesStationStep_m = this._currentParamsCalculationModel.ShiftCoordinatesStationStep_m,
+                        ShiftCoordinatesStation_m = this._currentParamsCalculationModel.ShiftCoordinatesStation_m,
+                        ShiftPowerStationMax_dB = this._currentParamsCalculationModel.ShiftPowerStationMax_dB,
+                        ShiftPowerStationMin_dB = this._currentParamsCalculationModel.ShiftPowerStationMin_dB,
+                        ShiftPowerStationStep_dB = this._currentParamsCalculationModel.ShiftPowerStationStep_dB,
+                        ShiftTiltStationMax_deg = this._currentParamsCalculationModel.ShiftTiltStationMax_deg,
+                        ShiftTiltStationMin_deg = this._currentParamsCalculationModel.ShiftTiltStationMin_deg,
+                        ShiftTiltStationStep_deg = this._currentParamsCalculationModel.ShiftTiltStationStep_deg,
+                        StationIds = data.ContextStationIds,
+                        TiltStation = this._currentParamsCalculationModel.TiltStation,
+                        TrustOldResults = this._currentParamsCalculationModel.TrustOldResults,
+                        UseMeasurementSameGSID = this._currentParamsCalculationModel.UseMeasurementSameGSID,
+                    };
+
+                    _commandDispatcher.Send(modifierEditParamsCalculation);
+                }
+            }
+        }
+        private void OnEditParamsCalculationsHandle(Events.OnEditParamsCalculation data)
+        {
+            if (data != null)
+            {
+                if (data.IsSuccessUpdateParameters)
+                {
+                    var modifierUpdateClientContext = new UpdateClientContext
+                    {
+                        ClientContextId = data.ClientContextId
+                    };
+                    _commandDispatcher.Send(modifierUpdateClientContext);
+                }
+            }
+        }
+
+        
     }
     public enum TypeCoord
     {

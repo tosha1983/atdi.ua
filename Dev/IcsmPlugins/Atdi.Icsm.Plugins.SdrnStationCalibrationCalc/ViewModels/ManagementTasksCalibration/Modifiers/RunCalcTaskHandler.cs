@@ -29,12 +29,11 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
               .Update()
               .SetValue(c => c.StatusCode, (byte)CalcTaskStatusCode.Available)
               .SetValue(c => c.StatusName, CalcTaskStatusCode.Available.ToString())
-              .SetValue(c => c.StatusNote, "The task was was made available")
+              .SetValue(c => c.StatusNote, "The task was made available")
               .Filter(c => c.Id, command.Id);
 
             if (_dataLayer.Executor.Execute(updQuery) > 0)
             {
-
                 var insQuery = _dataLayer.GetBuilder<ICalcResult>()
                     .Create()
                     .SetValue(c => c.CreatedDate, DateTimeOffset.Now)
