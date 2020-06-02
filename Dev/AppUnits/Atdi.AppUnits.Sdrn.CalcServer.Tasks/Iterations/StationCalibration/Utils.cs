@@ -16,10 +16,81 @@ using Atdi.Platform.Data;
 
 namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 {
+    public static class StringExtension
+    {
+        static Dictionary<string, string> _dictStandardsForDriveTests = new Dictionary<string, string>
+        {
+            {"GSM-900", "GSM"},
+            {"GSM-1800", "GSM"},
+            {"E-GSM", "GSM"},
+            {"GSM", "GSM"},
+            {"UMTS", "UMTS"},
+            {"WCDMA", "UMTS"},
+            {"LTE-1800", "LTE"},
+            {"LTE-2600", "LTE"},
+            {"LTE-900", "LTE"},
+            {"LTE", "LTE"},
+            {"CDMA-450", "CDMA"},
+            {"CDMA-800", "CDMA"},
+            {"CDMA", "CDMA"},
+            {"EVDO", "CDMA"}
+        };
+
+        /// <summary>
+        /// Получить массив связанных стандартов для драйв тестов
+        /// </summary>
+        /// <param name="standard"></param>
+        /// <returns></returns>
+        public static string[] GetStandards(string standard)
+        {
+            var allStandards = new List<string>();
+            allStandards.Add(standard);
+            var listStandards = _dictStandardsForDriveTests.ToList();
+            for (int i = 0; i < listStandards.Count; i++)
+            {
+                if ((listStandards[i].Key == standard) || (listStandards[i].Value == standard))
+                {
+                    allStandards.Add(listStandards[i].Key);
+                    allStandards.Add(listStandards[i].Value);
+                }
+            }
+            return allStandards.Distinct().ToArray();
+        }
+
+        public static string GetStandardForDriveTest(this string standard)
+        {
+            var findStandard = "";
+            var listStandards = _dictStandardsForDriveTests.ToList();
+            for (int i = 0; i < listStandards.Count; i++)
+            {
+                if (listStandards[i].Key == standard)
+                {
+                    findStandard = listStandards[i].Value;
+                    break;
+                }
+            }
+            return findStandard;
+        }
+
+        public static bool CompareStandardForDriveTests(this string standard)
+        {
+            if (GetStandards(standard).Contains(standard))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+    }
 
     public class Utils
     {
         private readonly ILogger _logger;
+
+       
+
 
         /// <summary>
         /// Заказываем у контейнера нужные сервисы
@@ -41,6 +112,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 return false;
             }
         }
+
+       
+    
+
 
         // потом по возможности перенести в UTILS  ет к дублирует метод из Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements  -> class СorrelationСoefficient
         public static double Pearson(float[] arr1, float[] arr2)
@@ -66,31 +141,25 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         }
 
 
-        public static bool CompareGSIDSimple(string GCID1, string GCID2)
-        {
-            if (GCID2 == GCID2)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-            //return resCompare;
-        }
+        //public static bool CompareGSIDSimple(string GCID1, string GCID2)
+        //{
+        //    if (GCID2 == GCID2)
+        //    {
+        //        return true;
+        //    }
+        //    else
+        //    {
+        //        return false;
+        //    }
+        //    //return resCompare;
+        //}
+
+
 
         public static bool CompareGSID(string GCID1, string GCID2, string standard)
         {
-            //var resCompare = GCIDComparison.Compare(standard, GCID1, GCID2);
-            if (GCID2 == GCID2)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-            //return resCompare;
+            var resCompare = GCIDComparisonRR.Compare(standard, GCID1, GCID2);
+            return resCompare;
         }
 
         /// <summary>
@@ -458,7 +527,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 for (int j = 0; j < arrUniqueGSID.Length; j++)
                 {
                     var driveTestsTwo = lstDriveTestsResult[j][0];
-                    if (CompareGSID(driveTestsOne.GSID, driveTestsTwo.GSID, Standard))
+                    if (CompareGSID(driveTestsOne.GSID, driveTestsTwo.GSID, Standard.GetStandardForDriveTest()))
                     {
                         for (int v = 0; v < lstDriveTestsResult[k].Length; v++)
                         {
@@ -516,88 +585,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             return lstRecalcDriveTestsResult.ToArray();
         }
 
-        /// <summary>
-        /// Выделяем драйв тесты в отдельные группы без учета стандарта
-        /// </summary>
-        /// <param name="contextDriveTestsResult"></param>
-        /// <param name="Standard"></param>
-        /// <returns></returns>
-        public static DriveTestsResult[][] CompareDriveTestsWithoutStandards(DriveTestsResult[] contextDriveTestsResult)
-        {
-            var lstDriveTestsResult = new List<DriveTestsResult[]>();
-            var lstAllDriveTestsResult = new List<DriveTestsResult>();
-            var arrUniqueGSID = GetUniqueArrayGSIDfromDriveTests(contextDriveTestsResult);
-            for (int i = 0; i < arrUniqueGSID.Length; i++)
-            {
-                var groupDriveTest = GroupingDriveTestsByGSID(contextDriveTestsResult, arrUniqueGSID[i]);
-                lstDriveTestsResult.Add(groupDriveTest);
-                lstAllDriveTestsResult.AddRange(groupDriveTest.ToArray());
-            }
-
-            var lstGroupDriveTestsResult = new List<DriveTestsResult>();
-            for (int k = 0; k < arrUniqueGSID.Length; k++)
-            {
-                var driveTestsOne = lstDriveTestsResult[k][0];
-                for (int j = 0; j < arrUniqueGSID.Length; j++)
-                {
-                    var driveTestsTwo = lstDriveTestsResult[j][0];
-                    if (CompareGSIDSimple(driveTestsOne.GSID, driveTestsTwo.GSID))
-                    {
-                        for (int v = 0; v < lstDriveTestsResult[k].Length; v++)
-                        {
-                            lstDriveTestsResult[k][v].NameGroupGlobalSID = driveTestsOne.GSID;
-                            if ((lstGroupDriveTestsResult.FindAll(x => x.Num == lstDriveTestsResult[k][v].Num).Count == 0))
-                            {
-                                lstGroupDriveTestsResult.Add(lstDriveTestsResult[k][v]);
-                            }
-                        }
-
-                        for (int v = 0; v < lstDriveTestsResult[j].Length; v++)
-                        {
-                            lstDriveTestsResult[j][v].NameGroupGlobalSID = driveTestsOne.GSID;
-                            if ((lstGroupDriveTestsResult.FindAll(x => x.Num == lstDriveTestsResult[j][v].Num).Count == 0))
-                            {
-                                lstGroupDriveTestsResult.Add(lstDriveTestsResult[j][v]);
-                            }
-                        }
-                    }
-                }
-            }
-
-            var cntRecalcDriveTest = 0;
-            var lstRecalcDriveTestsResult = new List<DriveTestsResult[]>();
-            var arrUniqueGroups = GetUniqueArrayGroupsFromDriveTests(lstGroupDriveTestsResult.ToArray());
-
-            for (int k = 0; k < arrUniqueGroups.Length; k++)
-            {
-                var tempGroupDriveTestsResult = new List<DriveTestsResult>();
-                for (int j = 0; j < arrUniqueGSID.Length; j++)
-                {
-                    if (!arrUniqueGroups.Contains(arrUniqueGSID[j]))
-                    {
-                        tempGroupDriveTestsResult.AddRange(lstAllDriveTestsResult.FindAll(x => x.GSID == arrUniqueGSID[j]));
-                    }
-                }
-
-                var driveTestsByOneGroup = lstGroupDriveTestsResult.FindAll(x => x.NameGroupGlobalSID == arrUniqueGroups[k]);
-                for (int n = 0; n < tempGroupDriveTestsResult.Count; n++)
-                {
-                    if (driveTestsByOneGroup.FindAll(x => x.Num == tempGroupDriveTestsResult[n].Num).Count == 0)
-                    {
-                        lstRecalcDriveTestsResult.Add(new DriveTestsResult[] { tempGroupDriveTestsResult[n] });
-                        cntRecalcDriveTest += 1;
-                    }
-                }
-
-
-                var orderByCountPoints = from z in driveTestsByOneGroup orderby z.CountPoints descending select z;
-                var tempDriveTestsByOneGroup = orderByCountPoints.ToArray();
-                lstRecalcDriveTestsResult.Add(tempDriveTestsByOneGroup);
-                cntRecalcDriveTest += tempDriveTestsByOneGroup.Length;
-            }
-
-            return lstRecalcDriveTestsResult.ToArray();
-        }
+     
 
         /// <summary>
         /// Поиск соответствий между драйв тестами и станицями
@@ -619,7 +607,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 for (int m = 0; m < groupedDriveTests.Length; m++)
                 {
                     var driveTestGSID = groupedDriveTests[m][0].GSID;
-                    if (CompareGSID(driveTestGSID, stationsGSID, Standard))
+                    if (CompareGSID(driveTestGSID, stationsGSID, Standard.GetStandardForDriveTest()))
                     {
                         var lnkDriveTest = new LinkGoupDriveTestsAndStations()
                         {
