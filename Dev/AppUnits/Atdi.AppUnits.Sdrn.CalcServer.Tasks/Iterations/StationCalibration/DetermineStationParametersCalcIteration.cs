@@ -576,24 +576,27 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         var calibrationStationsAndDriveTest = calibrationStationsAndDriveTestsResultByGroup[m];
                         var driveTests = calibrationStationsAndDriveTest.ResultCalibrationDriveTest;
                         var stations = calibrationStationsAndDriveTest.ResultCalibrationStation;
-                        for (int z = 0; z < driveTests.Length; z++)
+                        if (driveTests != null)
                         {
-                            if (driveTests[z] != null)
+                            for (int z = 0; z < driveTests.Length; z++)
                             {
-                                listCalibrationDriveTestResult.Add(driveTests[z]);
+                                if (driveTests[z] != null)
+                                {
+                                    listCalibrationDriveTestResult.Add(driveTests[z]);
+                                }
                             }
                         }
-                        for (int z = 0; z < stations.Length; z++)
+                        if (stations != null)
                         {
-                            if (stations[z] != null)
+                            for (int z = 0; z < stations.Length; z++)
                             {
-                                listCalibrationStationResult.Add(stations[z]);
+                                if (stations[z] != null)
+                                {
+                                    listCalibrationStationResult.Add(stations[z]);
+                                }
                             }
                         }
-
                     }
-
-                     
 
                     var calcCorellationResult = new CalibrationResult()
                     {

@@ -448,7 +448,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 for (int j = 0; j < arrUniqueGSID.Length; j++)
                 {
                     var stationTwo = lstContextStations[j][0];
-                    if (CompareGSID(stationOne.LicenseGsid, stationTwo.LicenseGsid, Standard))
+                    if (CompareGSID(stationOne.LicenseGsid, stationTwo.LicenseGsid, Standard.GetStandardForDriveTest()))
                     {
                         for (int v = 0; v < lstContextStations[k].Length; v++)
                         {

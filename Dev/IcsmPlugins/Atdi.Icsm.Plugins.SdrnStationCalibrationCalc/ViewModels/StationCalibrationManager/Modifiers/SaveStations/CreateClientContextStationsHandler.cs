@@ -51,6 +51,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                     .SetValue(c => c.CallSign, command.CallSign)
                     .SetValue(c => c.Standard, command.Standard)
                     .SetValue(c => c.RealGsid, command.RealGsid)
+                    .SetValue(c => c.LicenseGsid, command.LicenseGsid)
                     .SetValue(c => c.RegionCode, command.RegionCode)
                     .SetValue(c => c.ModifiedDate, command.ModifiedDate)
                     .SetValue(c => c.ExternalSource, command.ExternalSource)
