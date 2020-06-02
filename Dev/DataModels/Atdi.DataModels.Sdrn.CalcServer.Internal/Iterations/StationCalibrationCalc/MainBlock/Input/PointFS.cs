@@ -17,5 +17,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
         public float FieldStrength_dBmkVm;
 
         public float Level_dBm;
+
+        public int Count;
     }
 }

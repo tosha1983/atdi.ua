@@ -21,7 +21,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
     {
         private readonly ILogger _logger;
         private readonly IIterationsPool _iterationsPool;
-        private readonly IObjectPool<CalcPoint[]> _calcPointArrayPool;
+        private readonly IObjectPool<PointFS[]> _calcPointArrayPool;
         private readonly IObjectPoolSite _poolSite;
         private readonly ITransformation _transformation;
         private readonly AppServerComponentConfig _appServerComponentConfig;
@@ -40,14 +40,13 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             _poolSite = poolSite;
             _appServerComponentConfig = appServerComponentConfig;
             _transformation = transformation;
-            _calcPointArrayPool = _poolSite.GetPool<CalcPoint[]>(ObjectPools.StationCalibrationCalcPointArrayObjectPool);
+            _calcPointArrayPool = _poolSite.GetPool<PointFS[]>(ObjectPools.StationCalibrationPointFSArrayObjectPool);
             _logger = logger;
         }
 
         public CalibrationResult[] Run(ITaskContext taskContext, AllStationCorellationCalcData data)
         {
-            var calcPointArrayBuffer = default(CalcPoint[]);
-
+           
 
             if (data.GSIDGroupeDriveTests.Length==0)
             {
@@ -76,7 +75,18 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 /// Все точки PointFS[] Points сортируем по Lat (если есть одинаковые Lat то внутри по Lon)
                 /// Все DriveTests должны пройти это при этом на входе у нас будет большой объём данных, а на выходе контролируемый. 
                 ///////////////////////////////////////////////////////////////////////////////////////////
-                Utils.PrepareData(ref data.GSIDGroupeStation, ref data.GSIDGroupeDriveTests);
+
+                //var arrGSIDGroupeDriveTests = Utils.CompareDriveTestsWithoutStandards(data.GSIDGroupeDriveTests);
+
+                var arrGSIDGroupeDriveTests = new List<DriveTestsResult[]>();
+                var arrUniqueGSID = Utils.GetUniqueArrayGSIDfromDriveTests(data.GSIDGroupeDriveTests);
+                for (int i = 0; i < arrUniqueGSID.Length; i++)
+                {
+                    var groupDriveTest = Utils.GroupingDriveTestsByGSID(data.GSIDGroupeDriveTests, arrUniqueGSID[i]);
+                    arrGSIDGroupeDriveTests.Add(groupDriveTest);
+                }
+
+                data.GSIDGroupeDriveTests = Utils.PrepareData(ref data, ref arrGSIDGroupeDriveTests, this._calcPointArrayPool);
 
 
                 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -244,7 +254,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         var drvTests = outListDriveTestsResults[i];
 
                         var driveTestsResults = new DriveTestsResult[drvTests.Length];
-                        var keyValueDriveTests = new Dictionary<int, float>();
+                        var keyValueDriveTests = new Dictionary<long, float>();
 
                         var orderByCountPoints = from z in drvTests orderby z.CountPoints descending select z;
                         var tempDriveTestsByOneGroup = orderByCountPoints.ToArray();
@@ -613,13 +623,6 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             catch (Exception)
             {
                 throw;
-            }
-            finally
-            {
-                if (calcPointArrayBuffer != null)
-                {
-                    _calcPointArrayPool.Put(calcPointArrayBuffer);
-                }
             }
             return listCalcCorellationResult.ToArray();
         }

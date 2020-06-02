@@ -50,9 +50,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         public ResultCorrelationGSIDGroupeStationsWithoutParameters Run(ITaskContext taskContext, StationCorellationCalcData data)
 		{
             var calcCorellationResult = new ResultCorrelationGSIDGroupeStationsWithoutParameters();
-
             var calcPointArrayBuffer = default(CalcPoint[]);
-            calcPointArrayBuffer = _calcPointArrayPool.Take();
 
             // вызываем механизм расчета FieldStrengthCalcData на основе переданных данных data.FieldStrengthCalcData
             var iterationFieldStrengthCalcData = _iterationsPool.GetIteration<FieldStrengthCalcData, FieldStrengthCalcResult>();
@@ -114,7 +112,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             calcPointArrayBuffer[counter].Lat = (int)data.GSIDGroupeDriveTests.Points[i].Coordinate.Y + data.FieldStrengthCalcData.MapArea.AxisY.Step / 2;
 
                             data.FieldStrengthCalcData.TargetCoordinate.X = calcPointArrayBuffer[counter].Lon;
-                            data.FieldStrengthCalcData.TargetCoordinate.Y = calcPointArrayBuffer[counter].Lon;
+                            data.FieldStrengthCalcData.TargetCoordinate.Y = calcPointArrayBuffer[counter].Lat;
 
                             calcPointArrayBuffer[counter].FSCalc = iterationFieldStrengthCalcData.Run(taskContext, data.FieldStrengthCalcData).FS_dBuVm.Value;
                             calcPointArrayBuffer[counter].FSMeas = data.GSIDGroupeDriveTests.Points[i].FieldStrength_dBmkVm;
@@ -231,7 +229,6 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 calcCorellationResult.Corellation_factor = a1 / Math.Sqrt(a2 * a3);
 
             }
-
             catch (Exception)
             {
                 throw;

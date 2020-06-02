@@ -10,6 +10,7 @@ using Atdi.DataModels.Sdrn.CalcServer.Internal.Maps;
 using Atdi.DataModels.Sdrn.DeepServices.Gis;
 using Atdi.Platform.Logging;
 using Atdi.DataModels.Sdrn.CalcServer.Internal.Clients;
+using Atdi.Platform.Data;
 
 
 
@@ -65,6 +66,18 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         }
 
 
+        public static bool CompareGSIDSimple(string GCID1, string GCID2)
+        {
+            if (GCID2 == GCID2)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+            //return resCompare;
+        }
 
         public static bool CompareGSID(string GCID1, string GCID2, string standard)
         {
@@ -84,9 +97,90 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         /// Метод для предварительной подготовки данных
         /// </summary>
         /// <param name="driveTestsResults"></param>
-        public static void PrepareData(ref ContextStation[] contextStations, ref DriveTestsResult[] driveTestsResults)
+        public static DriveTestsResult[] PrepareData(ref AllStationCorellationCalcData data, ref List<DriveTestsResult[]> arrDiveTestsResults,  IObjectPool<PointFS[]> calcPointArrayPool)
         {
+            var alldriveTestsResults = new List<DriveTestsResult>();
+            var lowerLeftCoord_m = data.FieldStrengthCalcData.MapArea.LowerLeft;
+            var upperRightCoord_m = data.FieldStrengthCalcData.MapArea.UpperRight;
+            // Step
+            double lonStep_dec = data.FieldStrengthCalcData.MapArea.AxisX.Step;//_transformation.ConvertCoordinateToWgs84(data.FieldStrengthCalcData.MapArea.LowerLeft.X, data.CodeProjection);
+            double latStep_dec = data.FieldStrengthCalcData.MapArea.AxisY.Step;
 
+
+            for (int k = 0; k < arrDiveTestsResults.Count; k++)
+            {
+                var groupDriveTestByGsid = arrDiveTestsResults[k];
+
+                for (int z = 0; z < groupDriveTestByGsid.Length; z++)
+                {
+                    int counter = 0;
+                    var calcPointArrayBuffer = default(PointFS[]);
+                    calcPointArrayBuffer = calcPointArrayPool.Take();
+
+                    var drivePoint = groupDriveTestByGsid[z];
+                    for (int i = 0; i < drivePoint.Points.Length; i++)
+                    {
+                        if (drivePoint.Points[i].FieldStrength_dBmkVm >= data.CorellationParameters.MinRangeMeasurements_dBmkV &&
+                           drivePoint.Points[i].FieldStrength_dBmkVm <= data.CorellationParameters.MaxRangeMeasurements_dBmkV &&
+                           Utils.IsInsideMap(drivePoint.Points[i].Coordinate.X, drivePoint.Points[i].Coordinate.Y, lowerLeftCoord_m.X, lowerLeftCoord_m.Y, upperRightCoord_m.X, upperRightCoord_m.Y))
+                        {
+                            bool isFoubdInBuffer = false;
+
+                            if (counter > 0)
+                            {
+                                // Сравнение следующих координат с приведенными к центру пикселя,
+                                for (int j = 0; j < counter; j++)
+                                {
+
+                                    bool isInsidePixelLon = Math.Abs(drivePoint.Points[i].Coordinate.X - calcPointArrayBuffer[j].Coordinate.X) < data.FieldStrengthCalcData.MapArea.AxisX.Step;
+                                    bool isInsidePixelLat = Math.Abs(drivePoint.Points[i].Coordinate.Y - calcPointArrayBuffer[j].Coordinate.X) < data.FieldStrengthCalcData.MapArea.AxisY.Step;
+                                    if (isInsidePixelLon && isInsidePixelLat)
+                                    {
+                                        //  в случае если по координатам уже есть изменерия, напряжённость усредняется
+                                        calcPointArrayBuffer[j].Coordinate.X = (int)drivePoint.Points[i].Coordinate.X + data.FieldStrengthCalcData.MapArea.AxisX.Step / 2;
+                                        calcPointArrayBuffer[j].Coordinate.Y = (int)drivePoint.Points[i].Coordinate.Y + data.FieldStrengthCalcData.MapArea.AxisY.Step / 2;
+
+                                        calcPointArrayBuffer[j].FieldStrength_dBmkVm = (float)(20 * Math.Log10((calcPointArrayBuffer[j].Count * Math.Pow(10, 0.05 * calcPointArrayBuffer[j].FieldStrength_dBmkVm) + Math.Pow(10, 0.05 * drivePoint.Points[i].FieldStrength_dBmkVm)) / (calcPointArrayBuffer[j].Count + 1)));
+                                        calcPointArrayBuffer[j].Count += 1;
+                                        isFoubdInBuffer = true;
+                                    }
+                                }
+                            }
+                            else if (isFoubdInBuffer == false || counter == 0)
+                            {
+                                // выполняется для первой итерации и в случае если по координатам не было измерений
+                                calcPointArrayBuffer[counter].Count += 1;
+                                calcPointArrayBuffer[counter].Coordinate.X = (int)drivePoint.Points[i].Coordinate.X + data.FieldStrengthCalcData.MapArea.AxisX.Step / 2;
+                                calcPointArrayBuffer[counter].Coordinate.Y = (int)drivePoint.Points[i].Coordinate.Y + data.FieldStrengthCalcData.MapArea.AxisY.Step / 2;
+
+                                data.FieldStrengthCalcData.TargetCoordinate.X = (int)calcPointArrayBuffer[counter].Coordinate.X;
+                                data.FieldStrengthCalcData.TargetCoordinate.Y = (int)calcPointArrayBuffer[counter].Coordinate.Y;
+
+                                calcPointArrayBuffer[counter].FieldStrength_dBmkVm = drivePoint.Points[i].FieldStrength_dBmkVm;
+
+                                counter++;
+                            }
+                        }
+                    }
+
+                    var driveTestsResults = new PointFS[counter];
+                    for (int v = 0; v < counter; v++)
+                    {
+                        driveTestsResults[v] = calcPointArrayBuffer[z];
+                    }
+                    if (driveTestsResults.Length > 0)
+                    {
+                        drivePoint.Points = driveTestsResults;
+                    }
+                    if (calcPointArrayBuffer != null)
+                    {
+                        calcPointArrayPool.Put(calcPointArrayBuffer);
+                    }
+                }
+                arrDiveTestsResults[k] = groupDriveTestByGsid;
+                alldriveTestsResults.AddRange(arrDiveTestsResults[k]);
+            }
+            return alldriveTestsResults.ToArray();
         }
 
         /// <summary>
@@ -214,6 +308,23 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         }
 
 
+        /// <summary>
+        /// Массив драйв тестов, сгруппированный на основании GSID
+        /// </summary>
+        /// <param name="driveTests"></param>
+        /// <param name="Standard"></param>
+        /// <returns></returns>
+        public static DriveTestsResult[] GroupingDriveTestsByGSID(DriveTestsResult[] driveTests, string GSID)
+        {
+            var lstDriveTests = new List<DriveTestsResult>();
+            var listDriveTests = driveTests.ToList();
+            var fndDriveTests = listDriveTests.FindAll(x => x.GSID == GSID );
+            if ((fndDriveTests != null) && (fndDriveTests.Count > 0))
+            {
+                lstDriveTests.AddRange(fndDriveTests);
+            }
+            return lstDriveTests.ToArray();
+        }
 
 
         /// <summary>
@@ -254,7 +365,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
 
         /// <summary>
-        /// Формирование групп станций на основе последовательного вызова метода CompareGSID для сравнения станций между собой
+        /// Формирование групп станций на основе последовательного вызова метода CompareGSID для сравнения станций между собой ( c учетом стандарта)
         /// </summary>
         /// <param name="contextStations"></param>
         /// <param name="Standard"></param>
@@ -333,7 +444,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         }
 
         /// <summary>
-        /// Выделяем драйв тесты в отдельные группы
+        /// Выделяем драйв тесты в отдельные группы c учетом стандарта
         /// </summary>
         /// <param name="contextDriveTestsResult"></param>
         /// <param name="Standard"></param>
@@ -415,6 +526,88 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             return lstRecalcDriveTestsResult.ToArray();
         }
 
+        /// <summary>
+        /// Выделяем драйв тесты в отдельные группы без учета стандарта
+        /// </summary>
+        /// <param name="contextDriveTestsResult"></param>
+        /// <param name="Standard"></param>
+        /// <returns></returns>
+        public static DriveTestsResult[][] CompareDriveTestsWithoutStandards(DriveTestsResult[] contextDriveTestsResult)
+        {
+            var lstDriveTestsResult = new List<DriveTestsResult[]>();
+            var lstAllDriveTestsResult = new List<DriveTestsResult>();
+            var arrUniqueGSID = GetUniqueArrayGSIDfromDriveTests(contextDriveTestsResult);
+            for (int i = 0; i < arrUniqueGSID.Length; i++)
+            {
+                var groupDriveTest = GroupingDriveTestsByGSID(contextDriveTestsResult, arrUniqueGSID[i]);
+                lstDriveTestsResult.Add(groupDriveTest);
+                lstAllDriveTestsResult.AddRange(groupDriveTest.ToArray());
+            }
+
+            var lstGroupDriveTestsResult = new List<DriveTestsResult>();
+            for (int k = 0; k < arrUniqueGSID.Length; k++)
+            {
+                var driveTestsOne = lstDriveTestsResult[k][0];
+                for (int j = 0; j < arrUniqueGSID.Length; j++)
+                {
+                    var driveTestsTwo = lstDriveTestsResult[j][0];
+                    if (CompareGSIDSimple(driveTestsOne.GSID, driveTestsTwo.GSID))
+                    {
+                        for (int v = 0; v < lstDriveTestsResult[k].Length; v++)
+                        {
+                            lstDriveTestsResult[k][v].NameGroupGlobalSID = driveTestsOne.GSID;
+                            if ((lstGroupDriveTestsResult.FindAll(x => x.Num == lstDriveTestsResult[k][v].Num).Count == 0))
+                            {
+                                lstGroupDriveTestsResult.Add(lstDriveTestsResult[k][v]);
+                            }
+                        }
+
+                        for (int v = 0; v < lstDriveTestsResult[j].Length; v++)
+                        {
+                            lstDriveTestsResult[j][v].NameGroupGlobalSID = driveTestsOne.GSID;
+                            if ((lstGroupDriveTestsResult.FindAll(x => x.Num == lstDriveTestsResult[j][v].Num).Count == 0))
+                            {
+                                lstGroupDriveTestsResult.Add(lstDriveTestsResult[j][v]);
+                            }
+                        }
+                    }
+                }
+            }
+
+            var cntRecalcDriveTest = 0;
+            var lstRecalcDriveTestsResult = new List<DriveTestsResult[]>();
+            var arrUniqueGroups = GetUniqueArrayGroupsFromDriveTests(lstGroupDriveTestsResult.ToArray());
+
+            for (int k = 0; k < arrUniqueGroups.Length; k++)
+            {
+                var tempGroupDriveTestsResult = new List<DriveTestsResult>();
+                for (int j = 0; j < arrUniqueGSID.Length; j++)
+                {
+                    if (!arrUniqueGroups.Contains(arrUniqueGSID[j]))
+                    {
+                        tempGroupDriveTestsResult.AddRange(lstAllDriveTestsResult.FindAll(x => x.GSID == arrUniqueGSID[j]));
+                    }
+                }
+
+                var driveTestsByOneGroup = lstGroupDriveTestsResult.FindAll(x => x.NameGroupGlobalSID == arrUniqueGroups[k]);
+                for (int n = 0; n < tempGroupDriveTestsResult.Count; n++)
+                {
+                    if (driveTestsByOneGroup.FindAll(x => x.Num == tempGroupDriveTestsResult[n].Num).Count == 0)
+                    {
+                        lstRecalcDriveTestsResult.Add(new DriveTestsResult[] { tempGroupDriveTestsResult[n] });
+                        cntRecalcDriveTest += 1;
+                    }
+                }
+
+
+                var orderByCountPoints = from z in driveTestsByOneGroup orderby z.CountPoints descending select z;
+                var tempDriveTestsByOneGroup = orderByCountPoints.ToArray();
+                lstRecalcDriveTestsResult.Add(tempDriveTestsByOneGroup);
+                cntRecalcDriveTest += tempDriveTestsByOneGroup.Length;
+            }
+
+            return lstRecalcDriveTestsResult.ToArray();
+        }
 
         /// <summary>
         /// Поиск соответствий между драйв тестами и станицями

@@ -84,6 +84,14 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                 Factory = () => new CalcPoint[appConfig.ThresholdsStationCalibrationArrayLength.GetValueOrDefault(1_0000)]
             });
 
+            var driveCalcPointFSArrayPool = poolSite.Register(new ObjectPoolDescriptor<PointFS[]>()
+            {
+                Key = ObjectPools.StationCalibrationPointFSArrayObjectPool,
+                MinSize = appConfig.ThresholdsStationCalibrationObjectPoolMaxSize.GetValueOrDefault(0),
+                MaxSize = appConfig.ThresholdsStationCalibrationObjectPoolMaxSize.GetValueOrDefault(10),
+                Factory = () => new PointFS[appConfig.ThresholdsStationCalibrationArrayLength.GetValueOrDefault(1_0000)]
+            });
+
             base.OnActivateUnit();
 		}
 	}
