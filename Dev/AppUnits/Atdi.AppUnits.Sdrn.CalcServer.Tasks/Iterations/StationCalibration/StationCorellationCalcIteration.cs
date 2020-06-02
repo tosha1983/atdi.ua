@@ -94,22 +94,20 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                 if (isInsidePixelLon && isInsidePixelLat)
                                 {
                                     //  в случае если по координатам уже есть изменерия, напряжённость усредняется
-                                    calcPointArrayBuffer[j].Lon = (int)data.GSIDGroupeDriveTests.Points[i].Coordinate.X + data.FieldStrengthCalcData.MapArea.AxisX.Step / 2;
-                                    calcPointArrayBuffer[j].Lat = (int)data.GSIDGroupeDriveTests.Points[i].Coordinate.Y + data.FieldStrengthCalcData.MapArea.AxisY.Step / 2;
-
-                                    calcPointArrayBuffer[j].FSMeas = 20 * Math.Log10((calcPointArrayBuffer[j].Count * Math.Pow(10, 0.05 * calcPointArrayBuffer[j].FSMeas) + Math.Pow(10, 0.05 * data.GSIDGroupeDriveTests.Points[i].FieldStrength_dBmkVm)) / (calcPointArrayBuffer[j].Count + 1));//data.GSIDGroupeDriveTests.Points[i].FieldStrength_dBmkVm;
+                                    calcPointArrayBuffer[j].FSMeas = (calcPointArrayBuffer[j].Count * calcPointArrayBuffer[j].FSMeas + data.GSIDGroupeDriveTests.Points[i].FieldStrength_dBmkVm) / (calcPointArrayBuffer[j].Count + 1);
+                                    //20 * Math.Log10((calcPointArrayBuffer[j].Count * Math.Pow(10, 0.05 * calcPointArrayBuffer[j].FSMeas) + Math.Pow(10, 0.05 * data.GSIDGroupeDriveTests.Points[i].FieldStrength_dBmkVm)) / (calcPointArrayBuffer[j].Count + 1));//data.GSIDGroupeDriveTests.Points[i].FieldStrength_dBmkVm;
                                     calcPointArrayBuffer[j].Count += 1;
                                     isFoubdInBuffer = true;
-                                    //break;//??
+                                    break; // как только нашли точку в буфере, у которой совпали координаты в пределах пикселя - поиск прекращается
                                 }
                             }
                         }
-                        else if (isFoubdInBuffer == false || counter == 0)
+                        if (isFoubdInBuffer == false || counter == 0)
                         {
                             // выполняется для первой итерации и в случае если по координатам не было измерений
-                            calcPointArrayBuffer[counter].Count += 1;
-                            calcPointArrayBuffer[counter].Lon = (int)data.GSIDGroupeDriveTests.Points[i].Coordinate.X + data.FieldStrengthCalcData.MapArea.AxisX.Step / 2;
-                            calcPointArrayBuffer[counter].Lat = (int)data.GSIDGroupeDriveTests.Points[i].Coordinate.Y + data.FieldStrengthCalcData.MapArea.AxisY.Step / 2;
+                            calcPointArrayBuffer[counter].Count = 1;
+                            calcPointArrayBuffer[counter].Lon = lowerLeftCoord_m.X + (int)((data.GSIDGroupeDriveTests.Points[i].Coordinate.X - lowerLeftCoord_m.X) / data.FieldStrengthCalcData.MapArea.AxisX.Step) * data.FieldStrengthCalcData.MapArea.AxisX.Step + data.FieldStrengthCalcData.MapArea.AxisX.Step / 2;
+                            calcPointArrayBuffer[counter].Lat = lowerLeftCoord_m.Y + (int)((data.GSIDGroupeDriveTests.Points[i].Coordinate.Y - lowerLeftCoord_m.Y) / data.FieldStrengthCalcData.MapArea.AxisY.Step) * data.FieldStrengthCalcData.MapArea.AxisY.Step + data.FieldStrengthCalcData.MapArea.AxisY.Step / 2;
 
                             data.FieldStrengthCalcData.TargetCoordinate.X = calcPointArrayBuffer[counter].Lon;
                             data.FieldStrengthCalcData.TargetCoordinate.Y = calcPointArrayBuffer[counter].Lat;

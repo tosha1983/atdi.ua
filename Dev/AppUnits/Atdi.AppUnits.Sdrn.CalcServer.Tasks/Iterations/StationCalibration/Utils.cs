@@ -210,7 +210,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                         calcPointArrayBuffer[j].FieldStrength_dBmkVm = intermediateFS;//(float)(20 * Math.Log10((calcPointArrayBuffer[j].Count * Math.Pow(10, 0.05 * calcPointArrayBuffer[j].FieldStrength_dBmkVm) + Math.Pow(10, 0.05 * drivePoint.Points[i].FieldStrength_dBmkVm)) / (calcPointArrayBuffer[j].Count + 1)));
                                         calcPointArrayBuffer[j].Count += 1;
                                         isFoubdInBuffer = true;
-                                        break; // 
+                                        break; // как только нашли точку в буфере, у которой совпали координаты в пределах пикселя - поиск прекращается
                                     }
                                 }
                             }
