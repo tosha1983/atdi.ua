@@ -185,7 +185,6 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
                     BaseContextId = CurrentBaseClientContext.Id,
                     Name = CurrentClientContextCard.Name,
                     Note = CurrentClientContextCard.Note,
-                    TypeCode = CurrentClientContextCard.TypeCode,
                     OwnerId = Guid.NewGuid()
                 };
 
