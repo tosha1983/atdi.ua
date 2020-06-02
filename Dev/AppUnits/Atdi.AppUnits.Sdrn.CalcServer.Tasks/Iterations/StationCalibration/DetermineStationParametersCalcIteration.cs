@@ -317,7 +317,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                     for (int p = 0; p < coordinatesDrivePoint.Length; p++)
                                     {
                                         var coordinateStation = _transformation.ConvertCoordinateToEpgs(new Wgs84Coordinate() { Longitude = arrStations[z].Site.Longitude, Latitude = arrStations[z].Site.Latitude }, _transformation.ConvertProjectionToCode(data.Projection));
-                                        if (GeometricСalculations.GetDistance_km(coordinatesDrivePoint[p].X, coordinatesDrivePoint[p].Y, coordinateStation.X, coordinateStation.Y) <= _appServerComponentConfig.MinDistanceBetweenDriveTestAndStation_GSM)
+                                        if (GeometricСalculations.GetDistance_km(coordinatesDrivePoint[p].X, coordinatesDrivePoint[p].Y, coordinateStation.X, coordinateStation.Y) <= _appServerComponentConfig.MinDistanceBetweenDriveTestAndStation_GSM * 1000)
                                         {
                                             // добавляем весь массив станций arrStations в случае если одна из станций, которая входит в arrStations имеет расстояние до одной из точек текущего DrivePoint меньше 1 км (берем с конфигурации)
                                             GSIDGroupeStations.Add(arrStations);
@@ -446,7 +446,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             {
                                 var arrStations = GSIDGroupeStations[j].ToList();
                                 var temp = arrStations.FindAll(x => x.Type == ClientContextStationType.P);
-                                if (temp != null)
+                                if ((temp != null) && (temp.Count>0))
                                 {
                                     arrayStationsInStatusP.Add(temp.ToArray());
                                 }

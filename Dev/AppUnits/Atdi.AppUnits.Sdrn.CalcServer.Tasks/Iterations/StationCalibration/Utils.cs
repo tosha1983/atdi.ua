@@ -154,9 +154,27 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         //    //return resCompare;
         //}
 
+        /// <summary>
+        /// Сравнение драйв тестов со станциями
+        /// </summary>
+        /// <param name="GCID1"></param>
+        /// <param name="GCID2"></param>
+        /// <param name="standard"></param>
+        /// <returns></returns>
+        public static bool CompareGSIDBetweenDriveTestAndStation(string GCIDDriveTest, string GCIDStation, string standard)
+        {
+            var resCompare = GCIDComparisonRDB.Compare(standard, GCIDDriveTest, GCIDStation);
+            return resCompare;
+        }
 
-
-        public static bool CompareGSID(string GCID1, string GCID2, string standard)
+        /// <summary>
+        /// Сравнение с базовыми станциями
+        /// </summary>
+        /// <param name="GCID1"></param>
+        /// <param name="GCID2"></param>
+        /// <param name="standard"></param>
+        /// <returns></returns>
+        public static bool CompareGSIDWithBaseStations(string GCID1, string GCID2, string standard)
         {
             var resCompare = GCIDComparisonRR.Compare(standard, GCID1, GCID2);
             return resCompare;
@@ -172,7 +190,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             var lowerLeftCoord_m = data.FieldStrengthCalcData.MapArea.LowerLeft;
             var upperRightCoord_m = data.FieldStrengthCalcData.MapArea.UpperRight;
             // Step
-            double lonStep_dec = data.FieldStrengthCalcData.MapArea.AxisX.Step;//_transformation.ConvertCoordinateToWgs84(data.FieldStrengthCalcData.MapArea.LowerLeft.X, data.CodeProjection);
+            double lonStep_dec = data.FieldStrengthCalcData.MapArea.AxisX.Step;
             double latStep_dec = data.FieldStrengthCalcData.MapArea.AxisY.Step;
 
 
@@ -234,6 +252,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     }
                     
                     drivePoint.Points = driveTestsResults;
+                    drivePoint.CountPoints = driveTestsResults.Length;
                     groupDriveTestByGsid[z] = drivePoint;
 
                     if (calcPointArrayBuffer != null)
@@ -448,7 +467,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 for (int j = 0; j < arrUniqueGSID.Length; j++)
                 {
                     var stationTwo = lstContextStations[j][0];
-                    if (CompareGSID(stationOne.LicenseGsid, stationTwo.LicenseGsid, Standard.GetStandardForDriveTest()))
+                    if (CompareGSIDWithBaseStations(stationOne.LicenseGsid, stationTwo.LicenseGsid, Standard.GetStandardForDriveTest()))
                     {
                         for (int v = 0; v < lstContextStations[k].Length; v++)
                         {
@@ -527,7 +546,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 for (int j = 0; j < arrUniqueGSID.Length; j++)
                 {
                     var driveTestsTwo = lstDriveTestsResult[j][0];
-                    if (CompareGSID(driveTestsOne.GSID, driveTestsTwo.GSID, Standard.GetStandardForDriveTest()))
+                    if (CompareGSIDWithBaseStations(driveTestsOne.GSID, driveTestsTwo.GSID, Standard.GetStandardForDriveTest()))
                     {
                         for (int v = 0; v < lstDriveTestsResult[k].Length; v++)
                         {
@@ -607,7 +626,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 for (int m = 0; m < groupedDriveTests.Length; m++)
                 {
                     var driveTestGSID = groupedDriveTests[m][0].GSID;
-                    if (CompareGSID(driveTestGSID, stationsGSID, Standard.GetStandardForDriveTest()))
+                    if (CompareGSIDBetweenDriveTestAndStation(driveTestGSID, stationsGSID, Standard.GetStandardForDriveTest()))
                     {
                         var lnkDriveTest = new LinkGoupDriveTestsAndStations()
                         {
@@ -686,7 +705,15 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
         public static EpsgCoordinate CenterWeightAllCoordinates(PointFS[] pointFs)
         {
-            return new EpsgCoordinate();
+            double xCenterWeightCoord = 0;
+            double yCenterWeightCoord = 0;
+            for (int i = 0; i < pointFs.Length; i++)
+            {
+                var coordinate = pointFs[i].Coordinate;
+                xCenterWeightCoord += coordinate.X;
+                yCenterWeightCoord += coordinate.Y;
+            }
+            return new EpsgCoordinate() { X = xCenterWeightCoord / pointFs.Length,  Y = yCenterWeightCoord / pointFs.Length };
         }
 
     }

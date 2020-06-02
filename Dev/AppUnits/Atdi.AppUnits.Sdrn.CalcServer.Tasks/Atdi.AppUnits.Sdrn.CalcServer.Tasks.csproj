@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="AppServerComponent.cs" />
     <Compile Include="AppServerComponentConfig.cs" />
+    <Compile Include="Iterations\StationCalibration\CIDComparisonRDB.cs" />
     <Compile Include="Iterations\StationCalibration\GCIDComparisonRR.cs" />
     <Compile Include="Iterations\StationCalibration\DetermineStationParametersCalcIteration.cs" />
     <Compile Include="Iterations\StationCalibration\Utils.cs" />
