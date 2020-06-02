@@ -124,6 +124,15 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Calibration result Id.
+        /// </summary>
+        public static string CalibrationResultId {
+            get {
+                return ResourceManager.GetString("CalibrationResultId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Cascade tuning.
         /// </summary>
         public static string CascadeTuning {
@@ -201,6 +210,15 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         public static string CountMeasGSID_LS {
             get {
                 return ResourceManager.GetString("CountMeasGSID_LS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Count points in drive test.
+        /// </summary>
+        public static string CountPointsInDriveTest {
+            get {
+                return ResourceManager.GetString("CountPointsInDriveTest", resourceCulture);
             }
         }
         
@@ -340,6 +358,33 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Drive test Id.
+        /// </summary>
+        public static string DriveTestId {
+            get {
+                return ResourceManager.GetString("DriveTestId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на External code.
+        /// </summary>
+        public static string ExternalCode {
+            get {
+                return ResourceManager.GetString("ExternalCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на External source.
+        /// </summary>
+        public static string ExternalSource {
+            get {
+                return ResourceManager.GetString("ExternalSource", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на General.
         /// </summary>
         public static string General {
@@ -354,6 +399,15 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         public static string Id {
             get {
                 return ResourceManager.GetString("Id", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на License Gsid.
+        /// </summary>
+        public static string LicenseGsid {
+            get {
+                return ResourceManager.GetString("LicenseGsid", resourceCulture);
             }
         }
         
@@ -394,6 +448,15 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Maximum corellation.
+        /// </summary>
+        public static string MaxCorellation {
+            get {
+                return ResourceManager.GetString("MaxCorellation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Max deviation Altitude Station, m.
         /// </summary>
         public static string MaxDeviationAltitudeStation {
@@ -426,6 +489,15 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         public static string MaxDeviationTiltStation {
             get {
                 return ResourceManager.GetString("MaxDeviationTiltStation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Maximum percent corellation.
+        /// </summary>
+        public static string MaxPercentCorellation {
+            get {
+                return ResourceManager.GetString("MaxPercentCorellation", resourceCulture);
             }
         }
         
@@ -493,6 +565,69 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на New altitude, m.
+        /// </summary>
+        public static string New_Altitude_m {
+            get {
+                return ResourceManager.GetString("New_Altitude_m", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на New azimuth, deg.
+        /// </summary>
+        public static string New_Azimuth_deg {
+            get {
+                return ResourceManager.GetString("New_Azimuth_deg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на New freq, MHz.
+        /// </summary>
+        public static string New_Freq_MHz {
+            get {
+                return ResourceManager.GetString("New_Freq_MHz", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на New lat, deg.
+        /// </summary>
+        public static string New_Lat_deg {
+            get {
+                return ResourceManager.GetString("New_Lat_deg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на New lon, deg.
+        /// </summary>
+        public static string New_Lon_deg {
+            get {
+                return ResourceManager.GetString("New_Lon_deg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на New power,  dB.
+        /// </summary>
+        public static string New_Power_dB {
+            get {
+                return ResourceManager.GetString("New_Power_dB", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на New tilt, deg.
+        /// </summary>
+        public static string New_Tilt_deg {
+            get {
+                return ResourceManager.GetString("New_Tilt_deg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Note.
         /// </summary>
         public static string Note {
@@ -525,6 +660,69 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         public static string NumberStationInContour {
             get {
                 return ResourceManager.GetString("NumberStationInContour", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Old altitude, m.
+        /// </summary>
+        public static string Old_Altitude_m {
+            get {
+                return ResourceManager.GetString("Old_Altitude_m", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Old azimuth, deg.
+        /// </summary>
+        public static string Old_Azimuth_deg {
+            get {
+                return ResourceManager.GetString("Old_Azimuth_deg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Old lat, deg.
+        /// </summary>
+        public static string Old_Lat_deg {
+            get {
+                return ResourceManager.GetString("Old_Lat_deg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Old lon, deg.
+        /// </summary>
+        public static string Old_Lon_deg {
+            get {
+                return ResourceManager.GetString("Old_Lon_deg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Old power, dB.
+        /// </summary>
+        public static string Old_Power_dB {
+            get {
+                return ResourceManager.GetString("Old_Power_dB", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Old tilt, deg.
+        /// </summary>
+        public static string Old_Tilt_deg {
+            get {
+                return ResourceManager.GetString("Old_Tilt_deg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Old freq, MHz.
+        /// </summary>
+        public static string OldFreq_MHz {
+            get {
+                return ResourceManager.GetString("OldFreq_MHz", resourceCulture);
             }
         }
         
@@ -570,6 +768,24 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         public static string Projects {
             get {
                 return ResourceManager.GetString("Projects", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Real Gsid.
+        /// </summary>
+        public static string RealGsid {
+            get {
+                return ResourceManager.GetString("RealGsid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Result drive test status.
+        /// </summary>
+        public static string ResultDriveTestStatus {
+            get {
+                return ResourceManager.GetString("ResultDriveTestStatus", resourceCulture);
             }
         }
         

@@ -212,7 +212,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                 for (int z = 0; z < this._mobStationsLoadModelByParams.AreaModel.Length; z++)
                 {
                     var rs = new IMRecordset(arrayTables[v], IMRecordset.Mode.ReadOnly);
-                    rs.Select("ID,AZIMUTH,STANDARD,STATUS,CALL_SIGN,Position.LATITUDE,Position.LONGITUDE,Position.ASL,NAME,Owner.CODE,DATE_MODIFIED,DATE_CREATED,BW,RX_LOSSES,TX_LOSSES,PWR_ANT,Equipment.KTBF,Equipment.RXTH_6,Antenna.POLARIZATION,GAIN,Antenna.DIAGV,Antenna.DIAGH,Antenna.DIAGA,ELEVATION,Antenna.XPD,Position.City.PROVINCE");
+                    rs.Select("ID,AZIMUTH,STANDARD,STATUS,CALL_SIGN,Position.LATITUDE,Position.LONGITUDE,Position.ASL,NAME,Owner.REGIST_NUM,DATE_MODIFIED,DATE_CREATED,BW,RX_LOSSES,TX_LOSSES,PWR_ANT,Equipment.KTBF,Equipment.RXTH_6,Antenna.POLARIZATION,GAIN,Antenna.DIAGV,Antenna.DIAGH,Antenna.DIAGA,ELEVATION,Antenna.XPD,Position.City.PROVINCE");
                     if (((this._mobStationsLoadModelByParams.IdentifierStation != null) && (this._mobStationsLoadModelByParams.IdentifierStation != 0) && (this._mobStationsLoadModelByParams.SelectedStationType == SelectedStationType.OneStation)))
                     {
                         rs.SetWhere("ID", IMRecordset.Operation.Eq, this._mobStationsLoadModelByParams.IdentifierStation.Value);
@@ -273,7 +273,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                         mobStationT.m_Position.m_asl = rs.GetD("Position.ASL");
 
                         // Генерация GSID
-                        mobStationT.m_cust_txt1 = GetGlobalSID(rs.GetS("Owner.CODE"), rs.GetS("NAME"));
+                        mobStationT.m_cust_txt1 = GetGlobalSID(rs.GetS("Owner.REGIST_NUM"), rs.GetS("NAME"));
 
 
 
@@ -370,6 +370,10 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                         mobStationT.m_Antenna.m_xpd = rs.GetD("Antenna.XPD");
                         mobStationT.m_rec_area = rs.GetS("Position.City.PROVINCE");
                         mobStationT.m_cust_txt2 = ReadGCIDDataModel(mobStationT.m_cust_txt1, mobStationT.m_rec_area, mobStationT.m_standard);
+                        if ((mobStationT.m_cust_txt2!= mobStationT.m_cust_txt1) && !string.IsNullOrEmpty(mobStationT.m_cust_txt2))
+                        {
+                            mobStationT.m_cust_txt1 = mobStationT.m_cust_txt2;
+                        }
 
                         bool correctStation = false;
                         if (notActiveStationStatuses.Contains(rs.GetS("STATUS")))
@@ -502,6 +506,12 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                                 Angle_deg = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagv, AntennaPatternType.VV, source.m_gain).Select(c => c.Angle).ToArray()
                             };
 
+                            DateTime? modifiedDate = null;
+                            if (source.m_date_modified!=IM.NullT)
+                            {
+                                modifiedDate = source.m_date_modified;
+                            }
+
                             listIcsmMobStation.Add(new IcsmMobStation
                             {
                                 CallSign = source.m_call_sign,
@@ -512,7 +522,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                                 Name = source.m_name,
                                 LicenseGsid = source.m_cust_txt1,
                                 RealGsid = source.m_cust_txt2,
-                                ModifiedDate = source.m_date_modified,
+                                ModifiedDate = modifiedDate,
                                 CreatedDate = source.m_date_created,
                                 RegionCode = source.m_rec_area,
                                 SITE = new IcsmMobStationSite()

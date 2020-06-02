@@ -662,8 +662,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     CodeProjection = data.Projection
                 };
 
-
-                var iterationCorellationCalc = _iterationsPool.GetIteration<StationCorellationCalcData, ResultCorrelationGSIDGroupeStations>();
+                var iterationCorellationCalc = _iterationsPool.GetIteration<StationCorellationCalcData, ResultCorrelationGSIDGroupeStationsWithoutParameters>();
                 var resultCorellationCalcData = iterationCorellationCalc.Run(taskContext, stationCorellationCalcData);
 
                 // Если максимальная корреляция превысит(или равна) Сorrelation threshold weak то возвращаем True
@@ -762,6 +761,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             ParametersStationNew = resGSIDGroupeStations.ParametersStationNew,
                             ParametersStationOld = resGSIDGroupeStations.ParametersStationOld,
                             ResultStationStatus = calibrationStatusParameters.ResultStationStatus,
+                            StationMonitoringId = resGSIDGroupeStations.ClientContextStation.ContextId
                         };
                         listCalibrationStationResults.Add(calibrationStationResult);
 
@@ -773,7 +773,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             GsidFromStation = resGSIDGroupeStations.ClientContextStation.LicenseGsid,
                             //MaxPercentCorellation = ??????????????????????????
                             CountPointsInDriveTest = resGSIDGroupeStations.DriveTestsResult.Points.Length,
-                            ResultDriveTestStatus = calibrationStatusParameters.ResultDriveTestStatus
+                            ResultDriveTestStatus = calibrationStatusParameters.ResultDriveTestStatus,
+                            LinkToStationMonitoringId = resGSIDGroupeStations.ClientContextStation.ContextId
                         };
                         listCalibrationDriveTestResult.Add(calibrationDriveTestResult);
                     }
@@ -851,6 +852,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             ParametersStationNew = resGSIDGroupeStations.ParametersStationNew,
                             ParametersStationOld = resGSIDGroupeStations.ParametersStationOld,
                             ResultStationStatus = calibrationStatusParameters.ResultStationStatus,
+                            StationMonitoringId = resGSIDGroupeStations.ClientContextStation.ContextId
                         };
                         listCalibrationStationResults.Add(calibrationStationResult);
 
@@ -862,7 +864,9 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             GsidFromStation = resGSIDGroupeStations.ClientContextStation.LicenseGsid,
                             //MaxPercentCorellation = ??????????????????????????
                             CountPointsInDriveTest = resGSIDGroupeStations.DriveTestsResult.Points.Length,
-                            ResultDriveTestStatus = calibrationStatusParameters.ResultDriveTestStatus
+                            ResultDriveTestStatus = calibrationStatusParameters.ResultDriveTestStatus,
+                            LinkToStationMonitoringId = resGSIDGroupeStations.ClientContextStation.ContextId
+
                         };
                         listCalibrationDriveTestResult.Add(calibrationDriveTestResult);
                     }
@@ -954,7 +958,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         RealGsid = resGSIDGroupeStations.ClientContextStation.RealGsid,
                         //calibrationStationResult.MaxCorellation = ??????????????????????????
                         ParametersStationNew = resGSIDGroupeStations.ParametersStationNew,
-                        ParametersStationOld = resGSIDGroupeStations.ParametersStationOld
+                        ParametersStationOld = resGSIDGroupeStations.ParametersStationOld,
+                        //ResultStationStatus = StationStatusResult.IT
+                        StationMonitoringId = resGSIDGroupeStations.ClientContextStation.ContextId
+
                     };
                     listCalibrationStationResults.Add(calibrationStationResult);
 
@@ -966,6 +973,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         GsidFromStation = resGSIDGroupeStations.ClientContextStation.LicenseGsid,
                         //MaxPercentCorellation = ??????????????????????????
                         CountPointsInDriveTest = resGSIDGroupeStations.DriveTestsResult.Points.Length,
+                        LinkToStationMonitoringId = resGSIDGroupeStations.ClientContextStation.ContextId
                     };
 
                     if (pointForCorrelation.Value)

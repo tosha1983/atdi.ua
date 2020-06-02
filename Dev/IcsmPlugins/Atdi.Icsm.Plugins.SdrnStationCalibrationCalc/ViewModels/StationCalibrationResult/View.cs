@@ -23,6 +23,9 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
     [ViewCaption("Station Calibration result")]
     public class View : ViewBase
     {
+        private DateTime? _dateStartLoadResults;
+        private DateTime? _dateStopLoadResults;
+
         private long _resultId;
         private MP.MapDrawingData _currentMapData;
 
@@ -32,7 +35,10 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
         private readonly IEventBus _eventBus;
         private readonly ILogger _logger;
 
-      
+
+
+        public ViewCommand LoadResultsCommand { get; set; }
+
         private CalcServerDataLayer _dataLayer { get; set; }
 
         private IList _currentStationCalibrationResultModel;
@@ -66,11 +72,49 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             this.StationCalibrationDriveTestsDataAdapter = stationCalibrationDriveTestsDataAdapter;
             this.StationCalibrationStaDataAdapter = stationCalibrationStaDataAdapter;
 
+
+            this.LoadResultsCommand = new ViewCommand(this.OnLoadResultsCommand);
+
             this._dataLayer = dataLayer;
+
+            this.DateStartLoadResults = DateTime.Now.AddDays(-30);
+            this.DateStopLoadResults = DateTime.Now;
+
             this.RedrawMap();
         }
 
-      
+        public DateTime? DateStartLoadResults
+        {
+            get => this._dateStartLoadResults;
+            set => this.Set(ref this._dateStartLoadResults, value);
+        }
+        public DateTime? DateStopLoadResults
+        {
+            get => this._dateStopLoadResults;
+            set => this.Set(ref this._dateStopLoadResults, value);
+        }
+
+        private void OnLoadResultsCommand(object parameter)
+        {
+            try
+            {
+                this.StationCalibrationStaDataAdapter.resultId = -1;
+                this.StationCalibrationStaDataAdapter.Refresh();
+
+                this.StationCalibrationDriveTestsDataAdapter.resultId = -1;
+                this.StationCalibrationDriveTestsDataAdapter.Refresh();
+
+                this.StationCalibrationResultDataAdapter.resultId = ResultId;
+                this.StationCalibrationResultDataAdapter.dateTimeStart = new DateTimeOffset(DateStartLoadResults.Value);
+                this.StationCalibrationResultDataAdapter.dateTimeStop = new DateTimeOffset(DateStopLoadResults.Value);
+                this.StationCalibrationResultDataAdapter.Refresh();
+
+            }
+            catch (Exception e)
+            {
+                this._logger.Exception(Exceptions.StationCalibrationCalculation, e);
+            }
+        }
 
         public long ResultId
         {
@@ -82,12 +126,6 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
         {
             this.StationCalibrationResultDataAdapter.resultId = resId;
             this.StationCalibrationResultDataAdapter.Refresh();
-            
-            this.StationCalibrationStaDataAdapter.resultId = resId;
-            this.StationCalibrationStaDataAdapter.Refresh();
-
-            this.StationCalibrationDriveTestsDataAdapter.resultId = resId;
-            this.StationCalibrationDriveTestsDataAdapter.Refresh();
         }
 
         public MP.MapDrawingData CurrentMapData
@@ -192,7 +230,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             {
                 foreach (StationCalibrationResultModel v in this._currentStationCalibrationResultModel)
                 {
-                    var sta = GetStationCalibrationStaByResId(v.ResultId);
+                    var sta = GetStationCalibrationStaByResId(v.Id);
                     if (sta != null)
                     {
                         for (int i = 0; i < sta.Length; i++)
@@ -213,7 +251,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                             });
                         }
                     }
-                    var resDriveTests = GetDriveTests(v.ResultId);
+                    var resDriveTests = GetDriveTests(v.Id);
                     if (resDriveTests != null)
                     {
                         for (int k = 0; k < resDriveTests.Length; k++)
@@ -260,9 +298,9 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                 {
                     foreach (StationCalibrationResultModel v in this._currentStationCalibrationResultModel)
                     {
-                        this.StationCalibrationStaDataAdapter.resultId = v.ResultId;
+                        this.StationCalibrationStaDataAdapter.resultId = v.Id;
                         this.StationCalibrationStaDataAdapter.Refresh();
-                        this.StationCalibrationDriveTestsDataAdapter.resultId = v.ResultId;
+                        this.StationCalibrationDriveTestsDataAdapter.resultId = v.Id;
                         this.StationCalibrationDriveTestsDataAdapter.Refresh();
                         this.RedrawMap();
                     }
