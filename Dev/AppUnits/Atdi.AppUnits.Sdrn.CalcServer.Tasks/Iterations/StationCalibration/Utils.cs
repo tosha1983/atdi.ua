@@ -132,30 +132,25 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                 for (int j = 0; j < counter; j++)
                                 {
 
-                                    bool isInsidePixelLon = Math.Abs(drivePoint.Points[i].Coordinate.X - calcPointArrayBuffer[j].Coordinate.X) < data.FieldStrengthCalcData.MapArea.AxisX.Step;
-                                    bool isInsidePixelLat = Math.Abs(drivePoint.Points[i].Coordinate.Y - calcPointArrayBuffer[j].Coordinate.X) < data.FieldStrengthCalcData.MapArea.AxisY.Step;
+                                    bool isInsidePixelLon = Math.Abs(drivePoint.Points[i].Coordinate.X - calcPointArrayBuffer[j].Coordinate.X) < data.FieldStrengthCalcData.MapArea.AxisX.Step/2;
+                                    bool isInsidePixelLat = Math.Abs(drivePoint.Points[i].Coordinate.Y - calcPointArrayBuffer[j].Coordinate.Y) < data.FieldStrengthCalcData.MapArea.AxisY.Step/2;
                                     if (isInsidePixelLon && isInsidePixelLat)
                                     {
                                         //  в случае если по координатам уже есть изменерия, напряжённость усредняется
-                                        calcPointArrayBuffer[j].Coordinate.X = (int)drivePoint.Points[i].Coordinate.X + data.FieldStrengthCalcData.MapArea.AxisX.Step / 2;
-                                        calcPointArrayBuffer[j].Coordinate.Y = (int)drivePoint.Points[i].Coordinate.Y + data.FieldStrengthCalcData.MapArea.AxisY.Step / 2;
-
-                                        calcPointArrayBuffer[j].FieldStrength_dBmkVm = (float)(20 * Math.Log10((calcPointArrayBuffer[j].Count * Math.Pow(10, 0.05 * calcPointArrayBuffer[j].FieldStrength_dBmkVm) + Math.Pow(10, 0.05 * drivePoint.Points[i].FieldStrength_dBmkVm)) / (calcPointArrayBuffer[j].Count + 1)));
+                                        var intermediateFS = (calcPointArrayBuffer[j].Count * calcPointArrayBuffer[j].FieldStrength_dBmkVm + drivePoint.Points[i].FieldStrength_dBmkVm ) / ( calcPointArrayBuffer[j].Count + 1 );
+                                        calcPointArrayBuffer[j].FieldStrength_dBmkVm = intermediateFS;//(float)(20 * Math.Log10((calcPointArrayBuffer[j].Count * Math.Pow(10, 0.05 * calcPointArrayBuffer[j].FieldStrength_dBmkVm) + Math.Pow(10, 0.05 * drivePoint.Points[i].FieldStrength_dBmkVm)) / (calcPointArrayBuffer[j].Count + 1)));
                                         calcPointArrayBuffer[j].Count += 1;
                                         isFoubdInBuffer = true;
+                                        break; // 
                                     }
                                 }
                             }
-                            else if (isFoubdInBuffer == false || counter == 0)
+                            if (isFoubdInBuffer == false || counter == 0)
                             {
                                 // выполняется для первой итерации и в случае если по координатам не было измерений
-                                calcPointArrayBuffer[counter].Count += 1;
-                                calcPointArrayBuffer[counter].Coordinate.X = (int)drivePoint.Points[i].Coordinate.X + data.FieldStrengthCalcData.MapArea.AxisX.Step / 2;
-                                calcPointArrayBuffer[counter].Coordinate.Y = (int)drivePoint.Points[i].Coordinate.Y + data.FieldStrengthCalcData.MapArea.AxisY.Step / 2;
-
-                                data.FieldStrengthCalcData.TargetCoordinate.X = (int)calcPointArrayBuffer[counter].Coordinate.X;
-                                data.FieldStrengthCalcData.TargetCoordinate.Y = (int)calcPointArrayBuffer[counter].Coordinate.Y;
-
+                                calcPointArrayBuffer[counter].Count = 1;
+                                calcPointArrayBuffer[counter].Coordinate.X = lowerLeftCoord_m.X + Math.Floor((drivePoint.Points[i].Coordinate.X - lowerLeftCoord_m.X) / data.FieldStrengthCalcData.MapArea.AxisX.Step) * data.FieldStrengthCalcData.MapArea.AxisX.Step + data.FieldStrengthCalcData.MapArea.AxisX.Step / 2;
+                                calcPointArrayBuffer[counter].Coordinate.Y = lowerLeftCoord_m.Y + Math.Floor((drivePoint.Points[i].Coordinate.Y - lowerLeftCoord_m.Y) / data.FieldStrengthCalcData.MapArea.AxisY.Step) * data.FieldStrengthCalcData.MapArea.AxisY.Step + data.FieldStrengthCalcData.MapArea.AxisY.Step / 2;
                                 calcPointArrayBuffer[counter].FieldStrength_dBmkVm = drivePoint.Points[i].FieldStrength_dBmkVm;
 
                                 counter++;
@@ -166,30 +161,25 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     var driveTestsResults = new PointFS[counter];
                     for (int v = 0; v < counter; v++)
                     {
-                        driveTestsResults[v] = calcPointArrayBuffer[z];
+                        driveTestsResults[v] = calcPointArrayBuffer[v];
                     }
-                    if (driveTestsResults.Length > 0)
-                    {
-                        drivePoint.Points = driveTestsResults;
-                    }
+                    
+                    drivePoint.Points = driveTestsResults;
+                    groupDriveTestByGsid[z] = drivePoint;
+
                     if (calcPointArrayBuffer != null)
                     {
                         calcPointArrayPool.Put(calcPointArrayBuffer);
                     }
                 }
-                arrDiveTestsResults[k] = groupDriveTestByGsid;
+
+                var lstResDriveTest = groupDriveTestByGsid.ToList();
+                lstResDriveTest.RemoveAll(x => x.Points.Length == 0);
+
+                arrDiveTestsResults[k] = lstResDriveTest.ToArray();
                 alldriveTestsResults.AddRange(arrDiveTestsResults[k]);
             }
             return alldriveTestsResults.ToArray();
-        }
-
-        /// <summary>
-        /// Метод для перфорации драйв тестов
-        /// </summary>
-        /// <param name="driveTestsResults"></param>
-        public static void PerforationDriveTestResults(ref DriveTestsResult[] driveTestsResults)
-        {
-
         }
 
         /// <summary>

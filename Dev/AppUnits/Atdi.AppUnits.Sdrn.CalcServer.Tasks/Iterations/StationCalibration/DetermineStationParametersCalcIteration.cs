@@ -94,8 +94,6 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 ///     включение механизма перфорации DriveTests
                 /// 
                 ///////////////////////////////////////////////////////////////////////////////////////////
-                Utils.PerforationDriveTestResults(ref data.GSIDGroupeDriveTests);
-
                 for (int i = 0; i < data.GSIDGroupeDriveTests.Length; i++)
                 {
                     while (true)
