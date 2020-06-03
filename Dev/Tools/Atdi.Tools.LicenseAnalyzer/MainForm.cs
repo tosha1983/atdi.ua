@@ -100,6 +100,15 @@ namespace Atdi.Tools.LicenseAnalyzer
             {
 	            sharedSecret = "Atdi.AppServer.AppService.SdrnsController";
             }
+            else if (cmbConfigType.SelectedIndex == 7) // SDRN Calc Server Client ICSM Plugin
+			{
+	            sharedSecret = "9BE22B3F-2BA7-4486-9EE3-040A64A5CAD3";
+            }
+            else if (cmbConfigType.SelectedIndex == 8) // SDRN Station Calibration Calc ICSM Plugin
+			{
+	            sharedSecret = "A77839F8-5546-41C9-A6D9-3777894D3E41";
+            }
+
 			txtEncryptedOwnerId.Text = Encryptor.EncryptStringAES(txtLicenseOwnerId.Text, sharedSecret);
 			ToolTip tt = new ToolTip();
 			tt.IsBalloon = true;
@@ -122,5 +131,34 @@ namespace Atdi.Tools.LicenseAnalyzer
 			tt.SetToolTip(txtEncryptedPassword, Encryptor.DecryptStringAES(txtEncryptedPassword.Text, sharedSecret));
 
 		}
-    }
+
+		private void button4_Click(object sender, EventArgs e)
+		{
+			txtHostKey.Text = LicenseVerifier.GetHostKey();
+			button5.Enabled = true;
+			button6.Enabled = true;
+		}
+
+		private void button5_Click(object sender, EventArgs e)
+		{
+			Clipboard.SetText(txtHostKey.Text);
+		}
+
+		private void button6_Click(object sender, EventArgs e)
+		{
+			var saveDialog = new SaveFileDialog
+			{
+				Filter = @"Text|*.txt",
+				Title = "Save an Host Key Info File",
+				FileName = $"HostKey_{Environment.MachineName}_.txt"
+			};
+
+			var result = saveDialog.ShowDialog();
+
+			if (result == DialogResult.OK && !string.IsNullOrEmpty(saveDialog.FileName))
+			{
+				File.WriteAllText(saveDialog.FileName, txtHostKey.Text);
+			}
+		}
+	}
 }

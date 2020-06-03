@@ -11,6 +11,7 @@ using Atdi.Test.Api.Sdrn.CalcServer.Client.Tasks;
 using DM = Atdi.DataModels.Sdrn.CalcServer.Entities;
 using Atdi.DataModels.Sdrn.Infocenter.Entities.Stations;
 using Atdi.DataModels.Sdrn.Infocenter.Entities.SdrnServer;
+using Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks;
 
 namespace Atdi.Test.Api.Sdrn.CalcServer.Client
 {
@@ -101,16 +102,24 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client
 		{
 			try
 			{
-				var endpoint = new WebApiEndpoint(new Uri("http://localhost:15075/"), "/appserver/v1");
-				var dataContext = new WebApiDataContext("SDRN_Infocenter_DB");
+				//var endpoint = new WebApiEndpoint(new Uri("http://localhost:15075/"), "/appserver/v1");
+				//var dataContext = new WebApiDataContext("SDRN_Infocenter_DB");
+
+				var endpoint = new WebApiEndpoint(new Uri("http://localhost:15070/"), "/appserver/v1");
+				var dataContext = new WebApiDataContext("SDRN_CalcServer_DB");
 
 				var dataLayer = new WebApiDataLayer(endpoint, dataContext);
-				var d = new DateTime();
-				var d2 = DateTime.SpecifyKind(d, DateTimeKind.Unspecified);
-				var query = dataLayer.GetBuilder<IIntegrationLog>()
-					.Create();
-					query.SetValue( c => c.CreatedDate, d)
-					;
+				//var d = new DateTime();
+				//var d2 = DateTime.SpecifyKind(d, DateTimeKind.Unspecified);
+				//var query = dataLayer.GetBuilder<IIntegrationLog>()
+				//	.Create();
+				//	query.SetValue( c => c.CreatedDate, d)
+				//	;
+
+					var queryArgs = dataLayer.GetBuilder<IStationCalibrationArgs>()
+						.Create()
+						.SetValue(c => c.TASK.Id, 1000);
+					dataLayer.Executor.Execute(queryArgs);
 
 				//var reader = dataLayer.Executor.ExecuteReader(query);
 				//if (reader.Read())

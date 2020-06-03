@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Resources;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -50,6 +53,14 @@ namespace Atdi.Icsm.Plugins.Core
 			var captionText = captionAttr?.Text;
 			var xamlFilePath = $"{viewType.Assembly.GetName().Name}\\Xaml\\{xamlAttr.Name}";
 			var viewForm = new ViewForm(xamlFilePath, view, captionText, this, this.Logger);
+
+			
+			if (xamlAttr.Width > 0 && xamlAttr.Height > 0)
+			{
+				viewForm.Size = new Size(xamlAttr.Width, xamlAttr.Height);
+			}
+			viewForm.WindowState = xamlAttr.WindowState;
+
 			_forms.Add(viewForm, viewForm);
 			_formsByViews.Add(view, viewForm);
 			_viewsByFroms.Add(viewForm, view);
@@ -93,6 +104,21 @@ namespace Atdi.Icsm.Plugins.Core
 					this.Logger.Exception("Plugins.Core", "ViewStarter", e, this);
 				}
 			}
+		}
+
+		public void ShowException(string title, Exception e)
+		{
+			this.ShowException(title, "Something went wrong.", e);
+		}
+
+		public void ShowException(string title, string message, Exception e)
+		{
+			var text = new StringBuilder();
+			text.AppendLine(message);
+			text.AppendLine($"");
+			text.AppendLine(e.Message);
+
+			MessageBox.Show(text.ToString(), title, MessageBoxButtons.OK, MessageBoxIcon.Error);
 		}
 	}
 }
