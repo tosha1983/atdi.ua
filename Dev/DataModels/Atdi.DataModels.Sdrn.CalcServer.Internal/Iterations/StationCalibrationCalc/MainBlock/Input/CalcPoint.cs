@@ -10,9 +10,9 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
 	public struct CalcPoint
     {
-        public int Lon;
+        public double X;
 
-        public int Lat;
+        public double Y;
 
         public int Count;
 

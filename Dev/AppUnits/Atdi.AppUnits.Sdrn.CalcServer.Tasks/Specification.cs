@@ -36,7 +36,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 
     internal static class Exceptions
     {
-        //public static readonly string ServiceHostWasNotInitialized = "The service host was not initialized";
+        public static readonly string StationCalibration = "Station Calibration";
     }
 
     internal static class ObjectPools
@@ -48,6 +48,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 	    public static readonly string GisProfileHeightArrayObjectPool = "CalcServer.Gis.Profile.HeightArray";
         public static readonly string StationCalibrationDriveTestsResultArrayObjectPool = "CalcServer.StationCalibration.DriveTestsResult";
         public static readonly string StationCalibrationCalcPointArrayObjectPool = "CalcServer.StationCalibration.CalcPoint";
+        public static readonly string StationCalibrationPointFSArrayObjectPool = "CalcServer.StationCalibration.PointFS";
+        public static readonly string StationCalibrationResultObjectPool = "CalcServer.StationCalibration.StationCalibrationResultObjectPool";
+        public static readonly string StationCalibrationListDriveTestsResultObjectPool = "CalcServer.StationCalibration.ListDriveTestsResultObjectPool";
         
+
+
     }
 }

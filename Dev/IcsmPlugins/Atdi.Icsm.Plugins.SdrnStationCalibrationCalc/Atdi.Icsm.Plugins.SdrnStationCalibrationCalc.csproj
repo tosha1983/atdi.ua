@@ -110,8 +110,11 @@
     <Compile Include="ViewModels\ManagementTasksCalibration\Queries\GetClientContextById.cs" />
     <Compile Include="ViewModels\ManagementTasksCalibration\Queries\GetClientContextByIdExecutor.cs" />
     <Compile Include="ViewModels\ManagementTasksCalibration\View.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Events\PropagationModel\OnCreatePropagationModels.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Events\SaveStations\OnSavedStations.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Models\StationMonitoring\RoutesStationMonitoringModel.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Modifiers\PropagationModel\CreatePropagationModelsHandler.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Modifiers\PropagationModel\CreatePropagationModels.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Modifiers\SaveStations\CreateClientContextStations.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Modifiers\Parameters\CreateParamsCalculation.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Modifiers\SaveStations\CreateClientContextStationsHandler.cs" />

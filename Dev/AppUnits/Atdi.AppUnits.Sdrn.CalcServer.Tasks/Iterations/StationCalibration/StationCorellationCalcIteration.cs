@@ -50,9 +50,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         public ResultCorrelationGSIDGroupeStationsWithoutParameters Run(ITaskContext taskContext, StationCorellationCalcData data)
 		{
             var calcCorellationResult = new ResultCorrelationGSIDGroupeStationsWithoutParameters();
-
             var calcPointArrayBuffer = default(CalcPoint[]);
-            calcPointArrayBuffer = _calcPointArrayPool.Take();
 
             // вызываем механизм расчета FieldStrengthCalcData на основе переданных данных data.FieldStrengthCalcData
             var iterationFieldStrengthCalcData = _iterationsPool.GetIteration<FieldStrengthCalcData, FieldStrengthCalcResult>();
@@ -91,30 +89,29 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             // Сравнение следующих координат с приведенными к центру пикселя,
                             for (int j = 0; j < counter; j++)
                             {
-                                bool isInsidePixelLon = Math.Abs(data.GSIDGroupeDriveTests.Points[i].Coordinate.X - calcPointArrayBuffer[j].Lon) < data.FieldStrengthCalcData.MapArea.AxisX.Step;
-                                bool isInsidePixelLat = Math.Abs(data.GSIDGroupeDriveTests.Points[i].Coordinate.Y - calcPointArrayBuffer[j].Lat) < data.FieldStrengthCalcData.MapArea.AxisY.Step;
+                                bool isInsidePixelLon = Math.Abs(data.GSIDGroupeDriveTests.Points[i].Coordinate.X - calcPointArrayBuffer[j].X) < data.FieldStrengthCalcData.MapArea.AxisX.Step / 2;
+                                bool isInsidePixelLat = Math.Abs(data.GSIDGroupeDriveTests.Points[i].Coordinate.Y - calcPointArrayBuffer[j].Y) < data.FieldStrengthCalcData.MapArea.AxisY.Step / 2;
                                 if (isInsidePixelLon && isInsidePixelLat)
                                 {
                                     //  в случае если по координатам уже есть изменерия, напряжённость усредняется
-                                    calcPointArrayBuffer[j].Lon = (int)data.GSIDGroupeDriveTests.Points[i].Coordinate.X + data.FieldStrengthCalcData.MapArea.AxisX.Step / 2;
-                                    calcPointArrayBuffer[j].Lat = (int)data.GSIDGroupeDriveTests.Points[i].Coordinate.Y + data.FieldStrengthCalcData.MapArea.AxisY.Step / 2;
-
-                                    calcPointArrayBuffer[j].FSMeas = 20 * Math.Log10((calcPointArrayBuffer[j].Count * Math.Pow(10, 0.05 * calcPointArrayBuffer[j].FSMeas) + Math.Pow(10, 0.05 * data.GSIDGroupeDriveTests.Points[i].FieldStrength_dBmkVm)) / (calcPointArrayBuffer[j].Count + 1));//data.GSIDGroupeDriveTests.Points[i].FieldStrength_dBmkVm;
+                                    calcPointArrayBuffer[j].FSMeas = (calcPointArrayBuffer[j].Count * calcPointArrayBuffer[j].FSMeas + data.GSIDGroupeDriveTests.Points[i].FieldStrength_dBmkVm) / (calcPointArrayBuffer[j].Count + 1);
+                                    //20 * Math.Log10((calcPointArrayBuffer[j].Count * Math.Pow(10, 0.05 * calcPointArrayBuffer[j].FSMeas) + Math.Pow(10, 0.05 * data.GSIDGroupeDriveTests.Points[i].FieldStrength_dBmkVm)) / (calcPointArrayBuffer[j].Count + 1));//data.GSIDGroupeDriveTests.Points[i].FieldStrength_dBmkVm;
                                     calcPointArrayBuffer[j].Count += 1;
                                     isFoubdInBuffer = true;
-                                    //break;//??
+                                    break; // как только нашли точку в буфере, у которой совпали координаты в пределах пикселя - поиск прекращается
                                 }
                             }
                         }
-                        else if (isFoubdInBuffer == false || counter == 0)
+                        if (isFoubdInBuffer == false || counter == 0)
                         {
                             // выполняется для первой итерации и в случае если по координатам не было измерений
-                            calcPointArrayBuffer[counter].Count += 1;
-                            calcPointArrayBuffer[counter].Lon = (int)data.GSIDGroupeDriveTests.Points[i].Coordinate.X + data.FieldStrengthCalcData.MapArea.AxisX.Step / 2;
-                            calcPointArrayBuffer[counter].Lat = (int)data.GSIDGroupeDriveTests.Points[i].Coordinate.Y + data.FieldStrengthCalcData.MapArea.AxisY.Step / 2;
+                            calcPointArrayBuffer[counter].Count = 1;
+                            calcPointArrayBuffer[counter].X = lowerLeftCoord_m.X + Math.Floor((data.GSIDGroupeDriveTests.Points[i].Coordinate.X - lowerLeftCoord_m.X) / data.FieldStrengthCalcData.MapArea.AxisX.Step) * data.FieldStrengthCalcData.MapArea.AxisX.Step + data.FieldStrengthCalcData.MapArea.AxisX.Step / 2;
+                            calcPointArrayBuffer[counter].Y = lowerLeftCoord_m.Y + Math.Floor((data.GSIDGroupeDriveTests.Points[i].Coordinate.Y - lowerLeftCoord_m.Y) / data.FieldStrengthCalcData.MapArea.AxisY.Step) * data.FieldStrengthCalcData.MapArea.AxisY.Step + data.FieldStrengthCalcData.MapArea.AxisY.Step / 2;
 
-                            data.FieldStrengthCalcData.TargetCoordinate.X = calcPointArrayBuffer[counter].Lon;
-                            data.FieldStrengthCalcData.TargetCoordinate.Y = calcPointArrayBuffer[counter].Lon;
+                            data.FieldStrengthCalcData.TargetCoordinate.X = (int)calcPointArrayBuffer[counter].X;
+                            data.FieldStrengthCalcData.TargetCoordinate.Y = (int)calcPointArrayBuffer[counter].Y;
+                            data.FieldStrengthCalcData.TargetAltitude_m = data.GSIDGroupeDriveTests.Points[0].Height_m; // add to FS buffer model ?????????????????
 
                             calcPointArrayBuffer[counter].FSCalc = iterationFieldStrengthCalcData.Run(taskContext, data.FieldStrengthCalcData).FS_dBuVm.Value;
                             calcPointArrayBuffer[counter].FSMeas = data.GSIDGroupeDriveTests.Points[i].FieldStrength_dBmkVm;
@@ -129,10 +126,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 {
                     if (data.CorellationParameters.CorrelationDistance_m > data.FieldStrengthCalcData.MapArea.AxisX.Step)
                     {
-                        int lonAroundStart = calcPointArrayBuffer[i].Lon - data.CorellationParameters.CorrelationDistance_m / 2;
-                        int latAroundStart = calcPointArrayBuffer[i].Lat - data.CorellationParameters.CorrelationDistance_m / 2;
-                        int lonAroundStop = calcPointArrayBuffer[i].Lon + data.CorellationParameters.CorrelationDistance_m / 2;
-                        int latAroundStop = calcPointArrayBuffer[i].Lat + data.CorellationParameters.CorrelationDistance_m / 2;
+                        int lonAroundStart = (int)calcPointArrayBuffer[i].X - data.CorellationParameters.CorrelationDistance_m / 2;
+                        int latAroundStart = (int)calcPointArrayBuffer[i].Y - data.CorellationParameters.CorrelationDistance_m / 2;
+                        int lonAroundStop = (int)calcPointArrayBuffer[i].X + data.CorellationParameters.CorrelationDistance_m / 2;
+                        int latAroundStop = (int)calcPointArrayBuffer[i].Y + data.CorellationParameters.CorrelationDistance_m / 2;
                        
                         double measCalcFSdifference = (calcPointArrayBuffer[i].FSMeas - calcPointArrayBuffer[i].FSCalc);
                         double minMeasCalcFSdifference = measCalcFSdifference;
@@ -191,11 +188,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     //- CorreIPoints[](Lon_DEC, Lat_DEC, FSMeas_dBmkVm, FSCalc_dBmkVm, Dist_km) выдаётся только если Detail = true(нам для отладки не плохо было бы это хоть как визуализировать на карте)
                     if (data.CorellationParameters.Detail)
                     {
-                        calcCorellationResult.CorrellationPoints[i].Dist_km = GeometricСalculations.GetDistance_km(calcPointArrayBuffer[i].Lon, calcPointArrayBuffer[i].Lat, data.GSIDGroupeStation.Site.Longitude, data.GSIDGroupeStation.Site.Latitude);
+                        calcCorellationResult.CorrellationPoints[i].Dist_km = GeometricСalculations.GetDistance_km(calcPointArrayBuffer[i].X, calcPointArrayBuffer[i].Y, data.GSIDGroupeStation.Site.Longitude, data.GSIDGroupeStation.Site.Latitude);
                         calcCorellationResult.CorrellationPoints[i].FSCalc_dBmkVm = calcPointArrayBuffer[i].FSCalc;
                         calcCorellationResult.CorrellationPoints[i].FSMeas_dBmkVm = calcPointArrayBuffer[i].FSMeas;
 
-                        var coordinateTransform = _transformation.ConvertCoordinateToWgs84(new EpsgCoordinate() { X = calcPointArrayBuffer[i].Lon, Y = calcPointArrayBuffer[i].Lat }, _transformation.ConvertProjectionToCode(data.CodeProjection));
+                        var coordinateTransform = _transformation.ConvertCoordinateToWgs84(new EpsgCoordinate() { X = calcPointArrayBuffer[i].X, Y = calcPointArrayBuffer[i].Y }, _transformation.ConvertProjectionToCode(data.CodeProjection));
                         calcCorellationResult.CorrellationPoints[i].Lon_DEC = coordinateTransform.Longitude;
                         calcCorellationResult.CorrellationPoints[i].Lat_DEC = coordinateTransform.Latitude;
                         //var coord = _transformation.ConvertCoordinateToWgs84(data.FieldStrengthCalcData.MapArea.LowerLeft.X, data.CodeProjection)
@@ -231,7 +228,6 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 calcCorellationResult.Corellation_factor = a1 / Math.Sqrt(a2 * a3);
 
             }
-
             catch (Exception)
             {
                 throw;

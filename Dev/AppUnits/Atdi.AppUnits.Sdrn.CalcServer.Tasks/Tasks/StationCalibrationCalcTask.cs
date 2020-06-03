@@ -119,6 +119,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
         public void Run()
         {
             var mapData = _mapRepository.GetMapByName(this._calcDbScope, this._taskContext.ProjectId, this._parameters.MapName);
+            var propagationModel = _contextService.GetPropagationModel(this._calcDbScope, this._taskContext.ClientContextId);
             var iterationAllStationCorellationCalcData = new AllStationCorellationCalcData
             {
                 GSIDGroupeStation = this._contextStations,
@@ -128,8 +129,13 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                 GeneralParameters = this._parameters.GeneralParameters,
                 MapData = mapData,
                 CluttersDesc = _mapRepository.GetCluttersDesc(this._calcDbScope, mapData.Id),
-                PropagationModel = _contextService.GetPropagationModel(this._calcDbScope, this._taskContext.ClientContextId),
-                Projection = this._parameters.Projection
+                PropagationModel = propagationModel,
+                Projection = this._parameters.Projection,
+                FieldStrengthCalcData = new FieldStrengthCalcData
+                {
+                    PropagationModel = propagationModel,
+                    MapArea = mapData.Area
+                }
             };
             var iterationResultCalibration = _iterationsPool.GetIteration<AllStationCorellationCalcData, CalibrationResult[]>();
             var resulCalibration = iterationResultCalibration.Run(_taskContext, iterationAllStationCorellationCalcData);
@@ -649,67 +655,90 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
             var partResultIds = BreakDownElemBlocks.BreakDown(this._parameters.InfocMeasResults);
             for (int i = 0; i < partResultIds.Count; i++)
             {
-                    var queryDriveTestPoints = _infocenterDataLayer.GetBuilder<IDriveTestPoints>()
-                    .From()
-                    .Select(
-                        c => c.Id,
-                        c => c.DRIVE_TEST.Id,
-                        c => c.DRIVE_TEST.Freq_MHz,
-                        c => c.DRIVE_TEST.Gsid,
-                        c => c.DRIVE_TEST.PointsCount,
-                        c => c.DRIVE_TEST.Standard,
-                        c => c.DRIVE_TEST.RESULT.MeasTime,
-                        c => c.Points,
-                        c => c.Count
-                    )
-                    .Where(c => c.DRIVE_TEST.RESULT.Id, ConditionOperator.In, partResultIds[i].ToArray());
+                var queryDriveTest = _infocenterDataLayer.GetBuilder<IDriveTest>()
+                .From()
+                .Select(
+                    c => c.Id,
+                    c => c.Freq_MHz,
+                    c => c.Gsid,
+                    c => c.PointsCount,
+                    c => c.Standard,
+                    c => c.RESULT.MeasTime
+                )
+                .Where(c => c.RESULT.Id, ConditionOperator.In, partResultIds[i].ToArray());
 
-                var contextDriveTestsResults = _infoDbScope.Executor.ExecuteAndFetch(queryDriveTestPoints, reader =>
+                var contextDriveTestsResults = _infoDbScope.Executor.ExecuteAndFetch(queryDriveTest, reader =>
                 {
                     while (reader.Read())
                     {
-                        PointFS[] pointFS = null;
-                        var points = reader.GetValueAs<DriveTestPoint[]>(c => c.Points);
-                        if (points != null)
-                        {
-                            pointFS = new PointFS[points.Length];
-                            for (int j = 0; j < points.Length; j++)
-                            {
-                                pointFS[j].Coordinate = _transformation.ConvertCoordinateToEpgs(points[j].Coordinate, _transformation.ConvertProjectionToCode(this._parameters.Projection));
-                                pointFS[j].FieldStrength_dBmkVm = points[j].FieldStrength_dBmkVm;
-                                pointFS[j].Height_m = points[j].Height_m;
-                                pointFS[j].Level_dBm = points[j].Level_dBm;
-                            }
-                        }
-                        driveTests.Add(new DriveTestsResult()
-                        {
-                            DriveTestId = reader.GetValue(c => c.DRIVE_TEST.Id),
-                            Freq_MHz = reader.GetValue(c => c.DRIVE_TEST.Freq_MHz),
-                            GSID = reader.GetValue(c => c.DRIVE_TEST.Gsid),
-                            Standard = reader.GetValue(c => c.DRIVE_TEST.Standard),
-                            Points = pointFS,
-                            Num = cntRecord,
-                            CountPoints = reader.GetValue(c => c.Count)
-                        });
 
-                        var standards = driveTests.Select(c => c.Standard).ToArray();
-                        for (int j = 0; j < standards.Length; j++)
+                        var driveTestsResult = new DriveTestsResult()
                         {
-                            var fndDriveTests = driveTests.FindAll(x => x.Standard == standards[j]);
-                            var cntPoints = 0;
-                            for (int k = 0; k < fndDriveTests.Count; k++)
-                            {
-                                cntPoints += fndDriveTests[k].Points.Length;
-                            }
-                            if (cntPoints > _appServerComponentConfig.MaxCountDriveTestsByOneStandard)
-                            {
-                                throw new InvalidOperationException($"Too much drive tests. For standard #{standards[j]} greater {_appServerComponentConfig.MaxCountDriveTestsByOneStandard}. Please select other contour!");
-                            }
-                        }
+                            DriveTestId = reader.GetValue(c => c.Id),
+                            Freq_MHz = reader.GetValue(c => c.Freq_MHz),
+                            GSID = reader.GetValue(c => c.Gsid),
+                            Standard = reader.GetValue(c => c.Standard),
+                            Num = reader.GetValue(c => c.Id)
+                        };
+
+                        driveTests.Add(driveTestsResult);
+
+
                         cntRecord++;
                     }
                     return true;
                 });
+
+
+                for (int k = 0; k < driveTests.Count; k++)
+                {
+                    var driveTest = driveTests[k];
+
+                    var queryDriveTestPoints = _infocenterDataLayer.GetBuilder<IDriveTestPoints>()
+                    .From()
+                    .Select(
+                    c => c.Id,
+                    c => c.DRIVE_TEST.Id,
+                    c => c.Points,
+                    c => c.Count
+                    )
+                    .Where(c => c.DRIVE_TEST.Id, ConditionOperator.Equal, driveTest.Num);
+
+                    var pointFs = new List<PointFS>();
+                    var contextDriveTestsPointResults = _infoDbScope.Executor.ExecuteAndFetch(queryDriveTestPoints, DriveTestsPoint =>
+                    {
+                        while (DriveTestsPoint.Read())
+                        {
+                            PointFS[] pointFS = null;
+                            var points = DriveTestsPoint.GetValueAs<DriveTestPoint[]>(c => c.Points);
+                            if (points != null)
+                            {
+                                pointFS = new PointFS[points.Length];
+                                for (int j = 0; j < points.Length; j++)
+                                {
+                                    pointFS[j].Coordinate = _transformation.ConvertCoordinateToEpgs(points[j].Coordinate, _transformation.ConvertProjectionToCode(this._parameters.Projection));
+                                    pointFS[j].FieldStrength_dBmkVm = points[j].FieldStrength_dBmkVm;
+                                    if (points[j].Height_m == 0)
+                                    {
+                                        points[j].Height_m = 3;
+                                    }
+                                    else
+                                    {
+                                        pointFS[j].Height_m = points[j].Height_m;
+                                    }
+                                    pointFS[j].Level_dBm = points[j].Level_dBm;
+                                }
+                                pointFs.AddRange(pointFS);
+                            }
+
+                        }
+                        return true;
+                    });
+
+                    driveTest.CountPoints = pointFs.Count;
+                    driveTest.Points = pointFs.ToArray();
+                    driveTests[k] = driveTest;
+                }
             }
             this._contextDriveTestsResult = driveTests.ToArray();
         }

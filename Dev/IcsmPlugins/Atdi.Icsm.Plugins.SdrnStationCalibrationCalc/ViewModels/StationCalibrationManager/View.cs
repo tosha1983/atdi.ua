@@ -46,6 +46,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
         
         private IEventHandlerToken<Events.OnEditParamsCalculation> _onEditParamsCalculationToken;
         private IEventHandlerToken<Events.OnSavedStations> _onSavedStationsToken;
+        private IEventHandlerToken<Events.OnCreatePropagationModels> _onCreatePropagationModelsToken;
         private readonly IObjectReader _objectReader;
         private readonly ICommandDispatcher _commandDispatcher;
         private readonly ViewStarter _starter;
@@ -100,6 +101,8 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
 
             this.StartStationCalibrationCommand = new ViewCommand(this.OnStartStationCalibrationCommand);
             this.LoadDriveTestsCommand = new ViewCommand(this.OnLoadDriveTestsCommand);
+
+            
 
             this._currentParamsCalculationModel = new ParamsCalculationModel();
             this._currentGetStationsParameters = new GetStationsParamsModel();
@@ -171,15 +174,15 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             paramsCalculationModel.ShiftAltitudeStationStep_m = 5;
             paramsCalculationModel.MaxDeviationAltitudeStation_m = 10;
             paramsCalculationModel.TiltStation = true;
+            paramsCalculationModel.MaxDeviationTiltStation_deg = 3;
             paramsCalculationModel.ShiftTiltStationMin_deg = -20;
             paramsCalculationModel.ShiftTiltStationMax_deg = 0;
             paramsCalculationModel.ShiftTiltStationStep_deg = 1;
-            paramsCalculationModel.MaxDeviationTiltStation_deg = 3;
             paramsCalculationModel.AzimuthStation = true;
-            paramsCalculationModel.ShiftAltitudeStationMin_m = -180;
-            paramsCalculationModel.ShiftAltitudeStationMax_m = 180;
-            paramsCalculationModel.ShiftAltitudeStationStep_m = 10;
-            paramsCalculationModel.ShiftAzimuthStationMax_deg = 30;
+            paramsCalculationModel.ShiftAzimuthStationMin_deg = -180;
+            paramsCalculationModel.ShiftAzimuthStationMax_deg = 180;
+            paramsCalculationModel.ShiftAzimuthStationStep_deg = 10;
+            paramsCalculationModel.MaxDeviationAzimuthStation_deg = 30;
             paramsCalculationModel.CoordinatesStation = true;
             paramsCalculationModel.ShiftCoordinatesStation_m = 100;
             paramsCalculationModel.ShiftCoordinatesStationStep_m = 10;
@@ -670,10 +673,19 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                     this._currentParamsCalculationModel.InfocMeasResults = listStationMonitoringModel.ToArray();
                     this._currentParamsCalculationModel.StationIds = stations.Select(x => Convert.ToInt64(x.ExternalCode)).ToArray();
                     _onEditParamsCalculationToken = _eventBus.Subscribe<Events.OnEditParamsCalculation>(this.OnEditParamsCalculationsHandle);
+                    _onCreatePropagationModelsToken = _eventBus.Subscribe<Events.OnCreatePropagationModels>(this.OnCreatePropagationModelsHandle);
                     _onSavedStationsToken = _eventBus.Subscribe<Events.OnSavedStations>(this.OnSavedStationsHandle);
+
+
                     var clientContextId = _objectReader.Read<long?>().By(new CalcTaskModelByContextId() { TaskId = TaskId });
                     if ((clientContextId != null) && (clientContextId != 0))
                     {
+                        var createPropagationModels = new CreatePropagationModels()
+                        {
+                            ContextId = clientContextId.Value
+                        };
+                        _commandDispatcher.Send(createPropagationModels);
+
                         var createClientContextStations = new CreateClientContextStations()
                         {
                             ClientContextId = clientContextId.Value,
@@ -770,8 +782,16 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                 }
             }
         }
+        private void OnCreatePropagationModelsHandle(Events.OnCreatePropagationModels data)
+        {
+            if (data != null)
+            {
+                
+            }
+        }
 
         
+
     }
     public enum TypeCoord
     {

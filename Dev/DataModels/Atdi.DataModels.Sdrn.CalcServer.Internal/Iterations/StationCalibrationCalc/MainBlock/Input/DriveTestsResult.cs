@@ -22,7 +22,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 
         public string NameGroupGlobalSID;
 
-        public int Num;
+        public long Num;
 
         public long DriveTestId;
 

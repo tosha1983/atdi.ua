@@ -21,7 +21,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
     {
         private readonly ILogger _logger;
         private readonly IIterationsPool _iterationsPool;
-        private readonly IObjectPool<CalcPoint[]> _calcPointArrayPool;
+        private readonly IObjectPool<PointFS[]> _calcPointArrayPool;
+        private readonly IObjectPool<DriveTestsResult[][]> _calcListDriveTestsResultPool;
+        private readonly IObjectPool<CalibrationResult[]> _calibrationResultPool;
+
+
         private readonly IObjectPoolSite _poolSite;
         private readonly ITransformation _transformation;
         private readonly AppServerComponentConfig _appServerComponentConfig;
@@ -40,14 +44,40 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             _poolSite = poolSite;
             _appServerComponentConfig = appServerComponentConfig;
             _transformation = transformation;
-            _calcPointArrayPool = _poolSite.GetPool<CalcPoint[]>(ObjectPools.StationCalibrationCalcPointArrayObjectPool);
+            _calcPointArrayPool = _poolSite.GetPool<PointFS[]>(ObjectPools.StationCalibrationPointFSArrayObjectPool);
+            _calcListDriveTestsResultPool = _poolSite.GetPool<DriveTestsResult[][]>(ObjectPools.StationCalibrationListDriveTestsResultObjectPool);
+            _calibrationResultPool = _poolSite.GetPool<CalibrationResult[]>(ObjectPools.StationCalibrationResultObjectPool);
             _logger = logger;
         }
 
-        public CalibrationResult[] Run(ITaskContext taskContext, AllStationCorellationCalcData data)
+        public int GetMinDistance(string standard)
         {
-            var calcPointArrayBuffer = default(CalcPoint[]);
+            int? minDistance = null;
+            if (standard=="GSM")
+            {
+                minDistance = _appServerComponentConfig.MinDistanceBetweenDriveTestAndStation_GSM;
+            }
+            else if (standard == "UMTS")
+            {
+                minDistance = _appServerComponentConfig.MinDistanceBetweenDriveTestAndStation_UMTS;
+            }
+            else if (standard == "LTE")
+            {
+                minDistance = _appServerComponentConfig.MinDistanceBetweenDriveTestAndStation_LTE;
+            }
+            else if (standard == "CDMA")
+            {
+                minDistance = _appServerComponentConfig.MinDistanceBetweenDriveTestAndStation_CDMA;
+            }
+            else
+            {
+                throw new Exception("Not defined parameter");
+            }
+            return minDistance.Value;
+        }
 
+    public CalibrationResult[] Run(ITaskContext taskContext, AllStationCorellationCalcData data)
+        {
 
             if (data.GSIDGroupeDriveTests.Length==0)
             {
@@ -59,10 +89,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             }
 
             // создаем список для хранения результатов обработки
-            var listCalcCorellationResult = new List<CalibrationResult>();
+            //var listCalcCorellationResult = new List<CalibrationResult>();
+
             try
             {
-
                 // предварительная обработка
                 ////////////////////////////////////////////////////////////////////////////////////////////
                 ///
@@ -76,16 +106,27 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 /// Все точки PointFS[] Points сортируем по Lat (если есть одинаковые Lat то внутри по Lon)
                 /// Все DriveTests должны пройти это при этом на входе у нас будет большой объём данных, а на выходе контролируемый. 
                 ///////////////////////////////////////////////////////////////////////////////////////////
-                Utils.PrepareData(ref data.GSIDGroupeStation, ref data.GSIDGroupeDriveTests);
-
+                long countRecordsListDriveTestsResultBuffer = 0;
+                var listDriveTestsResultBuffer = default(DriveTestsResult[][]);
+                try
+                {
+                    listDriveTestsResultBuffer = _calcListDriveTestsResultPool.Take();
+                    Utils.CompareDriveTestsWithoutStandards(in data.GSIDGroupeDriveTests, listDriveTestsResultBuffer, out countRecordsListDriveTestsResultBuffer);
+                    data.GSIDGroupeDriveTests = Utils.PrepareData(ref data, ref listDriveTestsResultBuffer, countRecordsListDriveTestsResultBuffer, this._calcPointArrayPool);
+                }
+                finally
+                {
+                    if (listDriveTestsResultBuffer != null)
+                    {
+                        _calcListDriveTestsResultPool.Put(listDriveTestsResultBuffer);
+                    }
+                }
 
                 ///////////////////////////////////////////////////////////////////////////////////////////
                 ///    
                 ///     включение механизма перфорации DriveTests
                 /// 
                 ///////////////////////////////////////////////////////////////////////////////////////////
-                Utils.PerforationDriveTestResults(ref data.GSIDGroupeDriveTests);
-
                 for (int i = 0; i < data.GSIDGroupeDriveTests.Length; i++)
                 {
                     while (true)
@@ -124,7 +165,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 allStandards.AddRange(Utils.GetUniqueArrayStandardsFromDriveTests(data.GSIDGroupeDriveTests));
                 // создаем список неповторяющихся значений стандартов
                 var arrStandards = allStandards.Distinct().ToArray();
-
+                var listCalcCorellationResult = new CalibrationResult[arrStandards.Length];
                 // цикл по стандартам
                 for (int v = 0; v < arrStandards.Length; v++)
                 {
@@ -244,7 +285,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         var drvTests = outListDriveTestsResults[i];
 
                         var driveTestsResults = new DriveTestsResult[drvTests.Length];
-                        var keyValueDriveTests = new Dictionary<int, float>();
+                        var keyValueDriveTests = new Dictionary<long, float>();
 
                         var orderByCountPoints = from z in drvTests orderby z.CountPoints descending select z;
                         var tempDriveTestsByOneGroup = orderByCountPoints.ToArray();
@@ -294,8 +335,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
                             /////////////////////////////////////////////////////////////////////////////////////////////////////////
                             ///
-                            ///    2. Формируем новый массив (или список) массивов станций (GSIDGroupeStations) на основании того перемещаем туда все GSIDGroupeStations
-                            ///     из массива (или списка) массивов станций (GSIDGroupeStations) если хотябы одна из станций  GSIDGroupeStations 
+                            ///    2. Формируем новый массив (или список) массивов станций (GSIDGroupeStations) на основании того перемещаем туда все станции
+                            ///     из массива (или списка) массивов станций (outListContextStations) если хотябы одна из станций  outListContextStations 
                             ///     имеют координаты ближе чем 1км (параметр вынести в файл конфигурации в зависимости от STANDART) к координатам GSIDGroupeDriveTests.
                             ///     
                             /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -309,7 +350,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                     for (int p = 0; p < coordinatesDrivePoint.Length; p++)
                                     {
                                         var coordinateStation = _transformation.ConvertCoordinateToEpgs(new Wgs84Coordinate() { Longitude = arrStations[z].Site.Longitude, Latitude = arrStations[z].Site.Latitude }, _transformation.ConvertProjectionToCode(data.Projection));
-                                        if (GeometricСalculations.GetDistance_km(coordinatesDrivePoint[p].X, coordinatesDrivePoint[p].Y, coordinateStation.X, coordinateStation.Y) <= _appServerComponentConfig.MinDistanceBetweenDriveTestAndStation_GSM)
+                                        if (GeometricСalculations.GetDistance_km(coordinatesDrivePoint[p].X, coordinatesDrivePoint[p].Y, coordinateStation.X, coordinateStation.Y) <= _appServerComponentConfig.MinDistanceBetweenDriveTestAndStation_GSM * 1000)
                                         {
                                             // добавляем весь массив станций arrStations в случае если одна из станций, которая входит в arrStations имеет расстояние до одной из точек текущего DrivePoint меньше 1 км (берем с конфигурации)
                                             GSIDGroupeStations.Add(arrStations);
@@ -438,7 +479,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             {
                                 var arrStations = GSIDGroupeStations[j].ToList();
                                 var temp = arrStations.FindAll(x => x.Type == ClientContextStationType.P);
-                                if (temp != null)
+                                if ((temp != null) && (temp.Count>0))
                                 {
                                     arrayStationsInStatusP.Add(temp.ToArray());
                                 }
@@ -568,24 +609,27 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         var calibrationStationsAndDriveTest = calibrationStationsAndDriveTestsResultByGroup[m];
                         var driveTests = calibrationStationsAndDriveTest.ResultCalibrationDriveTest;
                         var stations = calibrationStationsAndDriveTest.ResultCalibrationStation;
-                        for (int z = 0; z < driveTests.Length; z++)
+                        if (driveTests != null)
                         {
-                            if (driveTests[z] != null)
+                            for (int z = 0; z < driveTests.Length; z++)
                             {
-                                listCalibrationDriveTestResult.Add(driveTests[z]);
+                                if (driveTests[z] != null)
+                                {
+                                    listCalibrationDriveTestResult.Add(driveTests[z]);
+                                }
                             }
                         }
-                        for (int z = 0; z < stations.Length; z++)
+                        if (stations != null)
                         {
-                            if (stations[z] != null)
+                            for (int z = 0; z < stations.Length; z++)
                             {
-                                listCalibrationStationResult.Add(stations[z]);
+                                if (stations[z] != null)
+                                {
+                                    listCalibrationStationResult.Add(stations[z]);
+                                }
                             }
                         }
-
                     }
-
-                     
 
                     var calcCorellationResult = new CalibrationResult()
                     {
@@ -607,21 +651,15 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         //NumberStationInContour=???????????????????
                         //TimeStart=???????????????????
                     };
-                    listCalcCorellationResult.Add(calcCorellationResult);
+                    listCalcCorellationResult[v] = calcCorellationResult;
                 }
+                return listCalcCorellationResult;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                throw;
+                this._logger.Exception(Exceptions.StationCalibration, e);
             }
-            finally
-            {
-                if (calcPointArrayBuffer != null)
-                {
-                    _calcPointArrayPool.Put(calcPointArrayBuffer);
-                }
-            }
-            return listCalcCorellationResult.ToArray();
+            return null;
         }
 
 

@@ -180,7 +180,7 @@ namespace Atdi.DataModels.Sdrn.DeepServices.RadioSystem.AntennaPattern
                 {
 
                 }
-                Angles.Add(360);
+                //Angles.Add(360);
                 Losses.Add(Losses[0]);
             }
         }
@@ -194,8 +194,9 @@ namespace Atdi.DataModels.Sdrn.DeepServices.RadioSystem.AntennaPattern
                 string OldSeparator = System.Globalization.NumberFormatInfo.CurrentInfo.NumberDecimalSeparator;
 
                 int i = 0;
-                foreach (string s in split)
+                for (int j=2; j< split.Length; j++)
                 {
+                    string s = split[j];
                     double Result;
                     string newString = s;
                     if (s.Contains("."))
@@ -205,7 +206,7 @@ namespace Atdi.DataModels.Sdrn.DeepServices.RadioSystem.AntennaPattern
                     {
                         Losses.Add(Result);
                         Angles.Add(i);
-                        i += 10;
+                        i += Convert.ToInt32(split[1]);
                     }
                 }
             }
