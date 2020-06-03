@@ -220,13 +220,15 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                     for (int j = 0; j < counter; j++)
                                     {
 
-                                        bool isInsidePixelLon = Math.Abs(drivePoint.Points[i].Coordinate.X - calcPointArrayBuffer[j].Coordinate.X) < data.FieldStrengthCalcData.MapArea.AxisX.Step / 2;
-                                        bool isInsidePixelLat = Math.Abs(drivePoint.Points[i].Coordinate.Y - calcPointArrayBuffer[j].Coordinate.Y) < data.FieldStrengthCalcData.MapArea.AxisY.Step / 2;
+                                        bool isInsidePixelLon = Math.Abs(drivePoint.Points[i].Coordinate.X - calcPointArrayBuffer[j].Coordinate.X) <= Math.Ceiling( data.FieldStrengthCalcData.MapArea.AxisX.Step / 2.0);
+                                        bool isInsidePixelLat = Math.Abs(drivePoint.Points[i].Coordinate.Y - calcPointArrayBuffer[j].Coordinate.Y) <= Math.Ceiling(data.FieldStrengthCalcData.MapArea.AxisY.Step / 2.0);
                                         if (isInsidePixelLon && isInsidePixelLat)
                                         {
                                             //  в случае если по координатам уже есть изменерия, напряжённость усредняется
                                             var intermediateFS = (calcPointArrayBuffer[j].Count * calcPointArrayBuffer[j].FieldStrength_dBmkVm + drivePoint.Points[i].FieldStrength_dBmkVm) / (calcPointArrayBuffer[j].Count + 1);
                                             calcPointArrayBuffer[j].FieldStrength_dBmkVm = intermediateFS;//(float)(20 * Math.Log10((calcPointArrayBuffer[j].Count * Math.Pow(10, 0.05 * calcPointArrayBuffer[j].FieldStrength_dBmkVm) + Math.Pow(10, 0.05 * drivePoint.Points[i].FieldStrength_dBmkVm)) / (calcPointArrayBuffer[j].Count + 1)));
+                                            calcPointArrayBuffer[j].Level_dBm = drivePoint.Points[i].Level_dBm;
+                                            calcPointArrayBuffer[j].Height_m = drivePoint.Points[i].Height_m;
                                             calcPointArrayBuffer[j].Count += 1;
                                             isFoubdInBuffer = true;
                                             break; // как только нашли точку в буфере, у которой совпали координаты в пределах пикселя - поиск прекращается
@@ -240,7 +242,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                     calcPointArrayBuffer[counter].Coordinate.X = lowerLeftCoord_m.X + Math.Floor((drivePoint.Points[i].Coordinate.X - lowerLeftCoord_m.X) / data.FieldStrengthCalcData.MapArea.AxisX.Step) * data.FieldStrengthCalcData.MapArea.AxisX.Step + data.FieldStrengthCalcData.MapArea.AxisX.Step / 2;
                                     calcPointArrayBuffer[counter].Coordinate.Y = lowerLeftCoord_m.Y + Math.Floor((drivePoint.Points[i].Coordinate.Y - lowerLeftCoord_m.Y) / data.FieldStrengthCalcData.MapArea.AxisY.Step) * data.FieldStrengthCalcData.MapArea.AxisY.Step + data.FieldStrengthCalcData.MapArea.AxisY.Step / 2;
                                     calcPointArrayBuffer[counter].FieldStrength_dBmkVm = drivePoint.Points[i].FieldStrength_dBmkVm;
-
+                                    calcPointArrayBuffer[counter].Level_dBm = drivePoint.Points[i].Level_dBm;
+                                    calcPointArrayBuffer[counter].Height_m = drivePoint.Points[i].Height_m;
                                     counter++;
                                 }
                             }

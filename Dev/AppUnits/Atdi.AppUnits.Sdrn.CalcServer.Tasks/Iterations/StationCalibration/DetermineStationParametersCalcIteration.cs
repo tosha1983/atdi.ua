@@ -50,7 +50,33 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             _logger = logger;
         }
 
-        public CalibrationResult[] Run(ITaskContext taskContext, AllStationCorellationCalcData data)
+        public int GetMinDistance(string standard)
+        {
+            int? minDistance = null;
+            if (standard=="GSM")
+            {
+                minDistance = _appServerComponentConfig.MinDistanceBetweenDriveTestAndStation_GSM;
+            }
+            else if (standard == "UMTS")
+            {
+                minDistance = _appServerComponentConfig.MinDistanceBetweenDriveTestAndStation_UMTS;
+            }
+            else if (standard == "LTE")
+            {
+                minDistance = _appServerComponentConfig.MinDistanceBetweenDriveTestAndStation_LTE;
+            }
+            else if (standard == "CDMA")
+            {
+                minDistance = _appServerComponentConfig.MinDistanceBetweenDriveTestAndStation_CDMA;
+            }
+            else
+            {
+                throw new Exception("Not defined parameter");
+            }
+            return minDistance.Value;
+        }
+
+    public CalibrationResult[] Run(ITaskContext taskContext, AllStationCorellationCalcData data)
         {
 
             if (data.GSIDGroupeDriveTests.Length==0)
@@ -309,8 +335,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
                             /////////////////////////////////////////////////////////////////////////////////////////////////////////
                             ///
-                            ///    2. Формируем новый массив (или список) массивов станций (GSIDGroupeStations) на основании того перемещаем туда все GSIDGroupeStations
-                            ///     из массива (или списка) массивов станций (GSIDGroupeStations) если хотябы одна из станций  GSIDGroupeStations 
+                            ///    2. Формируем новый массив (или список) массивов станций (GSIDGroupeStations) на основании того перемещаем туда все станции
+                            ///     из массива (или списка) массивов станций (outListContextStations) если хотябы одна из станций  outListContextStations 
                             ///     имеют координаты ближе чем 1км (параметр вынести в файл конфигурации в зависимости от STANDART) к координатам GSIDGroupeDriveTests.
                             ///     
                             /////////////////////////////////////////////////////////////////////////////////////////////////////////

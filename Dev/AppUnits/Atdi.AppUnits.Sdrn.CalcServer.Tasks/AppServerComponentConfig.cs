@@ -38,5 +38,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 
         public int? MinDistanceBetweenDriveTestAndStation_GSM { get; set; }
 
+        public int? MinDistanceBetweenDriveTestAndStation_UMTS { get; set; }
+
+        public int? MinDistanceBetweenDriveTestAndStation_LTE { get; set; }
+
+        public int? MinDistanceBetweenDriveTestAndStation_CDMA { get; set; }
+
+
     }
 }

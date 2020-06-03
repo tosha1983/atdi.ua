@@ -78,6 +78,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                     .SetValue(c => c.PolarizationName, ((PolarizationCode)(command.TRANSMITTER.PolarizationCode)).ToString())
                     .SetValue(c => c.Loss_dB, command.TRANSMITTER.Loss_dB)
                     .SetValue(c => c.Freq_MHz, command.TRANSMITTER.Freq_MHz)
+                    .SetValue(c => c.Freqs_MHz, command.TRANSMITTER.Freqs_MHz)
                     .SetValue(c => c.BW_kHz, command.TRANSMITTER.BW_kHz)
                     .SetValue(c => c.MaxPower_dBm, command.TRANSMITTER.MaxPower_dBm);
                 _dataLayer.Executor.Execute(transQuery);
@@ -93,6 +94,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                     .SetValue(c => c.Freq_MHz, command.RECEIVER.Freq_MHz)
                     .SetValue(c => c.BW_kHz, command.RECEIVER.BW_kHz)
                     .SetValue(c => c.KTBF_dBm, command.RECEIVER.KTBF_dBm)
+                    .SetValue(c => c.Freqs_MHz, command.RECEIVER.Freqs_MHz)
                     .SetValue(c => c.Threshold_dBm, command.RECEIVER.Threshold_dBm)
                     ;
                 _dataLayer.Executor.Execute(receiveQuery);

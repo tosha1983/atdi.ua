@@ -212,7 +212,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                 for (int z = 0; z < this._mobStationsLoadModelByParams.AreaModel.Length; z++)
                 {
                     var rs = new IMRecordset(arrayTables[v], IMRecordset.Mode.ReadOnly);
-                    rs.Select("ID,AZIMUTH,STANDARD,STATUS,CALL_SIGN,Position.LATITUDE,Position.LONGITUDE,Position.ASL,NAME,Owner.REGIST_NUM,DATE_MODIFIED,DATE_CREATED,BW,RX_LOSSES,TX_LOSSES,PWR_ANT,Equipment.KTBF,Equipment.RXTH_6,Antenna.POLARIZATION,GAIN,Antenna.DIAGV,Antenna.DIAGH,Antenna.DIAGA,ELEVATION,Antenna.XPD,Position.City.PROVINCE,Equipment.SENSITIVITY");
+                    rs.Select("ID,AGL,AZIMUTH,STANDARD,STATUS,CALL_SIGN,Position.LATITUDE,Position.LONGITUDE,NAME,Owner.REGIST_NUM,DATE_MODIFIED,DATE_CREATED,BW,RX_LOSSES,TX_LOSSES,PWR_ANT,Equipment.KTBF,Equipment.RXTH_6,Antenna.POLARIZATION,GAIN,Antenna.DIAGV,Antenna.DIAGH,Antenna.DIAGA,ELEVATION,Antenna.XPD,Position.City.PROVINCE,Equipment.SENSITIVITY");
                     if (((this._mobStationsLoadModelByParams.IdentifierStation != null) && (this._mobStationsLoadModelByParams.IdentifierStation != 0) && (this._mobStationsLoadModelByParams.SelectedStationType == SelectedStationType.OneStation)))
                     {
                         rs.SetWhere("ID", IMRecordset.Operation.Eq, this._mobStationsLoadModelByParams.IdentifierStation.Value);
@@ -270,7 +270,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                         mobStationT.m_Position.Format("*");
                         mobStationT.m_Position.m_longitude = rs.GetD("Position.LONGITUDE");
                         mobStationT.m_Position.m_latitude = rs.GetD("Position.LATITUDE");
-                        mobStationT.m_Position.m_asl = rs.GetD("Position.ASL");
+                        mobStationT.m_agl = rs.GetD("AGL");
 
                         // Генерация GSID
                         mobStationT.m_cust_txt1 = GetGlobalSID(rs.GetS("Owner.REGIST_NUM"), rs.GetS("NAME"));
@@ -475,7 +475,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                                 hh_pattern.Angle_deg = patt_HH.Select(c => c.Angle).ToArray();
                             };
 
-                            var patt_HV = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagv, AntennaPatternType.HV, source.m_gain);
+                            var patt_HV = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagh, AntennaPatternType.HV, source.m_gain);
                             if (patt_HV != null)
                             {
                                 hv_pattern = new IcsmMobStationPattern();
@@ -483,7 +483,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                                 hv_pattern.Angle_deg = patt_HV.Select(c => c.Angle).ToArray();
                             };
 
-                            var patt_VH = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagh, AntennaPatternType.VH, source.m_gain);
+                            var patt_VH = this._signalService.CalcAntennaPattern(source.m_Antenna.m_diagv, AntennaPatternType.VH, source.m_gain);
                             if (patt_VH != null)
                             {
                                 vh_pattern = new IcsmMobStationPattern();
@@ -531,7 +531,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                                 RegionCode = source.m_rec_area,
                                 SITE = new IcsmMobStationSite()
                                 {
-                                    Altitude_m = source.m_Position.m_asl,
+                                    Altitude_m = source.m_agl,
                                     Longitude_DEC = source.m_Position.m_longitude,
                                     Latitude_DEC = source.m_Position.m_latitude,
                                 },
