@@ -184,7 +184,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         /// Метод для предварительной подготовки данных
         /// </summary>
         /// <param name="driveTestsResults"></param>
-        public static DriveTestsResult[] PrepareData(ref AllStationCorellationCalcData data, ref List<DriveTestsResult[]> arrDiveTestsResults,  IObjectPool<PointFS[]> calcPointArrayPool)
+        public static DriveTestsResult[] PrepareData(ref AllStationCorellationCalcData data, ref DriveTestsResult[][] arrDiveTestsResults, long countRecordsListDriveTestsResultBuffer,  IObjectPool<PointFS[]> calcPointArrayPool)
         {
             var alldriveTestsResults = new List<DriveTestsResult>();
             var lowerLeftCoord_m = data.FieldStrengthCalcData.MapArea.LowerLeft;
@@ -194,7 +194,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             double latStep_dec = data.FieldStrengthCalcData.MapArea.AxisY.Step;
 
 
-            for (int k = 0; k < arrDiveTestsResults.Count; k++)
+            for (int k = 0; k < countRecordsListDriveTestsResultBuffer; k++)
             {
                 var groupDriveTestByGsid = arrDiveTestsResults[k];
 
@@ -202,62 +202,67 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 {
                     int counter = 0;
                     var calcPointArrayBuffer = default(PointFS[]);
-                    calcPointArrayBuffer = calcPointArrayPool.Take();
-
-                    var drivePoint = groupDriveTestByGsid[z];
-                    for (int i = 0; i < drivePoint.Points.Length; i++)
+                    try
                     {
-                        if (drivePoint.Points[i].FieldStrength_dBmkVm >= data.CorellationParameters.MinRangeMeasurements_dBmkV &&
-                           drivePoint.Points[i].FieldStrength_dBmkVm <= data.CorellationParameters.MaxRangeMeasurements_dBmkV &&
-                           Utils.IsInsideMap(drivePoint.Points[i].Coordinate.X, drivePoint.Points[i].Coordinate.Y, lowerLeftCoord_m.X, lowerLeftCoord_m.Y, upperRightCoord_m.X, upperRightCoord_m.Y))
+                        calcPointArrayBuffer = calcPointArrayPool.Take();
+                        var drivePoint = groupDriveTestByGsid[z];
+                        for (int i = 0; i < drivePoint.Points.Length; i++)
                         {
-                            bool isFoubdInBuffer = false;
-
-                            if (counter > 0)
+                            if (drivePoint.Points[i].FieldStrength_dBmkVm >= data.CorellationParameters.MinRangeMeasurements_dBmkV &&
+                               drivePoint.Points[i].FieldStrength_dBmkVm <= data.CorellationParameters.MaxRangeMeasurements_dBmkV &&
+                               Utils.IsInsideMap(drivePoint.Points[i].Coordinate.X, drivePoint.Points[i].Coordinate.Y, lowerLeftCoord_m.X, lowerLeftCoord_m.Y, upperRightCoord_m.X, upperRightCoord_m.Y))
                             {
-                                // Сравнение следующих координат с приведенными к центру пикселя,
-                                for (int j = 0; j < counter; j++)
-                                {
+                                bool isFoubdInBuffer = false;
 
-                                    bool isInsidePixelLon = Math.Abs(drivePoint.Points[i].Coordinate.X - calcPointArrayBuffer[j].Coordinate.X) < data.FieldStrengthCalcData.MapArea.AxisX.Step/2;
-                                    bool isInsidePixelLat = Math.Abs(drivePoint.Points[i].Coordinate.Y - calcPointArrayBuffer[j].Coordinate.Y) < data.FieldStrengthCalcData.MapArea.AxisY.Step/2;
-                                    if (isInsidePixelLon && isInsidePixelLat)
+                                if (counter > 0)
+                                {
+                                    // Сравнение следующих координат с приведенными к центру пикселя,
+                                    for (int j = 0; j < counter; j++)
                                     {
-                                        //  в случае если по координатам уже есть изменерия, напряжённость усредняется
-                                        var intermediateFS = (calcPointArrayBuffer[j].Count * calcPointArrayBuffer[j].FieldStrength_dBmkVm + drivePoint.Points[i].FieldStrength_dBmkVm ) / ( calcPointArrayBuffer[j].Count + 1 );
-                                        calcPointArrayBuffer[j].FieldStrength_dBmkVm = intermediateFS;//(float)(20 * Math.Log10((calcPointArrayBuffer[j].Count * Math.Pow(10, 0.05 * calcPointArrayBuffer[j].FieldStrength_dBmkVm) + Math.Pow(10, 0.05 * drivePoint.Points[i].FieldStrength_dBmkVm)) / (calcPointArrayBuffer[j].Count + 1)));
-                                        calcPointArrayBuffer[j].Count += 1;
-                                        isFoubdInBuffer = true;
-                                        break; // как только нашли точку в буфере, у которой совпали координаты в пределах пикселя - поиск прекращается
+
+                                        bool isInsidePixelLon = Math.Abs(drivePoint.Points[i].Coordinate.X - calcPointArrayBuffer[j].Coordinate.X) < data.FieldStrengthCalcData.MapArea.AxisX.Step / 2;
+                                        bool isInsidePixelLat = Math.Abs(drivePoint.Points[i].Coordinate.Y - calcPointArrayBuffer[j].Coordinate.Y) < data.FieldStrengthCalcData.MapArea.AxisY.Step / 2;
+                                        if (isInsidePixelLon && isInsidePixelLat)
+                                        {
+                                            //  в случае если по координатам уже есть изменерия, напряжённость усредняется
+                                            var intermediateFS = (calcPointArrayBuffer[j].Count * calcPointArrayBuffer[j].FieldStrength_dBmkVm + drivePoint.Points[i].FieldStrength_dBmkVm) / (calcPointArrayBuffer[j].Count + 1);
+                                            calcPointArrayBuffer[j].FieldStrength_dBmkVm = intermediateFS;//(float)(20 * Math.Log10((calcPointArrayBuffer[j].Count * Math.Pow(10, 0.05 * calcPointArrayBuffer[j].FieldStrength_dBmkVm) + Math.Pow(10, 0.05 * drivePoint.Points[i].FieldStrength_dBmkVm)) / (calcPointArrayBuffer[j].Count + 1)));
+                                            calcPointArrayBuffer[j].Count += 1;
+                                            isFoubdInBuffer = true;
+                                            break; // как только нашли точку в буфере, у которой совпали координаты в пределах пикселя - поиск прекращается
+                                        }
                                     }
                                 }
-                            }
-                            if (isFoubdInBuffer == false || counter == 0)
-                            {
-                                // выполняется для первой итерации и в случае если по координатам не было измерений
-                                calcPointArrayBuffer[counter].Count = 1;
-                                calcPointArrayBuffer[counter].Coordinate.X = lowerLeftCoord_m.X + Math.Floor((drivePoint.Points[i].Coordinate.X - lowerLeftCoord_m.X) / data.FieldStrengthCalcData.MapArea.AxisX.Step) * data.FieldStrengthCalcData.MapArea.AxisX.Step + data.FieldStrengthCalcData.MapArea.AxisX.Step / 2;
-                                calcPointArrayBuffer[counter].Coordinate.Y = lowerLeftCoord_m.Y + Math.Floor((drivePoint.Points[i].Coordinate.Y - lowerLeftCoord_m.Y) / data.FieldStrengthCalcData.MapArea.AxisY.Step) * data.FieldStrengthCalcData.MapArea.AxisY.Step + data.FieldStrengthCalcData.MapArea.AxisY.Step / 2;
-                                calcPointArrayBuffer[counter].FieldStrength_dBmkVm = drivePoint.Points[i].FieldStrength_dBmkVm;
+                                if (isFoubdInBuffer == false || counter == 0)
+                                {
+                                    // выполняется для первой итерации и в случае если по координатам не было измерений
+                                    calcPointArrayBuffer[counter].Count = 1;
+                                    calcPointArrayBuffer[counter].Coordinate.X = lowerLeftCoord_m.X + Math.Floor((drivePoint.Points[i].Coordinate.X - lowerLeftCoord_m.X) / data.FieldStrengthCalcData.MapArea.AxisX.Step) * data.FieldStrengthCalcData.MapArea.AxisX.Step + data.FieldStrengthCalcData.MapArea.AxisX.Step / 2;
+                                    calcPointArrayBuffer[counter].Coordinate.Y = lowerLeftCoord_m.Y + Math.Floor((drivePoint.Points[i].Coordinate.Y - lowerLeftCoord_m.Y) / data.FieldStrengthCalcData.MapArea.AxisY.Step) * data.FieldStrengthCalcData.MapArea.AxisY.Step + data.FieldStrengthCalcData.MapArea.AxisY.Step / 2;
+                                    calcPointArrayBuffer[counter].FieldStrength_dBmkVm = drivePoint.Points[i].FieldStrength_dBmkVm;
 
-                                counter++;
+                                    counter++;
+                                }
                             }
                         }
-                    }
 
-                    var driveTestsResults = new PointFS[counter];
-                    for (int v = 0; v < counter; v++)
-                    {
-                        driveTestsResults[v] = calcPointArrayBuffer[v];
-                    }
-                    
-                    drivePoint.Points = driveTestsResults;
-                    drivePoint.CountPoints = driveTestsResults.Length;
-                    groupDriveTestByGsid[z] = drivePoint;
+                        var driveTestsResults = new PointFS[counter];
+                        for (int v = 0; v < counter; v++)
+                        {
+                            driveTestsResults[v] = calcPointArrayBuffer[v];
+                        }
 
-                    if (calcPointArrayBuffer != null)
+                        drivePoint.Points = driveTestsResults;
+                        drivePoint.CountPoints = driveTestsResults.Length;
+                        groupDriveTestByGsid[z] = drivePoint;
+
+                    }
+                    finally
                     {
-                        calcPointArrayPool.Put(calcPointArrayBuffer);
+                        if (calcPointArrayBuffer != null)
+                        {
+                            calcPointArrayPool.Put(calcPointArrayBuffer);
+                        }
                     }
                 }
 
@@ -281,7 +286,6 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             {
                 lstPointFs.Add(pointFs[i]);
             }
-
             var orderByCountPoints = from z in lstPointFs orderby z.Coordinate.Y, z.Coordinate.X ascending select z;
             pointFs = orderByCountPoints.ToArray();
         }
@@ -604,7 +608,18 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             return lstRecalcDriveTestsResult.ToArray();
         }
 
-     
+
+        public static void CompareDriveTestsWithoutStandards(in DriveTestsResult[] GSIDGroupeDriveTests, DriveTestsResult[][] outListDriveTestsResult, out long countRecords)
+        {
+            var arrUniqueGSID = Utils.GetUniqueArrayGSIDfromDriveTests(GSIDGroupeDriveTests);
+            for (int i = 0; i < arrUniqueGSID.Length; i++)
+            {
+                var groupDriveTest = Utils.GroupingDriveTestsByGSID(GSIDGroupeDriveTests, arrUniqueGSID[i]);
+                outListDriveTestsResult[i] = groupDriveTest;
+            }
+            countRecords = arrUniqueGSID.Length;
+        }
+
 
         /// <summary>
         /// Поиск соответствий между драйв тестами и станицями

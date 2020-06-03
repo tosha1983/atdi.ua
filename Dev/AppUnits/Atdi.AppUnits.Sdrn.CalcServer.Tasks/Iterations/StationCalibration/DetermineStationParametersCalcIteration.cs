@@ -22,6 +22,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         private readonly ILogger _logger;
         private readonly IIterationsPool _iterationsPool;
         private readonly IObjectPool<PointFS[]> _calcPointArrayPool;
+        private readonly IObjectPool<DriveTestsResult[][]> _calcListDriveTestsResultPool;
+        private readonly IObjectPool<CalibrationResult[]> _calibrationResultPool;
+
+
         private readonly IObjectPoolSite _poolSite;
         private readonly ITransformation _transformation;
         private readonly AppServerComponentConfig _appServerComponentConfig;
@@ -41,12 +45,13 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             _appServerComponentConfig = appServerComponentConfig;
             _transformation = transformation;
             _calcPointArrayPool = _poolSite.GetPool<PointFS[]>(ObjectPools.StationCalibrationPointFSArrayObjectPool);
+            _calcListDriveTestsResultPool = _poolSite.GetPool<DriveTestsResult[][]>(ObjectPools.StationCalibrationListDriveTestsResultObjectPool);
+            _calibrationResultPool = _poolSite.GetPool<CalibrationResult[]>(ObjectPools.StationCalibrationResultObjectPool);
             _logger = logger;
         }
 
         public CalibrationResult[] Run(ITaskContext taskContext, AllStationCorellationCalcData data)
         {
-           
 
             if (data.GSIDGroupeDriveTests.Length==0)
             {
@@ -58,10 +63,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             }
 
             // создаем список для хранения результатов обработки
-            var listCalcCorellationResult = new List<CalibrationResult>();
+            //var listCalcCorellationResult = new List<CalibrationResult>();
+
             try
             {
-
                 // предварительная обработка
                 ////////////////////////////////////////////////////////////////////////////////////////////
                 ///
@@ -75,19 +80,21 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 /// Все точки PointFS[] Points сортируем по Lat (если есть одинаковые Lat то внутри по Lon)
                 /// Все DriveTests должны пройти это при этом на входе у нас будет большой объём данных, а на выходе контролируемый. 
                 ///////////////////////////////////////////////////////////////////////////////////////////
-
-                //var arrGSIDGroupeDriveTests = Utils.CompareDriveTestsWithoutStandards(data.GSIDGroupeDriveTests);
-
-                var arrGSIDGroupeDriveTests = new List<DriveTestsResult[]>();
-                var arrUniqueGSID = Utils.GetUniqueArrayGSIDfromDriveTests(data.GSIDGroupeDriveTests);
-                for (int i = 0; i < arrUniqueGSID.Length; i++)
+                long countRecordsListDriveTestsResultBuffer = 0;
+                var listDriveTestsResultBuffer = default(DriveTestsResult[][]);
+                try
                 {
-                    var groupDriveTest = Utils.GroupingDriveTestsByGSID(data.GSIDGroupeDriveTests, arrUniqueGSID[i]);
-                    arrGSIDGroupeDriveTests.Add(groupDriveTest);
+                    listDriveTestsResultBuffer = _calcListDriveTestsResultPool.Take();
+                    Utils.CompareDriveTestsWithoutStandards(in data.GSIDGroupeDriveTests, listDriveTestsResultBuffer, out countRecordsListDriveTestsResultBuffer);
+                    data.GSIDGroupeDriveTests = Utils.PrepareData(ref data, ref listDriveTestsResultBuffer, countRecordsListDriveTestsResultBuffer, this._calcPointArrayPool);
                 }
-
-                data.GSIDGroupeDriveTests = Utils.PrepareData(ref data, ref arrGSIDGroupeDriveTests, this._calcPointArrayPool);
-
+                finally
+                {
+                    if (listDriveTestsResultBuffer != null)
+                    {
+                        _calcListDriveTestsResultPool.Put(listDriveTestsResultBuffer);
+                    }
+                }
 
                 ///////////////////////////////////////////////////////////////////////////////////////////
                 ///    
@@ -132,7 +139,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 allStandards.AddRange(Utils.GetUniqueArrayStandardsFromDriveTests(data.GSIDGroupeDriveTests));
                 // создаем список неповторяющихся значений стандартов
                 var arrStandards = allStandards.Distinct().ToArray();
-
+                var listCalcCorellationResult = new CalibrationResult[arrStandards.Length];
                 // цикл по стандартам
                 for (int v = 0; v < arrStandards.Length; v++)
                 {
@@ -618,14 +625,15 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         //NumberStationInContour=???????????????????
                         //TimeStart=???????????????????
                     };
-                    listCalcCorellationResult.Add(calcCorellationResult);
+                    listCalcCorellationResult[v] = calcCorellationResult;
                 }
+                return listCalcCorellationResult;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                throw;
+                this._logger.Exception(Exceptions.StationCalibration, e);
             }
-            return listCalcCorellationResult.ToArray();
+            return null;
         }
 
 
