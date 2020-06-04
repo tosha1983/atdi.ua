@@ -25,7 +25,8 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
                 .Select(
                     c => c.Id,
                     c => c.MapName,
-                    c => c.TypeCode)
+                    c => c.TypeCode,
+                    c => c.CONTEXT.Name)
                 .Filter(c => c.Id, criterion.Id);
 
             var reader = _dataLayer.Executor.ExecuteReader(query);
@@ -38,7 +39,8 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
             {
                 Id = reader.GetValue(c => c.Id),
                 MapName = reader.GetValue(c => c.MapName),
-                TypeCode = reader.GetValue(c => c.TypeCode)
+                TypeCode = reader.GetValue(c => c.TypeCode),
+                ContextName = reader.GetValue(c => c.CONTEXT.Name)
             };
         }
     }

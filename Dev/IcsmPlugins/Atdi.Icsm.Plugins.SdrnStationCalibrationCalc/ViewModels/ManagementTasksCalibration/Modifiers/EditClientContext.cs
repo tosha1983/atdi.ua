@@ -14,8 +14,6 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
 
         public string Note;
 
-        public byte TypeCode;
-
         public bool Success;
     }
 }

@@ -18,5 +18,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
         public Guid OwnerTaskId { get; set; }
         public DateTimeOffset CreatedDate { get; set; }
         public string MapName { get; set; }
+        public long ContextId { get; set; }
+        public string ContextName { get; set; }
     }
 }

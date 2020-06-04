@@ -34,15 +34,19 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
         private CalcTaskModel _currentCalcTask;
         private CalcTaskModel _currentCalcTaskCard;
 
+        private CardEditMode _clientContextEditedMode = CardEditMode.None;
+        private CardEditMode _calcTaskEditedMode = CardEditMode.None;
+
         public ViewCommand ContextAddCommand { get; set; }
         public ViewCommand ContextModifyCommand { get; set; }
         public ViewCommand ContextDeleteCommand { get; set; }
+        public ViewCommand ContextSaveCommand { get; set; }
         public ViewCommand TaskAddCommand { get; set; }
         public ViewCommand TaskModifyCommand { get; set; }
         public ViewCommand TaskDeleteCommand { get; set; }
+        public ViewCommand TaskSaveCommand { get; set; }
         public ViewCommand TaskStartCalcCommand { get; set; }
         public ViewCommand TaskShowResultCommand { get; set; }
-
 
         public ProjectDataAdapter Projects { get; set; }
         public BaseClientContextDataAdapter BaseClientContexts { get; set; }
@@ -56,8 +60,6 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
         private IEventHandlerToken<Events.OnEditedCalcTask> _onEditedCalcTaskToken;
         private IEventHandlerToken<Events.OnDeletedCalcTask> _onDeletedCalcTaskToken;
         private IEventHandlerToken<Events.OnRunCalcTask> _onOnRunCalcTaskToken;
-
-
 
         public View(
             ProjectDataAdapter projectDataAdapter,
@@ -79,10 +81,12 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
             this.ContextAddCommand = new ViewCommand(this.OnContextAddCommand);
             this.ContextModifyCommand = new ViewCommand(this.OnContextModifyCommand);
             this.ContextDeleteCommand = new ViewCommand(this.OnContextDeleteCommand);
+            this.ContextSaveCommand = new ViewCommand(this.OnContextSaveCommand);
 
             this.TaskAddCommand = new ViewCommand(this.OnTaskAddCommand);
             this.TaskModifyCommand = new ViewCommand(this.OnTaskModifyCommand);
             this.TaskDeleteCommand = new ViewCommand(this.OnTaskDeleteCommand);
+            this.TaskSaveCommand = new ViewCommand(this.OnTaskSaveCommand);
 
             this.TaskStartCalcCommand = new ViewCommand(this.OnTaskStartCalcCommand);
             this.TaskShowResultCommand = new ViewCommand(this.OnTaskShowResultCommand);
@@ -110,7 +114,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
         public ClientContextModel CurrentBaseClientContext
         {
             get => this._currentBaseClientContext;
-            set => this.Set(ref this._currentBaseClientContext, value);
+            set => this.Set(ref this._currentBaseClientContext, value, () => { this.OnChangedCurrentBaseClientContext(value); });
         }
         public ClientContextModel CurrentClientContext
         {
@@ -132,11 +136,102 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
             get => this._currentCalcTaskCard;
             set => this.Set(ref this._currentCalcTaskCard, value);
         }
+
+        #region visible properties
+        private bool _clientContextAddEnabled = false;
+        public bool ClientContextAddEnabled
+        {
+            get => this._clientContextAddEnabled;
+            set => this.Set(ref this._clientContextAddEnabled, value);
+        }
+
+        private bool _clientContextEditEnabled = false;
+        public bool ClientContextEditEnabled
+        {
+            get => this._clientContextEditEnabled;
+            set => this.Set(ref this._clientContextEditEnabled, value);
+        }
+
+        private bool _clientContextDelEnabled = false;
+        public bool ClientContextDelEnabled
+        {
+            get => this._clientContextDelEnabled;
+            set => this.Set(ref this._clientContextDelEnabled, value);
+        }
+
+        private bool _clientContextSaveEnabled = false;
+        public bool ClientContextSaveEnabled
+        {
+            get => this._clientContextSaveEnabled;
+            set => this.Set(ref this._clientContextSaveEnabled, value);
+        }
+
+        private bool _calcTaskAddEnabled = false;
+        public bool CalcTaskAddEnabled
+        {
+            get => this._calcTaskAddEnabled;
+            set => this.Set(ref this._calcTaskAddEnabled, value);
+        }
+
+        private bool _calcTaskEditEnabled = false;
+        public bool CalcTaskEditEnabled
+        {
+            get => this._calcTaskEditEnabled;
+            set => this.Set(ref this._calcTaskEditEnabled, value);
+        }
+
+        private bool _calcTaskDelEnabled = false;
+        public bool CalcTaskDelEnabled
+        {
+            get => this._calcTaskDelEnabled;
+            set => this.Set(ref this._calcTaskDelEnabled, value);
+        }
+
+        private bool _calcTaskSaveEnabled = false;
+        public bool CalcTaskSaveEnabled
+        {
+            get => this._calcTaskSaveEnabled;
+            set => this.Set(ref this._calcTaskSaveEnabled, value);
+        }
+
+        private bool _calcTaskStartCalcEnabled = false;
+        public bool CalcTaskStartCalcEnabled
+        {
+            get => this._calcTaskStartCalcEnabled;
+            set => this.Set(ref this._calcTaskStartCalcEnabled, value);
+        }
+
+        private bool _calcTaskShowResultEnabled = false;
+        public bool CalcTaskShowResultEnabled
+        {
+            get => this._calcTaskShowResultEnabled;
+            set => this.Set(ref this._calcTaskShowResultEnabled, value);
+        }
+        #endregion
+
         private void OnChangedCurrentProject(ProjectModel project)
         {
             ReloadProjectContexts();
             CurrentClientContextCard = new ClientContextModel();
             CurrentCalcTaskCard = new CalcTaskModel();
+            ClientContextSaveEnabled = false;
+            CalcTaskEditEnabled = false;
+            CalcTaskDelEnabled = false;
+            CalcTaskStartCalcEnabled = false;
+            CalcTaskShowResultEnabled = false;
+            CalcTaskSaveEnabled = false;
+        }
+        private void OnChangedCurrentBaseClientContext(ClientContextModel context)
+        {
+            if (CurrentBaseClientContext != null)
+            {
+                ClientContextAddEnabled = true;
+            }
+            else
+            {
+                ClientContextAddEnabled = false;
+            }
+            ClientContextSaveEnabled = false;
         }
         private void OnChangedCurrentClientContext(ClientContextModel context)
         {
@@ -145,11 +240,37 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
                 ReloadCalcTask();
                 this.CurrentClientContextCard = _objectReader.Read<ClientContextModel>().By(new GetClientContextById { Id = CurrentClientContext.Id });
                 CurrentCalcTaskCard = new CalcTaskModel();
-            }    
+                ClientContextEditEnabled = true;
+                ClientContextDelEnabled = true;
+                CalcTaskAddEnabled = true;
+            }
+            else
+            {
+                ClientContextEditEnabled = false;
+                ClientContextDelEnabled = false;
+                CalcTaskAddEnabled = false;
+
+            }
+            ClientContextSaveEnabled = false;
+            CalcTaskSaveEnabled = false;
         }
         private void OnChangedCurrentCalcTask(CalcTaskModel task)
         {
             this.CurrentCalcTaskCard = _objectReader.Read<CalcTaskModel>().By(new GetCalcTaskById { Id = CurrentCalcTask.Id });
+            if (CurrentCalcTask != null)
+            {
+                CalcTaskEditEnabled = true;
+                CalcTaskDelEnabled = true;
+                CalcTaskStartCalcEnabled = true;
+                CalcTaskShowResultEnabled = true;
+            }
+            else
+            {
+                CalcTaskEditEnabled = false;
+                CalcTaskDelEnabled = false;
+                CalcTaskStartCalcEnabled = false;
+                CalcTaskShowResultEnabled = false;
+            }
         }
         private void ReloadProjectContexts()
         {
@@ -164,11 +285,17 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
         {
             this.CalcTasks.ContextId = this.CurrentClientContext.Id;
             this.CalcTasks.Refresh();
+            CalcTaskEditEnabled = false;
+            CalcTaskDelEnabled = false;
+            CalcTaskStartCalcEnabled = false;
+            CalcTaskShowResultEnabled = false;
         }
         private void ReloadClientContext()
         {
             this.ClientContexts.ProjectId = this.CurrentProject.Id;
             this.ClientContexts.Refresh();
+            ClientContextEditEnabled = false;
+            ClientContextDelEnabled = false;
         }
         private void OnContextAddCommand(object parameter)
         {
@@ -177,18 +304,20 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
                 if (this.CurrentBaseClientContext == null)
                     return;
 
-                _onCreatedClientContextToken = _eventBus.Subscribe<Events.OnCreatedClientContext>(this.OnCreatedClientContextHandle);
-
-                var projectModifier = new Modifiers.CreateClientContext
+                CurrentClientContextCard = new ClientContextModel()
                 {
+                    Name = "",
+                    Note = "",
                     ProjectId = CurrentProject.Id,
                     BaseContextId = CurrentBaseClientContext.Id,
-                    Name = CurrentClientContextCard.Name,
-                    Note = CurrentClientContextCard.Note,
-                    OwnerId = Guid.NewGuid()
+                    BaseContextName = CurrentBaseClientContext.Name,
                 };
 
-                _commandDispatcher.Send(projectModifier);
+                ClientContextSaveEnabled = true;
+                ClientContextAddEnabled = false;
+                ClientContextEditEnabled = false;
+                ClientContextDelEnabled = false;
+                _clientContextEditedMode = CardEditMode.Add;
             }
             catch (Exception e)
             {
@@ -202,17 +331,11 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
                 if (CurrentClientContext == null)
                     return;
 
-                _onEditedClientContextToken = _eventBus.Subscribe<Events.OnEditedClientContext>(this.OnEditedClientContextHandle);
-
-                var projectModifier = new Modifiers.EditClientContext
-                {
-                    Id = CurrentClientContext.Id,
-                    Name = CurrentClientContextCard.Name,
-                    Note = CurrentClientContextCard.Note,
-                    TypeCode = CurrentClientContextCard.TypeCode
-                };
-
-                _commandDispatcher.Send(projectModifier);
+                ClientContextSaveEnabled = true;
+                ClientContextAddEnabled = false;
+                ClientContextEditEnabled = false;
+                ClientContextDelEnabled = false;
+                _clientContextEditedMode = CardEditMode.Edit;
             }
             catch (Exception e)
             {
@@ -240,6 +363,43 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
                 MessageBox.Show(e.ToString());
             }
         }
+        private void OnContextSaveCommand(object parameter)
+        {
+            if(_clientContextEditedMode == CardEditMode.Add)
+            {
+                _onCreatedClientContextToken = _eventBus.Subscribe<Events.OnCreatedClientContext>(this.OnCreatedClientContextHandle);
+
+                var projectModifier = new Modifiers.CreateClientContext
+                {
+                    ProjectId = CurrentClientContextCard.ProjectId,
+                    BaseContextId = CurrentClientContextCard.BaseContextId,
+                    Name = CurrentClientContextCard.Name,
+                    Note = CurrentClientContextCard.Note,
+                    OwnerId = Guid.NewGuid()
+                };
+
+                _commandDispatcher.Send(projectModifier);
+            }
+
+            if (_clientContextEditedMode == CardEditMode.Edit)
+            {
+                _onEditedClientContextToken = _eventBus.Subscribe<Events.OnEditedClientContext>(this.OnEditedClientContextHandle);
+
+                var projectModifier = new Modifiers.EditClientContext
+                {
+                    Id = CurrentClientContext.Id,
+                    Name = CurrentClientContextCard.Name,
+                    Note = CurrentClientContextCard.Note
+                };
+
+                _commandDispatcher.Send(projectModifier);
+            }
+
+            _clientContextEditedMode = CardEditMode.None;
+            ClientContextSaveEnabled = false;
+            if (CurrentBaseClientContext != null)
+                ClientContextAddEnabled = true;
+        }
         private void OnTaskAddCommand(object parameter)
         {
             try
@@ -247,16 +407,20 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
                 if (this.CurrentClientContext == null)
                     return;
 
-                _onCreatedCalcTaskToken = _eventBus.Subscribe<Events.OnCreatedCalcTask>(this.OnCreatedCalcTaskHandle);
-
-                var modifier = new Modifiers.CreateCalcTask
+                CurrentCalcTaskCard = new CalcTaskModel()
                 {
                     ContextId = CurrentClientContext.Id,
-                    MapName = CurrentCalcTaskCard.MapName,
-                    OwnerId = Guid.NewGuid()
+                    ContextName = CurrentClientContext.Name,
+                    MapName = ""
                 };
 
-                _commandDispatcher.Send(modifier);
+                CalcTaskSaveEnabled = true;
+                CalcTaskAddEnabled = false;
+                CalcTaskEditEnabled = false;
+                CalcTaskDelEnabled = false;
+                CalcTaskStartCalcEnabled = false;
+                CalcTaskShowResultEnabled = false;
+                _calcTaskEditedMode = CardEditMode.Add;
             }
             catch (Exception e)
             {
@@ -270,16 +434,13 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
                 if (CurrentCalcTaskCard == null)
                     return;
 
-                _onEditedCalcTaskToken = _eventBus.Subscribe<Events.OnEditedCalcTask>(this.OnEditedCalcTasktHandle);
-
-                var modifier = new Modifiers.EditCalcTask
-                {
-                    Id = CurrentCalcTask.Id,
-                    MapName = CurrentCalcTaskCard.MapName,
-                    TypeCode = CurrentCalcTaskCard.TypeCode
-                };
-
-                _commandDispatcher.Send(modifier);
+                CalcTaskSaveEnabled = true;
+                CalcTaskAddEnabled = false;
+                CalcTaskEditEnabled = false;
+                CalcTaskDelEnabled = false;
+                CalcTaskStartCalcEnabled = false;
+                CalcTaskShowResultEnabled = false;
+                _calcTaskEditedMode = CardEditMode.Edit;
             }
             catch (Exception e)
             {
@@ -306,6 +467,40 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
             {
                 MessageBox.Show(e.ToString());
             }
+        }
+        private void OnTaskSaveCommand(object parameter)
+        {
+            if (_calcTaskEditedMode == CardEditMode.Add)
+            {
+                _onCreatedCalcTaskToken = _eventBus.Subscribe<Events.OnCreatedCalcTask>(this.OnCreatedCalcTaskHandle);
+
+                var modifier = new Modifiers.CreateCalcTask
+                {
+                    ContextId = CurrentCalcTaskCard.ContextId,
+                    MapName = CurrentCalcTaskCard.MapName,
+                    OwnerId = Guid.NewGuid()
+                };
+
+                _commandDispatcher.Send(modifier);
+            }
+
+            if (_calcTaskEditedMode == CardEditMode.Edit)
+            {
+                _onEditedCalcTaskToken = _eventBus.Subscribe<Events.OnEditedCalcTask>(this.OnEditedCalcTasktHandle);
+
+                var modifier = new Modifiers.EditCalcTask
+                {
+                    Id = CurrentCalcTask.Id,
+                    MapName = CurrentCalcTaskCard.MapName
+                };
+
+                _commandDispatcher.Send(modifier);
+            }
+
+            _calcTaskEditedMode = CardEditMode.None;
+            CalcTaskSaveEnabled = false;
+            if (CurrentClientContext != null)
+                CalcTaskAddEnabled = true;
         }
         private void OnTaskStartCalcCommand(object parameter)
         {
@@ -390,5 +585,13 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
             _onDeletedClientContextToken?.Dispose();
             _onDeletedClientContextToken = null;
         }
+    }
+    enum CardEditMode
+    {
+        None,
+        Add,
+        Edit,
+        Delete,
+        Duplicate
     }
 }
