@@ -9,6 +9,8 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
+using System.Windows.Media.TextFormatting;
 using Atdi.Platform.DependencyInjection;
 using Atdi.Platform.Logging;
 
@@ -79,7 +81,7 @@ namespace Atdi.Icsm.Plugins.Core
 			}
 		}
 
-		public void Close(ViewForm form)
+		internal void Close(ViewForm form)
 		{
 			if (_forms.ContainsKey(form))
 			{
@@ -107,6 +109,12 @@ namespace Atdi.Icsm.Plugins.Core
 			}
 		}
 
+
+		public bool AskQuestion(string title, string question)
+		{
+			return MessageBox.Show(question, title, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
+		}
+
 		public void ShowException(string title, Exception e)
 		{
 			this.ShowException(title, "Something went wrong.", e);
@@ -122,6 +130,20 @@ namespace Atdi.Icsm.Plugins.Core
 			MessageBox.Show(text.ToString(), title, MessageBoxButtons.OK, MessageBoxIcon.Error);
 		}
 
+		public bool ShowExceptionRequestingRetry(string title, Exception e)
+		{
+			return this.ShowExceptionRequestingRetry(title, "Something went wrong.", e);
+		}
+
+		public bool ShowExceptionRequestingRetry(string title, string message, Exception e)
+		{
+			var text = new StringBuilder();
+			text.AppendLine(message);
+			text.AppendLine($"");
+			text.AppendLine(e.Message);
+
+			return MessageBox.Show(text.ToString(), title, MessageBoxButtons.RetryCancel, MessageBoxIcon.Error) == DialogResult.Retry;
+		}
 
 		public void StartLongProcess(LongProcessOptions options, Action<LongProcessToken> action)
 		{
@@ -130,6 +152,40 @@ namespace Atdi.Icsm.Plugins.Core
 			worker.Start(options, action);
 		}
 
+		public void StartInUserContext(string title, string question, Action action, bool allowRetry = false)
+		{
+			if (this.AskQuestion(title, question))
+			{
+				this.StartInUserContext(title, action, allowRetry);
+			}
+		}
+
+		public void StartInUserContext(string title, Action action, bool allowRetry = false)
+		{
+			var retry = false;
+			do
+			{
+				try
+				{
+					action();
+				}
+				catch (Exception e)
+				{
+					this.Logger.Exception("Plugins.Core", "ViewStarter", title, e, this);
+					if (allowRetry)
+					{
+						retry = this.ShowExceptionRequestingRetry(title, e);
+					}
+					else
+					{
+						retry = false;
+						this.ShowException(title, e);
+					}
+				}
+
+			} while (retry);
+			
+		}
 
 		internal void Close(LongProcessWorker processWorker)
 		{

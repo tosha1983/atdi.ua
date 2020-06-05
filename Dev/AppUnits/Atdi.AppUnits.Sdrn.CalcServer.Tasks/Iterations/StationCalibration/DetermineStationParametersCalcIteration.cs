@@ -281,8 +281,6 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                     CompressedStationsAndDriveTest(ref outListContextStations, ref outListDriveTestsResults, resultCorrelationGSIDGroupeStations);
                                 }
                             }
-                            // нужна ли обработка если результат не біл получен ????????????????????
-                            // нужно ли добавлять станцииб драйв тесты для дальнейшей обработки????????????????????
                             else
                             {
                                 if ((contextStations!=null) && (contextStations.Count>0))
@@ -623,15 +621,42 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                     ///////////////////////////  если до текущего мемента драйв тест никуда не попал, тогда формируем результат с ним ////////////////////////////////
                                     if (calibrationStationsAndDriveTestsResultByGroup.Count > 0)
                                     {
+                                        var listTempCalibrationDriveTestResult = new List<CalibrationDriveTestResult>();
                                         for (int m = 0; m < calibrationStationsAndDriveTestsResultByGroup.Count; m++)
                                         {
-                                            var calibrationStationsAndDriveTest = calibrationStationsAndDriveTestsResultByGroup[m];
-                                            var driveTests = calibrationStationsAndDriveTest.ResultCalibrationDriveTest.ToList();
-                                            if (driveTests.Find(x => x.DriveTestId == currentDriveTest.DriveTestId) == null)
+                                            var calibrationStationsAndDriveTest = calibrationStationsAndDriveTestsResultByGroup[m].ResultCalibrationDriveTest;
+                                            if (calibrationStationsAndDriveTest != null)
                                             {
-                                                calibrationStationsAndDriveTestsResultByGroup.Add(new CalibrationStationsAndDriveTestsResult()
-                                                {
-                                                    ResultCalibrationDriveTest = new CalibrationDriveTestResult[1]
+                                                listTempCalibrationDriveTestResult.AddRange(calibrationStationsAndDriveTest);
+                                            }
+                                        }
+
+
+                                        if (listTempCalibrationDriveTestResult.Find(x => x.DriveTestId == currentDriveTest.DriveTestId) == null)
+                                        {
+                                            calibrationStationsAndDriveTestsResultByGroup.Add(new CalibrationStationsAndDriveTestsResult()
+                                            {
+                                                ResultCalibrationDriveTest = new CalibrationDriveTestResult[1]
+                                              {
+                                                    new CalibrationDriveTestResult()
+                                                    {
+                                                         CountPointsInDriveTest = currentDriveTest.Points.Length,
+                                                         DriveTestId = currentDriveTest.DriveTestId,
+                                                         Gsid = currentDriveTest.GSID,
+                                                         LinkToStationMonitoringId = currentDriveTest.LinkToStationMonitoringId,
+                                                         ResultDriveTestStatus = DriveTestStatusResult.UN
+                                                 }
+                                              },
+                                                ResultCalibrationStation = null
+                                            });
+
+                                        }
+                                    }
+                                    else
+                                    {
+                                        calibrationStationsAndDriveTestsResultByGroup.Add(new CalibrationStationsAndDriveTestsResult()
+                                        {
+                                            ResultCalibrationDriveTest = new CalibrationDriveTestResult[1]
                                                   {
                                                     new CalibrationDriveTestResult()
                                                     {
@@ -642,11 +667,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                          ResultDriveTestStatus = DriveTestStatusResult.UN
                                                  }
                                                   },
-                                                    ResultCalibrationStation = null
-                                                });
-
-                                            }
-                                        }
+                                            ResultCalibrationStation = null
+                                        });
                                     }
                                     /////////////////////////////////////////////////////////
                                 }
@@ -754,18 +776,18 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         Standard = standard, // стандарт
                         ResultCalibrationStation = listCalibrationStationResult.ToArray(), // станции
                         ResultCalibrationDriveTest = listCalibrationDriveTestResult.ToArray(), // драйв тесты
-                        CountStation_CS = listCalibrationStationResult.Select(x => x.ResultStationStatus == StationStatusResult.CS).Count(), // число станций со статусом CS
-                        CountStation_IT = listCalibrationStationResult.Select(x => x.ResultStationStatus == StationStatusResult.IT).Count(), // число станций со статусом IT
-                        CountStation_NF = listCalibrationStationResult.Select(x => x.ResultStationStatus == StationStatusResult.NF).Count(), // число станций со статусом NF
-                        CountStation_NS = listCalibrationStationResult.Select(x => x.ResultStationStatus == StationStatusResult.NS).Count(), // число станций со статусом NS
-                        CountStation_UN = listCalibrationStationResult.Select(x => x.ResultStationStatus == StationStatusResult.UN).Count(), // число станций со статусом UN
+                        CountStation_CS = listCalibrationStationResult.FindAll(x => x.ResultStationStatus == StationStatusResult.CS).Count(), // число станций со статусом CS
+                        CountStation_IT = listCalibrationStationResult.FindAll(x => x.ResultStationStatus == StationStatusResult.IT).Count(), // число станций со статусом IT
+                        CountStation_NF = listCalibrationStationResult.FindAll(x => x.ResultStationStatus == StationStatusResult.NF).Count(), // число станций со статусом NF
+                        CountStation_NS = listCalibrationStationResult.FindAll(x => x.ResultStationStatus == StationStatusResult.NS).Count(), // число станций со статусом NS
+                        CountStation_UN = listCalibrationStationResult.FindAll(x => x.ResultStationStatus == StationStatusResult.UN).Count(), // число станций со статусом UN
                         AreaName= areas,
                         CountMeasGSID = listCalibrationDriveTestResult.Select(x => x.Gsid).Count(),  // число GCID в драйв тестах
-                        CountMeasGSID_IT = listCalibrationDriveTestResult.Select(x => x.ResultDriveTestStatus== DriveTestStatusResult.IT).Count(), // число драйв тестов со статусом IT
-                        CountMeasGSID_LS = listCalibrationDriveTestResult.Select(x => x.ResultDriveTestStatus == DriveTestStatusResult.LS).Count(), // число драйв тестов со статусом LS
+                        CountMeasGSID_IT = listCalibrationDriveTestResult.FindAll(x => x.ResultDriveTestStatus== DriveTestStatusResult.IT).Count(), // число драйв тестов со статусом IT
+                        CountMeasGSID_LS = listCalibrationDriveTestResult.FindAll(x => x.ResultDriveTestStatus == DriveTestStatusResult.LS).Count(), // число драйв тестов со статусом LS
                         GeneralParameters = data.GeneralParameters,
                         NumberStation= listCalibrationStationResult.Count(),  // общее число станций
-                        NumberStationInContour = listCalibrationStationResult.Select(x=>x.IsContour==true).Count(), // общее число станций, которіе имеют статус А (попадают в контур)
+                        NumberStationInContour = listCalibrationStationResult.FindAll(x=>x.IsContour==true).Count(), // общее число станций, которіе имеют статус А (попадают в контур)
                         TimeStart= DateTime.Now
                     };
                     listCalcCorellationResult[v] = calcCorellationResult;
