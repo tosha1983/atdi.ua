@@ -19,5 +19,6 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
         public ParametersStation ParametersStationNew;
         public ParametersStation ParametersStationOld;
         public float MaxCorellation;
+        public bool IsContour;
     }
 }

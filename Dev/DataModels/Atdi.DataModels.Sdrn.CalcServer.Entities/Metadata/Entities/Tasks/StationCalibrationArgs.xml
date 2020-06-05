@@ -8,7 +8,7 @@
   
   xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   <DataSource Type="Database" Object="Table">
-    <Name>STATION_CALIBRATION_ARGS</Name>
+    <Name>CALCTASKS_STATION_CALIBRATION_ARGS</Name>
     <Schema>CALC</Schema>
   </DataSource>
   <Fields>

@@ -11,6 +11,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
     public static class RulesStatusParameters
     {
+
         public static List<CalibrationStatusParameters> CalibrationSecondStatusParameter = new List<Iterations.CalibrationStatusParameters>
             {
                  new CalibrationStatusParameters()

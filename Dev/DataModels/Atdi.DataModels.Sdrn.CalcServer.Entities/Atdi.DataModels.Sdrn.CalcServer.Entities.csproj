@@ -165,11 +165,11 @@
     <Content Include="DataLayer\SqlServer\Tables\CALC.CONTEXT_STATIONS_SITE.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.CONTEXT_STATIONS.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.CLIENT_CONTEXTS.sql" />
-    <Content Include="DataLayer\SqlServer\Tables\CALC.STATION_CALIBRATION_STA_RESULT.sql" />
-    <Content Include="DataLayer\SqlServer\Tables\CALC.STATION_CALIBRATION_RESULT.sql" />
-    <Content Include="DataLayer\SqlServer\Tables\CALC.STATION_CALIBRATION_DRIVE_TEST_RESULT.sql" />
-    <Content Include="DataLayer\SqlServer\Tables\CALC.STATION_CALIBRATION_ARGS_DEF.sql" />
-    <Content Include="DataLayer\SqlServer\Tables\CALC.STATION_CALIBRATION_ARGS.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.CALCRESULTS_STATION_CALIBRATION_STA.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.CALCRESULTS_STATION_CALIBRATION.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.CALCRESULTS_STATION_CALIBRATION_DRIVE_TEST.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.CALCTASKS_STATION_CALIBRATION_ARGS_DEF.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.CALCTASKS_STATION_CALIBRATION_ARGS.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.PROJECTS.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.PROJECT_MAPS.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.PROJECT_MAP_CONTENTS.sql" />

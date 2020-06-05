@@ -84,11 +84,12 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                 c => c.PARAMETERS.UseMeasurementSameGSID
 
             )
-            .Filter(f => f.RESULT.Id, DataModels.Api.EntityOrm.WebClient.FilterOperator.Equal, resultId);
+            .Filter(f => f.RESULT.Id, DataModels.Api.EntityOrm.WebClient.FilterOperator.Equal, resultId)
+            .OrderByDesc(f=>f.TimeStart);
             if ((dateTimeStart!=null) && (dateTimeStop != null))
             {
-                query.Filter(f => f.TimeStart, DataModels.Api.EntityOrm.WebClient.FilterOperator.GreaterEqual, dateTimeStart);
-                query.Filter(f => f.TimeStart, DataModels.Api.EntityOrm.WebClient.FilterOperator.LessEqual, dateTimeStop);
+                query.Filter(f => f.TimeStart, DataModels.Api.EntityOrm.WebClient.FilterOperator.GreaterEqual, new DateTimeOffset(new DateTime(dateTimeStart.Value.Year, dateTimeStart.Value.Month, dateTimeStart.Value.Day, 0, 0, 0, 1)));
+                query.Filter(f => f.TimeStart, DataModels.Api.EntityOrm.WebClient.FilterOperator.LessEqual, new DateTimeOffset(new DateTime(dateTimeStop.Value.Year, dateTimeStop.Value.Month, dateTimeStop.Value.Day, 23, 59, 59, 999)));
             }
         }
         protected override StationCalibrationResultModel ReadData(IDataReader<CS_ES.IStationCalibrationResult> reader, int index)

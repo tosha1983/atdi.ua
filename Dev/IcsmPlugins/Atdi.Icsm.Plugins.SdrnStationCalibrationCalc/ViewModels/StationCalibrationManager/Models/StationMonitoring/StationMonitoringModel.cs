@@ -21,5 +21,6 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
         public int CountSID { get; set; }
         public double? MinFreq_MHz { get; set; }
         public double? MaxFreq_MHz { get; set; }
+        public DriveTestStandardStats[] DriveTestStandardStats { get; set; }
     }
 }

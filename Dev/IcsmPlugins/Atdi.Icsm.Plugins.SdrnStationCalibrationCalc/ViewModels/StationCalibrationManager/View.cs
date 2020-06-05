@@ -52,6 +52,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
         private readonly ViewStarter _starter;
         private readonly IEventBus _eventBus;
         private readonly ILogger _logger;
+        private readonly AppComponentConfig _appComponentConfig;
 
         private IcsmStationName _selectedIcsmStationName;
         private SelectedStationType _selectedStationType;
@@ -81,6 +82,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             CalcServerDataLayer dataLayer,
             ParametersDataAdapter parametersDataAdapter,
             StationMonitoringDataAdapter stationMonitoringDataAdapter,
+            AppComponentConfig appComponentConfig,
             IObjectReader objectReader,
             ICommandDispatcher commandDispatcher,
             ITransformation transformation,
@@ -97,6 +99,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
 
 
             this._dataLayer = dataLayer;
+            this._appComponentConfig = appComponentConfig;
 
 
             this.StartStationCalibrationCommand = new ViewCommand(this.OnStartStationCalibrationCommand);
@@ -480,6 +483,38 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
 
 
 
+        /// <summary>
+        /// Максимально допустимое число точек в drive тесте для заданного в файле конфигурации стандарта
+        /// </summary>
+        /// <param name="standard"></param>
+        /// <returns></returns>
+        public int GetMaximumCountPointsInDriveTests(string standard)
+        {
+            int? maximumCountPoints = null;
+            if ((standard == "GSM") || (standard == "GSM-900") || (standard == "GSM-1800") || (standard == "E-GSM"))
+            {
+                maximumCountPoints = _appComponentConfig.MaximumCountPointsInDriveTestsFor_GSM;
+            }
+            else if ((standard == "UMTS") || (standard == "WCDMA"))
+            {
+                maximumCountPoints = _appComponentConfig.MaximumCountPointsInDriveTestsFor_UMTS;
+            }
+            else if ((standard == "LTE") || (standard == "LTE-1800") || (standard == "LTE-2600") || (standard == "LTE-900"))
+            {
+                maximumCountPoints = _appComponentConfig.MaximumCountPointsInDriveTestsFor_LTE;
+            }
+            else if ((standard == "CDMA") || (standard == "CDMA-450") || (standard == "CDMA-800") || (standard == "EVDO"))
+            {
+                maximumCountPoints = _appComponentConfig.MaximumCountPointsInDriveTestsFor_CDMA;
+            }
+            else
+            {
+                throw new Exception($"The parameter 'maximum count points' in the config is not defined for the '{standard}' standard");
+            }
+            return maximumCountPoints.Value;
+        }
+
+
         public GetStationsParamsModel GetStationsParams
         {
             get => this._currentGetStationsParameters;
@@ -668,13 +703,24 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                     var listStationMonitoringModel = new List<long>();
                     foreach (StationMonitoringModel x in CurrentStationMonitoringModel)
                     {
+                        var driveTestStandardStats = x.DriveTestStandardStats;
+                        if (driveTestStandardStats != null)
+                        {
+                            var listDriveTests = driveTestStandardStats.ToList();
+                            var countPoints = listDriveTests.Find(v => v.Count > GetMaximumCountPointsInDriveTests(v.Standard));
+                            if (countPoints.Standard !=null)
+                            {
+                                System.Windows.Forms.MessageBox.Show($"The functionality cannot be started, because for the standard '{countPoints.Standard}' the  number of points greater  {countPoints.Count}!");
+                                return;
+                            }
+                        }
                         listStationMonitoringModel.Add(x.Id);
                     }
                     this._currentParamsCalculationModel.InfocMeasResults = listStationMonitoringModel.ToArray();
                     this._currentParamsCalculationModel.StationIds = stations.Select(x => Convert.ToInt64(x.ExternalCode)).ToArray();
-                    _onEditParamsCalculationToken = _eventBus.Subscribe<Events.OnEditParamsCalculation>(this.OnEditParamsCalculationsHandle);
-                    _onCreatePropagationModelsToken = _eventBus.Subscribe<Events.OnCreatePropagationModels>(this.OnCreatePropagationModelsHandle);
-                    _onSavedStationsToken = _eventBus.Subscribe<Events.OnSavedStations>(this.OnSavedStationsHandle);
+                    this._onEditParamsCalculationToken = _eventBus.Subscribe<Events.OnEditParamsCalculation>(this.OnEditParamsCalculationsHandle);
+                    this._onCreatePropagationModelsToken = _eventBus.Subscribe<Events.OnCreatePropagationModels>(this.OnCreatePropagationModelsHandle);
+                    this._onSavedStationsToken = _eventBus.Subscribe<Events.OnSavedStations>(this.OnSavedStationsHandle);
 
 
                     var clientContextId = _objectReader.Read<long?>().By(new CalcTaskModelByContextId() { TaskId = TaskId });

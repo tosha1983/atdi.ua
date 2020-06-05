@@ -759,7 +759,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                 .SetValue(c => c.NumberStation, result.NumberStation)
                 .SetValue(c => c.NumberStationInContour, result.NumberStationInContour)
                 .SetValue(c => c.Standard, result.Standard)
-                .SetValue(c => c.TimeStart, result.TimeStart)
+                .SetValue(c => c.TimeStart,  DateTime.Now)
                 //.SetValue(c => c.ParametersId, _taskContext.TaskId)
                 .SetValue(c => c.PARAMETERS.TaskId, _taskContext.TaskId)
                 .SetValue(c => c.RESULT.Id, _taskContext.ResultId)

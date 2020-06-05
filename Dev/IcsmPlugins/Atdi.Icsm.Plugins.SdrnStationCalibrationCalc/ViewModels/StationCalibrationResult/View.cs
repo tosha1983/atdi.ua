@@ -189,24 +189,28 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                 {
                     if (v.DriveTestId > 0)
                     {
-                        var routes = GetRoutesByIdStationMonitoring(v.DriveTestId);
-                        if (routes != null)
+                        var staionMonitoringId = _objectReader.Read<long?>().By(new DriveResultsModelById() {  Id = v.DriveTestId });
+                        if ((staionMonitoringId != null) && (staionMonitoringId != 0))
                         {
-                            for (int i = 0; i < routes.Length; i++)
+                            var routes = GetRoutesByIdStationMonitoring(staionMonitoringId.Value);
+                            if (routes != null)
                             {
-                                points.Add(new MP.MapDrawingDataPoint()
+                                for (int i = 0; i < routes.Length; i++)
                                 {
-                                    Location = new MP.Location()
+                                    points.Add(new MP.MapDrawingDataPoint()
                                     {
-                                        Lat = routes[i].Latitude,
-                                        Lon = routes[i].Longitude
-                                    },
-                                    Color = System.Windows.Media.Brushes.Green,
-                                    Fill = System.Windows.Media.Brushes.ForestGreen,
-                                    Opacity = 0.85,
-                                    Width = 10,
-                                    Height = 10
-                                });
+                                        Location = new MP.Location()
+                                        {
+                                            Lat = routes[i].Latitude,
+                                            Lon = routes[i].Longitude
+                                        },
+                                        Color = System.Windows.Media.Brushes.Green,
+                                        Fill = System.Windows.Media.Brushes.ForestGreen,
+                                        Opacity = 0.85,
+                                        Width = 10,
+                                        Height = 10
+                                    });
+                                }
                             }
                         }
                     }
@@ -258,22 +262,26 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                         {
                             if (resDriveTests[k].DriveTestId > 0)
                             {
-                                var routes = GetRoutesByIdStationMonitoring(resDriveTests[k].DriveTestId);
-                                for (int i = 0; i < routes.Length; i++)
+                                var staionMonitoringId = _objectReader.Read<long?>().By(new DriveResultsModelById() { Id = resDriveTests[k].DriveTestId });
+                                if ((staionMonitoringId != null) && (staionMonitoringId != 0))
                                 {
-                                    points.Add(new MP.MapDrawingDataPoint()
+                                    var routes = GetRoutesByIdStationMonitoring(staionMonitoringId.Value);
+                                    for (int i = 0; i < routes.Length; i++)
                                     {
-                                        Location = new MP.Location()
+                                        points.Add(new MP.MapDrawingDataPoint()
                                         {
-                                            Lat = routes[i].Latitude,
-                                            Lon = routes[i].Longitude
-                                        },
-                                        Color = System.Windows.Media.Brushes.Green,
-                                        Fill = System.Windows.Media.Brushes.ForestGreen,
-                                        Opacity = 0.85,
-                                        Width = 10,
-                                        Height = 10
-                                    });
+                                            Location = new MP.Location()
+                                            {
+                                                Lat = routes[i].Latitude,
+                                                Lon = routes[i].Longitude
+                                            },
+                                            Color = System.Windows.Media.Brushes.Green,
+                                            Fill = System.Windows.Media.Brushes.ForestGreen,
+                                            Opacity = 0.85,
+                                            Width = 10,
+                                            Height = 10
+                                        });
+                                    }
                                 }
                             }
                         }

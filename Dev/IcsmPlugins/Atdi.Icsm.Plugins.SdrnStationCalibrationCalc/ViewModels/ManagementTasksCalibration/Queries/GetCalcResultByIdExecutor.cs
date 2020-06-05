@@ -26,6 +26,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
                     c => c.Id,
                     c => c.TASK.Id
                     )
+                 .OrderByDesc(c=>c.Id)
                 .Filter(c => c.TASK.Id, criterion.Id);
 
             var reader = _dataLayer.Executor.ExecuteReader(query);

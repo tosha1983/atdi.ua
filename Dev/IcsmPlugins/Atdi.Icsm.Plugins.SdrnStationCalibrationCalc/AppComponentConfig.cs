@@ -29,9 +29,17 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc
 		public string InfocenterEntityOrmEndpointApiUri { get; set; }
 
 		[ComponentConfigProperty("Infocenter.EntityOrm.DataContext")]
-		public string InfocenterEntityOrmDataContext { get; set; }
+
+        public string InfocenterEntityOrmDataContext { get; set; }
+
+        public int MaximumCountPointsInDriveTestsFor_GSM { get; set; }
+
+        public int MaximumCountPointsInDriveTestsFor_UMTS { get; set; }
+
+        public int MaximumCountPointsInDriveTestsFor_LTE { get; set; }
+
+        public int MaximumCountPointsInDriveTestsFor_CDMA { get; set; }
 
 
-
-	}
+    }
 }
