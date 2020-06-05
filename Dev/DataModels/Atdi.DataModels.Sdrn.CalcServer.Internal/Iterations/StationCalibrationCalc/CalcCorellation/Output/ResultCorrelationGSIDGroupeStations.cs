@@ -12,5 +12,6 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
     {
         public ParametersStation ParametersStationNew;
         public ParametersStation ParametersStationOld;
+        public double MaxCorrelation_PC;
     }
 }

@@ -379,10 +379,8 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                             mobStationT.m_cust_txt1 = mobStationT.m_cust_txt2;
                         }
 
-                        bool correctStation = false;
                         if (notActiveStationStatuses.Contains(rs.GetS("STATUS")))
                         {
-                            correctStation = true;
                             mobStationT.m_status = MobStationStatus.I.ToString();
                         }
                         else if (activeStationStatuses.Contains(rs.GetS("STATUS")))
@@ -393,7 +391,6 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                                 if (CheckHitting(this._mobStationsLoadModelByParams.AreaModel[w].Location, mobStationT.m_Position))
                                 {
                                     mobStationT.m_status = MobStationStatus.A.ToString();
-                                    correctStation = true;
                                 }
                                 else
                                 {
@@ -403,28 +400,20 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                                     if (CheckHitting(this._mobStationsLoadModelByParams.AreaModel[w].ExternalContour, mobStationT.m_Position))
                                     {
                                         isFindPositionWithDistanceAroundContour = true;
-                                        break;
                                     }
 
                                     if (isFindPositionWithDistanceAroundContour)
                                     {
                                         mobStationT.m_status = MobStationStatus.P.ToString();
-                                        correctStation = true;
                                     }
                                     else
                                     {
                                         // для всех остальных случаев выставляем статус I
                                         mobStationT.m_status = MobStationStatus.I.ToString();
-                                        correctStation = false;
                                     }
                                 }
                             }
                         }
-                        //// если станция не попадает в заданный регион и в область за регионом, которая отстоит на расстоянии DistanceAroundContour_km от границы точек региона, тогда просто пропускаем станцию
-                        //if (correctStation == false)
-                        //{
-                        //    continue;
-                        //}
 
                         //  Проверка - станция должна отправляться один раз (дуликатов быть не должно)
                         var fndStation = listMobStationT.Find(x => x.m_id == mobStationT.m_id);

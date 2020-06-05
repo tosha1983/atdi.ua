@@ -8,15 +8,14 @@
   
   xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   <DataSource Type="Database" Object="Table">
-    <Name>STATION_CALIBRATION_STA_RESULT</Name>
+    <Name>CALCRESULTS_STATION_CALIBRATION_STA</Name>
     <Schema>CALC</Schema>
   </DataSource>
   <Fields>
 
     <Field Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column" Desc="The Id record." Title="Id record"/>
     <Field Name="StationMonitoringId" SourceType="Column" SourceName="STATION_MONITORING_ID" DataType="Integer.64"  Required="false" Title="Station  monitoring ID" Desc="The station  monitoring ID" />
-    <!--<Field Name="CALIBRATION_RES" SourceType="Reference" SourceName="Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks.StationCalibrationResult"  Required="true" Title="Station calibration result" Desc="The Station calibration result" />-->
-    <Field Name="CalibrationResultId" SourceType="Column" SourceName="STATION_CALIBRATION_RESULT_ID" DataType="Integer.64"  Required="true" Title="calibration result ID" Desc="The calibration result ID" />
+    <Field Name="CalibrationResultId" SourceType="Column" SourceName="CALCRESULTS_STATION_CALIBRATION_ID" DataType="Integer.64"  Required="true" Title="calibration result ID" Desc="The calibration result ID" />
     <Field Name="ExternalSource" SourceType="Column" SourceName="EXTERNAL_SOURCE" DataType="Text.50" Required="false" Title="External source" Desc="The external source" />
     <Field Name="ExternalCode" SourceType="Column" SourceName="EXTERNAL_CODE" DataType="Text.50" Required="false" Title="External code" Desc="The external code" />
     <Field Name="LicenseGsid" SourceType="Column" SourceName="LICENSE_GSID" DataType="Text.100" Required="false" Title="License gsid" Desc="The license gsid" />

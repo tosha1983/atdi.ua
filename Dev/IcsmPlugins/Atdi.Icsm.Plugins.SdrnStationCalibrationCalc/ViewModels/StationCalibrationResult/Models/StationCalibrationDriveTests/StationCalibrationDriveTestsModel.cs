@@ -9,6 +9,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
     public class StationCalibrationDriveTestsModel
     {
         public long Id { get; set; }
+        public long ResultId { get; set; }
         public long LinkToStationMonitoringId { get; set; }
         public long DriveTestId { get; set; }
         public string ExternalSource { get; set; }

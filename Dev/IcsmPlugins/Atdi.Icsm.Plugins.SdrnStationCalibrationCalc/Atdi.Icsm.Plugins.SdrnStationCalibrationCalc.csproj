@@ -172,9 +172,11 @@
     <Compile Include="ViewModels\StationCalibrationResult\Models\StationCalibrationResult\StationCalibrationResultModel.cs" />
     <Compile Include="ViewModels\StationCalibrationResult\Models\StationCalibrationSta\RoutesStationMonitoringModel.cs" />
     <Compile Include="ViewModels\StationCalibrationResult\Models\StationCalibrationSta\StationCalibrationStaModel.cs" />
+    <Compile Include="ViewModels\StationCalibrationResult\Queries\DriveResultsModelById.cs" />
     <Compile Include="ViewModels\StationCalibrationResult\Queries\StationCalibrationDriveTestsModelById.cs" />
     <Compile Include="ViewModels\StationCalibrationResult\Queries\StationCalibrationDriveTestsModelByIdExecutor.cs" />
     <Compile Include="ViewModels\StationCalibrationResult\Queries\StationCalibrationStaModelByResultId.cs" />
+    <Compile Include="ViewModels\StationCalibrationResult\Queries\DriveResultsModelByIdExecutor.cs" />
     <Compile Include="ViewModels\StationCalibrationResult\Queries\StationCalibrationStaModelByResultIdExecutor.cs" />
     <Compile Include="ViewModels\StationCalibrationResult\Queries\StationCalibrationStaModelByIdExecutor.cs" />
     <Compile Include="ViewModels\StationCalibrationResult\Queries\StationCalibrationStaModelById.cs" />

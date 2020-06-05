@@ -35,8 +35,9 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                 c => c.StatusCode,
                 c => c.StatusName,
                 c => c.StatusNote
-            ).Filter(f => f.MeasTime, DataModels.Api.EntityOrm.WebClient.FilterOperator.GreaterEqual, StartDateTime.Date)
-            .Filter(f => f.MeasTime, DataModels.Api.EntityOrm.WebClient.FilterOperator.LessEqual, StopDateTime.Date);
+            )
+            .Filter(f => f.MeasTime, DataModels.Api.EntityOrm.WebClient.FilterOperator.GreaterEqual, new DateTime(StartDateTime.Date.Year, StartDateTime.Date.Month, StartDateTime.Date.Day, 0, 0, 0, 1))
+            .Filter(f => f.MeasTime, DataModels.Api.EntityOrm.WebClient.FilterOperator.LessEqual, new DateTime(StopDateTime.Date.Year, StopDateTime.Date.Month, StopDateTime.Date.Day, 23, 59, 59, 999));
         }
         protected override StationMonitoringModel ReadData(IDataReader<IC_ES.IStationMonitoring> reader, int index)
         {
@@ -60,6 +61,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                 MinFreq_MHz = reader.GetValue(c => c.STATS.MinFreq_MHz),
                 SensorName = reader.GetValue(c => c.SensorName),
                 SensorTitle = reader.GetValue(c => c.SensorTitle),
+                DriveTestStandardStats = standardStats
             };
         }
     }

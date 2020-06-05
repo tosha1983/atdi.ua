@@ -43,7 +43,7 @@ namespace Atdi.DataModels.Sdrn.Infocenter.Entities.SdrnServer
 		/// <summary>
 		/// результаты измерения получены полностью и доступны для использования
 		/// </summary>
-		Available = 2,
+		Available = 2
 	}
 
 	
