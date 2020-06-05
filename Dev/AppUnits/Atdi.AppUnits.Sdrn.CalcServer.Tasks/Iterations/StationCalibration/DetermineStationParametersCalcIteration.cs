@@ -704,7 +704,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 var resultCorellationCalcData = iterationCorellationCalc.Run(taskContext, stationCorellationCalcData);
 
                 // Если максимальная корреляция превысит(или равна) Сorrelation threshold weak то возвращаем True
-                if (resultCorellationCalcData.Corellation_factor > stationCorellationCalcData.GeneralParameters.СorrelationThresholdWeak)
+                if (resultCorellationCalcData.Corellation_pc > stationCorellationCalcData.GeneralParameters.СorrelationThresholdWeak)
                 {
                     StatusCorellationLinkGroup = true;
                     break;

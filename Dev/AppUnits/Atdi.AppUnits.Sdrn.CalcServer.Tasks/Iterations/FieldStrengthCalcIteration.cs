@@ -327,21 +327,31 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 };
                 var antennaGainD = _signalService.CalcAntennaGain(in antennaGainArgs);
                 double Level_dBm = data.Transmitter.MaxPower_dBm - data.Transmitter.Loss_dB + antennaGainD - lossResult.LossD_dB;
+                double antennaPatternLoss_dB = antennaGainD - antennaGainArgs.Antenna.Gain_dB;
                 if (data.PropagationModel.AbsorptionBlock.Available)
                 {// нужен учет дополнительного пути распространения
                     double Loss1 = lossResult.LossD_dB - antennaGainD;
                     antennaGainArgs.TiltToTarget_deg = lossResult.TiltaA_Deg;
                     var antennaGainA = _signalService.CalcAntennaGain(in antennaGainArgs);
+
                     double Loss2 = lossResult.LossA_dB - antennaGainA;
-                    double LossSum = Math.Min(Loss1, Loss2);
-                    //LossSum = LossSum - 10 * Math.Log10(Math.Pow(10, -0.1 * (Loss1 - LossSum))+ Math.Pow(10, -0.1 * (Loss2 - LossSum)));
+                    double LossSum = Loss1;
+
+                    if (Loss1 > Loss2)
+                    {
+                        LossSum = Loss2;
+                        antennaPatternLoss_dB = antennaGainA - antennaGainArgs.Antenna.Gain_dB;
+                    }
+                    //double LossSum = Math.Min(Loss1, Loss2);
+                    //LossSum = LossSum - 10 * Math.Log10(Math.Pow(10, -0.1 * (Loss1 - LossSum)) + Math.Pow(10, -0.1 * (Loss2 - LossSum)));
                     Level_dBm = data.Transmitter.MaxPower_dBm - data.Transmitter.Loss_dB - LossSum;
                 }
                 double FS_dBuVm = Level_dBm + 77.2 + 20 * Math.Log10(data.Transmitter.Freq_MHz);
                 return new FieldStrengthCalcResult
                 {
                     FS_dBuVm = FS_dBuVm,
-                    Level_dBm = Level_dBm
+                    Level_dBm = Level_dBm,
+                    AntennaPatternLoss_dB = antennaPatternLoss_dB
                 };
             }
             catch (Exception)
