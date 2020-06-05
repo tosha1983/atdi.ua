@@ -19,5 +19,9 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
         public byte StatusCode { get; set; }
         public string StatusName { get; set; }
         public string StatusNote { get; set; }
+        public long ProjectId { get; set; }
+        public long BaseContextId { get; set; }
+        public string BaseContextName { get; set; }
+
     }
 }

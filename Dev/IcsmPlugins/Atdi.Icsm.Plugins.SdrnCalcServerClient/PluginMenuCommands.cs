@@ -41,8 +41,8 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient
             catch (Exception e)
             {
 				_logger.Exception((EventContext)"PluginMenuCommands", (EventCategory)"OnRunProjectManagerCommand", e);
-                MessageBox.Show(e.ToString());
-            }
+				_viewStarter.ShowException(PluginMetadata.Title, e);
+			}
         }
 
         public void OnRunEntityOrmTestCommand()
@@ -54,8 +54,22 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient
 	        catch (Exception e)
 	        {
 		        _logger.Exception((EventContext)"PluginMenuCommands", (EventCategory)"OnRunEntityOrmTestCommand", e);
-		        MessageBox.Show(e.ToString());
+				_viewStarter.ShowException(PluginMetadata.Title, e);
+			}
+        }
+
+        public void OnRunDialogTestCommand()
+        {
+	        try
+	        {
+		        _viewStarter.Start<VM.EntityOrmTest.TestDialogView>(isModal: false);
 	        }
+	        catch (Exception e)
+	        {
+		        _logger.Exception((EventContext)"PluginMenuCommands", (EventCategory)"OnRunTestDialogCommand", e);
+				_viewStarter.ShowException(PluginMetadata.Title, e);
+
+			}
         }
 	}
 }

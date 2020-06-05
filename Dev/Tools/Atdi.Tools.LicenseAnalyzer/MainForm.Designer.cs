@@ -79,9 +79,10 @@
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
 			this.tabPage2 = new System.Windows.Forms.TabPage();
-			this.textBox1 = new System.Windows.Forms.TextBox();
+			this.txtHostKey = new System.Windows.Forms.TextBox();
 			this.button4 = new System.Windows.Forms.Button();
 			this.button5 = new System.Windows.Forms.Button();
+			this.button6 = new System.Windows.Forms.Button();
 			this.groupBox1.SuspendLayout();
 			this.groupBox3.SuspendLayout();
 			this.tabControl1.SuspendLayout();
@@ -456,7 +457,9 @@
             "WebQuery Web Portal",
             "ICS Control Client (Monitoring or other)",
             "SDRN Calc Server",
-            "SDRN Infocentr Server"});
+            "SDRN Infocentr Server",
+            "SDRN Calc Server Client ICSM Plugin",
+            "SDRN Station Calibration Calc ICSM Plugin"});
 			this.cmbConfigType.Location = new System.Drawing.Point(77, 17);
 			this.cmbConfigType.Name = "cmbConfigType";
 			this.cmbConfigType.Size = new System.Drawing.Size(303, 21);
@@ -502,9 +505,9 @@
 			// 
 			// button3
 			// 
-			this.button3.Location = new System.Drawing.Point(386, 14);
+			this.button3.Location = new System.Drawing.Point(386, 17);
 			this.button3.Name = "button3";
-			this.button3.Size = new System.Drawing.Size(75, 46);
+			this.button3.Size = new System.Drawing.Size(68, 47);
 			this.button3.TabIndex = 17;
 			this.button3.Text = "Encrypt";
 			this.button3.UseVisualStyleBackColor = true;
@@ -580,9 +583,10 @@
 			// 
 			// tabPage2
 			// 
+			this.tabPage2.Controls.Add(this.button6);
 			this.tabPage2.Controls.Add(this.button5);
 			this.tabPage2.Controls.Add(this.button4);
-			this.tabPage2.Controls.Add(this.textBox1);
+			this.tabPage2.Controls.Add(this.txtHostKey);
 			this.tabPage2.Location = new System.Drawing.Point(4, 22);
 			this.tabPage2.Name = "tabPage2";
 			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
@@ -591,32 +595,47 @@
 			this.tabPage2.Text = "Host Key";
 			this.tabPage2.UseVisualStyleBackColor = true;
 			// 
-			// textBox1
+			// txtHostKey
 			// 
-			this.textBox1.Location = new System.Drawing.Point(6, 6);
-			this.textBox1.Multiline = true;
-			this.textBox1.Name = "textBox1";
-			this.textBox1.ReadOnly = true;
-			this.textBox1.Size = new System.Drawing.Size(370, 150);
-			this.textBox1.TabIndex = 0;
+			this.txtHostKey.Location = new System.Drawing.Point(6, 6);
+			this.txtHostKey.Multiline = true;
+			this.txtHostKey.Name = "txtHostKey";
+			this.txtHostKey.ReadOnly = true;
+			this.txtHostKey.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+			this.txtHostKey.Size = new System.Drawing.Size(370, 150);
+			this.txtHostKey.TabIndex = 0;
 			// 
 			// button4
 			// 
 			this.button4.Location = new System.Drawing.Point(389, 6);
 			this.button4.Name = "button4";
-			this.button4.Size = new System.Drawing.Size(75, 46);
+			this.button4.Size = new System.Drawing.Size(75, 26);
 			this.button4.TabIndex = 18;
 			this.button4.Text = "Generate";
 			this.button4.UseVisualStyleBackColor = true;
+			this.button4.Click += new System.EventHandler(this.button4_Click);
 			// 
 			// button5
 			// 
-			this.button5.Location = new System.Drawing.Point(389, 58);
+			this.button5.Enabled = false;
+			this.button5.Location = new System.Drawing.Point(389, 38);
 			this.button5.Name = "button5";
-			this.button5.Size = new System.Drawing.Size(75, 46);
+			this.button5.Size = new System.Drawing.Size(75, 26);
 			this.button5.TabIndex = 19;
 			this.button5.Text = "Copy";
 			this.button5.UseVisualStyleBackColor = true;
+			this.button5.Click += new System.EventHandler(this.button5_Click);
+			// 
+			// button6
+			// 
+			this.button6.Enabled = false;
+			this.button6.Location = new System.Drawing.Point(389, 70);
+			this.button6.Name = "button6";
+			this.button6.Size = new System.Drawing.Size(75, 25);
+			this.button6.TabIndex = 20;
+			this.button6.Text = "Save to File";
+			this.button6.UseVisualStyleBackColor = true;
+			this.button6.Click += new System.EventHandler(this.button6_Click);
 			// 
 			// MainForm
 			// 
@@ -700,7 +719,8 @@
 		private System.Windows.Forms.TabPage tabPage2;
 		private System.Windows.Forms.Button button5;
 		private System.Windows.Forms.Button button4;
-		private System.Windows.Forms.TextBox textBox1;
+		private System.Windows.Forms.TextBox txtHostKey;
+		private System.Windows.Forms.Button button6;
 	}
 }
 

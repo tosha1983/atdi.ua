@@ -4,9 +4,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Atdi.WpfControls.EntityOrm.Controls"
-             mc:Ignorable="d" Height="40" Width="200" SizeChanged="UserControl_SizeChanged">
+             mc:Ignorable="d" Height="28" Width="200" SizeChanged="UserControl_SizeChanged">
     <Grid>
-        <Label Name="lblCaption" Content="Label" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,0,0" Height="25" Width="55"/>
-        <DatePicker Name="dtMain" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" Width="120" Margin="65,5,5,5" SelectedDateChanged="dtMain_SelectedDateChanged"/>
+        <Label Name="lblCaption" Content="Label" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,0,0" Height="24" Width="55"/>
+        <DatePicker Name="dtMain" HorizontalAlignment="Left" Height="24" Width="120" Margin="65,0,0,0" SelectedDateChanged="dtMain_SelectedDateChanged" VerticalAlignment="Center" VerticalContentAlignment="Center">
+            <DatePicker.Resources>
+                <Style TargetType="DatePickerTextBox">
+                    <Setter Property="VerticalAlignment" Value="Center" />
+                </Style>
+            </DatePicker.Resources>
+        </DatePicker>
     </Grid>
 </UserControl>
