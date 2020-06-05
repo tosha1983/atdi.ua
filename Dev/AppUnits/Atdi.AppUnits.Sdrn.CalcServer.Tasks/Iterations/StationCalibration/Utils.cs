@@ -507,6 +507,51 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             }
         }
 
+        /// <summary>
+        /// Массив станций, сгруппированный на основании GSID, заданному стандарту и статусу станции
+        /// </summary>
+        /// <param name="contextStations"></param>
+        /// <param name="Standard"></param>
+        /// <returns></returns>
+        public static ContextStation[] GroupingStationsByStandardAndGSIDAndStatus(ContextStation[] contextStations, string GSID, string Standard, ClientContextStationType[]  clientContextStationTypes)
+        {
+            var listStations = contextStations.ToList();
+            var fndStations = listStations.FindAll(x => x.LicenseGsid == GSID && x.Standard == Standard && clientContextStationTypes.Contains(x.Type));
+            if ((fndStations != null) && (fndStations.Count > 0))
+            {
+                return fndStations.ToArray();
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Формирование групп станций на основе последовательного вызова метода CompareGSID для сравнения станций между собой (c учетом стандарта)
+        /// </summary>
+        /// <param name="contextStations"></param>
+        /// <param name="Standard"></param>
+        /// <returns></returns>
+        public static ContextStation[][] GroupStationsByStatus(ContextStation[] contextStations, string Standard, ITransformation transformation, int maxDistance, string projection)
+        {
+            var lstContextStations = new List<ContextStation[]>();
+            var arrUniqueGSID = GetUniqueArrayGSIDfromStations(contextStations, Standard);
+            if (arrUniqueGSID != null)
+            {
+                for (int i = 0; i < arrUniqueGSID.Length; i++)
+                {
+                    var groupContextStations = GroupingStationsByStandardAndGSIDAndStatus(contextStations, arrUniqueGSID[i], Standard, new ClientContextStationType[] { ClientContextStationType.P });
+                    if (groupContextStations != null)
+                    {
+                        lstContextStations.Add(groupContextStations);
+                    }
+                }
+            }
+            return lstContextStations.ToArray();
+        }
+
+
 
         /// <summary>
         /// Формирование групп станций на основе последовательного вызова метода CompareGSID для сравнения станций между собой ( c учетом стандарта)
@@ -524,7 +569,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             {
                 for (int i = 0; i < arrUniqueGSID.Length; i++)
                 {
-                    var groupContextStations = GroupingStationsByStandardAndGSID(contextStations, arrUniqueGSID[i], Standard);
+                    var groupContextStations = GroupingStationsByStandardAndGSIDAndStatus(contextStations, arrUniqueGSID[i], Standard, new ClientContextStationType[] { ClientContextStationType.A, ClientContextStationType.I });
                     if (groupContextStations != null)
                     {
                         lstContextStations.Add(groupContextStations);
@@ -540,7 +585,6 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         for (int j = 0; j < arrUniqueGSID.Length; j++)
                         {
                             var stationTwo = lstContextStations[j][0];
-                            //if (CompareGSIDWithBaseStations(stationOne.LicenseGsid, stationTwo.LicenseGsid, Standard.GetStandardForDriveTest()))
                             if (CompareGSIDAndDistanceWithBaseStations(stationOne.LicenseGsid, stationTwo.LicenseGsid, Standard.GetStandardForDriveTest(), transformation, stationOne.Site.Longitude, stationOne.Site.Latitude, stationTwo.Site.Longitude, stationTwo.Site.Latitude, maxDistance, projection))
                             {
                                 for (int v = 0; v < lstContextStations[k].Length; v++)

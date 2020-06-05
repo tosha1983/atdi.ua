@@ -100,7 +100,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                 _dataLayer.Executor.Execute(receiveQuery);
 
 
-                //  создаем патерн атенты
+                //  создаем патерн антенны
                 var paternQuery = _dataLayer.GetBuilder<IContextStationPattern>()
                     .Create()
                     .SetValue(c => c.StationId, stationId)

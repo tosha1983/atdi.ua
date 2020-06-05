@@ -145,7 +145,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             this._currentParamsCalculationModel = ReadParamsCalculationByTaskId(this._taskId);
             if ((this._currentParamsCalculationModel.CorrelationThresholdHard==null) && (this._currentParamsCalculationModel.CorrelationThresholdWeak == null) || (this._currentParamsCalculationModel.DistanceAroundContour_km == null))
             {
-                FillParametersDefault(ref this._currentParamsCalculationModel);
+                FillParametersDefault(this._currentParamsCalculationModel);
             }
             if (this._currentParamsCalculationModel.Method == null)
             {
@@ -157,7 +157,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             }
         }
 
-        private void FillParametersDefault(ref ParamsCalculationModel paramsCalculationModel)
+        private void FillParametersDefault(ParamsCalculationModel paramsCalculationModel)
         {
             paramsCalculationModel.CorrelationThresholdWeak = 85;
             paramsCalculationModel.CorrelationThresholdHard = 30;
@@ -657,104 +657,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
 
         private void OnStartStationCalibrationCommand(object parameter)
         {
-
-            try
-            {
-                if (((CurrentAreas != null) && (CurrentAreas.Count == 0)) || (CurrentAreas == null))
-                {
-                    System.Windows.Forms.MessageBox.Show("Please select area!");
-                    return;
-                }
-                if ((CurrentParamsCalculation.DistanceAroundContour_km == null) || ((CurrentParamsCalculation.DistanceAroundContour_km != null) && (CurrentParamsCalculation.DistanceAroundContour_km == 0)))
-                {
-                    System.Windows.Forms.MessageBox.Show("Please fill parameter 'DistanceAroundContour_km'");
-                    return;
-                }
-                if (string.IsNullOrEmpty(GetStationsParams.StateForActiveStation))
-                {
-                    System.Windows.Forms.MessageBox.Show("Please fill 'StateForActiveStation'");
-                    return;
-                }
-                if (string.IsNullOrEmpty(GetStationsParams.StateForNotActiveStation))
-                {
-                    System.Windows.Forms.MessageBox.Show("Please fill 'StateForNotActiveStation'");
-                    return;
-                }
-                if ((GetStationsParams.Id == null) && (SelectedStationTypeVal == SelectedStationType.OneStation))
-                {
-                    System.Windows.Forms.MessageBox.Show("Please fill 'Id'");
-                    return;
-                }
-                if (string.IsNullOrEmpty(GetStationsParams.Standard))
-                {
-                    System.Windows.Forms.MessageBox.Show("Please fill 'Standard'");
-                    return;
-                }
-                if ((CurrentStationMonitoringModel == null) || ((CurrentStationMonitoringModel != null) && (CurrentStationMonitoringModel.Count == 0)))
-                {
-                    System.Windows.Forms.MessageBox.Show("Please select 'Drive tests'");
-                    return;
-                }
-
-
-                var stations = ReadStations();
-                if (stations.Length > 0)
-                {
-                    var listStationMonitoringModel = new List<long>();
-                    foreach (StationMonitoringModel x in CurrentStationMonitoringModel)
-                    {
-                        var driveTestStandardStats = x.DriveTestStandardStats;
-                        if (driveTestStandardStats != null)
-                        {
-                            var listDriveTests = driveTestStandardStats.ToList();
-                            var countPoints = listDriveTests.Find(v => v.Count > GetMaximumCountPointsInDriveTests(v.Standard));
-                            if (countPoints.Standard !=null)
-                            {
-                                System.Windows.Forms.MessageBox.Show($"The functionality cannot be started, because for the standard '{countPoints.Standard}' the  number of points greater  {countPoints.Count}!");
-                                return;
-                            }
-                        }
-                        listStationMonitoringModel.Add(x.Id);
-                    }
-                    this._currentParamsCalculationModel.InfocMeasResults = listStationMonitoringModel.ToArray();
-                    this._currentParamsCalculationModel.StationIds = stations.Select(x => Convert.ToInt64(x.ExternalCode)).ToArray();
-                    this._onEditParamsCalculationToken = _eventBus.Subscribe<Events.OnEditParamsCalculation>(this.OnEditParamsCalculationsHandle);
-                    this._onCreatePropagationModelsToken = _eventBus.Subscribe<Events.OnCreatePropagationModels>(this.OnCreatePropagationModelsHandle);
-                    this._onSavedStationsToken = _eventBus.Subscribe<Events.OnSavedStations>(this.OnSavedStationsHandle);
-
-
-                    var clientContextId = _objectReader.Read<long?>().By(new CalcTaskModelByContextId() { TaskId = TaskId });
-                    if ((clientContextId != null) && (clientContextId != 0))
-                    {
-                        var createPropagationModels = new CreatePropagationModels()
-                        {
-                            ContextId = clientContextId.Value
-                        };
-                        _commandDispatcher.Send(createPropagationModels);
-
-                        var createClientContextStations = new CreateClientContextStations()
-                        {
-                            ClientContextId = clientContextId.Value,
-                            IcsmMobStation = stations
-                        };
-                        _commandDispatcher.Send(createClientContextStations);
-                    }
-                    else
-                    {
-                        throw new Exception("Client context Id is 0!");
-                    }
-                    System.Windows.MessageBox.Show($"Task saved with {this._currentParamsCalculationModel.StationIds.Length} stations and {CurrentStationMonitoringModel.Count} drive tests");
-                    _viewStarter.Stop(this);
-                }
-                else
-                {
-                    System.Windows.MessageBox.Show("No stations with suitable parameters!");
-                }
-            }
-            catch (Exception e)
-            {
-                this._logger.Exception(Exceptions.StationCalibrationCalculation, e);
-            }
+            _viewStarter.StartInUserContext("Warning!", "Are you sure you want to start this process?", StartStationCalibrationCommandAction);
         }
 
         private void OnSavedStationsHandle(Events.OnSavedStations data)
@@ -813,6 +716,126 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                     _commandDispatcher.Send(modifierEditParamsCalculation);
                 }
             }
+        }
+
+        private void StartStationCalibrationCommandAction()
+        {
+            _viewStarter.StartLongProcess(
+                new LongProcessOptions()
+                {
+                    CanStop = false,
+                    CanAbort = true,
+                    UseProgressBar = true,
+                    UseLog = true,
+                    IsModal = false,
+                    MinValue = 0,
+                    MaxValue = 1000,
+                    ValueKind = LongProcessValueKind.Infinity,
+                    Title = "Saving stations ...",
+                    Note = "Selection and saving of stations in the calculation server in accordance with the specified parameters."
+                },
+                token =>
+                {
+                    try
+                    {
+                        if (((CurrentAreas != null) && (CurrentAreas.Count == 0)) || (CurrentAreas == null))
+                        {
+                            _viewStarter.ShowException("Error!", new Exception("Please fill parameter 'area!"));
+                        }
+                        if ((CurrentParamsCalculation.DistanceAroundContour_km == null) || ((CurrentParamsCalculation.DistanceAroundContour_km != null) && (CurrentParamsCalculation.DistanceAroundContour_km == 0)))
+                        {
+                            _viewStarter.ShowException("Error!", new Exception("Please fill parameter 'DistanceAroundContour_km!"));
+                        }
+                        if (string.IsNullOrEmpty(GetStationsParams.StateForActiveStation))
+                        {
+                            _viewStarter.ShowException("Error!", new Exception("Please fill parameter 'StateForActiveStation!"));
+                        }
+                        if (string.IsNullOrEmpty(GetStationsParams.StateForNotActiveStation))
+                        {
+                            _viewStarter.ShowException("Error!", new Exception("Please fill parameter 'StateForNotActiveStation!"));
+                        }
+                        if ((GetStationsParams.Id == null) && (SelectedStationTypeVal == SelectedStationType.OneStation))
+                        {
+                            _viewStarter.ShowException("Error!", new Exception("Please fill parameter 'Id!"));
+                        }
+                        if (string.IsNullOrEmpty(GetStationsParams.Standard))
+                        {
+                            _viewStarter.ShowException("Error!", new Exception("Please fill parameter 'Standard!"));
+                        }
+                        if ((CurrentStationMonitoringModel == null) || ((CurrentStationMonitoringModel != null) && (CurrentStationMonitoringModel.Count == 0)))
+                        {
+                            _viewStarter.ShowException("Error!", new Exception("Please fill parameter 'Drive tests!"));
+                        }
+
+
+                        var stations = ReadStations();
+                        if (stations.Length > 0)
+                        {
+                            var listStationMonitoringModel = new List<long>();
+                            foreach (StationMonitoringModel x in CurrentStationMonitoringModel)
+                            {
+                                var driveTestStandardStats = x.DriveTestStandardStats;
+                                if (driveTestStandardStats != null)
+                                {
+                                    var listDriveTests = driveTestStandardStats.ToList();
+                                    var countPoints = listDriveTests.Find(v => v.Count > GetMaximumCountPointsInDriveTests(v.Standard));
+                                    if (countPoints.Standard != null)
+                                    {
+                                        _viewStarter.ShowException("Error!", new Exception($"The functionality cannot be started, because for the standard '{countPoints.Standard}' the  number of points greater  {countPoints.Count}!"));
+                                    }
+                                }
+                                listStationMonitoringModel.Add(x.Id);
+                            }
+                            this._currentParamsCalculationModel.InfocMeasResults = listStationMonitoringModel.ToArray();
+                            this._currentParamsCalculationModel.StationIds = stations.Select(x => Convert.ToInt64(x.ExternalCode)).ToArray();
+                            this._onEditParamsCalculationToken = _eventBus.Subscribe<Events.OnEditParamsCalculation>(this.OnEditParamsCalculationsHandle);
+                            this._onCreatePropagationModelsToken = _eventBus.Subscribe<Events.OnCreatePropagationModels>(this.OnCreatePropagationModelsHandle);
+                            this._onSavedStationsToken = _eventBus.Subscribe<Events.OnSavedStations>(this.OnSavedStationsHandle);
+
+
+                            var clientContextId = _objectReader.Read<long?>().By(new CalcTaskModelByContextId() { TaskId = TaskId });
+                            if ((clientContextId != null) && (clientContextId != 0))
+                            {
+                                var createPropagationModels = new CreatePropagationModels()
+                                {
+                                    ContextId = clientContextId.Value
+                                };
+                                _commandDispatcher.Send(createPropagationModels);
+
+                                var createClientContextStations = new CreateClientContextStations()
+                                {
+                                    ClientContextId = clientContextId.Value,
+                                    IcsmMobStation = stations
+                                };
+                                _commandDispatcher.Send(createClientContextStations);
+                            }
+                            else
+                            {
+                                _viewStarter.ShowException("Error!", new Exception($"Client context Id is 0!"));
+                            }
+                            _eventBus.Send(new LongProcessLogEvent
+                            {
+                                ProcessToken = token,
+                                Message = $"Task saved with {this._currentParamsCalculationModel.StationIds.Length} stations and {CurrentStationMonitoringModel.Count} drive tests"
+                            });
+                            _viewStarter.Stop(this);
+                        }
+                        else
+                        {
+                            _eventBus.Send(new LongProcessLogEvent
+                            {
+                                ProcessToken = token,
+                                Message = $"No stations with suitable parameters!"
+                            });
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        this._logger.Exception(Exceptions.StationCalibrationCalculation, e);
+                    }
+                    token.AbortToken.ThrowIfCancellationRequested();
+                });
+            
         }
         private void OnEditParamsCalculationsHandle(Events.OnEditParamsCalculation data)
         {
