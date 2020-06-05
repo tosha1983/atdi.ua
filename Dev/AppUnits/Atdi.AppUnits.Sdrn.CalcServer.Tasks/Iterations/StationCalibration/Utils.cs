@@ -496,7 +496,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         public static ContextStation[] GroupingStationsByStandardAndGSID(ContextStation[] contextStations, string GSID, string Standard)
         {
             var listStations = contextStations.ToList();
-            var fndStations = listStations.FindAll(x => x.LicenseGsid == GSID && x.Standard == Standard);
+            var fndStations = listStations.FindAll(x => x.LicenseGsid == GSID && x.Standard == Standard /*&& x.Type== ClientContextStationType.A*/);
             if ((fndStations != null) && (fndStations.Count > 0))
             {
                 return fndStations.ToArray();
@@ -531,65 +531,68 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         lstAllStations.AddRange(groupContextStations.ToArray());
                     }
                 }
-
-                var lstGroupContextStations = new List<ContextStation>();
-                for (int k = 0; k < arrUniqueGSID.Length; k++)
+                if (lstContextStations.Count > 0)
                 {
-                    var stationOne = lstContextStations[k][0];
-                    for (int j = 0; j < arrUniqueGSID.Length; j++)
+                    var lstGroupContextStations = new List<ContextStation>();
+                    for (int k = 0; k < arrUniqueGSID.Length; k++)
                     {
-                        var stationTwo = lstContextStations[j][0];
-                        //if (CompareGSIDWithBaseStations(stationOne.LicenseGsid, stationTwo.LicenseGsid, Standard.GetStandardForDriveTest()))
-                        if (CompareGSIDAndDistanceWithBaseStations(stationOne.LicenseGsid, stationTwo.LicenseGsid, Standard.GetStandardForDriveTest(), transformation, stationOne.Site.Longitude, stationOne.Site.Latitude, stationTwo.Site.Longitude, stationTwo.Site.Latitude, maxDistance, projection))
+                        var stationOne = lstContextStations[k][0];
+                        for (int j = 0; j < arrUniqueGSID.Length; j++)
                         {
-                            for (int v = 0; v < lstContextStations[k].Length; v++)
+                            var stationTwo = lstContextStations[j][0];
+                            //if (CompareGSIDWithBaseStations(stationOne.LicenseGsid, stationTwo.LicenseGsid, Standard.GetStandardForDriveTest()))
+                            if (CompareGSIDAndDistanceWithBaseStations(stationOne.LicenseGsid, stationTwo.LicenseGsid, Standard.GetStandardForDriveTest(), transformation, stationOne.Site.Longitude, stationOne.Site.Latitude, stationTwo.Site.Longitude, stationTwo.Site.Latitude, maxDistance, projection))
                             {
-                                lstContextStations[k][v].NameGroupGlobalSID = stationOne.LicenseGsid;
-                                if ((lstGroupContextStations.FindAll(x => x.Id == lstContextStations[k][v].Id).Count == 0))
+                                for (int v = 0; v < lstContextStations[k].Length; v++)
                                 {
-                                    lstGroupContextStations.Add(lstContextStations[k][v]);
+                                    lstContextStations[k][v].NameGroupGlobalSID = stationOne.LicenseGsid;
+                                    if ((lstGroupContextStations.FindAll(x => x.Id == lstContextStations[k][v].Id).Count == 0))
+                                    {
+                                        lstGroupContextStations.Add(lstContextStations[k][v]);
+                                    }
                                 }
-                            }
 
-                            for (int v = 0; v < lstContextStations[j].Length; v++)
-                            {
-                                lstContextStations[j][v].NameGroupGlobalSID = stationOne.LicenseGsid;
-                                if ((lstGroupContextStations.FindAll(x => x.Id == lstContextStations[j][v].Id).Count == 0))
+                                for (int v = 0; v < lstContextStations[j].Length; v++)
                                 {
-                                    lstGroupContextStations.Add(lstContextStations[j][v]);
+                                    lstContextStations[j][v].NameGroupGlobalSID = stationOne.LicenseGsid;
+                                    if ((lstGroupContextStations.FindAll(x => x.Id == lstContextStations[j][v].Id).Count == 0))
+                                    {
+                                        lstGroupContextStations.Add(lstContextStations[j][v]);
+                                    }
                                 }
                             }
                         }
                     }
-                }
 
-                var cntRecalcContextStations = 0;
-              
-                var arrUniqueGroups = GetUniqueArrayGroupsFromStations(lstGroupContextStations.ToArray());
-                if (arrUniqueGroups != null)
-                {
-                    for (int k = 0; k < arrUniqueGroups.Length; k++)
+
+                    var cntRecalcContextStations = 0;
+
+                    var arrUniqueGroups = GetUniqueArrayGroupsFromStations(lstGroupContextStations.ToArray());
+                    if (arrUniqueGroups != null)
                     {
-                        var tempGroupStations = new List<ContextStation>();
-                        for (int j = 0; j < arrUniqueGSID.Length; j++)
+                        for (int k = 0; k < arrUniqueGroups.Length; k++)
                         {
-                            if (!arrUniqueGroups.Contains(arrUniqueGSID[j]))
+                            var tempGroupStations = new List<ContextStation>();
+                            for (int j = 0; j < arrUniqueGSID.Length; j++)
                             {
-                                tempGroupStations.AddRange(lstAllStations.FindAll(x => x.LicenseGsid == arrUniqueGSID[j]));
+                                if (!arrUniqueGroups.Contains(arrUniqueGSID[j]))
+                                {
+                                    tempGroupStations.AddRange(lstAllStations.FindAll(x => x.LicenseGsid == arrUniqueGSID[j]));
+                                }
                             }
-                        }
 
-                        var stationsByOneGroup = lstGroupContextStations.FindAll(x => x.NameGroupGlobalSID == arrUniqueGroups[k]);
-                        for (int n = 0; n < tempGroupStations.Count; n++)
-                        {
-                            if (stationsByOneGroup.FindAll(x => x.Id == tempGroupStations[n].Id).Count == 0)
+                            var stationsByOneGroup = lstGroupContextStations.FindAll(x => x.NameGroupGlobalSID == arrUniqueGroups[k]);
+                            for (int n = 0; n < tempGroupStations.Count; n++)
                             {
-                                lstRecalcContextStations.Add(new ContextStation[] { tempGroupStations[n] });
-                                cntRecalcContextStations += 1;
+                                if (stationsByOneGroup.FindAll(x => x.Id == tempGroupStations[n].Id).Count == 0)
+                                {
+                                    lstRecalcContextStations.Add(new ContextStation[] { tempGroupStations[n] });
+                                    cntRecalcContextStations += 1;
+                                }
                             }
+                            lstRecalcContextStations.Add(stationsByOneGroup.ToArray());
+                            cntRecalcContextStations += stationsByOneGroup.Count;
                         }
-                        lstRecalcContextStations.Add(stationsByOneGroup.ToArray());
-                        cntRecalcContextStations += stationsByOneGroup.Count;
                     }
                 }
             }

@@ -209,6 +209,9 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     // преобразуем в список массив станций , для которого не найдены соотвествия с драйв тестами (данный список будет пополняться при дальнейшей работе алгоритма)
                     var outListContextStations = outContextStations.ToList();
 
+                    // список для храненения станций со статусом P для дальнейшей обработки
+                    var outListContextStationsForStatusP = new List<ContextStation[]>();
+
                     // создаем список для хранения результатов обработки по отдельно взятому стандарту и заданой группе GSID
                     var calibrationStationsAndDriveTestsResultByGroup = new List<CalibrationStationsAndDriveTestsResult>();
 
@@ -217,10 +220,19 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     {
                         // получаем массив станций одной группы (связанных с драйв тестами)
                         var station = linkDriveTestsAndStations[z].ContextStation;
+
                         // получаем массив драйв тестов одной группы (связанных со станциями)
                         var driveTest = linkDriveTestsAndStations[z].DriveTestsResults;
 
-                        
+                        // отбираем только станции со статусами А и I
+                        var fndStationStatus_A = station.ToList();
+                        if (fndStationStatus_A.Find(x => x.Type == ClientContextStationType.A || x.Type == ClientContextStationType.I) == null)
+                        {
+                            outListDriveTestsResults.Add(driveTest);
+                            outListContextStationsForStatusP.Add(station);
+                            continue;
+                        }
+
 
                         ///  4.2.2. Расчет корреляции weake (схема бл 2)
                         var StatusCorellationLinkGroup = false;
@@ -560,9 +572,9 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
                                     /// обработка станций со статусом "P" ??????????
                                     var arrayStationsInStatusP = new List<ContextStation[]>();
-                                    for (int j = 0; j < GSIDGroupeStations.Count; j++)
+                                    for (int j = 0; j < outListContextStationsForStatusP.Count; j++)
                                     {
-                                        var arrStations = GSIDGroupeStations[j].ToList();
+                                        var arrStations = outListContextStationsForStatusP[j].ToList();
                                         var temp = arrStations.FindAll(x => x.Type == ClientContextStationType.P);
                                         if ((temp != null) && (temp.Count > 0))
                                         {
@@ -903,7 +915,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     res.DriveTestsResult.DriveTestId = driveTest.DriveTestId;
                     res.DriveTestsResult.LinkToStationMonitoringId = stations[i].Id;
                     
-                    res.MaxCorrelation_PC = resultCalibrationCalcData.MaxCorrelation_PC;
+                    res.MaxCorrelation_PC = resultCalibrationCalcData.Corellation_pc;
                     tempListCorrelationGSIDGroupeStations[i] = res;
                 }
             }
@@ -1025,15 +1037,15 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 {
                     var calibrationDriveTestResult = new CalibrationDriveTestResult()
                     {
-                        ExternalSource = calibrationStationsAndDriveTestsResult.ClientContextStation.ExternalSource,
-                        ExternalCode = calibrationStationsAndDriveTestsResult.ClientContextStation.ExternalCode,
+                        //ExternalSource = calibrationStationsAndDriveTestsResult.ClientContextStation.ExternalSource,
+                        //ExternalCode = calibrationStationsAndDriveTestsResult.ClientContextStation.ExternalCode,
                         Gsid = calibrationStationsAndDriveTestsResult.DriveTestsResult.GSID,
-                        GsidFromStation = calibrationStationsAndDriveTestsResult.ClientContextStation.LicenseGsid,
+                        //GsidFromStation = calibrationStationsAndDriveTestsResult.ClientContextStation.LicenseGsid,
                         CountPointsInDriveTest = calibrationStationsAndDriveTestsResult.DriveTestsResult.Points.Length,
                         ResultDriveTestStatus = DriveTestStatusResult.IT,
                         DriveTestId = calibrationStationsAndDriveTestsResult.DriveTestsResult.DriveTestId,
                         MaxPercentCorellation = (float)calibrationStationsAndDriveTestsResult.MaxCorrelation_PC,
-                        LinkToStationMonitoringId = calibrationStationsAndDriveTestsResult.ClientContextStation.Id
+                        //LinkToStationMonitoringId = calibrationStationsAndDriveTestsResult.ClientContextStation.Id
                     };
                     listCalibrationDriveTestResult.Add(calibrationDriveTestResult);
                 }
@@ -1130,14 +1142,14 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 {
                     var calibrationDriveTestResult = new CalibrationDriveTestResult()
                     {
-                        ExternalSource = calibrationStationsAndDriveTestsResult.ClientContextStation.ExternalSource,
-                        ExternalCode = calibrationStationsAndDriveTestsResult.ClientContextStation.ExternalCode,
+                        //ExternalSource = calibrationStationsAndDriveTestsResult.ClientContextStation.ExternalSource,
+                        //ExternalCode = calibrationStationsAndDriveTestsResult.ClientContextStation.ExternalCode,
                         Gsid = calibrationStationsAndDriveTestsResult.DriveTestsResult.GSID,
-                        GsidFromStation = calibrationStationsAndDriveTestsResult.ClientContextStation.LicenseGsid,
+                        //GsidFromStation = calibrationStationsAndDriveTestsResult.ClientContextStation.LicenseGsid,
                         CountPointsInDriveTest = calibrationStationsAndDriveTestsResult.DriveTestsResult.Points.Length,
                         DriveTestId = calibrationStationsAndDriveTestsResult.DriveTestsResult.DriveTestId,
                         MaxPercentCorellation = (float)calibrationStationsAndDriveTestsResult.MaxCorrelation_PC,
-                        LinkToStationMonitoringId = calibrationStationsAndDriveTestsResult.ClientContextStation.Id
+                        //LinkToStationMonitoringId = calibrationStationsAndDriveTestsResult.ClientContextStation.Id
                     };
                     calibrationDriveTestResult.ResultDriveTestStatus = DriveTestStatusResult.UN;
                     listCalibrationDriveTestResult.Add(calibrationDriveTestResult);

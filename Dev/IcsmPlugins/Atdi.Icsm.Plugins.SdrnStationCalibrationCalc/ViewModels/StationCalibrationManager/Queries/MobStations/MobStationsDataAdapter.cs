@@ -179,6 +179,25 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
             var listIcsmMobStation = new List<IcsmMobStation>();
 
 
+         
+
+            for (int i = 0; i < this._mobStationsLoadModelByParams.AreaModel.Length; i++)
+            {
+                var area = this._mobStationsLoadModelByParams.AreaModel[i];
+                var listDataLocationModel = new List<DataLocationModel>();
+                for (int j = 0; j < area.Location.Length; j++)
+                {
+                    listDataLocationModel.Add(new DataLocationModel()
+                    {
+                        Longitude = ICSM.IMPosition.Dms2Dec(area.Location[j].Longitude),
+                        Latitude = ICSM.IMPosition.Dms2Dec(area.Location[j].Latitude)
+                    });
+                }
+                this._mobStationsLoadModelByParams.AreaModel[i].Location = listDataLocationModel.ToArray();
+            }
+            
+
+
             if ((this._mobStationsLoadModelByParams.AreaModel == null) || ((this._mobStationsLoadModelByParams.AreaModel != null) && (this._mobStationsLoadModelByParams.AreaModel.Length == 0)))
             {
                 throw new Exception("'Areas' is null or contains 0 elements");
@@ -387,6 +406,9 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                         {
                             for (int w = 0; w < this._mobStationsLoadModelByParams.AreaModel.Length; w++)
                             {
+
+
+
                                 // если станция попадает в контур, тогда выставляем для нее статус P
                                 if (CheckHitting(this._mobStationsLoadModelByParams.AreaModel[w].Location, mobStationT.m_Position))
                                 {
