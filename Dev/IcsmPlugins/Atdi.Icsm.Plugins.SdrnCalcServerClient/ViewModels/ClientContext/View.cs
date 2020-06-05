@@ -12,10 +12,11 @@ using Atdi.Platform.Cqrs;
 using Atdi.Platform.Events;
 using System.Windows;
 using VM = Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels;
+using System.Windows.Forms;
 
 namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ClientContext
 {
-    [ViewXaml("ClientContext.xaml")]
+    [ViewXaml("ClientContext.xaml", WindowState = FormWindowState.Normal, Width = 350, Height = 200)]
     [ViewCaption("Calc Server Client: Client Context")]
     public class View : ViewBase
     {
@@ -104,7 +105,7 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ClientContext
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.ToString());
+                System.Windows.MessageBox.Show(e.ToString());
             }
         }
         public override void Dispose()

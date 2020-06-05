@@ -94,6 +94,7 @@
     <Compile Include="ViewModels\EntityOrmTest\Modifiers\CreateProjectHandler.cs" />
     <Compile Include="ViewModels\EntityOrmTest\Queries\GetProjectByOwnerId.cs" />
     <Compile Include="ViewModels\EntityOrmTest\Queries\GetProjectByOwnerIdExecutor.cs" />
+    <Compile Include="ViewModels\EntityOrmTest\TestDialogView.cs" />
     <Compile Include="ViewModels\Map\Events\OnCreatedMap.cs" />
     <Compile Include="ViewModels\Map\Events\OnDeletedMap.cs" />
     <Compile Include="ViewModels\Map\Events\OnEditedMap.cs" />
@@ -165,6 +166,10 @@
       <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
       <Name>Atdi.DataModels</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Modules\Atdi.Modules.Licensing\Atdi.Modules.Licensing.csproj">
+      <Project>{829d7ff8-518c-4844-b3e0-dc8ffe091775}</Project>
+      <Name>Atdi.Modules.Licensing</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Platform\Atdi.Platform.Configurator\Atdi.Platform.Configurator.csproj">
       <Project>{98e79b80-3176-4cad-b7ba-b5caa6752fab}</Project>
       <Name>Atdi.Platform.Configurator</Name>
@@ -214,6 +219,9 @@
 copy "$(TargetDir)Atdi.*.dll"    "C:\ATDI\ICS ManagerCalcServer"
 copy "$(TargetDir)ru-RU\*.*"   "C:\ATDI\ICS ManagerCalcServer\ru-RU"
 copy "$(TargetDir)uk-UA\*.*"  "C:\ATDI\ICS ManagerCalcServer\uk-UA"
-</PostBuildEvent>
+copy "$(TargetDir)XICSM_SdrnCalcServerClient.dll" "C:\ATDI\ICS Manager"
+copy "$(TargetDir)Atdi.*.dll"    "C:\ATDI\ICS Manager"
+copy "$(TargetDir)ru-RU\*.*"   "C:\ATDI\ICS Manager\ru-RU"
+copy "$(TargetDir)uk-UA\*.*"  "C:\ATDI\ICS Manager\uk-UA"</PostBuildEvent>
   </PropertyGroup>
 </Project>

@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Resources;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,7 +18,7 @@ namespace Atdi.Icsm.Plugins.Core
 	{
 		private readonly IServicesResolver _resolver;
 		private readonly Dictionary<ViewForm, ViewForm> _forms;
-
+		private readonly Dictionary<LongProcessWorker, LongProcessWorker> _processWorkers;
 		private readonly Dictionary<ViewForm, ViewBase> _viewsByFroms;
 		private readonly Dictionary<ViewBase, ViewForm> _formsByViews;
 
@@ -23,6 +26,7 @@ namespace Atdi.Icsm.Plugins.Core
 		{
 			_resolver = resolver;
 			_forms = new Dictionary<ViewForm, ViewForm>();
+			_processWorkers = new Dictionary<LongProcessWorker, LongProcessWorker>();
 			_formsByViews = new Dictionary<ViewBase, ViewForm>();
 			_viewsByFroms = new Dictionary<ViewForm, ViewBase>();
 		}
@@ -50,6 +54,14 @@ namespace Atdi.Icsm.Plugins.Core
 			var captionText = captionAttr?.Text;
 			var xamlFilePath = $"{viewType.Assembly.GetName().Name}\\Xaml\\{xamlAttr.Name}";
 			var viewForm = new ViewForm(xamlFilePath, view, captionText, this, this.Logger);
+
+			
+			if (xamlAttr.Width > 0 && xamlAttr.Height > 0)
+			{
+				viewForm.Size = new Size(xamlAttr.Width, xamlAttr.Height);
+			}
+			viewForm.WindowState = xamlAttr.WindowState;
+
 			_forms.Add(viewForm, viewForm);
 			_formsByViews.Add(view, viewForm);
 			_viewsByFroms.Add(viewForm, view);
@@ -92,6 +104,38 @@ namespace Atdi.Icsm.Plugins.Core
 				{
 					this.Logger.Exception("Plugins.Core", "ViewStarter", e, this);
 				}
+			}
+		}
+
+		public void ShowException(string title, Exception e)
+		{
+			this.ShowException(title, "Something went wrong.", e);
+		}
+
+		public void ShowException(string title, string message, Exception e)
+		{
+			var text = new StringBuilder();
+			text.AppendLine(message);
+			text.AppendLine($"");
+			text.AppendLine(e.Message);
+
+			MessageBox.Show(text.ToString(), title, MessageBoxButtons.OK, MessageBoxIcon.Error);
+		}
+
+
+		public void StartLongProcess(LongProcessOptions options, Action<LongProcessToken> action)
+		{
+			var worker = _resolver.Resolve<LongProcessWorker>();
+			_processWorkers.Add(worker, worker);
+			worker.Start(options, action);
+		}
+
+
+		internal void Close(LongProcessWorker processWorker)
+		{
+			if (_processWorkers.ContainsKey(processWorker))
+			{
+				_processWorkers.Remove(processWorker);
 			}
 		}
 	}

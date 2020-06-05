@@ -14,8 +14,14 @@ namespace Atdi.Icsm.Plugins.Core
 {
     public static class PluginHelper
     {
+	    //private static System.Windows.Threading.Dispatcher UiDispatcher;
+	    
+	    public static void RunUiContext(Action action)
+	    {
+		    System.Windows.Application.Current.Dispatcher.Invoke(action);
+	    }
 
-        public static double? ConvertStringToDouble(string s, bool isShowMessage = false)
+		public static double? ConvertStringToDouble(string s, bool isShowMessage = false)
         {
             if (string.IsNullOrEmpty(s))
                 return null;

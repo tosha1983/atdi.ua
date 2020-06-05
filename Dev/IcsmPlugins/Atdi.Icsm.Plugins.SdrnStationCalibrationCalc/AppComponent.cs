@@ -25,6 +25,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc
 			var currentAssembly = typeof(AppComponentConfig).Assembly;
 
 			var componentConfig = this.Config.Extract<AppComponentConfig>();
+			componentConfig.VerifyLicense();
 			this.Container.RegisterInstance(componentConfig, ServiceLifetime.Singleton);
 
 			this.Container.Register<CalcServerDataLayer>(ServiceLifetime.Singleton);

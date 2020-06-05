@@ -76,4 +76,9 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(TargetDir)XICSM_SdrnCalcServerClient.dll" "C:\ATDI\ICS ManagerCalcServer"
+copy "$(TargetDir)Atdi.*.dll"    "C:\ATDI\ICS ManagerCalcServer"
+</PostBuildEvent>
+  </PropertyGroup>
 </Project>

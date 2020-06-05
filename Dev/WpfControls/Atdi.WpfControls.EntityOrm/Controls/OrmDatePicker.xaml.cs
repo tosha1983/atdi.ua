@@ -47,7 +47,7 @@ namespace Atdi.WpfControls.EntityOrm.Controls
             }
         }
         public static DependencyProperty EnabledProperty = DependencyProperty.Register("Enabled", typeof(bool), typeof(OrmDatePicker),
-            new FrameworkPropertyMetadata(default(bool), new PropertyChangedCallback(OnPropertyChanged)));
+            new FrameworkPropertyMetadata(true, new PropertyChangedCallback(OnPropertyChanged)));
         public bool Enabled
         {
             get { return _enabled; }
@@ -82,13 +82,13 @@ namespace Atdi.WpfControls.EntityOrm.Controls
         private void RedrawControl()
         {
             lblCaption.Width = this._captionWith;
-            dtMain.Margin = new Thickness() { Left = CaptionWith, Right = 5, Bottom = 5, Top = 5 };
-            dtMain.Width = this.Width > this._captionWith + 10 ? this.Width - this._captionWith - 10 : 0;
-            dtMain.Height = this.Height - 10;
+            dtMain.Margin = new Thickness() { Left = CaptionWith, Right = 2, Bottom = 2, Top = 2 };
+            dtMain.Width = this.Width > this._captionWith + 4 ? this.Width - this._captionWith - 4 : 0;
+            dtMain.Height = this.Height - 4;
         }
         private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            RedrawControl();
+            this.RedrawControl();
         }
         private void dtMain_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {

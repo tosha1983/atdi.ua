@@ -11,9 +11,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
         public long Id;
 
         public string MapName;
-
-        public int TypeCode;
-
+        
         public bool Success;
     }
 }
