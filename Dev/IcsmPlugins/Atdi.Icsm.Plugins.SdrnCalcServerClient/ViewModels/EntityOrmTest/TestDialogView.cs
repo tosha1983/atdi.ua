@@ -25,6 +25,13 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.EntityOrmTest
 			_eventBus = eventBus;
 			_objectReader = objectReader;
 			_viewStarter = viewStarter;
+		
+			_viewStarter.StartInUserContext("Некий процесс (без повтора)", "Вы уверены что хотите запустить очень длительный процесс?", TestAction1);
+			_viewStarter.StartInUserContext("Некий процесс (с  повтором)", "Вы уверены что хотите запустить повторяемый процесс?", TestAction2, allowRetry: true);
+		}
+
+		private void TestAction1()
+		{
 			_viewStarter.StartLongProcess(
 				new LongProcessOptions()
 				{
@@ -67,10 +74,13 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.EntityOrmTest
 
 						token.AbortToken.ThrowIfCancellationRequested();
 					}
-
-					
-
 				});
+		}
+
+		private void TestAction2()
+		{
+			var q = 0;
+			var d = 1 / q;
 		}
 		public override void Dispose()
 		{
