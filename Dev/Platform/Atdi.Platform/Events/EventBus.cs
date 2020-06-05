@@ -18,29 +18,33 @@ namespace Atdi.Platform.Events
 		private class  EventHandlerToken<TEvent> : EventHandlerToken, IEventHandlerToken<TEvent>
 		{
 			private readonly EventBus _eventBus;
-			private readonly WeakReference<Action<TEvent>> _refHandler;
+			//private readonly WeakReference<Action<TEvent>> _refHandler;
+			private Action<TEvent> _handler;
 
 			public EventHandlerToken(EventBus eventBus, Action<TEvent> handler)
 			{
 				_eventBus = eventBus;
-				_refHandler = new WeakReference<Action<TEvent>>(handler);
+				_handler = handler;
+				//_refHandler = new WeakReference<Action<TEvent>>(handler);
 			}
 
 			public void Send(TEvent data)
 			{
-				if (_refHandler.TryGetTarget(out var handler))
-				{
-					handler.Invoke(data);
-				}
-				else
-				{
-					_eventBus.Unsubscribe(this);
-				}
+				_handler?.Invoke(data);
+				//if (_refHandler.TryGetTarget(out var handler))
+				//{
+				//	handler.Invoke(data);
+				//}
+				//else
+				//{
+				//	_eventBus.Unsubscribe(this);
+				//}
 			}
 
 			public void Dispose()
 			{
 				_eventBus.Unsubscribe(this);
+				_handler = null;
 			}
 		}
 		

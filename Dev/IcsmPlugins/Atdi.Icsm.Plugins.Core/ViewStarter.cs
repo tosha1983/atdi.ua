@@ -18,7 +18,7 @@ namespace Atdi.Icsm.Plugins.Core
 	{
 		private readonly IServicesResolver _resolver;
 		private readonly Dictionary<ViewForm, ViewForm> _forms;
-
+		private readonly Dictionary<LongProcessWorker, LongProcessWorker> _processWorkers;
 		private readonly Dictionary<ViewForm, ViewBase> _viewsByFroms;
 		private readonly Dictionary<ViewBase, ViewForm> _formsByViews;
 
@@ -26,6 +26,7 @@ namespace Atdi.Icsm.Plugins.Core
 		{
 			_resolver = resolver;
 			_forms = new Dictionary<ViewForm, ViewForm>();
+			_processWorkers = new Dictionary<LongProcessWorker, LongProcessWorker>();
 			_formsByViews = new Dictionary<ViewBase, ViewForm>();
 			_viewsByFroms = new Dictionary<ViewForm, ViewBase>();
 		}
@@ -119,6 +120,23 @@ namespace Atdi.Icsm.Plugins.Core
 			text.AppendLine(e.Message);
 
 			MessageBox.Show(text.ToString(), title, MessageBoxButtons.OK, MessageBoxIcon.Error);
+		}
+
+
+		public void StartLongProcess(LongProcessOptions options, Action<LongProcessToken> action)
+		{
+			var worker = _resolver.Resolve<LongProcessWorker>();
+			_processWorkers.Add(worker, worker);
+			worker.Start(options, action);
+		}
+
+
+		internal void Close(LongProcessWorker processWorker)
+		{
+			if (_processWorkers.ContainsKey(processWorker))
+			{
+				_processWorkers.Remove(processWorker);
+			}
 		}
 	}
 }
