@@ -45,11 +45,19 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc
 
 
 		public string Instance { get; set; }
-		//public string LicenseNumber { get; set; }
-		//public DateTime LicenseStopDate { get; set; }
-		//public DateTime LicenseStartDate { get; set; }
+        //public string LicenseNumber { get; set; }
+        //public DateTime LicenseStopDate { get; set; }
+        //public DateTime LicenseStartDate { get; set; }
 
-		public void VerifyLicense()
+        public int MaximumCountPointsInDriveTestsFor_GSM { get; set; }
+
+        public int MaximumCountPointsInDriveTestsFor_UMTS { get; set; }
+
+        public int MaximumCountPointsInDriveTestsFor_LTE { get; set; }
+
+        public int MaximumCountPointsInDriveTestsFor_CDMA { get; set; }
+
+        public void VerifyLicense()
 		{
 			var licenseFileName = this.LicenseFileName;
 			var licenseOwnerId = this.LicenseOwnerId;
