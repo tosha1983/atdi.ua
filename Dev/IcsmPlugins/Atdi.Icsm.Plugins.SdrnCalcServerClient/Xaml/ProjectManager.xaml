@@ -4,7 +4,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:XICSM.SdrnCalcServerClient.WpfControls"
              xmlns:res="clr-namespace:Atdi.Icsm.Plugins.SdrnCalcServerClient.Properties;assembly=XICSM_SdrnCalcServerClient"
-             xmlns:cdg="clr-namespace:Atdi.WpfControls.EntityOrm.Controls;assembly=Atdi.WpfControls.EntityOrm"
+             xmlns:orm="clr-namespace:Atdi.WpfControls.EntityOrm.Controls;assembly=Atdi.WpfControls.EntityOrm"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
   <UserControl.Resources>    
@@ -30,7 +30,7 @@
           <RowDefinition Height="*"></RowDefinition>
       </Grid.RowDefinitions>
       <GroupBox Grid.Row="0" Header="{x:Static res:Resources.Projects}" Margin="5, 5, 5, 5" Grid.Column="0">
-        <cdg:OrmDataGrid Grid.Column="0" Grid.Row="0" IsReadOnly="True" Margin="5, 5, 5, 5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding Projects}" SelectedItem="{Binding CurrentProject}">
+        <orm:OrmDataGrid Grid.Column="0" Grid.Row="0" IsReadOnly="True" Margin="5, 5, 5, 5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding Projects}" SelectedItem="{Binding CurrentProject}">
           <DataGrid.Columns>
             <DataGridTextColumn Header="{x:Static res:Resources.Name}" Binding="{Binding Path=Name}"></DataGridTextColumn>
             <DataGridTextColumn Header="{x:Static res:Resources.Note}" Binding="{Binding Path=Note}"></DataGridTextColumn>
@@ -39,9 +39,9 @@
             <DataGridTextColumn Header="{x:Static res:Resources.StatusName}" Binding="{Binding Path=StatusName}"></DataGridTextColumn>
             <DataGridTextColumn Header="{x:Static res:Resources.Projection}" Binding="{Binding Path=Projection}"></DataGridTextColumn>
           </DataGrid.Columns>
-        </cdg:OrmDataGrid>
+        </orm:OrmDataGrid>
       </GroupBox>
-      <GridSplitter Grid.Column="1" ShowsPreview="False" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch" Grid.RowSpan="3" Background="#FFB4B1B1"></GridSplitter>
+      <GridSplitter Grid.Column="1" ShowsPreview="False" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch" Background="#FFB4B1B1"></GridSplitter>
       <Grid Grid.Column="2">
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="*"/>
@@ -62,17 +62,17 @@
               <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-              <RowDefinition Height="100"></RowDefinition>
+              <RowDefinition Height="90"></RowDefinition>
               <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
             <!--<TextBox Grid.Column="0" Grid.Row="0" Margin="350,5,5,5"  HorizontalAlignment="Left" VerticalAlignment="Top" Width="300" Height="35" Text ="{Binding Path=CurrentProjectCard.Name}"/>-->
 
-            <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" Margin="5,5,5,5"  HorizontalAlignment="Left" VerticalAlignment="Top" CaptionWith="100" Width="300" Height="35" Caption="{x:Static res:Resources.Name}" Text ="{Binding Path=CurrentProjectCard.Name, Mode=TwoWay}"/>
-            <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" Margin="5,35,5,5" HorizontalAlignment="Left" VerticalAlignment="Top" CaptionWith="100" Width="300" Height="35" Caption="{x:Static res:Resources.Note}" Text ="{Binding Path=CurrentProjectCard.Note, Mode=TwoWay}"/>
-            <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" Margin="5,65,5,5" HorizontalAlignment="Left" VerticalAlignment="Top" CaptionWith="100" Width="300" Height="35" Caption="{x:Static res:Resources.Projection}" Text ="{Binding Path=CurrentProjectCard.Projection, Mode=TwoWay}"/>
-            <!--<cdg:OrmDatePicker Grid.Column="0" Grid.Row="0" Margin="500,5,5,5" HorizontalAlignment="Left" VerticalAlignment="Top" CaptionWith="50" Width="300" Height="35" Caption="Test1"/>
-            <cdg:OrmDatePicker Grid.Column="0" Grid.Row="0" Margin="500,35,5,5" HorizontalAlignment="Left" VerticalAlignment="Top" CaptionWith="100" Width="200" Height="35" Caption="Test2" SelectedDate="2020.02.04"/>
-            <cdg:OrmDatePicker Grid.Column="0" Grid.Row="0" Margin="500,65,5,5" HorizontalAlignment="Left" VerticalAlignment="Top" CaptionWith="250" Width="150" Height="35" Caption="Test3" SelectedDate="2020.02.05"/>-->
+            <orm:OrmTextBox Grid.Column="0" Grid.Row="0" Margin="0,5,0,0"  HorizontalAlignment="Left" VerticalAlignment="Top" CaptionWith="100" Width="300" Caption="{x:Static res:Resources.Name}" Text ="{Binding Path=CurrentProjectCard.Name, Mode=TwoWay}"/>
+            <orm:OrmTextBox Grid.Column="0" Grid.Row="0" Margin="0,33,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" CaptionWith="100" Width="300" Caption="{x:Static res:Resources.Note}" Text ="{Binding Path=CurrentProjectCard.Note, Mode=TwoWay}"/>
+            <orm:OrmTextBox Grid.Column="0" Grid.Row="0" Margin="0,61,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" CaptionWith="100" Width="300" Caption="{x:Static res:Resources.Projection}" Text ="{Binding Path=CurrentProjectCard.Projection, Mode=TwoWay}"/>
+            <!--<orm:OrmDatePicker Grid.Column="0" Grid.Row="0" Margin="500,5,5,5" HorizontalAlignment="Left" VerticalAlignment="Top" CaptionWith="50" Width="300" Height="35" Caption="Test1"/>
+            <orm:OrmDatePicker Grid.Column="0" Grid.Row="0" Margin="500,35,5,5" HorizontalAlignment="Left" VerticalAlignment="Top" CaptionWith="100" Width="200" Height="35" Caption="Test2" SelectedDate="2020.02.04"/>
+            <orm:OrmDatePicker Grid.Column="0" Grid.Row="0" Margin="500,65,5,5" HorizontalAlignment="Left" VerticalAlignment="Top" CaptionWith="250" Width="150" Height="35" Caption="Test3" SelectedDate="2020.02.05"/>-->
 
             <GroupBox Grid.Row="1" Header="{x:Static res:Resources.Maps}" Margin="5, 5, 5, 5">
               <Grid>
@@ -85,7 +85,7 @@
                 <Button Grid.Column="0" Grid.Row="1" Margin="5,5,5,5" HorizontalAlignment="Left" VerticalAlignment="Top" Content="{x:Static res:Resources.CreateNew}" Width="70" Height="20" Command="{Binding MapCreateNewCommand}"/>
                 <Button Grid.Column="0" Grid.Row="1" Margin="85,5,5,5" HorizontalAlignment="Left" VerticalAlignment="Top" Content="{x:Static res:Resources.Delete}" Width="70" Height="20" Command="{Binding MapDeleteCommand}"/>
                 <Button Grid.Column="0" Grid.Row="1" Margin="165,5,5,5" HorizontalAlignment="Left" VerticalAlignment="Top" Content="{x:Static res:Resources.Refresh}" Width="70" Height="20" Command="{Binding MapRefreshCommand}"/>
-                <cdg:OrmDataGrid Grid.Column="0" Grid.Row="1" IsReadOnly="True" Margin="5, 30, 5, 5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding ProjectMaps}" SelectedItem="{Binding CurrentProjectMap}">
+                <orm:OrmDataGrid Grid.Column="0" Grid.Row="1" IsReadOnly="True" Margin="5, 30, 5, 5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding ProjectMaps}" SelectedItem="{Binding CurrentProjectMap}">
                   <DataGrid.Columns>
                     <DataGridTextColumn Header="{x:Static res:Resources.Name}" Binding="{Binding Path=MapName}"></DataGridTextColumn>
                     <DataGridTextColumn Header="{x:Static res:Resources.Note}" Binding="{Binding Path=MapNote}"></DataGridTextColumn>
@@ -101,7 +101,7 @@
                     <DataGridTextColumn Header="{x:Static res:Resources.OwnerUpperLeftX}" Binding="{Binding Path=OwnerUpperLeftX}"></DataGridTextColumn>
                     <DataGridTextColumn Header="{x:Static res:Resources.OwnerUpperLeftY}" Binding="{Binding Path=OwnerUpperLeftY}"></DataGridTextColumn>
                   </DataGrid.Columns>
-                </cdg:OrmDataGrid>
+                </orm:OrmDataGrid>
               </Grid>
             </GroupBox>
           </Grid>
@@ -118,7 +118,7 @@
             <Button Margin="5,5,5,5" HorizontalAlignment="Left" VerticalAlignment="Top" Content="{x:Static res:Resources.CreateNew}" Width="70" Height="20" Command="{Binding ContextNewCommand}"/>
             <Button Margin="85,5,5,5" HorizontalAlignment="Left" VerticalAlignment="Top" Content="{x:Static res:Resources.Modify}" Width="70" Height="20" Command="{Binding ContextModifyCommand}"/>
             <Button Margin="165,5,5,5" HorizontalAlignment="Left" VerticalAlignment="Top" Content="{x:Static res:Resources.Delete}" Width="70" Height="20" Command="{Binding ContextDeleteCommand}"/>
-            <cdg:OrmDataGrid IsReadOnly="True" Margin="5, 30, 5, 5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding ProjectContexts}" SelectedItem="{Binding CurrentProjectContext}">
+            <orm:OrmDataGrid IsReadOnly="True" Margin="5, 30, 5, 5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding ProjectContexts}" SelectedItem="{Binding CurrentProjectContext}">
               <DataGrid.Columns>
                 <DataGridTextColumn Header="{x:Static res:Resources.Name}" Binding="{Binding Path=Name}"></DataGridTextColumn>
                 <DataGridTextColumn Header="{x:Static res:Resources.Note}" Binding="{Binding Path=Note}"></DataGridTextColumn>
@@ -128,7 +128,7 @@
                 <DataGridTextColumn Header="{x:Static res:Resources.StatusName}" Binding="{Binding Path=StatusName}"></DataGridTextColumn>
                 <DataGridTextColumn Header="{x:Static res:Resources.StatusNote}" Binding="{Binding Path=StatusNote}"></DataGridTextColumn>
               </DataGrid.Columns>
-            </cdg:OrmDataGrid>
+            </orm:OrmDataGrid>
           </Grid>
         </GroupBox>
       </Grid>

@@ -10,11 +10,12 @@ using System.Collections;
 using Atdi.Platform.Cqrs;
 using Atdi.Platform.Events;
 using System.Windows;
+using System.Windows.Forms;
 using Atdi.DataModels.Sdrn.CalcServer.Entities;
 
 namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.Map
 {
-    [ViewXaml("Map.xaml")]
+    [ViewXaml("Map.xaml", WindowState = FormWindowState.Normal, Width = 350, Height = 340)]
     [ViewCaption("Calc Server Client: Creating layers")]
     public class View : ViewBase
     {
@@ -81,7 +82,7 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.Map
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.ToString());
+                System.Windows.MessageBox.Show(e.ToString());
             }
         }
         private void OnCreatedMapHandle(Events.OnCreatedMap data)

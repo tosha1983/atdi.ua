@@ -450,4 +450,13 @@
   <data name="RealGsid" xml:space="preserve">
     <value>Real Gsid</value>
   </data>
+  <data name="BaseContext" xml:space="preserve">
+    <value>Base Context</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="Context" xml:space="preserve">
+    <value>Context</value>
+  </data>
 </root>

@@ -16,15 +16,15 @@ using System.Windows.Shapes;
 namespace Atdi.WpfControls.EntityOrm.Controls
 {
     /// <summary>
-    /// Interaction logic for OrmDatePicker.xaml
+    /// Interaction logic for OrmEnumBox.xaml
     /// </summary>
-    public partial class OrmDatePicker : UserControl
+    public partial class OrmEnumBox : UserControl
     {
         double _captionWith = 150;
         string _caption = "";
-        DateTime? _value = null;
+        OrmEnumBoxData[] _value = null;
         bool _enabled = true;
-        public OrmDatePicker()
+        public OrmEnumBox()
         {
             InitializeComponent();
         }
@@ -46,7 +46,7 @@ namespace Atdi.WpfControls.EntityOrm.Controls
                 lblCaption.Content = this._caption;
             }
         }
-        public static DependencyProperty EnabledProperty = DependencyProperty.Register("Enabled", typeof(bool), typeof(OrmDatePicker),
+        public static DependencyProperty EnabledProperty = DependencyProperty.Register("Enabled", typeof(bool), typeof(OrmEnumBox),
             new FrameworkPropertyMetadata(true, new PropertyChangedCallback(OnPropertyChanged)));
         public bool Enabled
         {
@@ -55,44 +55,42 @@ namespace Atdi.WpfControls.EntityOrm.Controls
             {
                 SetValue(EnabledProperty, value);
                 this._enabled = value;
-                dtMain.IsEnabled = this._enabled;
+                cmbMain.IsEnabled = this._enabled;
             }
         }
-        public static DependencyProperty SelectedDateProperty = DependencyProperty.Register("SelectedDate", typeof(DateTime?), typeof(OrmDatePicker),
-            new FrameworkPropertyMetadata(default(DateTime?), new PropertyChangedCallback(OnPropertyChanged)));
-        public DateTime? SelectedDate
+
+        public static DependencyProperty SourceProperty = DependencyProperty.Register("Source", typeof(OrmEnumBoxData[]), typeof(OrmEnumBox),
+            new FrameworkPropertyMetadata(default(OrmEnumBoxData[]), new PropertyChangedCallback(OnPropertyChanged)));
+        public OrmEnumBoxData[] Source
         {
             get { return _value; }
             set
             {
-                SetValue(SelectedDateProperty, value);
+                SetValue(SourceProperty, value);
                 this._value = value;
-                dtMain.SelectedDate = this._value;
+                cmbMain.ItemsSource = this._value;//.Select(c => c.ViewName).ToArray();
+                //cmbMain.DisplayMemberPath = "Name";
             }
         }
         private static void OnPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
-            var ctr = sender as OrmDatePicker;
+            var ctr = sender as OrmEnumBox;
 
-            if (e.Property == SelectedDateProperty)
-                ctr.SelectedDate = (DateTime?)e.NewValue;
+            if (e.Property == SourceProperty)
+                ctr.Source = (OrmEnumBoxData[])e.NewValue;
             else if (e.Property == EnabledProperty)
                 ctr.Enabled = (bool)e.NewValue;
         }
         private void RedrawControl()
         {
             lblCaption.Width = this._captionWith;
-            dtMain.Margin = new Thickness() { Left = CaptionWith, Right = 2, Bottom = 2, Top = 2 };
-            dtMain.Width = this.Width > this._captionWith + 4 ? this.Width - this._captionWith - 4 : 0;
-            dtMain.Height = this.Height - 4;
+            cmbMain.Margin = new Thickness() { Left = CaptionWith, Right = 2, Bottom = 2, Top = 2 };
+            cmbMain.Width = this.Width > this._captionWith + 4 ? this.Width - this._captionWith - 4 : 0;
+            cmbMain.Height = this.Height - 4;
         }
         private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            this.RedrawControl();
-        }
-        private void dtMain_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
-        {
-            SelectedDate = dtMain.SelectedDate;
+            RedrawControl();
         }
     }
 }

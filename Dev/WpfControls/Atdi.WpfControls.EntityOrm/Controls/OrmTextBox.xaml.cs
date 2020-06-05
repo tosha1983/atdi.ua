@@ -46,8 +46,8 @@ namespace Atdi.WpfControls.EntityOrm.Controls
                 lblCaption.Content = this._caption;
             }
         }
-        public static DependencyProperty EnabledProperty = DependencyProperty.Register("Enabled", typeof(bool), typeof(OrmDatePicker),
-            new FrameworkPropertyMetadata(default(bool), new PropertyChangedCallback(OnPropertyChanged)));
+        public static DependencyProperty EnabledProperty = DependencyProperty.Register("Enabled", typeof(bool), typeof(OrmTextBox),
+            new FrameworkPropertyMetadata(true, new PropertyChangedCallback(OnPropertyChanged)));
         public bool Enabled
         {
             get { return _enabled; }
@@ -77,20 +77,20 @@ namespace Atdi.WpfControls.EntityOrm.Controls
 
             if (e.Property == TextProperty)
                 ctr.Text = (string)e.NewValue;
-            else if (e.Property == EnabledProperty)
-                ctr.Enabled = (bool)e.NewValue;
+            if (e.Property == EnabledProperty)
+                ctr.IsEnabled = (bool)e.NewValue;
         }
         private void RedrawControl()
         {
             lblCaption.Width = this._captionWith;
-            txtMain.Margin = new Thickness() { Left = CaptionWith, Right = 5, Bottom = 5, Top = 5 };
-            txtMain.Width = this.Width > this._captionWith + 10 ? this.Width - this._captionWith - 10 : 0;
-            txtMain.Height = this.Height - 10;
+            txtMain.Margin = new Thickness() { Left = CaptionWith, Right = 2, Bottom = 2, Top = 2 };
+            txtMain.Width = this.Width > this._captionWith + 4 ? this.Width - this._captionWith - 4 : 0;
+            txtMain.Height = this.Height - 4;
         }
 
         private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            RedrawControl();
+            this.RedrawControl();
         }
 
         private void TxtMain_TextChanged(object sender, TextChangedEventArgs e)

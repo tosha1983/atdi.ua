@@ -70,14 +70,17 @@
     <Compile Include="Charts\LineChart.xaml.cs">
       <DependentUpon>LineChart.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\OrmButton.cs" />
     <Compile Include="Controls\OrmCheckBox.cs" />
-    <Compile Include="Controls\OrmComboBox.xaml.cs">
-      <DependentUpon>OrmComboBox.xaml</DependentUpon>
+    <Compile Include="Controls\OrmEnumBox\OrmEnumBox.xaml.cs">
+      <DependentUpon>OrmEnumBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\OrmDataGrid.cs" />
     <Compile Include="Controls\OrmDatePicker.xaml.cs">
       <DependentUpon>OrmDatePicker.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\OrmEnumBox\OrmEnumBoxData.cs" />
+    <Compile Include="Controls\OrmGridSplitter.cs" />
     <Compile Include="Controls\OrmTextBox.xaml.cs">
       <DependentUpon>OrmTextBox.xaml</DependentUpon>
     </Compile>
@@ -113,7 +116,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Controls\OrmComboBox.xaml">
+    <Page Include="Controls\OrmEnumBox\OrmEnumBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -129,6 +132,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy "$(TargetDir)Atdi.WpfControls.EntityOrm.dll" "C:\ATDI\ICS Manager"
+copy "$(TargetDir)Atdi.WpfControls.EntityOrm.dll" "C:\ATDI\ICS ManagerCalcServer"
 copy "$(TargetDir)Atdi.*.dll" "C:\ATDI\ICS Manager"
 copy "$(TargetDir)Atdi.WpfControls.EntityOrm.dll" "C:\ATDI\ICS Manager UCRF"
 copy "$(TargetDir)Atdi.WpfControls.EntityOrm.dll" "C:\ATDI\ICSM_UCRF_MON_2019_04_18_x_sig_214"</PostBuildEvent>

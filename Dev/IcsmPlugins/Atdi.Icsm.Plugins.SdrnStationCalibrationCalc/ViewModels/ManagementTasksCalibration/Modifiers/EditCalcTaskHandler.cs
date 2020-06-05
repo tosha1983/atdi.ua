@@ -27,8 +27,6 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
             var query = _dataLayer.GetBuilder<ICalcTask>()
                 .Update()
                 .SetValue(c => c.MapName, command.MapName)
-                .SetValue(c => c.TypeCode, (byte)command.TypeCode)
-                .SetValue(c => c.TypeName, ((CalcTaskTypeCode)(command.TypeCode)).ToString())
                 .Filter(c => c.Id, command.Id);
             _dataLayer.Executor.Execute(query);
 
