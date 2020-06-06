@@ -205,7 +205,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Count meas GSID.
+        ///   Ищет локализованную строку, похожую на Count meas GCID.
         /// </summary>
         public static string CountMeasGSID {
             get {
@@ -214,7 +214,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на CountMeasGSID in IT status.
+        ///   Ищет локализованную строку, похожую на CountMeasGCID in IT status.
         /// </summary>
         public static string CountMeasGSID_IT {
             get {
@@ -223,7 +223,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на CountMeasGSID in LS status.
+        ///   Ищет локализованную строку, похожую на CountMeasGCID in LS status.
         /// </summary>
         public static string CountMeasGSID_LS {
             get {
@@ -421,7 +421,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на License Gsid.
+        ///   Ищет локализованную строку, похожую на License GCID.
         /// </summary>
         public static string LicenseGsid {
             get {
@@ -799,7 +799,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Real Gsid.
+        ///   Ищет локализованную строку, похожую на Real GCID.
         /// </summary>
         public static string RealGsid {
             get {
@@ -1105,7 +1105,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Use measurement with same GSID.
+        ///   Ищет локализованную строку, похожую на Use measurement with same GCID.
         /// </summary>
         public static string UseMeasurementSameGSID {
             get {
