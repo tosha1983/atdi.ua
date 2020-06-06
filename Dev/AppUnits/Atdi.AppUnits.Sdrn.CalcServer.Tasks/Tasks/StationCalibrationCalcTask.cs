@@ -556,7 +556,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                             Type = (ClientContextStationType)reader.GetValue(c => c.StateCode),
                             CallSign = reader.GetValue(c => c.CallSign),
                             Name = reader.GetValue(c => c.Name),
-                            Standard = reader.GetValue(c => c.Standard),
+                            Standard = reader.GetValue(c => c.Standard).GetStandardForDriveTest(),
                             ExternalCode = reader.GetValue(c => c.ExternalCode),
                             ExternalSource = reader.GetValue(c => c.ExternalSource),
                             ModifiedDate = reader.GetValue(c => c.ModifiedDate),
@@ -677,7 +677,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                             DriveTestId = reader.GetValue(c => c.Id),
                             Freq_MHz = reader.GetValue(c => c.Freq_MHz),
                             GSID = reader.GetValue(c => c.Gsid),
-                            Standard = reader.GetValue(c => c.Standard),
+                            Standard = reader.GetValue(c => c.Standard).GetStandardForDriveTest(),
                             Num = reader.GetValue(c => c.Id)
                         };
 

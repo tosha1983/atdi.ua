@@ -185,6 +185,19 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
                 // создаем список неповторяющихся значений стандартов
                 var arrStandards = allStandards.Distinct().ToArray();
+
+                //var listStandards = new List<string>();
+                ////
+                //for (int n=0; n< arrStandards.Length; n++)
+                //{
+                //    var standard = arrStandards[n].GetStandardForDriveTest();
+                //    if (!listStandards.Contains(standard))
+                //    {
+                //        listStandards.Add(standard);
+                //    }
+                //}
+                //arrStandards = listStandards.ToArray();
+
                 var listCalcCorellationResult = new CalibrationResult[arrStandards.Length];
                 // цикл по стандартам
                 for (int v = 0; v < arrStandards.Length; v++)

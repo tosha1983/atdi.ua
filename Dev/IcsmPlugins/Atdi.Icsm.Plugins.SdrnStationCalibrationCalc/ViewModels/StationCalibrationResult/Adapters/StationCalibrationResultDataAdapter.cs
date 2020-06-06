@@ -101,7 +101,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                 AreaName = reader.GetValue(c => c.AreaName),
                 CountMeasGSID = reader.GetValue(c => c.CountMeasGSID),
                 CountMeasGSID_IT = reader.GetValue(c => c.CountMeasGSID_IT),
-                CountMeasGSID_LS = reader.GetValue(c => c.CountMeasGSID),
+                CountMeasGSID_LS = reader.GetValue(c => c.CountMeasGSID_LS),
                 CountStation_CS = reader.GetValue(c => c.CountStation_CS),
                 CountStation_IT = reader.GetValue(c => c.CountStation_IT),
                 CountStation_NF = reader.GetValue(c => c.CountStation_NF),
