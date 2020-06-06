@@ -530,7 +530,6 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                         IsContour = station[d].Type == ClientContextStationType.A ? true : false,
                                                         StationMonitoringId = station[d].Id,
                                                         MaxCorellation = (float)maxCorellation_pc,
-                                                        //ParametersStationNew=  ??????????????????????
                                                         ParametersStationOld = new ParametersStation()
                                                         {
                                                             Altitude_m = (int)station[d].Site.Altitude,
@@ -538,7 +537,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                             Tilt_Deg = station[d].Antenna.Tilt_deg,
                                                             Lat_deg = station[d].Site.Latitude,
                                                             Lon_deg = station[d].Site.Longitude,
-                                                            Power_dB = station[d].Transmitter.MaxPower_dBm
+                                                            Power_dB = station[d].Transmitter.MaxPower_dBm,
+                                                            Freq_MHz = station[d].Transmitter.MaxPower_dBm
                                                         }
                                                     });
                                                 }
@@ -612,7 +612,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                             Tilt_Deg = station[d].Antenna.Tilt_deg,
                                                             Lat_deg = station[d].Site.Latitude,
                                                             Lon_deg = station[d].Site.Longitude,
-                                                            Power_dB = station[d].Transmitter.MaxPower_dBm
+                                                            Power_dB = station[d].Transmitter.MaxPower_dBm,
+                                                            Freq_MHz = station[d].Transmitter.Freq_MHz
                                                         }
                                                     });
                                                 }
@@ -725,7 +726,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                     Tilt_Deg = arrStations[d].Antenna.Tilt_deg,
                                     Lat_deg = arrStations[d].Site.Latitude,
                                     Lon_deg = arrStations[d].Site.Longitude,
-                                    Power_dB = arrStations[d].Transmitter.MaxPower_dBm
+                                    Power_dB = arrStations[d].Transmitter.MaxPower_dBm,
+                                    Freq_MHz = arrStations[d].Transmitter.Freq_MHz
                                 }
                             });
                         }
