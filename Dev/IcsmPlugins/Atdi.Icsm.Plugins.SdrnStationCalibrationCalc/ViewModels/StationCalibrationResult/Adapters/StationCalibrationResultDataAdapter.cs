@@ -18,7 +18,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
         public StationCalibrationResultDataAdapter(CalcServerDataLayer dataLayer, ILogger logger) : base(dataLayer.Origin, logger)
         {
         }
-        public long resultId;
+        public long taskId;
         public DateTimeOffset? dateTimeStart;
         public DateTimeOffset? dateTimeStop;
 
@@ -84,7 +84,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                 c => c.PARAMETERS.UseMeasurementSameGSID
 
             )
-            .Filter(f => f.RESULT.Id, DataModels.Api.EntityOrm.WebClient.FilterOperator.Equal, resultId)
+            .Filter(f => f.RESULT.TASK.Id, DataModels.Api.EntityOrm.WebClient.FilterOperator.Equal, taskId)
             .OrderByDesc(f=>f.TimeStart);
             if ((dateTimeStart!=null) && (dateTimeStop != null))
             {
