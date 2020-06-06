@@ -639,6 +639,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             calcCalibrationResult.ParametersStationOld.Lat_deg = data.GSIDGroupeStation.Site.Latitude;
             calcCalibrationResult.ParametersStationOld.Lon_deg = data.GSIDGroupeStation.Site.Longitude;
             calcCalibrationResult.ParametersStationOld.Power_dB = data.GSIDGroupeStation.Transmitter.MaxPower_dBm;
+            calcCalibrationResult.ParametersStationOld.Freq_MHz = data.GSIDGroupeStation.Transmitter.Freq_MHz;
 
             var siteCoords_m = _transformation.ConvertCoordinateToAtdi(new Wgs84Coordinate() { Latitude = data.GSIDGroupeStation.Site.Latitude, Longitude = data.GSIDGroupeStation.Site.Longitude }, data.CodeProjection);
             

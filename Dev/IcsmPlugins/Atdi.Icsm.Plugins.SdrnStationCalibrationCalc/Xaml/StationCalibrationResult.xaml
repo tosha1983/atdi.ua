@@ -180,7 +180,7 @@
               <DataGridTextColumn Header="{x:Static res:Resources.New_Tilt_deg}" Binding="{Binding Path=New_Tilt_deg}"></DataGridTextColumn>
               <DataGridTextColumn Header="{x:Static res:Resources.Old_Altitude_m}" Binding="{Binding Path=Old_Altitude_m}"></DataGridTextColumn>
               <DataGridTextColumn Header="{x:Static res:Resources.Old_Azimuth_deg}" Binding="{Binding Path=Old_Azimuth_deg}"></DataGridTextColumn>
-              <DataGridTextColumn Header="{x:Static res:Resources.OldFreq_MHz}" Binding="{Binding Path=OldFreq_MHz}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.OldFreq_MHz}" Binding="{Binding Path=Old_Freq_MHz}"></DataGridTextColumn>
               <DataGridTextColumn Header="{x:Static res:Resources.Old_Lat_deg}" Binding="{Binding Path=Old_Lat_deg}"></DataGridTextColumn>
               <DataGridTextColumn Header="{x:Static res:Resources.Old_Lon_deg}" Binding="{Binding Path=Old_Lon_deg}"></DataGridTextColumn>
               <DataGridTextColumn Header="{x:Static res:Resources.Old_Power_dB}" Binding="{Binding Path=Old_Power_dB}"></DataGridTextColumn>

@@ -781,6 +781,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                     .SetValue(c => c.LicenseGsid, driveTest.Gsid)
                     .SetValue(c => c.RealGsid, driveTest.GsidFromStation)
                     .SetValue(c => c.DriveTestId, driveTest.DriveTestId)
+                    .SetValue(c => c.MaxPercentCorellation, driveTest.MaxPercentCorellation)
                     .SetValue(c => c.LinkToStationMonitoringId, driveTest.LinkToStationMonitoringId)
                     .SetValue(c => c.ResultDriveTestStatus, driveTest.ResultDriveTestStatus.ToString())
                     ;
