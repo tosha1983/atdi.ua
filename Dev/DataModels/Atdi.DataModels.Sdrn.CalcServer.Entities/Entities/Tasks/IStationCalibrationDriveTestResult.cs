@@ -22,8 +22,8 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks
         //IStationCalibrationResult CALIBRATION_RES { get; set; }
         string ExternalSource { get; set; }
         string ExternalCode { get; set; }
-        string LicenseGsid { get; set; }
-        string RealGsid { get; set; }
+        string StationGcid { get; set; }
+        string MeasGcid { get; set; }
         string ResultDriveTestStatus { get; set; }
         int CountPointsInDriveTest { get; set; }
         float MaxPercentCorellation { get; set; }

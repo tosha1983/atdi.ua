@@ -424,7 +424,7 @@
     <value>New tilt, deg</value>
   </data>
   <data name="OldFreq_MHz" xml:space="preserve">
-    <value>Old freq, MHz</value>
+    <value>Freq, MHz</value>
   </data>
   <data name="Old_Altitude_m" xml:space="preserve">
     <value>Old altitude, m</value>
@@ -458,5 +458,14 @@
   </data>
   <data name="Context" xml:space="preserve">
     <value>Context</value>
+  </data>
+  <data name="ResultStationStatus" xml:space="preserve">
+    <value>Result station status</value>
+  </data>
+  <data name="MeasGcid" xml:space="preserve">
+    <value>Meas GCID</value>
+  </data>
+  <data name="StationGcid" xml:space="preserve">
+    <value>Station GCID</value>
   </data>
 </root>

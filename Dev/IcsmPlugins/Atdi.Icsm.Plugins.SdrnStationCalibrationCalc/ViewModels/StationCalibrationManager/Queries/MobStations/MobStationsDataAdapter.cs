@@ -522,7 +522,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                             {
                                 CallSign = source.m_call_sign,
                                 ExternalCode = source.m_id.ToString(),
-                                ExternalSource = source.m_table_name,
+                                ExternalSource = arrayTables[v],//source.m_table_name,
                                 Standard = source.m_standard,
                                 StateName = source.m_status,
                                 Name = source.m_name,
