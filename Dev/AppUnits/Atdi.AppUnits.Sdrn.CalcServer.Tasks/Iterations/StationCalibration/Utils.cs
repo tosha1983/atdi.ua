@@ -579,10 +579,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 if (lstContextStations.Count > 0)
                 {
                     var lstGroupContextStations = new List<ContextStation>();
-                    for (int k = 0; k < arrUniqueGSID.Length; k++)
+                    for (int k = 0; k < lstContextStations.Count; k++)
                     {
                         var stationOne = lstContextStations[k][0];
-                        for (int j = 0; j < arrUniqueGSID.Length; j++)
+                        for (int j = 0; j < lstContextStations.Count; j++)
                         {
                             var stationTwo = lstContextStations[j][0];
                             if (CompareGSIDAndDistanceWithBaseStations(stationOne.LicenseGsid, stationTwo.LicenseGsid, Standard.GetStandardForDriveTest(), transformation, stationOne.Site.Longitude, stationOne.Site.Latitude, stationTwo.Site.Longitude, stationTwo.Site.Latitude, maxDistance, projection))

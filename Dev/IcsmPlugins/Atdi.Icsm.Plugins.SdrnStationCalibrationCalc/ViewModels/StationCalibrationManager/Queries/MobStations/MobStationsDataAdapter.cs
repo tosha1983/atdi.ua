@@ -518,6 +518,12 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                                 modifiedDate = source.m_date_modified;
                             }
 
+                            DateTime? createdDate = null;
+                            if (source.m_date_created != IM.NullT)
+                            {
+                                createdDate = source.m_date_created;
+                            }
+
                             listIcsmMobStation.Add(new IcsmMobStation
                             {
                                 CallSign = source.m_call_sign,
@@ -529,7 +535,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                                 LicenseGsid = source.m_cust_txt1,
                                 RealGsid = source.m_cust_txt2,
                                 ModifiedDate = modifiedDate,
-                                CreatedDate = source.m_date_created,
+                                CreatedDate = createdDate==null? DateTime.Now : createdDate.Value,
                                 RegionCode = source.m_rec_area,
                                 SITE = new IcsmMobStationSite()
                                 {

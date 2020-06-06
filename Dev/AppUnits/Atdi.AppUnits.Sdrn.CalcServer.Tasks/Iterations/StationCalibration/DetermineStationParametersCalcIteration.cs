@@ -212,6 +212,28 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     // список для храненения станций со статусом P для дальнейшей обработки
                     var outListContextStationsForStatusP = Utils.GroupStationsByStatus(data.GSIDGroupeStation, standard, _transformation, 100, data.Projection);
 
+                    //дополнительная проверка перечня станций, которые будут обрабатываться в блоке НДП на наличие таких, у которых есть статус P
+                    if ((outListContextStationsForStatusP != null) && (outListContextStationsForStatusP.Length > 0))
+                    {
+                        for (int z = 0; z < outListContextStations.Count; z++)
+                        {
+                            var listStations = outListContextStations[z].ToList();
+                            for (int g = 0; g < listStations.Count; g++)
+                            {
+                                for (int h = 0; h < outListContextStationsForStatusP.Length; h++)
+                                {
+                                    var findStationInStatusP = outListContextStationsForStatusP[h].ToList();
+                                    if (findStationInStatusP.Find(x => x.Id == listStations[g].Id) != null)
+                                    {
+                                        listStations.RemoveAt(g);
+                                    }
+                                }
+                            }
+                            outListContextStations[z] = listStations.ToArray();
+                        }
+                    }  
+
+
                     // создаем список для хранения результатов обработки по отдельно взятому стандарту и заданой группе GSID
                     var calibrationStationsAndDriveTestsResultByGroup = new List<CalibrationStationsAndDriveTestsResult>();
 
@@ -580,10 +602,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                     /// обработка станций со статусом "P" 
                                     if ((outListContextStationsForStatusP != null) && (outListContextStationsForStatusP.Length > 0))
                                     {
-                                        for (int m = 0; m < outListContextStationsForStatusP.Length; m++)
+                                        var lstStationsForStatusP = outListContextStationsForStatusP.ToList();
+                                        for (int m = 0; m < lstStationsForStatusP.Count; m++)
                                         {
                                             // проводим анализ по каждой отдельно взятой группе станций отдельно
-                                            var station = outListContextStationsForStatusP[m];
+                                            var station = lstStationsForStatusP[m];
 
                                             // расчет корелляции
                                             bool statusCorellationLinkGroup = CalcCorellation(taskContext, station, currentDriveTest, data, out double? maxCorellation_pc);
@@ -635,9 +658,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                     ResultCalibrationStation = lsttempCalibrationStationResult.ToArray()
                                                 });
                                                 // убираем из общего списка станций  те которые попали в результаты
-                                                //CompressedStations(ref outListContextStations, station);
+                                                CompressedStations(ref lstStationsForStatusP, station);
                                             }
                                         }
+                                        outListContextStationsForStatusP = lstStationsForStatusP.ToArray();
                                     }
 
                                     ///////////////////////////  если до текущего мемента драйв тест никуда не попал, тогда формируем результат с ним ////////////////////////////////
@@ -703,6 +727,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     ///   4.2.11. Все не изъятые Stations помечаются как необнаруженные (схема бл. 10)
                     ///   
                     /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                    if (outListContextStationsForStatusP.Length>0)
+                    {
+                        outListContextStations.AddRange(outListContextStationsForStatusP);
+                    }
 
                     var lstCalibrationStationResult = new List<CalibrationStationResult>();
                     for (int j = 0; j < outListContextStations.Count; j++)
