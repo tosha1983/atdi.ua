@@ -538,7 +538,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                             Lat_deg = station[d].Site.Latitude,
                                                             Lon_deg = station[d].Site.Longitude,
                                                             Power_dB = station[d].Transmitter.MaxPower_dBm,
-                                                            Freq_MHz = station[d].Transmitter.MaxPower_dBm
+                                                            Freq_MHz = station[d].Transmitter.Freq_MHz
                                                         }
                                                     });
                                                 }
@@ -666,7 +666,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                          DriveTestId = currentDriveTest.DriveTestId,
                                                          Gsid = currentDriveTest.GSID,
                                                          LinkToStationMonitoringId = currentDriveTest.LinkToStationMonitoringId,
-                                                         ResultDriveTestStatus = DriveTestStatusResult.UN
+                                                         ResultDriveTestStatus = DriveTestStatusResult.IT
                                                  }
                                               },
                                                 ResultCalibrationStation = null
@@ -686,7 +686,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                          DriveTestId = currentDriveTest.DriveTestId,
                                                          Gsid = currentDriveTest.GSID,
                                                          LinkToStationMonitoringId = currentDriveTest.LinkToStationMonitoringId,
-                                                         ResultDriveTestStatus = DriveTestStatusResult.UN
+                                                         ResultDriveTestStatus = DriveTestStatusResult.IT
                                                  }
                                                   },
                                             ResultCalibrationStation = null
@@ -716,7 +716,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                 ExternalCode = arrStations[d].ExternalCode,
                                 LicenseGsid = arrStations[d].LicenseGsid,
                                 //RealGsid = arrStations[d].RealGsid,
-                                ResultStationStatus =  StationStatusResult.UN, // если была UN то NF быть не может !!!!
+                                ResultStationStatus =  StationStatusResult.NF, // если была UN то NF быть не может !!!!
                                 StationMonitoringId = arrStations[d].Id,
                                 IsContour = arrStations[d].Type == ClientContextStationType.A ? true : false,
                                 //ParametersStationNew=  ??????????????????????

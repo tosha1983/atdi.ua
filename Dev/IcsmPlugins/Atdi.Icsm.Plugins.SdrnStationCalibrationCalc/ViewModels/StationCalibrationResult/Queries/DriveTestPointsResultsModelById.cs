@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibrationResult.Queries
 {
-    public class DriveResultsModelById
+    public class DriveTestPointsResultsModelById
     {
         public long Id;
     }

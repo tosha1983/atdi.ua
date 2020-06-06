@@ -276,7 +276,6 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                 var points = new List<MP.MapDrawingDataPoint>();
                 var polygons = new List<MP.MapDrawingDataPolygon>();
 
-
                 if (this._currentStationMonitoringModel != null)
                 {
                     foreach (StationMonitoringModel model in this._currentStationMonitoringModel)
@@ -293,11 +292,11 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                                         Lat = routes[i].Latitude,
                                         Lon = routes[i].Longitude
                                     },
-                                    Color = System.Windows.Media.Brushes.Green,
-                                    Fill = System.Windows.Media.Brushes.ForestGreen,
+                                    Color = System.Windows.Media.Brushes.Orange,
+                                    Fill = System.Windows.Media.Brushes.OrangeRed,
                                     Opacity = 0.85,
-                                    Width = 10,
-                                    Height = 10
+                                    Width = 4,
+                                    Height = 4
                                 });
                             }
                         }
@@ -478,10 +477,9 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             {
                 this._currentStationMonitoringModel = value;
                 RedrawMap();
+                
             }
         }
-
-
 
         /// <summary>
         /// Максимально допустимое число точек в drive тесте для заданного в файле конфигурации стандарта

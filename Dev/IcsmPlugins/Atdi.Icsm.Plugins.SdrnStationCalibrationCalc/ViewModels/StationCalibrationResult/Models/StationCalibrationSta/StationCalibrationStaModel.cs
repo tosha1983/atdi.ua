@@ -24,7 +24,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
         public double Old_Lat_dec_deg { get; set; }
         public double Old_Lon_dec_deg { get; set; }
         public float Old_Power_dB { get; set; }
-        public double Old_Freq_MHz { get; set; }
+        public float Old_Freq_MHz { get; set; }
         public int New_Altitude_m { get; set; }
         public float New_Tilt_deg { get; set; }
         public float New_Azimuth_deg { get; set; }

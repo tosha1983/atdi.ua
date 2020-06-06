@@ -172,16 +172,12 @@
     <Compile Include="ViewModels\StationCalibrationResult\Models\StationCalibrationResult\StationCalibrationResultModel.cs" />
     <Compile Include="ViewModels\StationCalibrationResult\Models\StationCalibrationSta\RoutesStationMonitoringModel.cs" />
     <Compile Include="ViewModels\StationCalibrationResult\Models\StationCalibrationSta\StationCalibrationStaModel.cs" />
-    <Compile Include="ViewModels\StationCalibrationResult\Queries\DriveResultsModelById.cs" />
-    <Compile Include="ViewModels\StationCalibrationResult\Queries\StationCalibrationDriveTestsModelById.cs" />
-    <Compile Include="ViewModels\StationCalibrationResult\Queries\StationCalibrationDriveTestsModelByIdExecutor.cs" />
+    <Compile Include="ViewModels\StationCalibrationResult\Queries\DriveTestPointsResultsModelById.cs" />
     <Compile Include="ViewModels\StationCalibrationResult\Queries\StationCalibrationStaModelByResultId.cs" />
-    <Compile Include="ViewModels\StationCalibrationResult\Queries\DriveResultsModelByIdExecutor.cs" />
+    <Compile Include="ViewModels\StationCalibrationResult\Queries\DriveTestPointsResultsModelByIdExecutor.cs" />
     <Compile Include="ViewModels\StationCalibrationResult\Queries\StationCalibrationStaModelByResultIdExecutor.cs" />
     <Compile Include="ViewModels\StationCalibrationResult\Queries\StationCalibrationStaModelByIdExecutor.cs" />
     <Compile Include="ViewModels\StationCalibrationResult\Queries\StationCalibrationStaModelById.cs" />
-    <Compile Include="ViewModels\StationCalibrationResult\Queries\RoutesStationMonitoringModelById.cs" />
-    <Compile Include="ViewModels\StationCalibrationResult\Queries\RoutesStationMonitoringModelByIdExecutor.cs" />
     <Compile Include="ViewModels\StationCalibrationResult\View.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -267,7 +263,6 @@
     <Folder Include="Events\" />
     <Folder Include="Queries\" />
     <Folder Include="ViewModels\StationCalibrationResult\Events\" />
-    <Folder Include="ViewModels\StationCalibrationResult\Modifiers\" />
     <Folder Include="Xaml\" />
   </ItemGroup>
   <ItemGroup>

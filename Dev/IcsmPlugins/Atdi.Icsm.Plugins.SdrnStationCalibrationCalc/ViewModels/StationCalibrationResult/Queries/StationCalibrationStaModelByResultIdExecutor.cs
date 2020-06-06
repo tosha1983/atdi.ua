@@ -53,7 +53,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                  c => c.Old_Power_dB,
                  c => c.Old_Tilt_deg,
                  c => c.StationMonitoringId
-             ).Filter(f => f.CalibrationResultId, DataModels.Api.EntityOrm.WebClient.FilterOperator.Equal, criterion.ResultId);
+             ).Filter(f => f.StationMonitoringId, DataModels.Api.EntityOrm.WebClient.FilterOperator.Equal, criterion.ResultId);
 
             var reader = _dataLayer.Executor.ExecuteReader(query);
             while (reader.Read())
@@ -78,7 +78,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                     New_Lat_dec_deg = reader.GetValue(c => c.New_Lat_deg),
                     New_Azimuth_deg = reader.GetValue(c => c.New_Azimuth_deg),
                     Old_Azimuth_deg = reader.GetValue(c => c.Old_Azimuth_deg),
-                    Old_Freq_MHz = (float)Math.Round(reader.GetValue(c => c.Old_Freq_MHz),6),
+                    Old_Freq_MHz =  (float)reader.GetValue(c => c.Old_Freq_MHz),
                     Old_Lat_dms_deg = ConvertCoordinates.DecToDmsToString(ICSM.IMPosition.Dec2Dms(reader.GetValue(c => c.Old_Lat_deg)), EnumCoordLine.Lat),
                     Old_Lon_dms_deg = ConvertCoordinates.DecToDmsToString(ICSM.IMPosition.Dec2Dms(reader.GetValue(c => c.Old_Lon_deg)), EnumCoordLine.Lon),
                     Old_Lon_dec_deg = reader.GetValue(c => c.Old_Lon_deg),
