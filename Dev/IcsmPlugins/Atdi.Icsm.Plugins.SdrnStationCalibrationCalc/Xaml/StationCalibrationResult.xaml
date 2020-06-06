@@ -166,25 +166,38 @@
           <cdg:OrmDataGrid IsReadOnly="True" Margin="5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding StationCalibrationStaDataAdapter}" SelectedItemsList="{Binding CurrentStationCalibrationStaModel, Mode=TwoWay}" >
             <DataGrid.Columns>
               <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=Id}"></DataGridTextColumn>
-              <DataGridTextColumn Header="{x:Static res:Resources.CalibrationResultId}" Binding="{Binding Path=CalibrationResultId}"></DataGridTextColumn>
+              
+              <DataGridTextColumn Header="{x:Static res:Resources.ResultStationStatus}" Binding="{Binding Path=ResultStationStatus}"></DataGridTextColumn>
               <DataGridTextColumn Header="{x:Static res:Resources.MaxCorellation}" Binding="{Binding Path=MaxCorellation}"></DataGridTextColumn>
               <DataGridTextColumn Header="{x:Static res:Resources.ExternalCode}" Binding="{Binding Path=ExternalCode}"></DataGridTextColumn>
               <DataGridTextColumn Header="{x:Static res:Resources.ExternalSource}" Binding="{Binding Path=ExternalSource}"></DataGridTextColumn>
               <DataGridTextColumn Header="{x:Static res:Resources.LicenseGsid}" Binding="{Binding Path=LicenseGsid}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.RealGsid}" Binding="{Binding Path=RealGsid}"></DataGridTextColumn>
+
+
               <DataGridTextColumn Header="{x:Static res:Resources.New_Altitude_m}" Binding="{Binding Path=New_Altitude_m}"></DataGridTextColumn>
-              <DataGridTextColumn Header="{x:Static res:Resources.New_Azimuth_deg}" Binding="{Binding Path=New_Azimuth_deg}"></DataGridTextColumn>
-              <DataGridTextColumn Header="{x:Static res:Resources.New_Freq_MHz}" Binding="{Binding Path=New_Freq_MHz}"></DataGridTextColumn>
-              <DataGridTextColumn Header="{x:Static res:Resources.New_Lat_deg}" Binding="{Binding Path=New_Lat_deg}"></DataGridTextColumn>
-              <DataGridTextColumn Header="{x:Static res:Resources.New_Lon_deg}" Binding="{Binding Path=New_Lon_deg}"></DataGridTextColumn>
-              <DataGridTextColumn Header="{x:Static res:Resources.New_Power_dB}" Binding="{Binding Path=New_Power_dB}"></DataGridTextColumn>
-              <DataGridTextColumn Header="{x:Static res:Resources.New_Tilt_deg}" Binding="{Binding Path=New_Tilt_deg}"></DataGridTextColumn>
               <DataGridTextColumn Header="{x:Static res:Resources.Old_Altitude_m}" Binding="{Binding Path=Old_Altitude_m}"></DataGridTextColumn>
+              
+              <DataGridTextColumn Header="{x:Static res:Resources.New_Azimuth_deg}" Binding="{Binding Path=New_Azimuth_deg}"></DataGridTextColumn>
               <DataGridTextColumn Header="{x:Static res:Resources.Old_Azimuth_deg}" Binding="{Binding Path=Old_Azimuth_deg}"></DataGridTextColumn>
-              <DataGridTextColumn Header="{x:Static res:Resources.OldFreq_MHz}" Binding="{Binding Path=Old_Freq_MHz}"></DataGridTextColumn>
-              <DataGridTextColumn Header="{x:Static res:Resources.Old_Lat_deg}" Binding="{Binding Path=Old_Lat_deg}"></DataGridTextColumn>
-              <DataGridTextColumn Header="{x:Static res:Resources.Old_Lon_deg}" Binding="{Binding Path=Old_Lon_deg}"></DataGridTextColumn>
+              
+              <DataGridTextColumn Header="{x:Static res:Resources.New_Lat_deg}" Binding="{Binding Path=New_Lat_dms_deg}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.Old_Lat_deg}" Binding="{Binding Path=Old_Lat_dms_deg}"></DataGridTextColumn>
+              
+              <DataGridTextColumn Header="{x:Static res:Resources.New_Lon_deg}" Binding="{Binding Path=New_Lon_dms_deg}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.Old_Lon_deg}" Binding="{Binding Path=Old_Lon_dms_deg}"></DataGridTextColumn>
+              
+              <DataGridTextColumn Header="{x:Static res:Resources.New_Power_dB}" Binding="{Binding Path=New_Power_dB}"></DataGridTextColumn>
               <DataGridTextColumn Header="{x:Static res:Resources.Old_Power_dB}" Binding="{Binding Path=Old_Power_dB}"></DataGridTextColumn>
+              
+              <DataGridTextColumn Header="{x:Static res:Resources.New_Tilt_deg}" Binding="{Binding Path=New_Tilt_deg}"></DataGridTextColumn>
               <DataGridTextColumn Header="{x:Static res:Resources.Old_Tilt_deg}" Binding="{Binding Path=Old_Tilt_deg}"></DataGridTextColumn>
+              
+              <DataGridTextColumn Header="{x:Static res:Resources.OldFreq_MHz}" Binding="{Binding Path=Old_Freq_MHz}"></DataGridTextColumn>
+              
+              
+              
+              
             </DataGrid.Columns>
           </cdg:OrmDataGrid>
         </GroupBox>
@@ -213,8 +226,8 @@
                   <DataGridTextColumn Header="{x:Static res:Resources.DriveTestId}" Binding="{Binding Path=DriveTestId}"></DataGridTextColumn>
                   <DataGridTextColumn Header="{x:Static res:Resources.ExternalSource}" Binding="{Binding Path=ExternalSource}"></DataGridTextColumn>
                   <DataGridTextColumn Header="{x:Static res:Resources.ExternalCode}" Binding="{Binding Path=ExternalCode}"></DataGridTextColumn>
-                  <DataGridTextColumn Header="{x:Static res:Resources.LicenseGsid}" Binding="{Binding Path=LicenseGsid}"></DataGridTextColumn>
-                  <DataGridTextColumn Header="{x:Static res:Resources.RealGsid}" Binding="{Binding Path=RealGsid}"></DataGridTextColumn>
+                  <DataGridTextColumn Header="{x:Static res:Resources.StationGcid}" Binding="{Binding Path=StationGcid}"></DataGridTextColumn>
+                  <DataGridTextColumn Header="{x:Static res:Resources.MeasGcid}" Binding="{Binding Path=MeasGcid}"></DataGridTextColumn>
                   <DataGridTextColumn Header="{x:Static res:Resources.ResultDriveTestStatus}" Binding="{Binding Path=ResultDriveTestStatus}"></DataGridTextColumn>
                   <DataGridTextColumn Header="{x:Static res:Resources.CountPointsInDriveTest}" Binding="{Binding Path=CountPointsInDriveTest}"></DataGridTextColumn>
                   <DataGridTextColumn Header="{x:Static res:Resources.MaxPercentCorellation}" Binding="{Binding Path=MaxPercentCorellation}"></DataGridTextColumn>

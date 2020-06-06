@@ -14,8 +14,8 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
         public long DriveTestId { get; set; }
         public string ExternalSource { get; set; }
         public string ExternalCode { get; set; }
-        public string LicenseGsid { get; set; }
-        public string RealGsid { get; set; }
+        public string StationGcid { get; set; }
+        public string MeasGcid { get; set; }
         public string ResultDriveTestStatus { get; set; }
         public int CountPointsInDriveTest { get; set; }
         public float MaxPercentCorellation { get; set; }

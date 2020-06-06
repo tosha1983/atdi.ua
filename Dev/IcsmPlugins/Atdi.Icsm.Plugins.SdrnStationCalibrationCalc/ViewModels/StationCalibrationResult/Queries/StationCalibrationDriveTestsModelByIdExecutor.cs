@@ -33,9 +33,9 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                 c => c.CountPointsInDriveTest,
                 c => c.ExternalCode,
                 c => c.ExternalSource,
-                c => c.LicenseGsid,
+                c => c.MeasGcid,
                 c => c.MaxPercentCorellation,
-                c => c.RealGsid,
+                c => c.StationGcid,
                 c => c.ResultDriveTestStatus,
                 c => c.DriveTestId,
                 c => c.LinkToStationMonitoringId
@@ -50,9 +50,9 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                     {
                         CountPointsInDriveTest = reader.GetValue(c => c.CountPointsInDriveTest),
                         ResultDriveTestStatus = reader.GetValue(c => c.ResultDriveTestStatus),
-                        RealGsid = reader.GetValue(c => c.RealGsid),
-                        MaxPercentCorellation = reader.GetValue(c => c.MaxPercentCorellation),
-                        LicenseGsid = reader.GetValue(c => c.LicenseGsid),
+                        MeasGcid = reader.GetValue(c => c.MeasGcid),
+                        MaxPercentCorellation = (float)Math.Round(reader.GetValue(c => c.MaxPercentCorellation),2),
+                        StationGcid = reader.GetValue(c => c.StationGcid),
                         ExternalSource = reader.GetValue(c => c.ExternalSource),
                         ExternalCode = reader.GetValue(c => c.ExternalCode),
                         DriveTestId = reader.GetValue(c => c.DriveTestId), // ссылка  на инфоцентр (SM_MEAS_RESULTS)

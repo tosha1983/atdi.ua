@@ -156,8 +156,8 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                             {
                                 Location = new MP.Location()
                                 {
-                                    Lon = sta[i].New_Lon_deg,
-                                    Lat = sta[i].New_Lat_deg
+                                    Lon = sta[i].New_Lon_dec_deg,
+                                    Lat = sta[i].New_Lat_dec_deg
                                 },
                                 Color = System.Windows.Media.Brushes.Blue,
                                 Fill = System.Windows.Media.Brushes.DarkBlue,
@@ -243,8 +243,8 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                             {
                                 Location = new MP.Location()
                                 {
-                                    Lon = sta[i].New_Lon_deg,
-                                    Lat = sta[i].New_Lat_deg
+                                    Lon = sta[i].New_Lon_dec_deg,
+                                    Lat = sta[i].New_Lat_dec_deg
                                 },
                                 Color = System.Windows.Media.Brushes.Blue,
                                 Fill = System.Windows.Media.Brushes.DarkBlue,
