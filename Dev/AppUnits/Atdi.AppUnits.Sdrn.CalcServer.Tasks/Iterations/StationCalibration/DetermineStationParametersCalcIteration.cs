@@ -186,6 +186,22 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 // создаем список неповторяющихся значений стандартов
                 var arrStandards = allStandards.Distinct().ToArray();
 
+                var selectDriveTestsByStandards = new List<DriveTestsResult>();
+                if (data.GSIDGroupeDriveTests != null)
+                {
+                    for (int c = 0; c < arrStandards.Length; c++)
+                    {
+                        var listDriveTests = data.GSIDGroupeDriveTests.ToList();
+                        var fndDrivetTests = listDriveTests.FindAll(x => x.Standard == arrStandards[c]);
+                        if (fndDrivetTests!=null)
+                        {
+                            selectDriveTestsByStandards.AddRange(fndDrivetTests);
+                        }
+                    }
+                }
+                data.GSIDGroupeDriveTests = selectDriveTestsByStandards.ToArray();
+
+
                 //var listStandards = new List<string>();
                 ////
                 //for (int n=0; n< arrStandards.Length; n++)
@@ -547,12 +563,13 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                 var lstTempCalibrationStationResult = new List<CalibrationStationResult>();
                                                 for (int d = 0; d < station.Length; d++)
                                                 {
+                                                    //currentDriveTest.LinkToStationMonitoringId = station[d].Id;
                                                     lstTempCalibrationStationResult.Add(new CalibrationStationResult()
                                                     {
                                                         ExternalSource = station[d].ExternalSource,
                                                         ExternalCode = station[d].ExternalCode,
                                                         LicenseGsid = station[d].LicenseGsid,
-                                                        //RealGsid = station[d].RealGsid,
+                                                        RealGsid = station[d].RealGsid,
                                                         ResultStationStatus = StationStatusResult.UN,
                                                         IsContour = station[d].Type == ClientContextStationType.A ? true : false,
                                                         StationMonitoringId = station[d].Id,
@@ -578,8 +595,9 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                              CountPointsInDriveTest = currentDriveTest.Points.Length,
                                                              DriveTestId = currentDriveTest.DriveTestId,
                                                              Gsid = currentDriveTest.GSID,
-                                                             LinkToStationMonitoringId = currentDriveTest.LinkToStationMonitoringId,
-                                                             ResultDriveTestStatus = DriveTestStatusResult.UN
+                                                             //LinkToStationMonitoringId = currentDriveTest.LinkToStationMonitoringId,
+                                                             ResultDriveTestStatus = DriveTestStatusResult.UN,
+                                                             MaxPercentCorellation = (float)maxCorellation_pc
                                                          }
                                                     );
                                                 }
@@ -623,6 +641,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                 var lsttempCalibrationStationResult = new List<CalibrationStationResult>();
                                                 for (int d = 0; d < station.Length; d++)
                                                 {
+                                                    //currentDriveTest.LinkToStationMonitoringId = station[d].Id;
                                                     lsttempCalibrationStationResult.Add(new CalibrationStationResult()
                                                     {
                                                         ExternalSource = station[d].ExternalSource,
@@ -657,9 +676,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                          CountPointsInDriveTest = currentDriveTest.Points.Length,
                                                          DriveTestId = currentDriveTest.DriveTestId,
                                                          Gsid = currentDriveTest.GSID,
-                                                         LinkToStationMonitoringId = currentDriveTest.LinkToStationMonitoringId,
-                                                         ResultDriveTestStatus = DriveTestStatusResult.IT
-                                                 }
+                                                         //LinkToStationMonitoringId =  currentDriveTest.LinkToStationMonitoringId,
+                                                         ResultDriveTestStatus = DriveTestStatusResult.IT,
+                                                         MaxPercentCorellation = (float)maxCorellation_pc
+                                                       }
                                                     },
                                                     ResultCalibrationStation = lsttempCalibrationStationResult.ToArray()
                                                 });
