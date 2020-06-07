@@ -264,11 +264,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     //- Correl factor(логарифмическая корреляция пирсона у нас реализована)
                     calcCorellationResult.Corellation_factor = 0;
                 }
-
-                
-
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }
