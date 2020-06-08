@@ -468,4 +468,7 @@
   <data name="StationGcid" xml:space="preserve">
     <value>Station GCID</value>
   </data>
+  <data name="Freq_MHz" xml:space="preserve">
+    <value>Freq, MHz</value>
+  </data>
 </root>

@@ -18,7 +18,6 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks
     {
         long CalibrationResultId { get; set; }
         long StationMonitoringId { get; set; }
-        //IStationCalibrationResult CALIBRATION_RES { get; set; }
         string ExternalSource { get; set; }
         string ExternalCode { get; set; }
         string LicenseGsid { get; set; }
@@ -38,7 +37,8 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks
         double New_Lat_deg { get; set; }
         double New_Lon_deg { get; set; }
         float New_Power_dB { get; set; }
-        //double New_Freq_MHz { get; set; }
+        float Freq_MHz { get; set; }
+        string Standard { get; set; }
     }
 
 }

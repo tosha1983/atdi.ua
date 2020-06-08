@@ -19,5 +19,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
         public string ResultDriveTestStatus { get; set; }
         public int CountPointsInDriveTest { get; set; }
         public float MaxPercentCorellation { get; set; }
+        public float Freq_MHz { get; set; }
+        public string Standard { get; set; }
     }
 }

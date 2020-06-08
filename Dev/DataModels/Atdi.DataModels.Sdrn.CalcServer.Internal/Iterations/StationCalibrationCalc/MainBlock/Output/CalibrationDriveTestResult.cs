@@ -19,5 +19,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
         public int CountPointsInDriveTest;
         public float MaxPercentCorellation;
         public long LinkToStationMonitoringId;
+        public string Standard;
+        public float Freq_MHz;
     }
 }

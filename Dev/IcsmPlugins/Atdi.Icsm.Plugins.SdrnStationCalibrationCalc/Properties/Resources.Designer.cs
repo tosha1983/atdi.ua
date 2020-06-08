@@ -403,6 +403,15 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Freq, MHz.
+        /// </summary>
+        public static string Freq_MHz {
+            get {
+                return ResourceManager.GetString("Freq_MHz", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на General.
         /// </summary>
         public static string General {

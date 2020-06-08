@@ -19,7 +19,6 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks
         long CalibrationResultId { get; set; }
         long DriveTestId { get; set; }
         long LinkToStationMonitoringId { get; set; }
-        //IStationCalibrationResult CALIBRATION_RES { get; set; }
         string ExternalSource { get; set; }
         string ExternalCode { get; set; }
         string StationGcid { get; set; }
@@ -27,6 +26,8 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks
         string ResultDriveTestStatus { get; set; }
         int CountPointsInDriveTest { get; set; }
         float MaxPercentCorellation { get; set; }
+        float Freq_MHz { get; set; }
+        string Standard { get; set; }
     }
 
 }

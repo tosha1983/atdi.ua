@@ -557,6 +557,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                             CallSign = reader.GetValue(c => c.CallSign),
                             Name = reader.GetValue(c => c.Name),
                             Standard = reader.GetValue(c => c.Standard).GetStandardForDriveTest(),
+                            RealStandard = reader.GetValue(c => c.Standard),
                             ExternalCode = reader.GetValue(c => c.ExternalCode),
                             ExternalSource = reader.GetValue(c => c.ExternalSource),
                             ModifiedDate = reader.GetValue(c => c.ModifiedDate),
@@ -678,6 +679,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                             Freq_MHz = reader.GetValue(c => c.Freq_MHz),
                             GSID = reader.GetValue(c => c.Gsid),
                             Standard = reader.GetValue(c => c.Standard).GetStandardForDriveTest(),
+                            RealStandard = reader.GetValue(c => c.Standard),
                             Num = reader.GetValue(c => c.Id)
                         };
 
@@ -784,6 +786,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                     .SetValue(c => c.MaxPercentCorellation, driveTest.MaxPercentCorellation)
                     .SetValue(c => c.LinkToStationMonitoringId, driveTest.LinkToStationMonitoringId)
                     .SetValue(c => c.ResultDriveTestStatus, driveTest.ResultDriveTestStatus.ToString())
+                    .SetValue(c => c.Freq_MHz, driveTest.Freq_MHz)
+                    .SetValue(c => c.Standard, driveTest.Standard)
                     ;
                     _calcDbScope.Executor.Execute<IStationCalibrationDriveTestResult_PK>(insertQueryStationCalibrationDriveTestResult);
                 }
@@ -814,6 +818,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                     .SetValue(c => c.Old_Tilt_deg, station.ParametersStationOld.Tilt_Deg)
                     .SetValue(c => c.RealGsid, station.RealGsid)
                     .SetValue(c => c.ResultStationStatus, station.ResultStationStatus.ToString())
+                    .SetValue(c => c.Freq_MHz, station.Freq_MHz)
+                    .SetValue(c => c.Standard, station.Standard)
                     ;
                     _calcDbScope.Executor.Execute<IStationCalibrationStaResult_PK>(insertQueryStationCalibrationStaResult);
                 }

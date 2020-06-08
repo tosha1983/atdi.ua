@@ -811,21 +811,12 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                             {
                                 _viewStarter.ShowException("Error!", new Exception($"Client context Id is 0!"));
                             }
-                            _eventBus.Send(new LongProcessLogEvent
-                            {
-                                ProcessToken = token,
-                                Message = $"Task saved with {this._currentParamsCalculationModel.StationIds.Length} stations and {CurrentStationMonitoringModel.Count} drive tests"
-                            });
-                            _viewStarter.Stop(this);
                         }
                         else
                         {
-                            _eventBus.Send(new LongProcessLogEvent
-                            {
-                                ProcessToken = token,
-                                Message = $"No stations with suitable parameters!"
-                            });
+                            _viewStarter.ShowException("Error!", new Exception($"No stations with suitable parameters!"));
                         }
+                        _viewStarter.Stop(this);
                     }
                     catch (Exception e)
                     {

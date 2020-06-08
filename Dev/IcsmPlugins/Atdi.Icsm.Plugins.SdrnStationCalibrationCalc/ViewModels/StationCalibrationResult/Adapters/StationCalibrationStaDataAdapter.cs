@@ -45,7 +45,9 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                 c => c.Old_Lon_deg,
                 c => c.Old_Power_dB,
                 c => c.Old_Tilt_deg,
-                c => c.StationMonitoringId
+                c => c.StationMonitoringId,
+                c => c.Standard,
+                c => c.Freq_MHz
             )
             .Filter(f => f.CalibrationResultId, DataModels.Api.EntityOrm.WebClient.FilterOperator.Equal, resultId);
         }
@@ -78,6 +80,8 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                 Old_Lat_dec_deg = reader.GetValue(c => c.Old_Lat_deg),
                 Old_Power_dB  = (float)Math.Round(reader.GetValue(c => c.Old_Power_dB),1),
                 Old_Tilt_deg = (float)Math.Round(reader.GetValue(c => c.Old_Tilt_deg),1),
+                Freq_MHz = reader.GetValue(c => c.Freq_MHz),
+                Standard = reader.GetValue(c => c.Standard),
                 StationMonitoringId = reader.GetValue(c => c.StationMonitoringId) // ccылка на сервер расчетов станция (CONTEXT_STATIONS)
             };
         }

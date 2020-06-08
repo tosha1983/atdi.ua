@@ -194,8 +194,10 @@
               <DataGridTextColumn Header="{x:Static res:Resources.Old_Tilt_deg}" Binding="{Binding Path=Old_Tilt_deg}"></DataGridTextColumn>
               
               <DataGridTextColumn Header="{x:Static res:Resources.OldFreq_MHz}" Binding="{Binding Path=Old_Freq_MHz}"></DataGridTextColumn>
-              
-              
+
+              <DataGridTextColumn Header="{x:Static res:Resources.Freq_MHz}" Binding="{Binding Path=Freq_MHz}"></DataGridTextColumn>
+
+              <DataGridTextColumn Header="{x:Static res:Resources.Standard}" Binding="{Binding Path=Standard}"></DataGridTextColumn>
               
               
             </DataGrid.Columns>
@@ -231,6 +233,8 @@
                   <DataGridTextColumn Header="{x:Static res:Resources.ResultDriveTestStatus}" Binding="{Binding Path=ResultDriveTestStatus}"></DataGridTextColumn>
                   <DataGridTextColumn Header="{x:Static res:Resources.CountPointsInDriveTest}" Binding="{Binding Path=CountPointsInDriveTest}"></DataGridTextColumn>
                   <DataGridTextColumn Header="{x:Static res:Resources.MaxPercentCorellation}" Binding="{Binding Path=MaxPercentCorellation}"></DataGridTextColumn>
+                  <DataGridTextColumn Header="{x:Static res:Resources.Freq_MHz}" Binding="{Binding Path=Freq_MHz}"></DataGridTextColumn>
+                  <DataGridTextColumn Header="{x:Static res:Resources.Standard}" Binding="{Binding Path=Standard}"></DataGridTextColumn>                  
                 </DataGrid.Columns>
               </cdg:OrmDataGrid>
             </GroupBox>

@@ -16,6 +16,8 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 
         public string Standard;
 
+        public string RealStandard;
+
         public PointFS[] Points;
 
         public int CountPoints;
