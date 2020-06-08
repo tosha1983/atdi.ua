@@ -802,25 +802,30 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                     .SetValue(c => c.ExternalCode, station.ExternalCode)
                     .SetValue(c => c.ExternalSource, station.ExternalSource)
                     .SetValue(c => c.LicenseGsid, station.LicenseGsid)
-                    .SetValue(c => c.MaxCorellation, station.MaxCorellation)
-                    .SetValue(c => c.New_Altitude_m, station.ParametersStationNew.Altitude_m)
-                    .SetValue(c => c.New_Azimuth_deg, station.ParametersStationNew.Azimuth_deg)
-                    .SetValue(c => c.New_Lat_deg, station.ParametersStationNew.Lat_deg)
-                    .SetValue(c => c.New_Lon_deg, station.ParametersStationNew.Lon_deg)
-                    .SetValue(c => c.New_Power_dB, station.ParametersStationNew.Power_dB)
-                    .SetValue(c => c.New_Tilt_deg, station.ParametersStationNew.Tilt_Deg)
-                    .SetValue(c => c.Old_Altitude_m, station.ParametersStationOld.Altitude_m)
-                    .SetValue(c => c.Old_Azimuth_deg, station.ParametersStationOld.Azimuth_deg)
-                    .SetValue(c => c.Old_Freq_MHz, station.ParametersStationOld.Freq_MHz)
-                    .SetValue(c => c.Old_Lat_deg, station.ParametersStationOld.Lat_deg)
-                    .SetValue(c => c.Old_Lon_deg, station.ParametersStationOld.Lon_deg)
-                    .SetValue(c => c.Old_Power_dB, station.ParametersStationOld.Power_dB)
-                    .SetValue(c => c.Old_Tilt_deg, station.ParametersStationOld.Tilt_Deg)
-                    .SetValue(c => c.RealGsid, station.RealGsid)
+                    .SetValue(c => c.MaxCorellation, station.MaxCorellation);
+                    if (station.ParametersStationNew != null)
+                    {
+                        insertQueryStationCalibrationStaResult.SetValue(c => c.New_Altitude_m, station.ParametersStationNew.Altitude_m)
+                       .SetValue(c => c.New_Azimuth_deg, station.ParametersStationNew.Azimuth_deg)
+                       .SetValue(c => c.New_Lat_deg, station.ParametersStationNew.Lat_deg)
+                       .SetValue(c => c.New_Lon_deg, station.ParametersStationNew.Lon_deg)
+                       .SetValue(c => c.New_Power_dB, station.ParametersStationNew.Power_dB)
+                       .SetValue(c => c.New_Tilt_deg, station.ParametersStationNew.Tilt_Deg);
+                    }
+                    if (station.ParametersStationOld != null)
+                    {
+                        insertQueryStationCalibrationStaResult.SetValue(c => c.Old_Altitude_m, station.ParametersStationOld.Altitude_m)
+                        .SetValue(c => c.Old_Azimuth_deg, station.ParametersStationOld.Azimuth_deg)
+                        .SetValue(c => c.Old_Freq_MHz, station.ParametersStationOld.Freq_MHz)
+                        .SetValue(c => c.Old_Lat_deg, station.ParametersStationOld.Lat_deg)
+                        .SetValue(c => c.Old_Lon_deg, station.ParametersStationOld.Lon_deg)
+                        .SetValue(c => c.Old_Power_dB, station.ParametersStationOld.Power_dB)
+                        .SetValue(c => c.Old_Tilt_deg, station.ParametersStationOld.Tilt_Deg);
+                    }
+                    insertQueryStationCalibrationStaResult.SetValue(c => c.RealGsid, station.RealGsid)
                     .SetValue(c => c.ResultStationStatus, station.ResultStationStatus.ToString())
                     .SetValue(c => c.Freq_MHz, station.Freq_MHz)
-                    .SetValue(c => c.Standard, station.Standard)
-                    ;
+                    .SetValue(c => c.Standard, station.Standard);
                     _calcDbScope.Executor.Execute<IStationCalibrationStaResult_PK>(insertQueryStationCalibrationStaResult);
                 }
             }

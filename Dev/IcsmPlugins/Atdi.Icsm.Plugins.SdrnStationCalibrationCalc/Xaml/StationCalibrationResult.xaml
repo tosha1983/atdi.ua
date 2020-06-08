@@ -174,12 +174,14 @@
               <DataGridTextColumn Header="{x:Static res:Resources.LicenseGsid}" Binding="{Binding Path=LicenseGsid}"></DataGridTextColumn>
               <DataGridTextColumn Header="{x:Static res:Resources.RealGsid}" Binding="{Binding Path=RealGsid}"></DataGridTextColumn>
 
-
-              <DataGridTextColumn Header="{x:Static res:Resources.New_Altitude_m}" Binding="{Binding Path=New_Altitude_m}"></DataGridTextColumn>
-              <DataGridTextColumn Header="{x:Static res:Resources.Old_Altitude_m}" Binding="{Binding Path=Old_Altitude_m}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.New_Tilt_deg}" Binding="{Binding Path=New_Tilt_deg}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.Old_Tilt_deg}" Binding="{Binding Path=Old_Tilt_deg}"></DataGridTextColumn>
               
               <DataGridTextColumn Header="{x:Static res:Resources.New_Azimuth_deg}" Binding="{Binding Path=New_Azimuth_deg}"></DataGridTextColumn>
               <DataGridTextColumn Header="{x:Static res:Resources.Old_Azimuth_deg}" Binding="{Binding Path=Old_Azimuth_deg}"></DataGridTextColumn>
+
+              <DataGridTextColumn Header="{x:Static res:Resources.New_Altitude_m}" Binding="{Binding Path=New_Altitude_m}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.Old_Altitude_m}" Binding="{Binding Path=Old_Altitude_m}"></DataGridTextColumn>
               
               <DataGridTextColumn Header="{x:Static res:Resources.New_Lat_deg}" Binding="{Binding Path=New_Lat_dms_deg}"></DataGridTextColumn>
               <DataGridTextColumn Header="{x:Static res:Resources.Old_Lat_deg}" Binding="{Binding Path=Old_Lat_dms_deg}"></DataGridTextColumn>
@@ -190,12 +192,10 @@
               <DataGridTextColumn Header="{x:Static res:Resources.New_Power_dB}" Binding="{Binding Path=New_Power_dB}"></DataGridTextColumn>
               <DataGridTextColumn Header="{x:Static res:Resources.Old_Power_dB}" Binding="{Binding Path=Old_Power_dB}"></DataGridTextColumn>
               
-              <DataGridTextColumn Header="{x:Static res:Resources.New_Tilt_deg}" Binding="{Binding Path=New_Tilt_deg}"></DataGridTextColumn>
-              <DataGridTextColumn Header="{x:Static res:Resources.Old_Tilt_deg}" Binding="{Binding Path=Old_Tilt_deg}"></DataGridTextColumn>
-              
+                            
               <DataGridTextColumn Header="{x:Static res:Resources.OldFreq_MHz}" Binding="{Binding Path=Old_Freq_MHz}"></DataGridTextColumn>
 
-              <DataGridTextColumn Header="{x:Static res:Resources.Freq_MHz}" Binding="{Binding Path=Freq_MHz}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.FreqLinkDriveTest_MHz}" Binding="{Binding Path=Freq_MHz}"></DataGridTextColumn>
 
               <DataGridTextColumn Header="{x:Static res:Resources.Standard}" Binding="{Binding Path=Standard}"></DataGridTextColumn>
               

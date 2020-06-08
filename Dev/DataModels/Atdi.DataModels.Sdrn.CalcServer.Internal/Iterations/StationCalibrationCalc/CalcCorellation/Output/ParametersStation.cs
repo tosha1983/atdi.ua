@@ -9,7 +9,7 @@ using Atdi.DataModels.Sdrn.CalcServer.Internal.Clients;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
-	public struct ParametersStation
+	public class ParametersStation
     {
         public int Altitude_m;
 

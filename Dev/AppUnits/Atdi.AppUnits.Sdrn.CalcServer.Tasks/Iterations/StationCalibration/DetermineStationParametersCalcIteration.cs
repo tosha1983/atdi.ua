@@ -186,17 +186,21 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 // создаем список неповторяющихся значений стандартов
                 var arrStandards = allStandards.Distinct().ToArray();
 
-                //var listStandards = new List<string>();
-                ////
-                //for (int n=0; n< arrStandards.Length; n++)
-                //{
-                //    var standard = arrStandards[n].GetStandardForDriveTest();
-                //    if (!listStandards.Contains(standard))
-                //    {
-                //        listStandards.Add(standard);
-                //    }
-                //}
-                //arrStandards = listStandards.ToArray();
+                var selectDriveTestsByStandards = new List<DriveTestsResult>();
+                if (data.GSIDGroupeDriveTests != null)
+                {
+                    for (int c = 0; c < arrStandards.Length; c++)
+                    {
+                        var listDriveTests = data.GSIDGroupeDriveTests.ToList();
+                        var fndDrivetTests = listDriveTests.FindAll(x => x.Standard == arrStandards[c]);
+                        if (fndDrivetTests != null)
+                        {
+                            selectDriveTestsByStandards.AddRange(fndDrivetTests);
+                        }
+                    }
+                }
+                data.GSIDGroupeDriveTests = selectDriveTestsByStandards.ToArray();
+
 
                 var listCalcCorellationResult = new CalibrationResult[arrStandards.Length];
                 // цикл по стандартам
@@ -568,7 +572,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                             Freq_MHz = station[d].Transmitter.Freq_MHz
                                                         },
                                                         Standard = station[d].RealStandard,
-                                                        Freq_MHz = station[d].Transmitter.Freq_MHz
+                                                        Freq_MHz = (float)currentDriveTest.Freq_MHz
                                                     });
                                                 }
                                                 var lstCalibrationDriveTestResult = new List<CalibrationDriveTestResult>();
@@ -650,7 +654,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                             Freq_MHz = station[d].Transmitter.Freq_MHz
                                                         },
                                                         Standard = station[d].RealStandard,
-                                                        Freq_MHz = station[d].Transmitter.Freq_MHz
+                                                        Freq_MHz = (float)currentDriveTest.Freq_MHz
                                                     });
                                                 }
 
@@ -988,7 +992,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         private bool CheckParameterStation(ParametersStation parametersStationOld, ParametersStation parametersStationNew, CalibrationParameters calibrationParameters)
         {
             bool isCorrect = true;
-            if (calibrationParameters.AltitudeStation)
+            if ((parametersStationOld !=null) && (parametersStationNew != null))
             {
                 if (calibrationParameters.AltitudeStation)
                 {
@@ -1072,7 +1076,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             IsContour = calibrationStationsAndDriveTestsResult.ClientContextStation.Type== ClientContextStationType.A ? true : false,
                             MaxCorellation = (float)calibrationStationsAndDriveTestsResult.MaxCorrelation_PC,
                             Standard = calibrationStationsAndDriveTestsResult.ClientContextStation.RealStandard,
-                            Freq_MHz = calibrationStationsAndDriveTestsResult.ClientContextStation.Transmitter.Freq_MHz
+                            Freq_MHz = (float)calibrationStationsAndDriveTestsResult.DriveTestsResult.Freq_MHz
                         };
                         listCalibrationStationResults.Add(calibrationStationResult);
 
@@ -1187,7 +1191,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             IsContour = calibrationStationsAndDriveTestsResult.ClientContextStation.Type == ClientContextStationType.A ? true : false,
                             MaxCorellation = (float)calibrationStationsAndDriveTestsResult.MaxCorrelation_PC,
                             Standard = calibrationStationsAndDriveTestsResult.ClientContextStation.RealStandard,
-                            Freq_MHz = calibrationStationsAndDriveTestsResult.ClientContextStation.Transmitter.Freq_MHz
+                            Freq_MHz = (float)calibrationStationsAndDriveTestsResult.DriveTestsResult.Freq_MHz
                         };
                         listCalibrationStationResults.Add(calibrationStationResult);
 

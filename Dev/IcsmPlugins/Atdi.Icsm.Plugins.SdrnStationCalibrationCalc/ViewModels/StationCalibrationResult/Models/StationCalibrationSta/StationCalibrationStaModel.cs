@@ -25,14 +25,14 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
         public double Old_Lon_dec_deg { get; set; }
         public float Old_Power_dB { get; set; }
         public float Old_Freq_MHz { get; set; }
-        public int New_Altitude_m { get; set; }
-        public float New_Tilt_deg { get; set; }
-        public float New_Azimuth_deg { get; set; }
+        public int? New_Altitude_m { get; set; }
+        public float? New_Tilt_deg { get; set; }
+        public float? New_Azimuth_deg { get; set; }
         public string New_Lat_dms_deg { get; set; }
         public string New_Lon_dms_deg { get; set; }
-        public double New_Lat_dec_deg { get; set; }
-        public double New_Lon_dec_deg { get; set; }
-        public float New_Power_dB { get; set; }
+        public double? New_Lat_dec_deg { get; set; }
+        public double? New_Lon_dec_deg { get; set; }
+        public float? New_Power_dB { get; set; }
         public long ResultId { get; set; }
         public float Freq_MHz { get; set; }
         public string Standard { get; set; }

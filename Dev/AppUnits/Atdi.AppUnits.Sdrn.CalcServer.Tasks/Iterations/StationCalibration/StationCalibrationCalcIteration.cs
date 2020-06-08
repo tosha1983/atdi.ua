@@ -633,6 +633,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
 
             //- Parameters Station Old(Altitude Station, Tilt Station, Azimuth Station, Lat Station, Lon Station, Power Station)
+            calcCalibrationResult.ParametersStationOld = new ParametersStation();
             calcCalibrationResult.ParametersStationOld.Altitude_m = (int)data.GSIDGroupeStation.Site.Altitude;//////////////!!!!!!!!!!!
             calcCalibrationResult.ParametersStationOld.Azimuth_deg = data.GSIDGroupeStation.Antenna.Azimuth_deg;
             calcCalibrationResult.ParametersStationOld.Tilt_Deg = data.GSIDGroupeStation.Antenna.Tilt_deg;
@@ -724,6 +725,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             
             var siteCoords_dec = _transformation.ConvertCoordinateToWgs84(new EpsgCoordinate() { X = siteCoords_m.X, Y = siteCoords_m.Y }, _transformation.ConvertProjectionToCode(data.CodeProjection));
 
+            calcCalibrationResult.ParametersStationNew = new ParametersStation();
             calcCalibrationResult.ParametersStationNew.Altitude_m = (int)data.GSIDGroupeStation.Site.Altitude;//////////////!!!!!!!!!!!
             calcCalibrationResult.ParametersStationNew.Azimuth_deg = data.GSIDGroupeStation.Antenna.Azimuth_deg;
             calcCalibrationResult.ParametersStationNew.Tilt_Deg = data.GSIDGroupeStation.Antenna.Tilt_deg;

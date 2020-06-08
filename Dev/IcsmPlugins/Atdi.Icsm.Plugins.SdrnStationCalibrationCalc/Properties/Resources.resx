@@ -471,4 +471,7 @@
   <data name="Freq_MHz" xml:space="preserve">
     <value>Freq, MHz</value>
   </data>
+  <data name="FreqLinkDriveTest_MHz" xml:space="preserve">
+    <value>Drive test Freq, MHz</value>
+  </data>
 </root>

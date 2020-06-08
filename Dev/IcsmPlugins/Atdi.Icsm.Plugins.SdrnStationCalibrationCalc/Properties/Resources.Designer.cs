@@ -412,6 +412,15 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Drive test Freq, MHz.
+        /// </summary>
+        public static string FreqLinkDriveTest_MHz {
+            get {
+                return ResourceManager.GetString("FreqLinkDriveTest_MHz", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на General.
         /// </summary>
         public static string General {
