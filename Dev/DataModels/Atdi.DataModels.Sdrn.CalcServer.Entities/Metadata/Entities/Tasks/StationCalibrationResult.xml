@@ -30,6 +30,9 @@
     <Field Name="CountMeasGSID" SourceType="Column" Required="false" SourceName="COUNT_MEAS_GSID" DataType="Integer.32" Title="Count meas GSID" Desc="The count meas GSID"/>
     <Field Name="CountMeasGSID_LS" SourceType="Column" Required="false" SourceName="COUNT_MEAS_GSID_LS" DataType="Integer.32" Title="Count meas GSID with status LS" Desc="The count meas GSID with status LS"/>
     <Field Name="CountMeasGSID_IT" SourceType="Column" Required="false" SourceName="COUNT_MEAS_GSID_IT" DataType="Integer.32" Title="Count meas GSID with status IT" Desc="The count meas GSID with status IT"/>
+    <Field Name="PercentComplete" SourceType="Column" Required="false" SourceName="PERCENT_COMPLETE" DataType="Integer.32" Title="Percent complete of the task" Desc="Percent complete of the task"/>
+    
+
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>

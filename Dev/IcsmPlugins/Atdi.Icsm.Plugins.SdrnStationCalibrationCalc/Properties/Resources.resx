@@ -474,4 +474,8 @@
   <data name="FreqLinkDriveTest_MHz" xml:space="preserve">
     <value>Drive test Freq, MHz</value>
   </data>
+  <data name="PercentComplete" xml:space="preserve">
+    <value>Percent complete of the task, %</value>
+    <comment>,</comment>
+  </data>
 </root>

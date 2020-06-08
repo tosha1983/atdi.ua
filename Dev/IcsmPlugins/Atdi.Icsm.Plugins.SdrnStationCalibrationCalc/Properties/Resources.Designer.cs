@@ -790,6 +790,15 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Percent complete of the task, %.
+        /// </summary>
+        public static string PercentComplete {
+            get {
+                return ResourceManager.GetString("PercentComplete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Power Station.
         /// </summary>
         public static string PowerStation {

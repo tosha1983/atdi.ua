@@ -11,6 +11,11 @@ using Atdi.Platform.Logging;
 using Atdi.Platform.Data;
 using Atdi.DataModels.Sdrn.DeepServices.Gis;
 using Atdi.Contracts.Sdrn.DeepServices.Gis;
+using Atdi.Contracts.CoreServices.DataLayer;
+using Atdi.Contracts.CoreServices.EntityOrm;
+using Atdi.DataModels.Sdrn.CalcServer.Entities;
+using Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks;
+using Atdi.DataModels.DataConstraint;
 
 namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 {
@@ -22,10 +27,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         private readonly ILogger _logger;
         private readonly IIterationsPool _iterationsPool;
         private readonly IObjectPool<PointFS[]> _calcPointArrayPool;
+        private readonly IDataLayer<EntityDataOrm<CalcServerEntityOrmContext>> _calcServerDataLayer;
         private readonly IObjectPool<DriveTestsResult[][]> _calcListDriveTestsResultPool;
         private readonly IObjectPool<CalibrationResult[]> _calibrationResultPool;
 
 
+        private IDataLayerScope _calcDbScope;
         private readonly IObjectPoolSite _poolSite;
         private readonly ITransformation _transformation;
         private readonly AppServerComponentConfig _appServerComponentConfig;
@@ -34,12 +41,14 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         /// Заказываем у контейнера нужные сервисы
         /// </summary>
         public DetermineStationParametersCalcIteration(
+            IDataLayer<EntityDataOrm<CalcServerEntityOrmContext>> calcServerDataLayer,
             IIterationsPool iterationsPool,
             IObjectPoolSite poolSite,
             AppServerComponentConfig appServerComponentConfig,
             ITransformation transformation,
             ILogger logger)
         {
+            _calcServerDataLayer = calcServerDataLayer;
             _iterationsPool = iterationsPool;
             _poolSite = poolSite;
             _appServerComponentConfig = appServerComponentConfig;
@@ -81,8 +90,9 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             return minDistance.Value;
         }
 
-    public CalibrationResult[] Run(ITaskContext taskContext, AllStationCorellationCalcData data)
+        public CalibrationResult[] Run(ITaskContext taskContext, AllStationCorellationCalcData data)
         {
+            this._calcDbScope = this._calcServerDataLayer.CreateScope<CalcServerDataContext>();
 
             if (data.GSIDGroupeDriveTests.Length==0)
             {
@@ -98,6 +108,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
             try
             {
+                int percentComplete = 0;
                 // предварительная обработка
                 ////////////////////////////////////////////////////////////////////////////////////////////
                 ///
@@ -175,10 +186,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 //var arrayStandardsFromDriveTests = Utils.GetUniqueArrayStandardsFromDriveTests(data.GSIDGroupeDriveTests);
                 //if (arrayStandardsFromDriveTests != null)
                 //{
-                    //allStandards.AddRange(arrayStandardsFromDriveTests);
+                //allStandards.AddRange(arrayStandardsFromDriveTests);
                 //}
 
-                if (allStandards.Count==0)
+                if (allStandards.Count == 0)
                 {
                     throw new Exception("The count of standards is 0!");
                 }
@@ -221,7 +232,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     var linkDriveTestsAndStations = Utils.CompareDriveTestAndStation(data.GSIDGroupeDriveTests, data.GSIDGroupeStation, standard, out DriveTestsResult[][] outDriveTestsResults, out ContextStation[][] outContextStations, _transformation, 100, data.Projection);
 
                     // преобразуем в список массив драйв тестов, для которого не найдены соотвествия со станциями (данный список будет пополняться при дальнейшей работе алгоритма)
-                    
+
                     var outListDriveTestsResults = outDriveTestsResults.ToList();
 
                     // преобразуем в список массив станций , для которого не найдены соотвествия с драйв тестами (данный список будет пополняться при дальнейшей работе алгоритма)
@@ -249,7 +260,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             }
                             outListContextStations[z] = listStations.ToArray();
                         }
-                    }  
+                    }
 
 
                     // создаем список для хранения результатов обработки по отдельно взятому стандарту и заданой группе GSID
@@ -325,12 +336,18 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             }
                             else
                             {
-                                if ((contextStations!=null) && (contextStations.Count>0))
+                                if ((contextStations != null) && (contextStations.Count > 0))
                                 {
                                     outListContextStations.Add(contextStations.ToArray());
                                     outListDriveTestsResults.Add(driveTestsResult.ToArray());
                                 }
                             }
+                        }
+
+                        if (linkDriveTestsAndStations.Length > 0)
+                        {
+                            percentComplete = (z + 1) * (int)(50.0 / linkDriveTestsAndStations.Length);
+                            UpdatePercentComplete(data.resultId, percentComplete);
                         }
                     }
 
@@ -361,7 +378,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         var orderByCountPoints = from z in drvTests orderby z.CountPoints descending select z;
                         var duplicateCountPoints = drvTests.GroupBy(x => new { x.CountPoints }).Where(g => g.Count() > 1).SelectMany(g => g.Select(gg => gg));
                         outListDriveTestsResults[i] = orderByCountPoints.ToArray();
-                     }
+                    }
 
                     for (int i = 0; i < outListDriveTestsResults.Count; i++)
                     {
@@ -388,7 +405,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
 
                             var arrIndexes = new int[driveTestsResults.Length];
-                            for (int k = driveTestsResults.Length-1, n = 0; k >=0; k--, n++)
+                            for (int k = driveTestsResults.Length - 1, n = 0; k >= 0; k--, n++)
                             {
                                 var fnd = fndElems.Find(c => c.Num == driveTestsResults[n].Num);
                                 if (fnd != null)
@@ -741,6 +758,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                 }
                             }
                         }
+
+                        if (outListDriveTestsResults.Count > 0)
+                        {
+                            percentComplete = 50 + ((i + 1) * (int)(50.0 / outListDriveTestsResults.Count));
+                            UpdatePercentComplete(data.resultId, percentComplete);
+                        }
                     }
 
 
@@ -750,7 +773,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     ///   
                     /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-                    if (outListContextStationsForStatusP.Length>0)
+                    if (outListContextStationsForStatusP.Length > 0)
                     {
                         outListContextStations.AddRange(outListContextStationsForStatusP);
                     }
@@ -767,7 +790,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                 ExternalCode = arrStations[d].ExternalCode,
                                 LicenseGsid = arrStations[d].LicenseGsid,
                                 //RealGsid = arrStations[d].RealGsid,
-                                ResultStationStatus =  StationStatusResult.NF, // если была UN то NF быть не может !!!!
+                                ResultStationStatus = StationStatusResult.NF, // если была UN то NF быть не может !!!!
                                 StationMonitoringId = arrStations[d].Id,
                                 IsContour = arrStations[d].Type == ClientContextStationType.A ? true : false,
                                 //ParametersStationNew=  ??????????????????????
@@ -834,7 +857,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     }
 
 
-                    var areasSelect = data.GSIDGroupeStation.ToList().Select(x=>x.RegionCode).Distinct();
+                    var areasSelect = data.GSIDGroupeStation.ToList().Select(x => x.RegionCode).Distinct();
                     string areas = string.Join(",", areasSelect.ToArray());
 
                     var calcCorellationResult = new CalibrationResult()
@@ -848,26 +871,48 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         CountStation_NF = listCalibrationStationResult.FindAll(x => x.ResultStationStatus == StationStatusResult.NF).Count(), // число станций со статусом NF
                         CountStation_NS = listCalibrationStationResult.FindAll(x => x.ResultStationStatus == StationStatusResult.NS).Count(), // число станций со статусом NS
                         CountStation_UN = listCalibrationStationResult.FindAll(x => x.ResultStationStatus == StationStatusResult.UN).Count(), // число станций со статусом UN
-                        AreaName= areas,
+                        AreaName = areas,
                         CountMeasGSID = listCalibrationDriveTestResult.Select(x => x.Gsid).Count(),  // число GCID в драйв тестах
-                        CountMeasGSID_IT = listCalibrationDriveTestResult.FindAll(x => x.ResultDriveTestStatus== DriveTestStatusResult.IT).Count(), // число драйв тестов со статусом IT
+                        CountMeasGSID_IT = listCalibrationDriveTestResult.FindAll(x => x.ResultDriveTestStatus == DriveTestStatusResult.IT).Count(), // число драйв тестов со статусом IT
                         CountMeasGSID_LS = listCalibrationDriveTestResult.FindAll(x => x.ResultDriveTestStatus == DriveTestStatusResult.LS).Count(), // число драйв тестов со статусом LS
                         GeneralParameters = data.GeneralParameters,
-                        NumberStation= listCalibrationStationResult.Count(),  // общее число станций
-                        NumberStationInContour = listCalibrationStationResult.FindAll(x=>x.IsContour==true).Count(), // общее число станций, которіе имеют статус А (попадают в контур)
-                        TimeStart= DateTime.Now
+                        NumberStation = listCalibrationStationResult.Count(),  // общее число станций
+                        NumberStationInContour = listCalibrationStationResult.FindAll(x => x.IsContour == true).Count(), // общее число станций, которіе имеют статус А (попадают в контур)
+                        TimeStart = DateTime.Now
                     };
                     listCalcCorellationResult[v] = calcCorellationResult;
                 }
+                UpdatePercentComplete(data.resultId, 100);
                 return listCalcCorellationResult;
             }
             catch (Exception e)
             {
                 this._logger.Exception(Exceptions.StationCalibration, e);
             }
+            finally
+            {
+                if (_calcDbScope != null)
+                {
+                    _calcDbScope.Dispose();
+                    _calcDbScope = null;
+                }
+            }
             return null;
         }
 
+        /// <summary>
+        /// Обновить процент выполнения задачи
+        /// </summary>
+        /// <param name="resultId"></param>
+        /// <param name="percentComplete"></param>
+        private void UpdatePercentComplete(long resultId, int percentComplete)
+        {
+            var updateQueryStationCalibrationResult = _calcServerDataLayer.GetBuilder<IStationCalibrationResult>()
+                          .Update()
+                          .SetValue(c => c.PercentComplete, percentComplete)
+                          .Where(c => c.Id, ConditionOperator.Equal, resultId);
+            _calcDbScope.Executor.Execute(updateQueryStationCalibrationResult);
+        }
 
         /// <summary>
         /// Расчет корреляции weake (схема бл 2)
@@ -971,12 +1016,15 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
                     var iterationCalibrationCalc = _iterationsPool.GetIteration<StationCalibrationCalcData, ResultCorrelationGSIDGroupeStations>();
                     var resultCalibrationCalcData = iterationCalibrationCalc.Run(taskContext, stationCalibrationCalcData);
-                    var res =  Atdi.Common.CopyHelper.CreateDeepCopy(resultCalibrationCalcData);
-                    res.ClientContextStation = stations[i];
-                    res.DriveTestsResult = driveTest;
-                    res.DriveTestsResult.DriveTestId = driveTest.DriveTestId;
-                    res.MaxCorrelation_PC = resultCalibrationCalcData.Corellation_pc;
-                    tempListCorrelationGSIDGroupeStations.Add(res);
+                    if (!double.IsNaN(resultCalibrationCalcData.Corellation_factor))
+                    {
+                        var res = Atdi.Common.CopyHelper.CreateDeepCopy(resultCalibrationCalcData);
+                        res.ClientContextStation = stations[i];
+                        res.DriveTestsResult = driveTest;
+                        res.DriveTestsResult.DriveTestId = driveTest.DriveTestId;
+                        res.MaxCorrelation_PC = resultCalibrationCalcData.Corellation_pc;
+                        tempListCorrelationGSIDGroupeStations.Add(res);
+                    }
                 }
             }
             return tempListCorrelationGSIDGroupeStations.ToArray();
@@ -1305,6 +1353,18 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             }
                         }
                     }
+                    else if ((resultCorrelationGSIDGroupeStations[b].DriveTestsResult == null) && (resultCorrelationGSIDGroupeStations[b].ClientContextStation != null))
+                    {
+                        arrStations.RemoveAll(x => x.Id == resultCorrelationGSIDGroupeStations[b].ClientContextStation.Id);
+                        if (arrStations.Count > 0)
+                        {
+                            contextStations[f] = arrStations.ToArray();
+                        }
+                        else
+                        {
+                            contextStations.RemoveAt(f);
+                        }
+                    }
                 }
             }
 
@@ -1331,6 +1391,18 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                     driveTests.RemoveAt(f);
                                 }
                             }
+                        }
+                    }
+                    else if ((resultCorrelationGSIDGroupeStations[b].DriveTestsResult != null) && (resultCorrelationGSIDGroupeStations[b].ClientContextStation == null))
+                    {
+                        arrDriveTests.RemoveAll(x => x.Num == resultCorrelationGSIDGroupeStations[b].DriveTestsResult.Num);
+                        if (arrDriveTests.Count > 0)
+                        {
+                            driveTests[f] = arrDriveTests.ToArray();
+                        }
+                        else
+                        {
+                            driveTests.RemoveAt(f);
                         }
                     }
                 }

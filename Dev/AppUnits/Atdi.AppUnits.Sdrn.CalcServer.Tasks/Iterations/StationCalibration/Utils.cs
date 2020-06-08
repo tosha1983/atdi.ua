@@ -155,7 +155,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         /// <returns></returns>
         public static bool CompareGSIDWithBaseStations(string GCID1, string GCID2, string standard)
         {
-            return GCIDComparisonRR.Compare(standard, GCID1, GCID2);
+            return (GCID1 == GCID2);
+            //return GCIDComparisonRR.Compare(standard, GCID1, GCID2);
         }
 
         public static bool CompareGSIDAndDistanceWithBaseStations(string GCID1, string GCID2, string standard, ITransformation _transformation, double X1, double Y1, double X2, double Y2, int maxDistance, string projection)
@@ -816,20 +817,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             {
                 if (groupedStations.Count > 0)
                 {
-                    if (groupedStations.Count == i)
-                    {
-                        break;
-                    }
                     var stationsGSID = groupedStations[i].ToList();
-
                     for (int m = 0; m < groupedDriveTests.Count; m++)
                     {
                         if (groupedDriveTests.Count > 0)
                         {
-                            if (groupedDriveTests.Count == m)
-                            {
-                                break;
-                            }
                             var driveTestGSID = groupedDriveTests[m].ToList();
                             if ((stationsGSID != null) && (driveTestGSID != null))
                             {
@@ -849,6 +841,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
                                         groupedStations.RemoveAt(i);
                                         groupedDriveTests.RemoveAt(m);
+                                        i = 0;
+                                        m = 0;
                                     }
                                 }
                             }

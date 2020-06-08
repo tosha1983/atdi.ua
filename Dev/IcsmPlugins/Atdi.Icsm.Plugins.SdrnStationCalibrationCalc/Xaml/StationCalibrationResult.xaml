@@ -61,6 +61,8 @@
           <GroupBox Grid.Row="0" Margin="5, 25, 5, 5" Header="Results">
             <cdg:OrmDataGrid IsReadOnly="True" Margin="5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding StationCalibrationResultDataAdapter}" SelectedItemsList="{Binding CurrentStationCalibrationResultModel, Mode=TwoWay}" >
             <DataGrid.Columns>
+              
+                <DataGridTextColumn Header="{x:Static res:Resources.PercentComplete}" Binding="{Binding Path=PercentComplete}"></DataGridTextColumn>
                 <DataGridTextColumn Header="{x:Static res:Resources.NumberStationInContour}" Binding="{Binding Path=NumberStationInContour}"></DataGridTextColumn>
                 <DataGridTextColumn Header="{x:Static res:Resources.Standard}" Binding="{Binding Path=Standard}"></DataGridTextColumn>
                 <DataGridTextColumn Header="{x:Static res:Resources.AreaName}" Binding="{Binding Path=AreaName}"></DataGridTextColumn>
