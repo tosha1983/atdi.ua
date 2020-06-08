@@ -162,7 +162,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         {
             var coordinateStation1 = _transformation.ConvertCoordinateToEpgs(new Wgs84Coordinate() { Longitude = X1, Latitude = Y1 }, _transformation.ConvertProjectionToCode(projection));
             var coordinateStation2 = _transformation.ConvertCoordinateToEpgs(new Wgs84Coordinate() { Longitude = X2, Latitude = Y2 }, _transformation.ConvertProjectionToCode(projection));
-            if ((GeometricСalculations.GetDistance_km(coordinateStation1.X, coordinateStation1.Y, coordinateStation2.X, coordinateStation2.Y) <= maxDistance) && GCIDComparisonRR.Compare(standard, GCID1, GCID2))
+            if ((GeometricСalculations.GetDistance_km(coordinateStation1.X, coordinateStation1.Y, coordinateStation2.X, coordinateStation2.Y) <= maxDistance) && GCID1== GCID2) /*&& GCIDComparisonRDB.Compare(standard, GCID1, GCID2)*/
             {
                 return true;
             }
@@ -705,7 +705,9 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     for (int j = 0; j < lstDriveTestsResult.Count; j++)
                     {
                         var driveTestsTwo = lstDriveTestsResult[j][0];
-                        if ((CompareGSIDWithBaseStations(driveTestsOne.GSID, driveTestsTwo.GSID, Standard.GetStandardForDriveTest())) || (GCIDComparisonRDB.Compare(Standard.GetStandardForDriveTest(), driveTestsOne.GSID, driveTestsTwo.GSID)))
+                        var one = driveTestsOne.GSID.Remove(driveTestsOne.GSID.Length - 1, 1);
+                        var two = driveTestsTwo.GSID.Remove(driveTestsTwo.GSID.Length - 1, 1);
+                        if (CompareGSIDWithBaseStations(one, two, Standard.GetStandardForDriveTest()))
                         {
                             for (int v = 0; v < lstDriveTestsResult[k].Length; v++)
                             {
