@@ -2,7 +2,7 @@
 (
   ID            NUMBER(15)                      NOT NULL,
   RESULT_ID     NUMBER(15)                      NOT NULL,
-  GSID          NVARCHAR2(250)                  NOT NULL,
+  GSID          NVARCHAR2(50)                   NOT NULL,
   FREQ_MHZ      NUMBER(22,8)                    NOT NULL,
   STANDARD      NVARCHAR2(50),
   POINTS_COUNT  NUMBER(9)                       NOT NULL

@@ -20,6 +20,30 @@ STORAGE    (
            )
 LOGGING 
 NOCOMPRESS 
+LOB (POINTS_ARRAY) STORE AS SECUREFILE 
+      ( TABLESPACE  USERS 
+        ENABLE      STORAGE IN ROW
+        CHUNK       8192
+        NOCACHE
+        INDEX       (
+          TABLESPACE USERS
+          STORAGE    (
+                      INITIAL          64K
+                      NEXT             1
+                      MINEXTENTS       1
+                      MAXEXTENTS       UNLIMITED
+                      PCTINCREASE      0
+                      BUFFER_POOL      DEFAULT
+                     ))
+        STORAGE    (
+                    INITIAL          104K
+                    NEXT             1M
+                    MINEXTENTS       1
+                    MAXEXTENTS       UNLIMITED
+                    PCTINCREASE      0
+                    BUFFER_POOL      DEFAULT
+                   )
+      )
 NOCACHE
 NOPARALLEL
 MONITORING;
@@ -41,21 +65,3 @@ STORAGE    (
             BUFFER_POOL      DEFAULT
            )
 NOPARALLEL;
-
-
-ALTER TABLE SDRNSVR.DRIVE_TESTS_POINTS ADD (
-  CONSTRAINT DRIVE_TESTS_POINTS_PK
- PRIMARY KEY
- (ID)
-    USING INDEX 
-    TABLESPACE USERS
-    PCTFREE    10
-    INITRANS   2
-    MAXTRANS   255
-    STORAGE    (
-                INITIAL          64K
-                NEXT             1M
-                MINEXTENTS       1
-                MAXEXTENTS       UNLIMITED
-                PCTINCREASE      0
-               ));

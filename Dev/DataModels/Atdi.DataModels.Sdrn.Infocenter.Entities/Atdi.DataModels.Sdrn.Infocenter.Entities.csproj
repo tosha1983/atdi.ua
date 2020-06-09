@@ -59,16 +59,37 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="DataLayer\Oracle\Tables\[INFOC].[CLUTTERS_DESCS].sql" />
-    <Content Include="DataLayer\Oracle\Tables\[INFOC].[CLUTTERS_DESCS_CLUTTERS].sql" />
-    <Content Include="DataLayer\Oracle\Tables\[INFOC].[CLUTTERS_DESCS_FREQS].sql" />
-    <Content Include="DataLayer\Oracle\Tables\[INFOC].[CLUTTERS_DESCS_FREQS_CLUTTERS].sql" />
-    <Content Include="DataLayer\Oracle\Tables\[INFOC].[MAPS].sql" />
-    <Content Include="DataLayer\Oracle\Tables\[INFOC].[MAP_SECTORS].sql" />
-    <Content Include="DataLayer\Oracle\Tables\[SDRNSVR].[DRIVE_TESTS].sql" />
-    <Content Include="DataLayer\Oracle\Tables\[SDRNSVR].[DRIVE_TESTS_POINTS].sql" />
-    <Content Include="DataLayer\Oracle\Tables\[SDRNSVR].[MEAS_RESULTS].sql" />
-    <Content Include="DataLayer\Oracle\Tables\[SDRNSVR].[MEAS_RESULTS_STATS].sql" />
+    <Content Include="DataLayer\Oracle\Functions\SDRNSVR.GetID.sql" />
+    <Content Include="DataLayer\Oracle\Functions\INFOC.GetID.sql" />
+    <Content Include="DataLayer\Oracle\Grants\Grants.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\INFOC.CLUTTERS_DESCS_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\INFOC.CLUTTERS_DESCS_CLUTTERS_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\INFOC.CLUTTERS_DESCS_FREQS_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\INFOC.CLUTTERS_DESCS_FREQS_CLUTTERS_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\INFOC.INTEGRATION_LOG_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\INFOC.INTEGRATION_OBJECTS_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\INFOC.MAPS_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\INFOC.MAP_SECTORS_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\SDRNSVR.DRIVE_ROUTES_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\SDRNSVR.DRIVE_TESTS_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\SDRNSVR.DRIVE_TESTS_POINTS_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\SDRNSVR.GLOBAL_IDENTITIES_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\SDRNSVR.SM_MEAS_RESULTS_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\SDRNSVR.SM_MEAS_RESULTS_STATS_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Tables\INFOC.CLUTTERS_DESCS.sql" />
+    <Content Include="DataLayer\Oracle\Tables\INFOC.INTEGRATION_OBJECTS.sql" />
+    <Content Include="DataLayer\Oracle\Tables\INFOC.INTEGRATION_LOG.sql" />
+    <Content Include="DataLayer\Oracle\Tables\SDRNSVR.GLOBAL_IDENTITIES.sql" />
+    <Content Include="DataLayer\Oracle\Tables\INFOC.CLUTTERS_DESCS_CLUTTERS.sql" />
+    <Content Include="DataLayer\Oracle\Tables\INFOC.CLUTTERS_DESCS_FREQS.sql" />
+    <Content Include="DataLayer\Oracle\Tables\INFOC.CLUTTERS_DESCS_FREQS_CLUTTERS.sql" />
+    <Content Include="DataLayer\Oracle\Tables\INFOC.MAPS.sql" />
+    <Content Include="DataLayer\Oracle\Tables\INFOC.MAP_SECTORS.sql" />
+    <Content Include="DataLayer\Oracle\Tables\SDRNSVR.DRIVE_TESTS.sql" />
+    <Content Include="DataLayer\Oracle\Tables\SDRNSVR.DRIVE_ROUTES.sql" />
+    <Content Include="DataLayer\Oracle\Tables\SDRNSVR.DRIVE_TESTS_POINTS.sql" />
+    <Content Include="DataLayer\Oracle\Tables\SDRNSVR.SM_MEAS_RESULTS.sql" />
+    <Content Include="DataLayer\Oracle\Tables\SDRNSVR.SM_MEAS_RESULTS_STATS.sql" />
     <Content Include="DataLayer\SqlServer\Tables\[SDRNSVR].[DRIVE_ROUTES].sql" />
     <Content Include="DataLayer\SqlServer\Tables\[STATIONS].[GLOBAL_IDENTITIES].sql" />
     <Content Include="DataLayer\SqlServer\Tables\[INFOC].[INTEGRATION_LOG].sql" />
@@ -166,7 +187,6 @@
     <Content Include="Metadata\Units\Power.dB.xml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="DataLayer\Oracle\Functions\" />
     <Folder Include="DataLayer\SqlServer\Functions\" />
   </ItemGroup>
   <ItemGroup>

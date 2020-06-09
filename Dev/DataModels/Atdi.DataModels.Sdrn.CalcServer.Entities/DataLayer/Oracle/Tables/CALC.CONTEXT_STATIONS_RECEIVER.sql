@@ -8,7 +8,7 @@
   THRESHOLD_DBM      NUMBER(30,10)              NOT NULL,
   POLARIZATION_CODE  NUMBER(3)                  NOT NULL,
   POLARIZATION_NAME  NVARCHAR2(50)              NOT NULL,
-  FREQS_MHZ          BLOB
+  FREQS_MHZ          BLOB                       NOT NULL
 )
 TABLESPACE USERS
 PCTUSED    0
