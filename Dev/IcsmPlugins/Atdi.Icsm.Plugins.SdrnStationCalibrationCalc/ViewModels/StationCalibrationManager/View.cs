@@ -722,9 +722,9 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                 new LongProcessOptions()
                 {
                     CanStop = false,
-                    CanAbort = true,
+                    CanAbort = false,
                     UseProgressBar = true,
-                    UseLog = true,
+                    UseLog = false,
                     IsModal = false,
                     MinValue = 0,
                     MaxValue = 1000,
