@@ -18,8 +18,8 @@
     <Field Name="CalibrationResultId" SourceType="Column" SourceName="CALCRESULTS_STATION_CALIBRATION_ID" DataType="Integer.64"  Required="true" Title="calibration result ID" Desc="The calibration result ID" />
     <Field Name="ExternalSource" SourceType="Column" SourceName="EXTERNAL_SOURCE" DataType="Text.50" Required="false" Title="External source" Desc="The external source" />
     <Field Name="ExternalCode" SourceType="Column" SourceName="EXTERNAL_CODE" DataType="Text.50" Required="false" Title="External code" Desc="The external code" />
-    <Field Name="LicenseGsid" SourceType="Column" SourceName="LICENSE_GSID" DataType="Text.100" Required="false" Title="License gsid" Desc="The license gsid" />
-    <Field Name="RealGsid" SourceType="Column" SourceName="REAL_GSID" DataType="Text.100" Required="false" Title="Real Gsid" Desc="The real Gsid" />
+    <Field Name="LicenseGsid" SourceType="Column" SourceName="LICENSE_GSID" DataType="Text.50" Required="false" Title="License gsid" Desc="The license gsid" />
+    <Field Name="RealGsid" SourceType="Column" SourceName="REAL_GSID" DataType="Text.50" Required="false" Title="Real Gsid" Desc="The real Gsid" />
     <Field Name="ResultStationStatus" SourceType="Column" SourceName="RESULT_STATION_STATUS" DataType="Text.50" Required="false" Title="Result station status" Desc="The result station status" />
     <Field Name="MaxCorellation" SourceType="Column" Required="false" SourceName="MAX_CORELLATION" DataType="Float.22.8" Title="Max corellation" Desc="The maximum corellation"/>
     <Field Name="Old_Altitude_m" SourceType="Column" Required="false" SourceName="OLD_ALTITUDE_M" DataType="Integer.32" Title="Old station parameter altitude, m" Desc="The Old station parameter altitude, m"/>

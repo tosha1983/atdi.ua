@@ -1,4 +1,4 @@
-﻿CREATE TABLE SDRNSVR.MEAS_RESULTS_STATS
+﻿CREATE TABLE SDRNSVR.SM_MEAS_RESULTS_STATS
 (
   ID              NUMBER(15)                    NOT NULL,
   GSID_COUNT      NUMBER(9)                     NOT NULL,
@@ -21,12 +21,36 @@ STORAGE    (
            )
 LOGGING 
 NOCOMPRESS 
+LOB (STANDARD_STATS) STORE AS SECUREFILE 
+      ( TABLESPACE  USERS 
+        ENABLE      STORAGE IN ROW
+        CHUNK       8192
+        NOCACHE
+        INDEX       (
+          TABLESPACE USERS
+          STORAGE    (
+                      INITIAL          64K
+                      NEXT             1
+                      MINEXTENTS       1
+                      MAXEXTENTS       UNLIMITED
+                      PCTINCREASE      0
+                      BUFFER_POOL      DEFAULT
+                     ))
+        STORAGE    (
+                    INITIAL          104K
+                    NEXT             1M
+                    MINEXTENTS       1
+                    MAXEXTENTS       UNLIMITED
+                    PCTINCREASE      0
+                    BUFFER_POOL      DEFAULT
+                   )
+      )
 NOCACHE
 NOPARALLEL
 MONITORING;
 
 
-CREATE UNIQUE INDEX SDRNSVR.MEAS_RESULTS_STATS_PK ON SDRNSVR.MEAS_RESULTS_STATS
+CREATE UNIQUE INDEX SDRNSVR.MEAS_RESULTS_STATS_PK ON SDRNSVR.SM_MEAS_RESULTS_STATS
 (ID)
 LOGGING
 TABLESPACE USERS
@@ -44,7 +68,7 @@ STORAGE    (
 NOPARALLEL;
 
 
-ALTER TABLE SDRNSVR.MEAS_RESULTS_STATS ADD (
+ALTER TABLE SDRNSVR.SM_MEAS_RESULTS_STATS ADD (
   CONSTRAINT MEAS_RESULTS_STATS_PK
  PRIMARY KEY
  (ID)

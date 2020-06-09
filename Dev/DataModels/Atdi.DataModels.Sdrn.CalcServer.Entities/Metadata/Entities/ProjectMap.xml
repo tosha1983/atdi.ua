@@ -43,7 +43,7 @@
     <Field Name="UpperLeftY" DataType="Integer.32"  SourceName="CRD_UPL_Y" SourceType="Column" Desc="The Upper Left Y" Title="Upper Left Y" Required="false"/>
 
     <Field Name="LowerRightX" DataType="Integer.32" SourceName="CRD_LWR_X" SourceType="Column" Desc="The Lower Right X" Title="Lower Right X" Required="false"/>
-    <Field Name="LowerRightY" DataType="Integer.32" SourceName="CRD_lWR_Y" SourceType="Column" Desc="The Lower Right Y" Title="Lower Right Y" Required="false"/>
+    <Field Name="LowerRightY" DataType="Integer.32" SourceName="CRD_LWR_Y" SourceType="Column" Desc="The Lower Right Y" Title="Lower Right Y" Required="false"/>
 
   </Fields>
   <PrimaryKey Clustered="true">

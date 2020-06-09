@@ -25,8 +25,8 @@
     <Field Name="StateName" SourceType="Column" SourceName="STATE_NAME" DataType="Text.50" Title="Station Type Name" Desc="The name of the type of the station" />
 
 
-    <Field Name="LicenseGsid" SourceType="Column" SourceName="LICENSE_GSID" DataType="Text.250" Title="License GSID" Desc="The license GSID of station" />
-    <Field Name="RealGsid" SourceType="Column" SourceName="REAL_GSID" DataType="Text.250" Title="Real GSID" Desc="The real GSID of station" />
+    <Field Name="LicenseGsid" SourceType="Column" SourceName="LICENSE_GSID" DataType="Text.50" Title="License GSID" Desc="The license GSID of station" />
+    <Field Name="RealGsid" SourceType="Column" SourceName="REAL_GSID" DataType="Text.50" Title="Real GSID" Desc="The real GSID of station" />
     <Field Name="RegionCode" SourceType="Column" SourceName="REGION_CODE" DataType="Text.50" Title="Region code" Desc="The code of region" />
     
 
