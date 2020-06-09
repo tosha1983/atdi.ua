@@ -32,7 +32,6 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         private readonly IObjectPool<CalibrationResult[]> _calibrationResultPool;
 
 
-        private IDataLayerScope _calcDbScope;
         private readonly IObjectPoolSite _poolSite;
         private readonly ITransformation _transformation;
         private readonly AppServerComponentConfig _appServerComponentConfig;
@@ -92,7 +91,6 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
         public CalibrationResult[] Run(ITaskContext taskContext, AllStationCorellationCalcData data)
         {
-            this._calcDbScope = this._calcServerDataLayer.CreateScope<CalcServerDataContext>();
 
             if (data.GSIDGroupeDriveTests.Length==0)
             {
@@ -889,14 +887,6 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             {
                 this._logger.Exception(Exceptions.StationCalibration, e);
             }
-            finally
-            {
-                if (_calcDbScope != null)
-                {
-                    _calcDbScope.Dispose();
-                    _calcDbScope = null;
-                }
-            }
             return null;
         }
 
@@ -907,11 +897,14 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         /// <param name="percentComplete"></param>
         private void UpdatePercentComplete(long resultId, int percentComplete)
         {
+            var calcDbScope = this._calcServerDataLayer.CreateScope<CalcServerDataContext>();
             var updateQueryStationCalibrationResult = _calcServerDataLayer.GetBuilder<IStationCalibrationResult>()
                           .Update()
                           .SetValue(c => c.PercentComplete, percentComplete)
                           .Where(c => c.Id, ConditionOperator.Equal, resultId);
-            _calcDbScope.Executor.Execute(updateQueryStationCalibrationResult);
+            calcDbScope.Executor.Execute(updateQueryStationCalibrationResult);
+            calcDbScope.Dispose();
+            calcDbScope = null;
         }
 
         /// <summary>
