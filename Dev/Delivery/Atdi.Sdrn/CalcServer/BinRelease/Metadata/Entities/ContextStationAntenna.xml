@@ -12,8 +12,8 @@
   </DataSource>
   <Fields>
     <Field Name="Gain_dB" SourceType="Column" Required="true" SourceName="GAIN_DB" DataType="Float.22.8" Title="Gain, dB" Desc="The Gain in dB"/>
-    <Field Name="Tilt_deg" SourceType="Column" Required="true" SourceName="TILT_DEG" DataType="Double.30.10" Title="Tilt, deg" Desc="The Tilt in degree"/>
-    <Field Name="Azimuth_deg" SourceType="Column" Required="true" SourceName="AZIMUTH_DEG" DataType="Double.30.10" Title="Azimuth, deg" Desc="The Azimuth in degree"/>
+    <Field Name="Tilt_deg" SourceType="Column" Required="true" SourceName="TILT_DEG" DataType="Float.22.8" Title="Tilt, deg" Desc="The Tilt in degree"/>
+    <Field Name="Azimuth_deg" SourceType="Column" Required="true" SourceName="AZIMUTH_DEG" DataType="Float.22.8" Title="Azimuth, deg" Desc="The Azimuth in degree"/>
     <Field Name="XPD_dB" SourceType="Column" Required="true" SourceName="XPD_DB" DataType="Float.22.8" Title="XPD, dB" Desc="The XPD in dB"/>
 
 
