@@ -1,0 +1,56 @@
+﻿<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:XICSM.SdrnCalcServerClient.WpfControls"
+             xmlns:res="clr-namespace:Atdi.Icsm.Plugins.SdrnCalcServerClient.Properties;assembly=XICSM_SdrnCalcServerClient"
+             xmlns:orm="clr-namespace:Atdi.WpfControls.EntityOrm.Controls;assembly=Atdi.WpfControls.EntityOrm"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+  <UserControl.Resources>    
+    <Style x:Key="DataGridHeaderCentered" TargetType="DataGridColumnHeader">
+      <Setter Property="HorizontalAlignment" Value="Stretch"/>
+      <Setter Property="HorizontalContentAlignment" Value="Center"/>
+    </Style>
+    <Style x:Key="DataGridCellCentered" TargetType="DataGridCell">
+      <Setter Property="TextBlock.TextAlignment" Value="Center" />
+    </Style>
+    <Style x:Key="DataGridCellRighted" TargetType="DataGridCell">
+      <Setter Property="TextBlock.TextAlignment" Value="Right" />
+    </Style>
+  </UserControl.Resources>
+  <DockPanel LastChildFill="True" MinHeight="30">
+    <Grid>
+      <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*"/>
+      </Grid.ColumnDefinitions>
+      <Grid.RowDefinitions>
+          <RowDefinition Height="*"></RowDefinition>
+      </Grid.RowDefinitions>
+      <GroupBox Header="{x:Static res:Resources.Maps}" Margin="5, 5, 5, 5">
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+          </Grid.ColumnDefinitions>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+          </Grid.RowDefinitions>
+          <WrapPanel Margin="5" Orientation="Vertical">
+            <orm:OrmTextBox CaptionWith="100" Width="300" Caption="{x:Static res:Resources.MapName}" Text="{Binding Path=CurrentMapCard.MapName, Mode=TwoWay}"/>
+            <orm:OrmTextBox CaptionWith="100" Width="300" Caption="{x:Static res:Resources.MapNote}" Text="{Binding Path=CurrentMapCard.MapNote, Mode=TwoWay}"/>
+            <orm:OrmTextBox CaptionWith="100" Width="300" Caption="{x:Static res:Resources.OwnerAxisXNumber}" Text="{Binding Path=CurrentMapCard.OwnerAxisXNumber, Mode=TwoWay}"/>
+            <orm:OrmTextBox CaptionWith="100" Width="300" Caption="{x:Static res:Resources.OwnerAxisXStep}" Text="{Binding Path=CurrentMapCard.OwnerAxisXStep, Mode=TwoWay}"/>
+            <orm:OrmTextBox CaptionWith="100" Width="300" Caption="{x:Static res:Resources.OwnerAxisYNumber}" Text="{Binding Path=CurrentMapCard.OwnerAxisYNumber, Mode=TwoWay}"/>
+            <orm:OrmTextBox CaptionWith="100" Width="300" Caption="{x:Static res:Resources.OwnerAxisYStep}" Text="{Binding Path=CurrentMapCard.OwnerAxisYStep, Mode=TwoWay}"/>
+            <orm:OrmTextBox CaptionWith="100" Width="300" Caption="{x:Static res:Resources.OwnerUpperLeftX}" Text="{Binding Path=CurrentMapCard.OwnerUpperLeftX, Mode=TwoWay}"/>
+            <orm:OrmTextBox CaptionWith="100" Width="300" Caption="{x:Static res:Resources.OwnerUpperLeftY}" Text="{Binding Path=CurrentMapCard.OwnerUpperLeftY, Mode=TwoWay}"/>
+            <!--<orm:OrmDatePicker CaptionWith="100" Width="300" Caption="{x:Static res:Resources.CreatedDate}" SelectedDate="01.06.2020"/>
+            <orm:OrmDatePicker CaptionWith="100" Width="300" Caption="{x:Static res:Resources.CreatedDate}" SelectedDate="02.06.2020"/>
+            <orm:OrmEnumBox CaptionWith="100" Width="300" Caption="{x:Static res:Resources.MapName}"/>-->
+            <Button HorizontalAlignment="Left" Margin="5" Content="{x:Static res:Resources.CreateMap}" Width="70" Height="20" Command="{Binding MapAddCommand}"/>
+          </WrapPanel>
+        </Grid>
+      </GroupBox>
+    </Grid>
+  </DockPanel>
+</UserControl>

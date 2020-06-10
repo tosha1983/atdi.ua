@@ -1,0 +1,296 @@
+﻿<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:XICSM.SdrnStationCalibrationCalc.WpfControls"
+             xmlns:maps="clr-namespace:Atdi.WpfControls.EntityOrm.Maps;assembly=Atdi.WpfControls.EntityOrm"
+             xmlns:res="clr-namespace:Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties;assembly=XICSM_SdrnStationCalibrationCalc"
+             xmlns:cdg="clr-namespace:Atdi.WpfControls.EntityOrm.Controls;assembly=Atdi.WpfControls.EntityOrm"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+  <UserControl.Resources>    
+    <Style x:Key="DataGridHeaderCentered" TargetType="DataGridColumnHeader">
+      <Setter Property="HorizontalAlignment" Value="Stretch"/>
+      <Setter Property="HorizontalContentAlignment" Value="Center"/>
+    </Style>
+    <Style x:Key="DataGridCellCentered" TargetType="DataGridCell">
+      <Setter Property="TextBlock.TextAlignment" Value="Center" />
+    </Style>
+    <Style x:Key="DataGridCellRighted" TargetType="DataGridCell">
+      <Setter Property="TextBlock.TextAlignment" Value="Right" />
+    </Style>
+  </UserControl.Resources>
+  <DockPanel LastChildFill="True" MinHeight="30">
+    <Grid>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="33*" MinWidth="100"/>
+        <ColumnDefinition Width="Auto" />
+        <ColumnDefinition Width="66*" MinWidth="100"/>
+      </Grid.ColumnDefinitions>
+      <Grid.RowDefinitions>
+          <RowDefinition Height="*"></RowDefinition>
+      </Grid.RowDefinitions>
+
+      <Grid Grid.Column="0">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="55*" MinHeight="100" ></RowDefinition>
+          <RowDefinition Height="Auto"></RowDefinition>
+          <RowDefinition Height="45*" MinHeight="100"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <ScrollViewer>
+      <GroupBox Grid.Row="0" Header="{x:Static res:Resources.ParametersOfTask}" Margin="5, 5, 5, 5" Grid.Column="0" VerticalAlignment="Top" Height="Auto"  HorizontalAlignment="Left">
+
+
+
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" MinWidth="360"/>
+            <ColumnDefinition Width="*" MinWidth="360"/>
+          </Grid.ColumnDefinitions>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+          </Grid.RowDefinitions>
+        
+        
+        
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" MinWidth="360"/>
+          </Grid.ColumnDefinitions>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+          </Grid.RowDefinitions>
+        
+        
+        <GroupBox Grid.Row="0" Header="{x:Static res:Resources.General}" Margin="5, 5, 5, 5" Grid.Column="0" Height="180" Width="350" HorizontalAlignment="Left" VerticalAlignment="Top">
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+          </Grid.ColumnDefinitions>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="*" ></RowDefinition>
+          </Grid.RowDefinitions>
+          <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" Margin="5,5,5,5"   HorizontalAlignment="Left" VerticalAlignment="Top" CaptionWith="220" Width="300" Height="25" Caption="{x:Static res:Resources.CorrelationThresholdHard}" Text ="{Binding Path=CurrentParamsCalculation.CorrelationThresholdHard, Mode=TwoWay}"/>
+          <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" Margin="5,30,5,5"  HorizontalAlignment="Left" VerticalAlignment="Top" CaptionWith="220" Width="300" Height="25" Caption="{x:Static res:Resources.CorrelationThresholdWeak}" Text ="{Binding Path=CurrentParamsCalculation.CorrelationThresholdWeak, Mode=TwoWay}"/>
+          <!--<cdg:OrmTextBox Grid.Column="0" Grid.Row="0" Margin="5,55,5,5"  HorizontalAlignment="Left" VerticalAlignment="Top" CaptionWith="180" Width="300" Height="25" Caption="{x:Static res:Resources.TrustOldResults}" Text ="{Binding Path=CurrentParamsCalculation.TrustOldResults, Mode=TwoWay}"/>-->
+          <cdg:OrmCheckBox Grid.Column="0" Grid.Row="0" Content="{x:Static res:Resources.TrustOldResults}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="8,55,5,5"  IsChecked="{Binding Path=CurrentParamsCalculation.TrustOldResults}"/>
+          <cdg:OrmCheckBox Grid.Column="0" Grid.Row="0" Content="{x:Static res:Resources.UseMeasurementSameGSID}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="8,85,5,5"  IsChecked="{Binding Path=CurrentParamsCalculation.UseMeasurementSameGSID}"/>
+          <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" Margin="5,105,5,5"  HorizontalAlignment="Left" VerticalAlignment="Top" CaptionWith="220" Width="300" Height="25" Caption="{x:Static res:Resources.DistanceAroundContour}" Text ="{Binding Path=CurrentParamsCalculation.DistanceAroundContour_km, Mode=TwoWay}"/>
+          <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" Margin="5,130,5,5"  HorizontalAlignment="Left" VerticalAlignment="Top" CaptionWith="220" Width="300" Height="25" Caption="{x:Static res:Resources.MinNumberPointForCorrelation}" Text ="{Binding Path=CurrentParamsCalculation.MinNumberPointForCorrelation, Mode=TwoWay}"/>
+        </Grid>
+        </GroupBox>
+          
+        <GroupBox Grid.Row="1" Header="{x:Static res:Resources.CalcCorrelation}" Margin="5, 5, 5, 5" Grid.Column="0" Height="180" Width="350" HorizontalAlignment="Left" VerticalAlignment="Top">
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" Margin="5,5,5,5"   HorizontalAlignment="Left" VerticalAlignment="Top" CaptionWith="220" Width="300" Height="25" Caption="{x:Static res:Resources.MinRangeMeasurements}" Text ="{Binding Path=CurrentParamsCalculation.MinRangeMeasurements_dBmkV, Mode=TwoWay}"/>
+            <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" Margin="5,30,5,5"   HorizontalAlignment="Left" VerticalAlignment="Top" CaptionWith="220" Width="300" Height="25" Caption="{x:Static res:Resources.MaxRangeMeasurements}" Text ="{Binding Path=CurrentParamsCalculation.MaxRangeMeasurements_dBmkV, Mode=TwoWay}"/>
+            <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" Margin="5,55,5,5"   HorizontalAlignment="Left" VerticalAlignment="Top" CaptionWith="220" Width="300" Height="25" Caption="{x:Static res:Resources.CorrelationDistance}" Text ="{Binding Path=CurrentParamsCalculation.CorrelationDistance_m, Mode=TwoWay}"/>
+            <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" Margin="5,80,5,5"   HorizontalAlignment="Left" VerticalAlignment="Top" CaptionWith="220" Width="300" Height="25" Caption="{x:Static res:Resources.Delta}" Text ="{Binding Path=CurrentParamsCalculation.Delta_dB, Mode=TwoWay}"/>
+            <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" Margin="5,105,5,5"   HorizontalAlignment="Left" VerticalAlignment="Top" CaptionWith="220" Width="300" Height="25" Caption="{x:Static res:Resources.MaxAntennasPatternLoss}" Text ="{Binding Path=CurrentParamsCalculation.MaxAntennasPatternLoss_dB, Mode=TwoWay}"/>
+          </Grid>
+        </GroupBox>
+
+        </Grid>
+
+
+
+
+          <GroupBox Grid.Row="0" Header="{x:Static res:Resources.CalibrationParameter}" Margin="5, 5, 5, 5" Grid.Column="1" Height="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+              </Grid.ColumnDefinitions>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="*" ></RowDefinition>
+              </Grid.RowDefinitions>
+              <cdg:OrmCheckBox Grid.Column="0" Grid.Row="0" Content="{x:Static res:Resources.AltitudeStation}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="8,8,5,5"  IsChecked="{Binding Path=CurrentParamsCalculation.AltitudeStation, Mode=TwoWay}"/>
+              <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="220" Width="300" Height="25" Caption="{x:Static res:Resources.ShiftAltitudeStationMin}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,30,5,5"  Text="{Binding Path=CurrentParamsCalculation.ShiftAltitudeStationMin_m, Mode=TwoWay}"/>
+              <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="220" Width="300" Height="25" Caption="{x:Static res:Resources.ShiftAltitudeStationMax}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,55,5,5"  Text="{Binding Path=CurrentParamsCalculation.ShiftAltitudeStationMax_m, Mode=TwoWay}"/>
+              <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="220" Width="300" Height="25" Caption="{x:Static res:Resources.ShiftAltitudeStationStep}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,80,5,5"  Text="{Binding Path=CurrentParamsCalculation.ShiftAltitudeStationStep_m, Mode=TwoWay}"/>
+              <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="220" Width="300" Height="25" Caption="{x:Static res:Resources.MaxDeviationAltitudeStation}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,105,5,5"  Text="{Binding Path=CurrentParamsCalculation.MaxDeviationAltitudeStation_m, Mode=TwoWay}"/>
+
+
+
+              <cdg:OrmCheckBox Grid.Column="0" Grid.Row="0" Content="{x:Static res:Resources.TiltStation}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="8,133,5,5"  IsChecked="{Binding Path=CurrentParamsCalculation.TiltStation, Mode=TwoWay}"/>
+              <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="220" Width="300" Height="25" Caption="{x:Static res:Resources.ShiftTiltStationMin}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,155,5,5"  Text="{Binding Path=CurrentParamsCalculation.ShiftTiltStationMin_deg, Mode=TwoWay}"/>
+              <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="220" Width="300" Height="25" Caption="{x:Static res:Resources.ShiftTiltStationMax}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,180,5,5"  Text="{Binding Path=CurrentParamsCalculation.ShiftTiltStationMax_deg, Mode=TwoWay}"/>
+              <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="220" Width="300" Height="25" Caption="{x:Static res:Resources.ShiftTiltStationStep}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,205,5,5"  Text="{Binding Path=CurrentParamsCalculation.ShiftTiltStationStep_deg, Mode=TwoWay}"/>
+              <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="220" Width="300" Height="25" Caption="{x:Static res:Resources.MaxDeviationTiltStation}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,255,5,5"  Text="{Binding Path=CurrentParamsCalculation.MaxDeviationTiltStation_deg, Mode=TwoWay}"/>
+
+
+              <cdg:OrmCheckBox Grid.Column="0" Grid.Row="0" Content="{x:Static res:Resources.AzimuthStation}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="8,233,5,5"  IsChecked="{Binding Path=CurrentParamsCalculation.AzimuthStation, Mode=TwoWay}"/>
+              <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="220" Width="300" Height="25" Caption="{x:Static res:Resources.ShiftAzimuthStationMin}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,280,5,5"  Text="{Binding Path=CurrentParamsCalculation.ShiftAzimuthStationMin_deg, Mode=TwoWay}"/>
+              <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="220" Width="300" Height="25" Caption="{x:Static res:Resources.ShiftAzimuthStationMax}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,305,5,5"  Text="{Binding Path=CurrentParamsCalculation.ShiftAzimuthStationMax_deg, Mode=TwoWay}"/>
+              <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="220" Width="300" Height="25" Caption="{x:Static res:Resources.ShiftAzimuthStationStep}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,330,5,5"  Text="{Binding Path=CurrentParamsCalculation.ShiftAzimuthStationStep_deg, Mode=TwoWay}"/>
+              <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="220" Width="300" Height="25" Caption="{x:Static res:Resources.MaxDeviationAzimuthStation}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,355,5,5"  Text="{Binding Path=CurrentParamsCalculation.MaxDeviationAzimuthStation_deg, Mode=TwoWay}"/>
+
+
+
+              <cdg:OrmCheckBox Grid.Column="0" Grid.Row="0" Content="{x:Static res:Resources.CoordinatesStation}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="8,383,5,5"  IsChecked="{Binding Path=CurrentParamsCalculation.CoordinatesStation, Mode=TwoWay}"/>
+              <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="220" Width="300" Height="25" Caption="{x:Static res:Resources.ShiftCoordinatesStation}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,405,5,5"  Text="{Binding Path=CurrentParamsCalculation.ShiftCoordinatesStation_m, Mode=TwoWay}"/>
+              <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="220" Width="300" Height="25" Caption="{x:Static res:Resources.MaxDeviationCoordinatesStation}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,430,5,5"  Text="{Binding Path=CurrentParamsCalculation.MaxDeviationCoordinatesStation_m, Mode=TwoWay}"/>
+              <!--<cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="180" Width="300" Height="25" Caption="{x:Static res:Resources.PowerStation}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,455,5,5"  Text="{Binding Path=CurrentParamsCalculation.PowerStation, Mode=TwoWay}"/>-->
+              <cdg:OrmCheckBox Grid.Column="0" Grid.Row="0" Content="{x:Static res:Resources.PowerStation}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,455,5,5"  IsChecked="{Binding Path=CurrentParamsCalculation.PowerStation, Mode=TwoWay}"/>
+              
+              
+              <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="220" Width="300" Height="25" Caption="{x:Static res:Resources.ShiftPowerStationMin}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,480,5,5"  Text="{Binding Path=CurrentParamsCalculation.ShiftPowerStationMin_dB, Mode=TwoWay}"/>
+              <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="220" Width="300" Height="25" Caption="{x:Static res:Resources.ShiftPowerStationMax}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,505,5,5"  Text="{Binding Path=CurrentParamsCalculation.ShiftPowerStationMax_dB, Mode=TwoWay}"/>
+              <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="220" Width="300" Height="25" Caption="{x:Static res:Resources.ShiftPowerStationStep}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,530,5,5"  Text="{Binding Path=CurrentParamsCalculation.ShiftPowerStationStep_dB, Mode=TwoWay}"/>
+
+              <cdg:OrmCheckBox Grid.Column="0" Grid.Row="0" Content="{x:Static res:Resources.CascadeTuning}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="8,558,5,5"  IsChecked="{Binding Path=CurrentParamsCalculation.CascadeTuning, Mode=TwoWay}"/>
+              <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="220" Width="300" Height="25" Caption="{x:Static res:Resources.NumberCascade}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,580,5,5"  Text="{Binding Path=CurrentParamsCalculation.NumberCascade, Mode=TwoWay}"/>
+              <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="220" Width="300" Height="25" Caption="{x:Static res:Resources.DetailOfCascade}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,605,5,5"  Text="{Binding Path=CurrentParamsCalculation.DetailOfCascade, Mode=TwoWay}"/>
+
+
+              <ComboBox Grid.Column="0" Grid.Row="0" Height="20" Width="220" SelectedValue="{Binding MethodParamsCalculationModelVal, Mode=TwoWay}" ItemsSource="{Binding MethodParamsCalculationModelValues}" Margin="5,630,5,5" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" HorizontalAlignment="Left" VerticalAlignment="Top" IsReadOnly="true"/>
+              
+              
+
+            </Grid>
+          </GroupBox>
+
+
+
+        </Grid>
+        
+      </GroupBox>
+          </ScrollViewer>
+      
+      <GridSplitter Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center" Background="#FFB4B1B1"/>
+      
+      <GroupBox Grid.Row="2" Header="{x:Static res:Resources.StationsBlock}" Margin="5, 5, 5, 5">
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+          </Grid.ColumnDefinitions>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+          </Grid.RowDefinitions>
+
+
+         
+          
+          <!--<ComboBox Grid.Column="0" Grid.Row="0" SelectedValue="{Binding SelectedStationTypeVal, Mode=TwoWay}" ItemsSource="{Binding SelectedStationTypeValues}" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" HorizontalAlignment="Left" VerticalAlignment="Top" IsReadOnly="true" Selected="ComboBoxSelectedStationType_SelectionChanged">
+            <ComboBox>
+              <Style TargetType="ComboBox">
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding Path=IsEnabledFieldId}" Value="true">
+                    <Setter  Property="Visibility" Value="Visible"/>
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding Path=IsEnabledFieldId}" Value="false">
+                    <Setter  Property="Visibility" Value="Collapsed"/>
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </ComboBox>
+          </ComboBox>-->
+
+
+          <ComboBox Grid.Column="0" Grid.Row="0" Height="20" Width="200"  Margin="8,5,5,5" SelectedValue="{Binding SelectedStationTypeVal, Mode=TwoWay}" ItemsSource="{Binding SelectedStationTypeValues}" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" HorizontalAlignment="Left" VerticalAlignment="Top" IsReadOnly="true"/>
+          <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="140" Width="300" Height="25" Caption="{x:Static res:Resources.Id}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="215,5,5,5"  Text="{Binding Path=GetStationsParams.Id, Mode=TwoWay}"/>
+          <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="140" Width="300" Height="25" Caption="{x:Static res:Resources.StateForActiveStation}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="215,35,5,5"  Text="{Binding Path=GetStationsParams.StateForActiveStation, Mode=TwoWay}"/>
+          <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="140" Width="300" Height="25" Caption="{x:Static res:Resources.StateForNotActiveStation}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="215,65,5,5"  Text="{Binding Path=GetStationsParams.StateForNotActiveStation, Mode=TwoWay}"/>
+          <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="140" Width="300" Height="25" Caption="{x:Static res:Resources.Standard}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="215,95,5,5"  Text="{Binding Path=GetStationsParams.Standard, Mode=TwoWay}"/>
+          
+
+          <ComboBox Grid.Column="0" Grid.Row="0" Height="20" Width="200" Margin="8,35,5,5" SelectedValue="{Binding SelectedIcsmStationNameVal, Mode=TwoWay}" ItemsSource="{Binding SelectedIcsmStationNameValues}" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" HorizontalAlignment="Left" VerticalAlignment="Top" IsReadOnly="true"/>
+          <GroupBox Grid.Row="0" Margin="5, 115, 5, 5" Header="Areas">
+            <cdg:OrmDataGrid IsReadOnly="True" Margin="5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding Areas}" SelectedItemsList="{Binding CurrentAreas, Mode=TwoWay}" >
+              <DataGrid.Columns>
+                <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=IdentifierFromICSM}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.Name}" Binding="{Binding Path=Name}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.TypeOfArea}" Binding="{Binding Path=TypeArea}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.CreatedBy}" Binding="{Binding Path=CreatedBy}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.DateCreated}" Binding="{Binding Path=DateCreated, StringFormat='{}{0:dd.MM.yyyy 0:HH:mm}'}"></DataGridTextColumn>
+              </DataGrid.Columns>
+            </cdg:OrmDataGrid>
+          </GroupBox>
+        </Grid>
+      </GroupBox>
+      </Grid>
+
+      <GridSplitter Grid.Column="1" ShowsPreview="False" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch"  Background="#FFB4B1B1"></GridSplitter>
+      
+      <Grid Grid.Column="2">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="55*" MinHeight="100"></RowDefinition>
+          <RowDefinition Height="Auto"></RowDefinition>
+          <RowDefinition Height="45*" MinHeight="100"></RowDefinition>
+        </Grid.RowDefinitions>
+
+
+       
+        <GroupBox Header="{x:Static res:Resources.DriveTestBlock}" Margin="5, 5, 5, 5">
+          <Grid Grid.Column="2">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="30"></RowDefinition>
+              <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Label Height="40" Grid.Column="0" Grid.Row="0" Margin="5,5,5,5" Content="{x:Static res:Resources.MeasurementsFrom}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <DatePicker Grid.Column="1" Grid.Row="0" Margin="110,5,5,5" Height="20" Width="100" HorizontalAlignment="Left" VerticalAlignment="Top" SelectedDate="{Binding Path=DateStartLoadDriveTest, StringFormat='{}{0:dd.MM.yyyy}'}"/>
+            <Label Height="40" Grid.Column="0" Grid.Row="0" Margin="215,5,5,5" Content="{x:Static res:Resources.To}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <DatePicker Grid.Column="1" Grid.Row="0" Margin="240,5,5,5" Height="20" Width="100" HorizontalAlignment="Left" VerticalAlignment="Top" SelectedDate="{Binding Path=DateStopLoadDriveTest, StringFormat='{}{0:dd.MM.yyyy}'}"/>
+            <Button Grid.Column="0" Grid.Row="0" Margin="350,5,5,5" Content="Load" Command="{Binding LoadDriveTestsCommand}" Width="70" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+             <cdg:OrmDataGrid Grid.Column="0" Grid.Row="1" IsReadOnly="True" Margin="5, 5, 5, 5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding StationMonitoringDataAdapter}" SelectedItemsList="{Binding CurrentStationMonitoringModel, Mode=TwoWay}" >
+                <DataGrid.Columns>
+                  <DataGridTextColumn Header="ID" Binding="{Binding Path=Id}"></DataGridTextColumn>
+                  <DataGridTextColumn Header="Date" Binding="{Binding Path=Date, StringFormat='{}{0:dd.MM.yyyy HH:mm}'}"></DataGridTextColumn>
+                  <DataGridTextColumn Header="Sensor Name" Binding="{Binding Path=SensorName}"></DataGridTextColumn>
+                  <DataGridTextColumn Header="Sensor Title" Binding="{Binding Path=SensorTitle}"></DataGridTextColumn>
+                  <DataGridTextColumn Header="Standards and Count" Binding="{Binding Path=StandardStats}"></DataGridTextColumn>
+                  <!--<DataGridTextColumn Header="CountByStandard" Binding="{Binding Path=CountByStandard}"></DataGridTextColumn>-->
+                  <DataGridTextColumn Header="Count SID" Binding="{Binding Path=CountSID}"></DataGridTextColumn>
+                  <DataGridTextColumn Header="Frequency min" Binding="{Binding Path=MinFreq_MHz}"></DataGridTextColumn>
+                  <DataGridTextColumn Header="Frequency max" Binding="{Binding Path=MaxFreq_MHz}"></DataGridTextColumn>
+                </DataGrid.Columns>
+              </cdg:OrmDataGrid>
+          </Grid>
+        </GroupBox>
+        <GridSplitter Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center" Background="#FFB4B1B1"/>
+        <GroupBox Grid.Row="2" Header="{x:Static res:Resources.Map}" Margin="5, 5, 5, 5">
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="*"></RowDefinition>
+              <RowDefinition Height="30"></RowDefinition>
+            </Grid.RowDefinitions>
+            <!--<cdg:OrmDataGrid IsReadOnly="True" Margin="5, 30, 5, 5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding }" SelectedItem="{Binding }">
+              <DataGrid.Columns>
+                <DataGridTextColumn Header="" Binding="{Binding Path=}"></DataGridTextColumn>
+                <DataGridTextColumn Header="" Binding="{Binding Path=}"></DataGridTextColumn>
+                <DataGridTextColumn Header="" Binding="{Binding Path=}"></DataGridTextColumn>
+                <DataGridTextColumn Header="" Binding="{Binding Path=, StringFormat='{}{0:dd.MM.yyyy HH:mm}'}"></DataGridTextColumn>
+                <DataGridTextColumn Header="" Binding="{Binding Path=}"></DataGridTextColumn>
+                <DataGridTextColumn Header="" Binding="{Binding Path=}"></DataGridTextColumn>
+                <DataGridTextColumn Header="" Binding="{Binding Path=}"></DataGridTextColumn>
+              </DataGrid.Columns>
+            </cdg:OrmDataGrid>-->
+
+            <maps:Map Grid.Row="0" DrawingData="{Binding CurrentMapData}"></maps:Map>
+            
+            <Button Grid.Column="0" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Content="Save" Width="70" Height="20" Command="{Binding StartStationCalibrationCommand}"/>
+          </Grid>
+        </GroupBox>
+      </Grid>
+    </Grid>
+  </DockPanel>
+</UserControl>
