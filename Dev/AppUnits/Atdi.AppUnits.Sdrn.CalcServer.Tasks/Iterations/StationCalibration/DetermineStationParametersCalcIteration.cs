@@ -201,7 +201,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     for (int c = 0; c < arrStandards.Length; c++)
                     {
                         var listDriveTests = data.GSIDGroupeDriveTests.ToList();
-                        var fndDrivetTests = listDriveTests.FindAll(x => x.Standard == arrStandards[c]);
+                        var fndDrivetTests = listDriveTests.FindAll(x => x.Standard == arrStandards[c].GetStandardForDriveTest());
                         if (fndDrivetTests != null)
                         {
                             selectDriveTestsByStandards.AddRange(fndDrivetTests);

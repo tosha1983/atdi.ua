@@ -505,6 +505,11 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             {
                 maximumCountPoints = _appComponentConfig.MaximumCountPointsInDriveTestsFor_CDMA;
             }
+            else if ((standard == "802.11") || (standard == "ШР"))
+            {
+                maximumCountPoints = _appComponentConfig.MaximumCountPointsInDriveTestsFor_802_11;
+            }
+            
             else
             {
                 throw new Exception($"The parameter 'maximum count points' in the config is not defined for the '{standard}' standard");
@@ -671,6 +676,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                 {
                     var modifierEditParamsCalculation = new EditParamsCalculation
                     {
+                        Standard = GetStationsParams.Standard,
                         ClientContextId = data.ClientContextId,
                         TaskId = TaskId,
                         AltitudeStation = this._currentParamsCalculationModel.AltitudeStation,

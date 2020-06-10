@@ -54,8 +54,11 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc
         [ComponentConfigProperty("Threshold.DriveTest.LtePoints.FetchRows")]
         public int MaximumCountPointsInDriveTestsFor_LTE { get; set; }
 
-        [ComponentConfigProperty("Threshold.CdmaPoints.LtePoints.FetchRows")]
+        [ComponentConfigProperty("Threshold.DriveTest.CdmaPoints.FetchRows")]
         public int MaximumCountPointsInDriveTestsFor_CDMA { get; set; }
+
+        [ComponentConfigProperty("Threshold.DriveTest.802_11_Points.FetchRows")]
+        public int MaximumCountPointsInDriveTestsFor_802_11 { get; set; }
 
         public void VerifyLicense()
 		{
