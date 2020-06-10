@@ -1,7 +1,7 @@
 ﻿CREATE TABLE CALC.PROJECT_MAP_CONTENT_SOURCES
 (
   ID              NUMBER(15)                    NOT NULL,
-  CONTEXT_ID      NUMBER(15)                    NOT NULL,
+  CONTENT_ID      NUMBER(15)                    NOT NULL,
   INFOC_MAP_ID    NUMBER(15)                    NOT NULL,
   INFOC_MAP_NAME  NVARCHAR2(450)                NOT NULL,
   COVERAGE        NUMBER(22,8)                  NOT NULL,

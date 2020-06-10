@@ -21,5 +21,6 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
         public CluttersDesc CluttersDesc;
         public FieldStrengthCalcData FieldStrengthCalcData;
         public string Projection;
+        public long resultId;
     }
 }

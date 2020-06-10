@@ -41,8 +41,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
             var queryArgs = _dataLayer.GetBuilder<IStationCalibrationArgs>()
                 .Create()
                 .SetValue(c => c.TASK.Id, pk.Id);
-            _dataLayer.Executor.Execute(queryArgs);
-
+            var pk_StationCalibrationArgs = _dataLayer.Executor.Execute<IStationCalibrationArgs_PK>(queryArgs); 
             _eventBus.Send(new OnCreatedCalcTask { CalcTasktId = pk.Id });
         }
     }

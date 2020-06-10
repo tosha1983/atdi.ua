@@ -52,7 +52,7 @@
     <Field Name="CascadeTuning" SourceType="Column" Required="false" SourceName="CASCADE_TUNING" DataType="Boolean" Title="CascadeTuning" Desc="CascadeTuning"/>
     <Field Name="NumberCascade" SourceType="Column" Required="false" SourceName="NUMBER_CASCADE" DataType="Integer.32" Title="NumberCascade" Desc="NumberCascade"/>
     <Field Name="DetailOfCascade" SourceType="Column" Required="false" SourceName="DETAIL_OF_CASCADE" DataType="Integer.32" Title="DetailOfCascade" Desc="DetailOfCascade"/>
-    <Field Name="Method" SourceType="Column" Required="false" SourceName="Method" DataType="Byte" Title="Method" Desc="Method"/>
+    <Field Name="Method" SourceType="Column" Required="false" SourceName="METHOD" DataType="Byte" Title="Method" Desc="Method"/>
 
   </Fields>
 

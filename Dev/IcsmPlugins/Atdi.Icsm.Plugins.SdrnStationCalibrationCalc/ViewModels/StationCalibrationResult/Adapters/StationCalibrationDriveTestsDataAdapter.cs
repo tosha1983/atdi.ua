@@ -28,12 +28,14 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                 c => c.CountPointsInDriveTest,
                 c => c.ExternalCode,
                 c => c.ExternalSource,
-                c => c.LicenseGsid,
+                c => c.MeasGcid,
                 c => c.MaxPercentCorellation,
-                c => c.RealGsid,
+                c => c.StationGcid,
                 c => c.ResultDriveTestStatus,
                 c => c.DriveTestId,
-                c => c.LinkToStationMonitoringId
+                c => c.LinkToStationMonitoringId,
+                c => c.Freq_MHz,
+                c => c.Standard
 
             ).Filter(f => f.CalibrationResultId, DataModels.Api.EntityOrm.WebClient.FilterOperator.Equal, resultId);
         }
@@ -44,13 +46,15 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                 Id = reader.GetValue(c => c.Id),
                 CountPointsInDriveTest  = reader.GetValue(c => c.CountPointsInDriveTest),
                 ResultDriveTestStatus = reader.GetValue(c => c.ResultDriveTestStatus),
-                RealGsid = reader.GetValue(c => c.RealGsid),
-                MaxPercentCorellation = reader.GetValue(c => c.MaxPercentCorellation),
-                LicenseGsid = reader.GetValue(c => c.LicenseGsid),
+                MeasGcid = reader.GetValue(c => c.MeasGcid),
+                MaxPercentCorellation = (float)Math.Round(reader.GetValue(c => c.MaxPercentCorellation),2),
+                StationGcid = reader.GetValue(c => c.StationGcid),
                 ExternalSource = reader.GetValue(c => c.ExternalSource),
                 ExternalCode  = reader.GetValue(c => c.ExternalCode),
                 DriveTestId = reader.GetValue(c => c.DriveTestId), // ссылка  на инфоцентр (SM_MEAS_RESULTS)
-                LinkToStationMonitoringId = reader.GetValue(c => c.LinkToStationMonitoringId) // ссылка  на сервер расчетов станция (CONTEXT_STATIONS)
+                LinkToStationMonitoringId = reader.GetValue(c => c.LinkToStationMonitoringId), // ссылка  на сервер расчетов станция (CONTEXT_STATIONS)
+                Freq_MHz = reader.GetValue(c => c.Freq_MHz),
+                Standard = reader.GetValue(c => c.Standard)
             };
         }
     }

@@ -20,5 +20,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
         public ParametersStation ParametersStationOld;
         public float MaxCorellation;
         public bool IsContour;
+        public string Standard;
+        public float Freq_MHz;
     }
 }

@@ -13,6 +13,7 @@ using MP = Atdi.WpfControls.EntityOrm.Maps;
 using System.Data;
 using Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibrationResult.Adapters;
 using Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibrationResult.Queries;
+using IC_ES = Atdi.DataModels.Sdrn.Infocenter.Entities.SdrnServer;
 using System.ComponentModel;
 
 
@@ -104,7 +105,8 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                 this.StationCalibrationDriveTestsDataAdapter.resultId = -1;
                 this.StationCalibrationDriveTestsDataAdapter.Refresh();
 
-                this.StationCalibrationResultDataAdapter.resultId = ResultId;
+                
+                this.StationCalibrationResultDataAdapter.taskId = GetTaskIdByCalcResultId(ResultId).Value;
                 this.StationCalibrationResultDataAdapter.dateTimeStart = new DateTimeOffset(DateStartLoadResults.Value);
                 this.StationCalibrationResultDataAdapter.dateTimeStop = new DateTimeOffset(DateStopLoadResults.Value);
                 this.StationCalibrationResultDataAdapter.Refresh();
@@ -124,7 +126,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
 
         private void OnChangeResultId(long resId)
         {
-            this.StationCalibrationResultDataAdapter.resultId = resId;
+            this.StationCalibrationResultDataAdapter.taskId = GetTaskIdByCalcResultId(resId).Value;
             this.StationCalibrationResultDataAdapter.Refresh();
         }
 
@@ -156,8 +158,8 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                             {
                                 Location = new MP.Location()
                                 {
-                                    Lon = sta[i].New_Lon_deg,
-                                    Lat = sta[i].New_Lat_deg
+                                    Lon = sta[i].Old_Lon_dec_deg,
+                                    Lat = sta[i].Old_Lat_dec_deg
                                 },
                                 Color = System.Windows.Media.Brushes.Blue,
                                 Fill = System.Windows.Media.Brushes.DarkBlue,
@@ -189,23 +191,44 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                 {
                     if (v.DriveTestId > 0)
                     {
-                        var staionMonitoringId = _objectReader.Read<long?>().By(new DriveResultsModelById() {  Id = v.DriveTestId });
-                        if ((staionMonitoringId != null) && (staionMonitoringId != 0))
+                        var driveTestPoints = GetDriveTestPoints(v.DriveTestId);
+                        if (driveTestPoints != null)
                         {
-                            var routes = GetRoutesByIdStationMonitoring(staionMonitoringId.Value);
-                            if (routes != null)
+                            for (int i = 0; i < driveTestPoints.Length; i++)
                             {
-                                for (int i = 0; i < routes.Length; i++)
+                                points.Add(new MP.MapDrawingDataPoint()
+                                {
+                                    Location = new MP.Location()
+                                    {
+                                        Lat = driveTestPoints[i].Coordinate.Latitude,
+                                        Lon = driveTestPoints[i].Coordinate.Longitude
+                                    },
+                                    Color = System.Windows.Media.Brushes.Orange,
+                                    Fill = System.Windows.Media.Brushes.OrangeRed,
+                                    Opacity = 0.85,
+                                    Width = 4,
+                                    Height = 4
+                                });
+                            }
+                        }
+
+                        if (v.LinkToStationMonitoringId > 0)
+                        {
+                            var sta = GetStationCalibrationStaByResId(v.LinkToStationMonitoringId);
+                            if (sta != null)
+                            {
+                                for (int i = 0; i < sta.Length; i++)
                                 {
                                     points.Add(new MP.MapDrawingDataPoint()
                                     {
                                         Location = new MP.Location()
                                         {
-                                            Lat = routes[i].Latitude,
-                                            Lon = routes[i].Longitude
+                                            Lon = sta[i].Old_Lon_dec_deg,
+                                            Lat = sta[i].Old_Lat_dec_deg
                                         },
-                                        Color = System.Windows.Media.Brushes.Green,
-                                        Fill = System.Windows.Media.Brushes.ForestGreen,
+                                        Color = System.Windows.Media.Brushes.Blue,
+                                        Fill = System.Windows.Media.Brushes.DarkBlue,
+
                                         Opacity = 0.85,
                                         Width = 10,
                                         Height = 10
@@ -216,7 +239,6 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                     }
                 }
             }
-
             data.Points = points.ToArray();
             this.CurrentMapData = data;
         }
@@ -243,8 +265,8 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                             {
                                 Location = new MP.Location()
                                 {
-                                    Lon = sta[i].New_Lon_deg,
-                                    Lat = sta[i].New_Lat_deg
+                                    Lon = sta[i].Old_Lon_dec_deg,
+                                    Lat = sta[i].Old_Lat_dec_deg
                                 },
                                 Color = System.Windows.Media.Brushes.Blue,
                                 Fill = System.Windows.Media.Brushes.DarkBlue,
@@ -253,37 +275,6 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                                 Width = 10,
                                 Height = 10
                             });
-                        }
-                    }
-                    var resDriveTests = GetDriveTests(v.Id);
-                    if (resDriveTests != null)
-                    {
-                        for (int k = 0; k < resDriveTests.Length; k++)
-                        {
-                            if (resDriveTests[k].DriveTestId > 0)
-                            {
-                                var staionMonitoringId = _objectReader.Read<long?>().By(new DriveResultsModelById() { Id = resDriveTests[k].DriveTestId });
-                                if ((staionMonitoringId != null) && (staionMonitoringId != 0))
-                                {
-                                    var routes = GetRoutesByIdStationMonitoring(staionMonitoringId.Value);
-                                    for (int i = 0; i < routes.Length; i++)
-                                    {
-                                        points.Add(new MP.MapDrawingDataPoint()
-                                        {
-                                            Location = new MP.Location()
-                                            {
-                                                Lat = routes[i].Latitude,
-                                                Lon = routes[i].Longitude
-                                            },
-                                            Color = System.Windows.Media.Brushes.Green,
-                                            Fill = System.Windows.Media.Brushes.ForestGreen,
-                                            Opacity = 0.85,
-                                            Width = 10,
-                                            Height = 10
-                                        });
-                                    }
-                                }
-                            }
                         }
                     }
                 }
@@ -317,17 +308,17 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
         }
 
 
-        public RoutesStationMonitoringModel[] GetRoutesByIdStationMonitoring(long Id)
+        public IC_ES.DriveTestPoint[] GetDriveTestPoints(long Id)
         {
-            var resRoutes = _objectReader
-                .Read<RoutesStationMonitoringModel[]>()
-                .By(new RoutesStationMonitoringModelById()
+            var resDriveTestPoints = _objectReader
+                .Read<IC_ES.DriveTestPoint[]>()
+                .By(new DriveTestPointsResultsModelById()
                 {
                     Id = Id
                 });
-            return resRoutes;
+            return resDriveTestPoints;
         }
-
+        
         public StationCalibrationStaModel[] GetStationCalibrationStaByResId(long ResId)
         {
             var resRoutes = _objectReader
@@ -350,17 +341,17 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             return resRoutes;
         }
 
-
-        public StationCalibrationDriveTestsModel[] GetDriveTests(long ResId)
+        public long? GetTaskIdByCalcResultId(long ResId)
         {
             var resRoutes = _objectReader
-                .Read<StationCalibrationDriveTestsModel[]>()
-                .By(new StationCalibrationDriveTestsModelById()
+                .Read<long?>()
+                .By(new CalcResultsModelById()
                 {
-                      ResultId = ResId
+                    ResultId = ResId
                 });
             return resRoutes;
         }
+
 
         public IList CurrentStationCalibrationDriveTestsModel
         {

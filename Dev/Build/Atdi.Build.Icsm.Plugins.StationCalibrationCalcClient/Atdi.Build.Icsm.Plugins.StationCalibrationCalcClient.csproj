@@ -60,6 +60,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="ICSM3.exe.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -176,10 +179,109 @@ copy "$(TargetDir)Atdi.AppUnits.dll"    "C:\ATDI\ICS ManagerCalcServer"
 copy "$(TargetDir)Atdi.AppUnits.Sdrn.DeepServices.dll"    "C:\ATDI\ICS ManagerCalcServer"
 copy "$(TargetDir)Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.dll"    "C:\ATDI\ICS ManagerCalcServer"
 copy "$(TargetDir)Atdi.AppUnits.Sdrn.DeepServices.Gis.dll" "C:\ATDI\ICS ManagerCalcServer"
+copy "$(TargetDir)Atdi.Contracts.Sdrn.DeepServices.Gis.dll"    "C:\ATDI\ICS ManagerCalcServer"
+copy "$(TargetDir)Atdi.Icsm.Plugins.Core.dll"    "C:\ATDI\ICS ManagerCalcServer"
+copy "$(TargetDir)Atdi.Platform.ServicesContainer.dll"    "C:\ATDI\ICS ManagerCalcServer"
+copy "$(TargetDir)Atdi.DataModels.Sdrn.DeepServices.Gis.dll"    "C:\ATDI\ICS ManagerCalcServer"
+copy "$(TargetDir)Atdi.Platform.Logging.dll"    "C:\ATDI\ICS ManagerCalcServer"
+copy "$(TargetDir)Atdi.Platform.Configurator.dll"    "C:\ATDI\ICS ManagerCalcServer"
+copy "$(TargetDir)Atdi.Platform.AppServer.dll"    "C:\ATDI\ICS ManagerCalcServer"
+copy "$(TargetDir)Atdi.Modules.Licensing.dll"    "C:\ATDI\ICS ManagerCalcServer"
+copy "$(TargetDir)Atdi.Common.dll"    "C:\ATDI\ICS ManagerCalcServer"
+copy "$(TargetDir)Atdi.DataModels.Sdrn.CalcServer.Entities.EntitiesProxy.dll"    "C:\ATDI\ICS ManagerCalcServer"
+
+copy "$(TargetDir)System.Net.Http.Formatting.dll" "C:\ATDI\ICS ManagerCalcServer"
+copy "$(TargetDir)Newtonsoft.Json.dll" "C:\ATDI\ICS ManagerCalcServer"
+copy "$(TargetDir)Castle.Facilities.WcfIntegration.dll" "C:\ATDI\ICS ManagerCalcServer"
+copy "$(TargetDir)Castle.Windsor.dll" "C:\ATDI\ICS ManagerCalcServer"
+copy "$(TargetDir)Castle.Core.dll" "C:\ATDI\ICS ManagerCalcServer"
+copy "$(TargetDir)Castle.Core.dll" "C:\ATDI\ICS ManagerCalcServer"
+copy "$(TargetDir)GMap.NET.Core.dll" "C:\ATDI\ICS ManagerCalcServer"
+copy "$(TargetDir)GMap.NET.WindowsPresentation.dll" "C:\ATDI\ICS ManagerCalcServer"
+copy "$(TargetDir)GMap.NET.WindowsPresentation.dll" "C:\ATDI\ICS ManagerCalcServer"
+
+
 
 copy "$(TargetDir)gdal_csharp.dll" "C:\ATDI\ICS ManagerCalcServer"
 copy "$(TargetDir)gdalconst_csharp.dll" "C:\ATDI\ICS ManagerCalcServer"
 copy "$(TargetDir)ogr_csharp.dll" "C:\ATDI\ICS ManagerCalcServer"
-copy "$(TargetDir)osr_csharp.dll" "C:\ATDI\ICS ManagerCalcServer"</PostBuildEvent>
+copy "$(TargetDir)osr_csharp.dll" "C:\ATDI\ICS ManagerCalcServer"
+
+
+copy "..\..\..\..\IcsmPlugins\Atdi.Icsm.Plugins.SdrnStationCalibrationCalc\Xaml\*.xaml" "C:\ATDI\ICS ManagerCalcServer\XICSM_SdrnStationCalibrationCalc\Xaml\*.*"
+copy "..\..\..\..\IcsmPlugins\Atdi.Icsm.Plugins.SdrnStationCalibrationCalc\Bin\$(ConfigurationName)\ru-RU\*.*"  "C:\ATDI\ICS ManagerCalcServer\ru-RU\*.*"
+copy "..\..\..\..\IcsmPlugins\Atdi.Icsm.Plugins.SdrnStationCalibrationCalc\Bin\$(ConfigurationName)\uk-UA\*.*" "C:\ATDI\ICS ManagerCalcServer\uk-UA\*.*"
+
+xcopy /Y /I /E "..\..\..\..\packages\GDAL.Native.2.4.4\build\gdal\*.*" "C:\ATDI\ICS ManagerCalcServer\gdal"
+
+
+
+
+
+
+
+copy "$(TargetDir)Atdi.Platform.ServicesContainer.dll"    "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.Platform.Logging.dll"    "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.AppUnits.dll"     "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.AppUnits.Sdrn.DeepServices.dll"    "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.dll"    "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+copy "$(TargetDir)XICSM_SdrnStationCalibrationCalc.dll"     "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.DataModels.Api.EntityOrm.WebClient.dll"     "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.DataModels.Sdrn.DeepServices.dll"     "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.Platform.dll"     "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.DataModels.EntityOrm.dll"    "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.DataModels.dll"    "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.Contracts.Api.EntityOrm.WebClient.dll"     "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.Contracts.Sdrn.DeepServices.dll"     "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.DataModels.Sdrn.DeepServices.RadioSystem.dll"     "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.Platform.AppServer.dll"     "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.Platform.Configurator.dll"     "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.Api.EntityOrm.WebClient.dll"     "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.DataModels.Sdrn.CalcServer.Entities.dll"     "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.Contracts.Sdrn.DeepServices.RadioSystem.dll"   "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.DataModels.Sdrn.Infocenter.Entities.dll"    "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.WpfControls.EntityOrm.dll"     "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.Icsm.Plugins.Core.dll"   "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.AppUnits.dll"   "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.AppUnits.Sdrn.DeepServices.dll"     "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.dll"     "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.AppUnits.Sdrn.DeepServices.Gis.dll"  "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.Contracts.Sdrn.DeepServices.Gis.dll"   "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.Icsm.Plugins.Core.dll"    "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.Platform.ServicesContainer.dll"   "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.DataModels.Sdrn.DeepServices.Gis.dll"   "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.Platform.Logging.dll"   "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.Platform.Configurator.dll"   "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.Platform.AppServer.dll"   "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.Modules.Licensing.dll"   "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.Common.dll"    "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.DataModels.Sdrn.CalcServer.Entities.EntitiesProxy.dll"   "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+
+copy "$(TargetDir)System.Net.Http.Formatting.dll"  "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+copy "$(TargetDir)Newtonsoft.Json.dll"  "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+copy "$(TargetDir)Castle.Facilities.WcfIntegration.dll"  "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+copy "$(TargetDir)Castle.Windsor.dll"  "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+copy "$(TargetDir)Castle.Core.dll"  "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+copy "$(TargetDir)GMap.NET.Core.dll"  "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+copy "$(TargetDir)GMap.NET.WindowsPresentation.dll"  "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+
+
+
+
+copy "$(TargetDir)gdal_csharp.dll"  "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+copy "$(TargetDir)gdalconst_csharp.dll"  "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+copy "$(TargetDir)ogr_csharp.dll"  "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+copy "$(TargetDir)osr_csharp.dll"  "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+copy "$(TargetDir)ICSM3.exe.config"  "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+
+
+
+copy "..\..\..\..\IcsmPlugins\Atdi.Icsm.Plugins.SdrnStationCalibrationCalc\Xaml\*.xaml"  "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)\XICSM_SdrnStationCalibrationCalc\Xaml\*.*"
+copy "..\..\..\..\IcsmPlugins\Atdi.Icsm.Plugins.SdrnStationCalibrationCalc\Bin\$(ConfigurationName)\ru-RU\*.*"   "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)\ru-RU\*.*"
+copy "..\..\..\..\IcsmPlugins\Atdi.Icsm.Plugins.SdrnStationCalibrationCalc\Bin\$(ConfigurationName)\uk-UA\*.*"  "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)\uk-UA\*.*"
+
+xcopy /Y /I /E "..\..\..\..\packages\GDAL.Native.2.4.4\build\gdal\*.*" "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)\gdal"
+
+</PostBuildEvent>
   </PropertyGroup>
 </Project>

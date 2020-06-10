@@ -157,13 +157,13 @@
     <value>Correlation threshold weak, %</value>
   </data>
   <data name="CountMeasGSID" xml:space="preserve">
-    <value>Count meas GSID</value>
+    <value>Count meas GCID</value>
   </data>
   <data name="CountMeasGSID_IT" xml:space="preserve">
-    <value>CountMeasGSID in IT status</value>
+    <value>CountMeasGCID in IT status</value>
   </data>
   <data name="CountMeasGSID_LS" xml:space="preserve">
-    <value>CountMeasGSID in LS status</value>
+    <value>CountMeasGCID in LS status</value>
   </data>
   <data name="CountStation_CS" xml:space="preserve">
     <value>CountStation in CS status</value>
@@ -373,7 +373,7 @@
     <value>Type of the area</value>
   </data>
   <data name="UseMeasurementSameGSID" xml:space="preserve">
-    <value>Use measurement with same GSID</value>
+    <value>Use measurement with same GCID</value>
   </data>
   <data name="MapName" xml:space="preserve">
     <value>Map Name</value>
@@ -394,7 +394,7 @@
     <value>External source</value>
   </data>
   <data name="LicenseGsid" xml:space="preserve">
-    <value>License Gsid</value>
+    <value>License GCID</value>
   </data>
   <data name="MaxCorellation" xml:space="preserve">
     <value>Maximum corellation</value>
@@ -424,7 +424,7 @@
     <value>New tilt, deg</value>
   </data>
   <data name="OldFreq_MHz" xml:space="preserve">
-    <value>Old freq, MHz</value>
+    <value>Freq, MHz</value>
   </data>
   <data name="Old_Altitude_m" xml:space="preserve">
     <value>Old altitude, m</value>
@@ -448,7 +448,7 @@
     <value>Result drive test status</value>
   </data>
   <data name="RealGsid" xml:space="preserve">
-    <value>Real Gsid</value>
+    <value>Real GCID</value>
   </data>
   <data name="BaseContext" xml:space="preserve">
     <value>Base Context</value>
@@ -458,5 +458,24 @@
   </data>
   <data name="Context" xml:space="preserve">
     <value>Context</value>
+  </data>
+  <data name="ResultStationStatus" xml:space="preserve">
+    <value>Result station status</value>
+  </data>
+  <data name="MeasGcid" xml:space="preserve">
+    <value>Meas GCID</value>
+  </data>
+  <data name="StationGcid" xml:space="preserve">
+    <value>Station GCID</value>
+  </data>
+  <data name="Freq_MHz" xml:space="preserve">
+    <value>Freq, MHz</value>
+  </data>
+  <data name="FreqLinkDriveTest_MHz" xml:space="preserve">
+    <value>Drive test Freq, MHz</value>
+  </data>
+  <data name="PercentComplete" xml:space="preserve">
+    <value>Percent complete of the task, %</value>
+    <comment>,</comment>
   </data>
 </root>

@@ -35,7 +35,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
             this._logger = logger;
             this._signalService = signalService;
             this._objectReader = objectReader;
-            this._mobStationsLoadModelByParams = mobStationsLoadModelByParams;
+            this._mobStationsLoadModelByParams =  mobStationsLoadModelByParams;
         }
 
 
@@ -177,6 +177,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
             string mobstafreq_table = "MOBSTA_FREQS";
             string mobstafreq_table2 = "MOBSTA_FREQS2";
             var listIcsmMobStation = new List<IcsmMobStation>();
+
 
 
             if ((this._mobStationsLoadModelByParams.AreaModel == null) || ((this._mobStationsLoadModelByParams.AreaModel != null) && (this._mobStationsLoadModelByParams.AreaModel.Length == 0)))
@@ -387,8 +388,20 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                         {
                             for (int w = 0; w < this._mobStationsLoadModelByParams.AreaModel.Length; w++)
                             {
+                                // конвертация в 4DEC
+                                var area = this._mobStationsLoadModelByParams.AreaModel[w];
+                                var listDataLocationModel = new DataLocationModel[area.Location.Length];
+                                for (int j = 0; j < area.Location.Length; j++)
+                                {
+                                    listDataLocationModel[j] = new DataLocationModel()
+                                    {
+                                        Longitude = ICSM.IMPosition.Dms2Dec(area.Location[j].Longitude),
+                                        Latitude = ICSM.IMPosition.Dms2Dec(area.Location[j].Latitude)
+                                    };
+                                }
+
                                 // если станция попадает в контур, тогда выставляем для нее статус P
-                                if (CheckHitting(this._mobStationsLoadModelByParams.AreaModel[w].Location, mobStationT.m_Position))
+                                if (CheckHitting(listDataLocationModel, mobStationT.m_Position))
                                 {
                                     mobStationT.m_status = MobStationStatus.A.ToString();
                                 }
@@ -505,18 +518,24 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                                 modifiedDate = source.m_date_modified;
                             }
 
+                            DateTime? createdDate = null;
+                            if (source.m_date_created != IM.NullT)
+                            {
+                                createdDate = source.m_date_created;
+                            }
+
                             listIcsmMobStation.Add(new IcsmMobStation
                             {
                                 CallSign = source.m_call_sign,
                                 ExternalCode = source.m_id.ToString(),
-                                ExternalSource = source.m_table_name,
+                                ExternalSource = arrayTables[v],//source.m_table_name,
                                 Standard = source.m_standard,
                                 StateName = source.m_status,
                                 Name = source.m_name,
                                 LicenseGsid = source.m_cust_txt1,
                                 RealGsid = source.m_cust_txt2,
                                 ModifiedDate = modifiedDate,
-                                CreatedDate = source.m_date_created,
+                                CreatedDate = createdDate==null? DateTime.Now : createdDate.Value,
                                 RegionCode = source.m_rec_area,
                                 SITE = new IcsmMobStationSite()
                                 {
@@ -531,7 +550,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                                     Tilt_deg = source.m_elevation,
                                     XPD_dB = (float)source.m_Antenna.m_xpd,
                                     ItuPatternCode = (byte)AntennaItuPattern.None,
-                                    //ItuPatternName ?????????????????????????????????
+                                    ItuPatternName = AntennaItuPattern.None.ToString(),
                                     HH_PATTERN = hh_pattern,
                                     HV_PATTERN = hv_pattern,
                                     VH_PATTERN = vh_pattern,
