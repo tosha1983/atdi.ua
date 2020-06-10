@@ -26,7 +26,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc
     {
         public static readonly string Title = "ICS Station Calibration Calculation";
         public static readonly string Ident = "SdrnStationCalibrationCalc";
-        public static readonly double SchemaVersion = 20200518.1638;
+        public static readonly double SchemaVersion = 20200610.1300;
 
        
 

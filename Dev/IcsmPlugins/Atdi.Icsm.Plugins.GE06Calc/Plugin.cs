@@ -24,7 +24,7 @@ namespace XICSM.GE06Calc
 
         protected override void ConnectToMenu(IMMainMenu mainMenu)
         {
-            mainMenu.InsertItem(PluginMetadata.Menu.MainTool, PluginMetadata.Menu.Tools.RunProjectManagerCommand, _menuCommands.OnRunGE06SettingsCommand);
+            mainMenu.InsertItem(PluginMetadata.Menu.MainTool, PluginMetadata.Menu.Tools.RunSettingsCommand, _menuCommands.OnRunGE06SettingsCommand);
             mainMenu.InsertItem(PluginMetadata.Menu.MainTool, PluginMetadata.Menu.Tools.About, _menuCommands.OnAboutCommand);
         }
     }
