@@ -79,10 +79,10 @@
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
 			this.tabPage2 = new System.Windows.Forms.TabPage();
-			this.txtHostKey = new System.Windows.Forms.TextBox();
-			this.button4 = new System.Windows.Forms.Button();
-			this.button5 = new System.Windows.Forms.Button();
 			this.button6 = new System.Windows.Forms.Button();
+			this.button5 = new System.Windows.Forms.Button();
+			this.button4 = new System.Windows.Forms.Button();
+			this.txtHostKey = new System.Windows.Forms.TextBox();
 			this.groupBox1.SuspendLayout();
 			this.groupBox3.SuspendLayout();
 			this.tabControl1.SuspendLayout();
@@ -457,7 +457,7 @@
             "WebQuery Web Portal",
             "ICS Control Client (Monitoring or other)",
             "SDRN Calc Server",
-            "SDRN Infocentr Server",
+            "SDRN Infocenter Server",
             "SDRN Calc Server Client ICSM Plugin",
             "SDRN Station Calibration Calc ICSM Plugin"});
 			this.cmbConfigType.Location = new System.Drawing.Point(77, 17);
@@ -595,25 +595,16 @@
 			this.tabPage2.Text = "Host Key";
 			this.tabPage2.UseVisualStyleBackColor = true;
 			// 
-			// txtHostKey
+			// button6
 			// 
-			this.txtHostKey.Location = new System.Drawing.Point(6, 6);
-			this.txtHostKey.Multiline = true;
-			this.txtHostKey.Name = "txtHostKey";
-			this.txtHostKey.ReadOnly = true;
-			this.txtHostKey.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.txtHostKey.Size = new System.Drawing.Size(370, 150);
-			this.txtHostKey.TabIndex = 0;
-			// 
-			// button4
-			// 
-			this.button4.Location = new System.Drawing.Point(389, 6);
-			this.button4.Name = "button4";
-			this.button4.Size = new System.Drawing.Size(75, 26);
-			this.button4.TabIndex = 18;
-			this.button4.Text = "Generate";
-			this.button4.UseVisualStyleBackColor = true;
-			this.button4.Click += new System.EventHandler(this.button4_Click);
+			this.button6.Enabled = false;
+			this.button6.Location = new System.Drawing.Point(389, 70);
+			this.button6.Name = "button6";
+			this.button6.Size = new System.Drawing.Size(75, 25);
+			this.button6.TabIndex = 20;
+			this.button6.Text = "Save to File";
+			this.button6.UseVisualStyleBackColor = true;
+			this.button6.Click += new System.EventHandler(this.button6_Click);
 			// 
 			// button5
 			// 
@@ -626,16 +617,25 @@
 			this.button5.UseVisualStyleBackColor = true;
 			this.button5.Click += new System.EventHandler(this.button5_Click);
 			// 
-			// button6
+			// button4
 			// 
-			this.button6.Enabled = false;
-			this.button6.Location = new System.Drawing.Point(389, 70);
-			this.button6.Name = "button6";
-			this.button6.Size = new System.Drawing.Size(75, 25);
-			this.button6.TabIndex = 20;
-			this.button6.Text = "Save to File";
-			this.button6.UseVisualStyleBackColor = true;
-			this.button6.Click += new System.EventHandler(this.button6_Click);
+			this.button4.Location = new System.Drawing.Point(389, 6);
+			this.button4.Name = "button4";
+			this.button4.Size = new System.Drawing.Size(75, 26);
+			this.button4.TabIndex = 18;
+			this.button4.Text = "Generate";
+			this.button4.UseVisualStyleBackColor = true;
+			this.button4.Click += new System.EventHandler(this.button4_Click);
+			// 
+			// txtHostKey
+			// 
+			this.txtHostKey.Location = new System.Drawing.Point(6, 6);
+			this.txtHostKey.Multiline = true;
+			this.txtHostKey.Name = "txtHostKey";
+			this.txtHostKey.ReadOnly = true;
+			this.txtHostKey.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+			this.txtHostKey.Size = new System.Drawing.Size(370, 150);
+			this.txtHostKey.TabIndex = 0;
 			// 
 			// MainForm
 			// 
