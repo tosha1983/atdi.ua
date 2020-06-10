@@ -19,7 +19,6 @@ using CT = Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ClientContext;
 
 namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
 {
-
 	[ViewXaml("ProjectManager.xaml")]
 	[ViewCaption("Calc Server Client: Project Manager")]
 	public class View : ViewBase

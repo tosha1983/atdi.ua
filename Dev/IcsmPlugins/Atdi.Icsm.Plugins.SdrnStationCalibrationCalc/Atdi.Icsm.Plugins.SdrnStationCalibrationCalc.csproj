@@ -276,6 +276,8 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.ru-RU.resx" />
+    <EmbeddedResource Include="Properties\Resources.uk-UA.resx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
@@ -283,7 +285,9 @@
 copy "$(TargetDir)Atdi.*.dll"    "C:\ATDI\ICS ManagerCalcServer"
 copy "$(TargetDir)ru-RU\*.*"   "C:\ATDI\ICS ManagerCalcServer\ru-RU"
 copy "$(TargetDir)uk-UA\*.*"  "C:\ATDI\ICS ManagerCalcServer\uk-UA"
-
-</PostBuildEvent>
+copy "$(TargetDir)XICSM_SdrnStationCalibrationCalc.dll" "C:\ATDI\ICS Manager"
+copy "$(TargetDir)Atdi.*.dll"    "C:\ATDI\ICS Manager"
+copy "$(TargetDir)ru-RU\*.*"   "C:\ATDI\ICS Manager\ru-RU"
+copy "$(TargetDir)uk-UA\*.*"  "C:\ATDI\ICS Manager\uk-UA"</PostBuildEvent>
   </PropertyGroup>
 </Project>
