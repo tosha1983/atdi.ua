@@ -180,6 +180,7 @@
     <Compile Include="ViewModels\StationCalibrationResult\Queries\StationCalibrationStaModelByResultIdExecutor.cs" />
     <Compile Include="ViewModels\StationCalibrationResult\Queries\StationCalibrationStaModelByIdExecutor.cs" />
     <Compile Include="ViewModels\StationCalibrationResult\Queries\StationCalibrationStaModelById.cs" />
+    <Compile Include="ViewModels\StationCalibrationResult\ConvertCoordinates.cs" />
     <Compile Include="ViewModels\StationCalibrationResult\View.cs" />
   </ItemGroup>
   <ItemGroup>

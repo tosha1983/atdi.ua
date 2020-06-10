@@ -1,13 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.IO;
+using Atdi.Icsm.Plugins.Core;
+using Atdi.Platform.Logging;
+using System.Collections.Specialized;
+using System.Collections;
+using Atdi.Platform.Cqrs;
+using Atdi.Platform.Events;
+using MP = Atdi.WpfControls.EntityOrm.Maps;
+using System.Data;
+using Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibrationResult.Adapters;
+using Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibrationResult.Queries;
+using IC_ES = Atdi.DataModels.Sdrn.Infocenter.Entities.SdrnServer;
+using System.ComponentModel;
 
-namespace Atdi.Common
+
+
+namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibrationResult
 {
     public static class ConvertCoordinates
     {

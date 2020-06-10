@@ -52,7 +52,6 @@
     <Compile Include="WinAPITime.cs" />
     <Compile Include="OSInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ConvertCoordinates.cs" />
     <Compile Include="TimeStamp.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
