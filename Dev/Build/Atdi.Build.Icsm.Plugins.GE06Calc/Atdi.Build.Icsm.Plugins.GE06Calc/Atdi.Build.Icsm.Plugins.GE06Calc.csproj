@@ -132,7 +132,17 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy "$(TargetDir)XICSM_GE06Calc.dll" "C:\ATDI\ICS Manager"
-copy "$(TargetDir)Atdi.*.dll"    "C:\ATDI\ICS Manager"
+
+copy "..\..\..\..\IcsmPlugins\Atdi.Icsm.Plugins.GE06Calc\Xaml\*.xaml" "C:\ATDI\ICS Manager\XICSM_GE06Calc\Xaml\*.*"
+copy "..\..\..\..\IcsmPlugins\Atdi.Icsm.Plugins.GE06Calc\Bin\$(ConfigurationName)\ru-RU\*.*"  "C:\ATDI\ICS Manager\ru-RU\*.*"
+copy "..\..\..\..\IcsmPlugins\Atdi.Icsm.Plugins.GE06Calc\Bin\$(ConfigurationName)\uk-UA\*.*" "C:\ATDI\ICS Manager\uk-UA\*.*"
+
+
+
+copy "$(TargetDir)XICSM_GE06Calc.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Client\GE06Calc\Bin$(ConfigurationName)"
+copy "..\..\..\..\IcsmPlugins\Atdi.Icsm.Plugins.GE06Calc\Xaml\*.xaml" "..\..\..\..\Delivery\Atdi.Sdrn\Client\GE06Calc\Bin$(ConfigurationName)\XICSM_GE06Calc\Xaml\*.*"
+copy "..\..\..\..\IcsmPlugins\Atdi.Icsm.Plugins.GE06Calc\Bin\$(ConfigurationName)\ru-RU\*.*"  "..\..\..\..\Delivery\Atdi.Sdrn\Client\GE06Calc\Bin$(ConfigurationName)\ru-RU\*.*" 
+copy "..\..\..\..\IcsmPlugins\Atdi.Icsm.Plugins.GE06Calc\Bin\$(ConfigurationName)\uk-UA\*.*" "..\..\..\..\Delivery\Atdi.Sdrn\Client\GE06Calc\Bin$(ConfigurationName)\uk-UA\*.*"
 </PostBuildEvent>
   </PropertyGroup>
 </Project>
