@@ -14,7 +14,7 @@
     <Field Name="CONTEXT" SourceType="Reference" SourceName="ClientContext"  Required="true" Title="Context" Desc="The client context in which the record of the station is created" />
     <Field Name="CreatedDate" SourceType="Column" SourceName="CREATED_DATE" DataType="DateTimeOffset"  Required="true" Title="Created date" Desc="The date of the station record created"  />
     <Field Name="Name" SourceType="Column" SourceName="NAME" DataType="Text.250" Required="true" Title="Station Name" Desc="The name of the station of the context" />
-    <Field Name="CallSign" SourceType="Column" SourceName="CALL_SIGN" DataType="Text.50" Required="true" Title="Call sign" Desc="The call sign of the station of the context" />
+    <Field Name="CallSign" SourceType="Column" SourceName="CALL_SIGN" DataType="Text.50" Required="false" Title="Call sign" Desc="The call sign of the station of the context" />
     <Field Name="Standard" SourceType="Column" SourceName="STANDARD" DataType="Text.50" Required="false" Title="Standard" Desc="The Standard of the station of the context" />
 
     <Field Name="ExternalCode" SourceType="Column" SourceName="EXTERNAL_CODE" DataType="Text.50" Required="false" Title="External code" Desc="The external code"  />

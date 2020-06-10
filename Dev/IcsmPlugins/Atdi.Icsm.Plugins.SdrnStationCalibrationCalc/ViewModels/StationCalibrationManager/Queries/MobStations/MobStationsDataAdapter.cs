@@ -550,7 +550,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                                     Tilt_deg = source.m_elevation,
                                     XPD_dB = (float)source.m_Antenna.m_xpd,
                                     ItuPatternCode = (byte)AntennaItuPattern.None,
-                                    //ItuPatternName ?????????????????????????????????
+                                    ItuPatternName = AntennaItuPattern.None.ToString(),
                                     HH_PATTERN = hh_pattern,
                                     HV_PATTERN = hv_pattern,
                                     VH_PATTERN = vh_pattern,

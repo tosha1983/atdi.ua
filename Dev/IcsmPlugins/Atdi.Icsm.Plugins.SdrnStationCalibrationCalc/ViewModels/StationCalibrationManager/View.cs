@@ -635,7 +635,12 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
 
         public override void Dispose()
         {
-
+            _onCreatePropagationModelsToken?.Dispose();
+            _onCreatePropagationModelsToken = null;
+            _onEditParamsCalculationToken?.Dispose();
+            _onEditParamsCalculationToken = null;
+            _onSavedStationsToken?.Dispose();
+            _onSavedStationsToken = null;
         }
 
 
@@ -725,7 +730,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                     CanAbort = false,
                     UseProgressBar = true,
                     UseLog = false,
-                    IsModal = false,
+                    IsModal = true,
                     MinValue = 0,
                     MaxValue = 1000,
                     ValueKind = LongProcessValueKind.Infinity,
@@ -739,30 +744,37 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                         if (((CurrentAreas != null) && (CurrentAreas.Count == 0)) || (CurrentAreas == null))
                         {
                             _viewStarter.ShowException("Error!", new Exception("Please fill parameter 'area!"));
+                            throw new Exception("Please fill parameter 'area!");
                         }
                         if ((CurrentParamsCalculation.DistanceAroundContour_km == null) || ((CurrentParamsCalculation.DistanceAroundContour_km != null) && (CurrentParamsCalculation.DistanceAroundContour_km == 0)))
                         {
                             _viewStarter.ShowException("Error!", new Exception("Please fill parameter 'DistanceAroundContour_km!"));
+                            throw new Exception("Please fill parameter 'DistanceAroundContour_km!");
                         }
                         if (string.IsNullOrEmpty(GetStationsParams.StateForActiveStation))
                         {
                             _viewStarter.ShowException("Error!", new Exception("Please fill parameter 'StateForActiveStation!"));
+                            throw new Exception("Please fill parameter 'StateForActiveStation!");
                         }
                         if (string.IsNullOrEmpty(GetStationsParams.StateForNotActiveStation))
                         {
                             _viewStarter.ShowException("Error!", new Exception("Please fill parameter 'StateForNotActiveStation!"));
+                            throw new Exception("Please fill parameter 'StateForNotActiveStation!");
                         }
                         if ((GetStationsParams.Id == null) && (SelectedStationTypeVal == SelectedStationType.OneStation))
                         {
                             _viewStarter.ShowException("Error!", new Exception("Please fill parameter 'Id!"));
+                            throw new Exception("Please fill parameter 'Id!");
                         }
                         if (string.IsNullOrEmpty(GetStationsParams.Standard))
                         {
                             _viewStarter.ShowException("Error!", new Exception("Please fill parameter 'Standard!"));
+                            throw new Exception("Please fill parameter 'Standard!");
                         }
                         if ((CurrentStationMonitoringModel == null) || ((CurrentStationMonitoringModel != null) && (CurrentStationMonitoringModel.Count == 0)))
                         {
                             _viewStarter.ShowException("Error!", new Exception("Please fill parameter 'Drive tests!"));
+                            throw new Exception("Please fill parameter 'Drive tests!");
                         }
 
 
@@ -780,6 +792,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                                     if (countPoints.Standard != null)
                                     {
                                         _viewStarter.ShowException("Error!", new Exception($"The functionality cannot be started, because for the standard '{countPoints.Standard}' the  number of points greater  {countPoints.Count}!"));
+                                        throw new Exception($"The functionality cannot be started, because for the standard '{countPoints.Standard}' the  number of points greater  {countPoints.Count}!");
                                     }
                                 }
                                 listStationMonitoringModel.Add(x.Id);
@@ -810,21 +823,21 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                             else
                             {
                                 _viewStarter.ShowException("Error!", new Exception($"Client context Id is 0!"));
+                                throw new Exception($"Client context Id is 0!");
                             }
                         }
                         else
                         {
                             _viewStarter.ShowException("Error!", new Exception($"No stations with suitable parameters!"));
+                            throw new Exception($"No stations with suitable parameters!");
                         }
-                        _viewStarter.Stop(this);
                     }
                     catch (Exception e)
                     {
                         this._logger.Exception(Exceptions.StationCalibrationCalculation, e);
                     }
-                    token.AbortToken.ThrowIfCancellationRequested();
                 });
-            
+            _viewStarter.Stop(this);
         }
         private void OnEditParamsCalculationsHandle(Events.OnEditParamsCalculation data)
         {
@@ -847,8 +860,6 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                 
             }
         }
-
-        
 
     }
     public enum TypeCoord

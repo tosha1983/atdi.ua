@@ -4,7 +4,7 @@
   CONTEXT_ID       NUMBER(15)                   NOT NULL,
   CREATED_DATE     TIMESTAMP(7) WITH TIME ZONE  DEFAULT CURRENT_TIMESTAMP AT TIME ZONE 'GMT' NOT NULL,
   NAME             NVARCHAR2(250)               NOT NULL,
-  CALL_SIGN        NVARCHAR2(50)                NOT NULL,
+  CALL_SIGN        NVARCHAR2(50),
   STATE_CODE       NUMBER(3)                    NOT NULL,
   STATE_NAME       NVARCHAR2(50)                NOT NULL,
   STANDARD         NVARCHAR2(50),

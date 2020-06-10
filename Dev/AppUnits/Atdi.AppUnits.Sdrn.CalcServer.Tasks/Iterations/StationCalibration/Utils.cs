@@ -813,16 +813,17 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             var lstStations = Atdi.Common.CopyHelper.CreateDeepCopy(contextStations).ToList();
             var lstDriveTests = Atdi.Common.CopyHelper.CreateDeepCopy(contextDriveTestsResult).ToList();
 
-            for (int i = 0; i < groupedStations.Count; i++)
+            for (int m = 0; m < groupedDriveTests.Count; m++)
             {
-                if (groupedStations.Count > 0)
+                if (groupedDriveTests.Count > 0)
                 {
-                    var stationsGSID = groupedStations[i].ToList();
-                    for (int m = 0; m < groupedDriveTests.Count; m++)
+                    var driveTestGSID = groupedDriveTests[m].ToList();
+                    for (int i = 0; i < groupedStations.Count; i++)
                     {
-                        if (groupedDriveTests.Count > 0)
+                        if (groupedStations.Count > 0)
                         {
-                            var driveTestGSID = groupedDriveTests[m].ToList();
+                            var stationsGSID = groupedStations[i].ToList();
+
                             if ((stationsGSID != null) && (driveTestGSID != null))
                             {
                                 if ((groupedDriveTests.Count > 0) && (groupedStations.Count > 0))

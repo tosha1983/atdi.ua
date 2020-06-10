@@ -59,6 +59,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="DataLayer\Oracle\Functions\STATIONS.GetID.sql" />
     <Content Include="DataLayer\Oracle\Functions\SDRNSVR.GetID.sql" />
     <Content Include="DataLayer\Oracle\Functions\INFOC.GetID.sql" />
     <Content Include="DataLayer\Oracle\Grants\Grants.sql" />
@@ -73,13 +74,13 @@
     <Content Include="DataLayer\Oracle\Sequences\SDRNSVR.DRIVE_ROUTES_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\SDRNSVR.DRIVE_TESTS_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\SDRNSVR.DRIVE_TESTS_POINTS_ID_SEQ.sql" />
-    <Content Include="DataLayer\Oracle\Sequences\SDRNSVR.GLOBAL_IDENTITIES_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\STATIONS.GLOBAL_IDENTITIES_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\SDRNSVR.SM_MEAS_RESULTS_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\SDRNSVR.SM_MEAS_RESULTS_STATS_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Tables\INFOC.CLUTTERS_DESCS.sql" />
     <Content Include="DataLayer\Oracle\Tables\INFOC.INTEGRATION_OBJECTS.sql" />
     <Content Include="DataLayer\Oracle\Tables\INFOC.INTEGRATION_LOG.sql" />
-    <Content Include="DataLayer\Oracle\Tables\SDRNSVR.GLOBAL_IDENTITIES.sql" />
+    <Content Include="DataLayer\Oracle\Tables\STATIONS.GLOBAL_IDENTITIES.sql" />
     <Content Include="DataLayer\Oracle\Tables\INFOC.CLUTTERS_DESCS_CLUTTERS.sql" />
     <Content Include="DataLayer\Oracle\Tables\INFOC.CLUTTERS_DESCS_FREQS.sql" />
     <Content Include="DataLayer\Oracle\Tables\INFOC.CLUTTERS_DESCS_FREQS_CLUTTERS.sql" />

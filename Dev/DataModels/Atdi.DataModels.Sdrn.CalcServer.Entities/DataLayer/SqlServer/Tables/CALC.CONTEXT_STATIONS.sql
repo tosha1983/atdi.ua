@@ -9,7 +9,7 @@ CREATE TABLE [CALC].[CONTEXT_STATIONS](
 	[CONTEXT_ID] [bigint] NOT NULL,
 	[CREATED_DATE] [datetimeoffset](7) NOT NULL,
 	[NAME] [nvarchar](250) NOT NULL,
-	[CALL_SIGN] [nvarchar](50) NOT NULL,
+	[CALL_SIGN] [nvarchar](50) NULL,
 	[STANDARD] [nvarchar](50),
 	[STATE_CODE] [tinyint] NOT NULL,
 	[STATE_NAME] [nvarchar](50) NOT NULL,

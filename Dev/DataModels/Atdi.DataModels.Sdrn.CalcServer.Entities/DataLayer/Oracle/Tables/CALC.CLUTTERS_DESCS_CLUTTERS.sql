@@ -1,10 +1,11 @@
-﻿CREATE TABLE CALC.CLUTTERS_DESCS_CLUTTERS
+﻿
+CREATE TABLE CALC.CLUTTERS_DESCS_CLUTTERS
 (
-  CLUTTERS_DESC_ID  NUMBER(15)                  NOT NULL,
   CODE              NUMBER(3)                   NOT NULL,
   NAME              NVARCHAR2(150)              NOT NULL,
   NOTE              NCLOB,
-  HEIGHT_M          NUMBER(3)                   NOT NULL
+  HEIGHT_M          NUMBER(3)                   NOT NULL,
+  CLUTTERS_DESC_ID  NUMBER(15)                  NOT NULL
 )
 TABLESPACE USERS
 PCTUSED    0
@@ -21,13 +22,37 @@ STORAGE    (
            )
 LOGGING 
 NOCOMPRESS 
+LOB (NOTE) STORE AS SECUREFILE 
+      ( TABLESPACE  USERS 
+        ENABLE      STORAGE IN ROW
+        CHUNK       8192
+        NOCACHE
+        INDEX       (
+          TABLESPACE USERS
+          STORAGE    (
+                      INITIAL          64K
+                      NEXT             1
+                      MINEXTENTS       1
+                      MAXEXTENTS       UNLIMITED
+                      PCTINCREASE      0
+                      BUFFER_POOL      DEFAULT
+                     ))
+        STORAGE    (
+                    INITIAL          104K
+                    NEXT             1M
+                    MINEXTENTS       1
+                    MAXEXTENTS       UNLIMITED
+                    PCTINCREASE      0
+                    BUFFER_POOL      DEFAULT
+                   )
+      )
 NOCACHE
 NOPARALLEL
 MONITORING;
 
 
-CREATE UNIQUE INDEX CALC.CLUTTERS_DESCS_CLUTTERS_PK ON CALC.CLUTTERS_DESCS_CLUTTERS
-(CLUTTERS_DESC_ID)
+CREATE UNIQUE INDEX CALC.PK_CLUTTERS_DESCS_CLUTTERS ON CALC.CLUTTERS_DESCS_CLUTTERS
+(CLUTTERS_DESC_ID, CODE)
 LOGGING
 TABLESPACE USERS
 PCTFREE    10
@@ -45,9 +70,9 @@ NOPARALLEL;
 
 
 ALTER TABLE CALC.CLUTTERS_DESCS_CLUTTERS ADD (
-  CONSTRAINT CLUTTERS_DESCS_CLUTTERS_PK
+  CONSTRAINT PK_CLUTTERS_DESCS_CLUTTERS
  PRIMARY KEY
- (CLUTTERS_DESC_ID)
+ (CLUTTERS_DESC_ID, CODE)
     USING INDEX 
     TABLESPACE USERS
     PCTFREE    10

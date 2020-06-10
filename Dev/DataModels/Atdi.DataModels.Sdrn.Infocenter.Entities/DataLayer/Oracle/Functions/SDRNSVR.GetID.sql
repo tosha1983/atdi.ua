@@ -26,11 +26,6 @@ into n
 from dual;
 end if;
 
-if inttable_name ='GLOBAL_IDENTITIES' then
-select SDRNSVR.GLOBAL_IDENTITIES_ID_SEQ.nextval
-into n
-from dual;
-end if;
 
 
 if inttable_name ='SM_MEAS_RESULTS' then

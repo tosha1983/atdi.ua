@@ -1,18 +1,18 @@
 ﻿CREATE TABLE CALC.CALCRESULTS_STATION_CALIBRATION_DRIVE_TEST
 (
-  ID                              NUMBER(15)    NOT NULL,
-  CALCRESULTS_STATION_CALIBRATIO  NUMBER(15)    NOT NULL,
-  EXTERNAL_SOURCE                 NVARCHAR2(50),
-  EXTERNAL_CODE                   NVARCHAR2(50),
-  STATION_GSID                    NVARCHAR2(50),
-  MEAS_GSID                       NVARCHAR2(50),
-  RESULT_DRIVE_TEST_STATUS        NVARCHAR2(50),
-  MAX_PERCENT_CORELLATION         NUMBER(22,8),
-  COUNT_POINTS_IN_DRIVE_TEST      NUMBER(9),
-  DRIVE_TEST_ID                   NUMBER(15),
-  LINK_STATION_MONITORING_ID      NUMBER(15),
-  FREQ_MHZ                        NUMBER(22,8),
-  STANDARD                        NVARCHAR2(50)
+  ID                                  NUMBER(15) NOT NULL,
+  CALCRESULTS_STATION_CALIBRATION_ID  NUMBER(15) NOT NULL,
+  EXTERNAL_SOURCE                     NVARCHAR2(50),
+  EXTERNAL_CODE                       NVARCHAR2(50),
+  STATION_GSID                        NVARCHAR2(50),
+  MEAS_GSID                           NVARCHAR2(50),
+  RESULT_DRIVE_TEST_STATUS            NVARCHAR2(50),
+  MAX_PERCENT_CORELLATION             NUMBER(22,8),
+  COUNT_POINTS_IN_DRIVE_TEST          NUMBER(9),
+  DRIVE_TEST_ID                       NUMBER(15),
+  LINK_STATION_MONITORING_ID          NUMBER(15),
+  FREQ_MHZ                            NUMBER(22,8),
+  STANDARD                            NVARCHAR2(50)
 )
 TABLESPACE USERS
 PCTUSED    0
