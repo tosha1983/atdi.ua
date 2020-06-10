@@ -56,6 +56,14 @@
     <Compile Include="EntityDataAdapter.cs" />
     <Compile Include="DataLayerBase.cs" />
     <Compile Include="Helpers\PluginHelper.cs" />
+    <Compile Include="LongProcessForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LongProcessForm.Designer.cs">
+      <DependentUpon>LongProcessForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LongProcessOptions.cs" />
+    <Compile Include="LongProcessWorker.cs" />
     <Compile Include="PluginBase.cs" />
     <Compile Include="Extensions\IMMainMenuExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -98,6 +106,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="LongProcessForm.resx">
+      <DependentUpon>LongProcessForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ViewForm.resx">
       <DependentUpon>ViewForm.cs</DependentUpon>
     </EmbeddedResource>

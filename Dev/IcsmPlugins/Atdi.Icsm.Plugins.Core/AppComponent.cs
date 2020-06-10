@@ -24,7 +24,8 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc
 		{
 			
 			this.Container.Register<ViewStarter>(ServiceLifetime.Singleton);
-			
+			this.Container.Register<LongProcessWorker>(ServiceLifetime.Transient);
+
 		}
 
 		protected override void OnActivate()

@@ -172,20 +172,24 @@
     <Compile Include="ViewModels\StationCalibrationResult\Models\StationCalibrationResult\StationCalibrationResultModel.cs" />
     <Compile Include="ViewModels\StationCalibrationResult\Models\StationCalibrationSta\RoutesStationMonitoringModel.cs" />
     <Compile Include="ViewModels\StationCalibrationResult\Models\StationCalibrationSta\StationCalibrationStaModel.cs" />
-    <Compile Include="ViewModels\StationCalibrationResult\Queries\StationCalibrationDriveTestsModelById.cs" />
-    <Compile Include="ViewModels\StationCalibrationResult\Queries\StationCalibrationDriveTestsModelByIdExecutor.cs" />
+    <Compile Include="ViewModels\StationCalibrationResult\Queries\CalcResultsModelById.cs" />
+    <Compile Include="ViewModels\StationCalibrationResult\Queries\CalcResultsModelByIdExecutor.cs" />
+    <Compile Include="ViewModels\StationCalibrationResult\Queries\DriveTestPointsResultsModelById.cs" />
     <Compile Include="ViewModels\StationCalibrationResult\Queries\StationCalibrationStaModelByResultId.cs" />
+    <Compile Include="ViewModels\StationCalibrationResult\Queries\DriveTestPointsResultsModelByIdExecutor.cs" />
     <Compile Include="ViewModels\StationCalibrationResult\Queries\StationCalibrationStaModelByResultIdExecutor.cs" />
     <Compile Include="ViewModels\StationCalibrationResult\Queries\StationCalibrationStaModelByIdExecutor.cs" />
     <Compile Include="ViewModels\StationCalibrationResult\Queries\StationCalibrationStaModelById.cs" />
-    <Compile Include="ViewModels\StationCalibrationResult\Queries\RoutesStationMonitoringModelById.cs" />
-    <Compile Include="ViewModels\StationCalibrationResult\Queries\RoutesStationMonitoringModelByIdExecutor.cs" />
     <Compile Include="ViewModels\StationCalibrationResult\View.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Api\Atdi.Api.EntityOrm.WebClient\Atdi.Api.EntityOrm.WebClient.csproj">
       <Project>{48ace960-6ba0-4a99-b060-4dbb8a182206}</Project>
       <Name>Atdi.Api.EntityOrm.WebClient</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Common\Atdi.Common\Atdi.Common.csproj">
+      <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
+      <Name>Atdi.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Contracts\Api\Atdi.Contracts.Api.EntityOrm.WebClient\Atdi.Contracts.Api.EntityOrm.WebClient.csproj">
       <Project>{a252d199-1162-484d-b50a-8c44a4edd670}</Project>
@@ -261,7 +265,6 @@
     <Folder Include="Events\" />
     <Folder Include="Queries\" />
     <Folder Include="ViewModels\StationCalibrationResult\Events\" />
-    <Folder Include="ViewModels\StationCalibrationResult\Modifiers\" />
     <Folder Include="Xaml\" />
   </ItemGroup>
   <ItemGroup>

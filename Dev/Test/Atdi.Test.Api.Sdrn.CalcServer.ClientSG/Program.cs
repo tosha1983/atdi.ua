@@ -92,7 +92,7 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client
                 }
             };
 
-            var bbb = Utils.CompareStations(contextStations, "GSM-900");
+            //var bbb = Utils.CompareStations(contextStations, "GSM-900");
           
 
             var contextDriveTest = new DriveTestsResult[] {
@@ -211,7 +211,7 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client
             }
 
           
-            var bbb3 = Utils.CompareDriveTestAndStation(lll.ToArray(), contextStations, "GSM", out DriveTestsResult[][] outDriveTestsResults, out ContextStation[][] outContextStations);
+            //var bbb3 = Utils.CompareDriveTestAndStation(lll.ToArray(), contextStations, "GSM", out DriveTestsResult[][] outDriveTestsResults, out ContextStation[][] outContextStations);
 
             TestWebApiOrm();
 			//RunPointFieldStrengthCalcTask();

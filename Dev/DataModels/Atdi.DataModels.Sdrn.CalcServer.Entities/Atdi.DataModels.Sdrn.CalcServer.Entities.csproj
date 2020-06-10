@@ -105,6 +105,51 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="DataLayer\Oracle\Functions\CALC.GetID.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\CALC.CALCRESULTS_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\CALC.CALCRESULTS_POINTFIELDSTRENGTH_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\CALC.CALCRESULTS_STATION_CALIBRATION_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\CALC.CALCRESULTS_STATION_CALIBRATION_DRIVE_TEST_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\CALC.CALCRESULTS_STATION_CALIBRATION_STA_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\CALC.CALCTASKS_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\CALC.CALCTASKS_COVERAGEPROFILES_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\CALC.CALCTASKS_POINTFIELDSTRENGTH_ARGS_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\CALC.CALCTASKS_POINTFIELDSTRENGTH_ARGS_DEF_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\CALC.CALCTASKS_STATION_CALIBRATION_ARGS_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\CALC.CALCTASKS_STATION_CALIBRATION_ARGS_DEF_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\CALC.CLIENT_CONTEXTS_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\CALC.CLIENT_CONTEXTS_ABSORPTION_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\CALC.CLIENT_CONTEXTS_ADDITIONAL_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\CALC.CLIENT_CONTEXTS_ATMOSPHERIC_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\CALC.CLIENT_CONTEXTS_CLUTTER_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\CALC.CLIENT_CONTEXTS_DIFFRACTION_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\CALC.CLIENT_CONTEXTS_DUCTING_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\CALC.CLIENT_CONTEXTS_GLOBALPARAMS_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\CALC.CLIENT_CONTEXTS_MAINBLOCK_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\CALC.CLIENT_CONTEXTS_REFLECTION_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\CALC.CLIENT_CONTEXTS_SUBPATHDIFFRACTION_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\CALC.CLIENT_CONTEXTS_TROPO_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\CALC.CLUTTERS_DESCS_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\CALC.CLUTTERS_DESCS_CLUTTERS_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\CALC.CLUTTERS_DESCS_FREQS_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\CALC.CLUTTERS_DESCS_FREQS_CLUTTERS_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\CALC.CONTEXT_PLANNEDCALCTASK_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\CALC.CONTEXT_STATIONS_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\CALC.CONTEXT_STATIONS_ANTENNA_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\CALC.CONTEXT_STATIONS_RECEIVER_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\CALC.CONTEXT_STATIONS_SITE_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\CALC.CONTEXT_STATIONS_TRANSMITTER_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\CALC.CONTEXT_STATION_COORDINATES_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\CALC.CONTEXT_STATION_PATTERNS_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\CALC.PROJECTS_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\CALC.PROJECT_MAPS_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\CALC.PROJECT_MAP_CONTENTS_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\CALC.PROJECT_MAP_CONTENT_SOURCES_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Tables\CALC.CALCRESULTS_STATION_CALIBRATION.sql" />
+    <Content Include="DataLayer\Oracle\Tables\CALC.CALCRESULTS_STATION_CALIBRATION_STA.sql" />
+    <Content Include="DataLayer\Oracle\Tables\CALC.CALCTASKS_STATION_CALIBRATION_ARGS.sql" />
+    <Content Include="DataLayer\Oracle\Tables\CALC.CALCTASKS_STATION_CALIBRATION_ARGS_DEF.sql" />
+    <Content Include="DataLayer\Oracle\Tables\CALC.CALCRESULTS_STATION_CALIBRATION_DRIVE_TEST.sql" />
     <Content Include="DataLayer\Oracle\Tables\CALC.CALCRESULTS.sql" />
     <Content Include="DataLayer\Oracle\Tables\CALC.CALCRESULTS_POINTFIELDSTRENGTH.sql" />
     <Content Include="DataLayer\Oracle\Tables\CALC.CALCTASKS.sql" />
@@ -165,11 +210,11 @@
     <Content Include="DataLayer\SqlServer\Tables\CALC.CONTEXT_STATIONS_SITE.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.CONTEXT_STATIONS.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.CLIENT_CONTEXTS.sql" />
-    <Content Include="DataLayer\SqlServer\Tables\CALC.STATION_CALIBRATION_STA_RESULT.sql" />
-    <Content Include="DataLayer\SqlServer\Tables\CALC.STATION_CALIBRATION_RESULT.sql" />
-    <Content Include="DataLayer\SqlServer\Tables\CALC.STATION_CALIBRATION_DRIVE_TEST_RESULT.sql" />
-    <Content Include="DataLayer\SqlServer\Tables\CALC.STATION_CALIBRATION_ARGS_DEF.sql" />
-    <Content Include="DataLayer\SqlServer\Tables\CALC.STATION_CALIBRATION_ARGS.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.CALCRESULTS_STATION_CALIBRATION_STA.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.CALCRESULTS_STATION_CALIBRATION.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.CALCRESULTS_STATION_CALIBRATION_DRIVE_TEST.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.CALCTASKS_STATION_CALIBRATION_ARGS_DEF.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.CALCTASKS_STATION_CALIBRATION_ARGS.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.PROJECTS.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.PROJECT_MAPS.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.PROJECT_MAP_CONTENTS.sql" />
@@ -290,7 +335,6 @@
     <Content Include="Metadata\Units\Power.dB.xml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="DataLayer\Oracle\Functions\" />
     <Folder Include="DataLayer\SqlServer\Functions\" />
   </ItemGroup>
   <ItemGroup />

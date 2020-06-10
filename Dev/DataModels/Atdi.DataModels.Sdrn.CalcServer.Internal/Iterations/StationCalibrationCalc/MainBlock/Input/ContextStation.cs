@@ -18,5 +18,6 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
         public string ExternalCode { get; set; }
         public string ExternalSource { get; set; }
         public string NameGroupGlobalSID { get; set; }
-    }
+        public string RealStandard { get; set; }
+}
 }

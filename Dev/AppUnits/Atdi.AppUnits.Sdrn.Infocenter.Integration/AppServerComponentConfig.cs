@@ -28,6 +28,9 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration
 		[ComponentConfigProperty("AutoImport.SdrnServer.StationMonitoring.Points.BufferSize")]
 		public int? AutoImportSdrnServerStationMonitoringPointsBufferSize { get; set; }
 
+		[ComponentConfigProperty("AutoImport.SdrnServer.StationMonitoring.Route.BufferSize")]
+		public int? AutoImportSdrnServerStationMonitoringRouteBufferSize { get; set; }
+
 
 		[ComponentConfigProperty("AutoImport.Files.Folder")]
 		public string AutoImportFilesFolder { get; set; }

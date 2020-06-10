@@ -51,6 +51,15 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration.SdrnServer
 			public string Standard;
 		}
 
+		private struct InfocDriveTestRoute
+		{
+			public double Longitude;
+
+			public double Latitude;
+
+			public double? Altitude;
+		}
+
 		private readonly IIntegrationService _integrationService;
 		private readonly IDataLayer<EntityDataOrm<ES_IC.InfocenterEntityOrmContext>> _infocDataLayer;
 		private readonly IDataLayer<EntityDataOrm<ES_SD.SdrnServerEntityOrmContext>> _sdrnsDataLayer;
@@ -226,12 +235,12 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration.SdrnServer
 				// читаем постранично одним потоком две сущности
 				var fetchRows = _config.AutoImportSdrnServerStationMonitoringPointsFetchRows.GetValueOrDefault(10000);
 				var offsetRows = 0;
-				var bufferSize = _config.AutoImportSdrnServerStationMonitoringPointsBufferSize.GetValueOrDefault(5000);
-				var pointsBuffer = new ES_IC.SdrnServer.DriveTestPoint[bufferSize];
-
+				var pointsBufferSize = _config.AutoImportSdrnServerStationMonitoringPointsBufferSize.GetValueOrDefault(5000);
+				var pointsBuffer = new ES_IC.SdrnServer.DriveTestPoint[pointsBufferSize];
+				
 				var canceled = false;
-
 				var pointsIndex = -1;
+				
 				var prevMeasStationId = (long)0;
 				var currMeasStationId = (long)0;
 				var numberOfReadPoints = 0;
@@ -338,7 +347,8 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration.SdrnServer
 
 							// добавляем элемент в масcив. если достигли конца сливаем на диск
 							++pointsIndex;
-							pointsBuffer[pointsIndex] = new DriveTestPoint
+
+							var point  = new DriveTestPoint
 							{
 								Height_m = Convert.ToInt32(reader.GetValue(c => c.Altitude)),
 								Coordinate = new Wgs84Coordinate
@@ -349,17 +359,14 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration.SdrnServer
 								FieldStrength_dBmkVm = Convert.ToSingle(reader.GetValue(c => c.LevelDbmkvm).GetValueOrDefault()),
 								Level_dBm = Convert.ToSingle(reader.GetValue(c => c.LevelDbm).GetValueOrDefault())
 							};
+							pointsBuffer[pointsIndex] = point;
 
 							if (pointsIndex + 1 == pointsBuffer.Length)
 							{
 								this.CreateDriveTestPoints(infocDbScope, currMeasStationId, pointsBuffer, pointsIndex + 1);
 								pointsIndex = -1;
 							}
-
 						} while (reader.Read());
-
-						
-
 						return false;
 					});
 
@@ -367,6 +374,112 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration.SdrnServer
 					offsetRows += fetchRows;
 				} while(!canceled);
 
+				// нужно залить маршруты
+				var routeBufferSize = _config.AutoImportSdrnServerStationMonitoringRouteBufferSize.GetValueOrDefault(5000);
+				var routeBuffer = new InfocDriveTestRoute[routeBufferSize];
+				var routMap = new HashSet<string>(routeBufferSize);
+				var routeIndex = 0; // важно , указывает всегда на следующую ячейку, так сделано специально чтобы  сжимать по необходимости
+				var routePackRation = 1;
+				var routeStopIndex = 1;
+				// читаем еще раз
+				offsetRows = 0;
+				canceled = false;
+				do
+				{
+					var sdrnSelQuery = _sdrnsDataLayer.GetBuilder<ES_SD.IResStLevelCar>()
+						.From()
+						.Select(
+							c => c.Altitude,
+							c => c.Lat,
+							c => c.Lon)
+						.Where(c => c.RES_MEAS_STATION.RES_MEAS.Id, ConditionOperator.Equal, resultId)
+						.Where(c => c.RES_MEAS_STATION.Standard, ConditionOperator.IsNotNull)
+						.OrderByAsc(c => c.Lat, c => c.Lon)
+						.Paginate(offsetRows, fetchRows);
+
+					canceled = sdrnsDbScope.Executor.ExecuteAndFetch(sdrnSelQuery, reader =>
+					{
+						// достигли конца потока данных?
+						if (!reader.Read())
+						{
+							return true;
+						}
+
+						do
+						{
+							var altitude = reader.GetValue(c => c.Altitude);
+							var longitude = reader.GetValue(c => c.Lon).GetValueOrDefault();
+							var latitude = reader.GetValue(c => c.Lat).GetValueOrDefault();
+
+							// маршруты
+							var key = $"{latitude}-{longitude}";
+							if (!routMap.Contains(key))
+							{
+								if (routePackRation == routeStopIndex)
+								{
+									// сбрасываем счетчик
+									routeStopIndex = 1;
+
+									// текущее значение нужн осохранить
+									routMap.Add(key);
+
+									if (routeIndex == routeBufferSize)
+									{
+										// пришло время сжаться в два раза так буфер забит полностью
+										routeIndex = routeIndex / 2;
+										// увеличивает частоту отбора точек
+										routePackRation *= 2;
+										routeStopIndex = 1;
+
+										// сдвигаем элементы - утесняем в 2 раза - до текущего индекса
+										// каждый второй оставляем
+										for (int i = 1; i < routeIndex; i++)
+										{
+											var sourceIndex = i * 2;
+											if (sourceIndex < routeBufferSize)
+											{
+												var source = routeBuffer[sourceIndex];
+												var key2 = $"{source.Latitude}-{source.Longitude}";
+												routMap.Remove(key2);
+												routeBuffer[i] = source;
+											}
+										}
+									}
+
+									routeBuffer[routeIndex] = new InfocDriveTestRoute
+									{
+										Latitude = latitude,
+										Longitude = longitude,
+										Altitude = altitude
+									};
+
+									++routeIndex;
+								}
+								else
+								{
+									// пропускаем это значение, так как берем каждый routePackRation
+									++routeStopIndex;
+								}
+							}
+						} while (reader.Read());
+						return false;
+					});
+					// смещаемся на следующую порцию данных
+					offsetRows += fetchRows;
+				} while (!canceled);
+
+				var routeQueryBuilder = _infocDataLayer.GetBuilder<ES_IC.SdrnServer.IDriveRoute>();
+				for (int i = 0; i < routeIndex; i++)
+				{
+					var routePoint = routeBuffer[i];
+					var routInsQuery = routeQueryBuilder
+						.Insert()
+						.SetValue(c => c.RESULT.Id, sdrnMeasResult.Id)
+						.SetValue(c => c.Latitude, routePoint.Latitude)
+						.SetValue(c => c.Longitude, routePoint.Longitude)
+						.SetValue(c => c.Altitude, routePoint.Altitude);
+					infocDbScope.Executor.Execute(routInsQuery);
+				}
 
 				// тут импортируем все потраха
 				var updStsQuery = _infocDataLayer.GetBuilder<ES_IC.SdrnServer.IStationMonitoringStats>()

@@ -25,11 +25,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
         public int CountMeasGSID { get; set; }
         public int CountMeasGSID_LS { get; set; }
         public int CountMeasGSID_IT { get; set; }
-
-
-
-
-
+        public int PercentComplete { get; set; }
         public float? CorrelationThresholdHard { get; set; }
         public float? CorrelationThresholdWeak { get; set; }
         public bool TrustOldResults { get; set; }

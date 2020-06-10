@@ -32,6 +32,8 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks
         int CountMeasGSID { get; set; }
         int CountMeasGSID_LS { get; set; }
         int CountMeasGSID_IT { get; set; }
+        int PercentComplete { get; set; }
+
     }
 
 }

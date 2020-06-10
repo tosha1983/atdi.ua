@@ -43,13 +43,21 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc
 		[ComponentConfigProperty("Infocenter.EntityOrm.DataContext")]
 		public string InfocenterEntityOrmDataContext { get; set; }
 
-
 		public string Instance { get; set; }
-		//public string LicenseNumber { get; set; }
-		//public DateTime LicenseStopDate { get; set; }
-		//public DateTime LicenseStartDate { get; set; }
 
-		public void VerifyLicense()
+        [ComponentConfigProperty("Threshold.DriveTest.GsmPoints.FetchRows")]
+        public int MaximumCountPointsInDriveTestsFor_GSM { get; set; }
+
+        [ComponentConfigProperty("Threshold.DriveTest.UmtsPoints.FetchRows")]
+        public int MaximumCountPointsInDriveTestsFor_UMTS { get; set; }
+
+        [ComponentConfigProperty("Threshold.DriveTest.LtePoints.FetchRows")]
+        public int MaximumCountPointsInDriveTestsFor_LTE { get; set; }
+
+        [ComponentConfigProperty("Threshold.CdmaPoints.LtePoints.FetchRows")]
+        public int MaximumCountPointsInDriveTestsFor_CDMA { get; set; }
+
+        public void VerifyLicense()
 		{
 			var licenseFileName = this.LicenseFileName;
 			var licenseOwnerId = this.LicenseOwnerId;
