@@ -43,7 +43,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
         private MP.MapDrawingData _currentMapData;
         private IList _currentAreas;
 
-        
+
         private IEventHandlerToken<Events.OnEditParamsCalculation> _onEditParamsCalculationToken;
         private IEventHandlerToken<Events.OnSavedStations> _onSavedStationsToken;
         private IEventHandlerToken<Events.OnCreatePropagationModels> _onCreatePropagationModelsToken;
@@ -63,7 +63,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
         private ParamsCalculationModel _currentParamsCalculationModel;
         private IList _currentStationMonitoringModel;
         private GetStationsParamsModel _currentGetStationsParameters;
-       
+
 
 
         private AreasDataAdapter AreasDataAdapter;
@@ -105,7 +105,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             this.StartStationCalibrationCommand = new ViewCommand(this.OnStartStationCalibrationCommand);
             this.LoadDriveTestsCommand = new ViewCommand(this.OnLoadDriveTestsCommand);
 
-            
+
 
             this._currentParamsCalculationModel = new ParamsCalculationModel();
             this._currentGetStationsParameters = new GetStationsParamsModel();
@@ -143,7 +143,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
         private void OnChangedTaskIdParams(long taskId)
         {
             this._currentParamsCalculationModel = ReadParamsCalculationByTaskId(this._taskId);
-            if ((this._currentParamsCalculationModel.CorrelationThresholdHard==null) && (this._currentParamsCalculationModel.CorrelationThresholdWeak == null) || (this._currentParamsCalculationModel.DistanceAroundContour_km == null))
+            if ((this._currentParamsCalculationModel.CorrelationThresholdHard == null) && (this._currentParamsCalculationModel.CorrelationThresholdWeak == null) || (this._currentParamsCalculationModel.DistanceAroundContour_km == null))
             {
                 FillParametersDefault(this._currentParamsCalculationModel);
             }
@@ -230,7 +230,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
 
         public MethodParamsCalculationModel MethodParamsCalculationModelVal
         {
-            get {return  this._methodParamsCalculationModel; }
+            get { return this._methodParamsCalculationModel; }
             set
             {
                 this._methodParamsCalculationModel = value;
@@ -306,7 +306,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                 if (this._currentAreas != null)
                     foreach (AreaModel area in this._currentAreas)
                     {
-                        if ((area.Location != null) && (area.Location.Length>0))
+                        if ((area.Location != null) && (area.Location.Length > 0))
                         {
                             var dataLocationModels = new DataLocationModel[area.Location.Length];
                             for (int i = 0; i < area.Location.Length; i++)
@@ -477,7 +477,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             {
                 this._currentStationMonitoringModel = value;
                 RedrawMap();
-                
+
             }
         }
 
@@ -504,6 +504,10 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             else if ((standard == "CDMA") || (standard == "CDMA-450") || (standard == "CDMA-800") || (standard == "EVDO"))
             {
                 maximumCountPoints = _appComponentConfig.MaximumCountPointsInDriveTestsFor_CDMA;
+            }
+            else if ((standard == "802.11") || (standard == "ШР"))
+            {
+                maximumCountPoints = _appComponentConfig.MaximumCountPointsInDriveTestsFor_802_11;
             }
             else
             {
@@ -542,7 +546,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                 .Read<ParamsCalculationModel>()
                 .By(new GetParamsCalculationByTaskId()
                 {
-                     TaskId = taskId
+                    TaskId = taskId
                 });
             return resMeas;
         }
@@ -601,12 +605,12 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             RoutesStationMonitoringModel[] resRoutes = null;
             try
             {
-                 resRoutes = _objectReader
-                .Read<RoutesStationMonitoringModel[]>()
-                .By(new RoutesStationMonitoringModelById()
-                {
-                    Id = Id
-                });
+                resRoutes = _objectReader
+               .Read<RoutesStationMonitoringModel[]>()
+               .By(new RoutesStationMonitoringModelById()
+               {
+                   Id = Id
+               });
             }
             catch (Exception e)
             {
@@ -723,6 +727,66 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
 
         private void StartStationCalibrationCommandAction()
         {
+            if (((CurrentAreas != null) && (CurrentAreas.Count == 0)) || (CurrentAreas == null))
+            {
+                _viewStarter.ShowException("Error!", new Exception("Please fill parameter 'area!"));
+                throw new Exception("Please fill parameter 'area!");
+            }
+            if ((CurrentParamsCalculation.DistanceAroundContour_km == null) || ((CurrentParamsCalculation.DistanceAroundContour_km != null) && (CurrentParamsCalculation.DistanceAroundContour_km == 0)))
+            {
+                _viewStarter.ShowException("Error!", new Exception("Please fill parameter 'DistanceAroundContour_km!"));
+                throw new Exception("Please fill parameter 'DistanceAroundContour_km!");
+            }
+            if (string.IsNullOrEmpty(GetStationsParams.StateForActiveStation))
+            {
+                _viewStarter.ShowException("Error!", new Exception("Please fill parameter 'StateForActiveStation!"));
+                throw new Exception("Please fill parameter 'StateForActiveStation!");
+            }
+            if (string.IsNullOrEmpty(GetStationsParams.StateForNotActiveStation))
+            {
+                _viewStarter.ShowException("Error!", new Exception("Please fill parameter 'StateForNotActiveStation!"));
+                throw new Exception("Please fill parameter 'StateForNotActiveStation!");
+            }
+            if ((GetStationsParams.Id == null) && (SelectedStationTypeVal == SelectedStationType.OneStation))
+            {
+                _viewStarter.ShowException("Error!", new Exception("Please fill parameter 'Id!"));
+                throw new Exception("Please fill parameter 'Id!");
+            }
+            if (string.IsNullOrEmpty(GetStationsParams.Standard))
+            {
+                _viewStarter.ShowException("Error!", new Exception("Please fill parameter 'Standard!"));
+                throw new Exception("Please fill parameter 'Standard!");
+            }
+            if ((CurrentStationMonitoringModel == null) || ((CurrentStationMonitoringModel != null) && (CurrentStationMonitoringModel.Count == 0)))
+            {
+                _viewStarter.ShowException("Error!", new Exception("Please fill parameter 'Drive tests!"));
+                throw new Exception("Please fill parameter 'Drive tests!");
+            }
+            var listStationMonitoringModel = new List<long>();
+            foreach (StationMonitoringModel x in CurrentStationMonitoringModel)
+            {
+                var driveTestStandardStats = x.DriveTestStandardStats;
+                if (driveTestStandardStats != null)
+                {
+                    var listDriveTests = driveTestStandardStats.ToList();
+                    for (int k=0; k< listDriveTests.Count; k++)
+                    {
+                        var max = GetMaximumCountPointsInDriveTests(listDriveTests[k].Standard);
+                        if (listDriveTests[k].Count>max)
+                        {
+                            _viewStarter.ShowException("Error!", new Exception($"The functionality cannot be started, because for the standard '{listDriveTests[k].Standard}' the  number of points greater  {listDriveTests[k].Count}!"));
+                            throw new Exception($"The functionality cannot be started, because for the standard '{listDriveTests[k].Standard}' the  number of points greater  {listDriveTests[k].Count}!");
+                        }
+                        if (listDriveTests[k].Count == 0)
+                        {
+                            _viewStarter.ShowException("Error!", new Exception($"The functionality cannot be started, because for the standard '{listDriveTests[k].Standard}' the  number of points is 0!"));
+                            throw new Exception($"The functionality cannot be started, because for the standard '{listDriveTests[k].Standard}' the  number of points is 0!");
+                        }
+                    }
+                }
+                listStationMonitoringModel.Add(x.Id);
+            }
+
             _viewStarter.StartLongProcess(
                 new LongProcessOptions()
                 {
@@ -739,103 +803,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                 },
                 token =>
                 {
-                    try
-                    {
-                        if (((CurrentAreas != null) && (CurrentAreas.Count == 0)) || (CurrentAreas == null))
-                        {
-                            _viewStarter.ShowException("Error!", new Exception("Please fill parameter 'area!"));
-                            throw new Exception("Please fill parameter 'area!");
-                        }
-                        if ((CurrentParamsCalculation.DistanceAroundContour_km == null) || ((CurrentParamsCalculation.DistanceAroundContour_km != null) && (CurrentParamsCalculation.DistanceAroundContour_km == 0)))
-                        {
-                            _viewStarter.ShowException("Error!", new Exception("Please fill parameter 'DistanceAroundContour_km!"));
-                            throw new Exception("Please fill parameter 'DistanceAroundContour_km!");
-                        }
-                        if (string.IsNullOrEmpty(GetStationsParams.StateForActiveStation))
-                        {
-                            _viewStarter.ShowException("Error!", new Exception("Please fill parameter 'StateForActiveStation!"));
-                            throw new Exception("Please fill parameter 'StateForActiveStation!");
-                        }
-                        if (string.IsNullOrEmpty(GetStationsParams.StateForNotActiveStation))
-                        {
-                            _viewStarter.ShowException("Error!", new Exception("Please fill parameter 'StateForNotActiveStation!"));
-                            throw new Exception("Please fill parameter 'StateForNotActiveStation!");
-                        }
-                        if ((GetStationsParams.Id == null) && (SelectedStationTypeVal == SelectedStationType.OneStation))
-                        {
-                            _viewStarter.ShowException("Error!", new Exception("Please fill parameter 'Id!"));
-                            throw new Exception("Please fill parameter 'Id!");
-                        }
-                        if (string.IsNullOrEmpty(GetStationsParams.Standard))
-                        {
-                            _viewStarter.ShowException("Error!", new Exception("Please fill parameter 'Standard!"));
-                            throw new Exception("Please fill parameter 'Standard!");
-                        }
-                        if ((CurrentStationMonitoringModel == null) || ((CurrentStationMonitoringModel != null) && (CurrentStationMonitoringModel.Count == 0)))
-                        {
-                            _viewStarter.ShowException("Error!", new Exception("Please fill parameter 'Drive tests!"));
-                            throw new Exception("Please fill parameter 'Drive tests!");
-                        }
-
-
-                        var stations = ReadStations();
-                        if (stations.Length > 0)
-                        {
-                            var listStationMonitoringModel = new List<long>();
-                            foreach (StationMonitoringModel x in CurrentStationMonitoringModel)
-                            {
-                                var driveTestStandardStats = x.DriveTestStandardStats;
-                                if (driveTestStandardStats != null)
-                                {
-                                    var listDriveTests = driveTestStandardStats.ToList();
-                                    var countPoints = listDriveTests.Find(v => v.Count > GetMaximumCountPointsInDriveTests(v.Standard));
-                                    if (countPoints.Standard != null)
-                                    {
-                                        _viewStarter.ShowException("Error!", new Exception($"The functionality cannot be started, because for the standard '{countPoints.Standard}' the  number of points greater  {countPoints.Count}!"));
-                                        throw new Exception($"The functionality cannot be started, because for the standard '{countPoints.Standard}' the  number of points greater  {countPoints.Count}!");
-                                    }
-                                }
-                                listStationMonitoringModel.Add(x.Id);
-                            }
-                            this._currentParamsCalculationModel.InfocMeasResults = listStationMonitoringModel.ToArray();
-                            this._currentParamsCalculationModel.StationIds = stations.Select(x => Convert.ToInt64(x.ExternalCode)).ToArray();
-                            this._onEditParamsCalculationToken = _eventBus.Subscribe<Events.OnEditParamsCalculation>(this.OnEditParamsCalculationsHandle);
-                            this._onCreatePropagationModelsToken = _eventBus.Subscribe<Events.OnCreatePropagationModels>(this.OnCreatePropagationModelsHandle);
-                            this._onSavedStationsToken = _eventBus.Subscribe<Events.OnSavedStations>(this.OnSavedStationsHandle);
-
-
-                            var clientContextId = _objectReader.Read<long?>().By(new CalcTaskModelByContextId() { TaskId = TaskId });
-                            if ((clientContextId != null) && (clientContextId != 0))
-                            {
-                                var createPropagationModels = new CreatePropagationModels()
-                                {
-                                    ContextId = clientContextId.Value
-                                };
-                                _commandDispatcher.Send(createPropagationModels);
-
-                                var createClientContextStations = new CreateClientContextStations()
-                                {
-                                    ClientContextId = clientContextId.Value,
-                                    IcsmMobStation = stations
-                                };
-                                _commandDispatcher.Send(createClientContextStations);
-                            }
-                            else
-                            {
-                                _viewStarter.ShowException("Error!", new Exception($"Client context Id is 0!"));
-                                throw new Exception($"Client context Id is 0!");
-                            }
-                        }
-                        else
-                        {
-                            _viewStarter.ShowException("Error!", new Exception($"No stations with suitable parameters!"));
-                            throw new Exception($"No stations with suitable parameters!");
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        this._logger.Exception(Exceptions.StationCalibrationCalculation, e);
-                    }
+                    OnLoadStationsHandle(listStationMonitoringModel);
                 });
             _viewStarter.Stop(this);
         }
@@ -857,10 +825,57 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
         {
             if (data != null)
             {
-                
+
             }
         }
 
+        private void OnLoadStationsHandle(List<long> listStationMonitoringModel)
+        {
+            try
+            {
+                var stations = ReadStations();
+                if (stations.Length > 0)
+                {
+
+                    this._currentParamsCalculationModel.InfocMeasResults = listStationMonitoringModel.ToArray();
+                    this._currentParamsCalculationModel.StationIds = stations.Select(x => Convert.ToInt64(x.ExternalCode)).ToArray();
+                    this._onEditParamsCalculationToken = _eventBus.Subscribe<Events.OnEditParamsCalculation>(this.OnEditParamsCalculationsHandle);
+                    this._onCreatePropagationModelsToken = _eventBus.Subscribe<Events.OnCreatePropagationModels>(this.OnCreatePropagationModelsHandle);
+                    this._onSavedStationsToken = _eventBus.Subscribe<Events.OnSavedStations>(this.OnSavedStationsHandle);
+
+                    var clientContextId = _objectReader.Read<long?>().By(new CalcTaskModelByContextId() { TaskId = TaskId });
+                    if ((clientContextId != null) && (clientContextId != 0))
+                    {
+                        var createPropagationModels = new CreatePropagationModels()
+                        {
+                            ContextId = clientContextId.Value
+                        };
+                        _commandDispatcher.Send(createPropagationModels);
+
+                        var createClientContextStations = new CreateClientContextStations()
+                        {
+                            ClientContextId = clientContextId.Value,
+                            IcsmMobStation = stations
+                        };
+                        _commandDispatcher.Send(createClientContextStations);
+                    }
+                    else
+                    {
+                        _viewStarter.ShowException("Error!", new Exception($"Client context Id is 0!"));
+                        throw new Exception($"Client context Id is 0!");
+                    }
+                }
+                else
+                {
+                    _viewStarter.ShowException("Error!", new Exception($"No stations with suitable parameters!"));
+                    throw new Exception($"No stations with suitable parameters!");
+                }
+            }
+            catch (Exception e)
+            {
+                this._logger.Exception(Exceptions.StationCalibrationCalculation, e);
+            }
+        }
     }
     public enum TypeCoord
     {

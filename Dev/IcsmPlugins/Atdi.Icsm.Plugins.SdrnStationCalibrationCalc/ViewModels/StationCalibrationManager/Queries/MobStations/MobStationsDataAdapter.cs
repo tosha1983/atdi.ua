@@ -293,7 +293,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
 
                         List<YMobstaFreqsT> yMobStationTxRx = new List<YMobstaFreqsT>();
                         var rssta = new IMRecordset(mobstafreq, IMRecordset.Mode.ReadOnly);
-                        rssta.Select("ID,TX_FREQ,RX_FREQ,ChannelTx.CHANNEL");
+                        rssta.Select("ID,TX_FREQ,RX_FREQ");
                         rssta.SetWhere("STA_ID", IMRecordset.Operation.Eq, mobStationT.m_id);
                         for (rssta.Open(); !rssta.IsEOF(); rssta.MoveNext())
                         {
@@ -375,7 +375,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                         mobStationT.m_Antenna.m_xpd = rs.GetD("Antenna.XPD");
                         mobStationT.m_rec_area = rs.GetS("Position.City.PROVINCE");
                         mobStationT.m_cust_txt2 = ReadGCIDDataModel(mobStationT.m_cust_txt1, mobStationT.m_rec_area, mobStationT.m_standard);
-                        if ((mobStationT.m_cust_txt2!= mobStationT.m_cust_txt1) && !string.IsNullOrEmpty(mobStationT.m_cust_txt2))
+                        if ((mobStationT.m_cust_txt2 != mobStationT.m_cust_txt1) && !string.IsNullOrEmpty(mobStationT.m_cust_txt2))
                         {
                             mobStationT.m_cust_txt1 = mobStationT.m_cust_txt2;
                         }
@@ -513,7 +513,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                             };
 
                             DateTime? modifiedDate = null;
-                            if (source.m_date_modified!=IM.NullT)
+                            if (source.m_date_modified != IM.NullT)
                             {
                                 modifiedDate = source.m_date_modified;
                             }
@@ -535,7 +535,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                                 LicenseGsid = source.m_cust_txt1,
                                 RealGsid = source.m_cust_txt2,
                                 ModifiedDate = modifiedDate,
-                                CreatedDate = createdDate==null? DateTime.Now : createdDate.Value,
+                                CreatedDate = createdDate == null ? DateTime.Now : createdDate.Value,
                                 RegionCode = source.m_rec_area,
                                 SITE = new IcsmMobStationSite()
                                 {
@@ -586,6 +586,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                     rs.Destroy();
                 }
             }
+
             return listIcsmMobStation.ToArray();
         }
 

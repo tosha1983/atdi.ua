@@ -84,7 +84,7 @@
           <DataGridTextColumn Header="{x:Static res:Resources.SensorName}" Binding="{Binding Path=SensorName}"></DataGridTextColumn>
         </DataGrid.Columns>
       </DataGrid>
-      <Button Grid.Row="1" Margin="0,5,130,0" Content="{x:Static res:Resources.TRBS}" Width="50" Height="20" Command="{Binding FilterTRBSCommand}" HorizontalAlignment="Right" VerticalAlignment="Top" IsEnabled="False"/>
+      <Button Grid.Row="1" Margin="0,5,130,0" Content="{x:Static res:Resources.TRBS}" Width="50" Height="20" Command="{Binding FilterTRBSCommand}" HorizontalAlignment="Right" VerticalAlignment="Top" IsEnabled="true"/>
       <Button Grid.Row="1" Margin="0,5,70,0" Content="{x:Static res:Resources.ZTR}" Width="50" Height="20" Command="{Binding FilterZTRCommand}" HorizontalAlignment="Right" VerticalAlignment="Top" IsEnabled="False"/>
       <Button Grid.Row="1" Margin="0,5,10,0" Content="{x:Static res:Resources.Plan}" Width="50" Height="20" Command="{Binding FilterPlanCommand}" HorizontalAlignment="Right" VerticalAlignment="Top" IsEnabled="False"/>
 
