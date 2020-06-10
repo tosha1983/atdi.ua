@@ -83,7 +83,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.Modules.Licensing", "M
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.Icsm.Plugins.GE06Calc", "IcsmPlugins\Atdi.Icsm.Plugins.GE06Calc\Atdi.Icsm.Plugins.GE06Calc.csproj", "{CB12BA69-A368-499E-ABC8-6D44095E27F0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.Build.Icsm.Plugins.GE06Calc", "Build\Atdi.Build.Icsm.Plugins.GE06Calc\Atdi.Build.Icsm.Plugins.GE06Calc\Atdi.Build.Icsm.Plugins.GE06Calc.csproj", "{598E6C51-D647-4DDF-84DD-1D99EFD4BD8D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.Build.Icsm.Plugins.GE06Calc", "Build\Atdi.Build.Icsm.Plugins.GE06Calc\Atdi.Build.Icsm.Plugins.GE06Calc.csproj", "{598E6C51-D647-4DDF-84DD-1D99EFD4BD8D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
