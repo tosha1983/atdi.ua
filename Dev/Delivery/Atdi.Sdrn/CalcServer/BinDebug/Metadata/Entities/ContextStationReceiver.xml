@@ -19,8 +19,10 @@
     <Field Name="KTBF_dBm" SourceType="Column" Required="true" SourceName="KTBF_DBM" DataType="Float.22.8" Title="KTBF, dBm" Desc="The KTBF in dBm"/>
     <Field Name="Threshold_dBm" SourceType="Column" Required="true" SourceName="THRESHOLD_DBM" DataType="Float.22.8" Title="Threshold, dBm" Desc="The Threshold in dBm"/>
 
-    <Field Name="PolarizationCode" SourceType="Column" SourceName="POLARIZING_CODE" DataType="Code.u08" Required="true" Title="Transmitter Polarization Code" Desc="The code of the Polarization of the transmitter"  />
-    <Field Name="PolarizationName" SourceType="Column" SourceName="POLARIZING_NAME" DataType="Text.50" Required="true" Title="Transmitter Polarization Name" Desc="The name of the Polarization of the transmitter" />
+    <Field Name="PolarizationCode" SourceType="Column" SourceName="POLARIZATION_CODE" DataType="Code.u08" Required="true" Title="Transmitter Polarization Code" Desc="The code of the Polarization of the transmitter"  />
+    <Field Name="PolarizationName" SourceType="Column" SourceName="POLARIZATION_NAME" DataType="Text.50" Required="true" Title="Transmitter Polarization Name" Desc="The name of the Polarization of the transmitter" />
+
+    <Field Name="Freqs_MHz" SourceType="Column" Required="false" SourceName="FREQS_MHZ" DataType="Array.Double" Title="Frequency MHz" Desc="The Frequency MHz"/>
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="StationId"/>
