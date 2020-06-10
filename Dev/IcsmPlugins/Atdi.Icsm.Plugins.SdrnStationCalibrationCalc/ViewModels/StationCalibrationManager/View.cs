@@ -675,6 +675,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                 {
                     var modifierEditParamsCalculation = new EditParamsCalculation
                     {
+                        Standard = GetStationsParams.Standard,
                         ClientContextId = data.ClientContextId,
                         TaskId = TaskId,
                         AltitudeStation = this._currentParamsCalculationModel.AltitudeStation,
