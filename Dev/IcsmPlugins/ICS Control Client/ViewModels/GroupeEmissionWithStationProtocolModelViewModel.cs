@@ -43,6 +43,7 @@ namespace XICSM.ICSControlClient.ViewModels
         public WpfCommand FilterApplyCommand { get; set; }
         public WpfCommand PrintSelectedCommand { get; set; }
         public WpfCommand PrintAllCommand { get; set; }
+        public WpfCommand FilterTRBSCommand { get; set; }
 
         public DataSynchronizationProcessDataAdapter Protocols => this._protocols;
         public DataSynchronizationProcessProtocolDataAdapter ProtocolDetails => this._protocolDetails;
@@ -53,6 +54,7 @@ namespace XICSM.ICSControlClient.ViewModels
             this._protocolDetails = new DataSynchronizationProcessProtocolDataAdapter();
             this._dataFilter = new GroupeEmissionProtocolDataFilter();
             this.FilterApplyCommand = new WpfCommand(this.OnFilterApplyCommand);
+            this.FilterTRBSCommand = new WpfCommand(this.OnFilterTRBSCommand);
             this.PrintSelectedCommand = new WpfCommand(this.OnPrintSelectedCommand);
             this.PrintAllCommand = new WpfCommand(this.OnPrintAllCommand);
             IsEnabledPrintAllCommand = false;
@@ -98,6 +100,35 @@ namespace XICSM.ICSControlClient.ViewModels
                 IsEnabledPrintAllCommand = true;
             else
                 IsEnabledPrintAllCommand = false;
+        }
+
+        private void OnFilterTRBSCommand(object parameter)
+        {
+            var _selectPeriodForm = new FM.SelectPeriodForm();
+            _selectPeriodForm.ShowDialog();
+            if (_selectPeriodForm.IsPresOK)
+            {
+                var selectYear = _selectPeriodForm.CurrentYear;
+                var selectMonth = _selectPeriodForm.CurrentMonth;
+                var sdrProtocols = SVC.SdrnsControllerWcfClientIeStation.GetProtocolsByParameters(null,
+              null,
+              null,
+              new DateTime(selectYear, selectMonth, 01, 0, 0, 0, 1),
+              new DateTime(selectYear, selectMonth, 23, 59, 59, 0, 1),
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              "");
+            }
         }
         private void OnFilterApplyCommand(object parameter)
         {
