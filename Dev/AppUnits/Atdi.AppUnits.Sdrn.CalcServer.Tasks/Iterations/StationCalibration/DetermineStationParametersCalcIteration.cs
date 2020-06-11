@@ -475,8 +475,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                         var arrStations = outListContextStations[j];
                                         for (int p = 0; p < coordinatesDrivePoint.Length; p++)
                                         {
-                                            var coordinateStation = _transformation.ConvertCoordinateToEpgs(new Wgs84Coordinate() { Longitude = arrStations[0].Site.Longitude, Latitude = arrStations[0].Site.Latitude }, _transformation.ConvertProjectionToCode(data.Projection));
-                                            if (GeometricСalculations.GetDistance_km(coordinatesDrivePoint[p].X, coordinatesDrivePoint[p].Y, coordinateStation.X, coordinateStation.Y) <= GetMinDistanceFromConfigByStandard(standard))
+                                            //var coordinateStation = _transformation.ConvertCoordinateToEpgs(new Wgs84Coordinate() { Longitude = arrStations[0].Site.Longitude, Latitude = arrStations[0].Site.Latitude }, _transformation.ConvertProjectionToCode(data.Projection));
+                                            if (GeometricСalculations.GetDistance_km(coordinatesDrivePoint[p].X, coordinatesDrivePoint[p].Y, arrStations[0].Coordinate.X, arrStations[0].Coordinate.Y) <= GetMinDistanceFromConfigByStandard(standard))
                                             {
                                                 // добавляем весь массив станций arrStations в случае если одна из станций, которая входит в arrStations имеет расстояние до одной из точек текущего DrivePoint меньше 1 км (берем с конфигурации)
                                                 GSIDGroupeStations.Add(arrStations);
@@ -498,8 +498,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                         var keyValueStations = new Dictionary<long, double>();
                                         for (int z = 0; z < arrStations.Length; z++)
                                         {
-                                            var coordinateStation = _transformation.ConvertCoordinateToEpgs(new Wgs84Coordinate() { Longitude = arrStations[z].Site.Longitude, Latitude = arrStations[z].Site.Latitude }, _transformation.ConvertProjectionToCode(data.Projection));
-                                            var distance = GeometricСalculations.GetDistance_km(centerWeightCoordinateOfDriveTest.X, centerWeightCoordinateOfDriveTest.Y, coordinateStation.X, coordinateStation.Y);
+                                            //var coordinateStation = _transformation.ConvertCoordinateToEpgs(new Wgs84Coordinate() { Longitude = arrStations[z].Site.Longitude, Latitude = arrStations[z].Site.Latitude }, _transformation.ConvertProjectionToCode(data.Projection));
+                                            var distance = GeometricСalculations.GetDistance_km(centerWeightCoordinateOfDriveTest.X, centerWeightCoordinateOfDriveTest.Y, arrStations[0].Coordinate.X, arrStations[0].Coordinate.Y /* coordinateStation.X, coordinateStation.Y*/);
                                             keyValueStations.Add(arrStations[z].Id, distance);
                                         }
                                         var orderStations = from z in keyValueStations.ToList() orderby z.Value ascending select z;
