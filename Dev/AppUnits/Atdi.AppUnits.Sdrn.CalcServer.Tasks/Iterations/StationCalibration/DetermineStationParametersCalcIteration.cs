@@ -201,7 +201,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     for (int c = 0; c < arrStandards.Length; c++)
                     {
                         var listDriveTests = data.GSIDGroupeDriveTests.ToList();
-                        var fndDrivetTests = listDriveTests.FindAll(x => x.Standard == arrStandards[c]);
+                        var fndDrivetTests = listDriveTests.FindAll(x => x.Standard == arrStandards[c].GetStandardForDriveTest());
                         if (fndDrivetTests != null)
                         {
                             selectDriveTestsByStandards.AddRange(fndDrivetTests);
@@ -212,6 +212,16 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
 
                 var listCalcCorellationResult = new CalibrationResult[arrStandards.Length];
+
+                if (data.GSIDGroupeDriveTests.Length == 0)
+                {
+                    throw new Exception("The count of drive tests is 0!");
+                }
+                if (data.GSIDGroupeStation.Length == 0)
+                {
+                    throw new Exception("The count of stations is 0!");
+                }
+
                 // цикл по стандартам
                 for (int v = 0; v < arrStandards.Length; v++)
                 {
@@ -754,16 +764,25 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                         });
                                     }
                                 }
+
+                                if (outListDriveTestsResults.Count > 0)
+                                {
+                                    var clc = (double)(50.0 / (double)(outListDriveTestsResults.Count * arrDriveTests.Length));
+                                    var newCalc = 50 + (int)(((i + 1)*(w+ 1))* clc);
+                                    if (percentComplete != newCalc)
+                                    {
+                                        percentComplete = newCalc;
+                                        UpdatePercentComplete(data.resultId, newCalc);
+                                    }
+                                }
                             }
                         }
-
-                        if (outListDriveTestsResults.Count > 0)
-                        {
-                            percentComplete = 50 + ((i + 1) * (int)(50.0 / outListDriveTestsResults.Count));
-                            UpdatePercentComplete(data.resultId, percentComplete);
-                        }
+                        //if (outListDriveTestsResults.Count > 0)
+                        //{
+                        //    percentComplete = 50 + ((i + 1) * (int)(50.0 / outListDriveTestsResults.Count));
+                        //    UpdatePercentComplete(data.resultId, percentComplete);
+                        //}
                     }
-
 
                     /////////////////////////////////////////////////////////////////////////////////////////////////////////
                     ///
@@ -838,7 +857,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             {
                                 if (driveTests[z] != null)
                                 {
-                                    listCalibrationDriveTestResult.Add(driveTests[z]);
+                                    if ((listCalibrationDriveTestResult.Find(n => n.DriveTestId == driveTests[z].DriveTestId)) == null)
+                                    {
+                                        listCalibrationDriveTestResult.Add(driveTests[z]);
+                                    }
                                 }
                             }
                         }
@@ -848,7 +870,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             {
                                 if (stations[z] != null)
                                 {
-                                    listCalibrationStationResult.Add(stations[z]);
+                                    if ((listCalibrationStationResult.Find(n => n.ExternalSource == stations[z].ExternalSource && n.ExternalCode == stations[z].ExternalCode)) == null)
+                                    {
+                                        listCalibrationStationResult.Add(stations[z]);
+                                    }
                                 }
                             }
                         }
