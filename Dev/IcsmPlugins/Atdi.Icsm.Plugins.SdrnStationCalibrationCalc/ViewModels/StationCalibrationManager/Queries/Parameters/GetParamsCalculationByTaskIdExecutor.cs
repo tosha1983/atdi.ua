@@ -27,6 +27,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
             var query = _dataLayer.GetBuilder<CS_ES.Tasks.IStationCalibrationArgs>()
                 .Read()
                 .Select(
+                c=>c.Standard,
                 c => c.TASK.Id,
                 c => c.AltitudeStation,
                 c => c.AzimuthStation,
@@ -120,6 +121,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                 UseMeasurementSameGSID = reader.GetValue(c => c.UseMeasurementSameGSID),
                 CorrelationThresholdHard = reader.GetValue(c => c.CorrelationThresholdHard),
                 CorrelationThresholdWeak = reader.GetValue(c => c.CorrelationThresholdWeak),
+                Standard = reader.GetValue(c => c.Standard)
                 //InfocMeasResults = reader.GetValue(c => c.InfocMeasResults),
                 //StationIds = reader.GetValue(c => c.StationIds)
             };

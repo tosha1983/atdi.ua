@@ -8,6 +8,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
 {
     public class ParamsCalculationModel
     {
+        public string Standard { get; set; }
         public long TaskId { get; set; }
         public float? CorrelationThresholdHard { get; set; }
         public float? CorrelationThresholdWeak { get; set; }
