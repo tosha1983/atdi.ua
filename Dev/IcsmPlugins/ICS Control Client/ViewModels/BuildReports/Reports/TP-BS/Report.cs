@@ -254,7 +254,7 @@ namespace XICSM.ICSControlClient.ViewModels.Reports
                 rep.WriteLine(line.ToArray());
                 for (int i = 0; i < ListHeadColumnWidth.Length; i++)
                 {
-                    rep.SetCellBackgroundColor(i, curr_num, System.Drawing.Color.Yellow);
+                    rep.SetCellBackgroundColor(i, curr_num);
                 }
 
 

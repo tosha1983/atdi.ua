@@ -622,6 +622,11 @@ namespace XICSM.ICSControlClient.ViewModels.Reports
 
             IFont font = null;
             cellStyleHead = oWorkbook_.CreateCellStyle();
+
+            cellStyleHead.FillForegroundColor = IndexedColors.Yellow.Index;
+            cellStyleHead.FillPattern = FillPattern.Diamonds;
+            cellStyleHead.FillBackgroundColor = IndexedColors.Yellow.Index;
+
             cellStyleHead.Alignment = HorizontalAlignment.Center;
             cellStyleHead.VerticalAlignment = VerticalAlignment.Center;
             cellStyleHead.BorderBottom = BorderStyle.Thin;
@@ -635,7 +640,7 @@ namespace XICSM.ICSControlClient.ViewModels.Reports
             cellStyleHead.WrapText = true;
 
             font = oWorkbook_.CreateFont();
-            font.FontHeightInPoints = 8;
+            font.FontHeightInPoints = 10;
             font.FontName = "Times New Roman";
             font.IsItalic = isItalic;
             cellStyleHead.SetFont(font);

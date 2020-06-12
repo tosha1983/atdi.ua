@@ -173,9 +173,9 @@ namespace XICSM.ICSControlClient.ViewModels.Reports
         /// <param name="col">Номер колонки, начинается с 1</param>
         /// <param name="row">Номер строки, начинается с 1</param>
         /// <param name="color">цвет фона</param>
-        public void SetCellBackgroundColor(int col, int row, Color color)
+        public void SetCellBackgroundColor(int col, int row)
         {
-            _ew.SetCellBackgroundColor(col, row, color);
+            _ew.SetCellStyle(col, row, _ew.GetCellStyleHead());
         }
                
         /// <summary>
