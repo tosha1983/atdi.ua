@@ -95,7 +95,7 @@
           <DataGridTextColumn Header="{x:Static res:Resources.GSIDReal}" Binding="{Binding Path=GlobalSID}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.GSIDICSM}" Binding="{Binding Path=PermissionGlobalSID}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.PermissionFrequency_MHz}" Binding="{Binding Path=StationTxFreq}" Width="200"></DataGridTextColumn>
-          <DataGridTextColumn Header="{x:Static res:Resources.PermissionChannel}" Binding="{Binding Path=StationChannel}" Width="200"></DataGridTextColumn>
+          <DataGridTextColumn Header="{x:Static res:Resources.PermissionChannel}" Binding="{Binding Path=StationTxChannel}" Width="200"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.RadioMonitoringResult}" Binding="{Binding Path=StatusMeasFull}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.FrequencyMeasured}" Binding="{Binding Path=RadioControlMeasFreq_MHz}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.FrequencyDeviation}" Binding="{Binding Path=RadioControlDeviationFreq_MHz}"></DataGridTextColumn>

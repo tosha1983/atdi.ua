@@ -104,30 +104,29 @@ namespace XICSM.ICSControlClient.ViewModels
 
         private void OnFilterTRBSCommand(object parameter)
         {
+
             var _selectPeriodForm = new FM.SelectPeriodForm();
             _selectPeriodForm.ShowDialog();
             if (_selectPeriodForm.IsPresOK)
             {
-                var selectYear = _selectPeriodForm.CurrentYear;
-                var selectMonth = _selectPeriodForm.CurrentMonth;
-                var sdrProtocols = SVC.SdrnsControllerWcfClientIeStation.GetProtocolsByParameters(null,
-              null,
-              null,
-              new DateTime(selectYear, selectMonth, 01, 0, 0, 0, 1),
-              new DateTime(selectYear, selectMonth, 23, 59, 59, 0, 1),
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              "");
+                FRM.FolderBrowserDialog folderDialog = new FRM.FolderBrowserDialog();
+                if (folderDialog.ShowDialog() == FRM.DialogResult.OK)
+                {
+                    if (!string.IsNullOrEmpty(folderDialog.SelectedPath))
+                    {
+                        var selectYear = _selectPeriodForm.CurrentYear;
+                        var selectMonth = _selectPeriodForm.CurrentMonth;
+
+                        var sdrProtocols = SVC.SdrnsControllerWcfClientIeStation.GetDetailProtocolsByParameters(new DateTime(selectYear, selectMonth, 1, 0, 0, 0, 1), new DateTime(selectYear, selectMonth, System.DateTime.DaysInMonth(selectYear, selectMonth), 23, 59, 59, 1));
+
+                        var prepareDataForReport = Report.PrepareData(sdrProtocols.ToList());
+                        if ((prepareDataForReport != null) && (prepareDataForReport.Length > 0))
+                        {
+                            Report.Save(folderDialog.SelectedPath, selectYear.ToString(), _selectPeriodForm.CurrentMonthName, prepareDataForReport);
+                            MessageBox.Show("Звіт сформовано!");
+                        }
+                    }
+                }
             }
         }
         private void OnFilterApplyCommand(object parameter)
