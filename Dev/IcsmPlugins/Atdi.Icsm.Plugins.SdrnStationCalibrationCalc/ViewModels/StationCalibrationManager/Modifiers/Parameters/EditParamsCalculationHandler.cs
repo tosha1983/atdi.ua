@@ -28,6 +28,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
         {
             var query = _dataLayer.GetBuilder<IStationCalibrationArgs>()
                 .Update()
+                  .SetValue(c => c.Standard, commandParameters.Standard)
                   .SetValue(c => c.AltitudeStation, commandParameters.AltitudeStation)
                   .SetValue(c => c.AzimuthStation, commandParameters.AzimuthStation)
                   .SetValue(c => c.CascadeTuning, commandParameters.CascadeTuning)

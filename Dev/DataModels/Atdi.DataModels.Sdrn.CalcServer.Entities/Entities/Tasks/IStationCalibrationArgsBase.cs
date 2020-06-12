@@ -11,6 +11,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks
     [Entity]
     public interface IStationCalibrationArgsBase
     {
+        string Standard { get; set; }
         long[] InfocMeasResults { get; set; }
         long[] StationIds { get; set; }
         float? CorrelationThresholdHard { get; set; }

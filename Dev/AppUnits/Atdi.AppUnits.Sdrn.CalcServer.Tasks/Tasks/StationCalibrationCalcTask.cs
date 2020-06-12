@@ -52,6 +52,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 
         private class TaskParameters
 		{
+            public string Standard;
+
             public long[] InfocMeasResults;
 
             public long[] StationIds;
@@ -348,6 +350,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
             var query = _calcServerDataLayer.GetBuilder<IStationCalibrationArgs>()
                             .From()
                             .Select(
+                                c => c.Standard,
                                 c => c.AltitudeStation,
                                 c => c.AzimuthStation,
                                 c => c.CascadeTuning,
@@ -465,7 +468,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                     Projection = reader.GetValue(c => c.TASK.CONTEXT.PROJECT.Projection),
                     MapName = reader.GetValue(c => c.TASK.MapName),
                     StationIds = reader.GetValue(c => c.StationIds),
-                    InfocMeasResults = reader.GetValue(c => c.InfocMeasResults)
+                    InfocMeasResults = reader.GetValue(c => c.InfocMeasResults),
+                    Standard = reader.GetValue(c => c.Standard)
                 };
             });
 
@@ -653,10 +657,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 
             // load drive tests
             int cntRecord = 0;
-            var driveTests = new List<DriveTestsResult>();
+            var allDriveTests = new List<DriveTestsResult>();
             var partResultIds = BreakDownElemBlocks.BreakDown(this._parameters.InfocMeasResults);
             for (int i = 0; i < partResultIds.Count; i++)
             {
+                var driveTests = new List<DriveTestsResult>();
                 var queryDriveTest = _infocenterDataLayer.GetBuilder<IDriveTest>()
                 .From()
                 .Select(
@@ -667,8 +672,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                     c => c.Standard,
                     c => c.RESULT.MeasTime
                 )
-                .Where(c => c.RESULT.Id, ConditionOperator.In, partResultIds[i].ToArray());
-
+                .Where(c => c.RESULT.Id, ConditionOperator.In, partResultIds[i].ToArray())
+                .Where(c => c.Standard, ConditionOperator.Equal, this._parameters.Standard.GetStandardForDriveTest());
                 var contextDriveTestsResults = _infoDbScope.Executor.ExecuteAndFetch(queryDriveTest, reader =>
                 {
                     while (reader.Read())
@@ -692,58 +697,69 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                     return true;
                 });
 
-
-                for (int k = 0; k < driveTests.Count; k++)
+                var allListNumsDriveTests = driveTests.Select(b => b.Num);
+                if ((allListNumsDriveTests != null) && (allListNumsDriveTests.Count() > 0))
                 {
-                    var driveTest = driveTests[k];
-
-                    var queryDriveTestPoints = _infocenterDataLayer.GetBuilder<IDriveTestPoints>()
-                    .From()
-                    .Select(
-                    c => c.Id,
-                    c => c.DRIVE_TEST.Id,
-                    c => c.Points,
-                    c => c.Count
-                    )
-                    .Where(c => c.DRIVE_TEST.Id, ConditionOperator.Equal, driveTest.Num);
-
-                    var pointFs = new List<PointFS>();
-                    var contextDriveTestsPointResults = _infoDbScope.Executor.ExecuteAndFetch(queryDriveTestPoints, DriveTestsPoint =>
+                    var breakDownListNumsDrivePoints = BreakDownElemBlocks.BreakDown(allListNumsDriveTests.ToArray());
+                    for (int k = 0; k < breakDownListNumsDrivePoints.Count(); k++)
                     {
-                        while (DriveTestsPoint.Read())
+
+                        var queryDriveTestPoints = _infocenterDataLayer.GetBuilder<IDriveTestPoints>()
+                        .From()
+                        .Select(
+                        c => c.Id,
+                        c => c.DRIVE_TEST.Id,
+                        c => c.Points,
+                        c => c.Count
+                        )
+                        .Where(c => c.DRIVE_TEST.Id, ConditionOperator.In, breakDownListNumsDrivePoints[k] /*driveTest.Num*/);
+
+                        var contextDriveTestsPointResults = _infoDbScope.Executor.ExecuteAndFetch(queryDriveTestPoints, DriveTestsPoint =>
                         {
-                            PointFS[] pointFS = null;
-                            var points = DriveTestsPoint.GetValueAs<DriveTestPoint[]>(c => c.Points);
-                            if (points != null)
+                            while (DriveTestsPoint.Read())
                             {
-                                pointFS = new PointFS[points.Length];
-                                for (int j = 0; j < points.Length; j++)
+                                var drvTestId = DriveTestsPoint.GetValue(c => c.DRIVE_TEST.Id);
+
+                                var fndDrvTest = driveTests.Find(n => n.DriveTestId == drvTestId);
+                                if (fndDrvTest != null)
                                 {
-                                    pointFS[j].Coordinate = _transformation.ConvertCoordinateToEpgs(points[j].Coordinate, _transformation.ConvertProjectionToCode(this._parameters.Projection));
-                                    pointFS[j].FieldStrength_dBmkVm = points[j].FieldStrength_dBmkVm;
-                                    if (points[j].Height_m == 0)
+                                    var lstDrvPOints = new List<PointFS>();
+                                    if ((fndDrvTest.Points != null) && (fndDrvTest.Points.Length > 0))
                                     {
-                                        points[j].Height_m = 3;
+                                        lstDrvPOints = fndDrvTest.Points.ToList();
                                     }
-                                    else
+                                    PointFS[] pointFS = null;
+                                    var points = DriveTestsPoint.GetValueAs<DriveTestPoint[]>(c => c.Points);
+                                    if (points != null)
                                     {
-                                        pointFS[j].Height_m = points[j].Height_m;
+                                        pointFS = new PointFS[points.Length];
+                                        for (int j = 0; j < points.Length; j++)
+                                        {
+                                            pointFS[j].Coordinate = _transformation.ConvertCoordinateToEpgs(points[j].Coordinate, _transformation.ConvertProjectionToCode(this._parameters.Projection));
+                                            pointFS[j].FieldStrength_dBmkVm = points[j].FieldStrength_dBmkVm;
+                                            if (points[j].Height_m == 0)
+                                            {
+                                                points[j].Height_m = 3;
+                                            }
+                                            else
+                                            {
+                                                pointFS[j].Height_m = points[j].Height_m;
+                                            }
+                                            pointFS[j].Level_dBm = points[j].Level_dBm;
+                                        }
+                                        lstDrvPOints.AddRange(pointFS);
+                                        fndDrvTest.CountPoints = lstDrvPOints.Count();
+                                        fndDrvTest.Points = lstDrvPOints.ToArray();
                                     }
-                                    pointFS[j].Level_dBm = points[j].Level_dBm;
                                 }
-                                pointFs.AddRange(pointFS);
                             }
-
-                        }
-                        return true;
-                    });
-
-                    driveTest.CountPoints = pointFs.Count;
-                    driveTest.Points = pointFs.ToArray();
-                    driveTests[k] = driveTest;
+                            return true;
+                        });
+                    }
                 }
+                allDriveTests.AddRange(driveTests);
             }
-            this._contextDriveTestsResult = driveTests.ToArray();
+            this._contextDriveTestsResult = allDriveTests.ToArray();
         }
 
         private long CreateResult()
