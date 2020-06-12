@@ -163,7 +163,7 @@
                 </DataGrid.Columns>
               </cdg:CustomDataGrid>
               <WrapPanel Grid.Row="1" Grid.ColumnSpan="20" >
-                <Button Content="{x:Static res:Resources.AddAssociationStation}" Margin="10,20,0,0" Command="{Binding AddAssociationStationCommand}" Height="30"/>
+                <Button Content="{x:Static res:Resources.AddAssociationStation}" Margin="10,20,0,0" Command="{Binding AddAssociationStationCommand}" Height="30" IsEnabled="{Binding AddAssociationStationEnabled}"/>
                 <Button Content="{x:Static res:Resources.DeleteEmission}" Margin="10,20,0,0" Command="{Binding DeleteEmissionCommand}" Height="30" HorizontalAlignment="Right"/>
                 <Button Content="{x:Static res:Resources.CompareWithTransmitterMask}" Margin="10,20,0,0" Command="{Binding CompareWithTransmitterMaskCommand}" Height="30" HorizontalAlignment="Right"/>
                 <Button Content="{x:Static res:Resources.CompareWithEmissionOnOtherSensors}" Margin="10,20,0,0" Command="{Binding CompareWithEmissionOnOtherSensorsCommand}" Height="30" HorizontalAlignment="Right"/>

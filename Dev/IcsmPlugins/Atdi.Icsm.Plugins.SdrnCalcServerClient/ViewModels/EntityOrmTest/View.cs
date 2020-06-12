@@ -61,7 +61,12 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.EntityOrmTest
             enumData.Add(new OrmEnumBoxData() { Id = 3, Name = "Locked", ViewName = "Locked" });
             enumData.Add(new OrmEnumBoxData() { Id = 4, Name = "Archived", ViewName = "Archived" });
             this.StatusTestEnum = enumData.ToArray();
+
+            EnumValue = enumData[2];
         }
+
+        public OrmEnumBoxData EnumValue { get; set; }
+        
 
         private void OnCreatedProjectHandle(Events.OnCreatedProject data)
         {

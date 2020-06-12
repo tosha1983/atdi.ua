@@ -7,6 +7,6 @@
              mc:Ignorable="d" Height="28" Width="200" SizeChanged="UserControl_SizeChanged">
     <Grid>
         <Label Name="lblCaption" Content="Label" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,0,0" Height="24" Width="55"/>
-        <ComboBox Name="cmbMain" HorizontalAlignment="Left" VerticalAlignment="Center" Height="24" Width="120" Margin="65,0,0,0" VerticalContentAlignment="Center"/>
+        <ComboBox Name="cmbMain" HorizontalAlignment="Left" VerticalAlignment="Center" Height="24" Width="120" Margin="65,0,0,0" VerticalContentAlignment="Center" SelectionChanged="cmbMain_SelectionChanged"/>
     </Grid>
 </UserControl>
