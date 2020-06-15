@@ -1423,7 +1423,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                     else if (i == 0)
                     {
                         reflevel = data[0].RefLevel;
-                        logger.Warning(Contexts.ThisComponent, "When executing the EstimateRefLevelCommandHandler command, "+
+                        logger.Warning(Contexts.ThisComponent, "When executing the EstimateRefLevelCommandHandler command, " +
                             "it is not possible to determine the necessary RefLevel since at the starting value, the device receives RFOverload.");
                     }
                     break;
