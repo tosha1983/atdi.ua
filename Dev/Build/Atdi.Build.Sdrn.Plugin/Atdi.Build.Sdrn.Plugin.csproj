@@ -95,6 +95,16 @@ copy "..\..\..\..\IcsmPlugins\ICS Control Client\ICSM 6.2.70\IcsmSchema\ICSContr
 copy "..\..\..\..\IcsmPlugins\ICS Control Client\ICSM 6.2.70\IcsmReport\*.*" "..\..\..\..\Delivery\Atdi.Sdrn\Client\IcsmPlugin\Bin$(ConfigurationName)\IcsmReport\*.*"
 
 copy "..\..\..\..\IcsmPlugins\ICS Control Client\Bin\$(ConfigurationName)\ru-RU\*.*" "..\..\..\..\Delivery\Atdi.Sdrn\Client\IcsmPlugin\Bin$(ConfigurationName)\ru-RU\*.*"
-copy "..\..\..\..\IcsmPlugins\ICS Control Client\Bin\$(ConfigurationName)\uk-UA\*.*" "..\..\..\..\Delivery\Atdi.Sdrn\Client\IcsmPlugin\Bin$(ConfigurationName)\uk-UA\*.*"</PostBuildEvent>
+copy "..\..\..\..\IcsmPlugins\ICS Control Client\Bin\$(ConfigurationName)\uk-UA\*.*" "..\..\..\..\Delivery\Atdi.Sdrn\Client\IcsmPlugin\Bin$(ConfigurationName)\uk-UA\*.*"
+
+copy "..\..\..\..\packages\NPOI.2.5.1\lib\net45\NPOI.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Client\IcsmPlugin\Bin$(ConfigurationName)"
+copy "..\..\..\..\packages\NPOI.2.5.1\lib\net45\NPOI.OOXML.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Client\IcsmPlugin\Bin$(ConfigurationName)"
+copy "..\..\..\..\packages\NPOI.2.5.1\lib\net45\NPOI.OpenXml4Net.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Client\IcsmPlugin\Bin$(ConfigurationName)"
+copy "..\..\..\..\packages\NPOI.2.5.1\lib\net45\NPOI.OpenXmlFormats.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Client\IcsmPlugin\Bin$(ConfigurationName)"
+copy "..\..\..\..\packages\NPOI.2.5.1\lib\net45\NPOI.OpenXmlFormats.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Client\IcsmPlugin\Bin$(ConfigurationName)"
+copy "..\..\..\..\packages\SharpZipLib.1.2.0\lib\net45\ICSharpCode.SharpZipLib.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Client\IcsmPlugin\Bin$(ConfigurationName)"
+copy "..\..\..\..\packages\SharpZipLib.1.2.0\lib\net45\ICSharpCode.SharpZipLib.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Client\IcsmPlugin\Bin$(ConfigurationName)"
+copy "..\..\..\..\packages\Portable.BouncyCastle.1.8.6\lib\net40\BouncyCastle.Crypto.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Client\IcsmPlugin\Bin$(ConfigurationName)"
+</PostBuildEvent>
   </PropertyGroup>
 </Project>

@@ -208,7 +208,12 @@ namespace XICSM.ICSControlClient.ViewModels
             get => this._rbw; // this.GetCurrentRBWValue();
             set => this.Set(ref this._rbw, value);
         }
-
+        public bool _addAssociationStationEnabled = false;
+        public bool AddAssociationStationEnabled
+        {
+            get => this._addAssociationStationEnabled;
+            set => this.Set(ref this._addAssociationStationEnabled, value);
+        }
         public CS.ChartOption CurrentChartOption
         {
             get => this._currentChartOption;
@@ -219,7 +224,6 @@ namespace XICSM.ICSControlClient.ViewModels
             get => this._currentChartLevelsDistrbutionOption;
             set => this.Set(ref this._currentChartLevelsDistrbutionOption, value);
         }
-        
         public IList CurrentEmittings
         {
             get => this._currentEmittings;
@@ -235,7 +239,7 @@ namespace XICSM.ICSControlClient.ViewModels
         public EmittingViewModel CurrentEmitting
         {
             get => this._currentEmitting;
-            set => this.Set(ref this._currentEmitting, value, () => { ReloadEmittingWorkTime(); UpdateCurrentChartLevelsDistrbutionOption(); });
+            set => this.Set(ref this._currentEmitting, value, () => { UpdateVisibility(); ReloadEmittingWorkTime(); UpdateCurrentChartLevelsDistrbutionOption(); });
         }
         public double[] SelectedRangeX
         {
@@ -313,6 +317,10 @@ namespace XICSM.ICSControlClient.ViewModels
 
             this.EmittingCaption = this.GetCurrentEmittingCaption();
         }
+        private void UpdateVisibility()
+        {
+            AddAssociationStationEnabled = (this.CurrentEmitting != null);
+        }
         private void ReloadEmittingWorkTime()
         {
             this._emittingWorkTimes.Source = _currentEmitting.WorkTimes;
@@ -355,7 +363,7 @@ namespace XICSM.ICSControlClient.ViewModels
         {
             try
             {
-                if (this._currentEmittings != null)
+                if (this._currentEmittings != null && this.CurrentEmittings.Count > 0)
                 {
                     List<long> emitings = new List<long>();
                     HashSet<long?> ids = new HashSet<long?>();

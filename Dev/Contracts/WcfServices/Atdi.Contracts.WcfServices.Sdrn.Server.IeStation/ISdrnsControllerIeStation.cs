@@ -108,5 +108,15 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server.IeStation
                                                     DateTime? permissionStop,
                                                     string statusMeas);
 
+        /// <summary>
+        /// Get Protocols by parameters
+        /// </summary>
+        /// <returns></returns>
+        [OperationContract]
+        HeadProtocols[] GetDetailProtocolsByPeriod(
+                                                    DateTime? DateStart,
+                                                    DateTime? DateStop
+                                                    );
+
     }
 }

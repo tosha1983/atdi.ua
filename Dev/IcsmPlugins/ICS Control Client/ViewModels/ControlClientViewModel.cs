@@ -1223,22 +1223,22 @@ namespace XICSM.ICSControlClient.ViewModels
                 SDR.MeasurementResults _measResult = null;
                 GeneralResultViewModel _generalResult = null;
 
-                if (this._currentShortMeasTask.TypeMeasurements == SDR.MeasurementType.MonitoringStations)
+                if (this.CurrentMeasurementResult.TypeMeasurements == SDR.MeasurementType.MonitoringStations)
                 {
                     _generalResult = this._currentGeneralResult;
                 }
-                else if (this._currentShortMeasTask.TypeMeasurements == SDR.MeasurementType.SpectrumOccupation)
+                else if (this.CurrentMeasurementResult.TypeMeasurements == SDR.MeasurementType.SpectrumOccupation)
                 {
                     if (this.CurrentMeasurementResult != null)
                         _measResult = _dataStore.GetMeasurementResultByResId(this.CurrentMeasurementResult.MeasSdrResultsId);
                 }
-                else if (this._currentShortMeasTask.TypeMeasurements == SDR.MeasurementType.Level)
+                else if (this.CurrentMeasurementResult.TypeMeasurements == SDR.MeasurementType.Level)
                 {
                     if (this.CurrentMeasurementResult != null)
                         _measResult = _dataStore.GetMeasurementResultByResId(this.CurrentMeasurementResult.MeasSdrResultsId);
                 }
 
-                var form = new FM.GraphicForm(this._currentShortMeasTask.TypeMeasurements, _measResult, _generalResult, 1);
+                var form = new FM.GraphicForm(this.CurrentMeasurementResult.TypeMeasurements, _measResult, _generalResult, 1);
                 form.ShowDialog();
                 form.Dispose();
             }

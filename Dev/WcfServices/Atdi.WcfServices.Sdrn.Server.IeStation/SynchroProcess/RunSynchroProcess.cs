@@ -240,7 +240,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                         var queryStationExtendedFrom = this._dataLayer.GetBuilder<MD.IStationExtended>()
                         .From()
                         .Select(c => c.Id, c => c.Address, c => c.BandWidth, c => c.DesigEmission, c => c.Latitude, c => c.Longitude, c => c.OwnerName, c => c.PermissionNumber, c => c.PermissionStart, c => c.PermissionStop, c => c.Province, c => c.Standard, c => c.StandardName, c => c.TableId, c => c.TableName,
-                                c => c.DocNum, c => c.StationName, c => c.StationChannel, c => c.StationTxFreq, c => c.StationRxFreq, c => c.PermissionCancelDate, c => c.TestStartDate, c => c.TestStopDate, c => c.PermissionGlobalSID, c => c.OKPO, c => c.StatusMeas, c => c.CurentStatusStation)
+                                c => c.DocNum, c => c.StationName, c => c.StationTxChannel, c => c.StationRxChannel, c => c.StationTxFreq, c => c.StationRxFreq, c => c.PermissionCancelDate, c => c.TestStartDate, c => c.TestStopDate, c => c.PermissionGlobalSID, c => c.OKPO, c => c.StatusMeas, c => c.CurentStatusStation)
                         .Where(c => c.Id, ConditionOperator.GreaterThan, 0);
                         scope.Executor.Fetch(queryStationExtendedFrom, readerStationExtendedFrom =>
                         {
@@ -371,11 +371,18 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                                         builderUpdateStationExtended.SetValue(c => c.StationRxFreq, stationsExtended[i].StationRxFreq);
                                     }
 
-                                    if (readerStationExtendedFrom.GetValue(c => c.StationChannel) != stationsExtended[i].StationChannel)
+                                    if (readerStationExtendedFrom.GetValue(c => c.StationTxChannel) != stationsExtended[i].StationTxChannel)
                                     {
                                         isChanged = true;
-                                        builderUpdateStationExtended.SetValue(c => c.StationChannel, stationsExtended[i].StationChannel);
+                                        builderUpdateStationExtended.SetValue(c => c.StationTxChannel, stationsExtended[i].StationTxChannel);
                                     }
+
+                                    if (readerStationExtendedFrom.GetValue(c => c.StationRxChannel) != stationsExtended[i].StationRxChannel)
+                                    {
+                                        isChanged = true;
+                                        builderUpdateStationExtended.SetValue(c => c.StationRxChannel, stationsExtended[i].StationRxChannel);
+                                    }
+
 
                                     if (readerStationExtendedFrom.GetValue(c => c.OKPO) != stationsExtended[i].OKPO)
                                     {
@@ -511,9 +518,14 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                                 builderStationExtendedInsert.SetValue(c => c.StationRxFreq, stationsExtended[i].StationRxFreq);
                                 isChangedSuccess = true;
                             }
-                            if (stationsExtended[i].StationChannel != null)
+                            if (stationsExtended[i].StationTxChannel != null)
                             {
-                                builderStationExtendedInsert.SetValue(c => c.StationChannel, stationsExtended[i].StationChannel);
+                                builderStationExtendedInsert.SetValue(c => c.StationTxChannel, stationsExtended[i].StationTxChannel);
+                                isChangedSuccess = true;
+                            }
+                            if (stationsExtended[i].StationRxChannel != null)
+                            {
+                                builderStationExtendedInsert.SetValue(c => c.StationRxChannel, stationsExtended[i].StationRxChannel);
                                 isChangedSuccess = true;
                             }
                             //if (stationsExtended[i].StatusMeas != null)
@@ -2308,7 +2320,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                         var queryStationExtendedFrom = this._dataLayer.GetBuilder<MD.IStationExtended>()
                         .From()
                         .Select(c => c.Id, c => c.Address, c => c.BandWidth, c => c.DesigEmission, c => c.Latitude, c => c.Longitude, c => c.OwnerName, c => c.PermissionNumber, c => c.PermissionStart, c => c.PermissionStop, c => c.Province, c => c.Standard, c => c.StandardName, c => c.TableId, c => c.TableName,
-                         c => c.DocNum, c => c.StationName, c => c.StationChannel, c => c.StationTxFreq, c => c.StationRxFreq, c => c.PermissionCancelDate, c => c.TestStartDate, c => c.TestStopDate, c => c.PermissionGlobalSID, c => c.OKPO, c => c.StatusMeas, c => c.CurentStatusStation)
+                         c => c.DocNum, c => c.StationName, c => c.StationTxChannel, c => c.StationRxChannel, c => c.StationTxFreq, c => c.StationRxFreq, c => c.PermissionCancelDate, c => c.TestStartDate, c => c.TestStopDate, c => c.PermissionGlobalSID, c => c.OKPO, c => c.StatusMeas, c => c.CurentStatusStation)
                         .Where(c => c.TableId, ConditionOperator.Equal, readerRefSpectrumFrom.GetValue(c => c.TableId))
                         .Where(c => c.TableName, ConditionOperator.Equal, readerRefSpectrumFrom.GetValue(c => c.TableName));
                         queryExecuter.Fetch(queryStationExtendedFrom, readerStationExtendedFrom =>
@@ -2334,7 +2346,8 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                                 stationExtended.Id = readerStationExtendedFrom.GetValue(c => c.Id);
                                 stationExtended.DocNum = readerStationExtendedFrom.GetValue(c => c.DocNum);
                                 stationExtended.StationName = readerStationExtendedFrom.GetValue(c => c.StationName);
-                                stationExtended.StationChannel = readerStationExtendedFrom.GetValue(c => c.StationChannel);
+                                stationExtended.StationTxChannel = readerStationExtendedFrom.GetValue(c => c.StationTxChannel);
+                                stationExtended.StationRxChannel = readerStationExtendedFrom.GetValue(c => c.StationRxChannel);
                                 stationExtended.StationTxFreq = readerStationExtendedFrom.GetValue(c => c.StationTxFreq);
                                 stationExtended.StationRxFreq = readerStationExtendedFrom.GetValue(c => c.StationRxFreq);
                                 stationExtended.PermissionCancelDate = readerStationExtendedFrom.GetValue(c => c.PermissionCancelDate);

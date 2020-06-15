@@ -27,6 +27,7 @@ namespace XICSM.ICSControlClient.Forms
             "Листопад",
             "Грудень",
         };
+        public string CurrentMonthName = string.Empty;
         public int CurrentMonth = 0;
         public int CurrentYear = 0;
         public SelectPeriodForm()
@@ -35,12 +36,14 @@ namespace XICSM.ICSControlClient.Forms
             cmbMonth.Items.AddRange(months);
             cmbMonth.SelectedIndex = DateTime.Now.Month-1;
             CurrentYear = DateTime.Now.Year;
+            textBoxYear.Text = CurrentYear.ToString();
             CurrentMonth = DateTime.Now.Month;
         }
 
         private void cmbMonth_SelectedIndexChanged(object sender, EventArgs e)
         {
             CurrentMonth = cmbMonth.SelectedIndex+1;
+            CurrentMonthName = cmbMonth.Items[cmbMonth.SelectedIndex].ToString();
         }
         private void btnApply_Click(object sender, EventArgs e)
         {

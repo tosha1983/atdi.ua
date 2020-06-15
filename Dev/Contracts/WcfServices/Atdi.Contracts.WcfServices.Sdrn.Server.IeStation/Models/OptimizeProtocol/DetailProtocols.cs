@@ -47,15 +47,25 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server.IeStation
         [DataMember]
         public string PermissionGlobalSID { get; set; }
         /// <summary>
-        /// Частота заявлена МГц
+        /// Частота передачі заявлена МГц
         /// </summary>
         [DataMember]
         public string StationTxFreq { get; set; }
         /// <summary>
-        /// Канал заявлений
+        /// Частота прийому заявлена МГц
         /// </summary>
         [DataMember]
-        public string StationChannel { get; set; }
+        public string StationRxFreq { get; set; }
+        /// <summary>
+        /// Канал передачі заявлений
+        /// </summary>
+        [DataMember]
+        public string StationTxChannel { get; set; }
+        /// <summary>
+        /// Канал прийому заявлений
+        /// </summary>
+        [DataMember]
+        public string StationRxChannel { get; set; }
         /// <summary>
         /// Результат радіоконтролю
         /// </summary>

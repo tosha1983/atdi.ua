@@ -39,7 +39,8 @@ namespace Atdi.DataModels.Sdrns.Server.Entities.IeStation
         string PermissionGlobalSID { get; set; }
         float[] StationTxFreq { get; set; }
         float[] StationRxFreq { get; set; }
-        string[] StationChannel { get; set; }
+        string[] StationTxChannel { get; set; }
+        string[] StationRxChannel { get; set; }
         string StationName { get; set; }
         string OKPO { get; set; }
     }

@@ -22,7 +22,8 @@ namespace Atdi.WpfControls.EntityOrm.Controls
     {
         double _captionWith = 150;
         string _caption = "";
-        OrmEnumBoxData[] _value = null;
+        OrmEnumBoxData _value = null;
+        OrmEnumBoxData[] _source = null;
         bool _enabled = true;
         public OrmEnumBox()
         {
@@ -59,17 +60,29 @@ namespace Atdi.WpfControls.EntityOrm.Controls
             }
         }
 
-        public static DependencyProperty SourceProperty = DependencyProperty.Register("Source", typeof(OrmEnumBoxData[]), typeof(OrmEnumBox),
-            new FrameworkPropertyMetadata(default(OrmEnumBoxData[]), new PropertyChangedCallback(OnPropertyChanged)));
-        public OrmEnumBoxData[] Source
+        public static DependencyProperty SelectedValueProperty = DependencyProperty.Register("SelectedValue", typeof(OrmEnumBoxData), typeof(OrmEnumBox),
+            new FrameworkPropertyMetadata(default(OrmEnumBoxData), new PropertyChangedCallback(OnPropertyChanged)));
+        public OrmEnumBoxData SelectedValue
         {
             get { return _value; }
             set
             {
-                SetValue(SourceProperty, value);
+                SetValue(SelectedValueProperty, value);
                 this._value = value;
-                cmbMain.ItemsSource = this._value;//.Select(c => c.ViewName).ToArray();
-                //cmbMain.DisplayMemberPath = "Name";
+                cmbMain.SelectedValue = this._value;
+            }
+        }
+
+        public static DependencyProperty SourceProperty = DependencyProperty.Register("Source", typeof(OrmEnumBoxData[]), typeof(OrmEnumBox),
+            new FrameworkPropertyMetadata(default(OrmEnumBoxData[]), new PropertyChangedCallback(OnPropertyChanged)));
+        public OrmEnumBoxData[] Source
+        {
+            get { return _source; }
+            set
+            {
+                SetValue(SourceProperty, value);
+                this._source = value;
+                cmbMain.ItemsSource = this._source;
             }
         }
         private static void OnPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
@@ -80,6 +93,8 @@ namespace Atdi.WpfControls.EntityOrm.Controls
                 ctr.Source = (OrmEnumBoxData[])e.NewValue;
             else if (e.Property == EnabledProperty)
                 ctr.Enabled = (bool)e.NewValue;
+            else if (e.Property == SelectedValueProperty)
+                ctr.SelectedValue = (OrmEnumBoxData)e.NewValue;
         }
         private void RedrawControl()
         {
@@ -91,6 +106,12 @@ namespace Atdi.WpfControls.EntityOrm.Controls
         private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             RedrawControl();
+        }
+
+        private void cmbMain_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (cmbMain.SelectedValue != null)
+                SelectedValue = cmbMain.SelectedValue as OrmEnumBoxData;
         }
     }
 }
