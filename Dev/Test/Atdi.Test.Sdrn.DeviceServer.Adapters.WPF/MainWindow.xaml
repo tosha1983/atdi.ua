@@ -39,8 +39,7 @@
                     <local:DrawIQ x:Name="SHIQ" Grid.Row="2" />
                 </Grid>
             </TabItem>            
-        </TabControl>
-        
+        </TabControl>        
         
         <StackPanel Grid.Column="1">
             <Button Click="StartTime_Click" Content="Time"/>
@@ -51,6 +50,10 @@
             <TextBox Name="points"  Text="800"/>
 
 
+            <RepeatButton Click="SetAzz1_Click" Content="Set Rot1" Margin="0,10,0,0"/>
+            <RepeatButton Click="SetAzz2_Click" Content="Set Rot2" Margin="0,10,0,0"/>
+            <RepeatButton Click="StopAzz_Click" Content="Stop Rot" Margin="0,10,0,0"/>
+            <RepeatButton Click="Get_Click" Content="Get Rot" Margin="0,10,0,0"/>
             <RepeatButton Click="GetTime_Click" Content="GET Time" Margin="0,10,0,0"/>
             <RepeatButton Click="GetTrace_Click" Content="GET Trace" />
             <RepeatButton Click="SetMeas2_Click" Content="GET Trace2" />
@@ -72,7 +75,6 @@
             <Button Click="SetWNDType_Click" Content="SPEC/IQ" Margin="0,10,0,0"/>
             <Button Click="SaveIQAN_Click" Content="Save IQ AN" Margin="0,10,0,0"/>
             
-        </StackPanel>
-        
+        </StackPanel>        
     </Grid>
 </Window>
