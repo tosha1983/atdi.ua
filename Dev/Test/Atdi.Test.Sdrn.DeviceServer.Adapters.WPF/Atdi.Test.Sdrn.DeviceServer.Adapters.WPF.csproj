@@ -153,6 +153,10 @@
       <Project>{e9112886-a82e-449d-bc85-da5831c8de5b}</Project>
       <Name>Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SPIDRotator\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SPIDRotator.csproj">
+      <Project>{78d1ed8d-0ac3-4b8c-b2fe-c42d49dc2edb}</Project>
+      <Name>Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SPIDRotator</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Common\Atdi.Common\Atdi.Common.csproj">
       <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
       <Name>Atdi.Common</Name>
