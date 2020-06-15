@@ -61,6 +61,10 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             switch (args.Model.MainBlock.ModelType)
             {
                 case MainCalcBlockModelType.ITU525:
+                    Lbf_dB = ITU525.Calc(args.Ha_m, args.Hb_m, args.Freq_Mhz, args.D_km);
+                    break;
+                case MainCalcBlockModelType.ITU1546:
+                    // prepare data
                 case MainCalcBlockModelType.Unknown:
                 default:
                     Lbf_dB = ITU525.Calc(args.Ha_m, args.Hb_m, args.Freq_Mhz, args.D_km);

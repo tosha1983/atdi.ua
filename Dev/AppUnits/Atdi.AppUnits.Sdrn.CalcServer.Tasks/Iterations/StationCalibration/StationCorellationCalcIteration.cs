@@ -106,30 +106,38 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         }
                         if (isFoubdInBuffer == false || counter == 0)
                         {
-                            int lowerLeftX = (int)(lowerLeftCoord_m.X + Math.Floor((data.GSIDGroupeDriveTests.Points[i].Coordinate.X - lowerLeftCoord_m.X) / data.FieldStrengthCalcData.MapArea.AxisX.Step) * data.FieldStrengthCalcData.MapArea.AxisX.Step + data.FieldStrengthCalcData.MapArea.AxisX.Step / 2);
-                            int lowerLeftY = (int)(lowerLeftCoord_m.Y + Math.Floor((data.GSIDGroupeDriveTests.Points[i].Coordinate.Y - lowerLeftCoord_m.Y) / data.FieldStrengthCalcData.MapArea.AxisY.Step) * data.FieldStrengthCalcData.MapArea.AxisY.Step + data.FieldStrengthCalcData.MapArea.AxisY.Step / 2);
+                            int newTargertCoordX = (int)(lowerLeftCoord_m.X + Math.Floor((data.GSIDGroupeDriveTests.Points[i].Coordinate.X - lowerLeftCoord_m.X) / data.FieldStrengthCalcData.MapArea.AxisX.Step) * data.FieldStrengthCalcData.MapArea.AxisX.Step + data.FieldStrengthCalcData.MapArea.AxisX.Step / 2);
+                            int newTargertCoordY = (int)(lowerLeftCoord_m.Y + Math.Floor((data.GSIDGroupeDriveTests.Points[i].Coordinate.Y - lowerLeftCoord_m.Y) / data.FieldStrengthCalcData.MapArea.AxisY.Step) * data.FieldStrengthCalcData.MapArea.AxisY.Step + data.FieldStrengthCalcData.MapArea.AxisY.Step / 2);
 
-                            data.FieldStrengthCalcData.TargetCoordinate.X = lowerLeftX;
-                            data.FieldStrengthCalcData.TargetCoordinate.Y = lowerLeftY;
+                            data.FieldStrengthCalcData.TargetCoordinate.X = newTargertCoordX;
+                            data.FieldStrengthCalcData.TargetCoordinate.Y = newTargertCoordY;
                             data.FieldStrengthCalcData.TargetAltitude_m = data.GSIDGroupeDriveTests.Points[0].Height_m; // add to FS buffer model ?????????????????
-                            var faCalculationResult = iterationFieldStrengthCalcData.Run(taskContext, data.FieldStrengthCalcData);
-
-                            if (faCalculationResult.AntennaPatternLoss_dB <= 30.0)
+                            if (Utils.IsInsideMap(newTargertCoordX, newTargertCoordY, lowerLeftCoord_m.X, lowerLeftCoord_m.Y, upperRightCoord_m.X, upperRightCoord_m.Y))
                             {
-                                // выполняется для первой итерации и в случае если по координатам не было измерений
-                                calcPointArrayBuffer[counter].Count = 1;
-                                calcPointArrayBuffer[counter].X = lowerLeftX;
-                                calcPointArrayBuffer[counter].Y = lowerLeftY;
+                                var faCalculationResult = iterationFieldStrengthCalcData.Run(taskContext, data.FieldStrengthCalcData);
 
-                                calcPointArrayBuffer[counter].FSCalc = faCalculationResult.FS_dBuVm.Value;// iterationFieldStrengthCalcData.Run(taskContext, data.FieldStrengthCalcData).FS_dBuVm.Value;
-                                calcPointArrayBuffer[counter].FSMeas = data.GSIDGroupeDriveTests.Points[i].FieldStrength_dBmkVm;
-                                
-                                counter++;
+                                if (faCalculationResult.AntennaPatternLoss_dB <= 30.0)
+                                {
+                                    // выполняется для первой итерации и в случае если по координатам не было измерений
+                                    calcPointArrayBuffer[counter].Count = 1;
+                                    calcPointArrayBuffer[counter].X = newTargertCoordX;
+                                    calcPointArrayBuffer[counter].Y = newTargertCoordY;
+
+                                    calcPointArrayBuffer[counter].FSCalc = faCalculationResult.FS_dBuVm.Value;// iterationFieldStrengthCalcData.Run(taskContext, data.FieldStrengthCalcData).FS_dBuVm.Value;
+                                    calcPointArrayBuffer[counter].FSMeas = data.GSIDGroupeDriveTests.Points[i].FieldStrength_dBmkVm;
+
+                                    counter++;
+                                }
+                                else
+                                {
+                                    patternLossExceedCount++;
+                                }
                             }
                             else
                             {
-                                patternLossExceedCount++;
+                                outOfMapCount++;
                             }
+
                         }
                     }
                 }
