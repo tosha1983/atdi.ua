@@ -4,7 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.Test.DeepServices.PropagaionModels
+//namespace Atdi.Test.DeepServices.PropagaionModels
+namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
 {
     public class land_sea
     {
