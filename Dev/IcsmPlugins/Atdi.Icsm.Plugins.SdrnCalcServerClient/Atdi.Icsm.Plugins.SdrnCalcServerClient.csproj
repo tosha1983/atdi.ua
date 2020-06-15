@@ -22,6 +22,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,6 +31,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="NetPlugins">
@@ -58,44 +60,58 @@
   <ItemGroup>
     <Compile Include="AppComponent.cs" />
     <Compile Include="AppComponentConfig.cs" />
-    <Compile Include="Core\DataAdapter.cs" />
-    <Compile Include="Core\DataLayerBase.cs" />
-    <Compile Include="Core\ViewCaptionAttribute.cs" />
-    <Compile Include="Core\ViewStarter.cs" />
-    <Compile Include="Core\ViewXamlAttribute.cs" />
-    <Compile Include="Core\ViewForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Core\ViewForm.Designer.cs">
-      <DependentUpon>ViewForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="DataLayers\InfocenterDataLayer.cs" />
     <Compile Include="DataLayers\CalcServerDataLayer.cs" />
-    <Compile Include="Environment\Extentions.cs" />
-    <Compile Include="Environment\Wpf\WpfColumnAttribute.cs" />
-    <Compile Include="Environment\Wpf\WpfCommand.cs" />
-    <Compile Include="Environment\Wpf\WpfDataAdapter.cs" />
-    <Compile Include="Environment\Wpf\WpfExtensions.cs" />
-    <Compile Include="Environment\Wpf\WpfViewModelBase.cs" />
-    <Compile Include="Forms\Base\WpfFormBase.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Base\WpfFormBase.Designer.cs">
-      <DependentUpon>WpfFormBase.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Base\WpfStandardForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Base\WpfStandardForm.Designer.cs">
-      <DependentUpon>WpfStandardForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="PluginMenuCommands.cs" />
-    <Compile Include="Helpers\PluginHelper.cs" />
-    <Compile Include="Metadata\SysLogs.cs" />
-    <Compile Include="Models\DataApadters\Mappers.cs" />
-    <Compile Include="Models\DataApadters\ProjectDataAdapter.cs" />
+    <Compile Include="ViewModels\ClientContext\Events\OnCreatedClientContext.cs" />
+    <Compile Include="ViewModels\ClientContext\Events\OnDeletedClientContext.cs" />
+    <Compile Include="ViewModels\ClientContext\Events\OnEditedClientContext.cs" />
+    <Compile Include="ViewModels\ClientContext\Models\ClientContextAbsorptionModel.cs" />
+    <Compile Include="ViewModels\ClientContext\Models\ClientContextAdditionalModel.cs" />
+    <Compile Include="ViewModels\ClientContext\Models\ClientContextAtmosphericModel.cs" />
+    <Compile Include="ViewModels\ClientContext\Models\ClientContextClutterModel.cs" />
+    <Compile Include="ViewModels\ClientContext\Models\ClientContextDiffractionModel.cs" />
+    <Compile Include="ViewModels\ClientContext\Models\ClientContextDuctingModel.cs" />
+    <Compile Include="ViewModels\ClientContext\Models\ClientContextGlobalParamsModel.cs" />
+    <Compile Include="ViewModels\ClientContext\Models\ClientContextMainBlockModel.cs" />
+    <Compile Include="ViewModels\ClientContext\Models\ClientContextModel.cs" />
+    <Compile Include="ViewModels\ClientContext\Models\ClientContextReflectionModel.cs" />
+    <Compile Include="ViewModels\ClientContext\Models\ClientContextSubPathDiffractionModel.cs" />
+    <Compile Include="ViewModels\ClientContext\Models\ClientContextTropoModel.cs" />
+    <Compile Include="ViewModels\ClientContext\Modifiers\CreateClientContext.cs" />
+    <Compile Include="ViewModels\ClientContext\Modifiers\CreateClientContextHandler.cs" />
+    <Compile Include="ViewModels\ClientContext\Modifiers\DeleteClientContext.cs" />
+    <Compile Include="ViewModels\ClientContext\Modifiers\DeleteClientContextHandler.cs" />
+    <Compile Include="ViewModels\ClientContext\Modifiers\EditClientContext.cs" />
+    <Compile Include="ViewModels\ClientContext\Modifiers\EditClientContextHandler.cs" />
+    <Compile Include="ViewModels\ClientContext\Queries\GetClientContextById.cs" />
+    <Compile Include="ViewModels\ClientContext\Queries\GetClientContextByIdExecutor.cs" />
+    <Compile Include="ViewModels\ClientContext\View.cs" />
     <Compile Include="ViewModels\EntityOrmTest\Adapters\ProjectDataAdapter.cs" />
+    <Compile Include="ViewModels\EntityOrmTest\Events\OnCreatedProject.cs" />
     <Compile Include="ViewModels\EntityOrmTest\Models\ProjectModel.cs" />
+    <Compile Include="ViewModels\EntityOrmTest\Modifiers\CreateProject.cs" />
+    <Compile Include="ViewModels\EntityOrmTest\Modifiers\CreateProjectHandler.cs" />
+    <Compile Include="ViewModels\EntityOrmTest\Queries\GetProjectByOwnerId.cs" />
+    <Compile Include="ViewModels\EntityOrmTest\Queries\GetProjectByOwnerIdExecutor.cs" />
+    <Compile Include="ViewModels\EntityOrmTest\TestDialogView.cs" />
+    <Compile Include="ViewModels\Map\Events\OnCreatedMap.cs" />
+    <Compile Include="ViewModels\Map\Events\OnDeletedMap.cs" />
+    <Compile Include="ViewModels\Map\Events\OnEditedMap.cs" />
+    <Compile Include="ViewModels\Map\Models\MapModel.cs" />
+    <Compile Include="ViewModels\Map\Modifiers\CreateMap.cs" />
+    <Compile Include="ViewModels\Map\Modifiers\CreateMapHandler.cs" />
+    <Compile Include="ViewModels\Map\Modifiers\DeleteMap.cs" />
+    <Compile Include="ViewModels\Map\Modifiers\DeleteMapHandler.cs" />
+    <Compile Include="ViewModels\Map\Modifiers\ChangeStateMap.cs" />
+    <Compile Include="ViewModels\Map\Modifiers\ChangeStateMapHandler.cs" />
+    <Compile Include="ViewModels\Map\View.cs" />
+    <Compile Include="ViewModels\ProjectManager\Adapters\ClientContextDataAdapter.cs" />
+    <Compile Include="ViewModels\ProjectManager\Adapters\ProjectDataAdapter.cs" />
+    <Compile Include="ViewModels\ProjectManager\Adapters\ProjectMapDataAdapter.cs" />
+    <Compile Include="ViewModels\ProjectManager\Events\OnCreatedProject.cs" />
+    <Compile Include="ViewModels\ProjectManager\Events\OnDeletedProject.cs" />
+    <Compile Include="ViewModels\ProjectManager\Events\OnEditedProject.cs" />
     <Compile Include="ViewModels\ProjectManager\Models\ClientContextModel.cs" />
     <Compile Include="ViewModels\ProjectManager\Models\ProjectMapModel.cs" />
     <Compile Include="ViewModels\ProjectManager\Models\ProjectModel.cs" />
@@ -112,6 +128,16 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\ProjectManager\Modifiers\ChangeStateProject.cs" />
+    <Compile Include="ViewModels\ProjectManager\Modifiers\ChangeStateProjectHandler.cs" />
+    <Compile Include="ViewModels\ProjectManager\Modifiers\CreateProject.cs" />
+    <Compile Include="ViewModels\ProjectManager\Modifiers\CreateProjectHandler.cs" />
+    <Compile Include="ViewModels\ProjectManager\Modifiers\DeleteProject.cs" />
+    <Compile Include="ViewModels\ProjectManager\Modifiers\DeleteProjectHandler.cs" />
+    <Compile Include="ViewModels\ProjectManager\Modifiers\EditProject.cs" />
+    <Compile Include="ViewModels\ProjectManager\Modifiers\EditProjectHandler.cs" />
+    <Compile Include="ViewModels\ProjectManager\Queries\GetProjectById.cs" />
+    <Compile Include="ViewModels\ProjectManager\Queries\GetProjectByIdExecutor.cs" />
     <Compile Include="ViewModels\ProjectManager\View.cs" />
     <Compile Include="ViewModels\EntityOrmTest\View.cs" />
   </ItemGroup>
@@ -140,6 +166,10 @@
       <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
       <Name>Atdi.DataModels</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Modules\Atdi.Modules.Licensing\Atdi.Modules.Licensing.csproj">
+      <Project>{829d7ff8-518c-4844-b3e0-dc8ffe091775}</Project>
+      <Name>Atdi.Modules.Licensing</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Platform\Atdi.Platform.Configurator\Atdi.Platform.Configurator.csproj">
       <Project>{98e79b80-3176-4cad-b7ba-b5caa6752fab}</Project>
       <Name>Atdi.Platform.Configurator</Name>
@@ -152,18 +182,21 @@
       <Project>{23df4b39-cb83-4c82-8d84-a7fd1e6b6bef}</Project>
       <Name>Atdi.WpfControls.EntityOrm</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Atdi.Icsm.Plugins.Core\Atdi.Icsm.Plugins.Core.csproj">
+      <Project>{259c5365-f07a-4217-8ba9-9d72b3f77f38}</Project>
+      <Name>Atdi.Icsm.Plugins.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Models\Views\" />
+    <Folder Include="Commands\" />
+    <Folder Include="Events\" />
+    <Folder Include="Queries\" />
+    <Folder Include="ViewModels\ClientContext\Adapters\" />
+    <Folder Include="ViewModels\Map\Adapters\" />
+    <Folder Include="ViewModels\Map\Queries\" />
     <Folder Include="Xaml\" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Core\ViewForm.resx">
-      <DependentUpon>ViewForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Base\WpfStandardForm.resx">
-      <DependentUpon>WpfStandardForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -182,11 +215,13 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetDir)XICSM_SdrnCalcServerClient.dll" "C:\ATDI\ICS Manager"
-copy "$(TargetDir)Atdi.*.dll" "C:\ATDI\ICS Manager"
-copy "$(TargetDir)XICSM_SdrnCalcServerClient.dll" "C:\ATDI\ICS Manager UCRF"
-copy "$(TargetDir)XICSM_SdrnCalcServerClient.dll" "C:\ATDI\ICSM_UCRF_MON_2019_04_18_x_sig_214"
-copy "$(TargetDir)\ru-RU" "C:\ATDI\ICS Manager UCRF\ru-RU\"
-copy "$(TargetDir)\uk-UA" "C:\ATDI\ICS Manager UCRF\uk-UA\"</PostBuildEvent>
+    <PostBuildEvent>copy "$(TargetDir)XICSM_SdrnCalcServerClient.dll" "C:\ATDI\ICS ManagerCalcServer"
+copy "$(TargetDir)Atdi.*.dll"    "C:\ATDI\ICS ManagerCalcServer"
+copy "$(TargetDir)ru-RU\*.*"   "C:\ATDI\ICS ManagerCalcServer\ru-RU"
+copy "$(TargetDir)uk-UA\*.*"  "C:\ATDI\ICS ManagerCalcServer\uk-UA"
+copy "$(TargetDir)XICSM_SdrnCalcServerClient.dll" "C:\ATDI\ICS Manager"
+copy "$(TargetDir)Atdi.*.dll"    "C:\ATDI\ICS Manager"
+copy "$(TargetDir)ru-RU\*.*"   "C:\ATDI\ICS Manager\ru-RU"
+copy "$(TargetDir)uk-UA\*.*"  "C:\ATDI\ICS Manager\uk-UA"</PostBuildEvent>
   </PropertyGroup>
 </Project>

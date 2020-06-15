@@ -21,8 +21,8 @@ namespace Atdi.Contracts.CoreServices.DataLayer
         bool HasTransaction { get; }
     }
 
-    public interface IDataLayerScope<TContext> : IDataLayerScope
-        where TContext : IDataContext, new()
-    {
-    }
+    //public interface IDataLayerScope<TContext> : IDataLayerScope
+    //    where TContext : IDataContext, new()
+    //{
+    //}
 }

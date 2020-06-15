@@ -24,6 +24,7 @@
     <Field Desc="VMMaxLvl" Title="VMMaxLvl" Name="VMMaxLvl" DataType="Float.22.8" SourceName="VMMAX_LVL" SourceType="Column" Required="false"/>
     <Field Desc="TaskId" Title="TaskId" Name="TaskId" DataType="Integer.64" SourceName="TASK_ID" SourceType="Column" Required="false"/>
     <Field Desc="SensorName" Title="SensorName" Name="SensorName" DataType="Text.150" SourceName="SENSOR_NAME" SourceType="Column" Required="false"/>
+    <Field Desc="SensorTitle" Title="SensorTitle" Name="SensorTitle" DataType="Text.150" SourceName="SENSOR_TITLE" SourceType="Column" Required="false"/>
     <Field Desc="Longitude, DEC" Title="Longitude, DEC" Name="Longitude" DataType="Double.30.10" SourceName="LON" SourceType="Column" Required="false" Unit="Longitude.DEC"/>
     <Field Desc="Latitude, DEC" Title="Latitude, DEC" Name="Latitude" DataType="Double.30.10" SourceName="LAT" SourceType="Column" Required="false" Unit="Latitude.DEC"/>
     <Field Desc="Step" Title="Step" Name="Step" DataType="Double.30.10" SourceName="CHANNEL_BANDWIDTH" SourceType="Column" Required="false"/>

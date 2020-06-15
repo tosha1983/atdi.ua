@@ -39,9 +39,9 @@ namespace XICSM.ICSControlClient.ViewModels
     {
         public enum SpectrumOccupationType
         {
+            All,
             FreqBandwidthOccupation,
-            FreqChannelOccupation,
-            All
+            FreqChannelOccupation
         }
 
         private const string TypeMeasurements = "SpectrumOccupation";
@@ -246,7 +246,7 @@ namespace XICSM.ICSControlClient.ViewModels
                         }
                     }
                 }
-                else
+                else if (recordCount > 0)
                 {
                     FRM.FolderBrowserDialog folderDialog = new FRM.FolderBrowserDialog();
                     if (folderDialog.ShowDialog() == FRM.DialogResult.OK)
@@ -257,6 +257,10 @@ namespace XICSM.ICSControlClient.ViewModels
                             ReadData(recordCount);
                         }
                     }
+                }
+                else
+                {
+                    MessageBox.Show($"The result of this query in the database is 0 records!", PluginHelper.MessageBoxCaption, MessageBoxButton.OK);
                 }
             }
         }
@@ -351,6 +355,7 @@ namespace XICSM.ICSControlClient.ViewModels
                                           c => c.ScansNumber,
                                           c => c.SensorId,
                                           c => c.SensorName,
+                                          c => c.SensorTitle,
                                           c => c.Step,
                                           c => c.TaskId,
                                           c => c.TimeMeas,
@@ -412,6 +417,7 @@ namespace XICSM.ICSControlClient.ViewModels
                                                                                             "Широта сенсора, град" }, System.Text.Encoding.UTF8);
                                         }
 
+                                        var sensorTitle = string.IsNullOrEmpty(readerResLevels.GetValue(c => c.SensorTitle)) ? readerResLevels.GetValue(c => c.SensorName) : readerResLevels.GetValue(c => c.SensorTitle);
                                         System.IO.File.AppendAllLines(currFileName, new string[] {
                                                        $"{readerResLevels.GetValue(c => c.Id)};" +
                                                        $"{readerResLevels.GetValue(c => c.FreqMeas)};" +
@@ -426,7 +432,7 @@ namespace XICSM.ICSControlClient.ViewModels
                                                        $"{readerResLevels.GetValue(c => c.TypeSpectrumOccupation)};" +
                                                        $"{readerResLevels.GetValue(c => c.LevelMinOccup)};" +
                                                        $"{readerResLevels.GetValue(c => c.TaskId)};" +
-                                                       $"{readerResLevels.GetValue(c => c.SensorName)};" +
+                                                       $"{sensorTitle};" +
                                                        $"{XICSM.ICSControlClient.ViewModels.Reports.ConvertCoordinates.DecToDmsToString2(readerResLevels.GetValue(c => c.Longitude).Value, Coordinates.EnumCoordLine.Lon)};" +
                                                        $"{XICSM.ICSControlClient.ViewModels.Reports.ConvertCoordinates.DecToDmsToString2(readerResLevels.GetValue(c => c.Latitude).Value, Coordinates.EnumCoordLine.Lat)}" }, System.Text.Encoding.UTF8);
 

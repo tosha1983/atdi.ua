@@ -36,8 +36,17 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="GMap.NET.Core, Version=1.7.5.0, Culture=neutral, PublicKeyToken=b85b9027b614afef, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\GMap.NET.Presentation.1.7.5\lib\net40\GMap.NET.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="GMap.NET.WindowsPresentation, Version=1.7.5.0, Culture=neutral, PublicKeyToken=b85b9027b614afef, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\GMap.NET.Presentation.1.7.5\lib\net40\GMap.NET.WindowsPresentation.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -47,8 +56,37 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Charts\ChartColumnsStyle.cs" />
+    <Compile Include="Charts\ChartGridStyle.cs" />
+    <Compile Include="Charts\ChartLine.cs" />
+    <Compile Include="Charts\ChartLineStyle.cs" />
+    <Compile Include="Charts\ChartMenuItem.cs" />
+    <Compile Include="Charts\ChartOption.cs" />
+    <Compile Include="Charts\ChartPoints.cs" />
+    <Compile Include="Charts\ChartStyle.cs" />
+    <Compile Include="Charts\LineChart.xaml.cs">
+      <DependentUpon>LineChart.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\OrmButton.cs" />
+    <Compile Include="Controls\OrmCheckBox.cs" />
+    <Compile Include="Controls\OrmEnumBox\OrmEnumBox.xaml.cs">
+      <DependentUpon>OrmEnumBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\OrmDataGrid.cs" />
+    <Compile Include="Controls\OrmDatePicker.xaml.cs">
+      <DependentUpon>OrmDatePicker.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\OrmEnumBox\OrmEnumBoxData.cs" />
+    <Compile Include="Controls\OrmGridSplitter.cs" />
+    <Compile Include="Controls\OrmTextBox.xaml.cs">
+      <DependentUpon>OrmTextBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Extentions.cs" />
+    <Compile Include="Maps\Map.cs" />
+    <Compile Include="Maps\MapData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -59,6 +97,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -73,11 +112,27 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Controls\" />
+    <Page Include="Charts\LineChart.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\OrmEnumBox\OrmEnumBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\OrmDatePicker.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\OrmTextBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy "$(TargetDir)Atdi.WpfControls.EntityOrm.dll" "C:\ATDI\ICS Manager"
+copy "$(TargetDir)Atdi.WpfControls.EntityOrm.dll" "C:\ATDI\ICS ManagerCalcServer"
 copy "$(TargetDir)Atdi.*.dll" "C:\ATDI\ICS Manager"
 copy "$(TargetDir)Atdi.WpfControls.EntityOrm.dll" "C:\ATDI\ICS Manager UCRF"
 copy "$(TargetDir)Atdi.WpfControls.EntityOrm.dll" "C:\ATDI\ICSM_UCRF_MON_2019_04_18_x_sig_214"</PostBuildEvent>

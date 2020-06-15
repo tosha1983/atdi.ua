@@ -19,7 +19,19 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 
 		DateTimeOffset CreatedDate { get; set; }
 
-		string Name { get; set; }
+        string ExternalCode { get; set; }
+
+        string ExternalSource { get; set; }
+
+        DateTimeOffset? ModifiedDate { get; set; }
+
+        string LicenseGsid { get; set; }
+
+        string RealGsid { get; set; }
+
+        string RegionCode { get; set; }
+
+        string Name { get; set; }
 
 		string CallSign { get; set; }
 
@@ -27,7 +39,9 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 
 		string StateName { get; set; }
 
-		IContextStationSite SITE { get; set; }
+        string Standard { get; set; }
+
+        IContextStationSite SITE { get; set; }
 
 		IContextStationAntenna ANTENNA { get; set; }
 

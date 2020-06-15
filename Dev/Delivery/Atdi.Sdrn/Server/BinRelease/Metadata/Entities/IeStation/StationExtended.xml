@@ -34,7 +34,8 @@
     <Field Desc="PermissionGlobalSID" Title="PermissionGlobalSID" Name="PermissionGlobalSID" DataType="Text.50" SourceName="PERMISS_GLOBAL_SID" SourceType="Column" Required="false"/>
     <Field Desc="StationTxFreq" Title="StationTxFreq" Name="StationTxFreq" DataType="Array.Float" SourceName="STATION_TX_FREQ" SourceType="Column" Required="false"/>
     <Field Desc="StationRxFreq" Title="StationRxFreq" Name="StationRxFreq" DataType="Array.Float" SourceName="STATION_RX_FREQ" SourceType="Column" Required="false"/>
-    <Field Desc="StationChannel" Title="StationChannel" Name="StationChannel" DataType="Array.String" SourceName="STATION_CHANNEL" SourceType="Column" Required="false"/>
+    <Field Desc="StationTxChannel" Title="StationTxChannel" Name="StationTxChannel" DataType="Array.String" SourceName="STATION_TX_CHANNEL" SourceType="Column" Required="false"/>
+    <Field Desc="StationRxChannel" Title="StationRxChannel" Name="StationRxChannel" DataType="Array.String" SourceName="STATION_RX_CHANNEL" SourceType="Column" Required="false"/>
     <Field Desc="StationName" Title="StationName" Name="StationName" DataType="Text.100" SourceName="STATION_NAME" SourceType="Column" Required="false"/>
     <Field Desc="OKPO" Title="OKPO" Name="OKPO" DataType="Text.20" SourceName="OKPO" SourceType="Column" Required="false"/>
   </Fields>

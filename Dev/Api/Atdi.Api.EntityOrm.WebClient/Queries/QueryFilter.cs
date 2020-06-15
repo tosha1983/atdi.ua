@@ -134,7 +134,8 @@ namespace Atdi.Api.EntityOrm.WebClient
 					return "null";
 				}
 
-				return $"'{realValue}'";
+				var valueAsString = Convert.ToString(realValue).Replace("'", "''");
+				return $"'{valueAsString}'";
 			}
 			if (type == typeof(DateTime))
 			{
@@ -318,56 +319,56 @@ namespace Atdi.Api.EntityOrm.WebClient
 
 		public IQueryFilter<TEntity, TQuery> And()
 		{
-			ValidateSate();
+			ValidateState();
 			_builder.Append(" and ");
 			return this;
 		}
 
 		public IQueryFilter<TEntity, TQuery> Begin()
 		{
-			ValidateSate();
+			ValidateState();
 			_builder.Append("(");
 			return this;
 		}
 
 		public IQueryFilter<TEntity, TQuery> Condition<TValue>(Expression<Func<TEntity, TValue>> leftOperandPathExpression, TValue value)
 		{
-			ValidateSate();
+			ValidateState();
 			_builder.Append(ConditionBuilder.Build(leftOperandPathExpression, value));
 			return this;
 		}
 
 		public IQueryFilter<TEntity, TQuery> Condition<TValue>(Expression<Func<TEntity, TValue>> leftOperandPathExpression, FilterOperator filterOperator, params TValue[] values)
 		{
-			ValidateSate();
+			ValidateState();
 			_builder.Append(ConditionBuilder.Build(leftOperandPathExpression, filterOperator, values));
 			return this;
 		}
 
 		public IQueryFilter<TEntity, TQuery> Condition<TValue>(Expression<Func<TEntity, TValue>> leftOperandPathExpression, Expression<Func<TEntity, TValue>> rightOperandPathExpression)
 		{
-			ValidateSate();
+			ValidateState();
 			_builder.Append(ConditionBuilder.Build(leftOperandPathExpression, rightOperandPathExpression));
 			return this;
 		}
 
 		public IQueryFilter<TEntity, TQuery> Condition<TValue>(Expression<Func<TEntity, TValue>> leftOperandPathExpression, FilterOperator filterOperator, params Expression<Func<TEntity, TValue>>[] rightOperandPathExpressions)
 		{
-			ValidateSate();
+			ValidateState();
 			_builder.Append(ConditionBuilder.Build(leftOperandPathExpression, filterOperator, rightOperandPathExpressions));
 			return this;
 		}
 
 		public IQueryFilter<TEntity, TQuery> End()
 		{
-			ValidateSate();
+			ValidateState();
 			_builder.Append(")");
 			return this;
 		}
 
 		public TQuery EndFilter()
 		{
-			ValidateSate();
+			ValidateState();
 			_processing = false;
 			if (_builder.Length == 0)
 			{
@@ -379,12 +380,12 @@ namespace Atdi.Api.EntityOrm.WebClient
 
 		public IQueryFilter<TEntity, TQuery> Or()
 		{
-			ValidateSate();
+			ValidateState();
 			_builder.Append(" or ");
 			return this;
 		}
 
-		private void ValidateSate()
+		private void ValidateState()
 		{
 			if (!_processing)
 			{

@@ -45,7 +45,12 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestProfile\GE06\BroadcastingAssignment.cs" />
+    <Compile Include="TestProfile\GE06\AffectedADMResult.cs" />
+    <Compile Include="TestProfile\GE06\ContoursResult.cs" />
+    <Compile Include="TestProfile\GE06\GE06TaskParameters.cs" />
     <Compile Include="TestProfile\TestProfiles.cs" />
+    <Compile Include="TestProfile\Tresh.cs" />
     <Compile Include="TestPropagationModel.cs" />
     <Compile Include="TestCalcAntennaPattern.cs" />
   </ItemGroup>

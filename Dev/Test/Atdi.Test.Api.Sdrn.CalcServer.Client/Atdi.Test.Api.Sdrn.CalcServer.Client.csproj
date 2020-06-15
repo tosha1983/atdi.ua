@@ -61,6 +61,8 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tasks\PointFieldStrengthCalcTask.cs" />
+    <Compile Include="Tasks\PointFieldStrengthCalcTask_Lviv.cs" />
+    <Compile Include="Tasks\StationCorrelationCalcTask.cs" />
     <Compile Include="Test\TestDataGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -91,6 +93,10 @@
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.CalcServer\Atdi.DataModels.Sdrn.CalcServer.csproj">
       <Project>{BA1BB2B6-EC14-4224-8D5D-20D6A6F7041C}</Project>
       <Name>Atdi.DataModels.Sdrn.CalcServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.Infocenter.Entities\Atdi.DataModels.Sdrn.Infocenter.Entities.csproj">
+      <Project>{b793c198-41c4-4e9e-9e18-479a8a51b0b0}</Project>
+      <Name>Atdi.DataModels.Sdrn.Infocenter.Entities</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

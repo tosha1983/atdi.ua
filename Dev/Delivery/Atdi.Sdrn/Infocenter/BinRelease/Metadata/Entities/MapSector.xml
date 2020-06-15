@@ -31,7 +31,7 @@
     <Field Name="LowerLeftX" DataType="Integer.32"  SourceName="CRD_LWL_X" SourceType="Column" Desc="The Lower Left X" Title="Lower Left X" Required="true"/>
     <Field Name="LowerLeftY" DataType="Integer.32"  SourceName="CRD_LWL_Y" SourceType="Column" Desc="The Lower Left Y" Title="Lower Left Y" Required="true"/>
     <Field Name="LowerRightX" DataType="Integer.32" SourceName="CRD_LWR_X" SourceType="Column" Desc="The Lower Right X" Title="Lower Right X" Required="true"/>
-    <Field Name="LowerRightY" DataType="Integer.32" SourceName="CRD_lWR_Y" SourceType="Column" Desc="The Lower Right Y" Title="Lower Right Y" Required="true"/>
+    <Field Name="LowerRightY" DataType="Integer.32" SourceName="CRD_LWR_Y" SourceType="Column" Desc="The Lower Right Y" Title="Lower Right Y" Required="true"/>
 
 
     <Field Name="ContentSize" DataType="Integer.32" SourceName="CONTENT_SIZE" SourceType="Column" Desc="The content size in bytes of the map" Title="Content size" Required="true"/>

@@ -106,8 +106,6 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
 
                         this._signalingCounter?.Increment();
 
-
-
                         bool? collectEmissionInstrumentalEstimation = null;
                         var rawTaskId = context.measResult.TaskId.Replace("SDRN.SubTaskSensorId.", "");
                         if (long.TryParse(rawTaskId, out long taskId))
@@ -133,8 +131,6 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                 }
                                 return true;
                             });
-
-                         
                         }
 
                         if (this.SaveMeasResultSignaling(ref context, collectEmissionInstrumentalEstimation.GetValueOrDefault(false)))
@@ -474,8 +470,13 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
 
                                         var builderInsertIWorkTime = this._dataLayer.GetBuilder<MD.IWorkTime>().Insert();
                                         builderInsertIWorkTime.SetValue(c => c.EMITTING.Id, valInsReferenceEmitting.Id);
-                                        if (workTime.HitCount >= 0 && workTime.HitCount <= Int32.MaxValue)
+                                        if (workTime.HitCount > 0 && workTime.HitCount <= Int32.MaxValue)
                                             builderInsertIWorkTime.SetValue(c => c.HitCount, workTime.HitCount);
+                                        else
+                                        {
+                                            WriteLog($"Incorrect value HitCount, Value is '{workTime.HitCount}'", "IWorkTime", context);
+                                            builderInsertIWorkTime.SetValue(c => c.HitCount, 1);
+                                        }
                                         builderInsertIWorkTime.SetValue(c => c.PersentAvailability, workTime.PersentAvailability);
                                         builderInsertIWorkTime.SetValue(c => c.StartEmitting, workTime.StartEmitting);
                                         builderInsertIWorkTime.SetValue(c => c.StopEmitting, workTime.StopEmitting);
@@ -597,6 +598,11 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                             builderInsertIWorkTime.SetValue(c => c.SYSINFO.Id, valInsSysInfo.Id);
                                             if (workTime.HitCount >= 0 && workTime.HitCount <= Int32.MaxValue)
                                                 builderInsertIWorkTime.SetValue(c => c.HitCount, workTime.HitCount);
+                                            else
+                                            {
+                                                WriteLog($"Incorrect value HitCount, Value is '{workTime.HitCount}'", "ISignalingSysInfoWorkTime", context);
+                                                builderInsertIWorkTime.SetValue(c => c.HitCount, 1);
+                                            }
                                             builderInsertIWorkTime.SetValue(c => c.PersentAvailability, workTime.PersentAvailability);
                                             builderInsertIWorkTime.SetValue(c => c.StartEmitting, workTime.StartEmitting);
                                             builderInsertIWorkTime.SetValue(c => c.StopEmitting, workTime.StopEmitting);

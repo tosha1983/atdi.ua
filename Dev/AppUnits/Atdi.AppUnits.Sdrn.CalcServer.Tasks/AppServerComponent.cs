@@ -11,6 +11,8 @@ using Atdi.DataModels.Sdrn.DeepServices.Gis;
 using Atdi.Platform.AppComponent;
 using Atdi.Platform.Data;
 using Atdi.Platform.DependencyInjection;
+using Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations;
+using Atdi.DataModels.Sdrn.CalcServer.Internal.Clients;
 
 namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 {
@@ -72,7 +74,44 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 				MaxSize = appConfig.ThresholdsGisProfileDataObjectPoolMaxSize.GetValueOrDefault(10),
 				Factory = () => new short[appConfig.ThresholdsGisProfileDataArrayLength.GetValueOrDefault(10_000)]
 			});
-			base.OnActivateUnit();
+
+
+           var driveCalcPointArrayPool = poolSite.Register(new ObjectPoolDescriptor<CalcPoint[]>()
+           {
+                Key = ObjectPools.StationCalibrationCalcPointArrayObjectPool,
+                MinSize = appConfig.ThresholdsStationCalibrationObjectPoolMaxSize.GetValueOrDefault(0),
+                MaxSize = appConfig.ThresholdsStationCalibrationObjectPoolMaxSize.GetValueOrDefault(10),
+                Factory = () => new CalcPoint[appConfig.ThresholdsStationCalibrationArrayLength.GetValueOrDefault(1_0000)]
+            });
+
+            var driveCalcPointFSArrayPool = poolSite.Register(new ObjectPoolDescriptor<PointFS[]>()
+            {
+                Key = ObjectPools.StationCalibrationPointFSArrayObjectPool,
+                MinSize = appConfig.ThresholdsStationCalibrationObjectPoolMaxSize.GetValueOrDefault(0),
+                MaxSize = appConfig.ThresholdsStationCalibrationObjectPoolMaxSize.GetValueOrDefault(10),
+                Factory = () => new PointFS[appConfig.ThresholdsStationCalibrationArrayLength.GetValueOrDefault(1_0000)]
+            });
+
+            var lstDriveTestsResultPool = poolSite.Register(new ObjectPoolDescriptor<DriveTestsResult[][]>()
+            {
+                Key = ObjectPools.StationCalibrationListDriveTestsResultObjectPool,
+                MinSize = appConfig.ThresholdsStationCalibrationObjectPoolMaxSize.GetValueOrDefault(0),
+                MaxSize = appConfig.ThresholdsStationCalibrationObjectPoolMaxSize.GetValueOrDefault(10),
+                Factory = () => new DriveTestsResult[appConfig.ThresholdsStationCalibrationArrayLength.GetValueOrDefault(1_0000)][]
+            });
+
+            var calibrationResultlPool = poolSite.Register(new ObjectPoolDescriptor<CalibrationResult[]>()
+            {
+                Key = ObjectPools.StationCalibrationResultObjectPool,
+                MinSize = appConfig.ThresholdsStationCalibrationObjectPoolMaxSize.GetValueOrDefault(0),
+                MaxSize = appConfig.ThresholdsStationCalibrationObjectPoolMaxSize.GetValueOrDefault(10),
+                Factory = () => new CalibrationResult[appConfig.ThresholdsStationCalibrationArrayLength.GetValueOrDefault(1_0000)]
+            });
+
+
+            
+
+            base.OnActivateUnit();
 		}
 	}
 }

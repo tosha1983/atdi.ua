@@ -191,8 +191,10 @@ namespace Atdi.Modules.LicenseGenerator
 			//ICSControl_ForTesting_Infocentr(@"C:\Projects\Repos\atdi.ua\Dev\Delivery\Licenses\Test\Sdrn\InfocentrLicense", 1);
 
 			//выпуск 90 сенсоров
-			ICSControl_ForUDCR_UNICOM_2020();
+			//ICSControl_ForUDCR_UNICOM_2020();
 
+			// для тестирования плагинов
+			ICSMPlugin_ForTesting_Calc_2020();
 
 			Console.WriteLine("Process was finished");
 
@@ -961,6 +963,7 @@ namespace Atdi.Modules.LicenseGenerator
                 MakeLicense(path, srvLicPrefix, srvInstancePrefix, "ClientLicense", "ICS Control Monitoring Client", srvLicenseIndex, instanceIndex, ownerName, ownerId, ownerKey, company, startDate, stopDate);
             }
         }
+
         public static string GetProductKey(string productName, string licenseType, string instance, string ownerId, string number)
         {
             var source = productName + "ZXCV158BNM" + licenseType + "ASD290FGHJKL" + instance + "QWE346RTYU7IOP" + ownerId + number;
@@ -1352,27 +1355,55 @@ namespace Atdi.Modules.LicenseGenerator
 					stopDate, 2020, LicenseLimitationTerms.Year);
 			}
 
-			//for (int i = 0; i < serverCount; i++)
-			//{
-			//	var srvLicenseIndex = GetUniqueIntegerKey(3);
-			//	var instanceIndex = GetUniqueIntegerKey(4);
-			//	var srvLicPrefix = "LIC-S";
-			//	var srvInstancePrefix = "SDRNSV-S";
-
-			//	MakeLicense(path, srvLicPrefix, srvInstancePrefix, "ServerLicense", "ICS Control Server", srvLicenseIndex, instanceIndex, ownerName, ownerId, ownerKey, company, startDate, stopDate);
-			//}
-
-			//for (int i = 0; i < clientCount; i++)
-			//{
-			//	var srvLicenseIndex = GetUniqueIntegerKey(3);
-			//	var instanceIndex = GetUniqueIntegerKey(4);
-			//	var srvLicPrefix = "LIC-C";
-			//	var srvInstancePrefix = "CLIENT-C";
-
-			//	MakeLicense(path, srvLicPrefix, srvInstancePrefix, "ClientLicense", "ICS Control Monitoring Client", srvLicenseIndex, instanceIndex, ownerName, ownerId, ownerKey, company, startDate, stopDate);
-			//}
+			
 		}
 
+		static void ICSMPlugin_ForTesting_Calc_2020()
+		{
+			const string ownerId = "OID-BD12-A00-N00";
+			const string ownerName = "ТОВ 'Лабораторія інформаційних систем'";
+			const string company = "ТОВ 'Лабораторія інформаційних систем'";
+			const string ownerKey = "BD12-A00";
+			var startDate = new DateTime(2020, 6, 1);
+			var stopDate = new DateTime(2025, 6, 1);
+
+			var licPrefix = "LIC-P";
+			var instancePrefix = "ICSMP-C";
+
+			var path1 = @"C:\Projects\Licensing\Test\ICSMPlugins\SdrnCalcServerClient";
+
+			
+
+			BuilProductLicense(
+				path1,
+				licPrefix,
+				instancePrefix,
+				"ClientLicense",
+				"ICSM Plugin - SDRN Calc Server Client",
+				ownerName,
+				ownerId,
+				ownerKey,
+				company,
+				startDate,
+				stopDate, 2020, LicenseLimitationTerms.TimePeriod);
+
+
+			var path2 = @"C:\Projects\Licensing\Test\ICSMPlugins\SdrnStationCalibrationCalc";
+			BuilProductLicense(
+				path2,
+				licPrefix,
+				instancePrefix,
+				"ClientLicense",
+				"ICSM Plugin - SDRN Station Calibration Calc",
+				ownerName,
+				ownerId,
+				ownerKey,
+				company,
+				startDate,
+				stopDate, 2020, LicenseLimitationTerms.TimePeriod);
+
+
+		}
 
 		private static string BuildNextLicenseNumber(string licPrefix, string ownerKey, int numMaxSize = 3)
 		{

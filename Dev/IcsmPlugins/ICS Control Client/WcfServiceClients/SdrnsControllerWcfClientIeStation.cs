@@ -81,5 +81,13 @@ namespace XICSM.ICSControlClient.WcfServiceClients
         {
             return Execute(contract => contract.GetDetailProtocolsByParameters(processId, "", DateCreated, DateStart, DateStop, DateMeasDay, DateMeasMonth, DateMeasYear, freqStart, freqStop, probability, standard, province, ownerName, permissionNumber, permissionStart, permissionStop, statusMeas));
         }
+
+        public static HeadProtocols[] GetDetailProtocolsByParameters(
+                                                   DateTime? DateStart,
+                                                   DateTime? DateStop
+                                                   )
+        {
+            return Execute(contract => contract.GetDetailProtocolsByPeriod(DateStart, DateStop));
+        }
     }
 }

@@ -1,0 +1,251 @@
+﻿<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:XICSM.SdrnStationCalibrationCalc.WpfControls"
+             xmlns:maps="clr-namespace:Atdi.WpfControls.EntityOrm.Maps;assembly=Atdi.WpfControls.EntityOrm"
+             xmlns:res="clr-namespace:Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties;assembly=XICSM_SdrnStationCalibrationCalc"
+             xmlns:cdg="clr-namespace:Atdi.WpfControls.EntityOrm.Controls;assembly=Atdi.WpfControls.EntityOrm"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+  <UserControl.Resources>    
+    <Style x:Key="DataGridHeaderCentered" TargetType="DataGridColumnHeader">
+      <Setter Property="HorizontalAlignment" Value="Stretch"/>
+      <Setter Property="HorizontalContentAlignment" Value="Center"/>
+    </Style>
+    <Style x:Key="DataGridCellCentered" TargetType="DataGridCell">
+      <Setter Property="TextBlock.TextAlignment" Value="Center" />
+    </Style>
+    <Style x:Key="DataGridCellRighted" TargetType="DataGridCell">
+      <Setter Property="TextBlock.TextAlignment" Value="Right" />
+    </Style>
+  </UserControl.Resources>
+  <DockPanel LastChildFill="True" MinHeight="30">
+    <Grid>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="33*" MinWidth="100"/>
+        <ColumnDefinition Width="Auto" />
+        <ColumnDefinition Width="66*" MinWidth="100"/>
+      </Grid.ColumnDefinitions>
+      <Grid.RowDefinitions>
+          <RowDefinition Height="*"></RowDefinition>
+      </Grid.RowDefinitions>
+
+      <Grid Grid.Column="0">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="55*" MinHeight="100" ></RowDefinition>
+          <RowDefinition Height="Auto"></RowDefinition>
+          <RowDefinition Height="45*" MinHeight="100"></RowDefinition>
+        </Grid.RowDefinitions>
+        
+      <GroupBox Grid.Row="0" Header="{x:Static res:Resources.ParametersOfTask}" Margin="5, 5, 5, 5" >
+
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+          </Grid.ColumnDefinitions>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+          </Grid.RowDefinitions>
+
+
+          <Label Height="40" Grid.Column="0" Grid.Row="0" Margin="5,5,5,5" Content="{x:Static res:Resources.MeasurementsFrom}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+          <DatePicker Grid.Column="0" Grid.Row="0" Margin="110,5,5,5" Height="20" Width="100" HorizontalAlignment="Left" VerticalAlignment="Top" SelectedDate="{Binding Path=DateStartLoadResults, StringFormat='{}{0:dd.MM.yyyy}'}"/>
+          <Label Height="40" Grid.Column="0" Grid.Row="0" Margin="215,5,5,5" Content="{x:Static res:Resources.To}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+          <DatePicker Grid.Column="0" Grid.Row="0" Margin="240,5,5,5" Height="20" Width="100" HorizontalAlignment="Left" VerticalAlignment="Top" SelectedDate="{Binding Path=DateStopLoadResults, StringFormat='{}{0:dd.MM.yyyy}'}"/>
+          <Button Grid.Column="0" Grid.Row="0" Margin="350,5,5,5" Content="Load" Command="{Binding LoadResultsCommand}" Width="70" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+          
+          <GroupBox Grid.Row="0" Margin="5, 25, 5, 5" Header="Results">
+            <cdg:OrmDataGrid IsReadOnly="True" Margin="5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding StationCalibrationResultDataAdapter}" SelectedItemsList="{Binding CurrentStationCalibrationResultModel, Mode=TwoWay}" >
+            <DataGrid.Columns>
+              
+                <DataGridTextColumn Header="{x:Static res:Resources.PercentComplete}" Binding="{Binding Path=PercentComplete}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.NumberStationInContour}" Binding="{Binding Path=NumberStationInContour}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.Standard}" Binding="{Binding Path=Standard}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.AreaName}" Binding="{Binding Path=AreaName}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.NumberStation}" Binding="{Binding Path=NumberStation}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.NumberStationInContour}" Binding="{Binding Path=NumberStationInContour}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.CountStation_CS}" Binding="{Binding Path=CountStation_CS}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.CountStation_NS}" Binding="{Binding Path=CountStation_NS}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.CountStation_IT}" Binding="{Binding Path=CountStation_IT}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.CountStation_NF}" Binding="{Binding Path=CountStation_NF}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.CountStation_UN}" Binding="{Binding Path=CountStation_UN}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.CountMeasGSID}" Binding="{Binding Path=CountMeasGSID}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.CountMeasGSID_LS}" Binding="{Binding Path=CountMeasGSID_LS}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.CountMeasGSID_IT}" Binding="{Binding Path=CountMeasGSID_IT}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.TimeStart}" Binding="{Binding Path=TimeStart, StringFormat='{}{0:dd.MM.yyyy 0:HH:mm}'}"></DataGridTextColumn>
+
+
+                <DataGridTextColumn Header="{x:Static res:Resources.CorrelationThresholdHard}" Binding="{Binding Path=CorrelationThresholdHard}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.CorrelationThresholdWeak}" Binding="{Binding Path=CorrelationThresholdWeak}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.TrustOldResults}" Binding="{Binding Path=TrustOldResults}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.UseMeasurementSameGSID}" Binding="{Binding Path=UseMeasurementSameGSID}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.DistanceAroundContour}" Binding="{Binding Path=DistanceAroundContour_km}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.MinNumberPointForCorrelation}" Binding="{Binding Path=MinNumberPointForCorrelation}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.MinRangeMeasurements}" Binding="{Binding Path=MinRangeMeasurements_dBmkV}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.MaxRangeMeasurements}" Binding="{Binding Path=MaxRangeMeasurements_dBmkV}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.CorrelationDistance}" Binding="{Binding Path=CorrelationDistance_m}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.Delta}" Binding="{Binding Path=Delta_dB}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.MaxAntennasPatternLoss}" Binding="{Binding Path=MaxAntennasPatternLoss_dB}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.Detail}" Binding="{Binding Path=Detail}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.AltitudeStation}" Binding="{Binding Path=AltitudeStation}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.ShiftAltitudeStationMin}" Binding="{Binding Path=ShiftAltitudeStationMin_m}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.ShiftAltitudeStationMax}" Binding="{Binding Path=ShiftAltitudeStationMax_m}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.ShiftAltitudeStationStep}" Binding="{Binding Path=ShiftAltitudeStationStep_m}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.MaxDeviationAltitudeStation}" Binding="{Binding Path=MaxDeviationAltitudeStation_m}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.TiltStation}" Binding="{Binding Path=TiltStation}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.ShiftTiltStationMin}" Binding="{Binding Path=ShiftTiltStationMin_deg}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.ShiftTiltStationMax}" Binding="{Binding Path=ShiftTiltStationMax_deg}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.ShiftTiltStationStep}" Binding="{Binding Path=ShiftTiltStationStep_deg}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.MaxDeviationTiltStation}" Binding="{Binding Path=MaxDeviationTiltStation_deg}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.AzimuthStation}" Binding="{Binding Path=AzimuthStation}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.ShiftAzimuthStationMin}" Binding="{Binding Path=ShiftAzimuthStationMin_deg}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.ShiftAzimuthStationMax}" Binding="{Binding Path=ShiftAzimuthStationMax_deg}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.ShiftAzimuthStationStep}" Binding="{Binding Path=ShiftAzimuthStationStep_deg}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.MaxDeviationAzimuthStation}" Binding="{Binding Path=MaxDeviationAzimuthStation_deg}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.CoordinatesStation}" Binding="{Binding Path=CoordinatesStation}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.ShiftCoordinatesStation}" Binding="{Binding Path=ShiftCoordinatesStation_m}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.ShiftCoordinatesStationStep}" Binding="{Binding Path=ShiftCoordinatesStationStep_m}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.MaxDeviationCoordinatesStation}" Binding="{Binding Path=MaxDeviationCoordinatesStation_m}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.PowerStation}" Binding="{Binding Path=PowerStation}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.ShiftPowerStationMin}" Binding="{Binding Path=ShiftPowerStationMin_dB}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.ShiftPowerStationMax}" Binding="{Binding Path=ShiftPowerStationMax_dB}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.ShiftPowerStationStep}" Binding="{Binding Path=ShiftPowerStationStep_dB}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.CascadeTuning}" Binding="{Binding Path=CascadeTuning}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.NumberCascade}" Binding="{Binding Path=NumberCascade}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.DetailOfCascade}" Binding="{Binding Path=DetailOfCascade}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.Method}" Binding="{Binding Path=Method}"></DataGridTextColumn>
+
+              </DataGrid.Columns>
+            </cdg:OrmDataGrid>
+          </GroupBox>
+        </Grid>        
+      </GroupBox>
+
+
+
+        <GridSplitter Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center" Background="#FFB4B1B1"/>
+
+
+        <GroupBox Grid.Row="2" Header="{x:Static res:Resources.Map}" Margin="5, 5, 5, 5">
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="*"></RowDefinition>
+              <RowDefinition Height="30"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <maps:Map Grid.Row="0" DrawingData="{Binding CurrentMapData}"></maps:Map>
+           
+          </Grid>
+        </GroupBox>
+        
+
+      </Grid>
+
+      <GridSplitter Grid.Column="1" ShowsPreview="False" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch"  Background="#FFB4B1B1"></GridSplitter>
+      
+      <Grid Grid.Column="2">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="55*" MinHeight="100"></RowDefinition>
+          <RowDefinition Height="Auto"></RowDefinition>
+          <RowDefinition Height="45*" MinHeight="100"></RowDefinition>
+        </Grid.RowDefinitions>
+
+
+
+
+
+        <GroupBox Grid.Row="0" Margin="5, 5, 5, 5" Header="Table with station">
+          <cdg:OrmDataGrid IsReadOnly="True" Margin="5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding StationCalibrationStaDataAdapter}" SelectedItemsList="{Binding CurrentStationCalibrationStaModel, Mode=TwoWay}" >
+            <DataGrid.Columns>
+              <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=Id}"></DataGridTextColumn>
+              
+              <DataGridTextColumn Header="{x:Static res:Resources.ResultStationStatus}" Binding="{Binding Path=ResultStationStatus}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.MaxCorellation}" Binding="{Binding Path=MaxCorellation}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.ExternalCode}" Binding="{Binding Path=ExternalCode}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.ExternalSource}" Binding="{Binding Path=ExternalSource}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.LicenseGsid}" Binding="{Binding Path=LicenseGsid}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.RealGsid}" Binding="{Binding Path=RealGsid}"></DataGridTextColumn>
+
+              <DataGridTextColumn Header="{x:Static res:Resources.New_Tilt_deg}" Binding="{Binding Path=New_Tilt_deg}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.Old_Tilt_deg}" Binding="{Binding Path=Old_Tilt_deg}"></DataGridTextColumn>
+              
+              <DataGridTextColumn Header="{x:Static res:Resources.New_Azimuth_deg}" Binding="{Binding Path=New_Azimuth_deg}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.Old_Azimuth_deg}" Binding="{Binding Path=Old_Azimuth_deg}"></DataGridTextColumn>
+
+              <DataGridTextColumn Header="{x:Static res:Resources.New_Altitude_m}" Binding="{Binding Path=New_Altitude_m}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.Old_Altitude_m}" Binding="{Binding Path=Old_Altitude_m}"></DataGridTextColumn>
+              
+              <DataGridTextColumn Header="{x:Static res:Resources.New_Lat_deg}" Binding="{Binding Path=New_Lat_dms_deg}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.Old_Lat_deg}" Binding="{Binding Path=Old_Lat_dms_deg}"></DataGridTextColumn>
+              
+              <DataGridTextColumn Header="{x:Static res:Resources.New_Lon_deg}" Binding="{Binding Path=New_Lon_dms_deg}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.Old_Lon_deg}" Binding="{Binding Path=Old_Lon_dms_deg}"></DataGridTextColumn>
+              
+              <DataGridTextColumn Header="{x:Static res:Resources.New_Power_dB}" Binding="{Binding Path=New_Power_dB}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.Old_Power_dB}" Binding="{Binding Path=Old_Power_dB}"></DataGridTextColumn>
+              
+                            
+              <DataGridTextColumn Header="{x:Static res:Resources.OldFreq_MHz}" Binding="{Binding Path=Old_Freq_MHz}"></DataGridTextColumn>
+
+              <DataGridTextColumn Header="{x:Static res:Resources.FreqLinkDriveTest_MHz}" Binding="{Binding Path=Freq_MHz}"></DataGridTextColumn>
+
+              <DataGridTextColumn Header="{x:Static res:Resources.Standard}" Binding="{Binding Path=Standard}"></DataGridTextColumn>
+              
+              
+            </DataGrid.Columns>
+          </cdg:OrmDataGrid>
+        </GroupBox>
+
+
+
+
+        <GridSplitter Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center" Background="#FFB4B1B1"/>
+
+        <GroupBox Grid.Row="2" Header="Drive tests" Margin="5, 5, 5, 5" >
+
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+
+
+
+            <GroupBox Grid.Row="0" Margin="5, 5, 5, 5" Header="Table with drive tests">
+              <cdg:OrmDataGrid IsReadOnly="True" Margin="5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding StationCalibrationDriveTestsDataAdapter}" SelectedItemsList="{Binding CurrentStationCalibrationDriveTestsModel, Mode=TwoWay}" >
+                <DataGrid.Columns>
+                  <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=Id}"></DataGridTextColumn>
+                  <DataGridTextColumn Header="{x:Static res:Resources.DriveTestId}" Binding="{Binding Path=DriveTestId}"></DataGridTextColumn>
+                  <DataGridTextColumn Header="{x:Static res:Resources.ExternalSource}" Binding="{Binding Path=ExternalSource}"></DataGridTextColumn>
+                  <DataGridTextColumn Header="{x:Static res:Resources.ExternalCode}" Binding="{Binding Path=ExternalCode}"></DataGridTextColumn>
+                  <DataGridTextColumn Header="{x:Static res:Resources.StationGcid}" Binding="{Binding Path=StationGcid}"></DataGridTextColumn>
+                  <DataGridTextColumn Header="{x:Static res:Resources.MeasGcid}" Binding="{Binding Path=MeasGcid}"></DataGridTextColumn>
+                  <DataGridTextColumn Header="{x:Static res:Resources.ResultDriveTestStatus}" Binding="{Binding Path=ResultDriveTestStatus}"></DataGridTextColumn>
+                  <DataGridTextColumn Header="{x:Static res:Resources.CountPointsInDriveTest}" Binding="{Binding Path=CountPointsInDriveTest}"></DataGridTextColumn>
+                  <DataGridTextColumn Header="{x:Static res:Resources.MaxPercentCorellation}" Binding="{Binding Path=MaxPercentCorellation}"></DataGridTextColumn>
+                  <DataGridTextColumn Header="{x:Static res:Resources.Freq_MHz}" Binding="{Binding Path=Freq_MHz}"></DataGridTextColumn>
+                  <DataGridTextColumn Header="{x:Static res:Resources.Standard}" Binding="{Binding Path=Standard}"></DataGridTextColumn>                  
+                </DataGrid.Columns>
+              </cdg:OrmDataGrid>
+            </GroupBox>
+          </Grid>
+        </GroupBox>
+        
+      </Grid>
+    </Grid>
+  </DockPanel>
+</UserControl>
+
+

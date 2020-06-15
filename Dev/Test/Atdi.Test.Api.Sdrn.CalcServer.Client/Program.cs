@@ -6,8 +6,12 @@ using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using Atdi.Api.EntityOrm.WebClient;
+using Atdi.DataModels.Sdrn.Infocenter.Entities;
 using Atdi.Test.Api.Sdrn.CalcServer.Client.Tasks;
 using DM = Atdi.DataModels.Sdrn.CalcServer.Entities;
+using Atdi.DataModels.Sdrn.Infocenter.Entities.Stations;
+using Atdi.DataModels.Sdrn.Infocenter.Entities.SdrnServer;
+using Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks;
 
 namespace Atdi.Test.Api.Sdrn.CalcServer.Client
 {
@@ -21,7 +25,9 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client
 			Console.WriteLine($"Press any key to start SDRN Calculation Server Client (AK) ...");
 			Console.ReadLine();
 
-			TestWebApiOrm();
+			CheckOrmBug();
+
+			//TestWebApiOrm();
 			//RunPointFieldStrengthCalcTask();
 
 			Console.ReadLine();
@@ -92,7 +98,56 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client
 			////Console.ReadLine();
 		}
 
+		static void CheckOrmBug()
+		{
+			try
+			{
+				//var endpoint = new WebApiEndpoint(new Uri("http://localhost:15075/"), "/appserver/v1");
+				//var dataContext = new WebApiDataContext("SDRN_Infocenter_DB");
+
+				var endpoint = new WebApiEndpoint(new Uri("http://localhost:15070/"), "/appserver/v1");
+				var dataContext = new WebApiDataContext("SDRN_CalcServer_DB");
+
+				var dataLayer = new WebApiDataLayer(endpoint, dataContext);
+				//var d = new DateTime();
+				//var d2 = DateTime.SpecifyKind(d, DateTimeKind.Unspecified);
+				//var query = dataLayer.GetBuilder<IIntegrationLog>()
+				//	.Create();
+				//	query.SetValue( c => c.CreatedDate, d)
+				//	;
+
+					var queryArgs = dataLayer.GetBuilder<IStationCalibrationArgs>()
+						.Create()
+						.SetValue(c => c.TASK.Id, 1000);
+					dataLayer.Executor.Execute(queryArgs);
+
+				//var reader = dataLayer.Executor.ExecuteReader(query);
+				//if (reader.Read())
+				//{
+				//	var v1 = reader.GetValue(c => c.GsidCount);
+				//	var v2 = reader.GetValue(c => c.StandardStats);
+				//	var v3 = reader.GetValueAs<DriveTestStandardStats[]>(c => c.StandardStats);
+				//}
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e);
+				//throw;
+			}
+			
+		}
+
 		static void RunPointFieldStrengthCalcTask()
+		{
+			var endpoint = new WebApiEndpoint(new Uri("http://localhost:15070/"), "/appserver/v1");
+			var dataContext = new WebApiDataContext("SDRN_CalcServer_DB");
+
+			var dataLayer = new WebApiDataLayer();
+
+			PointFieldStrengthCalcTask.Run(dataLayer, dataLayer.GetExecutor(endpoint, dataContext));
+		}
+
+		static void RunPointMyCalcTask()
 		{
 			var endpoint = new WebApiEndpoint(new Uri("http://localhost:15070/"), "/appserver/v1");
 			var dataContext = new WebApiDataContext("SDRN_CalcServer_DB");

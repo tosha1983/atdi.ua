@@ -76,4 +76,68 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(TargetDir)XICSM_SdrnCalcServerClient.dll" "C:\ATDI\ICS ManagerCalcServer"
+
+copy "..\..\..\..\IcsmPlugins\Atdi.Icsm.Plugins.SdrnCalcServerClient\Xaml\*.xaml" "C:\ATDI\ICS ManagerCalcServer\XICSM_SdrnCalcServerClient\Xaml\*.*"
+copy "..\..\..\..\IcsmPlugins\Atdi.Icsm.Plugins.SdrnCalcServerClient\Bin\$(ConfigurationName)\ru-RU\*.*"  "C:\ATDI\ICS ManagerCalcServer\ru-RU\*.*"
+copy "..\..\..\..\IcsmPlugins\Atdi.Icsm.Plugins.SdrnCalcServerClient\Bin\$(ConfigurationName)\uk-UA\*.*" "C:\ATDI\ICS ManagerCalcServer\uk-UA\*.*"
+
+
+
+copy "$(TargetDir)XICSM_SdrnCalcServerClient.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnCalcServerClient\Bin$(ConfigurationName)"
+copy "..\..\..\..\IcsmPlugins\Atdi.Icsm.Plugins.SdrnCalcServerClient\Xaml\*.xaml" "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnCalcServerClient\Bin$(ConfigurationName)\XICSM_SdrnCalcServerClient\Xaml\*.*"
+copy "..\..\..\..\IcsmPlugins\Atdi.Icsm.Plugins.SdrnCalcServerClient\Bin\$(ConfigurationName)\ru-RU\*.*"  "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnCalcServerClient\Bin$(ConfigurationName)\ru-RU\*.*" 
+copy "..\..\..\..\IcsmPlugins\Atdi.Icsm.Plugins.SdrnCalcServerClient\Bin\$(ConfigurationName)\uk-UA\*.*" "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnCalcServerClient\Bin$(ConfigurationName)\uk-UA\*.*"
+
+
+
+
+
+
+
+
+copy "$(TargetDir)Atdi.Platform.ServicesContainer.dll"    "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnCalcServerClient\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.Platform.Logging.dll"    "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnCalcServerClient\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.AppUnits.dll"     "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnCalcServerClient\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.AppUnits.Sdrn.DeepServices.dll"    "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnCalcServerClient\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.dll"    "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnCalcServerClient\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.DataModels.Api.EntityOrm.WebClient.dll"     "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnCalcServerClient\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.Platform.dll"     "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnCalcServerClient\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.DataModels.EntityOrm.dll"    "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnCalcServerClient\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.DataModels.dll"    "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnCalcServerClient\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.Contracts.Api.EntityOrm.WebClient.dll"     "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnCalcServerClient\Bin$(ConfigurationName)"
+
+
+copy "$(TargetDir)Atdi.Platform.AppServer.dll"     "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnCalcServerClient\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.Platform.Configurator.dll"     "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnCalcServerClient\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.Api.EntityOrm.WebClient.dll"     "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnCalcServerClient\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.DataModels.Sdrn.CalcServer.Entities.dll"     "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnCalcServerClient\Bin$(ConfigurationName)"
+
+copy "$(TargetDir)Atdi.DataModels.Sdrn.Infocenter.Entities.dll"    "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnCalcServerClient\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.WpfControls.EntityOrm.dll"     "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnCalcServerClient\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.Icsm.Plugins.Core.dll"   "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnCalcServerClient\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.AppUnits.dll"   "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnCalcServerClient\Bin$(ConfigurationName)"
+
+
+
+
+copy "$(TargetDir)Atdi.Icsm.Plugins.Core.dll"    "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnCalcServerClient\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.Platform.ServicesContainer.dll"   "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnCalcServerClient\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.Platform.Logging.dll"   "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnCalcServerClient\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.Platform.Configurator.dll"   "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnCalcServerClient\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.Platform.AppServer.dll"   "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnCalcServerClient\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.Modules.Licensing.dll"   "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnCalcServerClient\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.Common.dll"    "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnCalcServerClient\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.DataModels.Sdrn.CalcServer.Entities.EntitiesProxy.dll"   "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnCalcServerClient\Bin$(ConfigurationName)"
+
+copy "$(TargetDir)System.Net.Http.Formatting.dll"  "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnCalcServerClient\Bin$(ConfigurationName)"
+copy "$(TargetDir)Newtonsoft.Json.dll"  "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnCalcServerClient\Bin$(ConfigurationName)"
+copy "$(TargetDir)Castle.Facilities.WcfIntegration.dll"  "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnCalcServerClient\Bin$(ConfigurationName)"
+copy "$(TargetDir)Castle.Windsor.dll"  "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnCalcServerClient\Bin$(ConfigurationName)"
+copy "$(TargetDir)Castle.Core.dll"  "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnCalcServerClient\Bin$(ConfigurationName)"
+copy "$(TargetDir)GMap.NET.Core.dll"  "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnCalcServerClient\Bin$(ConfigurationName)"
+copy "$(TargetDir)GMap.NET.WindowsPresentation.dll"  "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnCalcServerClient\Bin$(ConfigurationName)"
+</PostBuildEvent>
+  </PropertyGroup>
 </Project>

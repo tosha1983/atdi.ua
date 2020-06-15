@@ -43,6 +43,7 @@ namespace XICSM.ICSControlClient.ViewModels
         public WpfCommand FilterApplyCommand { get; set; }
         public WpfCommand PrintSelectedCommand { get; set; }
         public WpfCommand PrintAllCommand { get; set; }
+        public WpfCommand FilterTRBSCommand { get; set; }
 
         public DataSynchronizationProcessDataAdapter Protocols => this._protocols;
         public DataSynchronizationProcessProtocolDataAdapter ProtocolDetails => this._protocolDetails;
@@ -53,6 +54,7 @@ namespace XICSM.ICSControlClient.ViewModels
             this._protocolDetails = new DataSynchronizationProcessProtocolDataAdapter();
             this._dataFilter = new GroupeEmissionProtocolDataFilter();
             this.FilterApplyCommand = new WpfCommand(this.OnFilterApplyCommand);
+            this.FilterTRBSCommand = new WpfCommand(this.OnFilterTRBSCommand);
             this.PrintSelectedCommand = new WpfCommand(this.OnPrintSelectedCommand);
             this.PrintAllCommand = new WpfCommand(this.OnPrintAllCommand);
             IsEnabledPrintAllCommand = false;
@@ -99,6 +101,34 @@ namespace XICSM.ICSControlClient.ViewModels
             else
                 IsEnabledPrintAllCommand = false;
         }
+
+        private void OnFilterTRBSCommand(object parameter)
+        {
+
+            var _selectPeriodForm = new FM.SelectPeriodForm();
+            _selectPeriodForm.ShowDialog();
+            if (_selectPeriodForm.IsPresOK)
+            {
+                FRM.FolderBrowserDialog folderDialog = new FRM.FolderBrowserDialog();
+                if (folderDialog.ShowDialog() == FRM.DialogResult.OK)
+                {
+                    if (!string.IsNullOrEmpty(folderDialog.SelectedPath))
+                    {
+                        var selectYear = _selectPeriodForm.CurrentYear;
+                        var selectMonth = _selectPeriodForm.CurrentMonth;
+
+                        var sdrProtocols = SVC.SdrnsControllerWcfClientIeStation.GetDetailProtocolsByParameters(new DateTime(selectYear, selectMonth, 1, 0, 0, 0, 1), new DateTime(selectYear, selectMonth, System.DateTime.DaysInMonth(selectYear, selectMonth), 23, 59, 59, 1));
+
+                        var prepareDataForReport = Report.PrepareData(sdrProtocols.ToList());
+                        if ((prepareDataForReport != null) && (prepareDataForReport.Length > 0))
+                        {
+                            Report.Save(folderDialog.SelectedPath, selectYear.ToString(), _selectPeriodForm.CurrentMonthName, prepareDataForReport);
+                            MessageBox.Show("Звіт сформовано!");
+                        }
+                    }
+                }
+            }
+        }
         private void OnFilterApplyCommand(object parameter)
         {
             var sdrProtocols = SVC.SdrnsControllerWcfClientIeStation.GetProtocolsByParameters(null,
@@ -134,7 +164,7 @@ namespace XICSM.ICSControlClient.ViewModels
                         {
                             foreach (DataSynchronizationProcessProtocolsViewModel row in this._currentProtocolDetails)
                             {
-                                PrintRow(row, folderDialog.SelectedPath);
+                                PrintRow(row, folderDialog.SelectedPath, true);
                             }
                             MessageBox.Show("Процедура формирования отчетов успешно завершена!");
                         }
@@ -147,21 +177,14 @@ namespace XICSM.ICSControlClient.ViewModels
         }
         private void OnPrintSelectedCommand(object parameter)
         {
-            FRM.FolderBrowserDialog folderDialog = new FRM.FolderBrowserDialog();
-            if (folderDialog.ShowDialog() == FRM.DialogResult.OK)
+            foreach (DataSynchronizationProcessProtocolsViewModel row in this._currentProtocolDetails)
             {
-                if (!string.IsNullOrEmpty(folderDialog.SelectedPath))
-                {
-                    foreach (DataSynchronizationProcessProtocolsViewModel row in this._currentProtocolDetails)
-                    {
-                        PrintRow(row, folderDialog.SelectedPath);
-                    }
-                    MessageBox.Show("Процедура формирования отчетов успешно завершена!");
-                }
+                PrintRow(row, System.IO.Path.GetTempFileName()+".rtf", false);
             }
+            MessageBox.Show("Процедура формирования отчетов успешно завершена!");
         }
 
-        private void PrintRow(DataSynchronizationProcessProtocolsViewModel row, string selectedPath)
+        private void PrintRow(DataSynchronizationProcessProtocolsViewModel row, string selectedPath, bool isPacketProcess)
         {
             var buildSpectrogram = new BuildSpectrogram();
             // заполненеие таблицы XPROTOCOL_REPORT
@@ -225,6 +248,15 @@ namespace XICSM.ICSControlClient.ViewModels
 
             //генерация отчета
             var nameFile = selectedPath + $@"\{row.GlobalSID}_{row.StandardName}_{row.Freq_MHz.ToString().Replace(".", "_").Replace(",", "_")}_{row.OwnerName}_{row.Level_dBm.ToString().Replace(".", "_").Replace(",", "_")}_{row.Id.ToString()}.rtf";
+            if (isPacketProcess==false)
+            {
+                nameFile = selectedPath;
+            }
+            if (System.IO.File.Exists(nameFile))
+            {
+                System.IO.File.Delete(nameFile);
+            }
+
             RecordPtr recPtr;
             recPtr.Table = "XPROTOCOL_REPORT";
             recPtr.Id = id;
@@ -241,6 +273,11 @@ namespace XICSM.ICSControlClient.ViewModels
             else
             {
                 recPtr.PrintRTFReport2(InsertSpectrogram.GetDirTemplates("SHDIR-REP") + @"\REPORT_SIGNALING.IRP", "RUS", nameFile, "", true, false);
+            }
+
+            if (isPacketProcess == false)
+            {
+                System.Diagnostics.Process.Start(nameFile);
             }
 
 

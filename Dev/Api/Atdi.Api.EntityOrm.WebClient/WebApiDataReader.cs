@@ -2,8 +2,12 @@
 using Atdi.Contracts.Api.EntityOrm.WebClient;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -49,6 +53,11 @@ namespace Atdi.Api.EntityOrm.WebClient
 					return (TValue)value;
 				}
 
+				if (type == typeof(byte[]))
+				{
+					var bytes = Convert.FromBase64String(Convert.ToString(value));
+					return (TValue)(object)bytes;
+				}
 				if (type == typeof(byte) || type == typeof(byte?))
 				{
 					return (TValue)(object)Convert.ToByte(value);
@@ -198,6 +207,38 @@ namespace Atdi.Api.EntityOrm.WebClient
 			return _reader.GetValue<TValue>(pathExpression.Body.GetMemberName());
 		}
 
+		public TData GetValueAs<TData>(Expression<Func<TEntity, byte[]>> columnExpression)
+		{
+			var data = this.GetValue(columnExpression);
+			var result = DeserializeAs<TData>(data);
+			return result;
+		}
+
+		private static T DeserializeAs<T>(byte[] value)
+		{
+			if (value == null) return default(T);
+
+			var binaryFormatter = new BinaryFormatter();
+			using (var stream = new MemoryStream(value))
+			{
+				binaryFormatter.Binder = new DeserializationBinder();
+				var result = binaryFormatter.Deserialize(stream);
+
+				return (T)result;
+			}
+		}
+
+		internal sealed class DeserializationBinder : SerializationBinder
+		{
+			public override Type BindToType(string assemblyName, string typeName)
+			{
+
+				var resultType = Type.GetType(String.Format("{0}, {1}",
+					typeName, assemblyName));
+
+				return resultType;
+			}
+		}
 		public bool Has<TValue>(System.Linq.Expressions.Expression<Func<TEntity, TValue>> pathExpression)
 		{
 			return _reader.Has(pathExpression.Body.GetMemberName());

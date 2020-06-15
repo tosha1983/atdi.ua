@@ -104,6 +104,11 @@ namespace XICSM.ICSControlClient.ViewModels
             {
                 this._currentRefSpectrums = value;
                 CheckEnabledStart();
+
+                if (value != null && value.Count > 0)
+                    DeleteRefSpectrumEnabled = true;
+                else
+                    DeleteRefSpectrumEnabled = false;
             }
         }
         public DateTime? DateStart
@@ -128,6 +133,14 @@ namespace XICSM.ICSControlClient.ViewModels
             else
                 IsEnabledStart = false;
         }
+
+        bool _deleteRefSpectrumEnabled = false;
+        public bool DeleteRefSpectrumEnabled
+        {
+            get => this._deleteRefSpectrumEnabled;
+            set => this.Set(ref this._deleteRefSpectrumEnabled, value);
+        }
+
         private void ReloadData()
         {
             this.DateStart = DateAndTime.DateSerial(DateTime.Today.Year, DateTime.Today.Month, 1);
@@ -252,10 +265,6 @@ namespace XICSM.ICSControlClient.ViewModels
         {
             var spectrums = SVC.SdrnsControllerWcfClientIeStation.GetAllRefSpectrum();
             this._refSpectrums.Source = spectrums.OrderByDescending(o => o.Id).ToArray();
-            if (spectrums.Length == 1)
-            {
-                this._currentRefSpectrums = new List<RefSpectrumViewModel>() { Mappers.Map(spectrums[0]) };
-            }
         }
         private void SelectSensors()
         {
@@ -467,13 +476,13 @@ namespace XICSM.ICSControlClient.ViewModels
                                 mobstafreq_table = "MOBSTA_FREQS2";
 
                             var rssta = new IMRecordset(mobstafreq_table, IMRecordset.Mode.ReadOnly);
-                            rssta.Select("ID,TX_FREQ,RX_FREQ,ChannelTx.CHANNEL");
+                            rssta.Select("ID,TX_FREQ,RX_FREQ,ChannelTx.CHANNEL,ChannelRx.CHANNEL");
                             rssta.SetWhere("STA_ID", IMRecordset.Operation.Eq, dataSpectrum.TableId);
 
                             var txFreq = new List<float>();
                             var rxFreq = new List<float>();
-                            var chanels = new List<string>();
-
+                            var chanelsTx = new List<string>();
+                            var chanelsRx = new List<string>();
                             for (rssta.Open(); !rssta.IsEOF(); rssta.MoveNext())
                             {
                                 var txfrq = rssta.GetD("TX_FREQ");
@@ -482,8 +491,10 @@ namespace XICSM.ICSControlClient.ViewModels
                                 var rxfrq = rssta.GetD("RX_FREQ");
                                 if (rxfrq != IM.NullD)
                                     rxFreq.Add((float)rxfrq);
-                                var chanel = rssta.GetS("ChannelTx.CHANNEL");
-                                chanels.Add(chanel);
+                                var chanelTx = rssta.GetS("ChannelTx.CHANNEL");
+                                chanelsTx.Add(chanelTx);
+                                var chanelRx = rssta.GetS("ChannelRx.CHANNEL");
+                                chanelsRx.Add(chanelRx);
                             }
                             if (rssta.IsOpen())
                                 rssta.Close();
@@ -491,7 +502,8 @@ namespace XICSM.ICSControlClient.ViewModels
 
                             stationExtended.StationTxFreq = txFreq.ToArray();
                             stationExtended.StationRxFreq = rxFreq.ToArray();
-                            stationExtended.StationChannel = chanels.ToArray();
+                            stationExtended.StationTxChannel = chanelsTx.ToArray();
+                            stationExtended.StationRxChannel = chanelsRx.ToArray();
                             stationExtended.TableId = dataSpectrum.TableId;
                             stationExtended.TableName = dataSpectrum.TableName;
                         }

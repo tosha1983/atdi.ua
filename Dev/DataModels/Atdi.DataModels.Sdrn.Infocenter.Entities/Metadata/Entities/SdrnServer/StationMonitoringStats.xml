@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "StationMonitoringStats"
+  Title       = "Station Monitoring Measurement Result Statistics"
+  Desc        = "The statistics of the measurement result of the station monitoring"
+  Type        = "Extension"
+  BaseEntity  = "Atdi.DataModels.Sdrn.Infocenter.Entities.SdrnServer.StationMonitoring"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>SM_MEAS_RESULTS_STATS</Name>
+    <Schema>SDRNSVR</Schema>
+  </DataSource>
+  <Fields>
+    <Field Name="GsidCount" SourceType="Column" SourceName="GSID_COUNT" DataType="Integer.32" Required="true" Title="GSID Count" Desc="The count of the GSID"  />
+
+    <Field Name="MinFreq_MHz" SourceType="Column" Required="false" SourceName="MIN_FREQ_MHZ" DataType="Double.30.10" Title="Min Freq, MHz" Desc="The minimum frequency in MHz"/>
+    <Field Name="MaxFreq_MHz" SourceType="Column" Required="false" SourceName="MAX_FREQ_MHZ" DataType="Double.30.10" Title="Max Freq, MHz" Desc="The maximum frequency in MHz"/>
+
+    <Field Name="StandardStats" DataType="Bytes.MAX" SourceName="STANDARD_STATS" SourceType="Column" Desc="The statistics of the standard station records " Title="Standard Stats" Required="false"/>
+
+  </Fields>
+
+</Entity>

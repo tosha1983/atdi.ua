@@ -79,11 +79,29 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Client Context.
+        /// </summary>
+        public static string ClientContext {
+            get {
+                return ResourceManager.GetString("ClientContext", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Created Date.
         /// </summary>
         public static string CreatedDate {
             get {
                 return ResourceManager.GetString("CreatedDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create Map.
+        /// </summary>
+        public static string CreateMap {
+            get {
+                return ResourceManager.GetString("CreateMap", resourceCulture);
             }
         }
         
@@ -111,6 +129,24 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.Properties {
         public static string Lock {
             get {
                 return ResourceManager.GetString("Lock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Map Name.
+        /// </summary>
+        public static string MapName {
+            get {
+                return ResourceManager.GetString("MapName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Map Note.
+        /// </summary>
+        public static string MapNote {
+            get {
+                return ResourceManager.GetString("MapNote", resourceCulture);
             }
         }
         
@@ -151,11 +187,65 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to AxisXNumber.
+        /// </summary>
+        public static string OwnerAxisXNumber {
+            get {
+                return ResourceManager.GetString("OwnerAxisXNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to AxisXStep.
+        /// </summary>
+        public static string OwnerAxisXStep {
+            get {
+                return ResourceManager.GetString("OwnerAxisXStep", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to AxisYNumber.
+        /// </summary>
+        public static string OwnerAxisYNumber {
+            get {
+                return ResourceManager.GetString("OwnerAxisYNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to AxisYStep.
+        /// </summary>
+        public static string OwnerAxisYStep {
+            get {
+                return ResourceManager.GetString("OwnerAxisYStep", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Owner Instance.
         /// </summary>
         public static string OwnerInstance {
             get {
                 return ResourceManager.GetString("OwnerInstance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UpperLeftX.
+        /// </summary>
+        public static string OwnerUpperLeftX {
+            get {
+                return ResourceManager.GetString("OwnerUpperLeftX", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UpperLeftY.
+        /// </summary>
+        public static string OwnerUpperLeftY {
+            get {
+                return ResourceManager.GetString("OwnerUpperLeftY", resourceCulture);
             }
         }
         
@@ -169,11 +259,38 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Projection.
+        /// </summary>
+        public static string Projection {
+            get {
+                return ResourceManager.GetString("Projection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Projects.
         /// </summary>
         public static string Projects {
             get {
                 return ResourceManager.GetString("Projects", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refresh.
+        /// </summary>
+        public static string Refresh {
+            get {
+                return ResourceManager.GetString("Refresh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save.
+        /// </summary>
+        public static string Save {
+            get {
+                return ResourceManager.GetString("Save", resourceCulture);
             }
         }
         
@@ -187,11 +304,29 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Status Note.
+        /// </summary>
+        public static string StatusNote {
+            get {
+                return ResourceManager.GetString("StatusNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Step Unit.
         /// </summary>
         public static string StepUnit {
             get {
                 return ResourceManager.GetString("StepUnit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type.
+        /// </summary>
+        public static string Type {
+            get {
+                return ResourceManager.GetString("Type", resourceCulture);
             }
         }
         

@@ -54,6 +54,10 @@
       <Project>{02b46618-04e2-4bc7-b8ad-533338854228}</Project>
       <Name>Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A.csproj">
+      <Project>{4843c1ef-4e5e-440c-ab55-5edb1de495ec}</Project>
+      <Name>Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL.csproj">
       <Project>{aa49edcc-42aa-4ab1-860c-e642156f9926}</Project>
       <Name>Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL</Name>
@@ -100,6 +104,12 @@ copy "$(TargetDir)RohdeSchwarz.Tools.Net.dll" "..\..\..\..\Delivery\Atdi.Sdrn\De
 copy "$(TargetDir)Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\RSFPL\Bin$(ConfigurationName)"
 copy "$(TargetDir)Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL.dll.config" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\RSFPL\Bin$(ConfigurationName)"
 copy "$(TargetDir)RohdeSchwarz.Visa.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\RSFPL\Bin$(ConfigurationName)"
-copy "$(TargetDir)Ivi.Visa.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\RSFPL\Bin$(ConfigurationName)"</PostBuildEvent>
+copy "$(TargetDir)Ivi.Visa.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\RSFPL\Bin$(ConfigurationName)"
+
+
+copy "$(TargetDir)Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\KTN6841A\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound.dll.config" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\KTN6841A\Bin$(ConfigurationName)"
+copy "$(TargetDir)dll\agSal.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\KTN6841A\Bin$(ConfigurationName)"
+copy "$(TargetDir)dll\agSal_x64.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\KTN6841A\Bin$(ConfigurationName)"</PostBuildEvent>
   </PropertyGroup>
 </Project>

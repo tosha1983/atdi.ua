@@ -17,14 +17,14 @@
   OWNER_AXIS_Y_STEP    NUMBER(9)                NOT NULL,
   OWNER_CRD_UPL_X      NUMBER(9)                NOT NULL,
   OWNER_CRD_UPL_Y      NUMBER(9)                NOT NULL,
-  AXIS_X_NUMBER        NUMBER(9)                NOT NULL,
-  AXIS_X_STEP          NUMBER(9)                NOT NULL,
-  AXIS_Y_NUMBER        NUMBER(9)                NOT NULL,
-  AXIS_Y_STEP          NUMBER(9)                NOT NULL,
-  CRD_UPL_X            NUMBER(9)                NOT NULL,
-  CRD_UPL_Y            NUMBER(9)                NOT NULL,
-  CRD_LWR_X            NUMBER(9)                NOT NULL,
-  CRD_LWR_Y            NUMBER(9)                NOT NULL
+  AXIS_X_NUMBER        NUMBER(9),
+  AXIS_X_STEP          NUMBER(9),
+  AXIS_Y_NUMBER        NUMBER(9),
+  AXIS_Y_STEP          NUMBER(9),
+  CRD_UPL_X            NUMBER(9),
+  CRD_UPL_Y            NUMBER(9),
+  CRD_LWR_X            NUMBER(9),
+  CRD_LWR_Y            NUMBER(9)
 )
 TABLESPACE USERS
 PCTUSED    0
@@ -41,6 +41,54 @@ STORAGE    (
            )
 LOGGING 
 NOCOMPRESS 
+LOB (MAP_NOTE) STORE AS SECUREFILE 
+      ( TABLESPACE  USERS 
+        ENABLE      STORAGE IN ROW
+        CHUNK       8192
+        NOCACHE
+        INDEX       (
+          TABLESPACE USERS
+          STORAGE    (
+                      INITIAL          64K
+                      NEXT             1
+                      MINEXTENTS       1
+                      MAXEXTENTS       UNLIMITED
+                      PCTINCREASE      0
+                      BUFFER_POOL      DEFAULT
+                     ))
+        STORAGE    (
+                    INITIAL          104K
+                    NEXT             1M
+                    MINEXTENTS       1
+                    MAXEXTENTS       UNLIMITED
+                    PCTINCREASE      0
+                    BUFFER_POOL      DEFAULT
+                   )
+      )
+  LOB (STATUS_NOTE) STORE AS SECUREFILE 
+      ( TABLESPACE  USERS 
+        ENABLE      STORAGE IN ROW
+        CHUNK       8192
+        NOCACHE
+        INDEX       (
+          TABLESPACE USERS
+          STORAGE    (
+                      INITIAL          64K
+                      NEXT             1
+                      MINEXTENTS       1
+                      MAXEXTENTS       UNLIMITED
+                      PCTINCREASE      0
+                      BUFFER_POOL      DEFAULT
+                     ))
+        STORAGE    (
+                    INITIAL          104K
+                    NEXT             1M
+                    MINEXTENTS       1
+                    MAXEXTENTS       UNLIMITED
+                    PCTINCREASE      0
+                    BUFFER_POOL      DEFAULT
+                   )
+      )
 NOCACHE
 NOPARALLEL
 MONITORING;

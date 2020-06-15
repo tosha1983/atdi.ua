@@ -20,7 +20,9 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Clients
 
 		public string CallSign;
 
-		public ClientContextStationType Type;
+        public string Standard;
+
+        public ClientContextStationType Type;
 
 		public StationAntenna Antenna;
 
@@ -30,7 +32,9 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Clients
 
 		public StationTransmitter Transmitter;
 
-	}
+        public StationReceiver Receiver;
+
+    }
 
 	public enum ClientContextStationType
 	{

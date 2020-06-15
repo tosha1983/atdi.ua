@@ -61,6 +61,10 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             switch (args.Model.MainBlock.ModelType)
             {
                 case MainCalcBlockModelType.ITU525:
+                    Lbf_dB = ITU525.Calc(args.Ha_m, args.Hb_m, args.Freq_Mhz, args.D_km);
+                    break;
+                case MainCalcBlockModelType.ITU1546:
+                    // prepare data
                 case MainCalcBlockModelType.Unknown:
                 default:
                     Lbf_dB = ITU525.Calc(args.Ha_m, args.Hb_m, args.Freq_Mhz, args.D_km);
@@ -84,16 +88,41 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
         }
         private static double CalcDiffraction(in CalcLossArgs args, double Ldsub_dB, bool calcabsorbtion = false)
         {
+            // 2 - cases
+            // lowering ant in above clutter HeightProfile - ReliefStartIndex
+            // 999 if ant inside clutter
             short[] prof; int startIndex;
-            if (calcabsorbtion) { prof = args.ReliefProfile; startIndex = args.ReliefStartIndex; }
-            else { prof = args.HeightProfile; startIndex = args.HeightStartIndex; }
+            var hA_m = args.Ha_m;
+            var hB_m = args.Hb_m;
+            if (calcabsorbtion)
+            {
+                prof = args.ReliefProfile; startIndex = args.ReliefStartIndex;
+            }
+            else
+            {
+                prof = args.HeightProfile; startIndex = args.HeightStartIndex;
+                //Ha = Ha - args.CluttersDesc.Frequencies[0].Clutters[0].Height_m;
+                if (args.ClutterProfile != null && args.ClutterProfile.Length > 0 &&
+                    args.CluttersDesc.Frequencies != null && args.CluttersDesc.Frequencies.Length > 0 &&
+                    args.CluttersDesc.Frequencies[0].Clutters != null)
+                {
+                    // for testing until clutter height is incorrect
+                    //hA_m -= args.ClutterProfile[startIndex];
+                    //hB_m -= args.ClutterProfile[startIndex + args.ProfileLength - 1];
+                    // when clutter height is calculated correctly
+                    hA_m -= args.CluttersDesc.Frequencies[0].Clutters[args.ClutterProfile[startIndex]].Height_m;
+                    hB_m -= args.CluttersDesc.Frequencies[0].Clutters[args.ClutterProfile[startIndex + args.ProfileLength - 1]].Height_m;
+                }
+
+            }
+            //if (Ha < 0) { return 999;}
 
             double Ld_dB = 0;
             switch (args.Model.DiffractionBlock.ModelType)
             {
                 case DiffractionCalcBlockModelType.Deygout91:
                     // вызов модели дегу
-                    Ld_dB = Deygout91.Calc(args.Ha_m, args.Hb_m, args.Freq_Mhz, args.D_km, prof, startIndex, args.ProfileLength, args.Model.Parameters.EarthRadius_km, Ldsub_dB);
+                    Ld_dB = Deygout91.Calc(hA_m, hB_m, args.Freq_Mhz, args.D_km, prof, startIndex, args.ProfileLength, args.Model.Parameters.EarthRadius_km, Ldsub_dB);
                     break;
                 case DiffractionCalcBlockModelType.Deygout66:
                 case DiffractionCalcBlockModelType.Bullington:

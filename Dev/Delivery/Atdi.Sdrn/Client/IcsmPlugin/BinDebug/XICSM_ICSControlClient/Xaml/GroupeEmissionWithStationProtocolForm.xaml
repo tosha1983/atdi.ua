@@ -32,7 +32,7 @@
         <RowDefinition Height="Auto"></RowDefinition>
         <RowDefinition Height="*"></RowDefinition>
       </Grid.RowDefinitions>
-      <WrapPanel Margin="5">
+      <!--<WrapPanel Margin="5">
         <Label Height="40" Content="{x:Static res:Resources.OwnerOfStation}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
         <TextBox Height="20" Width="80" Text="{Binding Path=DataFilter.Owner}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 
@@ -59,9 +59,6 @@
         <Label Height="40" Content="{x:Static res:Resources.DateCreated}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
         <DatePicker Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" SelectedDate="{Binding Path=DataFilter.DateCreated, StringFormat='{}{0:dd.MM.yyyy}'}"/>
 
-        <!--<Label Height="40" Content="{x:Static res:Resources.Probability}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-      <TextBox Height="20" Width="80" Text="{Binding Path=Probability}" HorizontalAlignment="Left" VerticalAlignment="Top"/>-->
-
         <Label Height="40" Content="{x:Static res:Resources.PermissionNumber}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
         <TextBox Height="20" Width="80" Text="{Binding Path=DataFilter.PermissionNumber}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 
@@ -71,11 +68,11 @@
         <Label Height="40" Content="{x:Static res:Resources.To}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
         <DatePicker Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" SelectedDate="{Binding Path=DataFilter.PermissionStop, StringFormat='{}{0:dd.MM.yyyy}'}"/>
         <Button Margin="10,0,0,0" Content="{x:Static res:Resources.ApplyCommand}" Width="80" Height="20" Command="{Binding FilterApplyCommand}" HorizontalAlignment="Right" VerticalAlignment="Top"/>
-      </WrapPanel>
+      </WrapPanel>-->
       <DataGrid Grid.Row="1" x:Name="GroupeEmissionProtocol" IsReadOnly="True" Margin="5,30,5,5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding Protocols}" SelectedItem="{Binding CurrentProtocol}">
         <DataGrid.Columns>
           <DataGridTextColumn Header="{x:Static res:Resources.GSID}" Binding="{Binding Path=GSID}"></DataGridTextColumn>
-          <DataGridTextColumn Header="{x:Static res:Resources.DateMeas}" Binding="{Binding Path=DateMeas}"></DataGridTextColumn>
+          <DataGridTextColumn Header="{x:Static res:Resources.DateMeas}" Binding="{Binding Path=DateMeas, StringFormat='{}{0:dd.MM.yyyy}'}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.RadioMonitoringResult}" Binding="{Binding Path=StatusMeasStationFull}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.OwnerOfStation}" Binding="{Binding Path=Owner}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.StationAddress}" Binding="{Binding Path=StationAddress}"></DataGridTextColumn>
@@ -87,9 +84,9 @@
           <DataGridTextColumn Header="{x:Static res:Resources.SensorName}" Binding="{Binding Path=SensorName}"></DataGridTextColumn>
         </DataGrid.Columns>
       </DataGrid>
-      <Button Grid.Row="1" Margin="0,0,130,0" Content="{x:Static res:Resources.TRBS}" Width="50" Height="20" Command="{Binding FilterTRBSCommand}" HorizontalAlignment="Right" VerticalAlignment="Top" IsEnabled="False"/>
-      <Button Grid.Row="1" Margin="0,0,70,0" Content="{x:Static res:Resources.ZTR}" Width="50" Height="20" Command="{Binding FilterZTRCommand}" HorizontalAlignment="Right" VerticalAlignment="Top" IsEnabled="False"/>
-      <Button Grid.Row="1" Margin="0,0,10,0" Content="{x:Static res:Resources.Plan}" Width="50" Height="20" Command="{Binding FilterPlanCommand}" HorizontalAlignment="Right" VerticalAlignment="Top" IsEnabled="False"/>
+      <Button Grid.Row="1" Margin="0,5,130,0" Content="{x:Static res:Resources.TRBS}" Width="50" Height="20" Command="{Binding FilterTRBSCommand}" HorizontalAlignment="Right" VerticalAlignment="Top" IsEnabled="true"/>
+      <Button Grid.Row="1" Margin="0,5,70,0" Content="{x:Static res:Resources.ZTR}" Width="50" Height="20" Command="{Binding FilterZTRCommand}" HorizontalAlignment="Right" VerticalAlignment="Top" IsEnabled="False"/>
+      <Button Grid.Row="1" Margin="0,5,10,0" Content="{x:Static res:Resources.Plan}" Width="50" Height="20" Command="{Binding FilterPlanCommand}" HorizontalAlignment="Right" VerticalAlignment="Top" IsEnabled="False"/>
 
       <GridSplitter Visibility="{Binding TaskStationsVisibility}" Grid.Row="2" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center">
       </GridSplitter>
@@ -98,7 +95,7 @@
           <DataGridTextColumn Header="{x:Static res:Resources.GSIDReal}" Binding="{Binding Path=GlobalSID}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.GSIDICSM}" Binding="{Binding Path=PermissionGlobalSID}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.PermissionFrequency_MHz}" Binding="{Binding Path=StationTxFreq}" Width="200"></DataGridTextColumn>
-          <DataGridTextColumn Header="{x:Static res:Resources.PermissionChannel}" Binding="{Binding Path=StationChannel}" Width="200"></DataGridTextColumn>
+          <DataGridTextColumn Header="{x:Static res:Resources.PermissionChannel}" Binding="{Binding Path=StationTxChannel}" Width="200"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.RadioMonitoringResult}" Binding="{Binding Path=StatusMeasFull}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.FrequencyMeasured}" Binding="{Binding Path=RadioControlMeasFreq_MHz}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.FrequencyDeviation}" Binding="{Binding Path=RadioControlDeviationFreq_MHz}"></DataGridTextColumn>
