@@ -99,6 +99,14 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
             this.ClientContexts = contextDataAdapter;
             this.CalcTasks = calcTaskDataAdapter;
 
+            _onCreatedClientContextToken = _eventBus.Subscribe<Events.OnCreatedClientContext>(this.OnCreatedClientContextHandle);
+            _onEditedClientContextToken = _eventBus.Subscribe<Events.OnEditedClientContext>(this.OnEditedClientContextHandle);
+            _onDeletedClientContextToken = _eventBus.Subscribe<Events.OnDeletedClientContext>(this.OnDeletedClientContextHandle);
+            _onCreatedCalcTaskToken = _eventBus.Subscribe<Events.OnCreatedCalcTask>(this.OnCreatedCalcTaskHandle);
+            _onEditedCalcTaskToken = _eventBus.Subscribe<Events.OnEditedCalcTask>(this.OnEditedCalcTasktHandle);
+            _onDeletedCalcTaskToken = _eventBus.Subscribe<Events.OnDeletedCalcTask>(this.OnDeletedCalcTaskHandle);
+            _onOnRunCalcTaskToken = _eventBus.Subscribe<Events.OnRunCalcTask>(this.OnRunCalcTaskHandle);
+
             ReloadProjects();
         }
         private void ReloadProjects()
@@ -349,8 +357,6 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
                 if (CurrentClientContext == null)
                     return;
 
-                _onDeletedClientContextToken = _eventBus.Subscribe<Events.OnDeletedClientContext>(this.OnDeletedClientContextHandle);
-
                 var projectModifier = new Modifiers.DeleteClientContext
                 {
                     Id = CurrentClientContext.Id
@@ -367,8 +373,6 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
         {
             if(_clientContextEditedMode == CardEditMode.Add)
             {
-                _onCreatedClientContextToken = _eventBus.Subscribe<Events.OnCreatedClientContext>(this.OnCreatedClientContextHandle);
-
                 var projectModifier = new Modifiers.CreateClientContext
                 {
                     ProjectId = CurrentClientContextCard.ProjectId,
@@ -383,8 +387,6 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
 
             if (_clientContextEditedMode == CardEditMode.Edit)
             {
-                _onEditedClientContextToken = _eventBus.Subscribe<Events.OnEditedClientContext>(this.OnEditedClientContextHandle);
-
                 var projectModifier = new Modifiers.EditClientContext
                 {
                     Id = CurrentClientContext.Id,
@@ -454,8 +456,6 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
                 if (CurrentCalcTaskCard == null)
                     return;
 
-                _onDeletedCalcTaskToken = _eventBus.Subscribe<Events.OnDeletedCalcTask>(this.OnDeletedCalcTaskHandle);
-
                 var modifier = new Modifiers.DeleteCalcTask
                 {
                     Id = CurrentCalcTask.Id
@@ -472,8 +472,6 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
         {
             if (_calcTaskEditedMode == CardEditMode.Add)
             {
-                _onCreatedCalcTaskToken = _eventBus.Subscribe<Events.OnCreatedCalcTask>(this.OnCreatedCalcTaskHandle);
-
                 var modifier = new Modifiers.CreateCalcTask
                 {
                     ContextId = CurrentCalcTaskCard.ContextId,
@@ -486,8 +484,6 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
 
             if (_calcTaskEditedMode == CardEditMode.Edit)
             {
-                _onEditedCalcTaskToken = _eventBus.Subscribe<Events.OnEditedCalcTask>(this.OnEditedCalcTasktHandle);
-
                 var modifier = new Modifiers.EditCalcTask
                 {
                     Id = CurrentCalcTask.Id,
@@ -508,8 +504,6 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
             {
                 if (TaskStartCalcCommand == null)
                     return;
-
-                _onOnRunCalcTaskToken = _eventBus.Subscribe<Events.OnRunCalcTask>(this.OnRunCalcTaskHandle);
 
                 var modifier = new Modifiers.RunCalcTask
                 {
@@ -584,6 +578,14 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
             _onEditedClientContextToken = null;
             _onDeletedClientContextToken?.Dispose();
             _onDeletedClientContextToken = null;
+            _onCreatedCalcTaskToken?.Dispose();
+            _onCreatedCalcTaskToken = null;
+            _onEditedCalcTaskToken?.Dispose();
+            _onEditedCalcTaskToken = null;
+            _onDeletedCalcTaskToken?.Dispose();
+            _onDeletedCalcTaskToken = null;
+            _onOnRunCalcTaskToken?.Dispose();
+            _onOnRunCalcTaskToken = null;
         }
     }
     enum CardEditMode
