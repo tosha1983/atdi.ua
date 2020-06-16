@@ -13,6 +13,8 @@ using Atdi.Platform.Events;
 using System.Windows;
 using VM = Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels;
 using System.Windows.Forms;
+using Atdi.WpfControls.EntityOrm.Controls;
+using Atdi.DataModels.Sdrn.CalcServer.Entities;
 
 namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ClientContext
 {
@@ -30,6 +32,7 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ClientContext
         private byte _mode; /* 0 - Add, 1 - Edit */
 
         private ClientContextModel _currentClientContextCard;
+        private OrmEnumBoxData[] _typeSource;
 
         public ViewCommand SaveCommand { get; set; }
 
@@ -47,6 +50,8 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ClientContext
 
             this.CurrentClientContextCard = new ClientContextModel();
             this.SaveCommand = new ViewCommand(this.OnSaveCommand);
+
+            TypeSource = PluginHelper.EnumToOrmEnumBoxData<ClientContextTypeCode>();
         }
         public long ProjectId
         {
@@ -62,6 +67,11 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ClientContext
         {
             get => this._mode;
             set => this.Set(ref this._mode, value);
+        }
+        public OrmEnumBoxData[] TypeSource
+        {
+            get => this._typeSource;
+            set => this.Set(ref this._typeSource, value);
         }
         public ClientContextModel CurrentClientContextCard
         {

@@ -880,6 +880,8 @@ namespace XICSM.ICSControlClient.ViewModels
             catch (Exception e)
             {
                 MessageBox.Show(e.ToString());
+                //MessageBox.Show(e.ToString());
+
             }
         }
         private void OnDetailForRefLevelCommand()

@@ -93,6 +93,16 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
             this.ProjectMaps = projectMapDataAdapter;
             this.ProjectContexts = clientContextDataAdapter;
 
+            _onCreatedProjectToken = _eventBus.Subscribe<Events.OnCreatedProject>(this.OnCreatedProjectHandle);
+            _onEditedProjectToken = _eventBus.Subscribe<Events.OnEditedProject>(this.OnEditedProjectHandle);
+            _onDeletedProjectToken = _eventBus.Subscribe<Events.OnDeletedProject>(this.OnDeletedProjectHandle);
+            _onCreatedMapToken = _eventBus.Subscribe<MP.Events.OnCreatedMap>(this.OnCreatedMapHandle);
+            _onEditedMapToken = _eventBus.Subscribe<MP.Events.OnEditedMap>(this.OnEditedMapHandle);
+            _onDeletedMapToken = _eventBus.Subscribe<MP.Events.OnDeletedMap>(this.OnDeletedMapHandle);
+            _onCreatedClientContextToken = _eventBus.Subscribe<CT.Events.OnCreatedClientContext>(this.OnCreatedClientContextHandle);
+            _onEditedClientContextToken = _eventBus.Subscribe<CT.Events.OnEditedClientContext>(this.OnEditedClientContextHandle);
+            _onDeletedClientContextToken = _eventBus.Subscribe<CT.Events.OnDeletedClientContext>(this.OnDeletedClientContextHandle);
+
             ReloadProjects();
         }
         public ProjectModel CurrentProject
@@ -159,8 +169,6 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
         {
             try
             {
-                _onCreatedProjectToken = _eventBus.Subscribe<Events.OnCreatedProject>(this.OnCreatedProjectHandle);
-
                 var projectModifier = new Modifiers.CreateProject
                 {
                     Name = CurrentProjectCard.Name,
@@ -182,8 +190,6 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
             {
                 if (CurrentProject == null)
                     return;
-
-                _onEditedProjectToken = _eventBus.Subscribe<Events.OnEditedProject>(this.OnEditedProjectHandle);
 
                 var projectModifier = new Modifiers.EditProject
                 {
@@ -207,8 +213,6 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
                 if (CurrentProject == null)
                     return;
 
-                _onDeletedProjectToken = _eventBus.Subscribe<Events.OnDeletedProject>(this.OnDeletedProjectHandle);
-
                 var projectModifier = new Modifiers.DeleteProject
                 {
                     Id = CurrentProject.Id
@@ -227,8 +231,6 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
             {
                 if (CurrentProject == null)
                     return;
-
-                _onEditedProjectToken = _eventBus.Subscribe<Events.OnEditedProject>(this.OnEditedProjectHandle);
 
                 var projectModifier = new Modifiers.ChangeStateProject
                 {
@@ -250,8 +252,6 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
                 if (CurrentProject == null)
                     return;
 
-                _onEditedProjectToken = _eventBus.Subscribe<Events.OnEditedProject>(this.OnEditedProjectHandle);
-
                 var projectModifier = new Modifiers.ChangeStateProject
                 {
                     Id = CurrentProject.Id,
@@ -272,8 +272,6 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
                 if (CurrentProject == null)
                     return;
 
-                _onCreatedMapToken = _eventBus.Subscribe<MP.Events.OnCreatedMap>(this.OnCreatedMapHandle);
-                _onEditedMapToken = _eventBus.Subscribe<MP.Events.OnEditedMap>(this.OnEditedMapHandle);
                 _starter.Start<VM.Map.View>(isModal: true, f => f.ProjectId = CurrentProject.Id );
             }
             catch (Exception e)
@@ -287,8 +285,6 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
             {
                 if (CurrentProjectMap == null)
                     return;
-
-                _onDeletedMapToken = _eventBus.Subscribe<MP.Events.OnDeletedMap>(this.OnDeletedMapHandle);
 
                 var projectModifier = new MP.Modifiers.DeleteMap
                 {
@@ -313,7 +309,6 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
                 if (CurrentProject == null)
                     return;
 
-                _onCreatedClientContextToken = _eventBus.Subscribe<CT.Events.OnCreatedClientContext>(this.OnCreatedClientContextHandle);
                 _starter.Start<VM.ClientContext.View>(isModal: true, f => { f.ProjectId = CurrentProject.Id; });
             }
             catch (Exception e)
@@ -328,7 +323,6 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
                 if (CurrentProject == null || CurrentProjectContext == null)
                     return;
 
-                _onEditedClientContextToken = _eventBus.Subscribe<CT.Events.OnEditedClientContext>(this.OnEditedClientContextHandle);
                 _starter.Start<VM.ClientContext.View>(isModal: true, f => { f.ContextId = CurrentProjectContext.Id; });
             }
             catch (Exception e)
@@ -342,8 +336,6 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
             {
                 if (CurrentProjectContext == null)
                     return;
-
-                _onDeletedClientContextToken = _eventBus.Subscribe<CT.Events.OnDeletedClientContext>(this.OnDeletedClientContextHandle);
 
                 var projectModifier = new CT.Modifiers.DeleteClientContext
                 {

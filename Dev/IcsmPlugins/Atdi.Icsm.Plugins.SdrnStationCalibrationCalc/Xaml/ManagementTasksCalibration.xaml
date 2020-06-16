@@ -41,6 +41,7 @@
           <GroupBox Header="{x:Static res:Resources.Projects}" Margin="5">
           <orm:OrmDataGrid Grid.Column="0" Grid.Row="0" IsReadOnly="True" Margin="5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding Projects}" SelectedItem="{Binding CurrentProject}">
             <DataGrid.Columns>
+              <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=Id}"></DataGridTextColumn>
               <DataGridTextColumn Header="{x:Static res:Resources.Name}" Binding="{Binding Path=Name}"></DataGridTextColumn>
               <DataGridTextColumn Header="{x:Static res:Resources.Note}" Binding="{Binding Path=Note}"></DataGridTextColumn>
               <DataGridTextColumn Header="{x:Static res:Resources.OwnerInstance}" Binding="{Binding Path=OwnerInstance}"></DataGridTextColumn>
@@ -63,6 +64,7 @@
         <GroupBox Grid.Row="2" Header="{x:Static res:Resources.BaseContexts}" Margin="5">
           <orm:OrmDataGrid IsReadOnly="True" Margin="5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding BaseClientContexts}" SelectedItem="{Binding CurrentBaseClientContext}">
             <DataGrid.Columns>
+              <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=Id}"></DataGridTextColumn>
               <DataGridTextColumn Header="{x:Static res:Resources.Name}" Binding="{Binding Path=Name}"></DataGridTextColumn>
               <DataGridTextColumn Header="{x:Static res:Resources.Note}" Binding="{Binding Path=Note}"></DataGridTextColumn>
               <DataGridTextColumn Header="{x:Static res:Resources.OwnerInstance}" Binding="{Binding Path=OwnerInstance}"></DataGridTextColumn>
@@ -103,6 +105,7 @@
           </Grid.RowDefinitions>
           <orm:OrmDataGrid IsReadOnly="True" Margin="5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding ClientContexts}" SelectedItem="{Binding CurrentClientContext}">
             <DataGrid.Columns>
+              <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=Id}"></DataGridTextColumn>
               <DataGridTextColumn Header="{x:Static res:Resources.Name}" Binding="{Binding Path=Name}"></DataGridTextColumn>
               <DataGridTextColumn Header="{x:Static res:Resources.Note}" Binding="{Binding Path=Note}"></DataGridTextColumn>
               <DataGridTextColumn Header="{x:Static res:Resources.OwnerInstance}" Binding="{Binding Path=OwnerInstance}"></DataGridTextColumn>
@@ -144,6 +147,7 @@
           </Grid.RowDefinitions>
           <orm:OrmDataGrid IsReadOnly="True" Margin="5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding CalcTasks}" SelectedItem="{Binding CurrentCalcTask}">
             <DataGrid.Columns>
+              <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=Id}"></DataGridTextColumn>
               <DataGridTextColumn Header="{x:Static res:Resources.TypeName}" Binding="{Binding Path=TypeName}"></DataGridTextColumn>
               <DataGridTextColumn Header="{x:Static res:Resources.StatusName}" Binding="{Binding Path=StatusName}"></DataGridTextColumn>
               <DataGridTextColumn Header="{x:Static res:Resources.StatusNote}" Binding="{Binding Path=StatusNote}"></DataGridTextColumn>
