@@ -8,7 +8,8 @@
              xmlns:cdg="clr-namespace:Atdi.WpfControls.EntityOrm.Controls;assembly=Atdi.WpfControls.EntityOrm"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-  <UserControl.Resources>    
+  <UserControl.Resources>
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     <Style x:Key="DataGridHeaderCentered" TargetType="DataGridColumnHeader">
       <Setter Property="HorizontalAlignment" Value="Stretch"/>
       <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -126,10 +127,10 @@
               <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="220" Width="300" Height="25" Caption="{x:Static res:Resources.ShiftTiltStationMin}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,155,5,5"  Text="{Binding Path=CurrentParamsCalculation.ShiftTiltStationMin_deg, Mode=TwoWay}"/>
               <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="220" Width="300" Height="25" Caption="{x:Static res:Resources.ShiftTiltStationMax}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,180,5,5"  Text="{Binding Path=CurrentParamsCalculation.ShiftTiltStationMax_deg, Mode=TwoWay}"/>
               <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="220" Width="300" Height="25" Caption="{x:Static res:Resources.ShiftTiltStationStep}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,205,5,5"  Text="{Binding Path=CurrentParamsCalculation.ShiftTiltStationStep_deg, Mode=TwoWay}"/>
-              <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="220" Width="300" Height="25" Caption="{x:Static res:Resources.MaxDeviationTiltStation}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,255,5,5"  Text="{Binding Path=CurrentParamsCalculation.MaxDeviationTiltStation_deg, Mode=TwoWay}"/>
+              <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="220" Width="300" Height="25" Caption="{x:Static res:Resources.MaxDeviationTiltStation}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,230,5,5"  Text="{Binding Path=CurrentParamsCalculation.MaxDeviationTiltStation_deg, Mode=TwoWay}"/>
 
 
-              <cdg:OrmCheckBox Grid.Column="0" Grid.Row="0" Content="{x:Static res:Resources.AzimuthStation}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="8,233,5,5"  IsChecked="{Binding Path=CurrentParamsCalculation.AzimuthStation, Mode=TwoWay}"/>
+              <cdg:OrmCheckBox Grid.Column="0" Grid.Row="0" Content="{x:Static res:Resources.AzimuthStation}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="8,255,5,5"  IsChecked="{Binding Path=CurrentParamsCalculation.AzimuthStation, Mode=TwoWay}"/>
               <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="220" Width="300" Height="25" Caption="{x:Static res:Resources.ShiftAzimuthStationMin}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,280,5,5"  Text="{Binding Path=CurrentParamsCalculation.ShiftAzimuthStationMin_deg, Mode=TwoWay}"/>
               <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="220" Width="300" Height="25" Caption="{x:Static res:Resources.ShiftAzimuthStationMax}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,305,5,5"  Text="{Binding Path=CurrentParamsCalculation.ShiftAzimuthStationMax_deg, Mode=TwoWay}"/>
               <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="220" Width="300" Height="25" Caption="{x:Static res:Resources.ShiftAzimuthStationStep}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,330,5,5"  Text="{Binding Path=CurrentParamsCalculation.ShiftAzimuthStationStep_deg, Mode=TwoWay}"/>
@@ -139,7 +140,8 @@
 
               <cdg:OrmCheckBox Grid.Column="0" Grid.Row="0" Content="{x:Static res:Resources.CoordinatesStation}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="8,383,5,5"  IsChecked="{Binding Path=CurrentParamsCalculation.CoordinatesStation, Mode=TwoWay}"/>
               <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="220" Width="300" Height="25" Caption="{x:Static res:Resources.ShiftCoordinatesStation}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,405,5,5"  Text="{Binding Path=CurrentParamsCalculation.ShiftCoordinatesStation_m, Mode=TwoWay}"/>
-              <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="220" Width="300" Height="25" Caption="{x:Static res:Resources.MaxDeviationCoordinatesStation}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,430,5,5"  Text="{Binding Path=CurrentParamsCalculation.MaxDeviationCoordinatesStation_m, Mode=TwoWay}"/>
+              <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="220" Width="300" Height="25" Caption="{x:Static res:Resources.ShiftCoordinatesStationStep}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,430,5,5"  Text="{Binding Path=CurrentParamsCalculation.ShiftCoordinatesStationStep_m, Mode=TwoWay}"/>
+              <!--<cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="220" Width="300" Height="25" Caption="{x:Static res:Resources.MaxDeviationCoordinatesStation}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,430,5,5"  Text="{Binding Path=CurrentParamsCalculation.MaxDeviationCoordinatesStation_m, Mode=TwoWay}"/>-->
               <!--<cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="180" Width="300" Height="25" Caption="{x:Static res:Resources.PowerStation}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,455,5,5"  Text="{Binding Path=CurrentParamsCalculation.PowerStation, Mode=TwoWay}"/>-->
               <cdg:OrmCheckBox Grid.Column="0" Grid.Row="0" Content="{x:Static res:Resources.PowerStation}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,455,5,5"  IsChecked="{Binding Path=CurrentParamsCalculation.PowerStation, Mode=TwoWay}"/>
               
@@ -147,13 +149,14 @@
               <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="220" Width="300" Height="25" Caption="{x:Static res:Resources.ShiftPowerStationMin}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,480,5,5"  Text="{Binding Path=CurrentParamsCalculation.ShiftPowerStationMin_dB, Mode=TwoWay}"/>
               <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="220" Width="300" Height="25" Caption="{x:Static res:Resources.ShiftPowerStationMax}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,505,5,5"  Text="{Binding Path=CurrentParamsCalculation.ShiftPowerStationMax_dB, Mode=TwoWay}"/>
               <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="220" Width="300" Height="25" Caption="{x:Static res:Resources.ShiftPowerStationStep}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,530,5,5"  Text="{Binding Path=CurrentParamsCalculation.ShiftPowerStationStep_dB, Mode=TwoWay}"/>
+              <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="220" Width="300" Height="25" Caption="{x:Static res:Resources.MaxDeviationCoordinatesStation}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,555,5,5"  Text="{Binding Path=CurrentParamsCalculation.MaxDeviationCoordinatesStation_m, Mode=TwoWay}"/>
 
-              <cdg:OrmCheckBox Grid.Column="0" Grid.Row="0" Content="{x:Static res:Resources.CascadeTuning}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="8,558,5,5"  IsChecked="{Binding Path=CurrentParamsCalculation.CascadeTuning, Mode=TwoWay}"/>
-              <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="220" Width="300" Height="25" Caption="{x:Static res:Resources.NumberCascade}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,580,5,5"  Text="{Binding Path=CurrentParamsCalculation.NumberCascade, Mode=TwoWay}"/>
-              <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="220" Width="300" Height="25" Caption="{x:Static res:Resources.DetailOfCascade}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,605,5,5"  Text="{Binding Path=CurrentParamsCalculation.DetailOfCascade, Mode=TwoWay}"/>
+              <cdg:OrmCheckBox Grid.Column="0" Grid.Row="0" Content="{x:Static res:Resources.CascadeTuning}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="8,588,5,5"  IsChecked="{Binding Path=CurrentParamsCalculation.CascadeTuning, Mode=TwoWay}"/>
+              <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="220" Width="300" Height="25" Caption="{x:Static res:Resources.NumberCascade}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,605,5,5"  Text="{Binding Path=CurrentParamsCalculation.NumberCascade, Mode=TwoWay}"/>
+              <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="220" Width="300" Height="25" Caption="{x:Static res:Resources.DetailOfCascade}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,630,5,5"  Text="{Binding Path=CurrentParamsCalculation.DetailOfCascade, Mode=TwoWay}"/>
 
 
-              <ComboBox Grid.Column="0" Grid.Row="0" Height="20" Width="220" SelectedValue="{Binding MethodParamsCalculationModelVal, Mode=TwoWay}" ItemsSource="{Binding MethodParamsCalculationModelValues}" Margin="5,630,5,5" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" HorizontalAlignment="Left" VerticalAlignment="Top" IsReadOnly="true"/>
+              <ComboBox Grid.Column="0" Grid.Row="0" Height="20" Width="220" SelectedValue="{Binding MethodParamsCalculationModelVal, Mode=TwoWay}" ItemsSource="{Binding MethodParamsCalculationModelValues}" Margin="5,655,5,5" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" HorizontalAlignment="Left" VerticalAlignment="Top" IsReadOnly="true"/>
               
               
 
@@ -197,11 +200,13 @@
           </ComboBox>-->
 
 
+          
           <ComboBox Grid.Column="0" Grid.Row="0" Height="20" Width="200"  Margin="8,5,5,5" SelectedValue="{Binding SelectedStationTypeVal, Mode=TwoWay}" ItemsSource="{Binding SelectedStationTypeValues}" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" HorizontalAlignment="Left" VerticalAlignment="Top" IsReadOnly="true"/>
-          <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="140" Width="300" Height="25" Caption="{x:Static res:Resources.Id}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="215,5,5,5"  Text="{Binding Path=GetStationsParams.Id, Mode=TwoWay}"/>
-          <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="140" Width="300" Height="25" Caption="{x:Static res:Resources.StateForActiveStation}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="215,35,5,5"  Text="{Binding Path=GetStationsParams.StateForActiveStation, Mode=TwoWay}"/>
-          <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="140" Width="300" Height="25" Caption="{x:Static res:Resources.StateForNotActiveStation}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="215,65,5,5"  Text="{Binding Path=GetStationsParams.StateForNotActiveStation, Mode=TwoWay}"/>
-          <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="140" Width="300" Height="25" Caption="{x:Static res:Resources.Standard}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="215,95,5,5"  Text="{Binding Path=GetStationsParams.Standard, Mode=TwoWay}"/>
+          <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="140" Width="300" Height="25" Caption="{x:Static res:Resources.Id}" Visibility="{Binding IsVisibleFieldId,   Converter={StaticResource BooleanToVisibilityConverter}}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="215,5,5,5"  Text="{Binding Path=GetStationsParams.Id, Mode=TwoWay}"/>
+          <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="140" Width="300" Height="25" Caption="{x:Static res:Resources.StateForActiveStation}" Visibility="{Binding IsVisibleFieldStateForActiveStation,   Converter={StaticResource BooleanToVisibilityConverter}}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="215,5,5,5"  Text="{Binding Path=GetStationsParams.StateForActiveStation, Mode=TwoWay}"/>
+          <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="140" Width="300" Height="25" Caption="{x:Static res:Resources.StateForNotActiveStation}" Visibility="{Binding IsVisibleFieldStateForNotActiveStation,   Converter={StaticResource BooleanToVisibilityConverter}}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="215,35,5,5"  Text="{Binding Path=GetStationsParams.StateForNotActiveStation, Mode=TwoWay}"/>
+          <cdg:OrmTextBox Grid.Column="0" Grid.Row="0" CaptionWith="140" Width="300" Height="25" Caption="{x:Static res:Resources.Standard}" Visibility="{Binding IsVisibleFieldStandard,   Converter={StaticResource BooleanToVisibilityConverter}}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="215,65,5,5"  Text="{Binding Path=GetStationsParams.Standard, Mode=TwoWay}"/>
+          
           
 
           <ComboBox Grid.Column="0" Grid.Row="0" Height="20" Width="200" Margin="8,35,5,5" SelectedValue="{Binding SelectedIcsmStationNameVal, Mode=TwoWay}" ItemsSource="{Binding SelectedIcsmStationNameValues}" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" HorizontalAlignment="Left" VerticalAlignment="Top" IsReadOnly="true"/>

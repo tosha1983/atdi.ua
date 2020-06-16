@@ -32,6 +32,7 @@
       <GroupBox Grid.Row="0" Header="{x:Static res:Resources.Projects}" Margin="5, 5, 5, 5" Grid.Column="0">
         <orm:OrmDataGrid Grid.Column="0" Grid.Row="0" IsReadOnly="True" Margin="5, 5, 5, 5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding Projects}" SelectedItem="{Binding CurrentProject}">
           <DataGrid.Columns>
+            <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=Id}"></DataGridTextColumn>
             <DataGridTextColumn Header="{x:Static res:Resources.Name}" Binding="{Binding Path=Name}"></DataGridTextColumn>
             <DataGridTextColumn Header="{x:Static res:Resources.Note}" Binding="{Binding Path=Note}"></DataGridTextColumn>
             <DataGridTextColumn Header="{x:Static res:Resources.OwnerInstance}" Binding="{Binding Path=OwnerInstance}"></DataGridTextColumn>
@@ -87,6 +88,7 @@
                 <Button Grid.Column="0" Grid.Row="1" Margin="165,5,5,5" HorizontalAlignment="Left" VerticalAlignment="Top" Content="{x:Static res:Resources.Refresh}" Width="70" Height="20" Command="{Binding MapRefreshCommand}"/>
                 <orm:OrmDataGrid Grid.Column="0" Grid.Row="1" IsReadOnly="True" Margin="5, 30, 5, 5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding ProjectMaps}" SelectedItem="{Binding CurrentProjectMap}">
                   <DataGrid.Columns>
+                    <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=Id}"></DataGridTextColumn>
                     <DataGridTextColumn Header="{x:Static res:Resources.Name}" Binding="{Binding Path=MapName}"></DataGridTextColumn>
                     <DataGridTextColumn Header="{x:Static res:Resources.Note}" Binding="{Binding Path=MapNote}"></DataGridTextColumn>
                     <DataGridTextColumn Header="{x:Static res:Resources.OwnerInstance}" Binding="{Binding Path=OwnerInstance}"></DataGridTextColumn>
@@ -120,6 +122,7 @@
             <Button Margin="165,5,5,5" HorizontalAlignment="Left" VerticalAlignment="Top" Content="{x:Static res:Resources.Delete}" Width="70" Height="20" Command="{Binding ContextDeleteCommand}"/>
             <orm:OrmDataGrid IsReadOnly="True" Margin="5, 30, 5, 5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding ProjectContexts}" SelectedItem="{Binding CurrentProjectContext}">
               <DataGrid.Columns>
+                <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=Id}"></DataGridTextColumn>
                 <DataGridTextColumn Header="{x:Static res:Resources.Name}" Binding="{Binding Path=Name}"></DataGridTextColumn>
                 <DataGridTextColumn Header="{x:Static res:Resources.Note}" Binding="{Binding Path=Note}"></DataGridTextColumn>
                 <DataGridTextColumn Header="{x:Static res:Resources.OwnerInstance}" Binding="{Binding Path=OwnerInstance}"></DataGridTextColumn>

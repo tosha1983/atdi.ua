@@ -46,6 +46,8 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.Map
 
             this.CurrentMapCard = new MapModel();
             this.MapAddCommand = new ViewCommand(this.OnMapAddCommand);
+
+            _onCreatedMapToken = _eventBus.Subscribe<Events.OnCreatedMap>(this.OnCreatedMapHandle);
         }
         public long ProjectId
         {
@@ -61,8 +63,6 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.Map
         {
             try
             {
-                _onCreatedMapToken = _eventBus.Subscribe<Events.OnCreatedMap>(this.OnCreatedMapHandle);
-
                 var mapModifier = new Modifiers.CreateMap
                 {
                     ProjectId = this.ProjectId,

@@ -177,11 +177,15 @@ namespace XICSM.ICSControlClient.ViewModels.Reports
                                 }
                                 else
                                 {
-                                    var allDetail = lstDetail.FindAll(v => v.Standard == linkedStandards.Standard);
-                                    if ((allDetail != null) && (allDetail.Count > 0))
+                                    var allLTE_1800TN = lstDetail.FindAll(v => linkedStandards.Standard.Contains(v.Standard) && v.PermissionNumber.StartsWith(dozvLTE1800_TN));
+                                    if (((allLTE_1800TN != null) && (allLTE_1800TN.Count == 0)) || (allLTE_1800TN == null))
                                     {
-                                        cpyHeader.DetailProtocols = CopyHelper.CreateDeepCopy(allDetail).ToArray();
-                                        listHeadProtocols.Add(cpyHeader);
+                                        var allDetail = lstDetail.FindAll(v => v.Standard == linkedStandards.Standard);
+                                        if ((allDetail != null) && (allDetail.Count > 0))
+                                        {
+                                            cpyHeader.DetailProtocols = CopyHelper.CreateDeepCopy(allDetail).ToArray();
+                                            listHeadProtocols.Add(cpyHeader);
+                                        }
                                     }
                                 }
                             }
@@ -687,7 +691,11 @@ namespace XICSM.ICSControlClient.ViewModels.Reports
             {
                 for (int i = 0; i < value.Length; i++)
                 {
-                    listArr.Add(Convert.ToDouble(value[i]));
+                    var val = value[i].ConvertStringToDouble();
+                    if (val != null)
+                    {
+                        listArr.Add(val.Value);
+                    }
                 }
             }
             listArr.Sort();

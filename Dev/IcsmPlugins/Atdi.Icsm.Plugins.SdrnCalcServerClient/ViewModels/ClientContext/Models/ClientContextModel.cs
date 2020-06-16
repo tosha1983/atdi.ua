@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Atdi.DataModels.Sdrn.CalcServer.Entities;
+using Atdi.WpfControls.EntityOrm.Controls;
 
 namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ClientContext
 {
@@ -16,7 +16,6 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ClientContext
         public string OwnerInstance { get; set; }
         public Guid OwnerContextId { get; set; }
         public DateTimeOffset CreatedDate { get; set; }
-        public ClientContextTypeCode TypeValue { get; set; }
         public byte TypeCode { get; set; }
         public string TypeName { get; set; }
         public byte StatusCode { get; set; }

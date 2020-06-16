@@ -124,6 +124,15 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Id.
+        /// </summary>
+        public static string Id {
+            get {
+                return ResourceManager.GetString("Id", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Lock.
         /// </summary>
         public static string Lock {
