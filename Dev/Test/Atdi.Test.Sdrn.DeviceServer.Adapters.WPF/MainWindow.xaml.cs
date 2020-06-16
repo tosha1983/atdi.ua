@@ -41,6 +41,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
         ADP.KTN6841A.Adapter KSadapter;
         ADP.RSFPL.Adapter AN2adapter;
         ADP.SignalHound.Adapter SHadapter;
+        ADP.SPIDRotator.Adapter ROadapter;
 
         ADP.GPS.GPSAdapter GPSadapter;
         //GNSSNMEA gnss;
@@ -56,6 +57,10 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
 
         private Thread GPSThread;
         private AnyDelegate GPSD;
+
+        private Thread ROThread;
+        private AnyDelegate ROD;
+        private DummyExecutionContextMy ROContext = null;
 
         public MainWindow()
         {
@@ -81,11 +86,11 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
         }
         private void StartTime_Click(object sender, RoutedEventArgs e)
         {
-            KSThread = new Thread(KSWorks);
-            KSThread.Name = "KSThread";
-            KSThread.IsBackground = true;
-            KSThread.Start();
-            KSD += KSConnect;
+            //KSThread = new Thread(KSWorks);
+            //KSThread.Name = "KSThread";
+            //KSThread.IsBackground = true;
+            //KSThread.Start();
+            //KSD += KSConnect;
 
             //AN2Thread = new Thread(AN2Works);
             //AN2Thread.Name = "AN2Thread";
@@ -105,6 +110,11 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             //GPSThread.Start();
             //GPSD += GPSConnect;
 
+            ROThread = new Thread(ROWorks);
+            ROThread.Name = "ROThread";
+            ROThread.IsBackground = true;
+            ROThread.Start();
+            ROD += ROConnect;
         }
         //long NextSecond = 0;
         private void GetGPSData()
@@ -305,6 +315,79 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
         }
         #endregion SH
 
+        #region RO
+        private void ROWorks()
+        {
+            TimeSpan ts = new TimeSpan(10000);
+            bool Cycle = true;
+            while (Cycle)
+            {
+                if (ROD != null) { ROD(); }
+                Thread.Sleep(ts);
+            }
+        }
+        private void ROConnect()
+        {
+            try
+            {
+                var adapterConfig = new ADP.SPIDRotator.AdapterConfig()
+                {
+                    PortNumber = 7,
+                    ElevationIsPolarization = false,
+                    ControlDeviceManufacturer = "SPID",
+                    ControlDeviceName = "ROT2PROG",
+                    ControlDeviceCode = "N/A",
+                    RotationDeviceManufacturer = "SPID",
+                    RotationDeviceName = "SPX AZ/EL-02",
+                    RotationDeviceCode = "N/A",
+                    AzimuthMin_dg = 0,
+                    AzimuthMax_dg = 360,
+                    ElevationMin_dg = -20,
+                    ElevationMax_dg = 100
+                    
+
+                    //SyncCPUtoGPS = true,
+                    //GPSPortBaudRate = 38400,
+                    //GPSPortNumber = 1,
+
+                };
+
+                ROadapter = new ADP.SPIDRotator.Adapter(adapterConfig, logger, TimeService);
+                App.Current.Dispatcher.Invoke((Action)delegate // <--- HERE
+                {
+                });
+                //SHIQ.ANAdapter = ANadapter;
+                ROadapter.Connect(adapterHost);
+
+                ROContext = new DummyExecutionContextMy(logger);
+                var command = new CMD.SetRotatorPositionCommand();
+
+                command.Parameter.Mode = CMD.Parameters.RotatorPositionMode.Get;//raz.Next(300, 330);
+                command.Parameter.PublicResultAfterSet = false;//raz.Next(300, 330);
+
+                ROadapter.SetRotatorPositionCommandHandler(command, ROContext);
+            }
+            finally
+            {
+                ROD -= ROConnect;
+            }
+        }
+
+        private void RODisconnect()
+        {
+            try
+            {
+                ROadapter.Disconnect();
+            }
+            finally
+            {
+                ROD -= RODisconnect;
+                ROThread.Abort();
+            }
+        }
+        #endregion RO
+
+
         private void GPSWorks()
         {
             TimeSpan ts = new TimeSpan(10000);
@@ -375,6 +458,157 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             AN2D += ANDisconnect;
             SHD += SHDisconnect;
         }
+
+        #region RO     
+
+
+
+        private void SetRandomRO1()
+        {
+            try
+            {
+                Random raz = new Random();
+                Random rel = new Random();
+                //var context = new DummyExecutionContextMy(logger);
+                if (ROContext.Token.IsCancellationRequested)
+                {
+                    ROContext = new DummyExecutionContextMy(logger);
+                }
+                var command = new CMD.SetRotatorPositionCommand();
+                command.Parameter.Azimuth_dg = 360;//raz.Next(300, 330); 
+                command.Parameter.AzimuthSpeed = 0;//raz.Next(300, 330);
+                command.Parameter.AzimuthStep_dg = 2;// 1.5f;//raz.Next(300, 330);
+                command.Parameter.AzimuthTimeStep_ms = 500;//raz.Next(300, 330);
+
+                command.Parameter.Polarization_dg = 0;// rel.Next(0, 20);
+                command.Parameter.PolarizationSpeed = 0;//raz.Next(300, 330);
+                command.Parameter.PolarizationStep_dg = 0;//raz.Next(300, 330);
+                command.Parameter.PolarizationTimeStep_ms = 0;//raz.Next(300, 330);
+
+                command.Parameter.Elevation_dg = 0;// rel.Next(0, 20);
+                command.Parameter.ElevationSpeed = 0;//raz.Next(300, 330);
+                command.Parameter.ElevationStep_dg = 2;//raz.Next(300, 330);
+                command.Parameter.ElevationTimeStep_ms = 10000;//raz.Next(300, 330);
+
+
+                command.Parameter.Mode = CMD.Parameters.RotatorPositionMode.SetAndGet;//raz.Next(300, 330);
+                command.Parameter.PublicResultAfterSet = false;//raz.Next(300, 330);
+
+                System.Diagnostics.Debug.WriteLine(command.Parameter.Azimuth_dg + "  st  " + command.Parameter.Polarization_dg);
+                ROadapter.SetRotatorPositionCommandHandler(command, ROContext);
+            }
+            finally
+            {
+                ROD -= SetRandomRO1;
+            }
+        }
+
+        private void SetRandomRO2()
+        {
+            try
+            {
+                Random raz = new Random();
+                Random rel = new Random();
+                //var context = new DummyExecutionContextMy(logger);
+                if (ROContext.Token.IsCancellationRequested)
+                {
+                    ROContext = new DummyExecutionContextMy(logger);
+                }
+                var command = new CMD.SetRotatorPositionCommand();
+                command.Parameter.Azimuth_dg = 340;
+                command.Parameter.AzimuthSpeed = 0;//raz.Next(300, 330);
+                command.Parameter.AzimuthStep_dg = 0;//raz.Next(300, 330);
+                command.Parameter.AzimuthTimeStep_ms = 500;//raz.Next(300, 330);
+
+                command.Parameter.Polarization_dg = 0;//rel.Next(0, 20);
+                command.Parameter.PolarizationSpeed = 0;//raz.Next(300, 330);
+                command.Parameter.PolarizationStep_dg = 0;//raz.Next(300, 330);
+                command.Parameter.PolarizationTimeStep_ms = 0;//raz.Next(300, 330);
+
+                command.Parameter.Elevation_dg = 20;// rel.Next(0, 20);
+                command.Parameter.ElevationSpeed = 0;//raz.Next(300, 330);
+                command.Parameter.ElevationStep_dg = 0;//raz.Next(300, 330);
+                command.Parameter.ElevationTimeStep_ms = 1000;//raz.Next(300, 330);
+
+                command.Parameter.Mode = CMD.Parameters.RotatorPositionMode.SetAndGet;
+                command.Parameter.PublicResultAfterSet = false;//raz.Next(300, 330);
+
+                System.Diagnostics.Debug.WriteLine(command.Parameter.Azimuth_dg + "  st  " + command.Parameter.Polarization_dg);
+                ROadapter.SetRotatorPositionCommandHandler(command, ROContext);
+            }
+            finally
+            {
+                ROD -= SetRandomRO2;
+            }
+        }
+        private void SetROStop()
+        {
+            try
+            {
+                ROContext.Token = new CancellationToken(true);
+            }
+            finally
+            {
+                ROD -= SetROStop;
+            }
+        }
+        private void SetRandomGet()
+        {
+            try
+            {
+                Random raz = new Random();
+                Random rel = new Random();
+                //var context = new DummyExecutionContextMy(logger);
+                if (ROContext.Token.IsCancellationRequested)
+                {
+                    ROContext = new DummyExecutionContextMy(logger);
+                }
+                var command = new CMD.SetRotatorPositionCommand();
+                command.Parameter.Azimuth_dg = 340;
+                command.Parameter.AzimuthSpeed = 0;//raz.Next(300, 330);
+                command.Parameter.AzimuthStep_dg = 0;// 1.5f;//raz.Next(300, 330);
+                command.Parameter.AzimuthTimeStep_ms = 500;//raz.Next(300, 330);
+
+                command.Parameter.Polarization_dg = 20;//rel.Next(0, 20);
+                command.Parameter.PolarizationSpeed = 0;//raz.Next(300, 330);
+                command.Parameter.PolarizationStep_dg = 0;//raz.Next(300, 330);
+                command.Parameter.PolarizationTimeStep_ms = 0;//raz.Next(300, 330);
+
+                command.Parameter.Elevation_dg = 0;// rel.Next(0, 20);
+                command.Parameter.ElevationSpeed = 0;//raz.Next(300, 330);
+                command.Parameter.ElevationStep_dg = 0;//raz.Next(300, 330);
+                command.Parameter.ElevationTimeStep_ms = 0;//raz.Next(300, 330);
+
+                command.Parameter.Mode = CMD.Parameters.RotatorPositionMode.Get;
+                command.Parameter.PublicResultAfterSet = false;//raz.Next(300, 330);
+
+                ROadapter.SetRotatorPositionCommandHandler(command, ROContext);
+            }
+            finally
+            {
+                ROD -= SetRandomGet;
+            }
+        }
+        private void SetAzz1_Click(object sender, RoutedEventArgs e)
+        {
+            ROD += SetRandomRO1;
+        }
+
+        private void SetAzz2_Click(object sender, RoutedEventArgs e)
+        {
+            ROD += SetRandomRO2;
+        }
+
+        private void StopAzz_Click(object sender, RoutedEventArgs e)
+        {
+            ROD += SetROStop;
+
+        }
+        private void Get_Click(object sender, RoutedEventArgs e)
+        {
+            ROD += SetRandomGet;
+        }
+        #endregion RO
         #region KS
         private void GetTraceKS()
         {
@@ -429,8 +663,8 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
 
                 long t4 = TimeService.TimeStamp.Ticks;
 
-                Debug.WriteLine(new TimeSpan(t2 - t1).ToString() + 
-                    "   \r\n" + new TimeSpan(t3 - t2).ToString() + 
+                Debug.WriteLine(new TimeSpan(t2 - t1).ToString() +
+                    "   \r\n" + new TimeSpan(t3 - t2).ToString() +
                     "   \r\n" + new TimeSpan(t4 - t3).ToString() +
                     "   \r\n" + rbw +
                     "   \r\n" + tp);
@@ -711,26 +945,27 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             try
             {
                 // send command
+                // send command
                 var context = new DummyExecutionContextMy(logger);
-                var command = new CMD.MesureTraceCommand();
-                decimal centr = 1850m * 1000000;
-                decimal span = 100.0m * 1000000;//0.025m
+                var command = new CMD.EstimateRefLevelCommand();
+                command.Parameter.Att_dB = -1;
+                decimal centr = 2412m * 1000000;
+                decimal span = 40.0m * 1000000;//0.025m
 
                 command.Parameter.FreqStart_Hz = centr - span / 2;//910 * 1000000;//424.625m * 1000000;//424.650
                 command.Parameter.FreqStop_Hz = centr + span / 2;//930*1000000;//424.675m * 1000000;
-                command.Parameter.Att_dB = 3;
-                command.Parameter.PreAmp_dB = 1;
-                command.Parameter.RBW_Hz = -1;
-                command.Parameter.VBW_Hz = -1;
+                command.Parameter.PreAmp_dB = 0;
+                command.Parameter.RBW_Hz = 20000;
+                command.Parameter.VBW_Hz = 20000;
                 command.Parameter.RefLevel_dBm = -40;
                 command.Parameter.SweepTime_s = 0.00001;
-                command.Parameter.TraceCount = 10;
-                command.Parameter.TracePoint = 500000;
-                command.Parameter.TraceType = CMD.Parameters.TraceType.MaxHold;
+                command.Parameter.TraceCount = 100;
+                command.Parameter.TracePoint = 1500;
+                command.Parameter.TraceType = CMD.Parameters.TraceType.ClearWhrite;
                 command.Parameter.DetectorType = CMD.Parameters.DetectorType.MaxPeak;
                 command.Parameter.LevelUnit = CMD.Parameters.LevelUnit.dBm;
 
-                AN2adapter.MesureTraceCommandHandler(command, context);
+                AN2adapter.EstimateRefLevelCommandHandler(command, context);
             }
             finally
             {
@@ -1649,6 +1884,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 SHD -= GetIQSH4;
             }
         }
+
         private void GetTime_Click(object sender, RoutedEventArgs e)
         {
 
@@ -1952,6 +2188,8 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             //    sw.Dispose();
             //}
         }
+
+        
     }
     public class DummyTimeService : ITimeService
     {
@@ -2060,6 +2298,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
 
         public void Cancel()
         {
+            
             this._logger.Verbouse("DummyExecutionContext", "Call method", $"Cancel");
         }
 
@@ -2100,6 +2339,12 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             //        }
             //    }
             //});
+
+            if (result is CMD.Results.RotatorPositionResult)
+            {
+                var r = (CMD.Results.RotatorPositionResult)result;
+                System.Diagnostics.Debug.WriteLine(r.PartIndex + "  " + r.Azimuth_dg + "  " + r.Established + "  " + r.Polarization_dg + "  " + r.Elevation_dg + "  " + r.Status);
+            }
         }
 
         public void Unlock(params CommandType[] types)

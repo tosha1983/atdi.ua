@@ -196,6 +196,16 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
             var utils = new Utils(_dataLayer, _logger);
             return utils.GetAllDataSynchronizationProcess();
         }
+
+        public HeadProtocols[] GetDetailProtocolsByPeriod(
+                                                    DateTime? DateStart,
+                                                    DateTime? DateStop
+                                                    )
+        {
+            var loadProtocols = new LoadProtocols(_dataLayer, _logger);
+            return loadProtocols.GetDetailProtocolsByPeriod(DateStart, DateStop);
+        }
+
     }
 }
 

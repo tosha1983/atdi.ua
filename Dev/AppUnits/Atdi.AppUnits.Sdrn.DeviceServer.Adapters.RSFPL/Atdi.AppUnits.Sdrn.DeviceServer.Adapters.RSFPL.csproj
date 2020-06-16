@@ -52,7 +52,6 @@
     <Compile Include="Adapter.cs" />
     <Compile Include="AdapterConfig.cs" />
     <Compile Include="AppServerComponent.cs" />
-    <Compile Include="AveragedTrace New.cs" />
     <Compile Include="AveragedTrace.cs" />
     <Compile Include="Enums\Optimization.cs" />
     <Compile Include="Enums\PowerRegister.cs" />

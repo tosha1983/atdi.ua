@@ -157,7 +157,13 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server.IeStation
         /// 
         /// </summary>
         [DataMember]
-        public string[] StationChannel { get; set; }
+        public string[] StationTxChannel { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [DataMember]
+        public string[] StationRxChannel { get; set; }
 
         /// <summary>
         /// 

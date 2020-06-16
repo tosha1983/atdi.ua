@@ -844,7 +844,9 @@ namespace XICSM.ICSControlClient.Forms
                             return false;
                         if (filter.Key == "StationTxFreq" && !c.StationTxFreq.Contains(filter.Value.Value))
                             return false;
-                        if (filter.Key == "StationChannel" && !c.StationChannel.Contains(filter.Value.Value))
+                        if (filter.Key == "StationTxChannel" && !c.StationTxChannel.Contains(filter.Value.Value))
+                            return false;
+                        if (filter.Key == "StationRxChannel" && !c.StationRxChannel.Contains(filter.Value.Value))
                             return false;
                         if (filter.Key == "StatusMeasFull" && !c.StatusMeasFull.Contains(filter.Value.Value))
                             return false;

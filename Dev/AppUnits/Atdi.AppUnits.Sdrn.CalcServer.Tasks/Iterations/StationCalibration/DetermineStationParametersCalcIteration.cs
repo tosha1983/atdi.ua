@@ -473,14 +473,17 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                     for (int j = 0; j < outListContextStations.Count; j++)
                                     {
                                         var arrStations = outListContextStations[j];
-                                        for (int p = 0; p < coordinatesDrivePoint.Length; p++)
+                                        if ((arrStations != null) && (arrStations.Length > 0))
                                         {
-                                            //var coordinateStation = _transformation.ConvertCoordinateToEpgs(new Wgs84Coordinate() { Longitude = arrStations[0].Site.Longitude, Latitude = arrStations[0].Site.Latitude }, _transformation.ConvertProjectionToCode(data.Projection));
-                                            if (GeometricСalculations.GetDistance_km(coordinatesDrivePoint[p].X, coordinatesDrivePoint[p].Y, arrStations[0].Coordinate.X, arrStations[0].Coordinate.Y) <= GetMinDistanceFromConfigByStandard(standard))
+                                            for (int p = 0; p < coordinatesDrivePoint.Length; p++)
                                             {
-                                                // добавляем весь массив станций arrStations в случае если одна из станций, которая входит в arrStations имеет расстояние до одной из точек текущего DrivePoint меньше 1 км (берем с конфигурации)
-                                                GSIDGroupeStations.Add(arrStations);
-                                                break;
+                                                //var coordinateStation = _transformation.ConvertCoordinateToEpgs(new Wgs84Coordinate() { Longitude = arrStations[0].Site.Longitude, Latitude = arrStations[0].Site.Latitude }, _transformation.ConvertProjectionToCode(data.Projection));
+                                                if (GeometricСalculations.GetDistance_km(coordinatesDrivePoint[p].X, coordinatesDrivePoint[p].Y, arrStations[0].Coordinate.X, arrStations[0].Coordinate.Y) <= GetMinDistanceFromConfigByStandard(standard))
+                                                {
+                                                    // добавляем весь массив станций arrStations в случае если одна из станций, которая входит в arrStations имеет расстояние до одной из точек текущего DrivePoint меньше 1 км (берем с конфигурации)
+                                                    GSIDGroupeStations.Add(arrStations);
+                                                    break;
+                                                }
                                             }
                                         }
                                     }
@@ -494,22 +497,25 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                     for (int q = 0; q < GSIDGroupeStations.Count; q++)
                                     {
                                         var arrStations = GSIDGroupeStations[q];
-                                        var stationsResults = new ContextStation[arrStations.Length];
-                                        var keyValueStations = new Dictionary<long, double>();
-                                        for (int z = 0; z < arrStations.Length; z++)
+                                        if ((arrStations != null) && (arrStations.Length > 0))
                                         {
-                                            //var coordinateStation = _transformation.ConvertCoordinateToEpgs(new Wgs84Coordinate() { Longitude = arrStations[z].Site.Longitude, Latitude = arrStations[z].Site.Latitude }, _transformation.ConvertProjectionToCode(data.Projection));
-                                            var distance = GeometricСalculations.GetDistance_km(centerWeightCoordinateOfDriveTest.X, centerWeightCoordinateOfDriveTest.Y, arrStations[0].Coordinate.X, arrStations[0].Coordinate.Y /* coordinateStation.X, coordinateStation.Y*/);
-                                            keyValueStations.Add(arrStations[z].Id, distance);
+                                            var stationsResults = new ContextStation[arrStations.Length];
+                                            var keyValueStations = new Dictionary<long, double>();
+                                            for (int z = 0; z < arrStations.Length; z++)
+                                            {
+                                                //var coordinateStation = _transformation.ConvertCoordinateToEpgs(new Wgs84Coordinate() { Longitude = arrStations[z].Site.Longitude, Latitude = arrStations[z].Site.Latitude }, _transformation.ConvertProjectionToCode(data.Projection));
+                                                var distance = GeometricСalculations.GetDistance_km(centerWeightCoordinateOfDriveTest.X, centerWeightCoordinateOfDriveTest.Y, arrStations[0].Coordinate.X, arrStations[0].Coordinate.Y /* coordinateStation.X, coordinateStation.Y*/);
+                                                keyValueStations.Add(arrStations[z].Id, distance);
+                                            }
+                                            var orderStations = from z in keyValueStations.ToList() orderby z.Value ascending select z;
+                                            var tempOrderStations = orderStations.ToArray();
+                                            for (int s = 0; s < tempOrderStations.Length; s++)
+                                            {
+                                                var fndStations = arrStations.First(x => x.Id == tempOrderStations[s].Key);
+                                                stationsResults[s] = fndStations;
+                                            }
+                                            GSIDGroupeStations[q] = stationsResults;
                                         }
-                                        var orderStations = from z in keyValueStations.ToList() orderby z.Value ascending select z;
-                                        var tempOrderStations = orderStations.ToArray();
-                                        for (int s = 0; s < tempOrderStations.Length; s++)
-                                        {
-                                            var fndStations = arrStations.First(x => x.Id == tempOrderStations[s].Key);
-                                            stationsResults[s] = fndStations;
-                                        }
-                                        GSIDGroupeStations[q] = stationsResults;
                                     }
 
                                     /////////////////////////////////////////////////////////////////////////////////////////////////////////

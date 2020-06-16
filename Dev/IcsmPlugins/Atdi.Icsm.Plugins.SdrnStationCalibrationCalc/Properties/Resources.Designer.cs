@@ -511,7 +511,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Shift Coordinates  Station Step, m.
+        ///   Ищет локализованную строку, похожую на Max deviation coordinates station, m.
         /// </summary>
         public static string MaxDeviationCoordinatesStation {
             get {

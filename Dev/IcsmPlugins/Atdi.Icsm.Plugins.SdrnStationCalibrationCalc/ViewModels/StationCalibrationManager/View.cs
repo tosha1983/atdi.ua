@@ -14,12 +14,12 @@ using Atdi.Platform.Cqrs;
 using Atdi.Platform.Events;
 using MP = Atdi.WpfControls.EntityOrm.Maps;
 using Atdi.DataModels.Sdrn.CalcServer.Entities;
-
 using System.Data;
 using System.Windows;
 using WPF =  System.Windows.Controls;
 using Atdi.DataModels.Sdrn.DeepServices.Gis;
 using Atdi.Contracts.Sdrn.DeepServices.Gis;
+using Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties;
 
 
 
@@ -32,7 +32,6 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
     public class View : ViewBase
     {
         private bool _isEnabledStart = false;
-        private bool _isEnabledFieldId = false;
 
         private DateTime? _dateStartLoadDriveTest;
         private DateTime? _dateStopLoadDriveTest;
@@ -42,6 +41,11 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
         private readonly ViewStarter _viewStarter;
         private MP.MapDrawingData _currentMapData;
         private IList _currentAreas;
+
+        private bool _isVisibleFieldId;
+        private bool _isVisibleFieldStateForActiveStation;
+        private bool _isVisibleFieldStateForNotActiveStation;
+        private bool _isVisibleFieldStandard;
 
 
         private IEventHandlerToken<Events.OnEditParamsCalculation> _onEditParamsCalculationToken;
@@ -115,6 +119,20 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             this.StationMonitoringDataAdapter = stationMonitoringDataAdapter;
             this._transformation = transformation;
 
+            if (this._selectedStationType == SelectedStationType.OneStation)
+            {
+                IsVisibleFieldId = true;
+                IsVisibleFieldStandard = false;
+                IsVisibleFieldStateForActiveStation = false;
+                IsVisibleFieldStateForNotActiveStation = false;
+            }
+            else
+            {
+                IsVisibleFieldId = false;
+                IsVisibleFieldStandard = true;
+                IsVisibleFieldStateForActiveStation = true;
+                IsVisibleFieldStateForNotActiveStation = true;
+            }
 
             this.ReloadData();
             this.RedrawMap();
@@ -128,11 +146,32 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             set => this.Set(ref this._isEnabledStart, value);
         }
 
-        public bool IsEnabledFieldId
+        public bool IsVisibleFieldId
         {
-            get => this._isEnabledFieldId;
-            set => this.Set(ref this._isEnabledFieldId, value);
+            get => this._isVisibleFieldId;
+            set => this.Set(ref this._isVisibleFieldId, value);
         }
+
+
+        public bool IsVisibleFieldStateForActiveStation
+        {
+            get => this._isVisibleFieldStateForActiveStation;
+            set => this.Set(ref this._isVisibleFieldStateForActiveStation, value);
+        }
+
+        public bool IsVisibleFieldStateForNotActiveStation
+        {
+            get => this._isVisibleFieldStateForNotActiveStation;
+            set => this.Set(ref this._isVisibleFieldStateForNotActiveStation, value);
+        }
+
+        public bool IsVisibleFieldStandard
+        {
+            get => this._isVisibleFieldStandard;
+            set => this.Set(ref this._isVisibleFieldStandard, value);
+        }
+
+
 
         public long TaskId
         {
@@ -159,8 +198,8 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
 
         private void FillParametersDefault(ParamsCalculationModel paramsCalculationModel)
         {
-            paramsCalculationModel.CorrelationThresholdWeak = 85;
-            paramsCalculationModel.CorrelationThresholdHard = 30;
+            paramsCalculationModel.CorrelationThresholdWeak = 15;
+            paramsCalculationModel.CorrelationThresholdHard = 50;
             paramsCalculationModel.TrustOldResults = true;
             paramsCalculationModel.UseMeasurementSameGSID = false;
             paramsCalculationModel.DistanceAroundContour_km = 5;
@@ -207,6 +246,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                 || ((CurrentStationMonitoringModel == null) || ((CurrentStationMonitoringModel != null) && (CurrentStationMonitoringModel.Count == 0))))
             {
                 IsEnabledStart = false;
+
             }
             else
             {
@@ -224,8 +264,25 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
 
         public SelectedStationType SelectedStationTypeVal
         {
-            get => this._selectedStationType;
-            set => this.Set(ref this._selectedStationType, value);
+            get { return this._selectedStationType; }
+            set
+            {
+                this.Set(ref this._selectedStationType, value);
+                if (this._selectedStationType == SelectedStationType.OneStation)
+                {
+                    IsVisibleFieldId = true;
+                    IsVisibleFieldStandard = false;
+                    IsVisibleFieldStateForActiveStation = false;
+                    IsVisibleFieldStateForNotActiveStation = false;
+                }
+                else
+                {
+                    IsVisibleFieldId = false;
+                    IsVisibleFieldStandard = true;
+                    IsVisibleFieldStateForActiveStation = true;
+                    IsVisibleFieldStateForNotActiveStation = true;
+                }
+            }
         }
 
         public MethodParamsCalculationModel MethodParamsCalculationModelVal
@@ -575,7 +632,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             return resGCID;
         }
 
-        public IcsmMobStation[] ReadStations()
+        public IcsmMobStation[] ReadStations(out string standard)
         {
             var selectedAreaModels = new List<AreaModel>();
             foreach (AreaModel areaModel in CurrentAreas)
@@ -597,6 +654,14 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                AreaModel = selectedAreaModels.ToArray(),
                SelectedStationType = SelectedStationTypeVal
            });
+            if ((resStations != null) && (resStations.Length > 0))
+            {
+                standard = resStations[0].Standard;
+            }
+            else
+            {
+                standard = string.Empty;
+            }
             return resStations;
         }
 
@@ -726,87 +791,258 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             }
         }
 
+        private bool ValidateTaskParameters()
+        {
+            bool isSuccess = true;
+            if (this.CurrentParamsCalculation != null)
+            {
+                // General parameter
+
+                if (((this.CurrentParamsCalculation.CorrelationThresholdHard >= 0) && (this.CurrentParamsCalculation.CorrelationThresholdHard <= 100)) == false)
+                {
+                    isSuccess = false;
+                
+                 _viewStarter.ShowException("Error!", new Exception($"General parameter '{Resources.CorrelationThresholdHard}' incorrect"));
+                }
+                if (((this.CurrentParamsCalculation.CorrelationThresholdWeak >= 0) && (this.CurrentParamsCalculation.CorrelationThresholdWeak <= 100)) == false)
+                {
+                    isSuccess = false;
+                    _viewStarter.ShowException("Error!", new Exception($"General parameter '{Resources.CorrelationThresholdWeak}' incorrect"));
+                }
+                if (((this.CurrentParamsCalculation.DistanceAroundContour_km >= 0) && (this.CurrentParamsCalculation.DistanceAroundContour_km <= 50)) == false)
+                {
+                    isSuccess = false;
+                    _viewStarter.ShowException("Error!", new Exception($"General parameter '{Resources.DistanceAroundContour}' incorrect"));
+                }
+                if (((this.CurrentParamsCalculation.MinNumberPointForCorrelation >= 1) && (this.CurrentParamsCalculation.MinNumberPointForCorrelation <= 1000)) == false)
+                {
+                    isSuccess = false;
+                    _viewStarter.ShowException("Error!", new Exception($"General parameter '{Resources.MinNumberPointForCorrelation}' incorrect"));
+                }
+                if ((this.CurrentParamsCalculation.CorrelationThresholdHard < this.CurrentParamsCalculation.CorrelationThresholdWeak))
+                {
+                    isSuccess = false;
+                    _viewStarter.ShowException("Error!", new Exception($"Correlation threshold weak must be greater than Correlation threshold hard!"));
+                }
+
+
+                // Correlation parameter
+                if (((this.CurrentParamsCalculation.MinRangeMeasurements_dBmkV >= -200) && (this.CurrentParamsCalculation.MinRangeMeasurements_dBmkV <= 200)) == false)
+                {
+                    isSuccess = false;
+                    _viewStarter.ShowException("Error!", new Exception($"Correlation  parameter '{Resources.MinRangeMeasurements}' incorrect"));
+                }
+                if (((this.CurrentParamsCalculation.MaxRangeMeasurements_dBmkV >= -200) && (this.CurrentParamsCalculation.MaxRangeMeasurements_dBmkV <= 200)) == false)
+                {
+                    isSuccess = false;
+                    _viewStarter.ShowException("Error!", new Exception($"Correlation  parameter '{Resources.MaxRangeMeasurements}' incorrect"));
+                }
+                if (((this.CurrentParamsCalculation.CorrelationDistance_m >= 0) && (this.CurrentParamsCalculation.CorrelationDistance_m <= 100)) == false)
+                {
+                    isSuccess = false;
+                    _viewStarter.ShowException("Error!", new Exception($"Correlation  parameter '{Resources.CorrelationDistance}' incorrect"));
+                }
+                if (((this.CurrentParamsCalculation.Delta_dB >= 0) && (this.CurrentParamsCalculation.Delta_dB <= 20)) == false)
+                {
+                    isSuccess = false;
+                    _viewStarter.ShowException("Error!", new Exception($"Correlation  parameter '{Resources.Delta}' incorrect"));
+                }
+                if (((this.CurrentParamsCalculation.MaxAntennasPatternLoss_dB >= 0) && (this.CurrentParamsCalculation.MaxAntennasPatternLoss_dB <= 200)) == false)
+                {
+                    isSuccess = false;
+                    _viewStarter.ShowException("Error!", new Exception($"Correlation  parameter '{Resources.MaxAntennasPatternLoss}' incorrect"));
+                }
+
+                // Calibration parameter
+                if (((this.CurrentParamsCalculation.ShiftAltitudeStationMin_m >= -100) && (this.CurrentParamsCalculation.ShiftAltitudeStationMin_m <= 100)) == false)
+                {
+                    isSuccess = false;
+                    _viewStarter.ShowException("Error!", new Exception($"CalibrationParameters  parameter '{Resources.ShiftAltitudeStationMin}' incorrect"));
+                }
+                if (((this.CurrentParamsCalculation.ShiftAltitudeStationMax_m >= -100) && (this.CurrentParamsCalculation.ShiftAltitudeStationMax_m <= 100)) == false)
+                {
+                    isSuccess = false;
+                    _viewStarter.ShowException("Error!", new Exception($"CalibrationParameters  parameter '{Resources.ShiftAltitudeStationMax}' incorrect"));
+                }
+                if (((this.CurrentParamsCalculation.ShiftAltitudeStationStep_m >= 1) && (this.CurrentParamsCalculation.ShiftAltitudeStationStep_m <= 10)) == false)
+                {
+                    isSuccess = false;
+                    _viewStarter.ShowException("Error!", new Exception($"CalibrationParameters  parameter '{Resources.ShiftAltitudeStationStep}' incorrect"));
+                }
+                if (((this.CurrentParamsCalculation.MaxDeviationAltitudeStation_m >= 0) && (this.CurrentParamsCalculation.MaxDeviationAltitudeStation_m <= 100)) == false)
+                {
+                    isSuccess = false;
+                    _viewStarter.ShowException("Error!", new Exception($"CalibrationParameters  parameter '{Resources.MaxDeviationAltitudeStation}' incorrect"));
+                }
+                if (((this.CurrentParamsCalculation.ShiftTiltStationMin_deg >= -100) && (this.CurrentParamsCalculation.ShiftTiltStationMin_deg <= 100)) == false)
+                {
+                    isSuccess = false;
+                    _viewStarter.ShowException("Error!", new Exception($"CalibrationParameters  parameter '{Resources.ShiftTiltStationMin}' incorrect"));
+                }
+                if (((this.CurrentParamsCalculation.ShiftTiltStationMax_deg >= -100) && (this.CurrentParamsCalculation.ShiftTiltStationMax_deg <= 100)) == false)
+                {
+                    isSuccess = false;
+                    _viewStarter.ShowException("Error!", new Exception($"CalibrationParameters  parameter '{Resources.ShiftTiltStationMax}' incorrect"));
+                }
+                if (((this.CurrentParamsCalculation.ShiftTiltStationStep_deg >= 1) && (this.CurrentParamsCalculation.ShiftTiltStationStep_deg <= 10)) == false)
+                {
+                    isSuccess = false;
+                    _viewStarter.ShowException("Error!", new Exception($"CalibrationParameters  parameter '{Resources.ShiftTiltStationStep}' incorrect"));
+                }
+                if (((this.CurrentParamsCalculation.MaxDeviationTiltStation_deg >= 0) && (this.CurrentParamsCalculation.MaxDeviationTiltStation_deg <= 100)) == false)
+                {
+                    isSuccess = false;
+                    _viewStarter.ShowException("Error!", new Exception($"CalibrationParameters  parameter '{Resources.MaxDeviationTiltStation}' incorrect"));
+                }
+                if (((this.CurrentParamsCalculation.ShiftAzimuthStationMin_deg >= -200) && (this.CurrentParamsCalculation.ShiftAzimuthStationMin_deg <= 200)) == false)
+                {
+                    isSuccess = false;
+                    _viewStarter.ShowException("Error!", new Exception($"CalibrationParameters  parameter '{Resources.ShiftAzimuthStationMin}' incorrect"));
+                }
+                if (((this.CurrentParamsCalculation.ShiftAzimuthStationMax_deg >= -200) && (this.CurrentParamsCalculation.ShiftAzimuthStationMax_deg <= 200)) == false)
+                {
+                    isSuccess = false;
+                    _viewStarter.ShowException("Error!", new Exception($"CalibrationParameters  parameter '{Resources.ShiftAzimuthStationMax}' incorrect"));
+                }
+                if (((this.CurrentParamsCalculation.ShiftAzimuthStationStep_deg >= 1) && (this.CurrentParamsCalculation.ShiftAzimuthStationStep_deg <= 10)) == false)
+                {
+                    isSuccess = false;
+                    _viewStarter.ShowException("Error!", new Exception($"CalibrationParameters  parameter '{Resources.ShiftAzimuthStationStep}' incorrect"));
+                }
+                if (((this.CurrentParamsCalculation.MaxDeviationAzimuthStation_deg >= 0) && (this.CurrentParamsCalculation.MaxDeviationAzimuthStation_deg <= 200)) == false)
+                {
+                    isSuccess = false;
+                    _viewStarter.ShowException("Error!", new Exception($"CalibrationParameters  parameter '{Resources.MaxDeviationAzimuthStation}' incorrect"));
+                }
+                if (((this.CurrentParamsCalculation.ShiftCoordinatesStation_m >= 0) && (this.CurrentParamsCalculation.ShiftCoordinatesStation_m <= 1000)) == false)
+                {
+                    isSuccess = false;
+                    _viewStarter.ShowException("Error!", new Exception($"CalibrationParameters  parameter '{Resources.ShiftCoordinatesStation}' incorrect"));
+                }
+                if (((this.CurrentParamsCalculation.ShiftCoordinatesStationStep_m >= 1) && (this.CurrentParamsCalculation.ShiftCoordinatesStationStep_m <= 100)) == false)
+                {
+                    isSuccess = false;
+                    _viewStarter.ShowException("Error!", new Exception($"CalibrationParameters  parameter '{Resources.ShiftCoordinatesStationStep}' incorrect"));
+                }
+                if (((this.CurrentParamsCalculation.MaxDeviationCoordinatesStation_m >= 0) && (this.CurrentParamsCalculation.MaxDeviationCoordinatesStation_m <= 1000)) == false)
+                {
+                    isSuccess = false;
+                    _viewStarter.ShowException("Error!", new Exception($"CalibrationParameters  parameter '{Resources.MaxDeviationCoordinatesStation}' incorrect"));
+                }
+                if (((this.CurrentParamsCalculation.ShiftPowerStationMin_dB >= -50) && (this.CurrentParamsCalculation.ShiftPowerStationMin_dB <= 50)) == false)
+                {
+                    isSuccess = false;
+                    _viewStarter.ShowException("Error!", new Exception($"CalibrationParameters  parameter '{Resources.ShiftPowerStationMin}' incorrect"));
+                }
+                if (((this.CurrentParamsCalculation.ShiftPowerStationMax_dB >= -50) && (this.CurrentParamsCalculation.ShiftPowerStationMax_dB <= 50)) == false)
+                {
+                    isSuccess = false;
+                    _viewStarter.ShowException("Error!", new Exception($"CalibrationParameters  parameter '{Resources.ShiftPowerStationMax}' incorrect"));
+                }
+                if (((this.CurrentParamsCalculation.ShiftPowerStationStep_dB >= 0) && (this.CurrentParamsCalculation.ShiftPowerStationStep_dB <= 5)) == false)
+                {
+                    isSuccess = false;
+                    _viewStarter.ShowException("Error!", new Exception($"CalibrationParameters  parameter '{Resources.ShiftPowerStationStep}' incorrect"));
+                }
+                if (((this.CurrentParamsCalculation.NumberCascade >= 1) && (this.CurrentParamsCalculation.NumberCascade <= 5)) == false)
+                {
+                    isSuccess = false;
+                    _viewStarter.ShowException("Error!", new Exception($"CalibrationParameters  parameter '{Resources.NumberCascade}' incorrect"));
+                }
+                if (((this.CurrentParamsCalculation.DetailOfCascade >= 2) && (this.CurrentParamsCalculation.DetailOfCascade <= 10)) == false)
+                {
+                    isSuccess = false;
+                    _viewStarter.ShowException("Error!", new Exception($"CalibrationParameters  parameter '{Resources.DetailOfCascade}' incorrect"));
+                }
+                if (((CurrentAreas != null) && (CurrentAreas.Count == 0)) && (CurrentAreas == null))
+                {
+                    isSuccess = false;
+                    _viewStarter.ShowException("Error!", new Exception("Please fill parameter 'area!"));
+                }
+                if ((CurrentParamsCalculation.DistanceAroundContour_km == null) && ((CurrentParamsCalculation.DistanceAroundContour_km != null) && (CurrentParamsCalculation.DistanceAroundContour_km == 0)))
+                {
+                    isSuccess = false;
+                    _viewStarter.ShowException("Error!", new Exception($"Please fill parameter 'DistanceAroundContour_km!"));
+                }
+                if ((string.IsNullOrEmpty(GetStationsParams.StateForActiveStation)) && (SelectedStationTypeVal== SelectedStationType.MultyStations))
+                {
+                    isSuccess = false;
+                    _viewStarter.ShowException("Error!", new Exception("Please fill parameter 'StateForActiveStation!"));
+                }
+                if ((string.IsNullOrEmpty(GetStationsParams.StateForNotActiveStation))  && (SelectedStationTypeVal == SelectedStationType.MultyStations))
+                {
+                    isSuccess = false;
+                    _viewStarter.ShowException("Error!", new Exception("Please fill parameter 'StateForNotActiveStation!"));
+                }
+                if ((GetStationsParams.Id == null) && (SelectedStationTypeVal == SelectedStationType.OneStation))
+                {
+                    isSuccess = false;
+                    _viewStarter.ShowException("Error!", new Exception("Please fill parameter 'Id!"));
+                }
+                if ((string.IsNullOrEmpty(GetStationsParams.Standard))  && (SelectedStationTypeVal == SelectedStationType.MultyStations))
+                {
+                    isSuccess = false;
+                    _viewStarter.ShowException("Error!", new Exception("Please fill parameter 'Standard!"));
+                }
+                if ((CurrentStationMonitoringModel == null) || ((CurrentStationMonitoringModel != null) && (CurrentStationMonitoringModel.Count == 0)))
+                {
+                    isSuccess = false;
+                    _viewStarter.ShowException("Error!", new Exception("Please fill parameter 'Drive tests!"));
+                }
+                
+            }
+            return isSuccess;
+        }
+
         private void StartStationCalibrationCommandAction()
         {
-            if (((CurrentAreas != null) && (CurrentAreas.Count == 0)) || (CurrentAreas == null))
+            if (ValidateTaskParameters())
             {
-                _viewStarter.ShowException("Error!", new Exception("Please fill parameter 'area!"));
-                throw new Exception("Please fill parameter 'area!");
-            }
-            if ((CurrentParamsCalculation.DistanceAroundContour_km == null) || ((CurrentParamsCalculation.DistanceAroundContour_km != null) && (CurrentParamsCalculation.DistanceAroundContour_km == 0)))
-            {
-                _viewStarter.ShowException("Error!", new Exception("Please fill parameter 'DistanceAroundContour_km!"));
-                throw new Exception("Please fill parameter 'DistanceAroundContour_km!");
-            }
-            if (string.IsNullOrEmpty(GetStationsParams.StateForActiveStation))
-            {
-                _viewStarter.ShowException("Error!", new Exception("Please fill parameter 'StateForActiveStation!"));
-                throw new Exception("Please fill parameter 'StateForActiveStation!");
-            }
-            if (string.IsNullOrEmpty(GetStationsParams.StateForNotActiveStation))
-            {
-                _viewStarter.ShowException("Error!", new Exception("Please fill parameter 'StateForNotActiveStation!"));
-                throw new Exception("Please fill parameter 'StateForNotActiveStation!");
-            }
-            if ((GetStationsParams.Id == null) && (SelectedStationTypeVal == SelectedStationType.OneStation))
-            {
-                _viewStarter.ShowException("Error!", new Exception("Please fill parameter 'Id!"));
-                throw new Exception("Please fill parameter 'Id!");
-            }
-            if (string.IsNullOrEmpty(GetStationsParams.Standard))
-            {
-                _viewStarter.ShowException("Error!", new Exception("Please fill parameter 'Standard!"));
-                throw new Exception("Please fill parameter 'Standard!");
-            }
-            if ((CurrentStationMonitoringModel == null) || ((CurrentStationMonitoringModel != null) && (CurrentStationMonitoringModel.Count == 0)))
-            {
-                _viewStarter.ShowException("Error!", new Exception("Please fill parameter 'Drive tests!"));
-                throw new Exception("Please fill parameter 'Drive tests!");
-            }
-            var listStationMonitoringModel = new List<long>();
-            foreach (StationMonitoringModel x in CurrentStationMonitoringModel)
-            {
-                var driveTestStandardStats = x.DriveTestStandardStats;
-                if (driveTestStandardStats != null)
+                var listStationMonitoringModel = new List<long>();
+                foreach (StationMonitoringModel x in CurrentStationMonitoringModel)
                 {
-                    var listDriveTests = driveTestStandardStats.ToList();
-                    for (int k=0; k< listDriveTests.Count; k++)
+                    var driveTestStandardStats = x.DriveTestStandardStats;
+                    if (driveTestStandardStats != null)
                     {
-                        var max = GetMaximumCountPointsInDriveTests(listDriveTests[k].Standard);
-                        if (listDriveTests[k].Count>max)
+                        var listDriveTests = driveTestStandardStats.ToList();
+                        for (int k = 0; k < listDriveTests.Count; k++)
                         {
-                            _viewStarter.ShowException("Error!", new Exception($"The functionality cannot be started, because for the standard '{listDriveTests[k].Standard}' the  number of points greater  {listDriveTests[k].Count}!"));
-                            throw new Exception($"The functionality cannot be started, because for the standard '{listDriveTests[k].Standard}' the  number of points greater  {listDriveTests[k].Count}!");
-                        }
-                        if (listDriveTests[k].Count == 0)
-                        {
-                            _viewStarter.ShowException("Error!", new Exception($"The functionality cannot be started, because for the standard '{listDriveTests[k].Standard}' the  number of points is 0!"));
-                            throw new Exception($"The functionality cannot be started, because for the standard '{listDriveTests[k].Standard}' the  number of points is 0!");
+                            var max = GetMaximumCountPointsInDriveTests(listDriveTests[k].Standard);
+                            if (listDriveTests[k].Count > max)
+                            {
+                                _viewStarter.ShowException("Error!", new Exception($"The functionality cannot be started, because for the standard '{listDriveTests[k].Standard}' the  number of points greater  {listDriveTests[k].Count}!"));
+                                return;
+                            }
+                            if (listDriveTests[k].Count == 0)
+                            {
+                                _viewStarter.ShowException("Error!", new Exception($"The functionality cannot be started, because for the standard '{listDriveTests[k].Standard}' the  number of points is 0!"));
+                                return;
+                            }
                         }
                     }
+                    listStationMonitoringModel.Add(x.Id);
                 }
-                listStationMonitoringModel.Add(x.Id);
-            }
 
-            _viewStarter.StartLongProcess(
-                new LongProcessOptions()
-                {
-                    CanStop = false,
-                    CanAbort = false,
-                    UseProgressBar = true,
-                    UseLog = false,
-                    IsModal = true,
-                    MinValue = 0,
-                    MaxValue = 1000,
-                    ValueKind = LongProcessValueKind.Infinity,
-                    Title = "Saving stations ...",
-                    Note = "Selection and saving of stations in the calculation server in accordance with the specified parameters."
-                },
-                token =>
-                {
-                    OnLoadStationsHandle(listStationMonitoringModel);
-                });
-            _viewStarter.Stop(this);
+                _viewStarter.StartLongProcess(
+                    new LongProcessOptions()
+                    {
+                        CanStop = false,
+                        CanAbort = false,
+                        UseProgressBar = true,
+                        UseLog = false,
+                        IsModal = true,
+                        MinValue = 0,
+                        MaxValue = 1000,
+                        ValueKind = LongProcessValueKind.Infinity,
+                        Title = "Saving stations ...",
+                        Note = "Selection and saving of stations in the calculation server in accordance with the specified parameters."
+                    },
+                    token =>
+                    {
+                        OnLoadStationsHandle(listStationMonitoringModel);
+                    });
+                _viewStarter.Stop(this);
+            }
         }
         private void OnEditParamsCalculationsHandle(Events.OnEditParamsCalculation data)
         {
@@ -834,10 +1070,14 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
         {
             try
             {
-                var stations = ReadStations();
+                var stations = ReadStations(out string standard);
                 if (stations.Length > 0)
                 {
-
+                    //если выбран режим "OneStation" то сохраняем реальный стандарт станции
+                    if (SelectedStationTypeVal == SelectedStationType.OneStation)
+                    {
+                        GetStationsParams.Standard = standard;
+                    }
                     this._currentParamsCalculationModel.InfocMeasResults = listStationMonitoringModel.ToArray();
                     this._currentParamsCalculationModel.StationIds = stations.Select(x => Convert.ToInt64(x.ExternalCode)).ToArray();
                     this._onEditParamsCalculationToken = _eventBus.Subscribe<Events.OnEditParamsCalculation>(this.OnEditParamsCalculationsHandle);

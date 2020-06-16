@@ -184,10 +184,6 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
             {
                 throw new Exception("'Areas' is null or contains 0 elements");
             }
-            if ((string.IsNullOrEmpty(this._mobStationsLoadModelByParams.StatusForActiveStation)) || (string.IsNullOrEmpty(this._mobStationsLoadModelByParams.StatusForNotActiveStation)))
-            {
-                throw new Exception("'StatusForActiveStation' or 'StatusForNotActiveStation' is null or empty");
-            }
             if (((this._mobStationsLoadModelByParams.IdentifierStation != null) && (this._mobStationsLoadModelByParams.IdentifierStation != 0)) && (this._mobStationsLoadModelByParams.SelectedStationType == SelectedStationType.OneStation))
             {
                 if (string.IsNullOrEmpty(this._mobStationsLoadModelByParams.TableName))
@@ -196,8 +192,14 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                 }
             }
 
-            var activeStationStatuses = GetStandards(this._mobStationsLoadModelByParams.StatusForActiveStation);
-            var notActiveStationStatuses = GetStandards(this._mobStationsLoadModelByParams.StatusForNotActiveStation);
+            string[] activeStationStatuses = null;
+            string[] notActiveStationStatuses = null;
+            if (this._mobStationsLoadModelByParams.SelectedStationType == SelectedStationType.MultyStations)
+            {
+                activeStationStatuses = GetStandards(this._mobStationsLoadModelByParams.StatusForActiveStation);
+                notActiveStationStatuses = GetStandards(this._mobStationsLoadModelByParams.StatusForNotActiveStation);
+            }
+
             var listMobStationT = new List<YMobStationT>();
 
             for (int v = 0; v < arrayTables.Length; v++)
@@ -234,28 +236,33 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                     rs.SetWhere("Position.LONGITUDE", IMRecordset.Operation.Le, this._mobStationsLoadModelByParams.AreaModel[z].ExternalContour[1].Longitude);
 
 
-
-                    var allStatuses = new List<string>();
-                    var newactiveStationStatuses = new string[activeStationStatuses.Length];
-                    var newnotActiveStationStatuses = new string[notActiveStationStatuses.Length];
-                    for (int s = 0; s < activeStationStatuses.Length; s++)
+                    if (this._mobStationsLoadModelByParams.SelectedStationType == SelectedStationType.MultyStations)
                     {
-                        newactiveStationStatuses[s] = "'" + activeStationStatuses[s] + "'";
+                        var allStatuses = new List<string>();
+                        var newactiveStationStatuses = new string[activeStationStatuses.Length];
+                        var newnotActiveStationStatuses = new string[notActiveStationStatuses.Length];
+                        for (int s = 0; s < activeStationStatuses.Length; s++)
+                        {
+                            newactiveStationStatuses[s] = "'" + activeStationStatuses[s] + "'";
+                        }
+                        for (int s = 0; s < notActiveStationStatuses.Length; s++)
+                        {
+                            newnotActiveStationStatuses[s] = "'" + notActiveStationStatuses[s] + "'";
+                        }
+                        allStatuses.AddRange(newactiveStationStatuses);
+                        allStatuses.AddRange(newnotActiveStationStatuses);
+                        var filter = string.Format("[STATUS] in ({0})", string.Join(",", allStatuses.ToArray()));
+                        rs.SetAdditional(filter);
                     }
-                    for (int s = 0; s < notActiveStationStatuses.Length; s++)
-                    {
-                        newnotActiveStationStatuses[s] = "'" + notActiveStationStatuses[s] + "'";
-                    }
-                    allStatuses.AddRange(newactiveStationStatuses);
-                    allStatuses.AddRange(newnotActiveStationStatuses);
-                    var filter = string.Format("[STATUS] in ({0})", string.Join(",", allStatuses.ToArray()));
-                    rs.SetAdditional(filter);
                     for (rs.Open(); !rs.IsEOF(); rs.MoveNext())
                     {
                         // если статус очередной станции не найден в параметрах для поиска, которые задал клиент тогда пропускаем станцию
-                        if (((activeStationStatuses.Contains(rs.GetS("STATUS"))) || (notActiveStationStatuses.Contains(rs.GetS("STATUS")))) == false)
+                        if (this._mobStationsLoadModelByParams.SelectedStationType == SelectedStationType.MultyStations)
                         {
-                            continue;
+                            if (((activeStationStatuses.Contains(rs.GetS("STATUS"))) || (notActiveStationStatuses.Contains(rs.GetS("STATUS")))) == false)
+                            {
+                                continue;
+                            }
                         }
 
                         var mobStationT = new YMobStationT();
@@ -380,11 +387,57 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                             mobStationT.m_cust_txt1 = mobStationT.m_cust_txt2;
                         }
 
-                        if (notActiveStationStatuses.Contains(rs.GetS("STATUS")))
+                        if (this._mobStationsLoadModelByParams.SelectedStationType == SelectedStationType.MultyStations)
                         {
-                            mobStationT.m_status = MobStationStatus.I.ToString();
+                            if (notActiveStationStatuses.Contains(rs.GetS("STATUS")))
+                            {
+                                mobStationT.m_status = MobStationStatus.I.ToString();
+                            }
+                            else if (activeStationStatuses.Contains(rs.GetS("STATUS")))
+                            {
+                                for (int w = 0; w < this._mobStationsLoadModelByParams.AreaModel.Length; w++)
+                                {
+                                    // конвертация в 4DEC
+                                    var area = this._mobStationsLoadModelByParams.AreaModel[w];
+                                    var listDataLocationModel = new DataLocationModel[area.Location.Length];
+                                    for (int j = 0; j < area.Location.Length; j++)
+                                    {
+                                        listDataLocationModel[j] = new DataLocationModel()
+                                        {
+                                            Longitude = ICSM.IMPosition.Dms2Dec(area.Location[j].Longitude),
+                                            Latitude = ICSM.IMPosition.Dms2Dec(area.Location[j].Latitude)
+                                        };
+                                    }
+
+                                    // если станция попадает в контур, тогда выставляем для нее статус P
+                                    if (CheckHitting(listDataLocationModel, mobStationT.m_Position))
+                                    {
+                                        mobStationT.m_status = MobStationStatus.A.ToString();
+                                    }
+                                    else
+                                    {
+                                        // если станция попадает во "внешний" контур, тогда выставляем для нее статус P (т.е. когда рассточние до границы заданного контура "Location" менее чем DistanceAroundContour_km)
+                                        bool isFindPositionWithDistanceAroundContour = false;
+
+                                        if (CheckHitting(this._mobStationsLoadModelByParams.AreaModel[w].ExternalContour, mobStationT.m_Position))
+                                        {
+                                            isFindPositionWithDistanceAroundContour = true;
+                                        }
+
+                                        if (isFindPositionWithDistanceAroundContour)
+                                        {
+                                            mobStationT.m_status = MobStationStatus.P.ToString();
+                                        }
+                                        else
+                                        {
+                                            // для всех остальных случаев выставляем статус I
+                                            mobStationT.m_status = MobStationStatus.I.ToString();
+                                        }
+                                    }
+                                }
+                            }
                         }
-                        else if (activeStationStatuses.Contains(rs.GetS("STATUS")))
+                        else if (this._mobStationsLoadModelByParams.SelectedStationType == SelectedStationType.OneStation)
                         {
                             for (int w = 0; w < this._mobStationsLoadModelByParams.AreaModel.Length; w++)
                             {

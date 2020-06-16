@@ -18,7 +18,8 @@ namespace XICSM.ICSControlClient.Models.Views
         public string GlobalSID { get; set; }
         public string PermissionGlobalSID { get; set; }
         public string StationTxFreq { get; set; }
-        public string StationChannel { get; set; }
+        public string StationTxChannel { get; set; }
+        public string StationRxChannel { get; set; }
         public string StatusMeas { get; set; }
         public string StatusMeasFull { get; set; }
         public string SensorName { get; set; }
