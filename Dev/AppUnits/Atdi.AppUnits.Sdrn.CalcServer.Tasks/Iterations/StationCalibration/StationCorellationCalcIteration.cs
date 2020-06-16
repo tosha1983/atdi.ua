@@ -112,7 +112,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             data.FieldStrengthCalcData.TargetCoordinate.X = newTargertCoordX;
                             data.FieldStrengthCalcData.TargetCoordinate.Y = newTargertCoordY;
                             data.FieldStrengthCalcData.TargetAltitude_m = data.GSIDGroupeDriveTests.Points[0].Height_m; // add to FS buffer model ?????????????????
-                            if (Utils.IsInsideMap(newTargertCoordX, newTargertCoordY, lowerLeftCoord_m.X, lowerLeftCoord_m.Y, upperRightCoord_m.X, upperRightCoord_m.Y))
+                            if ((Utils.IsInsideMap(newTargertCoordX, newTargertCoordY, lowerLeftCoord_m.X, lowerLeftCoord_m.Y, upperRightCoord_m.X, upperRightCoord_m.Y)) 
+                                && (Utils.IsInsideMap(data.FieldStrengthCalcData.PointCoordinate.X, data.FieldStrengthCalcData.PointCoordinate.Y, lowerLeftCoord_m.X, lowerLeftCoord_m.Y, upperRightCoord_m.X, upperRightCoord_m.Y)))
                             {
                                 var faCalculationResult = iterationFieldStrengthCalcData.Run(taskContext, data.FieldStrengthCalcData);
 
@@ -163,7 +164,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             {
                                 for (int latPointAround = latAroundStart; latPointAround < latAroundStop; latPointAround += data.FieldStrengthCalcData.MapArea.AxisY.Step)
                                 {
-                                    if (Utils.IsInsideMap(lonPointAround, latPointAround, lowerLeftCoord_m.X, lowerLeftCoord_m.Y, upperRightCoord_m.X, upperRightCoord_m.Y))
+                                    if ((Utils.IsInsideMap(lonPointAround, latPointAround, lowerLeftCoord_m.X, lowerLeftCoord_m.Y, upperRightCoord_m.X, upperRightCoord_m.Y))
+                                        &&   (Utils.IsInsideMap(data.FieldStrengthCalcData.PointCoordinate.X, data.FieldStrengthCalcData.PointCoordinate.Y, lowerLeftCoord_m.X, lowerLeftCoord_m.Y, upperRightCoord_m.X, upperRightCoord_m.Y)))
                                     {
                                         data.FieldStrengthCalcData.TargetCoordinate.X = lonPointAround;
                                         data.FieldStrengthCalcData.TargetCoordinate.Y = latPointAround;

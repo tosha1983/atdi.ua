@@ -232,7 +232,7 @@
     <value>Max deviation Azimuth Station, deg</value>
   </data>
   <data name="MaxDeviationCoordinatesStation" xml:space="preserve">
-    <value>Shift Coordinates  Station Step, m</value>
+    <value>Max deviation coordinates station, m</value>
   </data>
   <data name="MaxDeviationTiltStation" xml:space="preserve">
     <value>Max deviation Tilt Station, deg</value>
