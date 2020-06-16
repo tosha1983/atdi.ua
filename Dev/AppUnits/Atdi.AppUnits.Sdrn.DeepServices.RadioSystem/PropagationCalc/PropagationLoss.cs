@@ -65,6 +65,61 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
                     break;
                 case MainCalcBlockModelType.ITU1546:
                     // prepare data
+                    double hEffective_m = 0;
+                    
+                    int hMedDist_px = 0;
+                   
+                    double asl_m = 0;
+                    //параметр нужно будет добавить через буффер
+                    List<land_sea> landSeaList = new List<land_sea>();
+                    double px2km = args.D_km / args.ProfileLength;
+                    
+                    int aboveLand_px = 0;
+                    int aboveSea_px = 0;
+                    byte waterClutter = 2; // clutter code for sea/inland water should be in config
+                    //
+                    int minDistToHeff_px = (int)(3 / px2km);
+                    int maxDistToHeff_px = (int)(15 / px2km);
+
+                    for (int i = args.ReliefStartIndex; i < args.ReliefStartIndex + args.ProfileLength; i++)
+                    {
+                        // land-sea distance list calculation
+
+                        // coast line intersection condition
+                        if (i > args.ReliefStartIndex && args.ClutterProfile[i-1] != args.ClutterProfile[i] && 
+                            (args.ClutterProfile[i-1] == waterClutter || args.ClutterProfile[i] == waterClutter) || 
+                            i == args.ReliefStartIndex + args.ProfileLength - 1)
+                        {
+                            landSeaList.Add(new land_sea { land = aboveLand_px * px2km, sea = aboveSea_px * px2km });
+                            aboveSea_px = 0;
+                            aboveLand_px = 0;
+                        }
+                        // count relief points that belongs to land or sea propagation
+                        if (args.ClutterProfile[i] == waterClutter)
+                        {
+                            aboveSea_px++;
+                        }
+                        else
+                        {
+                            aboveLand_px++;
+                        }
+
+                        // effective height calculation, 
+                        if (i > minDistToHeff_px && i < maxDistToHeff_px)
+                        {
+                            hEffective_m += args.HeightProfile[i];
+                            hMedDist_px++;
+                        }
+                    }
+                    if (hMedDist_px > 0)
+                    {
+                        hEffective_m /= hMedDist_px;
+                    }
+
+                    double E_dBuVm = (ITU1546_4.Get_E(args.Ha_m, hEffective_m, args.Freq_Mhz, args.Model.Parameters.Time_pc, args.D_km, asl_m, args.Hb_m, landSeaList.ToArray()));
+                    Lbf_dB = (float)(139.3 - E_dBuVm + 20 * Math.Log10(args.Freq_Mhz));
+                    break;
+
                 case MainCalcBlockModelType.Unknown:
                 default:
                     Lbf_dB = ITU525.Calc(args.Ha_m, args.Hb_m, args.Freq_Mhz, args.D_km);
