@@ -70,7 +70,7 @@
     <Compile Include="Enums\TaskState.cs" />
     <Compile Include="Enums\TaskExecutionOption.cs" />
     <Compile Include="ResultPoolDescriptor.cs" />
-    <Compile Include="RotatorDeviceProperties.cs" />
+    <Compile Include="DeviceProperties\RotatorDeviceProperties.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Atdi.DataModels\Atdi.DataModels.csproj">
