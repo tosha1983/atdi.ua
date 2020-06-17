@@ -69,7 +69,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
                     
                     int hMedDist_px = 0;
                    
-                    double asl_m = 0;
+                    double asl_m = args.Hb_m;
                     //параметр нужно будет добавить через буффер
                     List<land_sea> landSeaList = new List<land_sea>();
                     double px2km = args.D_km / args.ProfileLength;
@@ -87,7 +87,8 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
 
                         // coast line intersection condition
                         if (i > args.ReliefStartIndex && args.ClutterProfile[i-1] != args.ClutterProfile[i] && 
-                            (args.ClutterProfile[i-1] == waterClutter || args.ClutterProfile[i] == waterClutter) || 
+                            (args.ClutterProfile[i-1] == waterClutter || args.ClutterProfile[i] == waterClutter) &&
+                            (aboveSea_px != 0 && aboveLand_px != 0) || 
                             i == args.ReliefStartIndex + args.ProfileLength - 1)
                         {
                             landSeaList.Add(new land_sea { land = aboveLand_px * px2km, sea = aboveSea_px * px2km });
@@ -105,18 +106,22 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
                         }
 
                         // effective height calculation, 
-                        if (i > minDistToHeff_px && i < maxDistToHeff_px)
+                        //if (i > minDistToHeff_px && i < maxDistToHeff_px)
+                        if (i >= args.ReliefStartIndex + args.ProfileLength * 0.2 && i < maxDistToHeff_px)
                         {
-                            hEffective_m += args.HeightProfile[i];
+                            hEffective_m += args.HeightProfile[args.ReliefStartIndex] - args.HeightProfile[i];
                             hMedDist_px++;
                         }
                     }
                     if (hMedDist_px > 0)
                     {
                         hEffective_m /= hMedDist_px;
+                        hEffective_m += args.Ha_m;
                     }
 
-                    double E_dBuVm = (ITU1546_4.Get_E(args.Ha_m, hEffective_m, args.Freq_Mhz, args.Model.Parameters.Time_pc, args.D_km, asl_m, args.Hb_m, landSeaList.ToArray()));
+                    //hEffective_m = 50;
+                    //public static double Get_E(double ha, double hef, double d, double f, double p, double h_gr, double h2, params land_sea[] list1)
+                    double E_dBuVm = (ITU1546_4.Get_E(args.Ha_m, hEffective_m, args.D_km, args.Freq_Mhz, args.Model.Parameters.Time_pc, asl_m, args.Hb_m, landSeaList.ToArray()));
                     Lbf_dB = (float)(139.3 - E_dBuVm + 20 * Math.Log10(args.Freq_Mhz));
                     break;
 
