@@ -73,6 +73,19 @@ namespace Atdi.WpfControls.EntityOrm.Controls
             }
         }
 
+        public static DependencyProperty SelectedValueIdProperty = DependencyProperty.Register("SelectedValueId", typeof(int), typeof(OrmEnumBox),
+            new FrameworkPropertyMetadata(int.MinValue, new PropertyChangedCallback(OnPropertyChanged)));
+        public int SelectedValueId
+        {
+            get { return _value.Id; }
+            set
+            {
+                SetValue(SelectedValueIdProperty, value);
+                this._value = this._source.Where(v => v.Id == value).First();
+                cmbMain.SelectedValue = this._value;
+            }
+        }
+
         public static DependencyProperty SourceProperty = DependencyProperty.Register("Source", typeof(OrmEnumBoxData[]), typeof(OrmEnumBox),
             new FrameworkPropertyMetadata(default(OrmEnumBoxData[]), new PropertyChangedCallback(OnPropertyChanged)));
         public OrmEnumBoxData[] Source
@@ -95,6 +108,8 @@ namespace Atdi.WpfControls.EntityOrm.Controls
                 ctr.Enabled = (bool)e.NewValue;
             else if (e.Property == SelectedValueProperty)
                 ctr.SelectedValue = (OrmEnumBoxData)e.NewValue;
+            else if (e.Property == SelectedValueIdProperty)
+                ctr.SelectedValueId = (int)e.NewValue;
         }
         private void RedrawControl()
         {
@@ -107,11 +122,10 @@ namespace Atdi.WpfControls.EntityOrm.Controls
         {
             RedrawControl();
         }
-
         private void cmbMain_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (cmbMain.SelectedValue != null)
-                SelectedValue = cmbMain.SelectedValue as OrmEnumBoxData;
+                SelectedValueId = (cmbMain.SelectedValue as OrmEnumBoxData).Id;
         }
     }
 }

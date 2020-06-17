@@ -89,7 +89,7 @@ namespace XICSM.ICSControlClient.ViewModels
             this.CompareWithTransmitterMaskCommand = new WpfCommand(this.OnCompareWithTransmitterMaskCommand);
             this.CompareWithEmissionOnOtherSensorsCommand = new WpfCommand(this.OnCompareWithEmissionOnOtherSensorsCommand);
 
-            string _endpointUrls = PluginHelper.GetRestApiEndPoint();
+            _endpointUrls = PluginHelper.GetRestApiEndPoint();
 
             if (string.IsNullOrEmpty(_endpointUrls))
                 return;
@@ -880,6 +880,8 @@ namespace XICSM.ICSControlClient.ViewModels
             catch (Exception e)
             {
                 MessageBox.Show(e.ToString());
+                //MessageBox.Show(e.ToString());
+
             }
         }
         private void OnDetailForRefLevelCommand()

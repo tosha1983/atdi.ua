@@ -49,7 +49,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SPIDRotator
                 SetAzimuthAndElevation(azt, elt);
                
                 RotatorDeviceProperties rdp = GetProperties(adapterConfig);
-                host.RegisterHandler<COM.SetRotatorPositionCommand, COM.Results.RotatorPositionResult>(SetRotatorPositionCommandHandler, rdp);
+                host.RegisterHandler<COM.SetRotatorPositionCommand, COMR.RotatorPositionResult>(SetRotatorPositionCommandHandler, rdp);
             }
             #region Exception
             catch (Exception exp)
