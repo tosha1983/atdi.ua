@@ -82,7 +82,7 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.Map
             }
             catch (Exception e)
             {
-                System.Windows.MessageBox.Show(e.ToString());
+                this._logger.Exception(Exceptions.CalcServerClient, e);
             }
         }
         private void OnCreatedMapHandle(Events.OnCreatedMap data)

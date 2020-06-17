@@ -72,7 +72,7 @@ namespace XICSM.ICSControlClient.ViewModels
         private int _startType;
         private EmittingViewModel[] _emittings;
         private FRM.Form _form;
-        private readonly string _endpointUrls = "";
+        private string _endpointUrls;
         private List<long> _sensorIds;
         private DateTime? _timeMeas;
 
@@ -132,7 +132,7 @@ namespace XICSM.ICSControlClient.ViewModels
             set => this.Set(ref this._freqIntersection, value);
         }
 
-        private DateTime _dateFrom = DateTime.Today;
+        private DateTime _dateFrom = DateTime.Today.AddMonths(-1);
         public DateTime DateFrom
         {
             get => this._dateFrom;

@@ -120,7 +120,7 @@
               <Label Height="18" Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "{x:Static res:Resources.TimeFrom}"  />
               <DatePicker Grid.Column="1" Grid.Row="0" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top">
                 <DatePicker.SelectedDate>
-                  <Binding Path="DateFrom" StringFormat='{}{0:dd.MM.yyyy}'>
+                  <Binding Path="DateFrom" StringFormat='{}{0:dd.MM.yyyy}' Mode='TwoWay'>
                   </Binding>
                 </DatePicker.SelectedDate>
               </DatePicker>
@@ -129,7 +129,7 @@
               <Label Height="18" Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "{x:Static res:Resources.TimeTo}"  />
               <DatePicker Grid.Column="1" Grid.Row="1" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top">
                 <DatePicker.SelectedDate>
-                  <Binding Path="DateTo" StringFormat='{}{0:dd.MM.yyyy}'>
+                  <Binding Path="DateTo" StringFormat='{}{0:dd.MM.yyyy}' Mode='TwoWay'>
                   </Binding>
                 </DatePicker.SelectedDate>
               </DatePicker>
@@ -150,6 +150,7 @@
               <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=Id}"></DataGridTextColumn>
               <DataGridTextColumn Header="{x:Static res:Resources.Status}" Binding="{Binding Path=Status}"></DataGridTextColumn>
               <DataGridTextColumn Header="{x:Static res:Resources.Name}" Binding="{Binding Path=Name}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.Title}" Binding="{Binding Path=Title}"></DataGridTextColumn>
               <DataGridTextColumn Header="{x:Static res:Resources.Adm}" Binding="{Binding Path=Administration}"></DataGridTextColumn>
               <DataGridTextColumn Header="{x:Static res:Resources.Network}" Binding="{Binding Path=NetworkId}"></DataGridTextColumn>
               <DataGridTextColumn Header="{x:Static res:Resources.LowFreq}" Binding="{Binding Path=LowerFreq}"></DataGridTextColumn>

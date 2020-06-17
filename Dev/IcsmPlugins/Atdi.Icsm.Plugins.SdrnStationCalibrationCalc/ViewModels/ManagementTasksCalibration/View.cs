@@ -329,7 +329,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.ToString());
+                this._logger.Exception(Exceptions.StationCalibrationCalculation, e);
             }
         }
         private void OnContextModifyCommand(object parameter)
@@ -347,7 +347,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.ToString());
+                this._logger.Exception(Exceptions.StationCalibrationCalculation, e);
             }
         }
         private void OnContextDeleteCommand(object parameter)
@@ -366,7 +366,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.ToString());
+                this._logger.Exception(Exceptions.StationCalibrationCalculation, e);
             }
         }
         private void OnContextSaveCommand(object parameter)
@@ -426,7 +426,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.ToString());
+                this._logger.Exception(Exceptions.StationCalibrationCalculation, e);
             }
         }
         private void OnTaskModifyCommand(object parameter)
@@ -446,7 +446,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.ToString());
+                this._logger.Exception(Exceptions.StationCalibrationCalculation, e);
             }
         }
         private void OnTaskDeleteCommand(object parameter)
@@ -465,7 +465,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.ToString());
+                this._logger.Exception(Exceptions.StationCalibrationCalculation, e);
             }
         }
         private void OnTaskSaveCommand(object parameter)
@@ -514,7 +514,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.ToString());
+                this._logger.Exception(Exceptions.StationCalibrationCalculation, e);
             }
         }
 
@@ -537,7 +537,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.ToString());
+                this._logger.Exception(Exceptions.StationCalibrationCalculation, e);
             }
         }
 

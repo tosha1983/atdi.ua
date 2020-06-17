@@ -1033,7 +1033,7 @@
     <value>Час до</value>
   </data>
   <data name="TimeFrom" xml:space="preserve">
-    <value>Час від</value>
+    <value>Дата початку</value>
   </data>
   <data name="TimeMeas" xml:space="preserve">
     <value>Час вимірювання</value>
@@ -1048,7 +1048,7 @@
     <value>Час закінчення</value>
   </data>
   <data name="TimeTo" xml:space="preserve">
-    <value>Час до</value>
+    <value>Дата закінчення</value>
   </data>
   <data name="Title" xml:space="preserve">
     <value>Заголовок</value>

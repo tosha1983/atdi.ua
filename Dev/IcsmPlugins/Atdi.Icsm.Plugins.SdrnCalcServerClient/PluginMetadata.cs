@@ -16,8 +16,11 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient
 	{
 		public static readonly EventCategory Refresh = "Refresh";
 	}
-
-	public static class PluginMetadata
+    internal static class Exceptions
+    {
+        public static readonly string CalcServerClient = "CalcServerClient";
+    }
+    public static class PluginMetadata
     {
         public static readonly string Title = "ICS Calc Server Client";
         public static readonly string Ident = "SdrnCalcServerClient";

@@ -181,7 +181,7 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.ToString());
+                this._logger.Exception(Exceptions.CalcServerClient, e);
             }
         }
         private void OnProjectModifyCommand(object parameter)
@@ -203,7 +203,7 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.ToString());
+                this._logger.Exception(Exceptions.CalcServerClient, e);
             }
         }
         private void OnProjectDeleteCommand(object parameter)
@@ -222,7 +222,7 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.ToString());
+                this._logger.Exception(Exceptions.CalcServerClient, e);
             }
         }
         private void OnProjectActivateCommand(object parameter)
@@ -242,7 +242,7 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.ToString());
+                this._logger.Exception(Exceptions.CalcServerClient, e);
             }
         }
         private void OnProjectLockCommand(object parameter)
@@ -262,7 +262,7 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.ToString());
+                this._logger.Exception(Exceptions.CalcServerClient, e);
             }
         }
         private void OnMapCreateNewCommand(object parameter)
@@ -276,7 +276,7 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.ToString());
+                this._logger.Exception(Exceptions.CalcServerClient, e);
             }
         }
         private void OnMapDeleteCommand(object parameter)
@@ -295,7 +295,7 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.ToString());
+                this._logger.Exception(Exceptions.CalcServerClient, e);
             }
         }
         private void OnMapRefreshCommand(object parameter)
@@ -313,7 +313,7 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.ToString());
+                this._logger.Exception(Exceptions.CalcServerClient, e);
             }
         }
         private void OnContextModifyCommand(object parameter)
@@ -327,7 +327,7 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.ToString());
+                this._logger.Exception(Exceptions.CalcServerClient, e);
             }
         }
         private void OnContextDeleteCommand(object parameter)
@@ -346,7 +346,7 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.ToString());
+                this._logger.Exception(Exceptions.CalcServerClient, e);
             }
         }
         #endregion

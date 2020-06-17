@@ -115,7 +115,7 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ClientContext
             }
             catch (Exception e)
             {
-                System.Windows.MessageBox.Show(e.ToString());
+                this._logger.Exception(Exceptions.CalcServerClient, e);
             }
         }
         public override void Dispose()
