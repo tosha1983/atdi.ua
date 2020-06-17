@@ -160,29 +160,29 @@ namespace Atdi.Modules.LicenseGenerator
 		static void Main(string[] args)
         {
 			InitDBs();
-            //var path = "C:\\Projects\\Licensing\\UDCR\\WebQuery\\AppServer";
-            //WebQueryAppServer_ForUDCR(path);
-            //path = "C:\\Projects\\Licensing\\UDCR\\WebQuery\\WebPortal";
-            //WebQueryWebPortal_ForUDCR(path);
+			//var path = "C:\\Projects\\Licensing\\UDCR\\WebQuery\\AppServer";
+			//WebQueryAppServer_ForUDCR(path);
+			//path = "C:\\Projects\\Licensing\\UDCR\\WebQuery\\WebPortal";
+			//WebQueryWebPortal_ForUDCR(path);
 
-            //UpdatePeriod_ICSControl_ForUDCR(@"C:\Projects\Licensing\UDCR\Sdrn\Licenses_2018");
+			//UpdatePeriod_ICSControl_ForUDCR(@"C:\Projects\Licensing\UDCR\Sdrn\Licenses_2018");
 
-            //UpdatePeriod_ICSControl_ForTest(@"C:\Projects\Licensing\Test\Sdrn\Licenses_2018");
+			//UpdatePeriod_ICSControl_ForTest(@"C:\Projects\Licensing\Test\Sdrn\Licenses_2018");
 
-            //ICSControl_ForTesting_ClusterServers(@"C:\Projects\Licensing\Test\Sdrn\Licenses_2019");
+			//ICSControl_ForTesting_ClusterServers(@"C:\Projects\Licensing\Test\Sdrn\Licenses_2019");
 
-            //ICSControl_ForUDCR(@"C:\Projects\Licensing\UDCR\Sdrn\Licenses_2019\УНИКОМ", 2, 10, 4);
+			//ICSControl_ForUDCR(@"C:\Projects\Licensing\UDCR\Sdrn\Licenses_2019\УНИКОМ", 2, 10, 4);
 
-            //ICSControl_ForTesting_ClientMonitoring(@"C:\Projects\Licensing\Test\Sdrn\Licenses_2019", 1);
+			//ICSControl_ForTesting_ClientMonitoring(@"C:\Projects\Licensing\Test\Sdrn\Licenses_2019", 1);
 
-            //ICSControl_ForTesting_ClusterServers(@"C:\Projects\Licensing\Test\Sdrn\Licenses_2020");
+			//ICSControl_ForTesting_ClusterServers(@"C:\Projects\Licensing\Test\Sdrn\Licenses_2020");
 
-            //UpdatePeriod_ICSControl_ForUDCR_2020(@"C:\Projects\Licensing\UDCR\Sdrn\Licenses_2019");
+			//UpdatePeriod_ICSControl_ForUDCR_2020(@"C:\Projects\Licensing\UDCR\Sdrn\Licenses_2019");
 
-            //UpdatePeriod_WebQueryAppServer_ForBosny_version_1_2020();
-            //UpdatePeriod_WebQueryAppServer_ForBosny_version_2_2020();
+			//UpdatePeriod_WebQueryAppServer_ForBosny_version_1_2020();
+			//UpdatePeriod_WebQueryAppServer_ForBosny_version_2_2020();
 
-            //UpdatePeriod_ICSControl_ForTest_2020();
+			//UpdatePeriod_ICSControl_ForTest_2020();
 
 			//ICSControl_ForTesting_CalcServer(@"C:\Projects\Repos\atdi.ua\Dev\Delivery\Licenses\Test\Sdrn\CalcServerLicense", 1);
 
@@ -194,7 +194,10 @@ namespace Atdi.Modules.LicenseGenerator
 			//ICSControl_ForUDCR_UNICOM_2020();
 
 			// для тестирования плагинов
-			ICSMPlugin_ForTesting_Calc_2020();
+			// ICSMPlugin_ForTesting_Calc_2020();
+
+			// УДЦР, 8+8 для плагинов , 1 сервер расчетов, 1 инфоцентер
+			ICSMPlugin_ForUDCR_CalcTasks_2020();
 
 			Console.WriteLine("Process was finished");
 
@@ -1405,6 +1408,97 @@ namespace Atdi.Modules.LicenseGenerator
 
 		}
 
+		static void ICSMPlugin_ForUDCR_CalcTasks_2020()
+		{
+
+			const string ownerKey = "BD13-G65";
+			const string ownerId = "OID-BD13-G65-N00";
+			const string ownerName = "Державне підприємство «Український державний центр радіочастот»";
+			const string company = "ТОВ 'Лабораторія інформаційних систем'";
+			
+			var startDate = new DateTime(2020, 6, 17);
+			var stopDate = new DateTime(2025, 6, 17);
+
+			var licPrefix = "LIC-P";
+			var instancePrefix = "ICSMP-C";
+
+			var path1 = @"C:\Projects\Licensing\UDCR\Sdrn\Licenses_2020\BD13-G65\Plugins\XICSM_SdrnCalcServerClient";
+			for (int i = 0; i < 8; i++)
+			{
+				BuilProductLicense(
+					path1,
+					licPrefix,
+					instancePrefix,
+					"ClientLicense",
+					"ICSM Plugin - SDRN Calc Server Client",
+					ownerName,
+					ownerId,
+					ownerKey,
+					company,
+					startDate,
+					stopDate, 2020, LicenseLimitationTerms.TimePeriod);
+			}
+			
+
+
+			var path2 = @"C:\Projects\Licensing\UDCR\Sdrn\Licenses_2020\BD13-G65\Plugins\XICSM_SdrnStationCalibrationCalc";
+			for (int i = 0; i < 8; i++)
+			{
+				BuilProductLicense(
+					path2,
+					licPrefix,
+					instancePrefix,
+					"ClientLicense",
+					"ICSM Plugin - SDRN Station Calibration Calc",
+					ownerName,
+					ownerId,
+					ownerKey,
+					company,
+					startDate,
+					stopDate, 2020, LicenseLimitationTerms.TimePeriod);
+			}
+
+			const ushort year = 2020;
+
+			startDate = new DateTime(2020, 6, 17);
+			stopDate = new DateTime(2021, 1, 1);
+			var path3 = @"C:\Projects\Licensing\UDCR\Sdrn\Licenses_2020\BD13-G65\CalcServer";
+			for (int i = 0; i < 1; i++)
+			{
+				BuilProductLicense(
+					path1,
+					"LIC-C",
+					"SDRNSV-C",
+					"ServerLicense",
+					"SDRN Calc Server",
+					ownerName,
+					ownerId,
+					ownerKey,
+					company,
+					startDate,
+					stopDate, 2020, LicenseLimitationTerms.Year);
+			}
+
+			startDate = new DateTime(2020, 6, 17);
+			stopDate = new DateTime(2021, 1, 1);
+			var path4 = @"C:\Projects\Licensing\UDCR\Sdrn\Licenses_2020\BD13-G65\InfocenterServer";
+			for (int i = 0; i < 1; i++)
+			{
+				BuilProductLicense(
+					path1,
+					"LIC-I",
+					"SDRNSV-I",
+					"ServerLicense",
+					"SDRN Infocenter Server",
+					ownerName,
+					ownerId,
+					ownerKey,
+					company,
+					startDate,
+					stopDate, 2020, LicenseLimitationTerms.Year);
+			}
+
+		}
 		private static string BuildNextLicenseNumber(string licPrefix, string ownerKey, int numMaxSize = 3)
 		{
 			var number = string.Empty;
