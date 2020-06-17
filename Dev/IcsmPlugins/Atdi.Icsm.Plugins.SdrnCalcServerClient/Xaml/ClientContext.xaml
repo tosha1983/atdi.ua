@@ -38,7 +38,7 @@
           <WrapPanel Margin="5" Orientation="Vertical">
             <orm:OrmTextBox CaptionWith="100" Width="300" Caption="{x:Static res:Resources.Name}" Text="{Binding Path=CurrentClientContextCard.Name, Mode=TwoWay}"/>
             <orm:OrmTextBox CaptionWith="100" Width="300" Caption="{x:Static res:Resources.Note}" Text="{Binding Path=CurrentClientContextCard.Note, Mode=TwoWay}"/>
-            <orm:OrmTextBox CaptionWith="100" Width="300" Caption="{x:Static res:Resources.Type}" Text="{Binding Path=CurrentClientContextCard.TypeCode, Mode=TwoWay}"/>
+            <orm:OrmEnumBox CaptionWith="100" Width="300" Caption="{x:Static res:Resources.Type}" Source="{Binding Path=TypeSource}" SelectedValueId="{Binding Path=CurrentClientContextCard.TypeCode, Mode=TwoWay}"/>
             <Button Margin="5" HorizontalAlignment="Left" Content="{x:Static res:Resources.Save}" Width="70" Height="20" Command="{Binding SaveCommand}"/>
           </WrapPanel>
         </Grid>
