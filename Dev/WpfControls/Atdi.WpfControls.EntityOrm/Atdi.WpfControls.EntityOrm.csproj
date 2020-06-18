@@ -71,15 +71,16 @@
       <DependentUpon>LineChart.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\OrmButton.cs" />
-    <Compile Include="Controls\OrmCheckBox.cs" />
-    <Compile Include="Controls\OrmEnumBox\OrmEnumBox.xaml.cs">
+    <Compile Include="Controls\OrmCheckBox.xaml.cs">
+      <DependentUpon>OrmCheckBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\OrmEnumBox.xaml.cs">
       <DependentUpon>OrmEnumBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\OrmDataGrid.cs" />
     <Compile Include="Controls\OrmDatePicker.xaml.cs">
       <DependentUpon>OrmDatePicker.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\OrmEnumBox\OrmEnumBoxData.cs" />
     <Compile Include="Controls\OrmGridSplitter.cs" />
     <Compile Include="Controls\OrmTextBox.xaml.cs">
       <DependentUpon>OrmTextBox.xaml</DependentUpon>
@@ -116,7 +117,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Controls\OrmEnumBox\OrmEnumBox.xaml">
+    <Page Include="Controls\OrmCheckBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\OrmEnumBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
