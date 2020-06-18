@@ -200,7 +200,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                 notActiveStationStatuses = GetStandards(this._mobStationsLoadModelByParams.StatusForNotActiveStation);
             }
 
-            var listMobStationT = new List<YMobStationT>();
+            var listMobStationT = new List<int>();
 
             for (int v = 0; v < arrayTables.Length; v++)
             {
@@ -314,6 +314,8 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                                 rsTx.m_status = "Tx";
 
                                 yMobStationTxRx.Add(rsTx);
+                                rsTx.Close();
+                                rsTx.Dispose();
 
                             }
                             var rxfrq = rssta.GetD("RX_FREQ");
@@ -325,6 +327,9 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                                 rsRx.m_rx_freq = rxfrq;
                                 rsRx.m_status = "Rx";
                                 yMobStationTxRx.Add(rsRx);
+
+                                rsRx.Close();
+                                rsRx.Dispose();
                             }
                         }
                         if (rssta.IsOpen())
@@ -355,6 +360,8 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                                 mobStationT.m_rx_low_freq = selectFreqRx.Min();
                             }
                         }
+
+
                         mobStationT.m_bw = rs.GetD("BW");
                         mobStationT.m_rx_losses = rs.GetD("RX_LOSSES");
                         mobStationT.m_tx_losses = rs.GetD("TX_LOSSES");
@@ -482,10 +489,9 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                         }
 
                         //  Проверка - станция должна отправляться один раз (дуликатов быть не должно)
-                        var fndStation = listMobStationT.Find(x => x.m_id == mobStationT.m_id);
-                        if (fndStation == null)
+                        if (!listMobStationT.Contains(mobStationT.m_id))
                         {
-                            listMobStationT.Add(mobStationT);
+                            listMobStationT.Add(mobStationT.m_id);
                             var source = mobStationT;
 
 
