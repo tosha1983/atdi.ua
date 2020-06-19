@@ -7,28 +7,18 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrn.DeepServices.GN06
 {
 	/// <summary>
-	/// 
+	/// ITU Name: "Spect_maskType".
 	/// </summary>
-	public class BroadcastingAssignmentTarget
+	public enum SpectrumMaskType
 	{
 		/// <summary>
-		/// ITU Name: "Adm_Ref_Id".
+		/// 
 		/// </summary>
-		public string AdmRefId; // M
+		N = 0,
 
 		/// <summary>
 		/// 
 		/// </summary>
-		public double Freq_MHz; // M
-
-		/// <summary>
-		/// 
-		/// </summary>
-		public double Lon_Dec; // M
-
-		/// <summary>
-		/// 
-		/// </summary>
-		public double Lat_Dec; // M
+		S = 1
 	}
 }

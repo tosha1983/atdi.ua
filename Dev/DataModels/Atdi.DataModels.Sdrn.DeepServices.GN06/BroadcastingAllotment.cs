@@ -24,7 +24,7 @@ namespace Atdi.DataModels.Sdrn.DeepServices.GN06
 		/// <summary>
 		/// 
 		/// </summary>
-		public EmissionCharacteristicsAlotment EmissionCharacteristicsAlotment;
+		public BroadcastingAllotmentEmissionCharacteristics EmissionCharacteristics;
 
 		/// <summary>
 		/// 

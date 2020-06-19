@@ -7,38 +7,38 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrn.DeepServices.GN06
 {
 	/// <summary>
-	/// ITU Name: "Plan_entryType".
+	/// 
 	/// </summary>
-	public enum PlanEntryType
+	public class BroadcastingAssignment
 	{
 		/// <summary>
 		/// 
 		/// </summary>
-		Unknown = 0,
+		public AdministrativeData AdmData;
 
 		/// <summary>
 		/// 
 		/// </summary>
-		SingleAssignment = 1,
+		public BroadcastingAssignmentTarget Target; //M for Action = MODIFY
 
 		/// <summary>
 		/// 
 		/// </summary>
-		SFN = 2,
+		public BroadcastingAssignmentEmissionCharacteristics EmissionCharacteristics;
 
 		/// <summary>
 		/// 
 		/// </summary>
-		Allotment = 3,
+		public SiteParameters SiteParameters;
 
 		/// <summary>
 		/// 
 		/// </summary>
-		AllotmentWithLinkedAssignmentAndSfn = 4,
+		public AntennaCharacteristics AntennaCharacteristics;
 
 		/// <summary>
 		/// 
 		/// </summary>
-		AllotmentWithSingleLinkedAssignmentAndNoSfn = 5
+		public DigitalPlanEntryParameters DigitalPlanEntryParameters;
 	}
 }

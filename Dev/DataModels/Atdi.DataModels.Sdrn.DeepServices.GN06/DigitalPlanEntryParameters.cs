@@ -14,26 +14,26 @@ namespace Atdi.DataModels.Sdrn.DeepServices.GN06
 		/// <summary>
 		/// 
 		/// </summary>
-		public Plan_entryType PlanEntry; //M
+		public PlanEntryType PlanEntry; //M
 
 		/// <summary>
-		/// 
+		/// ITU Name: "Assgn_code".
 		/// </summary>
-		public Assgn_codeType Assgn_code; //M
+		public AssignmentCodeType AssignmentCode; //M
 
 		/// <summary>
-		/// 
+		/// ITU Name: "Associated_adm_allot_id".
 		/// </summary>
-		public string Associated_adm_allot_id;//O
+		public string AdmAllotAssociatedId;//O
 
 		/// <summary>
-		/// 
+		/// ITU Name: "Associated_allot_sfn_id".
 		/// </summary>
-		public string Associated_allot_sfn_id;//O
+		public string SfnAllotAssociatedId;//O
 
 		/// <summary>
-		/// 
+		/// ITU Name: "Sfn_id".
 		/// </summary>
-		public string Sfn_id;//O
+		public string SfnId;//O
 	}
 }
