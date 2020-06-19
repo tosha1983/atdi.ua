@@ -16,19 +16,18 @@ using System.Windows.Shapes;
 namespace Atdi.WpfControls.EntityOrm.Controls
 {
     /// <summary>
-    /// Interaction logic for OrmEnumBox.xaml
+    /// Interaction logic for OrmCheckBox.xaml
     /// </summary>
-    public partial class OrmEnumBox : UserControl
+    public partial class OrmCheckBox : UserControl
     {
-        double _captionWith = 150;
-        string _caption = "";
-        OrmEnumBoxData _value = null;
-        OrmEnumBoxData[] _source = null;
-        bool _enabled = true;
-        public OrmEnumBox()
+        OrmCheckBoxData[] _source;
+        public OrmCheckBox()
         {
             InitializeComponent();
+            UpdateSource();
         }
+
+        double _captionWith = 150;
         public double CaptionWith
         {
             get { return _captionWith; }
@@ -38,6 +37,7 @@ namespace Atdi.WpfControls.EntityOrm.Controls
                 this.RedrawControl();
             }
         }
+        string _caption = "";
         public string Caption
         {
             get { return _caption; }
@@ -47,7 +47,9 @@ namespace Atdi.WpfControls.EntityOrm.Controls
                 lblCaption.Content = this._caption;
             }
         }
-        public static DependencyProperty EnabledProperty = DependencyProperty.Register("Enabled", typeof(bool), typeof(OrmEnumBox),
+
+        bool _enabled = true;
+        public static DependencyProperty EnabledProperty = DependencyProperty.Register("Enabled", typeof(bool), typeof(OrmCheckBox),
             new FrameworkPropertyMetadata(true, new PropertyChangedCallback(OnPropertyChanged)));
         public bool Enabled
         {
@@ -60,56 +62,47 @@ namespace Atdi.WpfControls.EntityOrm.Controls
             }
         }
 
-        public static DependencyProperty SelectedValueProperty = DependencyProperty.Register("SelectedValue", typeof(OrmEnumBoxData), typeof(OrmEnumBox),
-            new FrameworkPropertyMetadata(default(OrmEnumBoxData), new PropertyChangedCallback(OnPropertyChanged)));
-        public OrmEnumBoxData SelectedValue
+        bool? _value = null;
+        public static DependencyProperty SelectedValueProperty = DependencyProperty.Register("SelectedValue", typeof(bool?), typeof(OrmCheckBox),
+            new FrameworkPropertyMetadata(null, new PropertyChangedCallback(OnPropertyChanged)));
+        public bool? SelectedValue
         {
             get { return _value; }
             set
             {
+                if (this._isRequired && value == null)
+                    value = false;
                 SetValue(SelectedValueProperty, value);
                 this._value = value;
-                cmbMain.SelectedValue = this._value;
+                cmbMain.SelectedValue = this._source.Where(v => v.Value == this._value).First();
             }
         }
 
-        public static DependencyProperty SelectedValueIdProperty = DependencyProperty.Register("SelectedValueId", typeof(int), typeof(OrmEnumBox),
-            new FrameworkPropertyMetadata(int.MinValue, new PropertyChangedCallback(OnPropertyChanged)));
-        public int SelectedValueId
+        bool _isRequired = false;
+        public static DependencyProperty IsRequiredProperty = DependencyProperty.Register("IsRequired", typeof(bool), typeof(OrmCheckBox),
+            new FrameworkPropertyMetadata(false, new PropertyChangedCallback(OnPropertyChanged)));
+        public bool IsRequired
         {
-            get { return _value.Id; }
+            get { return _isRequired; }
             set
             {
-                SetValue(SelectedValueIdProperty, value);
-                this._value = this._source.Where(v => v.Id == value).First();
-                cmbMain.SelectedValue = this._value;
+                SetValue(IsRequiredProperty, value);
+                this._isRequired = value;
+                UpdateSource();
             }
         }
 
-        public static DependencyProperty SourceProperty = DependencyProperty.Register("Source", typeof(OrmEnumBoxData[]), typeof(OrmEnumBox),
-            new FrameworkPropertyMetadata(default(OrmEnumBoxData[]), new PropertyChangedCallback(OnPropertyChanged)));
-        public OrmEnumBoxData[] Source
-        {
-            get { return _source; }
-            set
-            {
-                SetValue(SourceProperty, value);
-                this._source = value;
-                cmbMain.ItemsSource = this._source;
-            }
-        }
         private static void OnPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
-            var ctr = sender as OrmEnumBox;
+            var ctr = sender as OrmCheckBox;
 
-            if (e.Property == SourceProperty)
-                ctr.Source = (OrmEnumBoxData[])e.NewValue;
+            if (e.Property == IsRequiredProperty)
+                ctr.IsRequired = (bool)e.NewValue;
             else if (e.Property == EnabledProperty)
                 ctr.Enabled = (bool)e.NewValue;
             else if (e.Property == SelectedValueProperty)
-                ctr.SelectedValue = (OrmEnumBoxData)e.NewValue;
-            else if (e.Property == SelectedValueIdProperty)
-                ctr.SelectedValueId = (int)e.NewValue;
+                ctr.SelectedValue = (bool?)e.NewValue;
+
         }
         private void RedrawControl()
         {
@@ -125,7 +118,29 @@ namespace Atdi.WpfControls.EntityOrm.Controls
         private void cmbMain_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (cmbMain.SelectedValue != null)
-                SelectedValueId = (cmbMain.SelectedValue as OrmEnumBoxData).Id;
+                SelectedValue = (cmbMain.SelectedValue as OrmCheckBoxData).Value;
+        }
+        private void UpdateSource()
+        {
+            var data = new List<OrmCheckBoxData>();
+            if (!this._isRequired)
+                data.Add(new OrmCheckBoxData() { Value = null, ViewName = "" });
+            data.Add(new OrmCheckBoxData() { Value = true, ViewName = "Yes" });
+            data.Add(new OrmCheckBoxData() { Value = false, ViewName = "No" });
+            this._source = data.ToArray();
+            cmbMain.ItemsSource = this._source;
+            SelectedValue = this._isRequired ? (bool?)false : null;
+        }
+    }
+    public class OrmCheckBoxData
+    {
+        public bool? Value;
+
+        public string ViewName;
+
+        public override string ToString()
+        {
+            return ViewName;
         }
     }
 }

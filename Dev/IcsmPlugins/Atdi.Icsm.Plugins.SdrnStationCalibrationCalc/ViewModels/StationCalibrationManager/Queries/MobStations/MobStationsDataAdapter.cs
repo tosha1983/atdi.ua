@@ -632,7 +632,8 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                                 }
                             });
                         }
-
+                        mobStationT.Close();
+                        mobStationT.Dispose();
                     }
                     if (rs.IsOpen())
                         rs.Close();
