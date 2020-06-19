@@ -21,12 +21,15 @@ namespace Atdi.Test.CalcServer.LowFunction.GE06
         public int Distance;
         public int FS;
         public int Height;
+        public PointType PointType;
     }
     public enum ContourType
     {
         Unknown = 0,
         Etalon = 1,
         New = 2,
+        Affected = 3,
+        Correct = 4
     }
     public enum PointType
     {

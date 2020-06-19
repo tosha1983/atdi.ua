@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="ActionType.cs" />
     <Compile Include="AdministrativeData.cs" />
+    <Compile Include="AreaPoint.cs" />
     <Compile Include="AllotmentParameters.cs" />
     <Compile Include="AntennaCharacteristics.cs" />
     <Compile Include="AntennaDirectionType.cs" />

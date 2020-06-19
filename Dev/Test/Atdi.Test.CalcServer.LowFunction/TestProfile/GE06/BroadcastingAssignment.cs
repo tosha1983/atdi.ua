@@ -30,6 +30,7 @@ namespace Atdi.Test.CalcServer.LowFunction
         public string Fragment; // O
         public ActionType Action; //M
         public string Adm_ref_id; //M ADM_KEY ICSM 
+        public string stn_cls;//O
     }
     public class DigitalPlanEntryParameters
     {
@@ -56,7 +57,7 @@ namespace Atdi.Test.CalcServer.LowFunction
         public PolarType Polar; //M
         public Ref_plan_cfgType Ref_plan_cfg;//  Ref_plan_cfg of (Sys_var and Rx_mode) is M
         public Spect_maskType Spect_mask; //M
-        public Type_ref_netwkType Typ_Ref_Netwk; //M
+        public Typ_ref_netwkType Typ_Ref_Netwk; //M
 
     }
     public class SiteParameters
@@ -156,7 +157,7 @@ namespace Atdi.Test.CalcServer.LowFunction
         V,
         M
     }
-    public enum Type_ref_netwkType
+    public enum Typ_ref_netwkType
     {
         RN1 = 1,
         RN2 = 2,

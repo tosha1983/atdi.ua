@@ -17,5 +17,9 @@ namespace Atdi.DataModels.Sdrn.DeepServices.GN06
 		/// 
 		/// </summary>
 		public int ContourId;//M
+        /// <summary>
+        /// Контур с точками
+        /// </summary>
+        public AreaPoint[] Сontur;//M
 	}
 }
