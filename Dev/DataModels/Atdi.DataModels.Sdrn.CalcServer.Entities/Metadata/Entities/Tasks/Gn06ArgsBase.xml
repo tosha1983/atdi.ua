@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "Gn06ArgsBase"
+  Title       = "GN06 Calculation"
+  Desc        = "The task of the GN06 Calculation"
+  Type        = "Abstract"
+  BaseEntity  = ""
+  
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>CALCTASKS_GN06_ARGS</Name>
+    <Schema>CALC</Schema>
+  </DataSource>
+  <Fields>
+
+    <!--
+    public class GE06TaskParameters
+    {
+        public float AzimuthStep_deg;
+        public bool AdditionalContoursByDistances;
+        public int[] Distances;
+        public bool CoutureByFieldStrength;
+        public int[] FieldStrength;
+        public int SubscribersHeight;
+        public double PercentageTime;
+        bool UseEffectiveHeight;
+        public CalculationType CalculationType;
+    }
+    public enum CalculationType
+    {
+        ConformityCheck = 1,
+        FindAffectedADM = 2,
+        CreateContoursByDistance = 3,
+        CreateContoursByFS = 4
+    }
+    -->
+
+  </Fields>
+  
+</Entity>

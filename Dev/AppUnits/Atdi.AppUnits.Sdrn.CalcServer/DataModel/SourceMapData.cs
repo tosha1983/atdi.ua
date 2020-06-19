@@ -144,6 +144,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.DataModel
 		}
 		public bool IntersectWith(AreaCoordinates area, out AreaCoordinates coverageArea)
 		{
+
 			coverageArea.UpperLeft = new AtdiCoordinate()
 			{
 				X = Math.Max(area.UpperLeft.X, this.UpperLeftX),
@@ -155,6 +156,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.DataModel
 				X = Math.Min(area.LowerRight.X, this.LowerRightX),
 				Y = Math.Max(area.LowerRight.Y, this.LowerRightY)
 			};
+
+			if ((coverageArea.LowerRight.X - coverageArea.UpperLeft.X) <= 0
+			|| (coverageArea.UpperLeft.Y - coverageArea.LowerRight.Y) <= 0)
+			{
+				return false;
+			}
 
 			return coverageArea.Area > 0;
 		}
