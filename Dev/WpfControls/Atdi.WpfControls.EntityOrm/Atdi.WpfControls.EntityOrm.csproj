@@ -70,6 +70,9 @@
     <Compile Include="Charts\LineChart.xaml.cs">
       <DependentUpon>LineChart.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\OrmBase.xaml.cs">
+      <DependentUpon>OrmBase.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\OrmButton.cs" />
     <Compile Include="Controls\OrmCheckBox.xaml.cs">
       <DependentUpon>OrmCheckBox.xaml</DependentUpon>
@@ -89,15 +92,18 @@
     <Compile Include="Maps\Map.cs" />
     <Compile Include="Maps\MapData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Properties\Resources.ru-RU.resx" />
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="Properties\Resources.uk-UA.resx" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -116,6 +122,10 @@
     <Page Include="Charts\LineChart.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\OrmBase.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\OrmCheckBox.xaml">
       <SubType>Designer</SubType>
