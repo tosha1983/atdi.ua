@@ -12,29 +12,18 @@
     <Schema>CALC</Schema>
   </DataSource>
   <Fields>
-
-    <!--
-    public class GE06TaskParameters
-    {
-        public float AzimuthStep_deg;
-        public bool AdditionalContoursByDistances;
-        public int[] Distances;
-        public bool CoutureByFieldStrength;
-        public int[] FieldStrength;
-        public int SubscribersHeight;
-        public double PercentageTime;
-        bool UseEffectiveHeight;
-        public CalculationType CalculationType;
-    }
-    public enum CalculationType
-    {
-        ConformityCheck = 1,
-        FindAffectedADM = 2,
-        CreateContoursByDistance = 3,
-        CreateContoursByFS = 4
-    }
-    -->
-
+    <Field Name="AzimuthStep_deg" SourceType="Column" Required="false" SourceName="AZIMUTH_STEP_DEG" DataType="Float.22.8" Title="Azimuth step, deg" Desc="Azimuth step, deg"/>
+    <Field Name="AdditionalContoursByDistances" SourceType="Column" Required="false" SourceName="ADDITIONAL_CONTOURS_BY_DISTANCE" DataType="Boolean" Title="Additional contours by distances" Desc="Additional contours by distances"/>
+    <Field Name="Distances" SourceType="Column" Required="false" SourceName="INFOC_MEAS_RESULTS" DataType="Array.Integer" Title="Distances" Desc="The distances"/>
+    <Field Name="ContureByFieldStrength" SourceType="Column" Required="false" SourceName="CONTURE_BY_FIELD_STRENGTH" DataType="Boolean" Title="Conture by FieldStrength" Desc="Conture by FieldStrength"/>
+    <Field Name="FieldStrength" SourceType="Column" Required="false" SourceName="FIELD_STRENGTH" DataType="Array.Integer" Title="FieldStrength" Desc="The FieldStrength"/>
+    <Field Name="SubscribersHeight" SourceType="Column" Required="false" SourceName="SUBSCRIBERS_HEIGHT" DataType="Integer.32" Title="Subscribers height" Desc="The Subscribers height"/>
+    <Field Name="PercentageTime" SourceType="Column" Required="false" SourceName="PERCENTAGE_TIME" DataType="Double.30.10" Title="Percentage time" Desc="The percentage time"/>
+    <Field Name="UseEffectiveHeight" SourceType="Column" Required="false" SourceName="USE_EFFECTIVE_HEIGHT" DataType="Boolean" Title="Use effective height" Desc="Use effective height"/>
+    <Field Name="CalculationType" SourceType="Column" SourceName="CALCULATION_TYPE" DataType="Text.50" Required="false" Title="Calculation type" Desc="The calculation type" />
+    <Field Name="SourceBroadcasting" SourceType="Column" SourceName="SOURCE_BROADCASTING" DataType="Text.25" Required="false" Title="Source broadcasting" Desc="The source broadcasting" />
+    <Field Name="BroadcastingAssignments" DataType="Bytes.MAX" SourceName="BROADCASTING_ASSIGNMENTS" SourceType="Column" Desc="The broadcasting assignments" Title="Broadcasting assignments" Required="false"/>
+    <Field Name="BroadcastingAllotments" DataType="Bytes.MAX" SourceName="BROADCASTING_ALLOTMENTS" SourceType="Column" Desc="The broadcasting allotments" Title="Broadcasting allotments" Required="false"/>
   </Fields>
   
 </Entity>

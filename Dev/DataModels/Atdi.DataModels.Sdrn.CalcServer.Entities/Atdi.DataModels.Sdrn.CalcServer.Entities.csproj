@@ -190,6 +190,8 @@
     <Content Include="DataLayer\Oracle\Tables\CALC.PROJECT_MAP_CONTENT_SOURCES.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.CALCRESULTS.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.CALCRESULTS_POINTFIELDSTRENGTH.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.CALCTASKS_GN06_ARGS_DEF.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.CALCTASKS_GN06_ARGS.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.CALCTASKS_POINTFIELDSTRENGTH_ARGS_DEF.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.CONTEXT_PLANNEDCALCTASK.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.CALCTASKS_POINTFIELDSTRENGTH_ARGS.sql" />
