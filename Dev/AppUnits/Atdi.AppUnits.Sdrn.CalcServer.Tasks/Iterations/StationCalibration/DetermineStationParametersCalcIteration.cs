@@ -1379,6 +1379,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                 else
                                 {
                                     contextStations.RemoveAt(f);
+                                    f = 0;
                                 }
                             }
                         }
@@ -1393,6 +1394,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         else
                         {
                             contextStations.RemoveAt(f);
+                            f = 0;
                         }
                     }
                 }
@@ -1419,6 +1421,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                 else
                                 {
                                     driveTests.RemoveAt(f);
+                                    f = 0;
                                 }
                             }
                         }
@@ -1433,6 +1436,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         else
                         {
                             driveTests.RemoveAt(f);
+                            f = 0;
                         }
                     }
                 }
@@ -1468,6 +1472,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                     if (contextStations.Count > 0)
                                     {
                                         contextStations.RemoveAt(f);
+                                        f = 0;
                                     }
                                 }
                             }
