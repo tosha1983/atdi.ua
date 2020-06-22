@@ -260,16 +260,22 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                 for (int h = 0; h < outListContextStationsForStatusP.Length; h++)
                                 {
                                     var findStationInStatusP = outListContextStationsForStatusP[h].ToList();
-                                    if (findStationInStatusP.Find(x => x.Id == listStations[g].Id) != null)
+                                    if (findStationInStatusP != null)
                                     {
-                                        listStations.RemoveAt(g);
+                                        if (listStations[g] != null)
+                                        {
+                                            if (findStationInStatusP.Find(x => x.Id == listStations[g].Id) != null)
+                                            {
+                                                listStations.RemoveAt(g);
+                                                g = 0;
+                                            }
+                                        }
                                     }
                                 }
                             }
                             outListContextStations[z] = listStations.ToArray();
                         }
                     }
-
 
                     // создаем список для хранения результатов обработки по отдельно взятому стандарту и заданой группе GSID
                     var calibrationStationsAndDriveTestsResultByGroup = new List<CalibrationStationsAndDriveTestsResult>();
