@@ -1046,7 +1046,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
                     var iterationCalibrationCalc = _iterationsPool.GetIteration<StationCalibrationCalcData, ResultCorrelationGSIDGroupeStations>();
                     var resultCalibrationCalcData = iterationCalibrationCalc.Run(taskContext, stationCalibrationCalcData);
-                    if (!double.IsNaN(resultCalibrationCalcData.Corellation_factor))
+                    if ((!double.IsNaN(resultCalibrationCalcData.Corellation_factor)) && (!float.IsNaN(resultCalibrationCalcData.ParametersStationNew.Power_dB)) && (!float.IsNaN(resultCalibrationCalcData.ParametersStationOld.Power_dB)))
                     {
                         var res = Atdi.Common.CopyHelper.CreateDeepCopy(resultCalibrationCalcData);
                         res.ClientContextStation = stations[i];
