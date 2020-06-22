@@ -20,10 +20,18 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks
         int SubscribersHeight { get; set; }
         double PercentageTime { get; set; }
         bool UseEffectiveHeight { get; set; }
-        string CalculationType { get; set; }
-        string SourceBroadcasting { get; set; }
-        byte[] BroadcastingAssignments { get; set; }
-        byte[] BroadcastingAllotments { get; set; }
+        byte CalculationTypeCode { get; set; }
+        string CalculationTypeName { get; set; }
+        string BroadcastingExtend { get; set; }
     }
-	
+
+    public enum CalculationType
+    {
+        ConformityCheck = 1,
+        FindAffectedADM = 2,
+        CreateContoursByDistance = 3,
+        CreateContoursByFS = 4
+    }
+
+
 }

@@ -20,10 +20,9 @@
     <Field Name="SubscribersHeight" SourceType="Column" Required="false" SourceName="SUBSCRIBERS_HEIGHT" DataType="Integer.32" Title="Subscribers height" Desc="The Subscribers height"/>
     <Field Name="PercentageTime" SourceType="Column" Required="false" SourceName="PERCENTAGE_TIME" DataType="Double.30.10" Title="Percentage time" Desc="The percentage time"/>
     <Field Name="UseEffectiveHeight" SourceType="Column" Required="false" SourceName="USE_EFFECTIVE_HEIGHT" DataType="Boolean" Title="Use effective height" Desc="Use effective height"/>
-    <Field Name="CalculationType" SourceType="Column" SourceName="CALCULATION_TYPE" DataType="Text.50" Required="false" Title="Calculation type" Desc="The calculation type" />
-    <Field Name="SourceBroadcasting" SourceType="Column" SourceName="SOURCE_BROADCASTING" DataType="Text.25" Required="false" Title="Source broadcasting" Desc="The source broadcasting" />
-    <Field Name="BroadcastingAssignments" DataType="Bytes.MAX" SourceName="BROADCASTING_ASSIGNMENTS" SourceType="Column" Desc="The broadcasting assignments" Title="Broadcasting assignments" Required="false"/>
-    <Field Name="BroadcastingAllotments" DataType="Bytes.MAX" SourceName="BROADCASTING_ALLOTMENTS" SourceType="Column" Desc="The broadcasting allotments" Title="Broadcasting allotments" Required="false"/>
+    <Field Name="CalculationTypeCode" SourceType="Column" SourceName="CALCULATION_TYPE_CODE" DataType="Code.u08" Required="true" Title="Calculation type code" Desc="The calculation type code"  />
+    <Field Name="CalculationTypeName" SourceType="Column" SourceName="CALCULATION_TYPE_NAME" DataType="Text.50" Required="false" Title="Calculation type name" Desc="The calculation type name" />
+    <Field Name="BroadcastingExtend" SourceType="Column" SourceName="BROADCASTING_EXTEND" DataType="Text.MAX" Required="false" Title="Broadcasting extended object" Desc="The broadcasting extended object" />
   </Fields>
   
 </Entity>
