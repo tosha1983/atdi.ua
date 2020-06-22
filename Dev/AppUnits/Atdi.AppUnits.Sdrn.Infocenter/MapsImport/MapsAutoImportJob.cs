@@ -635,17 +635,43 @@ namespace Atdi.AppUnits.Sdrn.Infocenter
 		}
 
 
-		private static float DecodeFloat(byte[] source, uint offset, uint size)
-		{
-			var statement = Encoding.ASCII.GetString(source, (int)offset, (int)size).Replace("\0", "").Replace(".", CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator);
-			return float.Parse(statement);
-		}
-		private static int DecodeInt(byte[] source, uint offset, uint size)
-		{
-			var statement = Encoding.ASCII.GetString(source, (int)offset, (int)size).Replace("\0", "").Replace(".", CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator);
-			return Convert.ToInt32((decimal.Parse(statement)));
-		}
-		private static string DecodeString(byte[] source, uint offset, uint size)
+        //private static float DecodeFloat(byte[] source, uint offset, uint size)
+        //{
+        //	var statement = Encoding.ASCII.GetString(source, (int)offset, (int)size).Replace("\0", "").Replace(".", CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator);
+        //	return float.Parse(statement);
+        //}
+        //private static int DecodeInt(byte[] source, uint offset, uint size)
+        //{
+        //	var statement = Encoding.ASCII.GetString(source, (int)offset, (int)size).Replace("\0", "").Replace(".", CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator);
+        //	return Convert.ToInt32((decimal.Parse(statement)));
+        //}
+        private static float DecodeFloat(byte[] source, uint offset, uint size)
+        {
+            var statement = Encoding.ASCII.GetString(source, (int)offset, (int)size).Replace("\0", "").Replace(".", CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator);
+            try
+            {
+                return float.Parse(statement);
+            }
+            catch (Exception e)
+            {
+                throw new InvalidOperationException($"Cannot decode source as float: '{statement}', NumberDecimalSeparator='{CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator}'", e);
+            }
+
+        }
+        private static int DecodeInt(byte[] source, uint offset, uint size)
+        {
+            var statement = Encoding.ASCII.GetString(source, (int)offset, (int)size).Replace("\0", "").Replace(".", CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator);
+            try
+            {
+                return Convert.ToInt32((decimal.Parse(statement)));
+            }
+            catch (Exception e)
+            {
+                throw new InvalidOperationException($"Cannot decode source as int: '{statement}', NumberDecimalSeparator='{CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator}'", e);
+            }
+        }
+
+        private static string DecodeString(byte[] source, uint offset, uint size)
 		{
 			var statement = Encoding.ASCII.GetString(source, (int)offset, (int)size).Replace("\0", "");
 			return statement;

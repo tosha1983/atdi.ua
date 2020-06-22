@@ -156,7 +156,13 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.DataModel
 				Y = Math.Max(area.LowerRight.Y, this.LowerRightY)
 			};
 
-			return coverageArea.Area > 0;
+            if ((coverageArea.LowerRight.X - coverageArea.UpperLeft.X) <= 0
+            || (coverageArea.UpperLeft.Y - coverageArea.LowerRight.Y) <= 0)
+            {
+                return false;
+            }
+
+            return coverageArea.Area > 0;
 		}
 
 		public AtdiCoordinate IndexToUpperLeftCoordinate(int xIndex, int yIndex)

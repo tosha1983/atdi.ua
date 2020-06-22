@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{D9A60B9C-08A1-41BC-B13F-A4E41CCCB859}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Atdi.Test.Api.Sdrn.CalcServer.Client</RootNamespace>
-    <AssemblyName>Atdi.Test.Api.Sdrn.CalcServer.Client</AssemblyName>
+    <RootNamespace>Atdi.Test.Api.Sdrn.CalcServer.Client.SJ</RootNamespace>
+    <AssemblyName>Atdi.Test.Api.Sdrn.CalcServer.Client.SJ</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

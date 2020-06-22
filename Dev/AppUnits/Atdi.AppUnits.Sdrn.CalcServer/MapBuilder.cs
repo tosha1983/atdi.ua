@@ -279,7 +279,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 			var sourceMaps = this.FindSourceMaps(infoDbScope, projectMap, mapType);
 			if (sourceMaps.Length == 0)
 			{
-				throw new InvalidOperationException($"Could not find any matching maps of type '{mapType}' in the Infocenter DB");
+                //throw new InvalidOperationException($"Could not find any matching maps of type '{mapType}' in the Infocenter DB");
+                return;
 			}
 
 			// для рельефа если есть мастер карта, то выравниваемся  к ней по ее координатной сетке
