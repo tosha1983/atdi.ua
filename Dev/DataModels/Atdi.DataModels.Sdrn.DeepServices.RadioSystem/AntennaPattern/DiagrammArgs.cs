@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.DeepServices.RadioSystem.AntennaPattern
 {
-    public struct DiagrammPoint
+    public struct DiagrammArgs
     {
-        public double? Angle;
-        public float? Loss;
+        public string Points;
+        public AntennaPatternType AntennaPatternType;
+        public double Gain;
     }
 }
 

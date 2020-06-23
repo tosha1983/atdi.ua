@@ -19,7 +19,7 @@ namespace Atdi.Contracts.Sdrn.DeepServices.RadioSystem
 		double CalcAntennaGain(in CalcAntennaGainArgs args);
 
 
-        DiagrammPoint[] CalcAntennaPattern(string points, AntennaPatternType  antennaPatternType, double gain);
+        void CalcAntennaPattern(in DiagrammArgs args, ref DiagrammPoint[] diagrammPointsResult);
 
 
     }
