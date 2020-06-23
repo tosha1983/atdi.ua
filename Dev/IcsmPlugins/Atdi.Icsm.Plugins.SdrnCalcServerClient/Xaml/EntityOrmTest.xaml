@@ -42,10 +42,8 @@
           </DataGrid.Columns>
         </DataGrid>
       </GroupBox>
-      <WrapPanel Grid.Column="1" Orientation="Vertical">
-        <orm:OrmEnumBox Grid.Column="2" Margin="5,5,5,5" CaptionWith="100" Width="300" Caption="{x:Static res:Resources.StatusName}" Source="{Binding Path=StatusTestEnum}" SelectedValue="{Binding Path=EnumValue, Mode=TwoWay}"/>
-        <orm:OrmCheckBox Grid.Column="2" Margin="5,5,5,5" CaptionWith="100" Width="300" Caption="Test CheckBox" SelectedValue="{Binding Path=CheckBoxValue, Mode=TwoWay}" IsRequired="False"/>
-      </WrapPanel>
+
+      <orm:OrmEnumBox Grid.Column="2" Margin="5,5,5,5" CaptionWith="100" Width="300" Caption="{x:Static res:Resources.StatusName}" Source="{Binding Path=StatusTestEnum}" SelectedValue="{Binding Path=EnumValue, Mode=TwoWay}"/>
     </Grid>
   </DockPanel>
 </UserControl>

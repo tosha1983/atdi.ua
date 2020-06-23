@@ -12,14 +12,14 @@ namespace Atdi.DataModels.Sdrn.DeepServices.GN06
 	public class BroadcastingAssignmentTarget
 	{
 		/// <summary>
-		/// 
+		/// ITU Name: "Adm_Ref_Id".
 		/// </summary>
 		public string AdmRefId; // M
 
 		/// <summary>
 		/// 
 		/// </summary>
-		public double Frequency; // M
+		public double Freq_MHz; // M
 
 		/// <summary>
 		/// 

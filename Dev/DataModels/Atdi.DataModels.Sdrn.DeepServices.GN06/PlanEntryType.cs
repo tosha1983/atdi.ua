@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrn.DeepServices.GN06
 {
 	/// <summary>
-	/// 
+	/// ITU Name: "Plan_entryType".
 	/// </summary>
 	public enum PlanEntryType
 	{
@@ -31,7 +31,14 @@ namespace Atdi.DataModels.Sdrn.DeepServices.GN06
 		/// </summary>
 		Allotment = 3,
 
-		AllotmentWithLinkedAssignmentAndSFN_id = 4,
-		AllotmentWithSingleLinkedAssignmentAndNoSFN_id = 5
+		/// <summary>
+		/// 
+		/// </summary>
+		AllotmentWithLinkedAssignmentAndSfn = 4,
+
+		/// <summary>
+		/// 
+		/// </summary>
+		AllotmentWithSingleLinkedAssignmentAndNoSfn = 5
 	}
 }

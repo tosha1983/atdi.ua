@@ -20,7 +20,7 @@ namespace Atdi.WpfControls.EntityOrm.Controls
     /// </summary>
     public partial class OrmEnumBox : UserControl
     {
-        double _captionWith = 150;
+        double _captionWith = 100;
         string _caption = "";
         OrmEnumBoxData _value = null;
         OrmEnumBoxData[] _source = null;
@@ -34,6 +34,7 @@ namespace Atdi.WpfControls.EntityOrm.Controls
             get { return _captionWith; }
             set
             {
+                SetValue(CaptionWithProperty, value);
                 this._captionWith = value;
                 this.RedrawControl();
             }
@@ -43,12 +44,11 @@ namespace Atdi.WpfControls.EntityOrm.Controls
             get { return _caption; }
             set
             {
+                SetValue(CaptionProperty, value);
                 this._caption = value;
                 lblCaption.Content = this._caption;
             }
         }
-        public static DependencyProperty EnabledProperty = DependencyProperty.Register("Enabled", typeof(bool), typeof(OrmEnumBox),
-            new FrameworkPropertyMetadata(true, new PropertyChangedCallback(OnPropertyChanged)));
         public bool Enabled
         {
             get { return _enabled; }
@@ -59,9 +59,6 @@ namespace Atdi.WpfControls.EntityOrm.Controls
                 cmbMain.IsEnabled = this._enabled;
             }
         }
-
-        public static DependencyProperty SelectedValueProperty = DependencyProperty.Register("SelectedValue", typeof(OrmEnumBoxData), typeof(OrmEnumBox),
-            new FrameworkPropertyMetadata(default(OrmEnumBoxData), new PropertyChangedCallback(OnPropertyChanged)));
         public OrmEnumBoxData SelectedValue
         {
             get { return _value; }
@@ -72,9 +69,6 @@ namespace Atdi.WpfControls.EntityOrm.Controls
                 cmbMain.SelectedValue = this._value;
             }
         }
-
-        public static DependencyProperty SelectedValueIdProperty = DependencyProperty.Register("SelectedValueId", typeof(int), typeof(OrmEnumBox),
-            new FrameworkPropertyMetadata(int.MinValue, new PropertyChangedCallback(OnPropertyChanged)));
         public int SelectedValueId
         {
             get { return _value.Id; }
@@ -85,9 +79,6 @@ namespace Atdi.WpfControls.EntityOrm.Controls
                 cmbMain.SelectedValue = this._value;
             }
         }
-
-        public static DependencyProperty SourceProperty = DependencyProperty.Register("Source", typeof(OrmEnumBoxData[]), typeof(OrmEnumBox),
-            new FrameworkPropertyMetadata(default(OrmEnumBoxData[]), new PropertyChangedCallback(OnPropertyChanged)));
         public OrmEnumBoxData[] Source
         {
             get { return _source; }
@@ -98,6 +89,12 @@ namespace Atdi.WpfControls.EntityOrm.Controls
                 cmbMain.ItemsSource = this._source;
             }
         }
+        public static DependencyProperty CaptionWithProperty = DependencyProperty.Register("CaptionWith", typeof(double), typeof(OrmEnumBox), new FrameworkPropertyMetadata(default(double), new PropertyChangedCallback(OnPropertyChanged)));
+        public static DependencyProperty CaptionProperty = DependencyProperty.Register("Caption", typeof(string), typeof(OrmEnumBox), new FrameworkPropertyMetadata("", new PropertyChangedCallback(OnPropertyChanged)));
+        public static DependencyProperty EnabledProperty = DependencyProperty.Register("Enabled", typeof(bool), typeof(OrmEnumBox), new FrameworkPropertyMetadata(true, new PropertyChangedCallback(OnPropertyChanged)));
+        public static DependencyProperty SelectedValueProperty = DependencyProperty.Register("SelectedValue", typeof(OrmEnumBoxData), typeof(OrmEnumBox), new FrameworkPropertyMetadata(default(OrmEnumBoxData), new PropertyChangedCallback(OnPropertyChanged)));
+        public static DependencyProperty SelectedValueIdProperty = DependencyProperty.Register("SelectedValueId", typeof(int), typeof(OrmEnumBox), new FrameworkPropertyMetadata(int.MinValue, new PropertyChangedCallback(OnPropertyChanged)));
+        public static DependencyProperty SourceProperty = DependencyProperty.Register("Source", typeof(OrmEnumBoxData[]), typeof(OrmEnumBox), new FrameworkPropertyMetadata(default(OrmEnumBoxData[]), new PropertyChangedCallback(OnPropertyChanged)));
         private static void OnPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
             var ctr = sender as OrmEnumBox;
@@ -110,6 +107,10 @@ namespace Atdi.WpfControls.EntityOrm.Controls
                 ctr.SelectedValue = (OrmEnumBoxData)e.NewValue;
             else if (e.Property == SelectedValueIdProperty)
                 ctr.SelectedValueId = (int)e.NewValue;
+            else if (e.Property == CaptionWithProperty)
+                ctr.CaptionWith = (double)e.NewValue;
+            else if (e.Property == CaptionProperty)
+                ctr.Caption = (string)e.NewValue;
         }
         private void RedrawControl()
         {

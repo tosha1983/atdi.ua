@@ -20,14 +20,17 @@ namespace Atdi.WpfControls.EntityOrm.Controls
     /// </summary>
     public partial class OrmCheckBox : UserControl
     {
+        double _captionWith = 100;
+        string _caption = "";
+        bool _enabled = true;
+        bool? _value = null;
+        bool _isRequired = false;
         OrmCheckBoxData[] _source;
         public OrmCheckBox()
         {
             InitializeComponent();
             UpdateSource();
         }
-
-        double _captionWith = 150;
         public double CaptionWith
         {
             get { return _captionWith; }
@@ -37,8 +40,7 @@ namespace Atdi.WpfControls.EntityOrm.Controls
                 this.RedrawControl();
             }
         }
-        string _caption = "";
-        public string Caption
+       public string Caption
         {
             get { return _caption; }
             set
@@ -47,10 +49,6 @@ namespace Atdi.WpfControls.EntityOrm.Controls
                 lblCaption.Content = this._caption;
             }
         }
-
-        bool _enabled = true;
-        public static DependencyProperty EnabledProperty = DependencyProperty.Register("Enabled", typeof(bool), typeof(OrmCheckBox),
-            new FrameworkPropertyMetadata(true, new PropertyChangedCallback(OnPropertyChanged)));
         public bool Enabled
         {
             get { return _enabled; }
@@ -61,10 +59,6 @@ namespace Atdi.WpfControls.EntityOrm.Controls
                 cmbMain.IsEnabled = this._enabled;
             }
         }
-
-        bool? _value = null;
-        public static DependencyProperty SelectedValueProperty = DependencyProperty.Register("SelectedValue", typeof(bool?), typeof(OrmCheckBox),
-            new FrameworkPropertyMetadata(null, new PropertyChangedCallback(OnPropertyChanged)));
         public bool? SelectedValue
         {
             get { return _value; }
@@ -77,13 +71,9 @@ namespace Atdi.WpfControls.EntityOrm.Controls
                 cmbMain.SelectedValue = this._source.Where(v => v.Value == this._value).First();
             }
         }
-
-        bool _isRequired = false;
-        public static DependencyProperty IsRequiredProperty = DependencyProperty.Register("IsRequired", typeof(bool), typeof(OrmCheckBox),
-            new FrameworkPropertyMetadata(false, new PropertyChangedCallback(OnPropertyChanged)));
         public bool IsRequired
         {
-            get { return _isRequired; }
+            get { return this._isRequired; }
             set
             {
                 SetValue(IsRequiredProperty, value);
@@ -91,7 +81,11 @@ namespace Atdi.WpfControls.EntityOrm.Controls
                 UpdateSource();
             }
         }
-
+        public static DependencyProperty CaptionWithProperty = DependencyProperty.Register("CaptionWith", typeof(double), typeof(OrmCheckBox), new FrameworkPropertyMetadata(default(double), new PropertyChangedCallback(OnPropertyChanged)));
+        public static DependencyProperty CaptionProperty = DependencyProperty.Register("Caption", typeof(string), typeof(OrmCheckBox), new FrameworkPropertyMetadata("", new PropertyChangedCallback(OnPropertyChanged)));
+        public static DependencyProperty EnabledProperty = DependencyProperty.Register("Enabled", typeof(bool), typeof(OrmCheckBox), new FrameworkPropertyMetadata(true, new PropertyChangedCallback(OnPropertyChanged)));
+        public static DependencyProperty SelectedValueProperty = DependencyProperty.Register("SelectedValue", typeof(bool?), typeof(OrmCheckBox), new FrameworkPropertyMetadata(null, new PropertyChangedCallback(OnPropertyChanged)));
+        public static DependencyProperty IsRequiredProperty = DependencyProperty.Register("IsRequired", typeof(bool), typeof(OrmCheckBox), new FrameworkPropertyMetadata(false, new PropertyChangedCallback(OnPropertyChanged)));
         private static void OnPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
             var ctr = sender as OrmCheckBox;
@@ -102,7 +96,10 @@ namespace Atdi.WpfControls.EntityOrm.Controls
                 ctr.Enabled = (bool)e.NewValue;
             else if (e.Property == SelectedValueProperty)
                 ctr.SelectedValue = (bool?)e.NewValue;
-
+            else if (e.Property == CaptionWithProperty)
+                ctr.CaptionWith = (double)e.NewValue;
+            else if (e.Property == CaptionProperty)
+                ctr.Caption = (string)e.NewValue;
         }
         private void RedrawControl()
         {
@@ -125,8 +122,8 @@ namespace Atdi.WpfControls.EntityOrm.Controls
             var data = new List<OrmCheckBoxData>();
             if (!this._isRequired)
                 data.Add(new OrmCheckBoxData() { Value = null, ViewName = "" });
-            data.Add(new OrmCheckBoxData() { Value = true, ViewName = "Yes" });
-            data.Add(new OrmCheckBoxData() { Value = false, ViewName = "No" });
+            data.Add(new OrmCheckBoxData() { Value = true, ViewName = Properties.Resources.Yes });
+            data.Add(new OrmCheckBoxData() { Value = false, ViewName = Properties.Resources.No });
             this._source = data.ToArray();
             cmbMain.ItemsSource = this._source;
             SelectedValue = this._isRequired ? (bool?)false : null;

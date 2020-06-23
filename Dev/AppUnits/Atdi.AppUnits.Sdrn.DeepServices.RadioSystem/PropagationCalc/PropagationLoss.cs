@@ -69,25 +69,25 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
                     
                     int hMedDist_px = 0;
                    
-                    double asl_m = 0;
+                    double asl_m = args.Hb_m + args.ReliefProfile[args.ReliefStartIndex + args.ProfileLength - 1];
                     //параметр нужно будет добавить через буффер
                     List<land_sea> landSeaList = new List<land_sea>();
-                    double px2km = args.D_km / args.ProfileLength;
-                    
-                    int aboveLand_px = 0;
-                    int aboveSea_px = 0;
-                    byte waterClutter = 2; // clutter code for sea/inland water should be in config
-                    //
-                    int minDistToHeff_px = (int)(3 / px2km);
-                    int maxDistToHeff_px = (int)(15 / px2km);
 
+                    double px2km = args.D_km / (args.ProfileLength - 1);
+                    double aboveLand_px = 0;
+                    double aboveSea_px = 0;
+                    byte waterClutter = 7; // clutter code for sea/inland water should be in config
+                    //
+                    int minDistToHeff_px = (int)(3.0 / px2km);
+                    int maxDistToHeff_px = (int)(15.0 / px2km);
+                    //
+                    // land-sea distance list + effective height calculation
                     for (int i = args.ReliefStartIndex; i < args.ReliefStartIndex + args.ProfileLength; i++)
                     {
-                        // land-sea distance list calculation
-
                         // coast line intersection condition
                         if (i > args.ReliefStartIndex && args.ClutterProfile[i-1] != args.ClutterProfile[i] && 
-                            (args.ClutterProfile[i-1] == waterClutter || args.ClutterProfile[i] == waterClutter) || 
+                            (args.ClutterProfile[i-1] == waterClutter || args.ClutterProfile[i] == waterClutter) &&
+                            (aboveSea_px != 0 && aboveLand_px != 0) || 
                             i == args.ReliefStartIndex + args.ProfileLength - 1)
                         {
                             landSeaList.Add(new land_sea { land = aboveLand_px * px2km, sea = aboveSea_px * px2km });
@@ -95,28 +95,26 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
                             aboveLand_px = 0;
                         }
                         // count relief points that belongs to land or sea propagation
-                        if (args.ClutterProfile[i] == waterClutter)
-                        {
-                            aboveSea_px++;
-                        }
-                        else
-                        {
-                            aboveLand_px++;
-                        }
-
+                        if (args.ClutterProfile[i] == waterClutter) { aboveSea_px++; }
+                        else { aboveLand_px++; }
+                        
                         // effective height calculation, 
                         if (i > minDistToHeff_px && i < maxDistToHeff_px)
+                        //if (i >= args.ReliefStartIndex + args.ProfileLength * 0.2 && i < maxDistToHeff_px)
                         {
-                            hEffective_m += args.HeightProfile[i];
+                            hEffective_m += args.ReliefProfile[args.ReliefStartIndex] - args.ReliefProfile[i];
                             hMedDist_px++;
                         }
                     }
                     if (hMedDist_px > 0)
                     {
                         hEffective_m /= hMedDist_px;
+                        hEffective_m += args.Ha_m;
                     }
 
-                    double E_dBuVm = (ITU1546_4.Get_E(args.Ha_m, hEffective_m, args.Freq_Mhz, args.Model.Parameters.Time_pc, args.D_km, asl_m, args.Hb_m, landSeaList.ToArray()));
+                    //hEffective_m = 65;
+                    asl_m = hEffective_m;
+                    double E_dBuVm = (ITU1546_4.Get_E(args.Ha_m, hEffective_m, args.D_km, args.Freq_Mhz, args.Model.Parameters.Time_pc, asl_m, args.Hb_m, landSeaList.ToArray()));
                     Lbf_dB = (float)(139.3 - E_dBuVm + 20 * Math.Log10(args.Freq_Mhz));
                     break;
 

@@ -54,7 +54,7 @@ namespace Atdi.AppUnits.Sdrn.Infocenter
 
 			// находим файлы
 			var fileNames = Directory.EnumerateFiles(folderName, "*.*", SearchOption.TopDirectoryOnly)
-				.Where(s => s.EndsWith(".geo", StringComparison.OrdinalIgnoreCase) || s.EndsWith(".blg", StringComparison.OrdinalIgnoreCase) || s.EndsWith(".sol", StringComparison.OrdinalIgnoreCase)).ToArray();
+				.Where(s => s.EndsWith(".geo") || s.EndsWith(".blg") || s.EndsWith(".sol")).ToArray();
 			//Directory.GetFiles(folderName, "*.geo,*.blg,*.sol", SearchOption.TopDirectoryOnly);
 
 			if (fileNames != null && fileNames.Length > 0)
@@ -550,11 +550,8 @@ namespace Atdi.AppUnits.Sdrn.Infocenter
 				map.StepUnit = "M";
 			}
 
-			//map.AxisX.Number = DecodeInt(body, 320, 10);
-			//map.AxisY.Number = DecodeInt(body, 330, 10);
-
-			map.AxisX.Number = DecodeInt(body, 320, 6);
-			map.AxisY.Number = DecodeInt(body, 330, 6);
+			map.AxisX.Number = DecodeInt(body, 320, 10);
+			map.AxisY.Number = DecodeInt(body, 330, 10);
 
 			map.Projection = DecodeString(body, 340, 6);
 			map.Info = DecodeString(body, 0, 160);
@@ -638,32 +635,43 @@ namespace Atdi.AppUnits.Sdrn.Infocenter
 		}
 
 
-		private static float DecodeFloat(byte[] source, uint offset, uint size)
-		{
-			var statement = Encoding.ASCII.GetString(source, (int)offset, (int)size).Replace("\0", "").Replace(".", CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator);
-			try
-			{
-				return float.Parse(statement);
-			}
-			catch (Exception e)
-			{
-				throw new InvalidOperationException($"Cannot decode source as float: '{statement}', NumberDecimalSeparator='{CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator}'", e);
-			}
-			
-		}
-		private static int DecodeInt(byte[] source, uint offset, uint size)
-		{
-			var statement = Encoding.ASCII.GetString(source, (int)offset, (int)size).Replace("\0", "").Replace(".", CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator);
-			try
-			{
-				return Convert.ToInt32((decimal.Parse(statement)));
-			}
-			catch (Exception e)
-			{
-				throw new InvalidOperationException($"Cannot decode source as int: '{statement}', NumberDecimalSeparator='{CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator}'", e);
-			}
-		}
-		private static string DecodeString(byte[] source, uint offset, uint size)
+        //private static float DecodeFloat(byte[] source, uint offset, uint size)
+        //{
+        //	var statement = Encoding.ASCII.GetString(source, (int)offset, (int)size).Replace("\0", "").Replace(".", CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator);
+        //	return float.Parse(statement);
+        //}
+        //private static int DecodeInt(byte[] source, uint offset, uint size)
+        //{
+        //	var statement = Encoding.ASCII.GetString(source, (int)offset, (int)size).Replace("\0", "").Replace(".", CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator);
+        //	return Convert.ToInt32((decimal.Parse(statement)));
+        //}
+        private static float DecodeFloat(byte[] source, uint offset, uint size)
+        {
+            var statement = Encoding.ASCII.GetString(source, (int)offset, (int)size).Replace("\0", "").Replace(".", CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator);
+            try
+            {
+                return float.Parse(statement);
+            }
+            catch (Exception e)
+            {
+                throw new InvalidOperationException($"Cannot decode source as float: '{statement}', NumberDecimalSeparator='{CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator}'", e);
+            }
+
+        }
+        private static int DecodeInt(byte[] source, uint offset, uint size)
+        {
+            var statement = Encoding.ASCII.GetString(source, (int)offset, (int)size).Replace("\0", "").Replace(".", CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator);
+            try
+            {
+                return Convert.ToInt32((decimal.Parse(statement)));
+            }
+            catch (Exception e)
+            {
+                throw new InvalidOperationException($"Cannot decode source as int: '{statement}', NumberDecimalSeparator='{CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator}'", e);
+            }
+        }
+
+        private static string DecodeString(byte[] source, uint offset, uint size)
 		{
 			var statement = Encoding.ASCII.GetString(source, (int)offset, (int)size).Replace("\0", "");
 			return statement;

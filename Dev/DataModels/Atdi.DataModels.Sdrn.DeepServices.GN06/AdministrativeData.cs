@@ -32,7 +32,7 @@ namespace Atdi.DataModels.Sdrn.DeepServices.GN06
 		public ActionType Action; //M
 
 		/// <summary>
-		/// 
+		/// ITU Name: "Adm_ref_id".
 		/// </summary>
 		public string AdmRefId; //M ADM_KEY ICSM 
 	}

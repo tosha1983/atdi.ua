@@ -279,9 +279,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 			var sourceMaps = this.FindSourceMaps(infoDbScope, projectMap, mapType);
 			if (sourceMaps.Length == 0)
 			{
-				//throw new InvalidOperationException($"Could not find any matching maps of type '{mapType}' in the Infocenter DB");
-
-				return;
+                //throw new InvalidOperationException($"Could not find any matching maps of type '{mapType}' in the Infocenter DB");
+                return;
 			}
 
 			// для рельефа если есть мастер карта, то выравниваемся  к ней по ее координатной сетке
@@ -378,7 +377,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 
 			// площадь ячейки, нужна для рельефа
 			var reliefCellArea = (double)projectMap.AxisXStep * projectMap.AxisYStep;
-			var coverageAmount = (long) 0;
+			var coverageAmount = (ulong)0;
 			for (var yIndex = 0; yIndex < projectMap.AxisYNumber; yIndex++)
 			{
 				for (var xIndex = 0; xIndex < projectMap.AxisXNumber; xIndex++)
@@ -415,7 +414,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 						var cellMap = cell.Maps[0];
 						mapContent.Content[contentIndex] = cellMap.Value;
 						cellMap.InfocenterMap.Used = true;
-						coverageAmount += cellMap.CoverageAmount;
+						coverageAmount += (ulong)cellMap.CoverageAmount;
 					}
 					else
 					{
@@ -430,13 +429,13 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 									return result;
 								});
 							mapContent.Content[contentIndex] = (T) (object) Convert.ToInt16(contentValue);
-							coverageAmount += cell.Maps.Sum(m => m.CoverageAmount);
+							coverageAmount += (ulong)cell.Maps.Sum(m => m.CoverageAmount);
 						}
 						else if (mapType == ProjectMapType.Building|| mapType == ProjectMapType.Clutter)
 						{
 							var max = cell.Maps.Max(c => c.CoverageAmount);
 							mapContent.Content[contentIndex] = cell.Maps.Where(c => c.CoverageAmount == max).Max(c => c.Value);
-							coverageAmount += cell.Maps.Sum(m => m.CoverageAmount);
+							coverageAmount += (ulong)cell.Maps.Sum(m => m.CoverageAmount);
 						}
 						else
 						{
@@ -861,7 +860,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 				// точка валидациия работы алгоритма: покрытие должно быть в рамках  заданной площади 
 				if (coverageArea.Area > projectMapCellArea.Area)
 				{
-					throw new InvalidOperationException($"Something went wrong while map coverage calculation ([Source Coverage Area] > [Project Map Cell Area]): CoverageArea='{coverageArea}'; CellArea='{projectMapCellArea}'");
+					throw new InvalidOperationException($"Something went wrong while map coverage calculation: [Source Coverage Area] > [Project Map Cell Area]");
 				}
 
 				// есть покрытие. фикисруем карту - возможно это последня карта по ряду причин (их две)

@@ -43,13 +43,26 @@
   <ItemGroup>
     <Compile Include="ActionType.cs" />
     <Compile Include="AdministrativeData.cs" />
+    <Compile Include="AreaPoint.cs" />
     <Compile Include="AllotmentParameters.cs" />
+    <Compile Include="AntennaCharacteristics.cs" />
+    <Compile Include="AntennaDirectionType.cs" />
+    <Compile Include="AssignmentCodeType.cs" />
     <Compile Include="BroadcastingAllotment.cs" />
+    <Compile Include="BroadcastingAllotmentEmissionCharacteristics.cs" />
+    <Compile Include="BroadcastingAssignment.cs" />
+    <Compile Include="BroadcastingAssignmentEmissionCharacteristics.cs" />
     <Compile Include="BroadcastingAssignmentTarget.cs" />
     <Compile Include="DigitalPlanEntryParameters.cs" />
     <Compile Include="PlanEntryType.cs" />
+    <Compile Include="PolarType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RefNetworkConfigType.cs" />
+    <Compile Include="RefNetworkType.cs" />
+    <Compile Include="RxModeType.cs" />
     <Compile Include="SiteParameters.cs" />
+    <Compile Include="SpectrumMaskType.cs" />
+    <Compile Include="SystemVariationType.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

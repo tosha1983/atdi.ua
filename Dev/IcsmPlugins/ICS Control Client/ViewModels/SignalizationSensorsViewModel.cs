@@ -254,42 +254,13 @@ namespace XICSM.ICSControlClient.ViewModels
         {
             var tempEmittings = new List<Emitt>();
 
-            if (!this._timeMeas.HasValue && this._emittings.Length != 1)
-            {
-                MessageBox.Show("Please select one emission!");
-                return null;
-            }
-
-            if (!this._timeMeas.HasValue)
-            {
-                using (var wc = new HttpClient())
-                {
-                    string filter = $"(Id in ({this._emittings[0].Id}))";
-                    string fields = "RES_MEAS.TimeMeas";
-                    string request = $"{_endpointUrls}api/orm/data/SDRN_Server_DB/Atdi.DataModels.Sdrns.Server.Entities/Emitting?select={fields}&filter={filter}";
-                    var response = wc.GetAsync(request).Result;
-                    if (response.StatusCode == HttpStatusCode.OK)
-                    {
-                        var dicFields = new Dictionary<string, int>();
-                        var data = JsonConvert.DeserializeObject<DataSetResult>(response.Content.ReadAsStringAsync().Result);
-
-                        foreach (var field in data.Fields)
-                            dicFields[field.Path] = field.Index;
-
-                        foreach (object[] record in data.Records)
-                        {
-                            this._timeMeas = (DateTime)record[dicFields["RES_MEAS.TimeMeas"]];
-                        }
-                    }
-                }
-            }
-            if (!this._timeMeas.HasValue)
+            if (!_timeMeas.HasValue)
                 return null;
 
             using (var wc = new HttpClient())
             {
                 var minFreq = _emittings.Length == 0 ? 0 : _emittings.Min(d => d.StartFrequency_MHz);
-                var maxFreq = _emittings.Length == 0 ? 0 : _emittings.Max(d => d.StopFrequency_MHz);
+                var maxFreq = _emittings.Length == 0 ? 0 : _emittings.Min(d => d.StopFrequency_MHz);
                 long emittingId = 0;
                 string filter = $"(EMITTING.StartFrequency_MHz le {maxFreq.ToString().Replace(",", ".")})and(EMITTING.StopFrequency_MHz ge {minFreq.ToString().Replace(",", ".")})and(EMITTING.RES_MEAS.SUBTASK_SENSOR.SENSOR.Id in ({string.Join(",", _sensorIds)}))and(EMITTING.RES_MEAS.TimeMeas Ge {_timeMeas.Value.Date.ToString("yyyy-MM-ddTHH\\:mm\\:ss.fffffff")})and(EMITTING.RES_MEAS.TimeMeas Le {_timeMeas.Value.Date.AddDays(1).ToString("yyyy-MM-ddTHH\\:mm\\:ss.fffffff")})";
                 string fields = "Id,StartEmitting,StopEmitting,EMITTING.Id,EMITTING.StartFrequency_MHz,EMITTING.StopFrequency_MHz,EMITTING.RES_MEAS.TimeMeas";

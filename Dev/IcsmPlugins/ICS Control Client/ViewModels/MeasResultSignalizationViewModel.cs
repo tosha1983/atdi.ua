@@ -460,13 +460,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 if (this._currentEmittings != null)
                     foreach (EmittingViewModel emitting in this._currentEmittings)
                         emittings.Add(emitting);
-
-                if (!_timeMeas.HasValue && emittings.Count != 1)
-                {
-                    MessageBox.Show("Please select one emission!");
-                    return;
-                }
-
+                
                 var dlgForm = new FM.SignalizationSensorsForm(1, emittings.ToArray(), _timeMeas);
                 dlgForm.ShowDialog();
                 dlgForm.Dispose();
