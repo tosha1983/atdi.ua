@@ -8,8 +8,8 @@ namespace Atdi.DataModels.Sdrn.DeepServices.EarthGeometry
 {
     public struct PointEarthGeometric
     {
-        public double Longitude;
-        public double Latitude;
+        public double Longitude; // DEC
+        public double Latitude; // DEC
     }
 }
 
