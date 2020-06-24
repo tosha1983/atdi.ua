@@ -22,6 +22,8 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>7.2</LangVersion>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -35,7 +37,33 @@
     <StartupObject>Atdi.Test.Platform.SG.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Castle.Core.4.2.1\lib\net45\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Codefoundry.LegacyWrapper32, Version=3.0.1.0, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\Codefoundry.LegacyWrapper.3.0.1\lib\net45\Codefoundry.LegacyWrapper32.exe</HintPath>
+    </Reference>
+    <Reference Include="Codefoundry.LegacyWrapper64, Version=3.0.1.0, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\..\packages\Codefoundry.LegacyWrapper.3.0.1\lib\net45\Codefoundry.LegacyWrapper64.exe</HintPath>
+    </Reference>
+    <Reference Include="Codefoundry.LegacyWrapperClient, Version=3.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Codefoundry.LegacyWrapper.3.0.1\lib\net45\Codefoundry.LegacyWrapperClient.dll</HintPath>
+    </Reference>
+    <Reference Include="LegacyWrapper, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Codefoundry.LegacyWrapper.3.0.1\lib\net45\LegacyWrapper.dll</HintPath>
+    </Reference>
+    <Reference Include="LegacyWrapper.Common, Version=3.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Codefoundry.LegacyWrapper.3.0.1\lib\net45\LegacyWrapper.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject, Version=3.3.4.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Codefoundry.LegacyWrapper.3.0.1\lib\net45\Ninject.dll</HintPath>
+    </Reference>
+    <Reference Include="PommaLabs.Thrower, Version=4.0.0.0, Culture=neutral, PublicKeyToken=2f204b7110a52060, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Codefoundry.LegacyWrapper.3.0.1\lib\net45\PommaLabs.Thrower.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -50,27 +78,56 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry\Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry.csproj">
+      <Project>{11c6a879-bb5b-4b89-a254-597301eae311}</Project>
+      <Name>Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeepServices.Gis\Atdi.AppUnits.Sdrn.DeepServices.Gis.csproj">
       <Project>{f1f30ab9-7598-424d-9cde-95412583eccf}</Project>
       <Name>Atdi.AppUnits.Sdrn.DeepServices.Gis</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeepServices.IDWM\Atdi.AppUnits.Sdrn.DeepServices.IDWM.csproj">
+      <Project>{b2bd17be-581f-477d-b0e1-5407d59591be}</Project>
+      <Name>Atdi.AppUnits.Sdrn.DeepServices.IDWM</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeepServices.EarthGeometry\Atdi.Contracts.Sdrn.DeepServices.EarthGeometry.csproj">
+      <Project>{2ecedd22-d39d-4d65-a811-5db274afc374}</Project>
+      <Name>Atdi.Contracts.Sdrn.DeepServices.EarthGeometry</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeepServices.Gis\Atdi.Contracts.Sdrn.DeepServices.Gis.csproj">
       <Project>{567b4c34-9ff5-4c05-9e7b-d1ed94eadaaf}</Project>
       <Name>Atdi.Contracts.Sdrn.DeepServices.Gis</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeepServices.IDWM\Atdi.Contracts.Sdrn.DeepServices.IDWM.csproj">
+      <Project>{4e1a00f8-68cf-4c16-bdef-2d5ee849c1ec}</Project>
+      <Name>Atdi.Contracts.Sdrn.DeepServices.IDWM</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeepServices\Atdi.Contracts.Sdrn.DeepServices.csproj">
       <Project>{dbbcbdeb-202d-4068-94f6-bb78bd47d51a}</Project>
       <Name>Atdi.Contracts.Sdrn.DeepServices</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices.EarthGeometry\Atdi.DataModels.Sdrn.DeepServices.EarthGeometry.csproj">
+      <Project>{32da0c04-3a89-428f-8997-3018aa1375c3}</Project>
+      <Name>Atdi.DataModels.Sdrn.DeepServices.EarthGeometry</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices.Gis\Atdi.DataModels.Sdrn.DeepServices.Gis.csproj">
       <Project>{d83887b2-4444-4207-a703-c99b94a4c170}</Project>
       <Name>Atdi.DataModels.Sdrn.DeepServices.Gis</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices.IDWM\Atdi.DataModels.Sdrn.DeepServices.IDWM.csproj">
+      <Project>{a0cb1ec6-1189-454d-a3a7-919a97e7b790}</Project>
+      <Name>Atdi.DataModels.Sdrn.DeepServices.IDWM</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices\Atdi.DataModels.Sdrn.DeepServices.csproj">
       <Project>{b26b6bd9-699d-46b8-ba43-0d0ba803087e}</Project>
       <Name>Atdi.DataModels.Sdrn.DeepServices</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Platform\Atdi.Platform.AppServer\Atdi.Platform.AppServer.csproj">
+      <Project>{20d45626-3779-4fc8-a55a-1c919d95649e}</Project>
+      <Name>Atdi.Platform.AppServer</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Platform\Atdi.Platform.Configurator\Atdi.Platform.Configurator.csproj">
       <Project>{98e79b80-3176-4cad-b7ba-b5caa6752fab}</Project>
@@ -79,6 +136,10 @@
     <ProjectReference Include="..\..\Platform\Atdi.Platform.Logging\Atdi.Platform.Logging.csproj">
       <Project>{1389b99f-ff39-4671-9789-d2e1aa91527c}</Project>
       <Name>Atdi.Platform.Logging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Platform\Atdi.Platform.ServicesContainer\Atdi.Platform.ServicesContainer.csproj">
+      <Project>{153006da-1f99-4d33-b490-d3a87e7dfd03}</Project>
+      <Name>Atdi.Platform.ServicesContainer</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Platform\Atdi.Platform\Atdi.Platform.csproj">
       <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>

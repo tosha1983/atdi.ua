@@ -25,10 +25,6 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem
             result = Signal.PropagationLoss.Calc(args);
 		}
 
-        public DiagrammPoint[] CalcAntennaPattern(string points,  AntennaPatternType antennaPatternType, double gain)
-        {
-            return CalculationAntennaPattern.Calc(points, antennaPatternType, gain);
-        }
 
         private void CalcMainBlock(in MainCalcBlock block)
 		{
@@ -40,6 +36,9 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem
 			
 		}
 
-
+        public void CalcAntennaPattern(in DiagrammArgs args, ref DiagrammPoint[] diagrammPointsResult)
+        {
+            CalculationAntennaPattern.Calc(in args, ref diagrammPointsResult);
+        }
     }
 }

@@ -116,7 +116,7 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration.SdrnServer
 
 					syncKey = new StationMonitoringSyncKey
 					{
-						LastResultId = firstResultId > 0 ? firstResultId  - 1 : firstResultId
+						LastResultId = firstResultId > 0 ? firstResultId - 1 : firstResultId
 					};
 				}
 
