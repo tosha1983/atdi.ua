@@ -22,6 +22,9 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration
 		[ComponentConfigProperty("AutoImport.SdrnServer.StationMonitoring.Period")]
 		public int? AutoImportSdrnServerStationMonitoringPeriod { get; set; }
 
+		[ComponentConfigProperty("AutoImport.SdrnServer.StationMonitoring.FirstResultId")]
+		public long? AutoImportSdrnServerStationMonitoringFirstResultId { get; set; }
+
 		[ComponentConfigProperty("AutoImport.SdrnServer.StationMonitoring.Points.FetchRows")]
 		public int? AutoImportSdrnServerStationMonitoringPointsFetchRows { get; set; }
 

@@ -112,9 +112,11 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration.SdrnServer
 
 				if (syncKey == null)
 				{
+					var firstResultId = _config.AutoImportSdrnServerStationMonitoringFirstResultId.GetValueOrDefault(0);
+
 					syncKey = new StationMonitoringSyncKey
 					{
-						LastResultId = 0
+						LastResultId = firstResultId > 0 ? firstResultId  - 1 : firstResultId
 					};
 				}
 
