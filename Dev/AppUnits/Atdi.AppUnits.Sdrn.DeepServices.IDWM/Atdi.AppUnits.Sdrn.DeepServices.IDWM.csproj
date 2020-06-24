@@ -34,12 +34,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Idwm.NET, Version=1.2.0.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Test\Atdi.Test.Platform.SG\bin\Debug\Idwm.NET.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.Channels" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -50,8 +48,9 @@
   <ItemGroup>
     <Compile Include="AppServerComponent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Specification.cs" />
+    <Compile Include="SdrnsControllerWcfClientIWorldMapApi.cs" />
     <Compile Include="IdwmService.cs" />
+    <Compile Include="WcfServiceClientBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeepServices.IDWM\Atdi.Contracts.Sdrn.DeepServices.IDWM.csproj">
@@ -61,6 +60,10 @@
     <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeepServices\Atdi.Contracts.Sdrn.DeepServices.csproj">
       <Project>{dbbcbdeb-202d-4068-94f6-bb78bd47d51a}</Project>
       <Name>Atdi.Contracts.Sdrn.DeepServices</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\WcfServices\Atdi.Contracts.WcfServices.Sdrn.DeepServices.IDWM\Atdi.Contracts.WcfServices.Sdrn.DeepServices.IDWM.csproj">
+      <Project>{5952d983-fffd-4dcd-bdb7-b0f02571b5dd}</Project>
+      <Name>Atdi.Contracts.WcfServices.Sdrn.DeepServices.IDWM</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices.IDWM\Atdi.DataModels.Sdrn.DeepServices.IDWM.csproj">
       <Project>{a0cb1ec6-1189-454d-a3a7-919a97e7b790}</Project>
@@ -74,19 +77,14 @@
       <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
       <Name>Atdi.Platform</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\WcfServices\Atdi.WcfServices\Atdi.WcfServices.csproj">
+      <Project>{1554f596-9b1c-4e35-8d9a-e9a0232790a5}</Project>
+      <Name>Atdi.WcfServices</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Atdi.AppUnits\Atdi.AppUnits.csproj">
       <Project>{aa445e89-a706-4a2a-b28e-edbae056652b}</Project>
       <Name>Atdi.AppUnits</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Idwm\Geoidx1.bin" />
-    <None Include="Idwm\Geopnt1.bin" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Idwm\DFORRT.DLL" />
-    <Content Include="Idwm\Idwm.NET.dll" />
-    <Content Include="Idwm\IDWM32D.DLL" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

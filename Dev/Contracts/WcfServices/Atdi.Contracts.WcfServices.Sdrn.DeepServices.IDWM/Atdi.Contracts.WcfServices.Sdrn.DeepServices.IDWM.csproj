@@ -33,6 +33,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -43,7 +44,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IWorldMapApi.cs" />
+    <Compile Include="Models\AdministrationsResult.cs" />
+    <Compile Include="Models\Point.cs" />
+    <Compile Include="Models\PointAndDistance.cs" />
+    <Compile Include="Models\PointByADM.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Specification.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

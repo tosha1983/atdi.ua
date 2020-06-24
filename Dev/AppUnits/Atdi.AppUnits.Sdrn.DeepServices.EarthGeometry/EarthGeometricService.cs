@@ -12,14 +12,10 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
 {
     public class EarthGeometricService : IEarthGeometricService
     {
-
-
         public EarthGeometricService()
         {
           
         }
-
-
 
         private double CalcSquare(in GeometryArgs geometryArgs)
         {
