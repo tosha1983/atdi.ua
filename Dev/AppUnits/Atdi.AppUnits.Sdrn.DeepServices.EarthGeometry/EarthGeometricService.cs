@@ -156,13 +156,28 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
         /// <param name="distance"></param>
         /// <param name="azimuth"></param>
         /// <returns></returns>
-        private PointEarthGeometric CalculationCoordinateByLengthAndAzimuth(double longitude, double latitude, double distance, double azimuth)
+        public PointEarthGeometric CalculationCoordinateByLengthAndAzimuth(double longitude, double latitude, double distance, double azimuth, bool LargeCircleArc = true)
         {
-            var R = 6371000.0;
+            var R = 6371.0;
             var point = new PointEarthGeometric();
-            point.Longitude = longitude + distance * Math.Sin(azimuth * Math.PI / 180.0) / Math.Cos(latitude * Math.PI / 180.0) / (R * Math.PI / 180.0);
-            point.Latitude = latitude + distance * Math.Cos(azimuth * Math.PI / 180.0) / (R * Math.PI / 180.0);
+            if (LargeCircleArc)
+            {
+                double arcDist = distance/R;
+                var newLat = Math.Sin(latitude * Math.PI / 180.0) * Math.Cos(arcDist) +
+                    Math.Cos(latitude * Math.PI / 180.0) * Math.Sin(arcDist) * Math.Cos(azimuth * Math.PI / 180.00);
+                point.Latitude = 180*Math.Asin(newLat)/Math.PI;
+                var newLon = Math.Sin(arcDist) * Math.Sin(azimuth * Math.PI / 180.0) /
+                    (Math.Cos(latitude * Math.PI / 180.0) * Math.Cos(arcDist) -
+                    Math.Sin(latitude * Math.PI / 180.0) * Math.Sin(arcDist) * Math.Cos(azimuth * Math.PI / 180.0));
+                point.Longitude = longitude + 180*Math.Atan(newLon)/Math.PI;
+            }
+            else
+            {
+                point.Longitude = longitude + distance * Math.Sin(azimuth * Math.PI / 180.0) / Math.Cos(latitude * Math.PI / 180.0) / (R * Math.PI / 180.0);
+                point.Latitude = latitude + distance * Math.Cos(azimuth * Math.PI / 180.0) / (R * Math.PI / 180.0);
+            }
             return point;
+
         }
 
 
