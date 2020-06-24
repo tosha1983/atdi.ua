@@ -48,6 +48,7 @@ namespace Atdi.Test.Platform.SG
                     host.Container.Register<IEarthGeometricService, EarthGeometricService>(ServiceLifetime.PerThread);
                     var resolver = host.Container.GetResolver<IServicesResolver>();
                     var transformation = resolver.Resolve<ITransformation>();
+                    var earthGeometricServiceServices = resolver.Resolve<IEarthGeometricService>();
                     var logger = resolver.Resolve<ILogger>();
 
                     //var Longitude = 36.2527;
@@ -73,32 +74,121 @@ namespace Atdi.Test.Platform.SG
                     //}
 
 
-                    
-                    var idwmServices = resolver.Resolve<IIdwmService>();
-                    var point = new Point() { Longitude_dec = 25.23193315, Latitude_dec = 47.98992167 };
-                    var adm = idwmServices.GetADMByPoint(in point);
-                    var point2 = new PointByADM () { Longitude_dec = 23.97, Latitude_dec = 50.03, Administration = "POL" };
-
-                    var resultPoint = new Point();
-                    idwmServices.GetNearestPointByADM(in point2, ref resultPoint);
-
-                    var tx= new PointAndDistance()
-                    {
-                        Distance = 100,
-                        Longitude_dec = 23.97,
-                        Latitude_dec = 50.03
-                    };
-                    AdministrationsResult[] administrationsResults = new AdministrationsResult[100];
-                    idwmServices.GetADMByPointAndDistance(in tx, ref administrationsResults, out int SizeBuffer);
-                    Console.WriteLine("Adm: " + adm);
+                    /*
+                  var idwmServices = resolver.Resolve<IIdwmService>();
 
 
-                    GeometryArgs geometryArgs = new GeometryArgs()
-                    {
-                         TypeGeometryObject = TypeGeometryObject.Points,
+                  var point = new Point() { Longitude_dec = 25.23193315, Latitude_dec = 47.98992167 };
+                  var adm = idwmServices.GetADMByPoint(in point);
+                  var point2 = new PointByADM () { Longitude_dec = 23.97, Latitude_dec = 50.03, Administration = "POL" };
 
-                        Points = new PointEarthGeometric[8]
-                        {
+                  var resultPoint = new Point();
+                  idwmServices.GetNearestPointByADM(in point2, ref resultPoint);
+
+                  var tx= new PointAndDistance()
+                  {
+                      Distance = 100,
+                      Longitude_dec = 23.97,
+                      Latitude_dec = 50.03
+                  };
+                  AdministrationsResult[] administrationsResults = new AdministrationsResult[100];
+                  idwmServices.GetADMByPointAndDistance(in tx, ref administrationsResults, out int SizeBuffer);
+                  Console.WriteLine("Adm: " + adm);
+
+
+                  GeometryArgs geometryArgs = new GeometryArgs()
+                  {
+                       TypeGeometryObject = TypeGeometryObject.Points,
+
+                      Points = new PointEarthGeometric[8]
+                      {
+                           new PointEarthGeometric()
+                           {
+                                Longitude_dec = 20,
+                                Latitude_dec = 10
+                           },
+                           new PointEarthGeometric()
+                           {
+                                Longitude_dec = 16,
+                                Latitude_dec = 12
+                           },
+                           new PointEarthGeometric()
+                           {
+                                Longitude_dec = 14,
+                                Latitude_dec = 15
+                           },
+                           new PointEarthGeometric()
+                           {
+                                Longitude_dec = 16,
+                                Latitude_dec = 18
+                           }
+                           ,
+                           new PointEarthGeometric()
+                           {
+                                Longitude_dec = 20,
+                                Latitude_dec = 30
+                           }
+                           ,
+                           new PointEarthGeometric()
+                           {
+                                Longitude_dec = 17,
+                                Latitude_dec = 18
+                           }
+                           ,
+                           new PointEarthGeometric()
+                           {
+                                Longitude_dec = 18,
+                                Latitude_dec = 15
+                           }
+                           ,
+                           new PointEarthGeometric()
+                           {
+                                Longitude_dec = 17,
+                                Latitude_dec = 12
+                           }
+                      }
+
+                      //Points = new  PointEarthGeometric[4]
+                      //{
+                      //     new PointEarthGeometric()
+                      //     {
+                      //          Longitude = 20,
+                      //          Latitude = 10
+                      //     },
+                      //     new PointEarthGeometric()
+                      //     {
+                      //          Longitude = 20,
+                      //          Latitude = 30
+                      //     },
+                      //     new PointEarthGeometric()
+                      //     {
+                      //          Longitude = 30,
+                      //          Latitude = 30
+                      //     },
+                      //     new PointEarthGeometric()
+                      //     {
+                      //          Longitude = 30,
+                      //          Latitude = 10
+                      //     }
+                      //}
+
+                  };
+                  PointEarthGeometric pointEarthGeometric = new PointEarthGeometric();
+
+
+                  var earthGeometricServiceServices = resolver.Resolve<IEarthGeometricService>();
+                  earthGeometricServiceServices.CalcBarycenter(in geometryArgs, ref pointEarthGeometric);
+
+
+                  PutPointToContourArgs geometryArgs2 = new PutPointToContourArgs()
+                  {
+                       PointEarthGeometricCalc = new PointEarthGeometric()
+                       {
+                           Longitude_dec = 22,
+                           Latitude_dec = 25
+                       },
+                      Points = new PointEarthGeometric[4]
+                       {
                              new PointEarthGeometric()
                              {
                                   Longitude_dec = 20,
@@ -106,195 +196,123 @@ namespace Atdi.Test.Platform.SG
                              },
                              new PointEarthGeometric()
                              {
-                                  Longitude_dec = 16,
-                                  Latitude_dec = 12
-                             },
-                             new PointEarthGeometric()
-                             {
-                                  Longitude_dec = 14,
-                                  Latitude_dec = 15
-                             },
-                             new PointEarthGeometric()
-                             {
-                                  Longitude_dec = 16,
-                                  Latitude_dec = 18
-                             }
-                             ,
-                             new PointEarthGeometric()
-                             {
                                   Longitude_dec = 20,
                                   Latitude_dec = 30
-                             }
-                             ,
+                             },
                              new PointEarthGeometric()
                              {
-                                  Longitude_dec = 17,
-                                  Latitude_dec = 18
-                             }
-                             ,
+                                  Longitude_dec = 30,
+                                  Latitude_dec = 30
+                             },
                              new PointEarthGeometric()
                              {
-                                  Longitude_dec = 18,
-                                  Latitude_dec = 15
+                                  Longitude_dec = 30,
+                                  Latitude_dec = 10
                              }
-                             ,
-                             new PointEarthGeometric()
-                             {
-                                  Longitude_dec = 17,
-                                  Latitude_dec = 12
-                             }
-                        }
+                       }
 
-                        //Points = new  PointEarthGeometric[4]
-                        //{
-                        //     new PointEarthGeometric()
-                        //     {
-                        //          Longitude = 20,
-                        //          Latitude = 10
-                        //     },
-                        //     new PointEarthGeometric()
-                        //     {
-                        //          Longitude = 20,
-                        //          Latitude = 30
-                        //     },
-                        //     new PointEarthGeometric()
-                        //     {
-                        //          Longitude = 30,
-                        //          Latitude = 30
-                        //     },
-                        //     new PointEarthGeometric()
-                        //     {
-                        //          Longitude = 30,
-                        //          Latitude = 10
-                        //     }
-                        //}
+                  };
+                  PointEarthGeometric pointEarthGeometric2 = new PointEarthGeometric();
 
-                    };
-                    PointEarthGeometric pointEarthGeometric = new PointEarthGeometric();
-
-                 
-                    var earthGeometricServiceServices = resolver.Resolve<IEarthGeometricService>();
-                    earthGeometricServiceServices.CalcBarycenter(in geometryArgs, ref pointEarthGeometric);
+                 earthGeometricServiceServices.PutPointToContour(in geometryArgs2, ref pointEarthGeometric2);
 
 
-                    PutPointToContourArgs geometryArgs2 = new PutPointToContourArgs()
-                    {
-                         PointEarthGeometricCalc = new PointEarthGeometric()
+
+
+                  ContourForStationByTriggerFieldStrengthsArgs contourForStationByTriggerFieldStrengthsArgs3 = new ContourForStationByTriggerFieldStrengthsArgs()
+                  {
+                       PointEarthGeometricCalc = new PointEarthGeometric()
+                       {
+                           Longitude_dec = 30,
+                           Latitude_dec = 50
+                       },
+                        Step_deg = 1,
+                        TriggerFieldStrength = 5.56
+                  };
+
+                  PointEarthGeometric[] pointEarthGeometric3 = new PointEarthGeometric[3];
+
+                  //earthGeometricServiceServices.CreateContourForStationByTriggerFieldStrengths((sourcePoint, destPoint) => CalcFieldStrength(sourcePoint, destPoint), in contourForStationByTriggerFieldStrengthsArgs3, ref pointEarthGeometric3, out int sizeBuffer);
+
+
+                  var arrPnts = new PointEarthGeometric[4]
+                       {
+                         new PointEarthGeometric()
                          {
-                             Longitude_dec = 22,
-                             Latitude_dec = 25
+                            Longitude_dec = 20,
+                            Latitude_dec = 40
                          },
-                        Points = new PointEarthGeometric[4]
+                         new PointEarthGeometric()
                          {
-                               new PointEarthGeometric()
-                               {
-                                    Longitude_dec = 20,
-                                    Latitude_dec = 10
-                               },
-                               new PointEarthGeometric()
-                               {
-                                    Longitude_dec = 20,
-                                    Latitude_dec = 30
-                               },
-                               new PointEarthGeometric()
-                               {
-                                    Longitude_dec = 30,
-                                    Latitude_dec = 30
-                               },
-                               new PointEarthGeometric()
-                               {
-                                    Longitude_dec = 30,
-                                    Latitude_dec = 10
-                               }
-                         }
-
-                    };
-                    PointEarthGeometric pointEarthGeometric2 = new PointEarthGeometric();
-
-                   earthGeometricServiceServices.PutPointToContour(in geometryArgs2, ref pointEarthGeometric2);
-
-
-
-
-                    ContourForStationByTriggerFieldStrengthsArgs contourForStationByTriggerFieldStrengthsArgs3 = new ContourForStationByTriggerFieldStrengthsArgs()
-                    {
-                         PointEarthGeometricCalc = new PointEarthGeometric()
-                         {
-                             Longitude_dec = 30,
-                             Latitude_dec = 50
-                         },
-                          Step_deg = 1,
-                          TriggerFieldStrength = 5.56
-                    };
-
-                    PointEarthGeometric[] pointEarthGeometric3 = new PointEarthGeometric[3];
-
-                    //earthGeometricServiceServices.CreateContourForStationByTriggerFieldStrengths((sourcePoint, destPoint) => CalcFieldStrength(sourcePoint, destPoint), in contourForStationByTriggerFieldStrengthsArgs3, ref pointEarthGeometric3, out int sizeBuffer);
-
-
-                    var arrPnts = new PointEarthGeometric[4]
-                         {
-                           new PointEarthGeometric()
-                           {
-                              Longitude_dec = 20,
-                              Latitude_dec = 40
-                           },
-                           new PointEarthGeometric()
-                           {
-                              Longitude_dec = 30,
-                              Latitude_dec = 40
-                           },
-                           new PointEarthGeometric()
-                           {
-                              Longitude_dec = 30,
-                              Latitude_dec = 30
-                           },
-                           new PointEarthGeometric()
-                           {
-                              Longitude_dec = 20,
-                              Latitude_dec = 30
-                           }
-                         };
-                    PointEarthGeometric pointEarthGeometricR = new PointEarthGeometric();
-                    earthGeometricServiceServices.CalcBarycenter( new GeometryArgs() { Points = arrPnts, TypeGeometryObject = TypeGeometryObject.Points} , ref pointEarthGeometricR);
-                    var arg = new ContourFromContureByDistanceArgs()
-                    {
-                        ContourPoints = arrPnts,
-                        Distance_m = 10000,
-                        PointBaryCenter = pointEarthGeometricR,
-                        Step_deg = 1
-                    };
-
-                    PointEarthGeometricWithAzimuth[] pointEarthGeometricPtx = new PointEarthGeometricWithAzimuth[1000];
-                    earthGeometricServiceServices.CreateContourFromContureByDistance(in arg, ref pointEarthGeometricPtx, out int pointLength);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                    ContourFromPointByDistanceArgs contourContourFromPointByDistanceArgs4 = new ContourFromPointByDistanceArgs()
-                    {
-                        PointEarthGeometricCalc = new PointEarthGeometric()
-                        {
                             Longitude_dec = 30,
-                            Latitude_dec = 50
-                        },
-                        Step_deg = 7,
-                        Distance_m = 2000.0
+                            Latitude_dec = 40
+                         },
+                         new PointEarthGeometric()
+                         {
+                            Longitude_dec = 30,
+                            Latitude_dec = 30
+                         },
+                         new PointEarthGeometric()
+                         {
+                            Longitude_dec = 20,
+                            Latitude_dec = 30
+                         }
+                       };
+                  PointEarthGeometric pointEarthGeometricR = new PointEarthGeometric();
+                  earthGeometricServiceServices.CalcBarycenter( new GeometryArgs() { Points = arrPnts, TypeGeometryObject = TypeGeometryObject.Points} , ref pointEarthGeometricR);
+                  var arg = new ContourFromContureByDistanceArgs()
+                  {
+                      ContourPoints = arrPnts,
+                      Distance_m = 10000,
+                      PointBaryCenter = pointEarthGeometricR,
+                      Step_deg = 1
+                  };
+
+                  PointEarthGeometricWithAzimuth[] pointEarthGeometricPtx = new PointEarthGeometricWithAzimuth[1000];
+                  earthGeometricServiceServices.CreateContourFromContureByDistance(in arg, ref pointEarthGeometricPtx, out int pointLength);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                  ContourFromPointByDistanceArgs contourContourFromPointByDistanceArgs4 = new ContourFromPointByDistanceArgs()
+                  {
+                      PointEarthGeometricCalc = new PointEarthGeometric()
+                      {
+                          Longitude_dec = 30,
+                          Latitude_dec = 50
+                      },
+                      Step_deg = 7,
+                      Distance_m = 2000.0
+                  };
+
+                  PointEarthGeometric[] pointEarthGeometric4 = new PointEarthGeometric[3000];
+
+                  earthGeometricServiceServices.CreateContourFromPointByDistance(in contourContourFromPointByDistanceArgs4, ref pointEarthGeometric4, out int sizeBuffer4);
+                  */
+
+                    var source = new PointEarthGeometricArgs()
+                    {
+                        Longitude = 30,
+                        Latitude = 50
+                    };
+                    var target = new PointEarthGeometricArgs()
+                    {
+                        Longitude = 30,
+                        Latitude = 50.1
                     };
 
-                    PointEarthGeometric[] pointEarthGeometric4 = new PointEarthGeometric[3000];
+                    var d = earthGeometricServiceServices.GetDistance_km(in source, in target, CoordinateUnits.deg);
 
-                    earthGeometricServiceServices.CreateContourFromPointByDistance(in contourContourFromPointByDistanceArgs4, ref pointEarthGeometric4, out int sizeBuffer4);
                 }
                 catch (Exception e)
                 {

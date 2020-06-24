@@ -156,13 +156,28 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
         /// <param name="distance"></param>
         /// <param name="azimuth"></param>
         /// <returns></returns>
-        private PointEarthGeometric CalculationCoordinateByLengthAndAzimuth(double longitude, double latitude, double distance, double azimuth)
+        public PointEarthGeometric CalculationCoordinateByLengthAndAzimuth(double longitude, double latitude, double distance, double azimuth, bool LargeCircleArc = true)
         {
-            var R = 6371000.0;
+            var R = 6371.0;
             var point = new PointEarthGeometric();
-            point.Longitude_dec = longitude + distance * Math.Sin(azimuth * Math.PI / 180.0) / Math.Cos(latitude * Math.PI / 180.0) / (R * Math.PI / 180.0);
-            point.Latitude_dec = latitude + distance * Math.Cos(azimuth * Math.PI / 180.0) / (R * Math.PI / 180.0);
+            if (LargeCircleArc)
+            {
+                double arcDist = distance / R;
+                var newLat = Math.Sin(latitude * Math.PI / 180.0) * Math.Cos(arcDist) +
+                    Math.Cos(latitude * Math.PI / 180.0) * Math.Sin(arcDist) * Math.Cos(azimuth * Math.PI / 180.00);
+                point.Latitude_dec = 180 * Math.Asin(newLat) / Math.PI;
+                var newLon = Math.Sin(arcDist) * Math.Sin(azimuth * Math.PI / 180.0) /
+                    (Math.Cos(latitude * Math.PI / 180.0) * Math.Cos(arcDist) -
+                    Math.Sin(latitude * Math.PI / 180.0) * Math.Sin(arcDist) * Math.Cos(azimuth * Math.PI / 180.0));
+                point.Longitude_dec = longitude + 180 * Math.Atan(newLon) / Math.PI;
+            }
+            else
+            {
+                point.Longitude_dec = longitude + distance * Math.Sin(azimuth * Math.PI / 180.0) / Math.Cos(latitude * Math.PI / 180.0) / (R * Math.PI / 180.0);
+                point.Latitude_dec = latitude + distance * Math.Cos(azimuth * Math.PI / 180.0) / (R * Math.PI / 180.0);
+            }
             return point;
+
         }
 
 
@@ -250,103 +265,9 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
 
         public void CreateContourFromContureByDistance(in ContourFromContureByDistanceArgs contourFromContureByDistanceArgs, ref PointEarthGeometricWithAzimuth[] pointEarthGeometricWithAzimuth, out int sizeResultBuffer)
         {
-            int index = 0;
-            for (double azimuth = 0; azimuth < 360; azimuth = index * contourFromContureByDistanceArgs.Step_deg)
-            {
-                var coordRecalc = CalculationCoordinateByLengthAndAzimuth(contourFromContureByDistanceArgs.PointBaryCenter.Longitude_dec, contourFromContureByDistanceArgs.PointBaryCenter.Latitude_dec, contourFromContureByDistanceArgs.Distance_m, azimuth);
-
-
-                var line2 = new LineEarthGeometric()
-                {
-                    PointEarthGeometric1 = contourFromContureByDistanceArgs.PointBaryCenter,
-                    PointEarthGeometric2 = coordRecalc
-                };
-
-                for (int i = 0; i < contourFromContureByDistanceArgs.ContourPoints.Length - 1; i++)
-                {
-                    var line = new LineEarthGeometric()
-                    {
-                        PointEarthGeometric1 = contourFromContureByDistanceArgs.ContourPoints[i],
-                        PointEarthGeometric2 = contourFromContureByDistanceArgs.ContourPoints[i + 1]
-                    };
-
-                    var x = intersect(line, line2);
-                }
-
-                index++;
-            }
+          
             sizeResultBuffer = 0;
         }
 
-
-
-        public bool intersect(LineEarthGeometric p1, LineEarthGeometric p2)
-        {
-
-            //если первый отрезок вертикальный
-            if (p1.PointEarthGeometric1.Longitude_dec - p1.PointEarthGeometric2.Longitude_dec == 0)
-            {
-
-                //найдём Xa, Ya - точки пересечения двух прямых
-                double Xa = p1.PointEarthGeometric1.Longitude_dec;
-                double A2 = (p2.PointEarthGeometric1.Latitude_dec - p2.PointEarthGeometric2.Latitude_dec) / (p2.PointEarthGeometric1.Longitude_dec - p2.PointEarthGeometric2.Longitude_dec);
-                double b2 = p2.PointEarthGeometric1.Latitude_dec - A2 * p2.PointEarthGeometric1.Longitude_dec;
-                double Ya = A2 * Xa + b2;
-
-                if (p2.PointEarthGeometric1.Longitude_dec <= Xa && p2.PointEarthGeometric2.Longitude_dec >= Xa && Math.Min(p1.PointEarthGeometric1.Latitude_dec, p1.PointEarthGeometric2.Latitude_dec) <= Ya &&
-                        Math.Max(p1.PointEarthGeometric1.Latitude_dec, p1.PointEarthGeometric2.Latitude_dec) >= Ya)
-                {
-
-                    return true;
-                }
-
-                return false;
-            }
-            //если второй отрезок вертикальный
-            else if (p2.PointEarthGeometric1.Longitude_dec - p2.PointEarthGeometric2.Longitude_dec == 0)
-            {
-
-                //найдём Xa, Ya - точки пересечения двух прямых
-                double Xa = p2.PointEarthGeometric1.Longitude_dec;
-                double A2 = (p1.PointEarthGeometric1.Latitude_dec - p1.PointEarthGeometric2.Latitude_dec) / (p1.PointEarthGeometric1.Longitude_dec - p1.PointEarthGeometric2.Longitude_dec);
-                double b2 = p1.PointEarthGeometric1.Latitude_dec - A2 * p1.PointEarthGeometric1.Longitude_dec;
-                double Ya = A2 * Xa + b2;
-
-                if (p1.PointEarthGeometric1.Longitude_dec <= Xa && p1.PointEarthGeometric2.Longitude_dec >= Xa && Math.Min(p2.PointEarthGeometric1.Latitude_dec, p2.PointEarthGeometric2.Latitude_dec) <= Ya &&
-                        Math.Max(p2.PointEarthGeometric1.Latitude_dec, p2.PointEarthGeometric2.Latitude_dec) >= Ya)
-                {
-
-                    return true;
-                }
-
-                return false;
-            }
-            else
-            {
-
-
-
-                double A1 = (p1.PointEarthGeometric1.Latitude_dec - p1.PointEarthGeometric2.Latitude_dec) / (p1.PointEarthGeometric1.Longitude_dec - p1.PointEarthGeometric2.Longitude_dec);
-                double A2 = (p2.PointEarthGeometric1.Latitude_dec - p2.PointEarthGeometric2.Latitude_dec) / (p2.PointEarthGeometric1.Longitude_dec - p2.PointEarthGeometric2.Longitude_dec);
-                double b1 = p1.PointEarthGeometric1.Latitude_dec - A1 * p1.PointEarthGeometric1.Longitude_dec;
-                double b2 = p2.PointEarthGeometric1.Latitude_dec - A2 * p2.PointEarthGeometric1.Longitude_dec;
-
-                if (A1 == A2)
-                {
-                    return false; //отрезки параллельны
-                }
-
-                double Xa = (b2 - b1) / (A1 - A2);
-
-                if ((Xa < Math.Max(p1.PointEarthGeometric1.Longitude_dec, p2.PointEarthGeometric1.Longitude_dec)) || (Xa > Math.Min(p1.PointEarthGeometric2.Longitude_dec, p2.PointEarthGeometric2.Longitude_dec)))
-                {
-                    return false; //точка Xa находится вне пересечения проекций отрезков на ось X 
-                }
-                else
-                {
-                    return true;
-                }
-            }
-        }
     }
 }

@@ -17,7 +17,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.IDWM
         /// <returns></returns>
         public string GetADMByPoint(in Point point)
         {
-            return SdrnsControllerWcfClientIWorldMapApi.GetADMByPoint(new WCF.Point() { Longitude = point.Longitude, Latitude = point.Latitude });
+            return SdrnsControllerWcfClientIWorldMapApi.GetADMByPoint(new WCF.Point() { Longitude = point.Longitude_dec, Latitude = point.Latitude_dec });
         }
 
 
@@ -28,11 +28,11 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.IDWM
         /// <returns></returns>
         public void GetNearestPointByADM(in PointByADM pointByADM, ref Point resultPoint)
         {
-            var val = SdrnsControllerWcfClientIWorldMapApi.GetNearestPointByADM(new WCF.PointByADM() { Longitude = pointByADM.Longitude, Latitude = pointByADM.Latitude, Administration = pointByADM.Administration });
+            var val = SdrnsControllerWcfClientIWorldMapApi.GetNearestPointByADM(new WCF.PointByADM() { Longitude = pointByADM.Longitude_dec, Latitude = pointByADM.Latitude_dec, Administration = pointByADM.Administration });
             if (val!=null)
             {
-                resultPoint.Longitude = val.Longitude;
-                resultPoint.Latitude = val.Latitude;
+                resultPoint.Longitude_dec = val.Longitude;
+                resultPoint.Latitude_dec = val.Latitude;
             }
         }
 
@@ -45,7 +45,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.IDWM
         public void GetADMByPointAndDistance(in PointAndDistance pointAndDistance, ref AdministrationsResult[] administrationsResult, out int sizeResultBuffer)
         {
            sizeResultBuffer = 0;
-           var val = SdrnsControllerWcfClientIWorldMapApi.GetADMByPointAndDistance(new WCF.PointAndDistance() { Longitude = pointAndDistance.Longitude, Latitude = pointAndDistance.Latitude, Distance = pointAndDistance.Distance });
+           var val = SdrnsControllerWcfClientIWorldMapApi.GetADMByPointAndDistance(new WCF.PointAndDistance() { Longitude = pointAndDistance.Longitude_dec, Latitude = pointAndDistance.Latitude_dec, Distance = pointAndDistance.Distance });
            if ((val!=null) && (val.Length>0))
            {
                 sizeResultBuffer = val.Length;
@@ -54,7 +54,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.IDWM
                     administrationsResult[i].Administration = val[i].Administration;
                     administrationsResult[i].Azimuth = val[i].Azimuth;
                     administrationsResult[i].Distance = val[i].Distance;
-                    administrationsResult[i].Point = new Point() { Longitude = val[i].Point.Longitude, Latitude = val[i].Point.Latitude };
+                    administrationsResult[i].Point = new Point() { Longitude_dec = val[i].Point.Longitude, Latitude_dec = val[i].Point.Latitude };
                 }
            }
         }
