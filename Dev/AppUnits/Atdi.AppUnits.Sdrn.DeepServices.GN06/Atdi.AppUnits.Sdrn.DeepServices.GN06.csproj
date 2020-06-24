@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -42,8 +43,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppServerComponent.cs" />
+    <Compile Include="Calculation\EstimationAssignmentsCalculation.cs" />
+    <Compile Include="Calculation\ForTypeNetwork\EstimationAssignmentsCalculationRN4.cs" />
+    <Compile Include="Calculation\ForTypeNetwork\EstimationAssignmentsCalculationRN3.cs" />
+    <Compile Include="Calculation\ForTypeNetwork\EstimationAssignmentsCalculationRN2.cs" />
+    <Compile Include="Calculation\ForTypeNetwork\EstimationAssignmentsCalculationRN1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Specification.cs" />
+    <Compile Include="EstimationAssignmentsService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeepServices.GN06\Atdi.Contracts.Sdrn.DeepServices.GN06.csproj">
