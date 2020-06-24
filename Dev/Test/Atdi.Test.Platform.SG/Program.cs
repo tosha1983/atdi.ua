@@ -18,8 +18,8 @@ using Atdi.Contracts.Sdrn.DeepServices.EarthGeometry;
 using Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry;
 using Atdi.DataModels.Sdrn.DeepServices.EarthGeometry;
 using System.Runtime.InteropServices;
-
 using System.Runtime.CompilerServices;
+using System.ServiceModel;
 
 
 namespace Atdi.Test.Platform.SG
@@ -40,6 +40,8 @@ namespace Atdi.Test.Platform.SG
                 try
                 {
                     host.Start();
+
+
 
                     host.Container.Register<IIdwmService, IdwmService>(ServiceLifetime.PerThread);
                     host.Container.Register<ITransformation, TransformationService>(ServiceLifetime.PerThread);

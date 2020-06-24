@@ -4,17 +4,17 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A6A627D5-CB40-4A2D-A4BB-3E7752EE53CA}</ProjectGuid>
+    <ProjectGuid>{9CA1F84F-B1F1-42BA-AA39-91F3A1C5CECB}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Atdi.AppServer.Sdrn.CalcServer.Console.SG</RootNamespace>
-    <AssemblyName>Atdi.AppServer.Sdrn.CalcServer.Console.SG</AssemblyName>
+    <RootNamespace>Atdi.AppServer.Sdrn.DeepServices.IDWM.WcfService.Console32.AK</RootNamespace>
+    <AssemblyName>Atdi.AppServer.Sdrn.DeepServices.IDWM.WcfService.Console32.AK</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -22,7 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -48,15 +48,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Contracts\WcfServices\Atdi.Contracts.WcfServices.Sdrn.DeepServices.IDWM\Atdi.Contracts.WcfServices.Sdrn.DeepServices.IDWM.csproj">
-      <Project>{5952d983-fffd-4dcd-bdb7-b0f02571b5dd}</Project>
-      <Name>Atdi.Contracts.WcfServices.Sdrn.DeepServices.IDWM</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Platform\Atdi.Platform.Configurator\Atdi.Platform.Configurator.csproj">
       <Project>{98e79b80-3176-4cad-b7ba-b5caa6752fab}</Project>
       <Name>Atdi.Platform.Configurator</Name>
