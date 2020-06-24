@@ -41,8 +41,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ContourFromContureByDistanceArgs.cs" />
     <Compile Include="ContourFromPointByDistanceArgs.cs" />
     <Compile Include="ContourForStationByTriggerFieldStrengthsArgs.cs" />
+    <Compile Include="Enums\CoordinateUnits.cs" />
+    <Compile Include="LineEarthGeometric.cs" />
+    <Compile Include="PointEarthGeometricWithAzimuth.cs" />
+    <Compile Include="PointEarthGeometricArgs.cs" />
     <Compile Include="PutPointToContourArgs.cs" />
     <Compile Include="PointEarthGeometric.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

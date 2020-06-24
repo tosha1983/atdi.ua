@@ -30,7 +30,7 @@ namespace Atdi.Contracts.Sdrn.DeepServices.EarthGeometry
         /// <param name="contourForStationByTriggerFieldStrengthsArgs"></param>
         /// <param name="pointResult"></param>
         /// <param name="sizeResultBuffer"></param>
-        void CreateContourForStationByTriggerFieldStrengths(in ContourForStationByTriggerFieldStrengthsArgs contourForStationByTriggerFieldStrengthsArgs, ref PointEarthGeometric[] pointResult, out int sizeResultBuffer);
+        void CreateContourForStationByTriggerFieldStrengths(Func<PointEarthGeometric, PointEarthGeometric, double> calcFieldStrengths, in ContourForStationByTriggerFieldStrengthsArgs contourForStationByTriggerFieldStrengthsArgs, ref PointEarthGeometric[] pointResult, out int sizeResultBuffer);
 
         /// <summary>
         /// Функция по формированию контура от точки
@@ -40,5 +40,33 @@ namespace Atdi.Contracts.Sdrn.DeepServices.EarthGeometry
         /// <param name="pointResult"></param>
         /// <param name="sizeResultBuffer"></param>
         void CreateContourFromPointByDistance(in ContourFromPointByDistanceArgs contourFromPointByDistanceArgs, ref PointEarthGeometric[] pointResult, out int sizeResultBuffer);
+
+        /// <summary>
+        /// Функция определения расстояния между двумя заданными точками
+        /// </summary>
+        /// <param name="sourcePointAgs"></param>
+        /// <param name="targetPointArgs"></param>
+        /// <param name="coordinateUnits"></param>
+        /// <returns></returns>
+        double GetDistance_km(in PointEarthGeometricArgs sourcePointAgs, in PointEarthGeometricArgs targetPointArgs, CoordinateUnits coordinateUnits = CoordinateUnits.m);
+
+        /// <summary>
+        /// Определение азимута
+        /// </summary>
+        /// <param name="sourcePointAgs"></param>
+        /// <param name="targetPointArgs"></param>
+        /// <param name="coordinateUnits"></param>
+        /// <returns></returns>
+        double GetAzimut(in PointEarthGeometricArgs sourcePointAgs, in PointEarthGeometricArgs targetPointArgs, CoordinateUnits coordinateUnits = CoordinateUnits.m);
+
+        /// <summary>
+        /// Функция по формированию контура от контура
+        /// </summary>
+        /// <param name="contourFromContureByDistanceArgs"></param>
+        /// <param name="pointEarthGeometricWithAzimuth"></param>
+        /// <param name="sizeResultBuffer"></param>
+        void CreateContourFromContureByDistance(in ContourFromContureByDistanceArgs contourFromContureByDistanceArgs, ref PointEarthGeometricWithAzimuth[] pointEarthGeometricWithAzimuth, out int sizeResultBuffer);
+
+
     }
 }

@@ -11,8 +11,8 @@ namespace Atdi.DataModels.Sdrn.DeepServices.IDWM
 	/// </summary>
 	public struct PointByADM
     {
-		public double Longitude;
-		public double Latitude;
+		public double Longitude_dec;
+		public double Latitude_dec;
         public string Administration;
 	}
 }

@@ -47,7 +47,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.IDWM
         {
             if (_isIdwmInit)
             {
-                return _idwmVal.GetCountry(IdwmNET.Idwm.DecToRadian((float)point.Longitude), IdwmNET.Idwm.DecToRadian((float)point.Latitude));
+                return _idwmVal.GetCountry(IdwmNET.Idwm.DecToRadian((float)point.Longitude_dec), IdwmNET.Idwm.DecToRadian((float)point.Latitude_dec));
             }
             else
             {
@@ -65,14 +65,14 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.IDWM
             string administration = pointByADM.Administration;
             if (_isIdwmInit)
             {
-                var nearestCountries = _idwmVal.GetNearestCountries(IdwmNET.Idwm.DecToRadian((float)pointByADM.Longitude), IdwmNET.Idwm.DecToRadian((float)pointByADM.Latitude), 100000, new string[] { }, 1000);
+                var nearestCountries = _idwmVal.GetNearestCountries(IdwmNET.Idwm.DecToRadian((float)pointByADM.Longitude_dec), IdwmNET.Idwm.DecToRadian((float)pointByADM.Latitude_dec), 100000, new string[] { }, 1000);
                 if ((nearestCountries != null) && (nearestCountries.Length > 0))
                 {
                     var findNearestCountries = nearestCountries.ToList().Find(x => x.country == administration);
                     if (findNearestCountries != null)
                     {
-                        resultPoint.Longitude = ((float)((findNearestCountries.rLongitude * 180) / Math.PI));
-                        resultPoint.Latitude = ((float)((findNearestCountries.rLatitude * 180) / Math.PI));
+                        resultPoint.Longitude_dec = ((float)((findNearestCountries.rLongitude * 180) / Math.PI));
+                        resultPoint.Latitude_dec = ((float)((findNearestCountries.rLatitude * 180) / Math.PI));
                     }
                 }
             }
@@ -99,7 +99,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.IDWM
             sizeResultBuffer = 0;
             if (_isIdwmInit)
             {
-                var nearesCountries = _idwmVal.GetNearestCountries(IdwmNET.Idwm.DecToRadian((float)pointAndDistance.Longitude), IdwmNET.Idwm.DecToRadian((float)pointAndDistance.Latitude), pointAndDistance.Distance, new string[] { }, 1000);
+                var nearesCountries = _idwmVal.GetNearestCountries(IdwmNET.Idwm.DecToRadian((float)pointAndDistance.Longitude_dec), IdwmNET.Idwm.DecToRadian((float)pointAndDistance.Latitude_dec), pointAndDistance.Distance, new string[] { }, 1000);
                 if ((nearesCountries != null) && (nearesCountries.Length > 0))
                 {
                     for (int i = 0; i < nearesCountries.Length; i++)
@@ -107,8 +107,8 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.IDWM
                         administrationsResult[i].Administration = nearesCountries[i].country;
                         administrationsResult[i].Azimuth = nearesCountries[i].azimuth;
                         administrationsResult[i].Distance = nearesCountries[i].distance;
-                        administrationsResult[i].Point.Longitude = ((float)((nearesCountries[i].rLongitude * 180) / Math.PI));
-                        administrationsResult[i].Point.Latitude = ((float)((nearesCountries[i].rLatitude * 180) / Math.PI));
+                        administrationsResult[i].Point.Longitude_dec = ((float)((nearesCountries[i].rLongitude * 180) / Math.PI));
+                        administrationsResult[i].Point.Latitude_dec = ((float)((nearesCountries[i].rLatitude * 180) / Math.PI));
                     }
                     sizeResultBuffer = nearesCountries.Length;
                 }

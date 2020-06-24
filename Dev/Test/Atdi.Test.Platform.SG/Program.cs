@@ -73,9 +73,9 @@ namespace Atdi.Test.Platform.SG
 
                     
                     var idwmServices = resolver.Resolve<IIdwmService>();
-                    var point = new Point() { Longitude = 25.23193315, Latitude = 47.98992167 };
+                    var point = new Point() { Longitude_dec = 25.23193315, Latitude_dec = 47.98992167 };
                     var adm = idwmServices.GetADMByPoint(in point);
-                    var point2 = new PointByADM () { Longitude = 23.97, Latitude = 50.03, Administration = "POL" };
+                    var point2 = new PointByADM () { Longitude_dec = 23.97, Latitude_dec = 50.03, Administration = "POL" };
 
                     var resultPoint = new Point();
                     idwmServices.GetNearestPointByADM(in point2, ref resultPoint);
@@ -83,8 +83,8 @@ namespace Atdi.Test.Platform.SG
                     var tx= new PointAndDistance()
                     {
                         Distance = 100,
-                        Longitude = 23.97,
-                        Latitude = 50.03
+                        Longitude_dec = 23.97,
+                        Latitude_dec = 50.03
                     };
                     AdministrationsResult[] administrationsResults = new AdministrationsResult[100];
                     idwmServices.GetADMByPointAndDistance(in tx, ref administrationsResults, out int SizeBuffer);
@@ -99,47 +99,47 @@ namespace Atdi.Test.Platform.SG
                         {
                              new PointEarthGeometric()
                              {
-                                  Longitude = 20,
-                                  Latitude = 10
+                                  Longitude_dec = 20,
+                                  Latitude_dec = 10
                              },
                              new PointEarthGeometric()
                              {
-                                  Longitude = 16,
-                                  Latitude = 12
+                                  Longitude_dec = 16,
+                                  Latitude_dec = 12
                              },
                              new PointEarthGeometric()
                              {
-                                  Longitude = 14,
-                                  Latitude = 15
+                                  Longitude_dec = 14,
+                                  Latitude_dec = 15
                              },
                              new PointEarthGeometric()
                              {
-                                  Longitude = 16,
-                                  Latitude = 18
+                                  Longitude_dec = 16,
+                                  Latitude_dec = 18
                              }
                              ,
                              new PointEarthGeometric()
                              {
-                                  Longitude = 20,
-                                  Latitude = 30
+                                  Longitude_dec = 20,
+                                  Latitude_dec = 30
                              }
                              ,
                              new PointEarthGeometric()
                              {
-                                  Longitude = 17,
-                                  Latitude = 18
+                                  Longitude_dec = 17,
+                                  Latitude_dec = 18
                              }
                              ,
                              new PointEarthGeometric()
                              {
-                                  Longitude = 18,
-                                  Latitude = 15
+                                  Longitude_dec = 18,
+                                  Latitude_dec = 15
                              }
                              ,
                              new PointEarthGeometric()
                              {
-                                  Longitude = 17,
-                                  Latitude = 12
+                                  Longitude_dec = 17,
+                                  Latitude_dec = 12
                              }
                         }
 
@@ -179,30 +179,30 @@ namespace Atdi.Test.Platform.SG
                     {
                          PointEarthGeometricCalc = new PointEarthGeometric()
                          {
-                             Longitude = 22,
-                             Latitude = 25
+                             Longitude_dec = 22,
+                             Latitude_dec = 25
                          },
                         Points = new PointEarthGeometric[4]
                          {
                                new PointEarthGeometric()
                                {
-                                    Longitude = 20,
-                                    Latitude = 10
+                                    Longitude_dec = 20,
+                                    Latitude_dec = 10
                                },
                                new PointEarthGeometric()
                                {
-                                    Longitude = 20,
-                                    Latitude = 30
+                                    Longitude_dec = 20,
+                                    Latitude_dec = 30
                                },
                                new PointEarthGeometric()
                                {
-                                    Longitude = 30,
-                                    Latitude = 30
+                                    Longitude_dec = 30,
+                                    Latitude_dec = 30
                                },
                                new PointEarthGeometric()
                                {
-                                    Longitude = 30,
-                                    Latitude = 10
+                                    Longitude_dec = 30,
+                                    Latitude_dec = 10
                                }
                          }
 
@@ -218,26 +218,75 @@ namespace Atdi.Test.Platform.SG
                     {
                          PointEarthGeometricCalc = new PointEarthGeometric()
                          {
-                              Longitude = 30,
-                               Latitude = 50
+                             Longitude_dec = 30,
+                             Latitude_dec = 50
                          },
                           Step_deg = 1,
-                          TriggerFieldStrength = 0.56
+                          TriggerFieldStrength = 5.56
                     };
 
                     PointEarthGeometric[] pointEarthGeometric3 = new PointEarthGeometric[3];
 
-                    earthGeometricServiceServices.CreateContourForStationByTriggerFieldStrengths(in contourForStationByTriggerFieldStrengthsArgs3, ref pointEarthGeometric3, out int sizeBuffer);
+                    //earthGeometricServiceServices.CreateContourForStationByTriggerFieldStrengths((sourcePoint, destPoint) => CalcFieldStrength(sourcePoint, destPoint), in contourForStationByTriggerFieldStrengthsArgs3, ref pointEarthGeometric3, out int sizeBuffer);
+
+
+                    var arrPnts = new PointEarthGeometric[4]
+                         {
+                           new PointEarthGeometric()
+                           {
+                              Longitude_dec = 20,
+                              Latitude_dec = 40
+                           },
+                           new PointEarthGeometric()
+                           {
+                              Longitude_dec = 30,
+                              Latitude_dec = 40
+                           },
+                           new PointEarthGeometric()
+                           {
+                              Longitude_dec = 30,
+                              Latitude_dec = 30
+                           },
+                           new PointEarthGeometric()
+                           {
+                              Longitude_dec = 20,
+                              Latitude_dec = 30
+                           }
+                         };
+                    PointEarthGeometric pointEarthGeometricR = new PointEarthGeometric();
+                    earthGeometricServiceServices.CalcBarycenter( new GeometryArgs() { Points = arrPnts, TypeGeometryObject = TypeGeometryObject.Points} , ref pointEarthGeometricR);
+                    var arg = new ContourFromContureByDistanceArgs()
+                    {
+                        ContourPoints = arrPnts,
+                        Distance_m = 10000,
+                        PointBaryCenter = pointEarthGeometricR,
+                        Step_deg = 1
+                    };
+
+                    PointEarthGeometricWithAzimuth[] pointEarthGeometricPtx = new PointEarthGeometricWithAzimuth[1000];
+                    earthGeometricServiceServices.CreateContourFromContureByDistance(in arg, ref pointEarthGeometricPtx, out int pointLength);
+
+
+
+
+
+
+
+
+
+
+
+
 
 
                     ContourFromPointByDistanceArgs contourContourFromPointByDistanceArgs4 = new ContourFromPointByDistanceArgs()
                     {
                         PointEarthGeometricCalc = new PointEarthGeometric()
                         {
-                            Longitude = 30,
-                            Latitude = 50
+                            Longitude_dec = 30,
+                            Latitude_dec = 50
                         },
-                        Step_deg = 0.5,
+                        Step_deg = 7,
                         Distance_m = 2000.0
                     };
 
@@ -258,5 +307,63 @@ namespace Atdi.Test.Platform.SG
             Console.WriteLine($"Server host was stopped. Press any key to exit ...");
             Console.ReadLine();
         }
+
+        private static double Deg2Rad(double deg)
+        {
+            return deg * (Math.PI / 180);
+        }
+
+        public static double getVal(double x, double all)
+        {
+            return x / all;
+        }
+
+        public static double CalcFieldStrength(PointEarthGeometric pointEarthGeometric1, PointEarthGeometric pointEarthGeometric2)
+        {
+            var dLat = Deg2Rad(pointEarthGeometric2.Latitude_dec - pointEarthGeometric1.Latitude_dec);
+            var dLon = Deg2Rad(pointEarthGeometric2.Longitude_dec - pointEarthGeometric1.Longitude_dec);
+            var a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) + Math.Cos(Deg2Rad(pointEarthGeometric1.Latitude_dec)) * Math.Cos(Deg2Rad(pointEarthGeometric2.Latitude_dec)) * Math.Sin(dLon / 2) * Math.Sin(dLon / 2);
+            var c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
+            var d = 6371 * c *1000;
+
+
+            if (d <= 50)
+            {
+                return getVal(d, 50);
+            }
+            else if ((d >= 50) && (d <= 1000))
+            {
+                return 1+ getVal(d, 1000);
+            }
+            else if ((d >= 1000) && (d <= 5000))
+            {
+                return 2+ getVal(d, 5000);
+            }
+            else if ((d >= 5000) && (d <= 10000))
+            {
+                return 3+ getVal(d, 10000);
+            }
+            else if ((d >= 10000) && (d <= 20000))
+            {
+                return 4+ getVal(d, 20000);
+            }
+            else if ((d >= 20000) && (d <= 50000))
+            {
+                return 5+ getVal(d, 50000);
+            }
+            else if ((d >= 50000) && (d <= 100000))
+            {
+                return 6+ getVal(d, 100000);
+            }
+            else if ((d >= 100000) && (d <= 500000))
+            {
+                return 7+ getVal(d, 500000);
+            }
+            else
+            {
+                return 9;
+            }
+        }
+
     }
 }

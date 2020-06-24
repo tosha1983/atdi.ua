@@ -12,6 +12,8 @@ using Atdi.Platform.Logging;
 using Atdi.DataModels.Sdrn.CalcServer.Internal.Clients;
 using Atdi.Platform.Data;
 using Atdi.Contracts.Sdrn.DeepServices.Gis;
+using Atdi.DataModels.Sdrn.DeepServices.EarthGeometry;
+using Atdi.Contracts.Sdrn.DeepServices.EarthGeometry;
 
 
 namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
@@ -156,14 +158,15 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         public static bool CompareGSIDWithBaseStations(string GCID1, string GCID2, string standard)
         {
             return (GCID1 == GCID2);
-            //return GCIDComparisonRR.Compare(standard, GCID1, GCID2);
         }
 
-        public static bool CompareGSIDAndDistanceWithBaseStations(string GCID1, string GCID2, string standard, ITransformation _transformation, double X1, double Y1, double X2, double Y2, int maxDistance, string projection)
+        public static bool CompareGSIDAndDistanceWithBaseStations(string GCID1, string GCID2, string standard, ITransformation transformation, IEarthGeometricService earthGeometricService, double X1, double Y1, double X2, double Y2, int maxDistance, string projection)
         {
-            var coordinateStation1 = _transformation.ConvertCoordinateToEpgs(new Wgs84Coordinate() { Longitude = X1, Latitude = Y1 }, _transformation.ConvertProjectionToCode(projection));
-            var coordinateStation2 = _transformation.ConvertCoordinateToEpgs(new Wgs84Coordinate() { Longitude = X2, Latitude = Y2 }, _transformation.ConvertProjectionToCode(projection));
-            if ((GeometricСalculations.GetDistance_km(coordinateStation1.X, coordinateStation1.Y, coordinateStation2.X, coordinateStation2.Y) <= maxDistance) && GCID1== GCID2) /*&& GCIDComparisonRDB.Compare(standard, GCID1, GCID2)*/
+            var coordinateStation1 = transformation.ConvertCoordinateToEpgs(new Wgs84Coordinate() { Longitude = X1, Latitude = Y1 }, transformation.ConvertProjectionToCode(projection));
+            var coordinateStation2 = transformation.ConvertCoordinateToEpgs(new Wgs84Coordinate() { Longitude = X2, Latitude = Y2 }, transformation.ConvertProjectionToCode(projection));
+            var pointSourceArgs = new PointEarthGeometricArgs() { Longitude = coordinateStation1.X,  Latitude= coordinateStation1.Y };
+            var pointTargetArgs = new PointEarthGeometricArgs() { Longitude = coordinateStation2.X, Latitude = coordinateStation2.Y };
+            if ((earthGeometricService.GetDistance_km(in pointSourceArgs, in pointTargetArgs) <= maxDistance) && GCID1== GCID2) 
             {
                 return true;
             }
@@ -560,7 +563,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         /// <param name="contextStations"></param>
         /// <param name="Standard"></param>
         /// <returns></returns>
-        public static ContextStation[][] CompareStations(ContextStation[] contextStations, string Standard, ITransformation transformation, int maxDistance, string projection)
+        public static ContextStation[][] CompareStations(ContextStation[] contextStations, string Standard, ITransformation transformation, IEarthGeometricService earthGeometricService, int maxDistance, string projection)
         {
             var lstContextStations = new List<ContextStation[]>();
             var lstAllStations = new List<ContextStation>();
@@ -586,7 +589,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         for (int j = 0; j < lstContextStations.Count; j++)
                         {
                             var stationTwo = lstContextStations[j][0];
-                            if (CompareGSIDAndDistanceWithBaseStations(stationOne.LicenseGsid, stationTwo.LicenseGsid, Standard.GetStandardForDriveTest(), transformation, stationOne.Site.Longitude, stationOne.Site.Latitude, stationTwo.Site.Longitude, stationTwo.Site.Latitude, maxDistance, projection))
+                            if (CompareGSIDAndDistanceWithBaseStations(stationOne.LicenseGsid, stationTwo.LicenseGsid, Standard.GetStandardForDriveTest(), transformation, earthGeometricService, stationOne.Site.Longitude, stationOne.Site.Latitude, stationTwo.Site.Longitude, stationTwo.Site.Latitude, maxDistance, projection))
                             {
                                 for (int v = 0; v < lstContextStations[k].Length; v++)
                                 {
@@ -803,13 +806,21 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         /// <param name="contextDriveTestsResult"></param>
         /// <param name="Standard"></param>
         /// <returns></returns>
-        public static LinkGoupDriveTestsAndStations[] CompareDriveTestAndStation(DriveTestsResult[] contextDriveTestsResult, ContextStation[] contextStations, string Standard, out DriveTestsResult[][] outDriveTestsResults, out ContextStation[][] outContextStations, ITransformation transformation, int maxDistance, string projection)
+        public static LinkGoupDriveTestsAndStations[] CompareDriveTestAndStation(DriveTestsResult[] contextDriveTestsResult,
+                                                                                 ContextStation[] contextStations,
+                                                                                 string Standard,
+                                                                                 out DriveTestsResult[][] outDriveTestsResults,
+                                                                                 out ContextStation[][] outContextStations,
+                                                                                 ITransformation transformation,
+                                                                                 IEarthGeometricService earthGeometricService,
+                                                                                 int maxDistance,
+                                                                                 string projection)
         {
             var lstLinkDriveTestsResultAndStation = new List<LinkGoupDriveTestsAndStations>();
             var forDeleteContextStation = new List<ContextStation>();
             var forDeleteDriveTestsResult = new List<DriveTestsResult>();
             var groupedDriveTests = CompareDriveTests(contextDriveTestsResult, Standard).ToList();
-            var groupedStations = CompareStations(contextStations, Standard, transformation, maxDistance, projection).ToList();
+            var groupedStations = CompareStations(contextStations, Standard, transformation, earthGeometricService, maxDistance, projection).ToList();
             var lstStations = Atdi.Common.CopyHelper.CreateDeepCopy(contextStations).ToList();
             var lstDriveTests = Atdi.Common.CopyHelper.CreateDeepCopy(contextDriveTestsResult).ToList();
 

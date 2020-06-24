@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.DeepServices.EarthGeometry
 {
-    public struct PointEarthGeometric
+    public enum CoordinateUnits
     {
-        public double Longitude_dec;
-        public double Latitude_dec;
+        m = 0,
+        deg = 1,
     }
 }
 

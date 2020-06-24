@@ -14,6 +14,8 @@ using Atdi.Contracts.Sdrn.DeepServices.Gis;
 using Atdi.DataModels.Sdrn.DeepServices.Gis.MapService;
 using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.SignalService;
 using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations;
+using Atdi.DataModels.Sdrn.DeepServices.EarthGeometry;
+using Atdi.Contracts.Sdrn.DeepServices.EarthGeometry;
 
 namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 {
@@ -27,6 +29,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         private readonly IObjectPool<byte[]> _buildingArrayPool;
         private readonly IObjectPool<short[]> _reliefArrayPool;
         private readonly IObjectPool<short[]> _heightArrayPool;
+        private readonly IEarthGeometricService _earthGeometricService;
         //private static int _dIndex;
         //private static int _dYIndex;
         //private static int _daxisXNumber;
@@ -161,12 +164,14 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
         public FieldStrengthCalcIteration(
             ISignalService signalService,
+            IEarthGeometricService earthGeometricService,
             IMapService mapService,
             IObjectPoolSite poolSite)
         {
             _signalService = signalService;
             _mapService = mapService;
             _poolSite = poolSite;
+            _earthGeometricService = earthGeometricService;
 
             _indexerArrayPool = _poolSite.GetPool<ProfileIndexer[]>(ObjectPools.GisProfileIndexerArrayObjectPool);
             _clutterArrayPool = _poolSite.GetPool<byte[]>(ObjectPools.GisProfileClutterArrayObjectPool);
@@ -294,7 +299,9 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         }
                     }
                 }
-                var d_km = GeometricСalculations.GetDistance_km(data.PointCoordinate.X, data.PointCoordinate.Y, data.TargetCoordinate.X, data.TargetCoordinate.Y);
+                var pointSourceArgs = new PointEarthGeometricArgs() { Longitude = data.PointCoordinate.X, Latitude = data.PointCoordinate.Y };
+                var pointTargetArgs = new PointEarthGeometricArgs() { Longitude = data.TargetCoordinate.X, Latitude = data.TargetCoordinate.Y };
+                var d_km = this._earthGeometricService.GetDistance_km(in pointSourceArgs, in pointTargetArgs);
                 var lossArgs = new CalcLossArgs
                 {
                     Model = data.PropagationModel,
@@ -316,7 +323,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
                 var lossResult = new CalcLossResult();
                 _signalService.CalcLoss(in lossArgs, ref lossResult);
-                var AzimutToTarget = GeometricСalculations.GetAzimut(data.PointCoordinate.X, data.PointCoordinate.Y, data.TargetCoordinate.X, data.TargetCoordinate.Y);
+                var AzimutToTarget = this._earthGeometricService.GetAzimut(in pointSourceArgs, in pointTargetArgs);
                 var antennaGainArgs = new CalcAntennaGainArgs
                 {
                     Antenna = data.Antenna,
