@@ -48,7 +48,7 @@ namespace Atdi.Contracts.Sdrn.DeepServices.EarthGeometry
         /// <param name="targetPointArgs"></param>
         /// <param name="coordinateUnits"></param>
         /// <returns></returns>
-        double GetDistance_km(in PointEarthGeometricArgs sourcePointAgs, in PointEarthGeometricArgs targetPointArgs, CoordinateUnits coordinateUnits = CoordinateUnits.m);
+        double GetDistance_km(in PointEarthGeometric sourcePointAgs, in PointEarthGeometric targetPointArgs);
 
         /// <summary>
         /// Определение азимута
@@ -57,7 +57,7 @@ namespace Atdi.Contracts.Sdrn.DeepServices.EarthGeometry
         /// <param name="targetPointArgs"></param>
         /// <param name="coordinateUnits"></param>
         /// <returns></returns>
-        double GetAzimut(in PointEarthGeometricArgs sourcePointAgs, in PointEarthGeometricArgs targetPointArgs, CoordinateUnits coordinateUnits = CoordinateUnits.m);
+        double GetAzimut(in PointEarthGeometric sourcePointAgs, in PointEarthGeometric targetPointArgs);
 
         /// <summary>
         /// Функция по формированию контура от контура

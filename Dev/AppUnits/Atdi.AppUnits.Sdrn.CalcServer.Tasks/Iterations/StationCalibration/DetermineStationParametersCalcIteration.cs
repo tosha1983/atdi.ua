@@ -488,8 +488,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                         {
                                             for (int p = 0; p < coordinatesDrivePoint.Length; p++)
                                             {
-                                                var sourcePointArgs = new PointEarthGeometricArgs() { Longitude = coordinatesDrivePoint[p].X, Latitude = coordinatesDrivePoint[p].Y };
-                                                var targetPointArgs = new PointEarthGeometricArgs() { Longitude = arrStations[0].Coordinate.X, Latitude = arrStations[0].Coordinate.Y };
+                                                var sourcePointArgs = new PointEarthGeometric() { Longitude = coordinatesDrivePoint[p].X, Latitude = coordinatesDrivePoint[p].Y };
+                                                var targetPointArgs = new PointEarthGeometric() { Longitude = arrStations[0].Coordinate.X, Latitude = arrStations[0].Coordinate.Y };
                                                 if (this._earthGeometricService.GetDistance_km(in sourcePointArgs, in targetPointArgs) <= GetMinDistanceFromConfigByStandard(standard))
                                                 {
                                                     // добавляем весь массив станций arrStations в случае если одна из станций, которая входит в arrStations имеет расстояние до одной из точек текущего DrivePoint меньше 1 км (берем с конфигурации)
@@ -515,8 +515,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                             var keyValueStations = new Dictionary<long, double>();
                                             for (int z = 0; z < arrStations.Length; z++)
                                             {
-                                                var sourcePointArgs = new PointEarthGeometricArgs() { Longitude = centerWeightCoordinateOfDriveTest.X, Latitude = centerWeightCoordinateOfDriveTest.Y };
-                                                var targetPointArgs = new PointEarthGeometricArgs() { Longitude = arrStations[0].Coordinate.X, Latitude = arrStations[0].Coordinate.Y };
+                                                var sourcePointArgs = new PointEarthGeometric() { Longitude = centerWeightCoordinateOfDriveTest.X, Latitude = centerWeightCoordinateOfDriveTest.Y };
+                                                var targetPointArgs = new PointEarthGeometric() { Longitude = arrStations[0].Coordinate.X, Latitude = arrStations[0].Coordinate.Y };
                                                 var distance = this._earthGeometricService.GetDistance_km(in sourcePointArgs, in targetPointArgs);
                                                 keyValueStations.Add(arrStations[z].Id, distance);
                                             }

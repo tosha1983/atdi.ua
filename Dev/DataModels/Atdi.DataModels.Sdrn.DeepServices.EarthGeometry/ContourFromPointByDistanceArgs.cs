@@ -19,7 +19,7 @@ namespace Atdi.DataModels.Sdrn.DeepServices.EarthGeometry
         /// <summary>
         /// Расстояние от точки
         /// </summary>
-        public double Distance_m;
+        public double Distance_km;
     }
 }
 

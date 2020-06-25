@@ -226,8 +226,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         //- CorreIPoints[](Lon_DEC, Lat_DEC, FSMeas_dBmkVm, FSCalc_dBmkVm, Dist_km) выдаётся только если Detail = true(нам для отладки не плохо было бы это хоть как визуализировать на карте)
                         if (data.CorellationParameters.Detail)
                         {
-                            var pointSourceArgs = new PointEarthGeometricArgs() { Longitude = calcPointArrayBuffer[i].X, Latitude = calcPointArrayBuffer[i].Y };
-                            var pointTargetArgs = new PointEarthGeometricArgs() { Longitude = data.GSIDGroupeStation.Site.Longitude, Latitude = data.GSIDGroupeStation.Site.Latitude };
+                            var pointSourceArgs = new PointEarthGeometric() { Longitude = calcPointArrayBuffer[i].X, Latitude = calcPointArrayBuffer[i].Y };
+                            var pointTargetArgs = new PointEarthGeometric() { Longitude = data.GSIDGroupeStation.Site.Longitude, Latitude = data.GSIDGroupeStation.Site.Latitude };
 
                             calcCorellationResult.CorrellationPoints[i].Dist_km = this._earthGeometricService.GetDistance_km(in pointSourceArgs, in pointTargetArgs); 
                             calcCorellationResult.CorrellationPoints[i].FSCalc_dBmkVm = calcPointArrayBuffer[i].FSCalc;

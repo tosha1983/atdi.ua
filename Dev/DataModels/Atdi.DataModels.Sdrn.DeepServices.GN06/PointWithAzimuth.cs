@@ -8,8 +8,7 @@ namespace Atdi.DataModels.Sdrn.DeepServices.GN06
 {
 	public class PointWithAzimuth
     {
-		public double Lon_DEC;
-        public double Lat_DEC;
+		public AreaPoint AreaPoint;
         public double Azimuth_deg;
     }
 }

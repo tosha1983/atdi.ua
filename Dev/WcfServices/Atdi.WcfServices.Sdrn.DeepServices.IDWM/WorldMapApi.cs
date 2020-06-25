@@ -55,7 +55,7 @@ namespace Atdi.WcfServices.Sdrn.DeepServices.IDWM
             string administration = pointByADM.Administration;
             if (_isIdwmInit)
             {
-                var nearestCountries = _idwmVal.GetNearestCountries(IdwmNET.Idwm.DecToRadian((float)pointByADM.Longitude), IdwmNET.Idwm.DecToRadian((float)pointByADM.Latitude), 100000, new string[] { }, 1000);
+                var nearestCountries = _idwmVal.GetNearestCountries(IdwmNET.Idwm.DecToRadian((float)pointByADM.Point.Longitude), IdwmNET.Idwm.DecToRadian((float)pointByADM.Point.Latitude), 100000, new string[] { }, 1000);
                 if ((nearestCountries != null) && (nearestCountries.Length > 0))
                 {
                     var findNearestCountries = nearestCountries.ToList().Find(x => x.country == administration);
@@ -98,7 +98,7 @@ namespace Atdi.WcfServices.Sdrn.DeepServices.IDWM
             string administration = pointByADM.Administration;
             if (_isIdwmInit)
             {
-                var nearestCountries = _idwmVal.GetNearestCountries(IdwmNET.Idwm.DecToRadian((float)pointByADM.Longitude), IdwmNET.Idwm.DecToRadian((float)pointByADM.Latitude), 100000, new string[] { }, 1000);
+                var nearestCountries = _idwmVal.GetNearestCountries(IdwmNET.Idwm.DecToRadian((float)pointByADM.Point.Longitude), IdwmNET.Idwm.DecToRadian((float)pointByADM.Point.Latitude), 100000, new string[] { }, 1000);
                 if ((nearestCountries != null) && (nearestCountries.Length > 0))
                 {
                     var findNearestCountries = nearestCountries.ToList().Find(x => x.country == administration);
@@ -123,7 +123,7 @@ namespace Atdi.WcfServices.Sdrn.DeepServices.IDWM
             var administrationsResult = new List<AdministrationsResult>();
             if (_isIdwmInit)
             {
-                var nearesCountries = _idwmVal.GetNearestCountries(IdwmNET.Idwm.DecToRadian((float)pointAndDistance.Longitude), IdwmNET.Idwm.DecToRadian((float)pointAndDistance.Latitude), pointAndDistance.Distance, new string[] { }, 1000);
+                var nearesCountries = _idwmVal.GetNearestCountries(IdwmNET.Idwm.DecToRadian((float)pointAndDistance.Point.Longitude), IdwmNET.Idwm.DecToRadian((float)pointAndDistance.Point.Latitude), pointAndDistance.Distance, new string[] { }, 1000);
                 if ((nearesCountries != null) && (nearesCountries.Length > 0))
                 {
                     for (int i = 0; i < nearesCountries.Length; i++)

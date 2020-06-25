@@ -28,7 +28,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.IDWM
         /// <returns></returns>
         public void GetNearestPointByADM(in PointByADM pointByADM, ref Point resultPoint)
         {
-            var val = SdrnsControllerWcfClientIWorldMapApi.GetNearestPointByADM(new WCF.PointByADM() { Longitude = pointByADM.Longitude_dec, Latitude = pointByADM.Latitude_dec, Administration = pointByADM.Administration });
+            var val = SdrnsControllerWcfClientIWorldMapApi.GetNearestPointByADM(new WCF.PointByADM() { Point = new WCF.Point() { Longitude = pointByADM.Point.Longitude_dec.Value, Latitude = pointByADM.Point.Latitude_dec.Value }, Administration = pointByADM.Administration });
             if (val!=null)
             {
                 resultPoint.Longitude_dec = val.Longitude;
@@ -45,7 +45,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.IDWM
         public void GetADMByPointAndDistance(in PointAndDistance pointAndDistance, ref AdministrationsResult[] administrationsResult, out int sizeResultBuffer)
         {
            sizeResultBuffer = 0;
-           var val = SdrnsControllerWcfClientIWorldMapApi.GetADMByPointAndDistance(new WCF.PointAndDistance() { Longitude = pointAndDistance.Longitude_dec, Latitude = pointAndDistance.Latitude_dec, Distance = pointAndDistance.Distance });
+           var val = SdrnsControllerWcfClientIWorldMapApi.GetADMByPointAndDistance(new WCF.PointAndDistance() { Point = new WCF.Point() { Longitude = pointAndDistance.Point.Longitude_dec.Value, Latitude = pointAndDistance.Point.Latitude_dec.Value }, Distance = pointAndDistance.Distance });
            if ((val!=null) && (val.Length>0))
            {
                 sizeResultBuffer = val.Length;

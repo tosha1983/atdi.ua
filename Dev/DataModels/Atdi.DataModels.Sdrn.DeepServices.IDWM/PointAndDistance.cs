@@ -11,8 +11,7 @@ namespace Atdi.DataModels.Sdrn.DeepServices.IDWM
 	/// </summary>
 	public struct PointAndDistance
     {
-		public double Longitude_dec;
-		public double Latitude_dec;
+		public Point  Point;
         public float Distance;
 	}
 }
