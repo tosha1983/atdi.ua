@@ -28,7 +28,9 @@ namespace Atdi.Contracts.CoreServices.DataLayer
         IQueryUpdateStatement<TModel> Where<TValue>(Expression<Func<TModel, TValue>> columnExpression, ConditionOperator conditionOperator, params TValue[] values);
 
         IQueryUpdateStatement<TModel> SetValue<TValue>(Expression<Func<TModel, TValue>> columnsExpression, TValue value);
-    }
+
+        IQueryUpdateStatement<TModel> SetValueAsJson<TValue>(Expression<Func<TModel, string>> columnsExpression, TValue value);
+	}
 
     public static class QueryUpdateStatementExtensitons
     {

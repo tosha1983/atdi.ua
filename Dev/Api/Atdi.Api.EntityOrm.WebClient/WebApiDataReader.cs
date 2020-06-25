@@ -10,6 +10,7 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Atdi.Api.EntityOrm.WebClient
 {
@@ -264,6 +265,11 @@ namespace Atdi.Api.EntityOrm.WebClient
 			return _reader.Read();
 		}
 
-
+		public TData GetValueAs<TData>(Expression<Func<TEntity, string>> columnExpression)
+		{
+			var data = this.GetValue(columnExpression);
+			var result = JsonConvert.DeserializeObject<TData>(data);
+			return result;
+		}
 	}
 }
