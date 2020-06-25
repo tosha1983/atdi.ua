@@ -299,8 +299,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         }
                     }
                 }
-                var pointSourceArgs = new PointEarthGeometricArgs() { Longitude = data.PointCoordinate.X, Latitude = data.PointCoordinate.Y };
-                var pointTargetArgs = new PointEarthGeometricArgs() { Longitude = data.TargetCoordinate.X, Latitude = data.TargetCoordinate.Y };
+                var pointSourceArgs = new PointEarthGeometric() { Longitude = data.PointCoordinate.X, Latitude = data.PointCoordinate.Y };
+                var pointTargetArgs = new PointEarthGeometric() { Longitude = data.TargetCoordinate.X, Latitude = data.TargetCoordinate.Y };
                 var d_km = this._earthGeometricService.GetDistance_km(in pointSourceArgs, in pointTargetArgs);
                 var lossArgs = new CalcLossArgs
                 {

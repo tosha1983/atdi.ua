@@ -30,7 +30,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
                 {
                     var pointI = geometryArgs.Points[i];
                     var pointIPlus1 = geometryArgs.Points[i + 1];
-                    square += (pointI.Longitude_dec * pointIPlus1.Latitude_dec - pointIPlus1.Longitude_dec * pointI.Latitude_dec);
+                    square += (pointI.Longitude * pointIPlus1.Latitude - pointIPlus1.Longitude * pointI.Latitude);
                 }
             }
             return square / 2;
@@ -45,7 +45,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
                 {
                     var pointI = geometryArgs.Points[i];
                     var pointIPlus1 = geometryArgs.Points[i + 1];
-                    Gx += (pointI.Longitude_dec + pointIPlus1.Longitude_dec) * (pointI.Longitude_dec * pointIPlus1.Latitude_dec - pointIPlus1.Longitude_dec * pointI.Latitude_dec);
+                    Gx += (pointI.Longitude + pointIPlus1.Longitude) * (pointI.Longitude * pointIPlus1.Latitude - pointIPlus1.Longitude * pointI.Latitude);
                 }
             }
             return Gx / (6 * CalcSquare(in geometryArgs));
@@ -60,7 +60,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
                 {
                     var pointI = geometryArgs.Points[i];
                     var pointIPlus1 = geometryArgs.Points[i + 1];
-                    Gy += (pointI.Latitude_dec + pointIPlus1.Latitude_dec) * (pointI.Longitude_dec * pointIPlus1.Latitude_dec - pointIPlus1.Longitude_dec * pointI.Latitude_dec);
+                    Gy += (pointI.Latitude + pointIPlus1.Latitude) * (pointI.Longitude * pointIPlus1.Latitude - pointIPlus1.Longitude * pointI.Latitude);
                 }
             }
             return Gy / (6 * CalcSquare(in geometryArgs));
@@ -74,7 +74,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
                 for (int i = 0; i < geometryArgs.Points.Length; i++)
                 {
                     var pointI = geometryArgs.Points[i];
-                    Gx += pointI.Longitude_dec;
+                    Gx += pointI.Longitude;
                 }
                 Gx = Gx / geometryArgs.Points.Length;
             }
@@ -89,7 +89,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
                 for (int i = 0; i < geometryArgs.Points.Length; i++)
                 {
                     var pointI = geometryArgs.Points[i];
-                    Gy += pointI.Latitude_dec;
+                    Gy += pointI.Latitude;
                 }
                 Gy = Gy / geometryArgs.Points.Length;
             }
@@ -101,12 +101,14 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
             switch (geometryArgs.TypeGeometryObject)
             {
                 case TypeGeometryObject.Points:
-                    pointResult.Longitude_dec = CalcGxForPoints(in geometryArgs);
-                    pointResult.Latitude_dec = CalcGyForPoints(in geometryArgs);
+                    pointResult.Longitude = CalcGxForPoints(in geometryArgs);
+                    pointResult.Latitude = CalcGyForPoints(in geometryArgs);
+                    pointResult.CoordinateUnits = CoordinateUnits.deg;
                     break;
                 case TypeGeometryObject.Polygon:
-                    pointResult.Longitude_dec = CalcGxForPolygon(in geometryArgs);
-                    pointResult.Latitude_dec = CalcGyForPolygon(in geometryArgs);
+                    pointResult.Longitude = CalcGxForPolygon(in geometryArgs);
+                    pointResult.Latitude = CalcGyForPolygon(in geometryArgs);
+                    pointResult.CoordinateUnits = CoordinateUnits.deg;
                     break;
                 default:
                     throw new Exception($"For type '{geometryArgs.TypeGeometryObject}'  is not implementation");
@@ -124,29 +126,24 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
             if ((points != null) && (points.Length > 0))
             {
                 var curNearestPoint = points[0];
-                var curNearestDistance = DistanceTo(pointEarthGeometricCalc, curNearestPoint);
+                var curNearestDistance = GetDistance_km(in pointEarthGeometricCalc, in curNearestPoint);
                 for (int i = 0; i < points.Length; i++)
                 {
                     var point = points[i];
-                    var distance = DistanceTo(pointEarthGeometricCalc, point);
+                    var distance = GetDistance_km(pointEarthGeometricCalc, point);
                     if (distance < curNearestDistance)
                     {
                         curNearestDistance = distance;
                         curNearestPoint = point;
                     }
                 }
-                pointResult.Longitude_dec = curNearestPoint.Longitude_dec;
-                pointResult.Latitude_dec = curNearestPoint.Latitude_dec;
+                pointResult.Longitude = curNearestPoint.Longitude;
+                pointResult.Latitude = curNearestPoint.Latitude;
+                pointResult.CoordinateUnits = CoordinateUnits.deg;
             }
         }
 
-        private double DistanceTo(PointEarthGeometric pointEarthGeometricFromArr, PointEarthGeometric point)
-        {
-            var distanceX = pointEarthGeometricFromArr.Longitude_dec - point.Longitude_dec;
-            var distanceY = pointEarthGeometricFromArr.Latitude_dec - point.Latitude_dec;
-            var distance = Math.Sqrt(distanceX * distanceX + distanceY * distanceY);
-            return distance;
-        }
+        
 
         /// <summary>
         /// Расчет координаты по заданной точке, азимуту и расстоянию
@@ -165,19 +162,20 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
                 double arcDist = distance / R;
                 var newLat = Math.Sin(latitude * Math.PI / 180.0) * Math.Cos(arcDist) +
                     Math.Cos(latitude * Math.PI / 180.0) * Math.Sin(arcDist) * Math.Cos(azimuth * Math.PI / 180.00);
-                point.Latitude_dec = 180 * Math.Asin(newLat) / Math.PI;
+                point.Latitude = 180 * Math.Asin(newLat) / Math.PI;
                 var newLon = Math.Sin(arcDist) * Math.Sin(azimuth * Math.PI / 180.0) /
                     (Math.Cos(latitude * Math.PI / 180.0) * Math.Cos(arcDist) -
                     Math.Sin(latitude * Math.PI / 180.0) * Math.Sin(arcDist) * Math.Cos(azimuth * Math.PI / 180.0));
-                point.Longitude_dec = longitude + 180 * Math.Atan(newLon) / Math.PI;
+                point.Longitude = longitude + 180 * Math.Atan(newLon) / Math.PI;
+                point.CoordinateUnits = CoordinateUnits.deg;
             }
             else
             {
-                point.Longitude_dec = longitude + distance * Math.Sin(azimuth * Math.PI / 180.0) / Math.Cos(latitude * Math.PI / 180.0) / (R * Math.PI / 180.0);
-                point.Latitude_dec = latitude + distance * Math.Cos(azimuth * Math.PI / 180.0) / (R * Math.PI / 180.0);
+                point.Longitude = longitude + distance * Math.Sin(azimuth * Math.PI / 180.0) / Math.Cos(latitude * Math.PI / 180.0) / (R * Math.PI / 180.0);
+                point.Latitude = latitude + distance * Math.Cos(azimuth * Math.PI / 180.0) / (R * Math.PI / 180.0);
+                point.CoordinateUnits = CoordinateUnits.deg;
             }
             return point;
-
         }
 
 
@@ -188,13 +186,13 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
 
         public void CreateContourForStationByTriggerFieldStrengths(Func<PointEarthGeometric, PointEarthGeometric, double> calcFieldStrengths, in ContourForStationByTriggerFieldStrengthsArgs contourForStationByTriggerFieldStrengthsArgs, ref PointEarthGeometric[] pointResult, out int sizeResultBuffer)
         {
-            double d0_m = 500000.0;
-            double mindistance_m = 50.0;
+            double d0_m = 500.0;
+            double mindistance_m = 0.05;
             int index = 0;
             for (double azimuth = 0; azimuth < 360; azimuth = index * contourForStationByTriggerFieldStrengthsArgs.Step_deg)
             {
                 
-                var coordRecalc = CalculationCoordinateByLengthAndAzimuth(contourForStationByTriggerFieldStrengthsArgs.PointEarthGeometricCalc.Longitude_dec, contourForStationByTriggerFieldStrengthsArgs.PointEarthGeometricCalc.Latitude_dec, d0_m, azimuth);
+                var coordRecalc = CalculationCoordinateByLengthAndAzimuth(contourForStationByTriggerFieldStrengthsArgs.PointEarthGeometricCalc.Longitude, contourForStationByTriggerFieldStrengthsArgs.PointEarthGeometricCalc.Latitude, d0_m, azimuth);
                 var calcFieldStrength = calcFieldStrengths(contourForStationByTriggerFieldStrengthsArgs.PointEarthGeometricCalc, coordRecalc);
                 var d1_m = d0_m;
                 while (true)
@@ -202,24 +200,68 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
                     if (calcFieldStrength < contourForStationByTriggerFieldStrengthsArgs.TriggerFieldStrength)
                     {
                         d1_m += (d1_m / 2.0);
-                        coordRecalc = CalculationCoordinateByLengthAndAzimuth(contourForStationByTriggerFieldStrengthsArgs.PointEarthGeometricCalc.Longitude_dec, contourForStationByTriggerFieldStrengthsArgs.PointEarthGeometricCalc.Latitude_dec, d1_m, azimuth);
+                        coordRecalc = CalculationCoordinateByLengthAndAzimuth(contourForStationByTriggerFieldStrengthsArgs.PointEarthGeometricCalc.Longitude, contourForStationByTriggerFieldStrengthsArgs.PointEarthGeometricCalc.Latitude, d1_m, azimuth);
                         calcFieldStrength = calcFieldStrengths(contourForStationByTriggerFieldStrengthsArgs.PointEarthGeometricCalc, coordRecalc);
                     }
                     else if (calcFieldStrength > contourForStationByTriggerFieldStrengthsArgs.TriggerFieldStrength)
                     {
                         d1_m -= (d1_m / 2.0);
-                        coordRecalc = CalculationCoordinateByLengthAndAzimuth(contourForStationByTriggerFieldStrengthsArgs.PointEarthGeometricCalc.Longitude_dec, contourForStationByTriggerFieldStrengthsArgs.PointEarthGeometricCalc.Latitude_dec, d1_m, azimuth);
+                        coordRecalc = CalculationCoordinateByLengthAndAzimuth(contourForStationByTriggerFieldStrengthsArgs.PointEarthGeometricCalc.Longitude, contourForStationByTriggerFieldStrengthsArgs.PointEarthGeometricCalc.Latitude, d1_m, azimuth);
                         calcFieldStrength = calcFieldStrengths(contourForStationByTriggerFieldStrengthsArgs.PointEarthGeometricCalc, coordRecalc);
                     }
                     if ((Math.Round(calcFieldStrength,2) == contourForStationByTriggerFieldStrengthsArgs.TriggerFieldStrength) || (d1_m < mindistance_m))
                     {
                         pointResult[index] = coordRecalc;
+                        pointResult[index].CoordinateUnits = CoordinateUnits.deg;
                         break;
                     }
                 }
                 index++;
             }
             sizeResultBuffer = index;
+        }
+
+        public bool CheckHitting(PointEarthGeometric[] poligon, PointEarthGeometric point)
+        {
+            if (poligon == null || poligon.Length == 0)
+                return false;
+
+
+            bool hit = false; // количество пересечений луча слева в право четное = false, нечетное = true;
+            for (int i = 0; i < poligon.Length - 1; i++)
+            {
+                if (((poligon[i].Latitude <= point.Latitude) && ((poligon[i + 1].Latitude > point.Latitude))) || ((poligon[i].Latitude > point.Latitude) && ((poligon[i + 1].Latitude <= point.Latitude))))
+                {
+                    if ((poligon[i].Longitude > point.Longitude) && (poligon[i + 1].Longitude > point.Longitude))
+                    {
+                        hit = !hit;
+                    }
+                    else if (!((poligon[i].Longitude < point.Longitude) && (poligon[i + 1].Longitude < point.Longitude)))
+                    {
+                        if (point.Longitude < poligon[i + 1].Longitude - (point.Latitude - poligon[i + 1].Latitude) * (poligon[i + 1].Longitude - poligon[i].Longitude) / (poligon[i].Latitude - poligon[i + 1].Latitude))
+                        {
+                            hit = !hit;
+                        }
+                    }
+                }
+            }
+            int i_ = poligon.Length - 1;
+            if (((poligon[i_].Latitude <= point.Latitude) && ((poligon[0].Latitude > point.Latitude))) || ((poligon[i_].Latitude > point.Latitude) && ((poligon[0].Latitude <= point.Latitude))))
+            {
+                if ((poligon[i_].Longitude > point.Longitude) && (poligon[0].Longitude > point.Longitude))
+                {
+                    hit = !hit;
+                }
+                else if (!((poligon[i_].Longitude < point.Longitude) && (poligon[0].Longitude < point.Longitude)))
+                {
+                    if (point.Longitude < poligon[0].Longitude - (point.Latitude - poligon[0].Latitude) * (poligon[0].Longitude - poligon[i_].Longitude) / (poligon[i_].Latitude - poligon[0].Latitude))
+                    {
+                        hit = !hit;
+                    }
+                }
+            }
+
+            return hit;
         }
 
         /// <summary>
@@ -233,8 +275,9 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
             int index = 0;
             for (double azimuth = 0; azimuth < 360; azimuth= index * contourFromPointByDistanceArgs.Step_deg)
             {
-                var coordRecalc = CalculationCoordinateByLengthAndAzimuth(contourFromPointByDistanceArgs.PointEarthGeometricCalc.Longitude_dec, contourFromPointByDistanceArgs.PointEarthGeometricCalc.Latitude_dec, contourFromPointByDistanceArgs.Distance_m, azimuth);
+                var coordRecalc = CalculationCoordinateByLengthAndAzimuth(contourFromPointByDistanceArgs.PointEarthGeometricCalc.Longitude, contourFromPointByDistanceArgs.PointEarthGeometricCalc.Latitude, contourFromPointByDistanceArgs.Distance_km, azimuth);
                 pointResult[index] = coordRecalc;
+                pointResult[index].CoordinateUnits = CoordinateUnits.deg;
                 index++;
             }
             sizeResultBuffer = index;
@@ -246,9 +289,16 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
         /// <param name="targetPointArgs"></param>
         /// <param name="coordinateUnits"></param>
         /// <returns></returns>
-        public double GetDistance_km(in PointEarthGeometricArgs sourcePointAgs, in PointEarthGeometricArgs targetPointArgs, CoordinateUnits coordinateUnits = CoordinateUnits.m)
+        public double GetDistance_km(in PointEarthGeometric sourcePointAgs, in PointEarthGeometric targetPointArgs)
         {
-            return GeometricСalculations.GetDistance_km(in sourcePointAgs, in targetPointArgs, coordinateUnits);
+            if (sourcePointAgs.CoordinateUnits != targetPointArgs.CoordinateUnits)
+            {
+                throw new Exception("Сoordinate types do not match!");
+            }
+            else
+            {
+                return GeometricСalculations.GetDistance_km(sourcePointAgs.Longitude, sourcePointAgs.Latitude, targetPointArgs.Longitude, targetPointArgs.Latitude, sourcePointAgs.CoordinateUnits);
+            }
         }
 
         /// <summary>
@@ -258,9 +308,16 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
         /// <param name="targetPointArgs"></param>
         /// <param name="coordinateUnits"></param>
         /// <returns></returns>
-        public double GetAzimut(in PointEarthGeometricArgs sourcePointAgs, in PointEarthGeometricArgs targetPointArgs, CoordinateUnits coordinateUnits = CoordinateUnits.m)
+        public double GetAzimut(in PointEarthGeometric sourcePointAgs, in PointEarthGeometric targetPointArgs)
         {
-            return GeometricСalculations.GetAzimut(in sourcePointAgs, in targetPointArgs, coordinateUnits);
+            if (sourcePointAgs.CoordinateUnits != targetPointArgs.CoordinateUnits)
+            {
+                throw new Exception("Сoordinate types do not match!");
+            }
+            else
+            {
+                return GeometricСalculations.GetAzimut(sourcePointAgs.Longitude, sourcePointAgs.Latitude, targetPointArgs.Longitude, targetPointArgs.Latitude, sourcePointAgs.CoordinateUnits);
+            }
         }
 
         public void CreateContourFromContureByDistance(in ContourFromContureByDistanceArgs contourFromContureByDistanceArgs, ref PointEarthGeometricWithAzimuth[] pointEarthGeometricWithAzimuth, out int sizeResultBuffer)

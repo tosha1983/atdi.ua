@@ -164,8 +164,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         {
             var coordinateStation1 = transformation.ConvertCoordinateToEpgs(new Wgs84Coordinate() { Longitude = X1, Latitude = Y1 }, transformation.ConvertProjectionToCode(projection));
             var coordinateStation2 = transformation.ConvertCoordinateToEpgs(new Wgs84Coordinate() { Longitude = X2, Latitude = Y2 }, transformation.ConvertProjectionToCode(projection));
-            var pointSourceArgs = new PointEarthGeometricArgs() { Longitude = coordinateStation1.X,  Latitude= coordinateStation1.Y };
-            var pointTargetArgs = new PointEarthGeometricArgs() { Longitude = coordinateStation2.X, Latitude = coordinateStation2.Y };
+            var pointSourceArgs = new PointEarthGeometric() { Longitude = coordinateStation1.X, Latitude = coordinateStation1.Y };
+            var pointTargetArgs = new PointEarthGeometric() { Longitude = coordinateStation2.X, Latitude = coordinateStation2.Y };
             if ((earthGeometricService.GetDistance_km(in pointSourceArgs, in pointTargetArgs) <= maxDistance) && GCID1== GCID2) 
             {
                 return true;

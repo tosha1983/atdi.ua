@@ -23,7 +23,7 @@ namespace Atdi.DataModels.Sdrn.DeepServices.EarthGeometry
         /// <summary>
         /// Расстояние контура == s
         /// </summary>
-        public double Distance_m;
+        public double Distance_km;
     }
 }
 

@@ -15,9 +15,8 @@ namespace Atdi.Contracts.WcfServices.Sdrn.DeepServices.IDWM
     public class PointByADM
     {
         [DataMember]
-        public double Longitude { get; set; }
-        [DataMember]
-        public double Latitude { get; set; }
+        public Point Point { get; set; }
+
         [DataMember]
         public string Administration { get; set; }
     }

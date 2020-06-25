@@ -23,7 +23,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.GN06
             {
                 EstimationAssignmentsCalculationRN3.Calc(in broadcastingAllotment, in pointAllotment, in pointCalcFieldStrength, ref pointResult, out sizeResultBuffer);
             }
-            if (broadcastingAllotment.EmissionCharacteristics.RefNetwork == RefNetworkType.RN4)
+            else if (broadcastingAllotment.EmissionCharacteristics.RefNetwork == RefNetworkType.RN4)
             {
                 EstimationAssignmentsCalculationRN4.Calc(in broadcastingAllotment, in pointAllotment, in pointCalcFieldStrength, ref pointResult, out sizeResultBuffer);
             }
