@@ -11,6 +11,8 @@ using Atdi.DataModels.Sdrn.DeepServices.Gis;
 using Atdi.Platform.Logging;
 using Atdi.Contracts.Sdrn.DeepServices.Gis;
 using Atdi.Platform.Data;
+using Atdi.DataModels.Sdrn.DeepServices.EarthGeometry;
+using Atdi.Contracts.Sdrn.DeepServices.EarthGeometry;
 
 
 namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
@@ -25,6 +27,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         private readonly ITransformation _transformation;
         private readonly IObjectPool<CalcPoint[]> _calcPointArrayPool;
         private readonly IObjectPoolSite _poolSite;
+        private readonly IEarthGeometricService _earthGeometricService;
 
         /// <summary>
         /// Заказываем у контейнера нужные сервисы
@@ -33,10 +36,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             IIterationsPool iterationsPool,
             ITransformation transformation,
             IObjectPoolSite poolSite,
+            IEarthGeometricService earthGeometricService,
             ILogger logger)
         {
             _iterationsPool = iterationsPool;
             _transformation = transformation;
+            _earthGeometricService = earthGeometricService;
             _poolSite = poolSite;
             _calcPointArrayPool = _poolSite.GetPool<CalcPoint[]>(ObjectPools.StationCalibrationCalcPointArrayObjectPool);
             _logger = logger;
@@ -221,7 +226,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         //- CorreIPoints[](Lon_DEC, Lat_DEC, FSMeas_dBmkVm, FSCalc_dBmkVm, Dist_km) выдаётся только если Detail = true(нам для отладки не плохо было бы это хоть как визуализировать на карте)
                         if (data.CorellationParameters.Detail)
                         {
-                            calcCorellationResult.CorrellationPoints[i].Dist_km = GeometricСalculations.GetDistance_km(calcPointArrayBuffer[i].X, calcPointArrayBuffer[i].Y, data.GSIDGroupeStation.Site.Longitude, data.GSIDGroupeStation.Site.Latitude);
+                            var pointSourceArgs = new PointEarthGeometric() { Longitude = calcPointArrayBuffer[i].X, Latitude = calcPointArrayBuffer[i].Y };
+                            var pointTargetArgs = new PointEarthGeometric() { Longitude = data.GSIDGroupeStation.Site.Longitude, Latitude = data.GSIDGroupeStation.Site.Latitude };
+
+                            calcCorellationResult.CorrellationPoints[i].Dist_km = this._earthGeometricService.GetDistance_km(in pointSourceArgs, in pointTargetArgs); 
                             calcCorellationResult.CorrellationPoints[i].FSCalc_dBmkVm = calcPointArrayBuffer[i].FSCalc;
                             calcCorellationResult.CorrellationPoints[i].FSMeas_dBmkVm = calcPointArrayBuffer[i].FSMeas;
 

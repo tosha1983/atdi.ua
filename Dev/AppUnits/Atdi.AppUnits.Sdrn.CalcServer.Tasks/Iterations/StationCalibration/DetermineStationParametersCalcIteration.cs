@@ -7,6 +7,8 @@ using Atdi.Contracts.Sdrn.CalcServer;
 using Atdi.Contracts.Sdrn.DeepServices;
 using Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations;
 using Atdi.DataModels.Sdrn.CalcServer.Internal.Clients;
+using Atdi.DataModels.Sdrn.DeepServices.EarthGeometry;
+using Atdi.Contracts.Sdrn.DeepServices.EarthGeometry;
 using Atdi.Platform.Logging;
 using Atdi.Platform.Data;
 using Atdi.DataModels.Sdrn.DeepServices.Gis;
@@ -34,6 +36,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
         private readonly IObjectPoolSite _poolSite;
         private readonly ITransformation _transformation;
+        private readonly IEarthGeometricService _earthGeometricService;
         private readonly AppServerComponentConfig _appServerComponentConfig;
 
         /// <summary>
@@ -41,6 +44,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         /// </summary>
         public DetermineStationParametersCalcIteration(
             IDataLayer<EntityDataOrm<CalcServerEntityOrmContext>> calcServerDataLayer,
+            IEarthGeometricService earthGeometricService,
             IIterationsPool iterationsPool,
             IObjectPoolSite poolSite,
             AppServerComponentConfig appServerComponentConfig,
@@ -49,6 +53,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         {
             _calcServerDataLayer = calcServerDataLayer;
             _iterationsPool = iterationsPool;
+            _earthGeometricService = earthGeometricService;
             _poolSite = poolSite;
             _appServerComponentConfig = appServerComponentConfig;
             _transformation = transformation;
@@ -237,7 +242,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
                     // вызов метода сравнения станций и драйв тестов (с использованием функции CompareGSID)
                     // результатом выполнения данной функции есть три сущности: массив связей между набором станций и драйв тестами (сгруппирован по GSID), а также массив драйв тестов и массив станций (каждый из которых сгруппирован по GSID), которые не удалось связать через функцию CompareGSID
-                    var linkDriveTestsAndStations = Utils.CompareDriveTestAndStation(data.GSIDGroupeDriveTests, data.GSIDGroupeStation, standard, out DriveTestsResult[][] outDriveTestsResults, out ContextStation[][] outContextStations, _transformation, 100, data.Projection);
+                    var linkDriveTestsAndStations = Utils.CompareDriveTestAndStation(data.GSIDGroupeDriveTests, data.GSIDGroupeStation, standard, out DriveTestsResult[][] outDriveTestsResults, out ContextStation[][] outContextStations, _transformation, _earthGeometricService, 100, data.Projection);
 
                     // преобразуем в список массив драйв тестов, для которого не найдены соотвествия со станциями (данный список будет пополняться при дальнейшей работе алгоритма)
 
@@ -483,8 +488,9 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                         {
                                             for (int p = 0; p < coordinatesDrivePoint.Length; p++)
                                             {
-                                                //var coordinateStation = _transformation.ConvertCoordinateToEpgs(new Wgs84Coordinate() { Longitude = arrStations[0].Site.Longitude, Latitude = arrStations[0].Site.Latitude }, _transformation.ConvertProjectionToCode(data.Projection));
-                                                if (GeometricСalculations.GetDistance_km(coordinatesDrivePoint[p].X, coordinatesDrivePoint[p].Y, arrStations[0].Coordinate.X, arrStations[0].Coordinate.Y) <= GetMinDistanceFromConfigByStandard(standard))
+                                                var sourcePointArgs = new PointEarthGeometric() { Longitude = coordinatesDrivePoint[p].X, Latitude = coordinatesDrivePoint[p].Y };
+                                                var targetPointArgs = new PointEarthGeometric() { Longitude = arrStations[0].Coordinate.X, Latitude = arrStations[0].Coordinate.Y };
+                                                if (this._earthGeometricService.GetDistance_km(in sourcePointArgs, in targetPointArgs) <= GetMinDistanceFromConfigByStandard(standard))
                                                 {
                                                     // добавляем весь массив станций arrStations в случае если одна из станций, которая входит в arrStations имеет расстояние до одной из точек текущего DrivePoint меньше 1 км (берем с конфигурации)
                                                     GSIDGroupeStations.Add(arrStations);
@@ -509,8 +515,9 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                             var keyValueStations = new Dictionary<long, double>();
                                             for (int z = 0; z < arrStations.Length; z++)
                                             {
-                                                //var coordinateStation = _transformation.ConvertCoordinateToEpgs(new Wgs84Coordinate() { Longitude = arrStations[z].Site.Longitude, Latitude = arrStations[z].Site.Latitude }, _transformation.ConvertProjectionToCode(data.Projection));
-                                                var distance = GeometricСalculations.GetDistance_km(centerWeightCoordinateOfDriveTest.X, centerWeightCoordinateOfDriveTest.Y, arrStations[0].Coordinate.X, arrStations[0].Coordinate.Y /* coordinateStation.X, coordinateStation.Y*/);
+                                                var sourcePointArgs = new PointEarthGeometric() { Longitude = centerWeightCoordinateOfDriveTest.X, Latitude = centerWeightCoordinateOfDriveTest.Y };
+                                                var targetPointArgs = new PointEarthGeometric() { Longitude = arrStations[0].Coordinate.X, Latitude = arrStations[0].Coordinate.Y };
+                                                var distance = this._earthGeometricService.GetDistance_km(in sourcePointArgs, in targetPointArgs);
                                                 keyValueStations.Add(arrStations[z].Id, distance);
                                             }
                                             var orderStations = from z in keyValueStations.ToList() orderby z.Value ascending select z;

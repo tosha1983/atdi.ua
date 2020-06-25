@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -42,8 +43,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppServerComponent.cs" />
+    <Compile Include="Calculation\EstimationAssignmentsCalculation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Specification.cs" />
+    <Compile Include="EstimationAssignmentsService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeepServices.GN06\Atdi.Contracts.Sdrn.DeepServices.GN06.csproj">
@@ -53,6 +56,10 @@
     <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeepServices\Atdi.Contracts.Sdrn.DeepServices.csproj">
       <Project>{dbbcbdeb-202d-4068-94f6-bb78bd47d51a}</Project>
       <Name>Atdi.Contracts.Sdrn.DeepServices</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices.EarthGeometry\Atdi.DataModels.Sdrn.DeepServices.EarthGeometry.csproj">
+      <Project>{32da0c04-3a89-428f-8997-3018aa1375c3}</Project>
+      <Name>Atdi.DataModels.Sdrn.DeepServices.EarthGeometry</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices.GN06\Atdi.DataModels.Sdrn.DeepServices.GN06.csproj">
       <Project>{ee65799e-0a0a-4599-8f5e-30eb23304d49}</Project>
@@ -65,6 +72,10 @@
     <ProjectReference Include="..\..\Platform\Atdi.Platform\Atdi.Platform.csproj">
       <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
       <Name>Atdi.Platform</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry\Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry.csproj">
+      <Project>{11c6a879-bb5b-4b89-a254-597301eae311}</Project>
+      <Name>Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry</Name>
     </ProjectReference>
     <ProjectReference Include="..\Atdi.AppUnits\Atdi.AppUnits.csproj">
       <Project>{aa445e89-a706-4a2a-b28e-edbae056652b}</Project>

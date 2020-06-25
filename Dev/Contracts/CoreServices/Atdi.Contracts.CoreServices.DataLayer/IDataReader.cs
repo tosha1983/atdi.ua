@@ -121,6 +121,8 @@ namespace Atdi.Contracts.CoreServices.DataLayer
 
 		TData GetValueAs<TData>(Expression<Func<TModel, byte[]>> columnExpression);
 
+		TData GetValueAs<TData>(Expression<Func<TModel, string>> columnExpression);
+
 		int GetValue(Expression<Func<TModel, int>> columnExpression);
         int? GetValue(Expression<Func<TModel, int?>> columnExpression);
         int[] GetValue(Expression<Func<TModel, int[]>> columnExpression);
