@@ -40,30 +40,30 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
             }
             else
             {
-                double lon1 = xpoint * Math.PI / 180;
-                double lat1 = ypoint * Math.PI / 180;
-                double lon2 = xtarget * Math.PI / 180;
-                double lat2 = ytarget * Math.PI / 180;
-                double cl1 = Math.Cos(lat1);
-                double cl2 = Math.Cos(lat2);
-                double sl1 = Math.Sin(lat1);
-                double sl2 = Math.Sin(lat2);
-                double delta = lon2 - lon1;
-                double cdelta = Math.Cos(delta);
-                double sdelta = Math.Sin(delta);
-                double x = (cl1 * sl2) - (sl1 * cl2 * cdelta);
-                double y = sdelta * cl2;
-                double z = Math.Atan(-y/x)* 180 / Math.PI;
-                if (x < 0) { z = z + 180;}
-                az = z;
+                //double lon1 = xtarget * Math.PI / 180;
+                //double lat1 = ytarget * Math.PI / 180;
+                //double lon2 = xpoint * Math.PI / 180;
+                //double lat2 = ypoint * Math.PI / 180;
+                //double cl1 = Math.Cos(lat1);
+                //double cl2 = Math.Cos(lat2);
+                //double sl1 = Math.Sin(lat1);
+                //double sl2 = Math.Sin(lat2);
+                //double delta = lon2 - lon1;
+                //double cdelta = Math.Cos(delta);
+                //double sdelta = Math.Sin(delta);
+                //double x = (cl1 * sl2) - (sl1 * cl2 * cdelta);
+                //double y = sdelta * cl2;
+                //double z = Math.Atan(-y/x)* 180 / Math.PI;
+                //if (x < 0) { z = z + 180;}
+                //az = z;
 
-                //double dlon = xtarget - xpoint;
-                //double r = Math.Sin(ypoint * Math.PI / 180) * Math.Sin(ytarget * Math.PI / 180) + Math.Cos(ypoint * Math.PI / 180) * Math.Cos(ytarget * Math.PI / 180) * Math.Cos(dlon * Math.PI / 180);
-                //double x1 = Math.Sin(ytarget * Math.PI / 180) - Math.Sin(ypoint * Math.PI / 180) * r;
-                //double y1 = Math.Cos(ypoint * Math.PI / 180) * Math.Cos(ytarget * Math.PI / 180) * Math.Cos(dlon * Math.PI / 180);
-                //if ((Math.Abs(x1) < 0.000000001) && (Math.Abs(y1) < 0.000000001)) { az = xtarget; }
-                //else { az = Math.Atan2(y1, x1) * 180 / Math.PI; }
-                //if (az < 0) { az = az + 360; }
+                double dlon = xtarget - xpoint;
+                double r = Math.Sin(ypoint * Math.PI / 180) * Math.Sin(ytarget * Math.PI / 180) + Math.Cos(ypoint * Math.PI / 180) * Math.Cos(ytarget * Math.PI / 180) * Math.Cos(dlon * Math.PI / 180);
+                double x1 = Math.Sin(ytarget * Math.PI / 180) - Math.Sin(ypoint * Math.PI / 180) * r;
+                double y1 = Math.Cos(ypoint * Math.PI / 180) * Math.Cos(ytarget * Math.PI / 180) * Math.Sin(dlon * Math.PI / 180);
+                if ((Math.Abs(x1) < 0.000000001) && (Math.Abs(y1) < 0.000000001)) { az = xtarget; }
+                else { az = Math.Atan2(y1, x1) * 180 / Math.PI; }
+                if (az < 0) { az = az + 360; }
             }
             return az;
         }

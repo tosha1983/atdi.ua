@@ -18,12 +18,12 @@ namespace Atdi.Test.CalcServer.LowFunction
         public void Test()
         {
             //START DATA
-            GE.RefNetworkType RefNetwork = GE.RefNetworkType.RN4;
+            GE.RefNetworkType RefNetwork = GE.RefNetworkType.RN1;
             GE.RefNetworkConfigType RefNetworkConfig = GE.RefNetworkConfigType.RPC3;
             double PointLon = 30;
-            double PointLat = 80;
-            double AllotmentPointLon = 30;
-            double AllotmentPointLat = 81;
+            double PointLat = 51;
+            double AllotmentPointLon = 31;
+            double AllotmentPointLat = 50;
             //
 
             GE.BroadcastingAllotment broadcastingAllotment = new GE.BroadcastingAllotment();
