@@ -13,5 +13,7 @@ namespace Atdi.Contracts.Api.EntityOrm.WebClient
 	{
 		IUpdateQuery<TEntity> SetValue<TValue>(Expression<Func<TEntity, TValue>> pathExpression, TValue value);
 
+		IUpdateQuery<TEntity> SetValueAsJson<TValue>(Expression<Func<TEntity, string>> pathExpression, TValue value);
+
 	}
 }

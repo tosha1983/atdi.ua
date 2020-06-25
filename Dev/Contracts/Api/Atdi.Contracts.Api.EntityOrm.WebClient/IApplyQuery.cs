@@ -14,6 +14,8 @@ namespace Atdi.Contracts.Api.EntityOrm.WebClient
 	{
 		IApplyQuery<TEntity> SetValue<TValue>(Expression<Func<TEntity, TValue>> pathExpression, TValue value);
 
+		IApplyQuery<TEntity> SetValueAsJson<TValue>(Expression<Func<TEntity, string>> pathExpression, TValue value);
+
 		IApplyQuery<TEntity> UpdateIfExists();
 
 		IApplyQuery<TEntity> CreateIfNotExists();

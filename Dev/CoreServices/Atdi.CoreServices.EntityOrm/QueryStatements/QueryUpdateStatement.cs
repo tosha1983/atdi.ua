@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Linq.Expressions;
 using Atdi.Contracts.CoreServices.EntityOrm.Metadata;
 using Atdi.Contracts.CoreServices.EntityOrm;
+using Newtonsoft.Json;
 
 namespace Atdi.CoreServices.EntityOrm
 {
@@ -75,6 +76,15 @@ namespace Atdi.CoreServices.EntityOrm
             this.SetValue(columnValue);
             return this;
         }
+
+        public IQueryUpdateStatement<TModel> SetValueAsJson<TValue>(Expression<Func<TModel, string>> columnsExpression, TValue value)
+        {
+			var memberName = columnsExpression.Body.GetMemberName();
+			var json = JsonConvert.SerializeObject(value);
+			var columnValue = ColumnValue.Create<string>(json, memberName);
+			this.SetValue(columnValue);
+			return this;
+		}
 
         IQueryUpdateStatement<TModel> IQueryUpdateStatement<TModel>.Where(Expression<Func<TModel, bool>> expression)
         {

@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using Atdi.Api.EntityOrm.WebClient.DTO;
 using Atdi.Contracts.Api.EntityOrm.WebClient;
 using Atdi.DataModels.Api.EntityOrm.WebClient;
+using Newtonsoft.Json;
 
 namespace Atdi.Api.EntityOrm.WebClient
 {
@@ -82,6 +84,13 @@ namespace Atdi.Api.EntityOrm.WebClient
 		public ICreateQuery<TEntity> SetValue<TValue>(System.Linq.Expressions.Expression<Func<TEntity, TValue>> pathExpression, TValue value)
 		{
 			_createQuery.SetValue(pathExpression.Body.GetMemberName(), value);
+			return this;
+		}
+
+		public ICreateQuery<TEntity> SetValueAsJson<TValue>(Expression<Func<TEntity, string>> pathExpression, TValue value)
+		{
+			var json = JsonConvert.SerializeObject(value);
+			_createQuery.SetValue(pathExpression.Body.GetMemberName(), json);
 			return this;
 		}
 	}

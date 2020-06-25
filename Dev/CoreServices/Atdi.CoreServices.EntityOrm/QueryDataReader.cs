@@ -14,6 +14,7 @@ using Atdi.Contracts.CoreServices.EntityOrm.Metadata;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
+using Newtonsoft.Json;
 
 namespace Atdi.CoreServices.EntityOrm
 {
@@ -907,8 +908,19 @@ namespace Atdi.CoreServices.EntityOrm
 			var result = data.DeserializeAs<TData>();
 			return result;
 		}
+		//JsonConvert.SerializeObject
 
-		
+		public TData GetValueAs<TData>(Expression<Func<TModel, string>> columnExpression)
+		{
+			var data = this.GetValue(columnExpression);
+			if (data == null)
+			{
+				return default(TData);
+			}
+
+			var result = JsonConvert.DeserializeObject<TData>(data);
+			return result;
+		}
 
 		#endregion
 
