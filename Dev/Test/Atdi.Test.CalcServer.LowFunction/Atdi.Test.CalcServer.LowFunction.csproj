@@ -79,6 +79,10 @@
       <Project>{c67fbe11-fef0-48ad-9912-61bf4c61db03}</Project>
       <Name>Atdi.DataModels.Sdrn.DeepServices.RadioSystem</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Atdi.Test.DeepServices.Client.WPF\Atdi.Test.DeepServices.Client.WPF.csproj">
+      <Project>{21c68ffe-b517-482a-8214-85a51eb4bbe6}</Project>
+      <Name>Atdi.Test.DeepServices.Client.WPF</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
