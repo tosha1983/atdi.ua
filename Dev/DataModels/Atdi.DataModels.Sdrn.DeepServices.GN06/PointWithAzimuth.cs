@@ -10,5 +10,6 @@ namespace Atdi.DataModels.Sdrn.DeepServices.GN06
     {
 		public AreaPoint AreaPoint;
         public double Azimuth_deg;
+        public double AntDiscrimination_dB;
     }
 }

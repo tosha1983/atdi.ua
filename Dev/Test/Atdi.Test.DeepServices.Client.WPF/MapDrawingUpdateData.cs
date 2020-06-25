@@ -36,8 +36,8 @@ namespace Atdi.Test.DeepServices.Client.WPF
                             Color = System.Windows.Media.Brushes.Blue,
                             Fill = System.Windows.Media.Brushes.BlueViolet,
                             Opacity = 0.85,
-                            Width = 6,
-                            Height = 6
+                            Width = 16,
+                            Height = 16
                         });
                     }
                 }
@@ -55,8 +55,8 @@ namespace Atdi.Test.DeepServices.Client.WPF
                             Color = System.Windows.Media.Brushes.Orange,
                             Fill = System.Windows.Media.Brushes.OrangeRed,
                             Opacity = 0.85,
-                            Width = 6,
-                            Height = 6
+                            Width = 16,
+                            Height = 16
                         });
                     }
                 }

@@ -19,7 +19,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
           
         }
 
-
+        private const double re_km = 6371.0;
 
         private double CalcSquare(in GeometryArgs geometryArgs)
         {
@@ -143,7 +143,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
             }
         }
 
-        
+
 
         /// <summary>
         /// Расчет координаты по заданной точке, азимуту и расстоянию
@@ -153,29 +153,41 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
         /// <param name="distance"></param>
         /// <param name="azimuth"></param>
         /// <returns></returns>
-        public PointEarthGeometric CalculationCoordinateByLengthAndAzimuth(double longitude, double latitude, double distance, double azimuth, bool LargeCircleArc = true)
+        public PointEarthGeometric CalculationCoordinateByLengthAndAzimuth(in PointEarthGeometric PointStart, double distance_km, double azimuth, bool LargeCircleArc = true)
         {
-            var R = 6371.0;
             var point = new PointEarthGeometric();
-            if (LargeCircleArc)
+
+            if (PointStart.CoordinateUnits == CoordinateUnits.deg)
             {
-                double arcDist = distance / R;
-                var newLat = Math.Sin(latitude * Math.PI / 180.0) * Math.Cos(arcDist) +
-                    Math.Cos(latitude * Math.PI / 180.0) * Math.Sin(arcDist) * Math.Cos(azimuth * Math.PI / 180.00);
-                point.Latitude = 180 * Math.Asin(newLat) / Math.PI;
-                var newLon = Math.Sin(arcDist) * Math.Sin(azimuth * Math.PI / 180.0) /
-                    (Math.Cos(latitude * Math.PI / 180.0) * Math.Cos(arcDist) -
-                    Math.Sin(latitude * Math.PI / 180.0) * Math.Sin(arcDist) * Math.Cos(azimuth * Math.PI / 180.0));
-                point.Longitude = longitude + 180 * Math.Atan(newLon) / Math.PI;
-                point.CoordinateUnits = CoordinateUnits.deg;
+                var latitude = PointStart.Latitude;
+                var longitude = PointStart.Longitude;
+                if (LargeCircleArc)
+                {
+                    double arcDist = distance_km / re_km;
+                    var newLat = Math.Sin(latitude * Math.PI / 180.0) * Math.Cos(arcDist) +
+                        Math.Cos(latitude * Math.PI / 180.0) * Math.Sin(arcDist) * Math.Cos(azimuth * Math.PI / 180.00);
+                    point.Latitude = 180 * Math.Asin(newLat) / Math.PI;
+                    var newLon = Math.Sin(arcDist) * Math.Sin(azimuth * Math.PI / 180.0) /
+                        (Math.Cos(latitude * Math.PI / 180.0) * Math.Cos(arcDist) -
+                        Math.Sin(latitude * Math.PI / 180.0) * Math.Sin(arcDist) * Math.Cos(azimuth * Math.PI / 180.0));
+                    point.Longitude = longitude + 180 * Math.Atan(newLon) / Math.PI;
+                    point.CoordinateUnits = CoordinateUnits.deg;
+                }
+                else
+                {
+                    point.Longitude = longitude + distance_km * Math.Sin(azimuth * Math.PI / 180.0) / Math.Cos(latitude * Math.PI / 180.0) / (re_km * Math.PI / 180.0);
+                    point.Latitude = latitude + distance_km * Math.Cos(azimuth * Math.PI / 180.0) / (re_km * Math.PI / 180.0);
+                    point.CoordinateUnits = CoordinateUnits.deg;
+                }
+                return point;
             }
             else
-            {
-                point.Longitude = longitude + distance * Math.Sin(azimuth * Math.PI / 180.0) / Math.Cos(latitude * Math.PI / 180.0) / (R * Math.PI / 180.0);
-                point.Latitude = latitude + distance * Math.Cos(azimuth * Math.PI / 180.0) / (R * Math.PI / 180.0);
-                point.CoordinateUnits = CoordinateUnits.deg;
+            {//Не проверенно
+                point.Longitude = PointStart.Longitude + (distance_km/1000.0)*Math.Sin(azimuth * Math.PI / 180.0);
+                point.Latitude = PointStart.Latitude + (distance_km / 1000.0) * Math.Cos(azimuth * Math.PI / 180.0); ;
+                point.CoordinateUnits = CoordinateUnits.m;
+                return point;
             }
-            return point;
         }
 
 
@@ -192,7 +204,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
             for (double azimuth = 0; azimuth < 360; azimuth = index * contourForStationByTriggerFieldStrengthsArgs.Step_deg)
             {
                 
-                var coordRecalc = CalculationCoordinateByLengthAndAzimuth(contourForStationByTriggerFieldStrengthsArgs.PointEarthGeometricCalc.Longitude, contourForStationByTriggerFieldStrengthsArgs.PointEarthGeometricCalc.Latitude, d0_m, azimuth);
+                var coordRecalc = CalculationCoordinateByLengthAndAzimuth(in contourForStationByTriggerFieldStrengthsArgs.PointEarthGeometricCalc, d0_m, azimuth);
                 var calcFieldStrength = calcFieldStrengths(contourForStationByTriggerFieldStrengthsArgs.PointEarthGeometricCalc, coordRecalc);
                 var d1_m = d0_m;
                 while (true)
@@ -200,13 +212,13 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
                     if (calcFieldStrength < contourForStationByTriggerFieldStrengthsArgs.TriggerFieldStrength)
                     {
                         d1_m += (d1_m / 2.0);
-                        coordRecalc = CalculationCoordinateByLengthAndAzimuth(contourForStationByTriggerFieldStrengthsArgs.PointEarthGeometricCalc.Longitude, contourForStationByTriggerFieldStrengthsArgs.PointEarthGeometricCalc.Latitude, d1_m, azimuth);
+                        coordRecalc = CalculationCoordinateByLengthAndAzimuth(in contourForStationByTriggerFieldStrengthsArgs.PointEarthGeometricCalc, d1_m, azimuth);
                         calcFieldStrength = calcFieldStrengths(contourForStationByTriggerFieldStrengthsArgs.PointEarthGeometricCalc, coordRecalc);
                     }
                     else if (calcFieldStrength > contourForStationByTriggerFieldStrengthsArgs.TriggerFieldStrength)
                     {
                         d1_m -= (d1_m / 2.0);
-                        coordRecalc = CalculationCoordinateByLengthAndAzimuth(contourForStationByTriggerFieldStrengthsArgs.PointEarthGeometricCalc.Longitude, contourForStationByTriggerFieldStrengthsArgs.PointEarthGeometricCalc.Latitude, d1_m, azimuth);
+                        coordRecalc = CalculationCoordinateByLengthAndAzimuth(in contourForStationByTriggerFieldStrengthsArgs.PointEarthGeometricCalc, d1_m, azimuth);
                         calcFieldStrength = calcFieldStrengths(contourForStationByTriggerFieldStrengthsArgs.PointEarthGeometricCalc, coordRecalc);
                     }
                     if ((Math.Round(calcFieldStrength,2) == contourForStationByTriggerFieldStrengthsArgs.TriggerFieldStrength) || (d1_m < mindistance_m))
@@ -275,7 +287,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
             int index = 0;
             for (double azimuth = 0; azimuth < 360; azimuth= index * contourFromPointByDistanceArgs.Step_deg)
             {
-                var coordRecalc = CalculationCoordinateByLengthAndAzimuth(contourFromPointByDistanceArgs.PointEarthGeometricCalc.Longitude, contourFromPointByDistanceArgs.PointEarthGeometricCalc.Latitude, contourFromPointByDistanceArgs.Distance_km, azimuth);
+                var coordRecalc = CalculationCoordinateByLengthAndAzimuth(in contourFromPointByDistanceArgs.PointEarthGeometricCalc, contourFromPointByDistanceArgs.Distance_km, azimuth);
                 pointResult[index] = coordRecalc;
                 pointResult[index].CoordinateUnits = CoordinateUnits.deg;
                 index++;

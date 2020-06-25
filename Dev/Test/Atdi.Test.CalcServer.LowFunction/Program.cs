@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WPF = Atdi.Test.DeepServices.Client.WPF;
+using Atdi.AppUnits.Sdrn.DeepServices.GN06;
+using GE = Atdi.DataModels.Sdrn.DeepServices.GN06;
+
 
 
 namespace Atdi.Test.CalcServer.LowFunction
@@ -17,13 +20,12 @@ namespace Atdi.Test.CalcServer.LowFunction
             //CalcAntennaPattern.Test();
             //var CalcPropagationLoss = new TestPropagationModel();
             //CalcPropagationLoss.Test();
-            var TestDistance = new TestDistance();
-            TestDistance.Test1();
-            WPF.RunApp.Start(WPF.TypeObject.Points, 
-                new WPF.Location[] { new WPF.Location(30, 50), new WPF.Location(30, 51), new WPF.Location(31, 51), new WPF.Location(31, 50)}, 
-                WPF.TypeObject.Points,
-                new WPF.Location[] { new WPF.Location(29, 50), new WPF.Location(29, 51), new WPF.Location(29.5, 51), new WPF.Location(29.5, 50) }
-                );
+            //var TestDistance = new TestDistance();
+            //TestDistance.Test1();
+            var TestGE06 = new TestGE06();
+            TestGE06.Test();
+            
+           
         }
     }
 }

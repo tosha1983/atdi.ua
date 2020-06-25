@@ -14,8 +14,12 @@ namespace Atdi.Test.CalcServer.LowFunction
         public void Test()
         {
             EarthGeometricService earthGeometricService = new EarthGeometricService();
-            double longitude = 30;
-            double latitude = 0;
+            PointEarthGeometric point = new PointEarthGeometric()
+            {
+                Latitude = 0,
+                Longitude = 30,
+                CoordinateUnits = CoordinateUnits.deg
+            };
             double distance = 0;
             double azimuth = 0;
             PointEarthGeometric [,] arr1 = new PointEarthGeometric [8, 1];
@@ -27,8 +31,8 @@ namespace Atdi.Test.CalcServer.LowFunction
                 {
                     distance = j*10;
                     azimuth = i*45;
-                    arr1[i,0] = earthGeometricService.CalculationCoordinateByLengthAndAzimuth(longitude, latitude, distance, azimuth, true);
-                    arr2[i, 0] = earthGeometricService.CalculationCoordinateByLengthAndAzimuth(longitude, latitude, distance, azimuth, false);
+                    arr1[i,0] = earthGeometricService.CalculationCoordinateByLengthAndAzimuth(point, distance, azimuth, true);
+                    arr2[i, 0] = earthGeometricService.CalculationCoordinateByLengthAndAzimuth(point, distance, azimuth, false);
                 }
             }
         }
