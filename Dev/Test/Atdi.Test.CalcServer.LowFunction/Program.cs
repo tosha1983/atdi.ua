@@ -16,7 +16,7 @@ namespace Atdi.Test.CalcServer.LowFunction
             //var CalcPropagationLoss = new TestPropagationModel();
             //CalcPropagationLoss.Test();
             var TestDistance = new TestDistance();
-            TestDistance.Test();
+            TestDistance.Test1();
         }
     }
 }

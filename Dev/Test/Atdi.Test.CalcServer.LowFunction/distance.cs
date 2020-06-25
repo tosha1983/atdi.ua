@@ -32,6 +32,22 @@ namespace Atdi.Test.CalcServer.LowFunction
                 }
             }
         }
+        public void Test1()
+        {
+            EarthGeometricService earthGeometricService = new EarthGeometricService();
+            PointEarthGeometricArgs point1 = new  PointEarthGeometricArgs()
+            {
+                Latitude = 50, Longitude = 30
+            };
+            PointEarthGeometricArgs point2 = new PointEarthGeometricArgs()
+            {
+                Latitude = 50.1,
+                Longitude = 30
+            };
+            earthGeometricService.GetDistance_km(point1, point2, CoordinateUnits.deg);
+        }
+        
+        
  
     }
 }
