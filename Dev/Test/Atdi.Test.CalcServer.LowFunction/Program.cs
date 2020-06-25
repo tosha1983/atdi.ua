@@ -10,6 +10,7 @@ namespace Atdi.Test.CalcServer.LowFunction
 {
     class Program
     {
+        [STAThread]
         static void Main(string[] args)
         {
             //var CalcAntennaPattern = new TestCalcAntennaPattern();
