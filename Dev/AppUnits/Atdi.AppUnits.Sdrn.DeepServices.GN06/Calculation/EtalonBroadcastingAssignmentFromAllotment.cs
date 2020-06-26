@@ -98,18 +98,24 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.GN06
         {
 
 
-            outputBroadcastingAssignment.AdmData = new AdministrativeData();
-            outputBroadcastingAssignment.AdmData.Adm = inputBroadcastingAllotment.AdminData.Adm;
-            outputBroadcastingAssignment.AntennaCharacteristics = new AntennaCharacteristics();
-            outputBroadcastingAssignment.AntennaCharacteristics.AglHeight_m = 150;
-            outputBroadcastingAssignment.AntennaCharacteristics.DiagrH = new float[36] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, };
-            outputBroadcastingAssignment.AntennaCharacteristics.DiagrV = new float[36] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, };
-            outputBroadcastingAssignment.AntennaCharacteristics.Direction = AntennaDirectionType.ND;
+            outputBroadcastingAssignment.AdmData = new AdministrativeData
+            {
+                Adm = inputBroadcastingAllotment.AdminData.Adm
+            };
+            outputBroadcastingAssignment.AntennaCharacteristics = new AntennaCharacteristics
+            {
+                AglHeight_m = 150,
+                DiagrH = new float[36] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
+                DiagrV = new float[36] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
+                Direction = AntennaDirectionType.ND
+            };
             outputBroadcastingAssignment.DigitalPlanEntryParameters = new DigitalPlanEntryParameters();
             var Emmision = inputBroadcastingAllotment.EmissionCharacteristics;
-            outputBroadcastingAssignment.EmissionCharacteristics = new BroadcastingAssignmentEmissionCharacteristics();
-            outputBroadcastingAssignment.EmissionCharacteristics.Polar = Emmision.Polar;
-            outputBroadcastingAssignment.EmissionCharacteristics.Freq_MHz = Emmision.Freq_MHz;
+            outputBroadcastingAssignment.EmissionCharacteristics = new BroadcastingAssignmentEmissionCharacteristics
+            {
+                Polar = Emmision.Polar,
+                Freq_MHz = Emmision.Freq_MHz
+            };
             double ERP = GetERPGE06(Emmision.Freq_MHz, Emmision.RefNetworkConfig, Emmision.RefNetwork);
             if (Emmision.Polar == PolarType.H)
             {
