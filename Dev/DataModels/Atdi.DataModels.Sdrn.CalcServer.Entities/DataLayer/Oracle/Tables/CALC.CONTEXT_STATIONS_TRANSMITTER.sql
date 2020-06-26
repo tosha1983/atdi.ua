@@ -1,6 +1,6 @@
 ﻿CREATE TABLE CALC.CONTEXT_STATIONS_TRANSMITTER
 (
-  FREQ_MHZ           NUMBER(22,8)               NOT NULL,
+  FREQ_MHZ           NUMBER(30,10)               NOT NULL,
   BW_KHZ             NUMBER(22,8)               NOT NULL,
   LOSS_DB            NUMBER(30,10)              NOT NULL,
   MAX_POWER_DBM      NUMBER(30,10)              NOT NULL,
