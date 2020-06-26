@@ -31,6 +31,8 @@ namespace Atdi.Contracts.Api.EntityOrm.WebClient
 
 		TData GetValueAs<TData>(Expression<Func<TEntity, byte[]>> columnExpression);
 
+		TData GetValueAs<TData>(Expression<Func<TEntity, string>> columnExpression);
+
 		TValue GetValue<TValue>(Expression<Func<TEntity, TValue>> pathExpression);
 
 		bool IsNull<TValue>(Expression<Func<TEntity, TValue>> pathExpression);

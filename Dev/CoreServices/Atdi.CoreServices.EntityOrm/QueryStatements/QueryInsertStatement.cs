@@ -10,6 +10,7 @@ using Atdi.Contracts.CoreServices.EntityOrm.Metadata;
 using Atdi.Contracts.CoreServices.EntityOrm;
 using System.Linq.Expressions;
 using Atdi.DataModels.DataConstraint;
+using Newtonsoft.Json;
 
 namespace Atdi.CoreServices.EntityOrm
 {
@@ -103,6 +104,14 @@ namespace Atdi.CoreServices.EntityOrm
             return this;
         }
 
-    }
+		public IQueryInsertStatement<TModel> SetValueAsJson<TValue>(Expression<Func<TModel, string>> columnsExpression, TValue value)
+		{
+			var memberName = columnsExpression.Body.GetMemberName();
+			var json = JsonConvert.SerializeObject(value);
+			var columnValue = ColumnValue.Create<string>(json, memberName);
+			this.SetValue(columnValue);
+			return this;
+		}
+	}
 
 }
