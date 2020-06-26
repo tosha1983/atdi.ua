@@ -10,7 +10,7 @@ namespace Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations
 	{
         public double[] Freqs_MHz;
 
-        public float Freq_MHz;
+        public double Freq_MHz;
 
 		public double BW_kHz;
 
