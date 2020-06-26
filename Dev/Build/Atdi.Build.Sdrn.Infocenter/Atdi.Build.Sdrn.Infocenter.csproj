@@ -50,6 +50,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.Infocenter.Integration\Atdi.AppUnits.Sdrn.Infocenter.Integration.csproj">
+      <Project>{6dc325ca-a275-4522-9db8-b3180d19e365}</Project>
+      <Name>Atdi.AppUnits.Sdrn.Infocenter.Integration</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.Infocenter\Atdi.AppUnits.Sdrn.Infocenter.csproj">
       <Project>{4d714049-70ae-43bb-870d-4b2315dc29e5}</Project>
       <Name>Atdi.AppUnits.Sdrn.Infocenter</Name>
