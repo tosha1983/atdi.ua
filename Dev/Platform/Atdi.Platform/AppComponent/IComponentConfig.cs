@@ -65,7 +65,11 @@ namespace Atdi.Platform.AppComponent
                 {
                     propertyInfo.SetValue(result, config.GetParameterAsInteger(propertyName));
                 }
-                else if (propertyInfo.PropertyType == typeof(float) || propertyInfo.PropertyType == typeof(float?))
+                else if (propertyInfo.PropertyType == typeof(long) || propertyInfo.PropertyType == typeof(long?))
+                {
+	                propertyInfo.SetValue(result, config.GetParameterAsLong(propertyName));
+                }
+				else if (propertyInfo.PropertyType == typeof(float) || propertyInfo.PropertyType == typeof(float?))
                 {
                     propertyInfo.SetValue(result, config.GetParameterAsFloat(propertyName));
                 }
@@ -153,7 +157,29 @@ namespace Atdi.Platform.AppComponent
             throw new InvalidOperationException($"Incorrect parameter value as int: Name = '{paramName}', Value = '{stringValue}'");
         }
 
-        public static float? GetParameterAsFloat(this IComponentConfig config, string paramName)
+        public static long? GetParameterAsLong(this IComponentConfig config, string paramName)
+        {
+	        var realValue = config?[paramName];
+	        if (realValue == null)
+	        {
+		        return null;
+	        }
+
+	        var stringValue = Convert.ToString(realValue);
+	        if (string.IsNullOrEmpty(stringValue))
+	        {
+		        return null;
+	        }
+
+	        if (long.TryParse(stringValue, out var result))
+	        {
+		        return result;
+	        }
+
+	        throw new InvalidOperationException($"Incorrect parameter value as long: Name = '{paramName}', Value = '{stringValue}'");
+        }
+
+		public static float? GetParameterAsFloat(this IComponentConfig config, string paramName)
         {
             var realValue = config?[paramName];
             if (realValue == null)

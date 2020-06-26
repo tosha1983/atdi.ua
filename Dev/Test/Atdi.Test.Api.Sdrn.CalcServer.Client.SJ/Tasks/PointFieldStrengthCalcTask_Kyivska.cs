@@ -90,22 +90,22 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client.Tasks
         //private static double[] pointsHeights = new double[] { 8 };
 
         //// 17-18 sea 52km
-        private static double[] sitesLatitudes = new double[] { 50.61738 };
-        private static double[] sitesLongitudes = new double[] { 30.505687 };
-        private static double[] sitesHeights = new double[] { 15 };
+        //private static double[] sitesLatitudes = new double[] { 50.61738 };
+        //private static double[] sitesLongitudes = new double[] { 30.505687 };
+        //private static double[] sitesHeights = new double[] { 15 };
 
-        private static double[] pointsLatitudes = new double[] { 51.090661 };
-        private static double[] pointsLongitudes = new double[] { 30.481682 };
-        private static double[] pointsHeights = new double[] { 16 };
+        //private static double[] pointsLatitudes = new double[] { 51.090661 };
+        //private static double[] pointsLongitudes = new double[] { 30.481682 };
+        //private static double[] pointsHeights = new double[] { 16 };
 
-        //// 19-20 mix 2.8km
-        //private static double[] sitesLatitudes = new double[] { 50.875664 };
-        //private static double[] sitesLongitudes = new double[] { 30.367521 };
-        //private static double[] sitesHeights = new double[] { 23 };
+        // 19-20 mix 2.8km
+        private static double[] sitesLatitudes = new double[] { 50.875664 };
+        private static double[] sitesLongitudes = new double[] { 30.367521 };
+        private static double[] sitesHeights = new double[] { 23 };
 
-        //private static double[] pointsLatitudes = new double[] { 50.895969 };
-        //private static double[] pointsLongitudes = new double[] { 30.390554 };
-        //private static double[] pointsHeights = new double[] { 42 };
+        private static double[] pointsLatitudes = new double[] { 50.895969 };
+        private static double[] pointsLongitudes = new double[] { 30.390554 };
+        private static double[] pointsHeights = new double[] { 42 };
 
         ////// 21-22 land 2.1km
         //private static double[] sitesLatitudes = new double[] { 50.84377 };
@@ -320,9 +320,9 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client.Tasks
                     .SetValue(c => c.OwnerUpperLeftX, 253_831)
                     .SetValue(c => c.OwnerUpperLeftY, 5_681_087)
                     .SetValue(c => c.StepUnit, "M")
-                    .SetValue(c => c.OwnerAxisXNumber, 1000)
+                    .SetValue(c => c.OwnerAxisXNumber, 500)
                     .SetValue(c => c.OwnerAxisXStep, 200)
-                    .SetValue(c => c.OwnerAxisYNumber, 1000)
+                    .SetValue(c => c.OwnerAxisYNumber, 500)
                     .SetValue(c => c.OwnerAxisYStep, 200)
                     ;
                 var projectMapPk = executor.Execute<IProjectMap_PK>(insQuery);

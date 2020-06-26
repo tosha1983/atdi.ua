@@ -28,15 +28,75 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client.Tasks
             public double Hei_m;
         }
 
+        //////////small
+        //// 29-30 
+        //private static double[] sitesLatitudes = new double[] { 45.481647 };
+        //private static double[] sitesLongitudes = new double[] { 29.9444 };
+        //private static double[] sitesHeights = new double[] { 10 };
 
-        //// 29-30
-        private static double[] sitesLatitudes = new double[] { 44.577623 };
-        private static double[] sitesLongitudes = new double[] { 30.072781 };
+        //private static double[] pointsLatitudes = new double[] { 46.504229 };
+        //private static double[] pointsLongitudes = new double[] { 31.347353 };
+        //private static double[] pointsHeights = new double[] { 10 };
+
+        //// 31-32
+        //private static double[] sitesLatitudes = new double[] { 46.129873 };
+        //private static double[] sitesLongitudes = new double[] { 29.950144 };
+        //private static double[] sitesHeights = new double[] { 10 };
+
+        //private static double[] pointsLatitudes = new double[] { 47.078988 };
+        //private static double[] pointsLongitudes = new double[] { 31.266428 };
+        //private static double[] pointsHeights = new double[] { 10 };
+
+        //////// 33-34
+        //private static double[] sitesLatitudes = new double[] { 46.957024 };
+        //private static double[] sitesLongitudes = new double[] { 30.197852 };
+        //private static double[] sitesHeights = new double[] { 10 };
+
+        //private static double[] pointsLatitudes = new double[] { 45.73545 };
+        //private static double[] pointsLongitudes = new double[] { 31.000003 };
+        //private static double[] pointsHeights = new double[] { 10 };
+
+
+
+
+
+        ///// 35-36 land
+        //private static double[] sitesLatitudes = new double[] { 46.894911 };
+        //private static double[] sitesLongitudes = new double[] { 29.754707 };
+        //private static double[] sitesHeights = new double[] { 10 };
+
+        //private static double[] pointsLatitudes = new double[] { 46.617777 };
+        //private static double[] pointsLongitudes = new double[] { 30.163169 };
+        //private static double[] pointsHeights = new double[] { 10 };
+
+        ///// 37-38 sea
+        //private static double[] sitesLatitudes = new double[] { 46.36263 };
+        //private static double[] sitesLongitudes = new double[] { 30.181614 };
+        //private static double[] sitesHeights = new double[] { 10 };
+
+        //private static double[] pointsLatitudes = new double[] { 46.128241 };
+        //private static double[] pointsLongitudes = new double[] { 30.473214 };
+        //private static double[] pointsHeights = new double[] { 10 };
+
+        ///// 39-40 mix
+        private static double[] sitesLatitudes = new double[] { 46.147019 };
+        private static double[] sitesLongitudes = new double[] { 30.197827 };
         private static double[] sitesHeights = new double[] { 10 };
 
-        private static double[] pointsLatitudes = new double[] { 46.540336 };
-        private static double[] pointsLongitudes = new double[] { 36.771902 };
+        private static double[] pointsLatitudes = new double[] { 46.401132 };
+        private static double[] pointsLongitudes = new double[] { 30.361765 };
         private static double[] pointsHeights = new double[] { 10 };
+
+        //////////////////////////large
+
+        //// 29-30
+        //private static double[] sitesLatitudes = new double[] { 44.577623 };
+        //private static double[] sitesLongitudes = new double[] { 30.072781 };
+        //private static double[] sitesHeights = new double[] { 10 };
+
+        //private static double[] pointsLatitudes = new double[] { 46.540336 };
+        //private static double[] pointsLongitudes = new double[] { 36.771902 };
+        //private static double[] pointsHeights = new double[] { 10 };
 
         //// 31-32
         //private static double[] sitesLatitudes = new double[] { 46.544495 };
@@ -260,9 +320,9 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client.Tasks
                     .SetValue(c => c.OwnerUpperLeftX, 208_400)
                     .SetValue(c => c.OwnerUpperLeftY, 5_220_200)
                     .SetValue(c => c.StepUnit, "M")
-                    .SetValue(c => c.OwnerAxisXNumber, 3000)
+                    .SetValue(c => c.OwnerAxisXNumber, 1000)//3000
                     .SetValue(c => c.OwnerAxisXStep, 200)
-                    .SetValue(c => c.OwnerAxisYNumber, 1500)
+                    .SetValue(c => c.OwnerAxisYNumber, 1000)//1500
                     .SetValue(c => c.OwnerAxisYStep, 200)
                     ;
                 var projectMapPk = executor.Execute<IProjectMap_PK>(insQuery);
@@ -578,7 +638,7 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client.Tasks
                     .Apply()
                     .Filter(c => c.ContextId, contextId)
                     .SetValue(c => c.ContextId, contextId)
-                    .SetValue(c => c.Time_pc, 7)
+                    .SetValue(c => c.Time_pc, 50)
                     .SetValue(c => c.Location_pc, 50)
                     .SetValue(c => c.EarthRadius_km, 8500)
                 ;
@@ -636,7 +696,7 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client.Tasks
                 .SetValue(c => c.PolarizationCode, (byte)PolarizationCode.H)
                 .SetValue(c => c.PolarizationName, "H")
                 .SetValue(c => c.Loss_dB, 3)
-                .SetValue(c => c.Freq_MHz, 423)
+                .SetValue(c => c.Freq_MHz, 300)
                 .SetValue(c => c.BW_kHz, 0)
                 .SetValue(c => c.MaxPower_dBm, 30);
             executor.Execute(transQuery);
