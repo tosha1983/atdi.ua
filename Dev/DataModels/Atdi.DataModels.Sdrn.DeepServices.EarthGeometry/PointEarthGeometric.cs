@@ -11,6 +11,14 @@ namespace Atdi.DataModels.Sdrn.DeepServices.EarthGeometry
         public double Longitude;
         public double Latitude;
         public CoordinateUnits CoordinateUnits;
+
+        public PointEarthGeometric(double Longitude, double Latitude, CoordinateUnits CoordinateUnits) : this()
+        {
+            this.Longitude = Longitude;
+            this.Latitude = Latitude;
+            this.CoordinateUnits = CoordinateUnits;
+
+        }
     }
 }
 
