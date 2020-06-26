@@ -26,8 +26,8 @@ namespace Atdi.Test.CalcServer.LowFunction
             //var TestDistance = new TestDistance();
             //TestDistance.Test1();
 
-            //var TestGE06 = new TestGE06();
-            //TestGE06.Test();
+            var TestGE06 = new TestGE06();
+            TestGE06.Test();
 
            
             //CalcBarycenter testBaryCentr = new CalcBarycenter();
@@ -42,8 +42,8 @@ namespace Atdi.Test.CalcServer.LowFunction
             //CreateContourForStationByTriggerFieldStrengths createContourForStationByTriggerFieldStrengths = new CreateContourForStationByTriggerFieldStrengths();
             //createContourForStationByTriggerFieldStrengths.Test();
 
-            CreateContourFromContureByDistance createContourFromContureByDistance = new CreateContourFromContureByDistance();
-            createContourFromContureByDistance.Test();
+            //CreateContourFromContureByDistance createContourFromContureByDistance = new CreateContourFromContureByDistance();
+            //createContourFromContureByDistance.Test();
 
 
 
