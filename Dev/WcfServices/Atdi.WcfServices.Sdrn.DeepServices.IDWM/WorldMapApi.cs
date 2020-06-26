@@ -128,18 +128,21 @@ namespace Atdi.WcfServices.Sdrn.DeepServices.IDWM
                 {
                     for (int i = 0; i < nearesCountries.Length; i++)
                     {
-                        administrationsResult.Add(new AdministrationsResult()
+                        if (nearesCountries[i].distance > 0)
                         {
-                            Point = new Point()
+                            administrationsResult.Add(new AdministrationsResult()
                             {
-                                Longitude = ((float)((nearesCountries[i].rLongitude * 180) / Math.PI)),
-                                Latitude = ((float)((nearesCountries[i].rLatitude * 180) / Math.PI))
-                            },
-                            Administration = nearesCountries[i].country,
-                            Azimuth = nearesCountries[i].azimuth,
-                            Distance = nearesCountries[i].distance
+                                Point = new Point()
+                                {
+                                    Longitude = ((float)((nearesCountries[i].rLongitude * 180) / Math.PI)),
+                                    Latitude = ((float)((nearesCountries[i].rLatitude * 180) / Math.PI))
+                                },
+                                Administration = nearesCountries[i].country,
+                                Azimuth = nearesCountries[i].azimuth,
+                                Distance = nearesCountries[i].distance
 
-                        });
+                            });
+                        }
                     }
 
                 }

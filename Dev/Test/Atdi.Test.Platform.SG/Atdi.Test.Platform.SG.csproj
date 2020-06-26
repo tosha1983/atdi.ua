@@ -91,6 +91,10 @@
       <Project>{f1f30ab9-7598-424d-9cde-95412583eccf}</Project>
       <Name>Atdi.AppUnits.Sdrn.DeepServices.Gis</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeepServices.GN06\Atdi.AppUnits.Sdrn.DeepServices.GN06.csproj">
+      <Project>{910e2fdf-8557-4162-ab5c-d62e3a9df394}</Project>
+      <Name>Atdi.AppUnits.Sdrn.DeepServices.GN06</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeepServices.IDWM\Atdi.AppUnits.Sdrn.DeepServices.IDWM.csproj">
       <Project>{b2bd17be-581f-477d-b0e1-5407d59591be}</Project>
       <Name>Atdi.AppUnits.Sdrn.DeepServices.IDWM</Name>
@@ -102,6 +106,10 @@
     <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeepServices.Gis\Atdi.Contracts.Sdrn.DeepServices.Gis.csproj">
       <Project>{567b4c34-9ff5-4c05-9e7b-d1ed94eadaaf}</Project>
       <Name>Atdi.Contracts.Sdrn.DeepServices.Gis</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeepServices.GN06\Atdi.Contracts.Sdrn.DeepServices.GN06.csproj">
+      <Project>{a3b45d65-031a-455d-984c-309ccc856994}</Project>
+      <Name>Atdi.Contracts.Sdrn.DeepServices.GN06</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeepServices.IDWM\Atdi.Contracts.Sdrn.DeepServices.IDWM.csproj">
       <Project>{4e1a00f8-68cf-4c16-bdef-2d5ee849c1ec}</Project>
@@ -122,6 +130,10 @@
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices.Gis\Atdi.DataModels.Sdrn.DeepServices.Gis.csproj">
       <Project>{d83887b2-4444-4207-a703-c99b94a4c170}</Project>
       <Name>Atdi.DataModels.Sdrn.DeepServices.Gis</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices.GN06\Atdi.DataModels.Sdrn.DeepServices.GN06.csproj">
+      <Project>{ee65799e-0a0a-4599-8f5e-30eb23304d49}</Project>
+      <Name>Atdi.DataModels.Sdrn.DeepServices.GN06</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices.IDWM\Atdi.DataModels.Sdrn.DeepServices.IDWM.csproj">
       <Project>{a0cb1ec6-1189-454d-a3a7-919a97e7b790}</Project>

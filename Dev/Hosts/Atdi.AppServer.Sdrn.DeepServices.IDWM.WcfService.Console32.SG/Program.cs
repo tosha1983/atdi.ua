@@ -11,8 +11,8 @@ namespace Atdi.AppServer.Sdrn.DeepServices.IDWM
     {
         static void Main(string[] args)
         {
-            Console.WriteLine($"Press any key to start SDRN DeepService IDWM WCF Service App Server (32-bit host) ...");
-            Console.ReadLine();
+            //Console.WriteLine($"Press any key to start SDRN DeepService IDWM WCF Service App Server (32-bit host) ...");
+            //Console.ReadLine();
 
             using (var host = PlatformConfigurator.BuildHost())
             {

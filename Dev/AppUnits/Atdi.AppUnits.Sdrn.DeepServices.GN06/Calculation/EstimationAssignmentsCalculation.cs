@@ -2,8 +2,8 @@
 using Atdi.Platform;
 using Atdi.Contracts.Sdrn.DeepServices.GN06;
 using Atdi.DataModels.Sdrn.DeepServices.GN06;
-using Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry;
 using Atdi.DataModels.Sdrn.DeepServices.EarthGeometry;
+using Atdi.Contracts.Sdrn.DeepServices.EarthGeometry;
 using Atdi.Platform.Logging;
 
 namespace Atdi.AppUnits.Sdrn.DeepServices.GN06
@@ -12,9 +12,8 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.GN06
     {
         public const double AntDiscriminationDVBT_dB =6;
         public const double AntDiscriminationTDAB_dB =12;
-        public static void Calc(in BroadcastingAllotment broadcastingAllotment, in AreaPoint pointAllotment, in AreaPoint pointCalcFieldStrength, ref PointWithAzimuth[] pointResult, out int sizeResultBuffer)
+        public static void Calc(in BroadcastingAllotment broadcastingAllotment, in AreaPoint pointAllotment, in AreaPoint pointCalcFieldStrength, ref PointWithAzimuth[] pointResult, IEarthGeometricService earthGeometricService, out int sizeResultBuffer)
         {
-            EarthGeometricService earthGeometricService = new EarthGeometricService();
             // определение параметров эталонной сети D - размер соты, d_ минимальное растояние между передатчиками
             GetNetworkParameters(in broadcastingAllotment, out double D_km, out double d_km, out double DistanceToSt_km, out int NumberStation);
             sizeResultBuffer = NumberStation;
@@ -89,7 +88,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.GN06
                     break;
             }
         }
-        private static void GetCoordinat(EarthGeometricService earthGeometricService, RefNetworkType refNetworkType, ref PointWithAzimuth[] pointResult, PointEarthGeometric Centr, double AzimutFromCentrToAllotmentPoint_deg, double dist, bool SmallDistance)
+        private static void GetCoordinat(IEarthGeometricService earthGeometricService, RefNetworkType refNetworkType, ref PointWithAzimuth[] pointResult, PointEarthGeometric Centr, double AzimutFromCentrToAllotmentPoint_deg, double dist, bool SmallDistance)
         {
             switch (refNetworkType)
             {

@@ -7,15 +7,15 @@ using System.Threading.Tasks;
 
 namespace Atdi.Contracts.Sdrn.DeepServices.EarthGeometry
 {
-	
-	public interface IEarthGeometricService : IDeepService
-	{
+
+    public interface IEarthGeometricService : IDeepService
+    {
         /// <summary>
         /// Функция по определение центра масс
         /// </summary>
         /// <param name="point"></param>
         /// <returns></returns>
-        void CalcBarycenter(in GeometryArgs  geometryArgs, ref PointEarthGeometric pointResult);
+        void CalcBarycenter(in GeometryArgs geometryArgs, ref PointEarthGeometric pointResult);
 
         /// <summary>
         /// Функция по определению ближайшей точки контура
@@ -68,5 +68,16 @@ namespace Atdi.Contracts.Sdrn.DeepServices.EarthGeometry
         void CreateContourFromContureByDistance(in ContourFromContureByDistanceArgs contourFromContureByDistanceArgs, ref PointEarthGeometricWithAzimuth[] pointEarthGeometricWithAzimuth, out int sizeResultBuffer);
 
 
+        /// <summary>
+        /// Рассчитать точку по заданной дистанции, азимуту и начальной точке
+        /// </summary>
+        /// <param name="PointStart"></param>
+        /// <param name="distance_km"></param>
+        /// <param name="azimuth"></param>
+        /// <param name="LargeCircleArc"></param>
+        /// <returns></returns>
+        PointEarthGeometric CalculationCoordinateByLengthAndAzimuth(in PointEarthGeometric PointStart, double distance_km, double azimuth, bool LargeCircleArc = true);
+
     }
+        
 }

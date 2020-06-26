@@ -16,15 +16,45 @@ namespace Atdi.Test.CalcServer.LowFunction
         [STAThread]
         static void Main(string[] args)
         {
+            Console.WriteLine($"Press any key to start ...");
+            Console.ReadLine();
+
             //var CalcAntennaPattern = new TestCalcAntennaPattern();
             //CalcAntennaPattern.Test();
             //var CalcPropagationLoss = new TestPropagationModel();
             //CalcPropagationLoss.Test();
             //var TestDistance = new TestDistance();
             //TestDistance.Test1();
-            var TestGE06 = new TestGE06();
-            TestGE06.Test();
-            
+
+            //var TestGE06 = new TestGE06();
+            //TestGE06.Test();
+
+           
+            //CalcBarycenter testBaryCentr = new CalcBarycenter();
+            //testBaryCentr.Test();
+
+            //PutPointToContour putPointToContour = new PutPointToContour();
+            //putPointToContour.Test();
+
+            //CreateContourFromPointByDistance createContourFromPointByDistance = new CreateContourFromPointByDistance();
+            //createContourFromPointByDistance.Test();
+
+            //CreateContourForStationByTriggerFieldStrengths createContourForStationByTriggerFieldStrengths = new CreateContourForStationByTriggerFieldStrengths();
+            //createContourForStationByTriggerFieldStrengths.Test();
+
+            CreateContourFromContureByDistance createContourFromContureByDistance = new CreateContourFromContureByDistance();
+            createContourFromContureByDistance.Test();
+
+
+
+            //GetADMByPoint getADMByPoint = new GetADMByPoint();
+            //getADMByPoint.Test();
+
+            //GetNearestPointByADM getNearestPointByADM = new GetNearestPointByADM();
+            //getNearestPointByADM.Test();
+
+            //GetADMByPointAndDistanse GetADMByPointAndDistanse = new GetADMByPointAndDistanse();
+            //GetADMByPointAndDistanse.Test();
            
         }
     }

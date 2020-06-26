@@ -17,6 +17,9 @@ using Atdi.DataModels.Sdrn.DeepServices.IDWM;
 using Atdi.Contracts.Sdrn.DeepServices.EarthGeometry;
 using Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry;
 using Atdi.DataModels.Sdrn.DeepServices.EarthGeometry;
+using Atdi.AppUnits.Sdrn.DeepServices.GN06;
+using Atdi.Contracts.Sdrn.DeepServices.GN06;
+using GE = Atdi.DataModels.Sdrn.DeepServices.GN06;
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
 using System.ServiceModel;
@@ -59,6 +62,8 @@ namespace Atdi.Test.Platform.SG
                     var resolver = host.Container.GetResolver<IServicesResolver>();
                     var transformation = resolver.Resolve<ITransformation>();
                     var earthGeometricServiceServices = resolver.Resolve<IEarthGeometricService>();
+                    var gn06Service = resolver.Resolve<IGn06Service>();
+
                     var logger = resolver.Resolve<ILogger>();
 
                     //var Longitude = 36.2527;
