@@ -43,12 +43,26 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IGn06Service.cs" />
+    <Compile Include="Models\Points.cs" />
+    <Compile Include="Models\ContextStation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\DataModels\Atdi.DataModels.Sdrn.CalcServer.Internal\Atdi.DataModels.Sdrn.CalcServer.Internal.csproj">
+      <Project>{04ab56c1-7a30-411d-9bb2-be4b641cf268}</Project>
+      <Name>Atdi.DataModels.Sdrn.CalcServer.Internal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices.EarthGeometry\Atdi.DataModels.Sdrn.DeepServices.EarthGeometry.csproj">
+      <Project>{32da0c04-3a89-428f-8997-3018aa1375c3}</Project>
+      <Name>Atdi.DataModels.Sdrn.DeepServices.EarthGeometry</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices.GN06\Atdi.DataModels.Sdrn.DeepServices.GN06.csproj">
       <Project>{ee65799e-0a0a-4599-8f5e-30eb23304d49}</Project>
       <Name>Atdi.DataModels.Sdrn.DeepServices.GN06</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices.RadioSystem\Atdi.DataModels.Sdrn.DeepServices.RadioSystem.csproj">
+      <Project>{c67fbe11-fef0-48ad-9912-61bf4c61db03}</Project>
+      <Name>Atdi.DataModels.Sdrn.DeepServices.RadioSystem</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices\Atdi.DataModels.Sdrn.DeepServices.csproj">
       <Project>{b26b6bd9-699d-46b8-ba43-0d0ba803087e}</Project>

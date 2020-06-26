@@ -43,6 +43,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppServerComponent.cs" />
+    <Compile Include="Calculation\BoundaryPointsFromAllotments.cs" />
+    <Compile Include="Calculation\StationFromBroadcastingAssignment.cs" />
+    <Compile Include="Calculation\EtalonBroadcastingAssignmentFromAllotment.cs" />
     <Compile Include="Calculation\EstimationAssignmentsCalculation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Specification.cs" />
@@ -61,13 +64,25 @@
       <Project>{dbbcbdeb-202d-4068-94f6-bb78bd47d51a}</Project>
       <Name>Atdi.Contracts.Sdrn.DeepServices</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.CalcServer.Internal\Atdi.DataModels.Sdrn.CalcServer.Internal.csproj">
+      <Project>{04ab56c1-7a30-411d-9bb2-be4b641cf268}</Project>
+      <Name>Atdi.DataModels.Sdrn.CalcServer.Internal</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices.EarthGeometry\Atdi.DataModels.Sdrn.DeepServices.EarthGeometry.csproj">
       <Project>{32da0c04-3a89-428f-8997-3018aa1375c3}</Project>
       <Name>Atdi.DataModels.Sdrn.DeepServices.EarthGeometry</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices.Gis\Atdi.DataModels.Sdrn.DeepServices.Gis.csproj">
+      <Project>{d83887b2-4444-4207-a703-c99b94a4c170}</Project>
+      <Name>Atdi.DataModels.Sdrn.DeepServices.Gis</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices.GN06\Atdi.DataModels.Sdrn.DeepServices.GN06.csproj">
       <Project>{ee65799e-0a0a-4599-8f5e-30eb23304d49}</Project>
       <Name>Atdi.DataModels.Sdrn.DeepServices.GN06</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices.RadioSystem\Atdi.DataModels.Sdrn.DeepServices.RadioSystem.csproj">
+      <Project>{c67fbe11-fef0-48ad-9912-61bf4c61db03}</Project>
+      <Name>Atdi.DataModels.Sdrn.DeepServices.RadioSystem</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices\Atdi.DataModels.Sdrn.DeepServices.csproj">
       <Project>{b26b6bd9-699d-46b8-ba43-0d0ba803087e}</Project>
