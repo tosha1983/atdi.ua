@@ -22,7 +22,7 @@
   NEW_LON_DEG                         NUMBER(30,10),
   NEW_POWER_DB                        NUMBER(30,10),
   STATION_MONITORING_ID               NUMBER(15),
-  FREQ_MHZ                            NUMBER(22,8),
+  FREQ_MHZ                            NUMBER(30,10),
   STANDARD                            NVARCHAR2(50)
 )
 TABLESPACE USERS
