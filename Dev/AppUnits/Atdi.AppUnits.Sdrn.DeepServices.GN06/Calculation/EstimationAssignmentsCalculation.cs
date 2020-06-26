@@ -77,7 +77,8 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.GN06
                     DistFromCentr = D * 0.5;
                     NumberStation = 3;
                     break;
-                case RefNetworkType.TDAB:
+                case RefNetworkType.RN5:
+                case RefNetworkType.RN6:
                     switch (broadcastingAllotment.EmissionCharacteristics.RefNetworkConfig)
                     {
                         case RefNetworkConfigType.RPC4: d = 60; D = 120; break;
@@ -93,7 +94,8 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.GN06
             switch (refNetworkType)
             {
                 case RefNetworkType.RN1:
-                case RefNetworkType.TDAB:
+                case RefNetworkType.RN5:
+                case RefNetworkType.RN6:
                     pointResult[0] = new PointWithAzimuth();
                     pointResult[0].AreaPoint = new AreaPoint() { Lat_DEC = Centr.Latitude, Lon_DEC = Centr.Longitude};
                     for (int i = 1; i <= 6; i++)
@@ -138,7 +140,8 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.GN06
                     pointResult[1].AntDiscrimination_dB = 0;
                     if (SmallDistance) { pointResult[2].AntDiscrimination_dB = 0; } else { pointResult[2].AntDiscrimination_dB = AntDiscriminationDVBT_dB; }
                     break;
-                case RefNetworkType.TDAB:
+                case RefNetworkType.RN5:
+                case RefNetworkType.RN6:
                     pointResult[1].AntDiscrimination_dB = AntDiscriminationTDAB_dB;
                     pointResult[6].AntDiscrimination_dB = AntDiscriminationTDAB_dB;
                     pointResult[0].AntDiscrimination_dB = 0;
