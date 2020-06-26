@@ -17,6 +17,6 @@ namespace Atdi.Contracts.Sdrn.DeepServices.GN06
 
         void GetStationFromBroadcastingAssignment(BroadcastingAssignment inputBroadcastingAssignment, ref ContextStation outputContextStation);
 
-        void GetBoundaryPointsFromAllotments(BroadcastingAllotment broadcastingAllotment, ref Points pointsResult);
+        void GetBoundaryPointsFromAllotments(BroadcastingAllotment broadcastingAllotment, ref Points pointsResult, double step_km = 5);
     }
 }

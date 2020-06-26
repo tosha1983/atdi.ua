@@ -32,9 +32,9 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.GN06
             StationFromBroadcastingAssignment.Calc(inputBroadcastingAssignment, ref outputContextStation);
         }
 
-        public void GetBoundaryPointsFromAllotments(BroadcastingAllotment broadcastingAllotment, ref Points pointsResult)
+        public void GetBoundaryPointsFromAllotments(BroadcastingAllotment broadcastingAllotment, ref Points pointsResult, double step_km =5)
         {
-            BoundaryPointsFromAllotments.Calc(broadcastingAllotment, ref pointsResult);
+            BoundaryPointsFromAllotments.Calc(this._earthGeometricService, broadcastingAllotment, ref pointsResult, step_km);
         }
 
         public void Dispose()
