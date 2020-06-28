@@ -161,8 +161,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                 var tskParam = loadData[i];
 
                 context.Task.taskParameters = tskParam;
-                if ((tskParam.status == StatusTask.A.ToString()) || (tskParam.status == StatusTask.F.ToString()) || (tskParam.status == StatusTask.Z.ToString()))
+                if ((tskParam.status == StatusTask.N.ToString()) || (tskParam.status == StatusTask.A.ToString()) || (tskParam.status == StatusTask.F.ToString()) || (tskParam.status == StatusTask.Z.ToString()))
                 {
+                    if (tskParam.status == StatusTask.N.ToString())
+                    {
+                        tskParam.status = StatusTask.A.ToString();
+                    }
                     if (tskParam.MeasurementType == MeasType.SpectrumOccupation)
                     {
                         var eventCommand = new CommandHandler<SOTask, SpectrumOccupationProcess>(this._logger, this._repositoryTaskParametersByString, this._config);

@@ -22,9 +22,9 @@ using System;
 
 namespace Atdi.Test.CalcServer.LowFunction
 {
-    public class TestGE06
+    public class TestGE06EstimationAssignmentsPointsForEtalonNetwork
     {
-        public void Test()
+        public static void Test()
         {
 
             using (var host = PlatformConfigurator.BuildHost())
@@ -43,9 +43,9 @@ namespace Atdi.Test.CalcServer.LowFunction
                     //START DATA
                     GE.RefNetworkType RefNetwork = GE.RefNetworkType.RN1;
                     GE.RefNetworkConfigType RefNetworkConfig = GE.RefNetworkConfigType.RPC3;
-                    double PointLon = 31;
+                    double PointLon = 30;
                     double PointLat = 51;
-                    double AllotmentPointLon = 30;
+                    double AllotmentPointLon = 31;
                     double AllotmentPointLat = 50;
                     //
 
@@ -54,14 +54,22 @@ namespace Atdi.Test.CalcServer.LowFunction
                     { RefNetwork = RefNetwork, RefNetworkConfig = RefNetworkConfig };
                     GE.AreaPoint Point = new GE.AreaPoint() { Lat_DEC = PointLat, Lon_DEC = PointLon };
                     GE.AreaPoint AllotmentPoint = new GE.AreaPoint() { Lat_DEC = AllotmentPointLat, Lon_DEC = AllotmentPointLon };
-                    GE.PointWithAzimuth[] points = new GE.PointWithAzimuth[7];
 
-                    gn06Service.EstimationAssignmentsPointsForEtalonNetwork(in broadcastingAllotment, in AllotmentPoint, in Point, ref points, out int i);
+
+
+                    EstimationAssignmentsPointsArgs estimationAssignmentsPointsArgs = new EstimationAssignmentsPointsArgs();
+                    estimationAssignmentsPointsArgs.BroadcastingAllotment = broadcastingAllotment;
+                    estimationAssignmentsPointsArgs.PointAllotment = AllotmentPoint;
+                    estimationAssignmentsPointsArgs.PointCalcFieldStrength = Point;
+                    PointWithAzimuthResult pointWithAzimuthResult = new PointWithAzimuthResult();
+                    pointWithAzimuthResult.PointWithAzimuth = new GE.PointWithAzimuth[7];
+
+                    gn06Service.EstimationAssignmentsPointsForEtalonNetwork(in estimationAssignmentsPointsArgs, ref pointWithAzimuthResult);
                     // на карту 
                     WPF.Location[] InputData = new WPF.Location[2] { new WPF.Location(Point.Lon_DEC, Point.Lat_DEC), new WPF.Location(AllotmentPoint.Lon_DEC, AllotmentPoint.Lat_DEC) };
-                    WPF.Location[] OutputData = new WPF.Location[i];
-                    for (int j = 0; i > j; j++)
-                    { OutputData[j] = new WPF.Location(points[j].AreaPoint.Lon_DEC, points[j].AreaPoint.Lat_DEC); }
+                    WPF.Location[] OutputData = new WPF.Location[pointWithAzimuthResult.sizeResultBuffer];
+                    for (int j = 0; pointWithAzimuthResult.sizeResultBuffer > j; j++)
+                    { OutputData[j] = new WPF.Location(pointWithAzimuthResult.PointWithAzimuth[j].AreaPoint.Lon_DEC, pointWithAzimuthResult.PointWithAzimuth[j].AreaPoint.Lat_DEC); }
                     WPF.RunApp.Start(WPF.TypeObject.Points, InputData, WPF.TypeObject.Points, OutputData);
 
                 }
@@ -70,7 +78,7 @@ namespace Atdi.Test.CalcServer.LowFunction
                     Console.WriteLine("Exception: " + e.Message);
                 }
 
-                Console.WriteLine($"Press any key to stop test DeepServices Gis ...");
+                Console.WriteLine($"Press any key to stop test DeepServices GE06 ...");
                 Console.ReadLine();
             }
         }

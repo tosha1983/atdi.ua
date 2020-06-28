@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Atdi.DataModels.Sdrn.DeepServices.EarthGeometry;
 
-namespace Atdi.DataModels.Sdrn.DeepServices.GN06
+namespace Atdi.Contracts.Sdrn.DeepServices.GN06
 {
 	
 	/// <summary>

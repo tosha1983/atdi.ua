@@ -16,6 +16,7 @@ namespace Atdi.DataModels.Sdrn.DeepServices.GN06
 		RN2 = 1,
 		RN3 = 2,
 		RN4 = 3,
-        TDAB = 4
+        RN5 = 4,
+        RN6 =5
     }
 }
