@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Atdi.DataModels.Sdrn.DeepServices.RadioSystem;
 using Atdi.DataModels.Sdrn.CalcServer.Internal.Clients;
 
-namespace Atdi.DataModels.Sdrn.DeepServices.GN06
+namespace Atdi.Contracts.Sdrn.DeepServices.GN06
 {
 	
 	/// <summary>

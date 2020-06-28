@@ -11,14 +11,15 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.GN06
     public static class BoundaryPointsFromAllotments
     {
 
-        public static void Calc(IEarthGeometricService earthGeometricService, BroadcastingAllotment broadcastingAllotment, ref Points pointsResult, double step_km)
+        public static void Calc(IEarthGeometricService earthGeometricService, in BroadcastingAllotmentWithStep broadcastingAllotment, ref Points pointsResult)
         {
-            if ((broadcastingAllotment.AllotmentParameters is null) || (broadcastingAllotment.AllotmentParameters.Сontur is null) || (broadcastingAllotment.AllotmentParameters.Сontur.Length < 3))
+            double step_km = broadcastingAllotment.step_km == null ? 5 : broadcastingAllotment.step_km.Value;
+            if ((broadcastingAllotment.BroadcastingAllotment.AllotmentParameters is null) || (broadcastingAllotment.BroadcastingAllotment.AllotmentParameters.Сontur is null) || (broadcastingAllotment.BroadcastingAllotment.AllotmentParameters.Сontur.Length < 3))
             { pointsResult.SizeResultBuffer = 0; return; }
-            var conture = broadcastingAllotment.AllotmentParameters.Сontur;
-            PointEarthGeometric FirstPoint = new PointEarthGeometric()
+            var conture = broadcastingAllotment.BroadcastingAllotment.AllotmentParameters.Сontur;
+            PointEarthGeometric firstPoint = new PointEarthGeometric()
             { Latitude = conture[0].Lat_DEC, Longitude = conture[0].Lon_DEC, CoordinateUnits = CoordinateUnits.deg };
-            var oldPoint = FirstPoint;
+            var oldPoint = firstPoint;
             pointsResult.PointEarthGeometrics[0] = oldPoint;
             pointsResult.SizeResultBuffer = 1;
             int i = 1;
@@ -30,12 +31,12 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.GN06
                 oldPoint = newPoint;
             }
             while (conture.Length >= i);
-            FillBetwenPoints(earthGeometricService, ref pointsResult, oldPoint, FirstPoint, step_km);
+            FillBetwenPoints(earthGeometricService, ref pointsResult, oldPoint, firstPoint, step_km);
             pointsResult.SizeResultBuffer = pointsResult.SizeResultBuffer - 1;
         }
         private static void FillBetwenPoints(IEarthGeometricService earthGeometricService, ref Points pointsResult, PointEarthGeometric oldPoint, PointEarthGeometric newPoint, double step_km)
         {
-            double MinDistanse = 99999;
+            double minDistanse = 99999;
             do
             {
                 var distanse = earthGeometricService.GetDistance_km(oldPoint, newPoint);
@@ -46,9 +47,9 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.GN06
                 }
                 else
                 {
-                    if (distanse < MinDistanse)
+                    if (distanse < minDistanse)
                     {
-                        MinDistanse = distanse;
+                        minDistanse = distanse;
                         double Az = earthGeometricService.GetAzimut(oldPoint, newPoint);
                         var Point = earthGeometricService.CalculationCoordinateByLengthAndAzimuth(in oldPoint, step_km, Az);
                         pointsResult.PointEarthGeometrics[pointsResult.SizeResultBuffer] = Point;

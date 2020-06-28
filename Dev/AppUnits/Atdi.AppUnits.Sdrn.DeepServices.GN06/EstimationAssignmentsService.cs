@@ -17,24 +17,24 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.GN06
         }
 
 
-        public void EstimationAssignmentsPointsForEtalonNetwork(in BroadcastingAllotment broadcastingAllotment, in AreaPoint pointAllotment, in AreaPoint pointCalcFieldStrength, ref PointWithAzimuth[] pointResult, out int sizeResultBuffer)
+        public void EstimationAssignmentsPointsForEtalonNetwork(in EstimationAssignmentsPointsArgs  estimationAssignmentsPointsArgs, ref PointWithAzimuthResult pointWithAzimuthResult)
         {
-             EstimationAssignmentsCalculation.Calc(in broadcastingAllotment, in pointAllotment, in pointCalcFieldStrength, ref pointResult, this._earthGeometricService, out sizeResultBuffer);
+             EstimationAssignmentsCalculation.Calc(in estimationAssignmentsPointsArgs,  ref pointWithAzimuthResult, this._earthGeometricService);
         }
 
-        public void GetEtalonBroadcastingAssignmentFromAllotment(BroadcastingAllotment inputBroadcastingAllotment, BroadcastingAssignment outputBroadcastingAssignment)
+        public void GetEtalonBroadcastingAssignmentFromAllotment(BroadcastingAllotment broadcastingAllotmentArgs, BroadcastingAssignment broadcastingAssignmentResult)
         {
-            EtalonBroadcastingAssignmentFromAllotment.Calc(inputBroadcastingAllotment, outputBroadcastingAssignment);
+            EtalonBroadcastingAssignmentFromAllotment.Calc(broadcastingAllotmentArgs, broadcastingAssignmentResult);
         }
 
-        public void GetStationFromBroadcastingAssignment(BroadcastingAssignment inputBroadcastingAssignment, ref ContextStation outputContextStation)
+        public void GetStationFromBroadcastingAssignment(BroadcastingAssignment broadcastingAssignmentArgs, ref ContextStation contextStationResult)
         {
-            StationFromBroadcastingAssignment.Calc(inputBroadcastingAssignment, ref outputContextStation);
+            StationFromBroadcastingAssignment.Calc(broadcastingAssignmentArgs, ref contextStationResult);
         }
 
-        public void GetBoundaryPointsFromAllotments(BroadcastingAllotment broadcastingAllotment, ref Points pointsResult, double step_km =5)
+        public void GetBoundaryPointsFromAllotments(in BroadcastingAllotmentWithStep broadcastingAllotmentWithStepArgs, ref Points pointsResult)
         {
-            BoundaryPointsFromAllotments.Calc(this._earthGeometricService, broadcastingAllotment, ref pointsResult, step_km);
+            BoundaryPointsFromAllotments.Calc(this._earthGeometricService, broadcastingAllotmentWithStepArgs, ref pointsResult);
         }
 
         public void Dispose()
@@ -43,3 +43,5 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.GN06
         }
     }
 }
+
+

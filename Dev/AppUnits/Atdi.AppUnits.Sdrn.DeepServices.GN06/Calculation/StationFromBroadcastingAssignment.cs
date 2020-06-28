@@ -3,6 +3,7 @@ using Atdi.Platform;
 using Atdi.DataModels.Sdrn.DeepServices.GN06;
 using Atdi.DataModels.Sdrn.CalcServer.Internal.Clients;
 using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations;
+using Atdi.Contracts.Sdrn.DeepServices.GN06;
 using Atdi.DataModels.Sdrn.DeepServices.Gis;
 
 namespace Atdi.AppUnits.Sdrn.DeepServices.GN06
