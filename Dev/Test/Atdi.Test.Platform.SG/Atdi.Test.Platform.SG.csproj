@@ -99,6 +99,14 @@
       <Project>{b2bd17be-581f-477d-b0e1-5407d59591be}</Project>
       <Name>Atdi.AppUnits.Sdrn.DeepServices.IDWM</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeepServices.RadioSystem\Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.csproj">
+      <Project>{b8d91488-2850-46a9-9e32-9d1dd7d02683}</Project>
+      <Name>Atdi.AppUnits.Sdrn.DeepServices.RadioSystem</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Common\Atdi.Common\Atdi.Common.csproj">
+      <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
+      <Name>Atdi.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeepServices.EarthGeometry\Atdi.Contracts.Sdrn.DeepServices.EarthGeometry.csproj">
       <Project>{2ecedd22-d39d-4d65-a811-5db274afc374}</Project>
       <Name>Atdi.Contracts.Sdrn.DeepServices.EarthGeometry</Name>

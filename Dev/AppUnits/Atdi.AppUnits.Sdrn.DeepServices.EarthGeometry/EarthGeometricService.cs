@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.IO;
+using System.Windows;
 
 namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
 {
@@ -16,7 +17,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
 
         public EarthGeometricService()
         {
-          
+
         }
 
         private const double re_km = 6371.0;
@@ -162,21 +163,37 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
                 var distance_prev = GetDistance_km(pointEarthGeometricCalc, new PointEarthGeometric() { Longitude = xPrev, Latitude = yPrev, CoordinateUnits = CoordinateUnits.deg });
                 var distance_next = GetDistance_km(pointEarthGeometricCalc, new PointEarthGeometric() { Longitude = xNext, Latitude = yNext, CoordinateUnits = CoordinateUnits.deg });
 
-                if (distance_next > distance_prev)
+                
+
+                if ((distance_next > distance_prev) && (double.IsNaN(distance_next)==false))
                 {
                     pointResult.Longitude = xPrev;
                     pointResult.Latitude = yPrev;
                 }
-                else
+                else if ((distance_next < distance_prev) && (double.IsNaN(distance_prev) == false))
                 {
                     pointResult.Longitude = xNext;
                     pointResult.Latitude = yNext;
                 }
+                else
+                {
+                    if (double.IsNaN(distance_prev)==false)
+                    {
+                        pointResult.Longitude = xPrev;
+                        pointResult.Latitude = yPrev;
+                    }
+                    if (double.IsNaN(distance_next) == false)
+                    {
+                        pointResult.Longitude = xNext;
+                        pointResult.Latitude = yNext;
+                    }
+                }
+
                 pointResult.CoordinateUnits = CoordinateUnits.deg;
             }
         }
 
-        public  void Ortho(double x1, double y1,
+        public void Ortho(double x1, double y1,
                                    double x2, double y2,
                                    double x3, double y3,
                                    out double x, out double y)
@@ -223,7 +240,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
         /// <param name="distance"></param>
         /// <param name="azimuth"></param>
         /// <returns></returns>
-        public PointEarthGeometric CalculationCoordinateByLengthAndAzimuth(in PointEarthGeometric PointStart, double distance_km, double azimuth, bool LargeCircleArc = true)
+        public  PointEarthGeometric CalculationCoordinateByLengthAndAzimuth(in PointEarthGeometric PointStart, double distance_km, double azimuth, bool LargeCircleArc = true)
         {
             var point = new PointEarthGeometric();
 
@@ -253,7 +270,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
             }
             else
             {//Не проверенно
-                point.Longitude = PointStart.Longitude + (distance_km/1000.0)*Math.Sin(azimuth * Math.PI / 180.0);
+                point.Longitude = PointStart.Longitude + (distance_km / 1000.0) * Math.Sin(azimuth * Math.PI / 180.0);
                 point.Latitude = PointStart.Latitude + (distance_km / 1000.0) * Math.Cos(azimuth * Math.PI / 180.0); ;
                 point.CoordinateUnits = CoordinateUnits.m;
                 return point;
@@ -273,7 +290,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
             int index = 0;
             for (double azimuth = 0; azimuth < 360; azimuth = index * contourForStationByTriggerFieldStrengthsArgs.Step_deg)
             {
-                
+
                 var coordRecalc = CalculationCoordinateByLengthAndAzimuth(in contourForStationByTriggerFieldStrengthsArgs.PointEarthGeometricCalc, d0_m, azimuth);
                 var calcFieldStrength = calcFieldStrengths(contourForStationByTriggerFieldStrengthsArgs.PointEarthGeometricCalc, coordRecalc);
                 var d1_m = d0_m;
@@ -291,7 +308,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
                         coordRecalc = CalculationCoordinateByLengthAndAzimuth(in contourForStationByTriggerFieldStrengthsArgs.PointEarthGeometricCalc, d1_m, azimuth);
                         calcFieldStrength = calcFieldStrengths(contourForStationByTriggerFieldStrengthsArgs.PointEarthGeometricCalc, coordRecalc);
                     }
-                    if ((Math.Round(calcFieldStrength,2) == contourForStationByTriggerFieldStrengthsArgs.TriggerFieldStrength) || (d1_m < mindistance_m))
+                    if ((Math.Round(calcFieldStrength, 2) == contourForStationByTriggerFieldStrengthsArgs.TriggerFieldStrength) || (d1_m < mindistance_m))
                     {
                         pointResult[index] = coordRecalc;
                         pointResult[index].CoordinateUnits = CoordinateUnits.deg;
@@ -303,49 +320,6 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
             sizeResultBuffer = index;
         }
 
-        public bool CheckHitting(PointEarthGeometric[] poligon, PointEarthGeometric point)
-        {
-            if (poligon == null || poligon.Length == 0)
-                return false;
-
-
-            bool hit = false; // количество пересечений луча слева в право четное = false, нечетное = true;
-            for (int i = 0; i < poligon.Length - 1; i++)
-            {
-                if (((poligon[i].Latitude <= point.Latitude) && ((poligon[i + 1].Latitude > point.Latitude))) || ((poligon[i].Latitude > point.Latitude) && ((poligon[i + 1].Latitude <= point.Latitude))))
-                {
-                    if ((poligon[i].Longitude > point.Longitude) && (poligon[i + 1].Longitude > point.Longitude))
-                    {
-                        hit = !hit;
-                    }
-                    else if (!((poligon[i].Longitude < point.Longitude) && (poligon[i + 1].Longitude < point.Longitude)))
-                    {
-                        if (point.Longitude < poligon[i + 1].Longitude - (point.Latitude - poligon[i + 1].Latitude) * (poligon[i + 1].Longitude - poligon[i].Longitude) / (poligon[i].Latitude - poligon[i + 1].Latitude))
-                        {
-                            hit = !hit;
-                        }
-                    }
-                }
-            }
-            int i_ = poligon.Length - 1;
-            if (((poligon[i_].Latitude <= point.Latitude) && ((poligon[0].Latitude > point.Latitude))) || ((poligon[i_].Latitude > point.Latitude) && ((poligon[0].Latitude <= point.Latitude))))
-            {
-                if ((poligon[i_].Longitude > point.Longitude) && (poligon[0].Longitude > point.Longitude))
-                {
-                    hit = !hit;
-                }
-                else if (!((poligon[i_].Longitude < point.Longitude) && (poligon[0].Longitude < point.Longitude)))
-                {
-                    if (point.Longitude < poligon[0].Longitude - (point.Latitude - poligon[0].Latitude) * (poligon[0].Longitude - poligon[i_].Longitude) / (poligon[i_].Latitude - poligon[0].Latitude))
-                    {
-                        hit = !hit;
-                    }
-                }
-            }
-
-            return hit;
-        }
-
         /// <summary>
         /// Вычисление точек контура по заданной точке, расстоянии от точки, набору азимутов и шаге между азимутами 
         /// </summary>
@@ -355,7 +329,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
         public void CreateContourFromPointByDistance(in ContourFromPointByDistanceArgs contourFromPointByDistanceArgs, ref PointEarthGeometric[] pointResult, out int sizeResultBuffer)
         {
             int index = 0;
-            for (double azimuth = 0; azimuth < 360; azimuth= index * contourFromPointByDistanceArgs.Step_deg)
+            for (double azimuth = 0; azimuth < 360; azimuth = index * contourFromPointByDistanceArgs.Step_deg)
             {
                 var coordRecalc = CalculationCoordinateByLengthAndAzimuth(in contourFromPointByDistanceArgs.PointEarthGeometricCalc, contourFromPointByDistanceArgs.Distance_km, azimuth);
                 pointResult[index] = coordRecalc;
@@ -402,6 +376,45 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
             }
         }
 
+        /// <summary>
+        /// Функция по формированию контура от контура
+        /// </summary>
+        /// <param name="contourFromContureByDistanceArgs"></param>
+        /// <param name="pointEarthGeometricWithAzimuth"></param>
+        /// <param name="sizeResultBuffer"></param>
+        public void CreateContourFromContureByDistance(in ContourFromContureByDistanceArgs contourFromContureByDistanceArgs, ref PointEarthGeometricWithAzimuth[] pointEarthGeometricWithAzimuth, out int sizeResultBuffer)
+        {
+            int iterNum = 0;
+            int index = 0;
+            double s = contourFromContureByDistanceArgs.Distance_km;
+            var baryCenter = contourFromContureByDistanceArgs.PointBaryCenter;
+            for (double azimuth = 0; azimuth < 360; azimuth = index * contourFromContureByDistanceArgs.Step_deg)
+            {
+                var coordInterSect = CheckInterSectPoint(baryCenter, contourFromContureByDistanceArgs.ContourPoints, s, azimuth);
+                var pointEarthGeometric = new PointEarthGeometric();
+                if ((coordInterSect != null) && (coordInterSect.Length > 0))
+                {
+                    var pointResult = new PointEarthGeometric() { Longitude = coordInterSect[0].PointEarthGeometric.Longitude, Latitude = coordInterSect[0].PointEarthGeometric.Latitude, CoordinateUnits = CoordinateUnits.deg };
+                    var distance = GetDistance_km(in pointResult, in baryCenter);
+                    for (int h = 0; h < coordInterSect.Length; h++)
+                    {
+                        pointResult = new PointEarthGeometric() { Longitude = coordInterSect[h].PointEarthGeometric.Longitude, Latitude = coordInterSect[h].PointEarthGeometric.Latitude, CoordinateUnits = CoordinateUnits.deg };
+                        if  (GetDistance_km(in pointResult, in baryCenter) >= distance)
+                        {
+                            distance = GetDistance_km(in pointResult, in baryCenter);
+                            pointEarthGeometric = pointResult;
+                        }
+                    }
+                }
+                var pointEarthGeometricRecalc = CalculationCoordinateByLengthAndAzimuth(in pointEarthGeometric, s, azimuth);
+                var dist = GetDistance_km(in pointEarthGeometricRecalc, in pointEarthGeometric);
+                System.Diagnostics.Debug.WriteLine($" distance - {dist};  ");
+                pointEarthGeometricWithAzimuth[iterNum] = new PointEarthGeometricWithAzimuth() { Azimuth_deg = azimuth, PointEarthGeometric = pointEarthGeometricRecalc };
+                iterNum++;
+                index++;
+            }
+            sizeResultBuffer = iterNum;
+        }
 
         /// <summary>
         /// По заданному расстоянию 'distance' от точки барицентра 'pointEarthGeometricBaryCentr' и заданному азимуту 'azimuth' выполняется
@@ -412,48 +425,28 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
         /// <param name="distance"></param>
         /// <param name="azimuth"></param>
         /// <returns>Точка пересечения</returns>
-        private PointEarthGeometricWithAzimuth[] CheckInterSectPoint(PointEarthGeometric pointEarthGeometricBaryCentr, PointEarthGeometric[] contourPoints, double distance, double azimuth)
+        public PointEarthGeometricWithAzimuth[] CheckInterSectPoint(PointEarthGeometric pointEarthGeometricBaryCentr, PointEarthGeometric[] contourPoints, double distance, double azimuth)
         {
+            var maxDistance_Km = 40000;
             var pointEarthGeometricWithAzimuth = new List<PointEarthGeometricWithAzimuth>();
             var pointEarthGeometric = new PointEarthGeometric(pointEarthGeometricBaryCentr.Longitude, pointEarthGeometricBaryCentr.Latitude, CoordinateUnits.deg);
-            var coordRecalcNew = CalculationCoordinateByLengthAndAzimuth(in pointEarthGeometric, 30000, azimuth, false);
+            var coordRecalcNew = CalculationCoordinateByLengthAndAzimuth(in pointEarthGeometric, maxDistance_Km, azimuth, false);
             var lineNew = new LineEarthGeometric()
             {
                 PointEarthGeometric1 = pointEarthGeometricBaryCentr,
                 PointEarthGeometric2 = coordRecalcNew
             };
 
-            for (int j = 0; j < contourPoints.Length - 1; j++)
-            {
-                var lineR = new LineEarthGeometric()
-                {
-                    PointEarthGeometric1 = contourPoints[j],
-                    PointEarthGeometric2 = contourPoints[j + 1]
-                };
-
-                bool lines_intersect_, segments_intersect_;
-                PointEarthGeometric poi_, close1_, close2_;
-                FindIntersection(lineR.PointEarthGeometric1, lineR.PointEarthGeometric2, lineNew.PointEarthGeometric1, lineNew.PointEarthGeometric2, out lines_intersect_, out segments_intersect_, out poi_, out close1_, out close2_);
-                if (segments_intersect_)
-                {
-                    pointEarthGeometricWithAzimuth.Add(new PointEarthGeometricWithAzimuth()
-                    {
-                        PointEarthGeometric = new PointEarthGeometric() { Longitude = poi_.Longitude, Latitude = poi_.Latitude, CoordinateUnits = CoordinateUnits.deg },
-                        Azimuth_deg = azimuth
-                    });
-                }
-            }
-
-            var lineR_ = new LineEarthGeometric()
+            var lineEarthGeometric = new LineEarthGeometric()
             {
                 PointEarthGeometric1 = contourPoints[contourPoints.Length - 1],
                 PointEarthGeometric2 = contourPoints[0]
             };
 
-            bool lines_intersect, segments_intersect;
-            PointEarthGeometric poi, close1, close2;
-            FindIntersection(lineR_.PointEarthGeometric1, lineR_.PointEarthGeometric2, lineNew.PointEarthGeometric1, lineNew.PointEarthGeometric2, out lines_intersect, out segments_intersect, out poi, out close1, out close2);
-            if (segments_intersect)
+            bool linesIntersect, segmentsIntersect;
+            PointEarthGeometric poi;
+            CreateContourFromContureByDistanceСalculations.FindIntersection(lineEarthGeometric.PointEarthGeometric1, lineEarthGeometric.PointEarthGeometric2, lineNew.PointEarthGeometric1, lineNew.PointEarthGeometric2, out linesIntersect, out segmentsIntersect, out poi);
+            if (segmentsIntersect)
             {
                 pointEarthGeometricWithAzimuth.Add(new PointEarthGeometricWithAzimuth()
                 {
@@ -462,121 +455,28 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
                 });
             }
 
-            return pointEarthGeometricWithAzimuth.ToArray();
-        }
-
-
-
-        private void FindIntersection(
-            PointEarthGeometric p1, PointEarthGeometric p2, PointEarthGeometric p3, PointEarthGeometric p4,
-            out bool lines_intersect, out bool segments_intersect,
-            out PointEarthGeometric intersection,
-            out PointEarthGeometric close_p1, out PointEarthGeometric close_p2)
-        {
-
-            double dx12 = p2.Longitude - p1.Longitude;
-            double dy12 = p2.Latitude - p1.Latitude;
-            double dx34 = p4.Longitude - p3.Longitude;
-            double dy34 = p4.Latitude - p3.Latitude;
-
-
-            double denominator = (dy12 * dx34 - dx12 * dy34);
-
-            double t1 =
-                ((p1.Longitude - p3.Longitude) * dy34 + (p3.Latitude - p1.Latitude) * dx34)
-                    / denominator;
-            if (double.IsInfinity(t1))
+            for (int j = 0; j < contourPoints.Count() - 1; j++)
             {
-
-                lines_intersect = false;
-                segments_intersect = false;
-                intersection = new PointEarthGeometric(double.NaN, double.NaN,
-                        CoordinateUnits.deg);
-                close_p1 = new PointEarthGeometric(double.NaN, double.NaN,
-                        CoordinateUnits.deg);
-                close_p2 = new PointEarthGeometric(double.NaN, double.NaN,
-                        CoordinateUnits.deg);
-                return;
-            }
-            lines_intersect = true;
-
-            double t2 =
-                ((p3.Longitude - p1.Longitude) * dy12 + (p1.Latitude - p3.Latitude) * dx12)
-                    / -denominator;
-
-
-            intersection = new PointEarthGeometric(p1.Longitude + dx12 * t1, p1.Latitude + dy12 * t1,
-                        CoordinateUnits.deg);
-
-
-            segments_intersect =
-                ((t1 >= 0) && (t1 <= 1) &&
-                 (t2 >= 0) && (t2 <= 1));
-
-
-            if (t1 < 0)
-            {
-                t1 = 0;
-            }
-            else if (t1 > 1)
-            {
-                t1 = 1;
-            }
-
-            if (t2 < 0)
-            {
-                t2 = 0;
-            }
-            else if (t2 > 1)
-            {
-                t2 = 1;
-            }
-
-            close_p1 = new PointEarthGeometric(p1.Longitude + dx12 * t1, p1.Latitude + dy12 * t1,
-                        CoordinateUnits.deg);
-            close_p2 = new PointEarthGeometric(p3.Longitude + dx34 * t2, p3.Latitude + dy34 * t2,
-                        CoordinateUnits.deg);
-        }
-
-
-        public void CreateContourFromContureByDistance(in ContourFromContureByDistanceArgs contourFromContureByDistanceArgs, ref PointEarthGeometricWithAzimuth[] pointEarthGeometricWithAzimuth, out int sizeResultBuffer)
-        {
-            //int maxCountIteration = 20;
-            int iterNum = 0;
-            int index = 0;
-
-            double s = contourFromContureByDistanceArgs.Distance_km;
-
-
-            var lstPointEarthGeometricWithAzimuth = new List<PointEarthGeometric>();
-            for (double azimuth = 0; azimuth < 360; azimuth = index * contourFromContureByDistanceArgs.Step_deg)
-            {
-                var pt = contourFromContureByDistanceArgs.PointBaryCenter;
-                var coordInterSect = CheckInterSectPoint(pt, contourFromContureByDistanceArgs.ContourPoints, s, azimuth);
-
-                for (int i = 0; i < coordInterSect.Length; i++)
+                var line = new LineEarthGeometric()
                 {
-                    lstPointEarthGeometricWithAzimuth.Add(new PointEarthGeometric()
-                    {
-                        Longitude = coordInterSect[i].PointEarthGeometric.Longitude,
-                        Latitude = coordInterSect[i].PointEarthGeometric.Latitude,
-                        CoordinateUnits = CoordinateUnits.deg
-                    });
+                    PointEarthGeometric1 = contourPoints[j],
+                    PointEarthGeometric2 = contourPoints[j + 1]
+                };
 
-                    pointEarthGeometricWithAzimuth[iterNum] = new PointEarthGeometricWithAzimuth()
+                linesIntersect = false; segmentsIntersect = false;
+                poi = new PointEarthGeometric();
+
+                CreateContourFromContureByDistanceСalculations.FindIntersection(line.PointEarthGeometric1, line.PointEarthGeometric2, lineNew.PointEarthGeometric1, lineNew.PointEarthGeometric2, out linesIntersect, out segmentsIntersect, out poi);
+                if (segmentsIntersect)
+                {
+                    pointEarthGeometricWithAzimuth.Add(new PointEarthGeometricWithAzimuth()
                     {
-                        PointEarthGeometric = new PointEarthGeometric()
-                        {
-                            Longitude = coordInterSect[i].PointEarthGeometric.Longitude,
-                            Latitude = coordInterSect[i].PointEarthGeometric.Latitude
-                        },
+                        PointEarthGeometric = new PointEarthGeometric() { Longitude = poi.Longitude, Latitude = poi.Latitude, CoordinateUnits = CoordinateUnits.deg },
                         Azimuth_deg = azimuth
-                    };
-                    iterNum++;
+                    });
                 }
-                index++;
             }
-            sizeResultBuffer = iterNum + 1;
+            return pointEarthGeometricWithAzimuth.ToArray();
         }
     }
 }

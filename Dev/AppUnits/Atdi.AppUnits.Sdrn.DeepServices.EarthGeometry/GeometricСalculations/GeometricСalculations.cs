@@ -10,7 +10,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
 {
     internal static class GeometricСalculations
     {
-        public const double re = 6371;
+        private const double re_km = 6371.0;
         public static double GetDistance_km(double x1, double y1, double x2, double y2, CoordinateUnits coordinateUnits = CoordinateUnits.m)
         { //Надо проверить - дистанция и преобразование координат совпадают с телекомом
             double d = 0;
@@ -23,7 +23,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
                 double dlon = x2 - x1;
                 double r = Math.Sin(y1 * Math.PI / 180) * Math.Sin(y2 * Math.PI / 180) + Math.Cos(y1 * Math.PI / 180) * Math.Cos(y2 * Math.PI / 180) * Math.Cos(dlon * Math.PI / 180);
                 double angle = Math.Acos(r);
-                d = angle * re;
+                d = angle * re_km;
             }
             return d;
         }
