@@ -38,8 +38,8 @@ namespace Atdi.Test.CalcServer.LowFunction
                     var earthGeometricServiceServices = resolver.Resolve<IEarthGeometricService>();
 
 
-                    var arrPnts = new PointEarthGeometric[9]
-                        {
+                    var arrPnts = new PointEarthGeometric[5]
+                                            {
                                               new PointEarthGeometric()
                                               {
                                                  Longitude = 30,
@@ -47,20 +47,7 @@ namespace Atdi.Test.CalcServer.LowFunction
                                                  CoordinateUnits = CoordinateUnits.deg
 
                                               },
-                                              new PointEarthGeometric()
-                                              {
-                                                 Longitude = 30,
-                                                 Latitude = 50.001,
-                                                 CoordinateUnits = CoordinateUnits.deg
 
-                                              },
-                                              new PointEarthGeometric()
-                                              {
-                                                 Longitude = 30,
-                                                 Latitude = 50.003,
-                                                 CoordinateUnits = CoordinateUnits.deg
-
-                                              },
                                               new PointEarthGeometric()
                                               {
                                                  Longitude = 30,
@@ -76,26 +63,10 @@ namespace Atdi.Test.CalcServer.LowFunction
                                                  CoordinateUnits = CoordinateUnits.deg
                                               },
 
-                                              new PointEarthGeometric()
-                                              {
-                                                 Longitude = 30.6,
-                                                 Latitude = 50.6
-                                                 ,
-                                                 CoordinateUnits = CoordinateUnits.deg
-                                              },
-
-                                              new PointEarthGeometric()
-                                              {
-                                                 Longitude = 30.6,
-                                                 Latitude = 50.4
-                                                 ,
-                                                 CoordinateUnits = CoordinateUnits.deg
-                                              },
-
-                                              new PointEarthGeometric()
+                                               new PointEarthGeometric()
                                               {
                                                  Longitude = 30.7,
-                                                 Latitude = 50.1
+                                                 Latitude = 50.5
                                                  ,
                                                  CoordinateUnits = CoordinateUnits.deg
                                               },
@@ -107,15 +78,15 @@ namespace Atdi.Test.CalcServer.LowFunction
                                                  ,
                                                  CoordinateUnits = CoordinateUnits.deg
                                               }
-                        };
+                                            };
                     PointEarthGeometric pointEarthGeometricR = new PointEarthGeometric();
                     earthGeometricServiceServices.CalcBarycenter(new GeometryArgs() { Points = arrPnts, TypeGeometryObject = TypeGeometryObject.Points }, ref pointEarthGeometricR);
                     var arg = new ContourFromContureByDistanceArgs()
                     {
                         ContourPoints = arrPnts,
-                        Distance_km = 10,
+                        Distance_km = 5,
                         PointBaryCenter = pointEarthGeometricR,
-                        Step_deg = 3
+                        Step_deg = 0.8
                     };
 
                     PointEarthGeometricWithAzimuth[] pointEarthGeometricPtx = new PointEarthGeometricWithAzimuth[10000];
@@ -134,7 +105,7 @@ namespace Atdi.Test.CalcServer.LowFunction
                         inputPnts[u] = new WPF.Location(arrPnts[u].Longitude, arrPnts[u].Latitude);
                     }
 
-                    WPF.RunApp.Start(WPF.TypeObject.Polygon, inputPnts, WPF.TypeObject.Points, outPnts);
+                    WPF.RunApp.Start(WPF.TypeObject.Polygon, inputPnts, WPF.TypeObject.Polygon, outPnts);
 
 
 
