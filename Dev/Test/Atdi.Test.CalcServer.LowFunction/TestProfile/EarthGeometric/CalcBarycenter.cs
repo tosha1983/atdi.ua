@@ -39,7 +39,7 @@ namespace Atdi.Test.CalcServer.LowFunction
 
                     GeometryArgs geometryArgs = new GeometryArgs()
                     {
-                        TypeGeometryObject = TypeGeometryObject.Points,
+                        TypeGeometryObject = TypeGeometryObject.Polygon,
 
                         //Points = new PointEarthGeometric[4]
                         //{

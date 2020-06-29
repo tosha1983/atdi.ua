@@ -19,6 +19,8 @@ using Atdi.Contracts.Sdrn.DeepServices.GN06;
 using GE = Atdi.DataModels.Sdrn.DeepServices.GN06;
 using WPF = Atdi.Test.DeepServices.Client.WPF;
 using System;
+using System.Collections.Generic;
+using Atdi.Common;
 
 namespace Atdi.Test.CalcServer.LowFunction
 {
@@ -40,6 +42,30 @@ namespace Atdi.Test.CalcServer.LowFunction
 
                     var gn06Service = resolver.Resolve<IGn06Service>();
 
+                    string fileName = System.IO.Path.Combine(Environment.CurrentDirectory, "AreaTest.txt");
+
+                    List<GE.AreaPoint> pointEarthGeometricslst = new List<GE.AreaPoint>();
+                    var str = System.IO.File.ReadAllText(fileName);
+                    string[] a = str.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+                    for (int i = 0; i < a.Length; i++)
+                    {
+                        string[] aa = a[i].Split(new char[] { '\t' }, StringSplitOptions.RemoveEmptyEntries);
+                        if ((aa != null) && (aa.Length > 0))
+                        {
+                            for (int j = 0; j < aa.Length; j++)
+                            {
+                                pointEarthGeometricslst.Add(new GE.AreaPoint()
+                                {
+                                    Lon_DEC = Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.AntennaPattern.Position.DmsToDec(aa[0].ConvertStringToDouble().Value),
+                                    Lat_DEC= Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.AntennaPattern.Position.DmsToDec(aa[1].ConvertStringToDouble().Value),
+                                });
+                                break;
+                            }
+                        }
+                    }
+
+                    var arrPnts = pointEarthGeometricslst.ToArray();
+
 
                     BroadcastingAllotmentWithStep broadcastingAllotmentWithStep = new BroadcastingAllotmentWithStep();
                     broadcastingAllotmentWithStep.BroadcastingAllotment = new GE.BroadcastingAllotment()
@@ -48,29 +74,30 @@ namespace Atdi.Test.CalcServer.LowFunction
                        {
                            ContourId = 1,
                            Name = "Name",
-                           Сontur = new GE.AreaPoint[4]
-                             {
-                                  new GE.AreaPoint()
-                                  {
-                                       Lon_DEC = 20,
-                                       Lat_DEC = 10
-                                  },
-                                  new GE.AreaPoint()
-                                  {
-                                       Lon_DEC = 20,
-                                       Lat_DEC = 30
-                                  },
-                                  new GE.AreaPoint()
-                                  {
-                                       Lon_DEC = 30,
-                                       Lat_DEC = 30
-                                  },
-                                  new GE.AreaPoint()
-                                  {
-                                       Lon_DEC = 30,
-                                       Lat_DEC = 10
-                                  }
-                             }
+                           Сontur = arrPnts
+                           //Сontur = new GE.AreaPoint[4]
+                           //  {
+                           //       new GE.AreaPoint()
+                           //       {
+                           //            Lon_DEC = 20,
+                           //            Lat_DEC = 10
+                           //       },
+                           //       new GE.AreaPoint()
+                           //       {
+                           //            Lon_DEC = 20,
+                           //            Lat_DEC = 30
+                           //       },
+                           //       new GE.AreaPoint()
+                           //       {
+                           //            Lon_DEC = 30,
+                           //            Lat_DEC = 30
+                           //       },
+                           //       new GE.AreaPoint()
+                           //       {
+                           //            Lon_DEC = 30,
+                           //            Lat_DEC = 10
+                           //       }
+                           //  }
                        }
                     };
                     broadcastingAllotmentWithStep.step_km = 5;
