@@ -30,14 +30,14 @@ namespace Atdi.Test.CalcServer.LowFunction
             TestGE06GetBoundaryPointsFromAllotments.Test();
 
             //TestGE06EstimationAssignmentsPointsForEtalonNetwork.Test();
-                       
+
             //TestGE06GetEtalonBroadcastingAssignmentFromAllotment.Test();
 
             //TestGE06GetEtalonBroadcastingAssignmentFromAllotment.Test();
 
 
             //CalcBarycenter testBaryCentr = new CalcBarycenter();
-            //testBaryCentr.Test();
+            //                       testBaryCentr.Test();
 
             //PutPointToContour putPointToContour = new PutPointToContour();
             //putPointToContour.Test();
