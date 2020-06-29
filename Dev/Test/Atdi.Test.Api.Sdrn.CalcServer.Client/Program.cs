@@ -25,17 +25,16 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client
 			Console.WriteLine($"Press any key to start SDRN Calculation Server Client (AK) ...");
 			Console.ReadLine();
 
-			CheckOrmBug();
+			//CheckOrmBug();
 
 			//TestWebApiOrm();
 			//RunPointFieldStrengthCalcTask();
 
-			Console.ReadLine();
-			Console.ReadLine();
-			//client.BaseAddress = new Uri("http://localhost:15070/");
-			//client.DefaultRequestHeaders.Accept.Clear();
-			//client.DefaultRequestHeaders.Accept.Add(
-			//	new MediaTypeWithQualityHeaderValue("application/json"));
+
+			client.BaseAddress = new Uri("http://localhost:15070/");
+			client.DefaultRequestHeaders.Accept.Clear();
+			client.DefaultRequestHeaders.Accept.Add(
+				new MediaTypeWithQualityHeaderValue("application/json"));
 
 
 			////LoadContextStation(10);
@@ -92,10 +91,17 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client
 			//Console.WriteLine($"Wait calculation ... Press any key to show result");
 			//Console.ReadLine();
 
-			////var mapFile = LoadProjectMapContent(4);
-			////MapMaker.Make(mapFile, @"C:\Temp\Maps\Out");
+			//var mapFile = LoadProjectMapContent(2);
+			var sector1 = MapService.LoadMapSectorContent(27);
+			var sector2 = MapService.LoadMapSectorContent(28);
+			var sector3 = MapService.LoadMapSectorContent(29);
+			var sector4 = MapService.LoadMapSectorContent(30);
+			MapMaker.Make(sector1, @"C:\Temp\Maps\Out", true );
+			MapMaker.Make(sector2, @"C:\Temp\Maps\Out", true);
+			MapMaker.Make(sector3, @"C:\Temp\Maps\Out", true);
+			MapMaker.Make(sector4, @"C:\Temp\Maps\Out", true);
 
-			////Console.ReadLine();
+			Console.ReadLine();
 		}
 
 		static void CheckOrmBug()
@@ -326,134 +332,127 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client
 
 		static MapFile LoadProjectMapContent(long contentId)
 		{
-			var request = new DTO.RecordReadRequest
-			{
-				Context = "SDRN_CalcServer_DB",
-				Namespace = "Atdi.DataModels.Sdrn.CalcServer.Entities",
-				Entity = "ProjectMapContent",
-				PrimaryKey = contentId.ToString(),
-				Select = new string[]
-				{
-					"MAP.MapName",
-					"MAP.MapNote",
-					"MAP.AxisXNumber",
-					"MAP.AxisXStep",
-					"MAP.AxisYNumber",
-					"MAP.AxisYStep",
-					"MAP.UpperLeftX",
-					"MAP.UpperLeftY",
-					"MAP.LowerRightX",
-					"MAP.LowerRightY",
-					"MAP.Projection",
-					"MAP.StepUnit",
+			var endpoint = new WebApiEndpoint(new Uri("http://localhost:15070/"), "/appserver/v1");
+			var dataContext = new WebApiDataContext("SDRN_CalcServer_DB");
 
-					"TypeCode",
-					"TypeName",
-					"StepDataType",
-					"StepDataSize",
-					"ContentType",
-					"ContentEncoding",
-					"Content"
-				}
-			};
+			var dataLayer = new WebApiDataLayer(endpoint, dataContext);
 
-			var response = client.PostAsJsonAsync(
-				"/appserver/v1/api/orm/data/$Record", request).GetAwaiter().GetResult();
-
-			response.EnsureSuccessStatusCode();
-
-			var result = response.Content.ReadAsAsync<RecordResult>().GetAwaiter().GetResult();
-
+			var webQuery = dataLayer.GetBuilder<DM.IProjectMapContent>()
+					.Read()
+					.Select(c => c.MAP.MapName)
+					.Select(c => c.MAP.MapNote)
+					.Select(c => c.MAP.AxisXNumber)
+					.Select(c => c.MAP.AxisXStep)
+					.Select(c => c.MAP.AxisYNumber)
+					.Select(c => c.MAP.AxisYStep)
+					.Select(c => c.MAP.UpperLeftX)
+					.Select(c => c.MAP.UpperLeftY)
+					.Select(c => c.MAP.LowerRightX)
+					.Select(c => c.MAP.LowerRightY)
+					.Select(c => c.MAP.PROJECT.Projection)
+					.Select(c => c.MAP.StepUnit)
+					.Select(c => c.TypeCode)
+					.Select(c => c.TypeName)
+					.Select(c => c.StepDataType)
+					.Select(c => c.StepDataSize)
+					.Select(c => c.ContentType)
+					.Select(c => c.ContentEncoding)
+					.Select(c => c.Content)
+					.Filter(c => c.Id, contentId)
+				;
 			var mapFile = new MapFile();
-
-			for (int i = 0; i < result.Fields.Length; i++)
+			var reader = dataLayer.Executor.ExecuteReader(webQuery);
+			if (!reader.Read())
 			{
-				var field = result.Fields[i];
-				if ("MAP.MapName".Equals(field.Path, StringComparison.OrdinalIgnoreCase))
-				{
-					mapFile.MapName = Convert.ToString(result.Record[i]);
-				}
-				if ("MAP.MapNote".Equals(field.Path, StringComparison.OrdinalIgnoreCase))
-				{
-					mapFile.MapNote= Convert.ToString(result.Record[i]);
-				}
-				if ("MAP.AxisXNumber".Equals(field.Path, StringComparison.OrdinalIgnoreCase))
-				{
-					mapFile.AxisX.Number = Convert.ToInt32(result.Record[i]);
-				}
-				if ("MAP.AxisXStep".Equals(field.Path, StringComparison.OrdinalIgnoreCase))
-				{
-					mapFile.AxisX.Step = Convert.ToInt32(result.Record[i]);
-				}
-				if ("MAP.AxisYNumber".Equals(field.Path, StringComparison.OrdinalIgnoreCase))
-				{
-					mapFile.AxisY.Number = Convert.ToInt32(result.Record[i]);
-				}
-				if ("MAP.AxisYStep".Equals(field.Path, StringComparison.OrdinalIgnoreCase))
-				{
-					mapFile.AxisY.Step = Convert.ToInt32(result.Record[i]);
-				}
-
-				if ("MAP.UpperLeftX".Equals(field.Path, StringComparison.OrdinalIgnoreCase))
-				{
-					mapFile.Coordinates.UpperLeft.X = Convert.ToInt32(result.Record[i]);
-				}
-				if ("MAP.UpperLeftY".Equals(field.Path, StringComparison.OrdinalIgnoreCase))
-				{
-					mapFile.Coordinates.UpperLeft.Y = Convert.ToInt32(result.Record[i]);
-				}
-				if ("MAP.LowerRightX".Equals(field.Path, StringComparison.OrdinalIgnoreCase))
-				{
-					mapFile.Coordinates.LowerRight.X = Convert.ToInt32(result.Record[i]);
-				}
-				if ("MAP.LowerRightY".Equals(field.Path, StringComparison.OrdinalIgnoreCase))
-				{
-					mapFile.Coordinates.LowerRight.Y = Convert.ToInt32(result.Record[i]);
-				}
-
-				mapFile.Coordinates.LowerLeft.X = mapFile.Coordinates.UpperLeft.X;
-				mapFile.Coordinates.LowerLeft.Y = mapFile.Coordinates.LowerRight.Y;
-				mapFile.Coordinates.UpperRight.X = mapFile.Coordinates.LowerRight.X;
-				mapFile.Coordinates.UpperRight.Y = mapFile.Coordinates.UpperLeft.Y;
-
-				if ("MAP.Projection".Equals(field.Path, StringComparison.OrdinalIgnoreCase))
-				{
-					mapFile.Projection = Convert.ToString(result.Record[i]);
-				}
-				if ("MAP.StepUnit".Equals(field.Path, StringComparison.OrdinalIgnoreCase))
-				{
-					mapFile.StepUnit = Convert.ToString(result.Record[i]);
-				}
-
-				if ("TypeCode".Equals(field.Path, StringComparison.OrdinalIgnoreCase))
-				{
-					mapFile.MapType = (MapType)Convert.ToInt32(result.Record[i]);
-				}
-				if ("TypeName".Equals(field.Path, StringComparison.OrdinalIgnoreCase))
-				{
-					mapFile.MapTypeName =Convert.ToString(result.Record[i]);
-				}
-				if ("StepDataType".Equals(field.Path, StringComparison.OrdinalIgnoreCase))
-				{
-					mapFile.StepDataType = Convert.ToString(result.Record[i]);
-				}
-				if ("StepDataSize".Equals(field.Path, StringComparison.OrdinalIgnoreCase))
-				{
-					mapFile.StepDataSize = Convert.ToByte(result.Record[i]);
-				}
-				if ("ContentType".Equals(field.Path, StringComparison.OrdinalIgnoreCase))
-				{
-					mapFile.ContentType = Convert.ToString(result.Record[i]);
-				}
-				if ("ContentEncoding".Equals(field.Path, StringComparison.OrdinalIgnoreCase))
-				{
-					mapFile.ContentEncoding = Convert.ToString(result.Record[i]);
-				}
-				if ("Content".Equals(field.Path, StringComparison.OrdinalIgnoreCase))
-				{
-					mapFile.Content = Convert.FromBase64String(Convert.ToString(result.Record[i])); // Convert.ToString(result.Record[i])?.Select(c => (byte)c).ToArray();
-				}
+				return mapFile;
 			}
+
+			
+			//if ("MAP.MapName".Equals(field.Path, StringComparison.OrdinalIgnoreCase))
+			{
+				mapFile.MapName = reader.GetValue(c => c.MAP.MapName);
+			}
+			//if ("MAP.MapNote".Equals(field.Path, StringComparison.OrdinalIgnoreCase))
+			{
+				mapFile.MapNote = reader.GetValue(c => c.MAP.MapNote);
+			}
+			//if ("MAP.AxisXNumber".Equals(field.Path, StringComparison.OrdinalIgnoreCase))
+			{
+				mapFile.AxisX.Number = reader.GetValue(c => c.MAP.AxisXNumber).GetValueOrDefault();
+			}
+			//if ("MAP.AxisXStep".Equals(field.Path, StringComparison.OrdinalIgnoreCase))
+			{
+				mapFile.AxisX.Step = reader.GetValue(c => c.MAP.AxisXStep).GetValueOrDefault();
+			}
+			//if ("MAP.AxisYNumber".Equals(field.Path, StringComparison.OrdinalIgnoreCase))
+			{
+				mapFile.AxisY.Number = reader.GetValue(c => c.MAP.AxisYNumber).GetValueOrDefault();
+			}
+			//if ("MAP.AxisYStep".Equals(field.Path, StringComparison.OrdinalIgnoreCase))
+			{
+				mapFile.AxisY.Step = reader.GetValue(c => c.MAP.AxisYStep).GetValueOrDefault();
+			}
+
+			//if ("MAP.UpperLeftX".Equals(field.Path, StringComparison.OrdinalIgnoreCase))
+			{
+				mapFile.Coordinates.UpperLeft.X = reader.GetValue(c => c.MAP.UpperLeftX).GetValueOrDefault();
+			}
+			//if ("MAP.UpperLeftY".Equals(field.Path, StringComparison.OrdinalIgnoreCase))
+			{
+				mapFile.Coordinates.UpperLeft.Y = reader.GetValue(c => c.MAP.UpperLeftY).GetValueOrDefault();
+			}
+			//if ("MAP.LowerRightX".Equals(field.Path, StringComparison.OrdinalIgnoreCase))
+			{
+				mapFile.Coordinates.LowerRight.X = reader.GetValue(c => c.MAP.LowerRightX).GetValueOrDefault();
+			}
+			//if ("MAP.LowerRightY".Equals(field.Path, StringComparison.OrdinalIgnoreCase))
+			{
+				mapFile.Coordinates.LowerRight.Y = reader.GetValue(c => c.MAP.LowerRightY).GetValueOrDefault();
+			}
+
+			mapFile.Coordinates.LowerLeft.X = mapFile.Coordinates.UpperLeft.X;
+			mapFile.Coordinates.LowerLeft.Y = mapFile.Coordinates.LowerRight.Y;
+			mapFile.Coordinates.UpperRight.X = mapFile.Coordinates.LowerRight.X;
+			mapFile.Coordinates.UpperRight.Y = mapFile.Coordinates.UpperLeft.Y;
+
+			//if ("MAP.Projection".Equals(field.Path, StringComparison.OrdinalIgnoreCase))
+			{
+				mapFile.Projection = reader.GetValue(c => c.MAP.PROJECT.Projection);
+			}
+			//if ("MAP.StepUnit".Equals(field.Path, StringComparison.OrdinalIgnoreCase))
+			{
+				mapFile.StepUnit = reader.GetValue(c => c.MAP.StepUnit);
+			}
+
+			//if ("TypeCode".Equals(field.Path, StringComparison.OrdinalIgnoreCase))
+			{
+				mapFile.MapType = (MapType)reader.GetValue(c => c.TypeCode); ;
+			}
+			//if ("TypeName".Equals(field.Path, StringComparison.OrdinalIgnoreCase))
+			{
+				mapFile.MapTypeName = reader.GetValue(c => c.TypeName);
+			}
+			//if ("StepDataType".Equals(field.Path, StringComparison.OrdinalIgnoreCase))
+			{
+				mapFile.StepDataType = reader.GetValue(c => c.StepDataType);
+			}
+			//if ("StepDataSize".Equals(field.Path, StringComparison.OrdinalIgnoreCase))
+			{
+				mapFile.StepDataSize = reader.GetValue(c => c.StepDataSize);
+			}
+			//if ("ContentType".Equals(field.Path, StringComparison.OrdinalIgnoreCase))
+			{
+				mapFile.ContentType = reader.GetValue(c => c.ContentType);
+			}
+			//if ("ContentEncoding".Equals(field.Path, StringComparison.OrdinalIgnoreCase))
+			{
+				mapFile.ContentEncoding = reader.GetValue(c => c.ContentEncoding);
+			}
+			//if ("Content".Equals(field.Path, StringComparison.OrdinalIgnoreCase))
+			{
+				mapFile.Content = reader.GetValue(c => c.Content);  //Convert.FromBase64String(Convert.ToString(result.Record[i])); // Convert.ToString(result.Record[i])?.Select(c => (byte)c).ToArray();
+			}
+			
 			// return project ID.
 			return mapFile;
 		}
