@@ -50,7 +50,7 @@ namespace Atdi.Test.CalcServer.LowFunction
                           {
                                new PointEarthGeometric()
                                {
-                                    Longitude = 20,
+                                    Longitude = 25,
                                     Latitude = 10,
                                     CoordinateUnits = CoordinateUnits.deg
                                },
@@ -63,13 +63,13 @@ namespace Atdi.Test.CalcServer.LowFunction
 
                                new PointEarthGeometric()
                                {
-                                    Longitude = 30,
+                                    Longitude = 35,
                                     Latitude = 30,
                                     CoordinateUnits = CoordinateUnits.deg
                                },
                                new PointEarthGeometric()
                                {
-                                    Longitude = 30,
+                                    Longitude = 25,
                                     Latitude = 10,
                                     CoordinateUnits = CoordinateUnits.deg
                                }

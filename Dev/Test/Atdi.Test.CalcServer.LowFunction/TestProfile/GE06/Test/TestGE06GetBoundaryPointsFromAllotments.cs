@@ -76,7 +76,7 @@ namespace Atdi.Test.CalcServer.LowFunction
                     broadcastingAllotmentWithStep.step_km = 5;
 
                     Points points = new Points();
-                    points.PointEarthGeometrics = new PointEarthGeometric[1000];
+                    points.PointEarthGeometrics = new PointEarthGeometric[10000];
 
                     gn06Service.GetBoundaryPointsFromAllotments(in broadcastingAllotmentWithStep, ref points);
                     // на карту 

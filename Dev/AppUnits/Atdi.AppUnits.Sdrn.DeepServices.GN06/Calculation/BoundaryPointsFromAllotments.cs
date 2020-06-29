@@ -29,8 +29,9 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.GN06
                 {Latitude = conture[i].Lat_DEC, Longitude = conture[i].Lon_DEC, CoordinateUnits = CoordinateUnits.deg};
                 FillBetwenPoints(earthGeometricService, ref pointsResult, oldPoint, newPoint, step_km);
                 oldPoint = newPoint;
+                i++;
             }
-            while (conture.Length >= i);
+            while (conture.Length > i);
             FillBetwenPoints(earthGeometricService, ref pointsResult, oldPoint, firstPoint, step_km);
             pointsResult.SizeResultBuffer = pointsResult.SizeResultBuffer - 1;
         }

@@ -42,10 +42,10 @@ namespace Atdi.Test.CalcServer.LowFunction
                         PointEarthGeometricCalc = new PointEarthGeometric()
                         {
                             Longitude = 30,
-                            Latitude = 50
+                            Latitude = 50, CoordinateUnits = CoordinateUnits.deg
                         },
                         Step_deg = 1,
-                        Distance_km = 20.0
+                        Distance_km = 60.0
                     };
 
                     PointEarthGeometric[] pointEarthGeometric = new PointEarthGeometric[3000];
