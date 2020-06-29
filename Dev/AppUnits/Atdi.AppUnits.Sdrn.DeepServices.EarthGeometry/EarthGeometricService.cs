@@ -160,6 +160,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
                                            pointEarthGeometricCalc.Longitude, pointEarthGeometricCalc.Latitude,
                                            out double xNext, out double yNext);
 
+
                 var distance_prev = GetDistance_km(pointEarthGeometricCalc, new PointEarthGeometric() { Longitude = xPrev, Latitude = yPrev, CoordinateUnits = CoordinateUnits.deg });
                 var distance_next = GetDistance_km(pointEarthGeometricCalc, new PointEarthGeometric() { Longitude = xNext, Latitude = yNext, CoordinateUnits = CoordinateUnits.deg });
 
@@ -177,7 +178,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
                 }
                 else
                 {
-                    if (double.IsNaN(distance_prev)==false)
+                    if (double.IsNaN(distance_prev) == false)
                     {
                         pointResult.Longitude = xPrev;
                         pointResult.Latitude = yPrev;
@@ -376,6 +377,52 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
             }
         }
 
+
+        public bool CheckHitting(PointEarthGeometric[] poligon, PointEarthGeometric point)
+        {
+            if (poligon == null || poligon.Length == 0)
+                return false;
+
+
+            bool hit = false; // количество пересечений луча слева в право четное = false, нечетное = true;
+            for (int i = 0; i < poligon.Length - 1; i++)
+            {
+                if (((poligon[i].Latitude <= point.Latitude) && ((poligon[i + 1].Latitude > point.Latitude))) || ((poligon[i].Latitude > point.Latitude) && ((poligon[i + 1].Latitude <= point.Latitude))))
+                {
+                    if ((poligon[i].Longitude > point.Longitude) && (poligon[i + 1].Longitude > point.Longitude))
+                    {
+                        hit = !hit;
+                    }
+                    else if (!((poligon[i].Longitude < point.Longitude) && (poligon[i + 1].Longitude < point.Longitude)))
+                    {
+                        if (point.Longitude < poligon[i + 1].Longitude - (point.Latitude - poligon[i + 1].Latitude) * (poligon[i + 1].Longitude - poligon[i].Longitude) / (poligon[i].Latitude - poligon[i + 1].Latitude))
+                        {
+                            hit = !hit;
+                        }
+                    }
+                }
+            }
+            int i_ = poligon.Length - 1;
+            if (((poligon[i_].Latitude <= point.Latitude) && ((poligon[0].Latitude > point.Latitude))) || ((poligon[i_].Latitude > point.Latitude) && ((poligon[0].Latitude <= point.Latitude))))
+            {
+                if ((poligon[i_].Longitude > point.Longitude) && (poligon[0].Longitude > point.Longitude))
+                {
+                    hit = !hit;
+                }
+                else if (!((poligon[i_].Longitude < point.Longitude) && (poligon[0].Longitude < point.Longitude)))
+                {
+                    if (point.Longitude < poligon[0].Longitude - (point.Latitude - poligon[0].Latitude) * (poligon[0].Longitude - poligon[i_].Longitude) / (poligon[i_].Latitude - poligon[0].Latitude))
+                    {
+                        hit = !hit;
+                    }
+                }
+            }
+
+            return hit;
+        }
+
+
+
         /// <summary>
         /// Функция по формированию контура от контура
         /// </summary>
@@ -384,6 +431,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
         /// <param name="sizeResultBuffer"></param>
         public void CreateContourFromContureByDistance(in ContourFromContureByDistanceArgs contourFromContureByDistanceArgs, ref PointEarthGeometricWithAzimuth[] pointEarthGeometricWithAzimuth, out int sizeResultBuffer)
         {
+            double epsilon = 0.01;
             int iterNum = 0;
             int index = 0;
             double s = contourFromContureByDistanceArgs.Distance_km;
@@ -410,6 +458,74 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
                 var dist = GetDistance_km(in pointEarthGeometricRecalc, in pointEarthGeometric);
                 System.Diagnostics.Debug.WriteLine($" distance - {dist};  ");
                 pointEarthGeometricWithAzimuth[iterNum] = new PointEarthGeometricWithAzimuth() { Azimuth_deg = azimuth, PointEarthGeometric = pointEarthGeometricRecalc };
+
+
+                //if (CheckHitting(contourFromContureByDistanceArgs.ContourPoints, pointEarthGeometricRecalc))
+                //{
+                //    var newStepVal = contourFromContureByDistanceArgs.Distance_km;
+                //    while (true)
+                //    {
+                //        newStepVal *= 2;
+                //        if (CheckHitting(contourFromContureByDistanceArgs.ContourPoints, pointEarthGeometricRecalc))
+                //        {
+                //            pointEarthGeometricRecalc = CalculationCoordinateByLengthAndAzimuth(in pointEarthGeometric, newStepVal, azimuth);
+                //        }
+                //        else
+                //        {
+                //            break;
+                //        }
+                //    }
+                //}
+
+
+
+
+                //var putPointToContourArgs = new PutPointToContourArgs()
+                //{
+                //    PointEarthGeometricCalc = pointEarthGeometricRecalc,
+                //    Points = contourFromContureByDistanceArgs.ContourPoints
+                //};
+
+                //var pointRecalcResult = new PointEarthGeometric();
+                //PutPointToContour(in putPointToContourArgs, ref pointRecalcResult);
+                //var dist = GetDistance_km(in pointEarthGeometricRecalc, in pointRecalcResult);
+                //var newStep = contourFromContureByDistanceArgs.Distance_km;
+                //while (true)
+                //{
+                //    //if (newStep < dist)
+                //    //{
+                //    //    newStep = (dist - newStep);
+                //    //}
+                //    //else
+                //    //{
+                //    //    newStep = (newStep - dist);
+                //    //}
+
+
+
+                //    var newpointEarthGeometricRecalc = CalculationCoordinateByLengthAndAzimuth(in pointEarthGeometricRecalc, newStep, azimuth);
+                //    dist = GetDistance_km(in newpointEarthGeometricRecalc, in pointRecalcResult);
+
+                //    if ((dist - contourFromContureByDistanceArgs.Distance_km) <= epsilon)
+                //    {
+                //        pointEarthGeometricWithAzimuth[iterNum] = new PointEarthGeometricWithAzimuth() { Azimuth_deg = azimuth, PointEarthGeometric = pointEarthGeometricRecalc };
+                //        break;
+                //    }
+
+                //    if ((dist - contourFromContureByDistanceArgs.Distance_km)< contourFromContureByDistanceArgs.Distance_km)
+                //    {
+                //        newStep = newStep + (dist - contourFromContureByDistanceArgs.Distance_km);
+                //    }
+                //    else
+                //    {
+                //        newStep = newStep - (dist - contourFromContureByDistanceArgs.Distance_km);
+                //    }
+
+                //}
+                //System.Diagnostics.Debug.WriteLine($" distance - {dist};  ");
+                //pointEarthGeometricWithAzimuth[iterNum] = new PointEarthGeometricWithAzimuth() { Azimuth_deg = azimuth, PointEarthGeometric = pointEarthGeometricRecalc };
+
+
                 iterNum++;
                 index++;
             }
@@ -455,7 +571,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
                 });
             }
 
-            for (int j = 0; j < contourPoints.Count() - 1; j++)
+            for (int j = 0; j < contourPoints.Length - 1; j++)
             {
                 var line = new LineEarthGeometric()
                 {
@@ -478,5 +594,6 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
             }
             return pointEarthGeometricWithAzimuth.ToArray();
         }
+
     }
 }

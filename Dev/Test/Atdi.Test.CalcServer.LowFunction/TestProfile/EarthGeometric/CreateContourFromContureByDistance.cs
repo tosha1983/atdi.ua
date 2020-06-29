@@ -105,6 +105,12 @@ namespace Atdi.Test.CalcServer.LowFunction
                         inputPnts[u] = new WPF.Location(arrPnts[u].Longitude, arrPnts[u].Latitude);
                     }
 
+                    //inputPnts[inputPnts.Length - 2] = new WPF.Location(30.54, 51);
+                    //inputPnts[inputPnts.Length - 1] = new WPF.Location(30.942532334249936, 50.904220557083228);
+
+
+
+
                     WPF.RunApp.Start(WPF.TypeObject.Polygon, inputPnts, WPF.TypeObject.Polygon, outPnts);
 
 

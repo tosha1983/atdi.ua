@@ -273,12 +273,12 @@ namespace Atdi.Test.Platform.SG
                     PointEarthGeometric pointEarthGeometric2 = new PointEarthGeometric();
 
                    earthGeometricServiceServices.PutPointToContour(in geometryArgs2, ref pointEarthGeometric2);
-                    WPF.Location[] zx3 = new WPF.Location[geometryArgs2.Points.Length+1];
+                    WPF.Location[] zx3 = new WPF.Location[geometryArgs2.Points.Length];
                     for (int u = 0; u < geometryArgs2.Points.Length; u++)
                     {
                         zx3[u] = new WPF.Location(geometryArgs2.Points[u].Longitude, geometryArgs2.Points[u].Latitude);
                     }
-                    zx3[zx3.Length - 1] = new WPF.Location(geometryArgs2.PointEarthGeometricCalc.Longitude, geometryArgs2.PointEarthGeometricCalc.Latitude);
+                    //zx3[zx3.Length - 1] = new WPF.Location(geometryArgs2.PointEarthGeometricCalc.Longitude, geometryArgs2.PointEarthGeometricCalc.Latitude);
 
                     //WPF.RunApp.Start(WPF.TypeObject.Polygon, zx3 , WPF.TypeObject.Points, new WPF.Location[] { new WPF.Location(pointEarthGeometric2.Longitude, pointEarthGeometric2.Latitude) });
 
@@ -308,7 +308,7 @@ namespace Atdi.Test.Platform.SG
                     //WPF.RunApp.Start(WPF.TypeObject.Points, new WPF.Location[] { new WPF.Location(contourForStationByTriggerFieldStrengthsArgs3.PointEarthGeometricCalc.Longitude, contourForStationByTriggerFieldStrengthsArgs3.PointEarthGeometricCalc.Latitude) }, WPF.TypeObject.Points, zx5);
 
                     List<PointEarthGeometric> pointEarthGeometricslst = new List<PointEarthGeometric>();
-                    var str = System.IO.File.ReadAllText("C:\\Projects\\Area.txt");
+                    var str = System.IO.File.ReadAllText("C:\\Projects\\Area3.txt");
                     string[] a = str.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
                     for (int i=0; i<a.Length;i++)
                     {
