@@ -27,10 +27,10 @@ namespace Atdi.Test.CalcServer.LowFunction
             //TestDistance.Test1();
 
 
-            TestGE06EstimationAssignmentsPointsForEtalonNetwork.Test();
+            TestGE06GetBoundaryPointsFromAllotments.Test();
 
-            //TestGE06GetBoundaryPointsFromAllotments.Test();
-
+            //TestGE06EstimationAssignmentsPointsForEtalonNetwork.Test();
+                       
             //TestGE06GetEtalonBroadcastingAssignmentFromAllotment.Test();
 
             //TestGE06GetEtalonBroadcastingAssignmentFromAllotment.Test();
