@@ -27575,10 +27575,6 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             A = Math.Pow(A0, v);
             E = (1 - A) * Get_land(ha, hef, d, f, p) + A * Get_sea(h_gr, d, f, p);
 
-
-            // 1546-6
-
-            E = (1 - A) * Get_land(ha, hef, d, f, p) + A * Get_sea(h_gr, d, f, p);
             return E;
         }
         /// <summary>
@@ -27614,15 +27610,26 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             h_gr_ = h_gr;
             h2_ = h2;
 
+            // p 15 short distances
+            
+
             if (d_ < 1)
             {
                 double E;
-                if (d_ < 0.1)
+                
+
+                if (d_ <= 0.04)
                 {
-                    d_ = 0.1;
+                    double dslope = Math.Sqrt(d * d + 0.000001 * Math.Pow((ha - h2), 2));
+                    E = 106.9 - 20 * Math.Log10(dslope);
+                    return E;
                 }
-                E = 106.9 - 20 * Math.Log10(d_);
-                return E;
+                else
+                {
+                    d_ = 1.0;
+                }
+
+                
             }
             if (d_ > 1000)
             {
@@ -27731,6 +27738,17 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             {
                 E5 = Egran;
             }
+
+            // p 15
+            if (d < 1.0)
+            {
+                double dslope = Math.Sqrt(d * d + 0.000001 * Math.Pow((ha - h2), 2));
+                double dinf = Math.Sqrt(0.0016 + 0.000001 * Math.Pow((ha - h2), 2));
+                double dsup = Math.Sqrt(1.0 + 0.000001 * Math.Pow((ha - h2), 2));
+                double Einf = 106.9 - 20 * Math.Log10(dinf);
+                E = Einf + (E5 - Einf) * Math.Log10(dslope / dinf) / Math.Log10(dsup / dinf);
+            }
+            
             return E5;
         }
         ////////////////////////////////////////////////////////
