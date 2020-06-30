@@ -1,5 +1,7 @@
 ﻿using System;
 using Atdi.Platform;
+using Atdi.Contracts.Sdrn.DeepServices.IDWM;
+using Atdi.DataModels.Sdrn.DeepServices.IDWM;
 using Atdi.Contracts.Sdrn.DeepServices.GN06;
 using Atdi.DataModels.Sdrn.DeepServices.GN06;
 using Atdi.DataModels.Sdrn.DeepServices.EarthGeometry;
@@ -11,9 +13,11 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.GN06
     public class EstimationAssignmentsService : IGn06Service
     {
         private readonly IEarthGeometricService _earthGeometricService;
-        public EstimationAssignmentsService(IEarthGeometricService earthGeometricService)
+        private readonly IIdwmService  _idwmService;
+        public EstimationAssignmentsService(IEarthGeometricService earthGeometricService, IIdwmService idwmService)
         {
             this._earthGeometricService = earthGeometricService;
+            this._idwmService = idwmService;
         }
 
 
@@ -35,6 +39,11 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.GN06
         public void GetBoundaryPointsFromAllotments(in BroadcastingAllotmentWithStep broadcastingAllotmentWithStepArgs, ref Points pointsResult)
         {
             BoundaryPointsFromAllotments.Calc(this._earthGeometricService, broadcastingAllotmentWithStepArgs, ref pointsResult);
+        }
+
+        public void CalcBarycenterGE06(in BroadcastingCalcBarycenterGE06 broadcastingCalcBarycenterGE06, ref PointEarthGeometric coordBaryCenter)
+        {
+            BarycenterGE06.Calc(this._earthGeometricService, this._idwmService, broadcastingCalcBarycenterGE06, ref coordBaryCenter);
         }
 
         public void Dispose()

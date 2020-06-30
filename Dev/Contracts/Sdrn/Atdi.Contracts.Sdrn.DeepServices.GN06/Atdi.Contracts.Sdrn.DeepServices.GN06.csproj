@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IGn06Service.cs" />
+    <Compile Include="Models\Args\BroadcastingCalcBarycenterGE06.cs" />
     <Compile Include="Models\Args\EstimationAssignmentsPointsArgs.cs" />
     <Compile Include="Models\Args\BroadcastingAllotmentWithStep.cs" />
     <Compile Include="Models\Results\PointWithAzimuthResult.cs" />

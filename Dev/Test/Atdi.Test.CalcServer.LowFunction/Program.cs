@@ -27,7 +27,7 @@ namespace Atdi.Test.CalcServer.LowFunction
             //TestDistance.Test1();
 
 
-            TestGE06GetBoundaryPointsFromAllotments.Test();
+            //TestGE06GetBoundaryPointsFromAllotments.Test();
 
             //TestGE06EstimationAssignmentsPointsForEtalonNetwork.Test();
 
@@ -37,10 +37,10 @@ namespace Atdi.Test.CalcServer.LowFunction
 
 
             //CalcBarycenter testBaryCentr = new CalcBarycenter();
-             //testBaryCentr.Test();
+            //testBaryCentr.Test();
 
-            //PutPointToContour putPointToContour = new PutPointToContour();
-            //putPointToContour.Test();
+            PutPointToContour putPointToContour = new PutPointToContour();
+            putPointToContour.Test();
 
             //CreateContourFromPointByDistance createContourFromPointByDistance = new CreateContourFromPointByDistance();
             //createContourFromPointByDistance.Test();

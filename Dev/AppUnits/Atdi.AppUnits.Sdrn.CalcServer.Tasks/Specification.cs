@@ -51,8 +51,5 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
         public static readonly string StationCalibrationPointFSArrayObjectPool = "CalcServer.StationCalibration.PointFS";
         public static readonly string StationCalibrationResultObjectPool = "CalcServer.StationCalibration.StationCalibrationResultObjectPool";
         public static readonly string StationCalibrationListDriveTestsResultObjectPool = "CalcServer.StationCalibration.ListDriveTestsResultObjectPool";
-        
-
-
     }
 }

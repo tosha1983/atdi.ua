@@ -220,6 +220,8 @@ namespace Atdi.Test.CalcServer.LowFunction
                              
                     //       }
                     //};
+
+
                     PointEarthGeometric pointEarthGeometricCalc = new PointEarthGeometric();
                     earthGeometricServiceServices.CalcBarycenter(in geometryArgs, ref pointEarthGeometricCalc);
                     WPF.Location[] inputCoords = new WPF.Location[geometryArgs.Points.Length];
