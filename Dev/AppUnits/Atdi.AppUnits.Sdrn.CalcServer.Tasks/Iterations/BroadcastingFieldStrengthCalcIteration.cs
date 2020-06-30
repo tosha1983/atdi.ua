@@ -19,7 +19,7 @@ using Atdi.Contracts.Sdrn.DeepServices.EarthGeometry;
 
 namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 {
-    public class FieldStrengthCa1546BroadcastlcIteration : IIterationHandler<BroadcastingFieldStrengthCalcData, BroadcastingFieldStrengthCalcResult>
+    public class BroadcastingFieldStrengthCalcIteration : IIterationHandler<BroadcastingFieldStrengthCalcData, BroadcastingFieldStrengthCalcResult>
     {
         private readonly ISignalService _signalService;
         private readonly IMapService _mapService;
@@ -159,7 +159,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
         #endregion
 
-        public FieldStrengthCa1546BroadcastlcIteration(
+        public BroadcastingFieldStrengthCalcIteration(
             ISignalService signalService,
             IEarthGeometricService earthGeometricService,
             IMapService mapService,

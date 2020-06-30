@@ -60,7 +60,7 @@
     <Compile Include="Tasks\CoverageProfilesCalcTask.cs" />
     <Compile Include="Iterations\FieldStrengthCalcIteration.cs" />
     <Compile Include="Iterations\ProfileIndexersCalcIteration.cs" />
-    <Compile Include="Tasks\GN06\Gn06CalcTask.cs" />
+    <Compile Include="Tasks\GE06\GE06CalcTask.cs" />
     <Compile Include="Tasks\StationCalibrationCalcTask.cs" />
     <Compile Include="Tasks\PointFieldStrengthCalcTask.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

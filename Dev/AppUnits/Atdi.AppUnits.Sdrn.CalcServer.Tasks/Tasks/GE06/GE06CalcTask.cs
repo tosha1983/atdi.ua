@@ -19,7 +19,7 @@ using Atdi.Platform.Data;
 namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 {
 	[TaskHandler(CalcTaskType.Gn06CalcTask)]
-	public class Gn06CalcTask : ITaskHandler
+	public class GE06CalcTask : ITaskHandler
 	{
 		private readonly IDataLayer<EntityDataOrm<CalcServerEntityOrmContext>> _calcServerDataLayer;
         private readonly IClientContextService _contextService;
@@ -35,7 +35,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
        
 
       
-		public Gn06CalcTask(
+		public GE06CalcTask(
 			IDataLayer<EntityDataOrm<CalcServerEntityOrmContext>> calcServerDataLayer,
 			IClientContextService contextService,
 			IMapRepository mapRepository,
