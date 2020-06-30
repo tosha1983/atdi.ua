@@ -30,13 +30,13 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client.Tasks
 
         //////////small
         //// 29-30 
-        //private static double[] sitesLatitudes = new double[] { 45.481647 };
-        //private static double[] sitesLongitudes = new double[] { 29.9444 };
-        //private static double[] sitesHeights = new double[] { 10 };
+        private static double[] sitesLatitudes = new double[] { 45.481647 };
+        private static double[] sitesLongitudes = new double[] { 29.9444 };
+        private static double[] sitesHeights = new double[] { 10 };
 
-        //private static double[] pointsLatitudes = new double[] { 46.504229 };
-        //private static double[] pointsLongitudes = new double[] { 31.347353 };
-        //private static double[] pointsHeights = new double[] { 10 };
+        private static double[] pointsLatitudes = new double[] { 46.504229 };
+        private static double[] pointsLongitudes = new double[] { 31.347353 };
+        private static double[] pointsHeights = new double[] { 10 };
 
         //// 31-32
         //private static double[] sitesLatitudes = new double[] { 46.129873 };
@@ -79,13 +79,42 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client.Tasks
         //private static double[] pointsHeights = new double[] { 10 };
 
         ///// 39-40 mix
-        private static double[] sitesLatitudes = new double[] { 46.147019 };
-        private static double[] sitesLongitudes = new double[] { 30.197827 };
-        private static double[] sitesHeights = new double[] { 10 };
+        //private static double[] sitesLatitudes = new double[] { 46.147019 };
+        //private static double[] sitesLongitudes = new double[] { 30.197827 };
+        //private static double[] sitesHeights = new double[] { 10 };
 
-        private static double[] pointsLatitudes = new double[] { 46.401132 };
-        private static double[] pointsLongitudes = new double[] { 30.361765 };
-        private static double[] pointsHeights = new double[] { 10 };
+        //private static double[] pointsLatitudes = new double[] { 46.401132 };
+        //private static double[] pointsLongitudes = new double[] { 30.361765 };
+        //private static double[] pointsHeights = new double[] { 10 };
+
+        ///// 41-42 mix short distance
+        //private static double[] sitesLatitudes = new double[] { 46.043564 };
+        //private static double[] sitesLongitudes = new double[] { 30.397428 };
+        //private static double[] sitesHeights = new double[] { 10 };
+
+        //private static double[] pointsLatitudes = new double[] { 46.040558 };
+        //private static double[] pointsLongitudes = new double[] { 30.401205 };
+        //private static double[] pointsHeights = new double[] { 10 };
+
+        ///// 43-44 mix low rx ant
+
+
+        //private static double[] sitesLatitudes = new double[] { 46.067596 };
+        //private static double[] sitesLongitudes = new double[] { 30.435252 };
+        //private static double[] sitesHeights = new double[] { 10 };
+
+        //private static double[] pointsLatitudes = new double[] { 46.024409 };
+        //private static double[] pointsLongitudes = new double[] { 30.466242 };
+        //private static double[] pointsHeights = new double[] { 2 };
+
+        //// 45-46 mix low rx ant
+        //private static double[] sitesLatitudes = new double[] { 45.782642 };
+        //private static double[] sitesLongitudes = new double[] { 31.363665 };
+        //private static double[] sitesHeights = new double[] { 10 };
+
+        //private static double[] pointsLatitudes = new double[] { 45.740109 };
+        //private static double[] pointsLongitudes = new double[] { 31.411184 };
+        //private static double[] pointsHeights = new double[] { 2 };
 
         //////////////////////////large
 
