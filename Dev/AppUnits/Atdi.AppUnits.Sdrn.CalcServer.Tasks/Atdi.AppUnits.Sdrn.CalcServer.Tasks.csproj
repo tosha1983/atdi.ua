@@ -50,6 +50,7 @@
     <Compile Include="AppServerComponent.cs" />
     <Compile Include="AppServerComponentConfig.cs" />
     <Compile Include="Iterations\GE06\BroadcastingFieldStrengthCalcIteration.cs" />
+    <Compile Include="Iterations\GE06\Ge06CalcFieldStrengthInPoint.cs" />
     <Compile Include="Iterations\GE06\Ge06CalcIteration.cs" />
     <Compile Include="Iterations\StationCalibration\CIDComparisonRDB.cs" />
     <Compile Include="Iterations\StationCalibration\GCIDComparisonRR.cs" />
@@ -164,6 +165,9 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Iterations\GE06\Allotment\" />
+    <Folder Include="Iterations\GE06\Assignment\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

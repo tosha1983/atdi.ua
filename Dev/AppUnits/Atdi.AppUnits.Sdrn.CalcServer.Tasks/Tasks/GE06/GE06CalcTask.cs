@@ -195,6 +195,5 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                 var keyGn06AffectedADMResult = _calcDbScope.Executor.Execute<CALC.IGn06AffectedADMResult_PK>(insertQueryGn06AffectedADMResult);
             }
         }
-        }
     }
 }

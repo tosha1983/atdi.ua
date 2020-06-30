@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Clients\ClientContext.cs" />
+    <Compile Include="Iterations\Gn06\Input\BroadcastingFieldStrengthInPointGE06.cs" />
     <Compile Include="Iterations\Gn06\Input\BroadcastingFieldStrengthCalcData.cs" />
     <Compile Include="Iterations\Gn06\Output\BroadcastingFieldStrengthCalcResult.cs" />
     <Compile Include="Iterations\Gn06\Input\Ge06TaskParameters.cs" />
@@ -51,6 +52,7 @@
     <Compile Include="Iterations\Gn06\Output\CalcPointResult.cs" />
     <Compile Include="Iterations\Gn06\Output\CountoursPoint.cs" />
     <Compile Include="Iterations\Gn06\Output\AffectedADMResult.cs" />
+    <Compile Include="Iterations\Gn06\Output\PointResult.cs" />
     <Compile Include="Iterations\Gn06\Output\Enum\PointType.cs" />
     <Compile Include="Iterations\Gn06\Output\Enum\ContourType.cs" />
     <Compile Include="Iterations\Gn06\Output\Ge06CalcResult.cs" />
