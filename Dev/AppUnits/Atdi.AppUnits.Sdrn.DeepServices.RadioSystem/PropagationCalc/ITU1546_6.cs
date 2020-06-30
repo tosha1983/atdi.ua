@@ -27432,7 +27432,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             double E;
             if (ha < 1)
             {
-                h = 1;
+                h = 1.0;
             }
             else
             {
@@ -27596,7 +27596,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
         /// <param name="h2">высота антенны абонента, м (по умолчанию 10м)</param>
         /// <param name="list1">Суша - вода</param>
         /// <returns>напряженность поля в дБ(мкВ/м)</returns>
-        public static double Get_E(double ha, double hef, double d, double f, double p, double h_gr, double h2, params land_sea[] list1)
+        public static double Get_E(double ha, double hef, double d, double f, double p, double h_gr, double h2, params land_sea[] list1, bool h2aboveSea)
 
         {
             // проверка входных данных
@@ -27698,18 +27698,43 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             {
                 h2_ = 100;
             }
-            if (h2_ < 2)
+            if (h2aboveSea)
             {
-                h2_ = 2;
+                if (h2_ < 3)
+                {
+                    h2_ = 3.0;
+                }
             }
+            else  
+            {
+                if (h2_ < 1)
+                {
+                    h2_ = 1.0;
+                }
+            }
+            
 
             double E5;
             ITU1546_6 E1 = new ITU1546_6();
             E5 = E1.Get_E_(ha_, hef_, d_, f_, p_, h_gr_, list1);
-            // расчет поправки для приемной антенны;
-            double a_h2;
-            a_h2 = (3.2 + 6.2 * Math.Log10(f)) * Math.Log10(h2_ / 10);
-            E5 = E5 + a_h2;
+            // p 9. расчет поправки для приемной антенны;
+            double c10 = (3.2 + 6.2 * Math.Log10(f)) * Math.Log10(h2_ / 10);
+            double d10 = E1.D06(f, h1_, 10.0);
+            if (h2aboveSea && h2_ < 10.0 && d < d10)
+            {
+                double dh2 = E1.D06(f, h1_, h2_);
+                if ( d <= dh2 )
+                {
+                    c10 = 0;
+                }
+                else
+                {
+                    c10 *= Math.Log10(d / dh2) / c10 *= Math.Log10(d10 / dh2);
+                }
+            }
+            
+
+            E5 = E5 + c10;
             double Egran;
             Egran = E1.Emax_land(d_);
             double tt, ss;
