@@ -6,13 +6,14 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
-    public class ContoursResult
+    public class CountoursPoint
     {
-        public ContourType ContourType;
+        public double Lon_DEC;
+        public double Lat_DEC;
         public int Distance;
         public int FS;
-        public string AffectedADM;
-        public int PointsCount;
-        public CountoursPoint[] CountoursPoints;
+        public int Height;
+        public PointType PointType;
     }
 }
+    

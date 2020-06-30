@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
-    public class AffectedADMResult
+    public enum PointType
     {
-        public string ADM;
-        public string TypeAffected;
-        public string AffectedServices;
+        Unknown = 0,
+        Etalon = 1,
+        Affected = 2,
+        Correct = 3
     }
 }
-    

@@ -47,9 +47,12 @@
     <Compile Include="Iterations\Gn06\Output\BroadcastingFieldStrengthCalcResult.cs" />
     <Compile Include="Iterations\Gn06\Input\Ge06TaskParameters.cs" />
     <Compile Include="Iterations\Gn06\Input\Ge06CalcData.cs" />
-    <Compile Include="Iterations\Gn06\Output\AffectedADMResult.cs" />
-    <Compile Include="Iterations\Gn06\Output\CalcPointResult.cs" />
     <Compile Include="Iterations\Gn06\Output\ContoursResult.cs" />
+    <Compile Include="Iterations\Gn06\Output\CalcPointResult.cs" />
+    <Compile Include="Iterations\Gn06\Output\CountoursPoint.cs" />
+    <Compile Include="Iterations\Gn06\Output\AffectedADMResult.cs" />
+    <Compile Include="Iterations\Gn06\Output\Enum\PointType.cs" />
+    <Compile Include="Iterations\Gn06\Output\Enum\ContourType.cs" />
     <Compile Include="Iterations\Gn06\Output\Ge06CalcResult.cs" />
     <Compile Include="Iterations\StationCalibrationCalc\CalcCorellation\Input\AllStationCorellationCalcData.cs" />
     <Compile Include="Iterations\StationCalibrationCalc\CalcCorellation\Input\StationCorellationCalcDataBase.cs" />
