@@ -49,8 +49,8 @@
   <ItemGroup>
     <Compile Include="AppServerComponent.cs" />
     <Compile Include="AppServerComponentConfig.cs" />
-    <Compile Include="Iterations\BroadcastingFieldStrengthCalcIteration.cs" />
-    <Compile Include="Iterations\GN06\Gn06CalcIteration.cs" />
+    <Compile Include="Iterations\GE06\BroadcastingFieldStrengthCalcIteration.cs" />
+    <Compile Include="Iterations\GE06\Ge06CalcIteration.cs" />
     <Compile Include="Iterations\StationCalibration\CIDComparisonRDB.cs" />
     <Compile Include="Iterations\StationCalibration\GCIDComparisonRR.cs" />
     <Compile Include="Iterations\StationCalibration\DetermineStationParametersCalcIteration.cs" />

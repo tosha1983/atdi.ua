@@ -31,7 +31,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
         private readonly AppServerComponentConfig _appServerComponentConfig;
         private ITaskContext _taskContext;
 		private IDataLayerScope _calcDbScope;
-        private Gn06TaskParameters _parameters;
+        private Ge06TaskParameters _parameters;
        
 
       
@@ -78,7 +78,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
         {
             var mapData = _mapRepository.GetMapByName(this._calcDbScope, this._taskContext.ProjectId, this._parameters.MapName);
             var propagationModel = _contextService.GetPropagationModel(this._calcDbScope, this._taskContext.ClientContextId);
-            var iterationGn06CalcData = new Gn06CalcData
+            var iterationGn06CalcData = new Ge06CalcData
             {
                 Gn06TaskParameters = this._parameters,
                 MapData = mapData,
@@ -91,7 +91,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                     MapArea = mapData.Area
                 }
             };
-            var iterationResultGn06 = _iterationsPool.GetIteration<Gn06CalcData, Gn06CalcResult[]>();
+            var iterationResultGn06 = _iterationsPool.GetIteration<Ge06CalcData, Ge06CalcResult[]>();
             var resulCalibration = iterationResultGn06.Run(_taskContext, iterationGn06CalcData);
 
 
@@ -135,7 +135,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                 {
                     return null;
                 }
-                return new Gn06TaskParameters()
+                return new Ge06TaskParameters()
                 {
                     CalculationTypeCode = reader.GetValue(c => c.CalculationTypeCode),
                     CalculationTypeName = reader.GetValue(c => c.CalculationTypeName),

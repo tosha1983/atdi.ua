@@ -24,7 +24,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
     /// <summary>
     /// 
     /// </summary>
-    public class Gn06CalcIteration : IIterationHandler<Gn06CalcData, Gn06CalcResult[]>
+    public class Ge06CalcIteration : IIterationHandler<Ge06CalcData, Ge06CalcResult[]>
     {
         private readonly ILogger _logger;
         private readonly IIterationsPool _iterationsPool;
@@ -37,7 +37,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         /// <summary>
         /// Заказываем у контейнера нужные сервисы
         /// </summary>
-        public Gn06CalcIteration(
+        public Ge06CalcIteration(
             IDataLayer<EntityDataOrm<CalcServerEntityOrmContext>> calcServerDataLayer,
             IEarthGeometricService earthGeometricService,
             IIterationsPool iterationsPool,
@@ -57,7 +57,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
         
 
-        public Gn06CalcResult[] Run(ITaskContext taskContext, Gn06CalcData data)
+        public Ge06CalcResult[] Run(ITaskContext taskContext, Ge06CalcData data)
         {
             
             return null;
