@@ -126,7 +126,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
                     //landSeaList.Add(new land_sea { land = 0, sea = args.D_km });
                     //landSeaList.Add(new land_sea { land = 9.2, sea = 12.8 });
                     //landSeaList.Add(new land_sea { land = 6.0, sea = 0 });
-                    double E_dBuVm = (ITU1546_6.Get_E(args.Ha_m, hEffective_m, args.D_km, args.Freq_Mhz, args.Model.Parameters.Time_pc, asl_m, args.Hb_m, landSeaList.ToArray(), h2aboveSea));
+                    double E_dBuVm = (ITU1546_6.Get_E(args.Ha_m, hEffective_m, args.D_km, args.Freq_Mhz, args.Model.Parameters.Time_pc, asl_m, args.Hb_m, h2aboveSea, landSeaList.ToArray()));
                     Lbf_dB = (float)(139.3 - E_dBuVm + 20 * Math.Log10(args.Freq_Mhz));
                     break;
 

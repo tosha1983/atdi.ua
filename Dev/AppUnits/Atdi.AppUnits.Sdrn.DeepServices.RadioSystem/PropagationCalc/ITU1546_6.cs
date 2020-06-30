@@ -27596,7 +27596,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
         /// <param name="h2">высота антенны абонента, м (по умолчанию 10м)</param>
         /// <param name="list1">Суша - вода</param>
         /// <returns>напряженность поля в дБ(мкВ/м)</returns>
-        public static double Get_E(double ha, double hef, double d, double f, double p, double h_gr, double h2, params land_sea[] list1, bool h2aboveSea)
+        public static double Get_E(double ha, double hef, double d, double f, double p, double h_gr, double h2, bool h2aboveSea, params land_sea[] list1)
 
         {
             // проверка входных данных
@@ -27719,17 +27719,17 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             E5 = E1.Get_E_(ha_, hef_, d_, f_, p_, h_gr_, list1);
             // p 9. расчет поправки для приемной антенны;
             double c10 = (3.2 + 6.2 * Math.Log10(f)) * Math.Log10(h2_ / 10);
-            double d10 = E1.D06(f, h1_, 10.0);
+            double d10 = E1.D06(f, ha_, 10.0);
             if (h2aboveSea && h2_ < 10.0 && d < d10)
             {
-                double dh2 = E1.D06(f, h1_, h2_);
-                if ( d <= dh2 )
+                double dh2 = E1.D06(f, ha_, h2_);
+                if ( d_ <= dh2 )
                 {
                     c10 = 0;
                 }
                 else
                 {
-                    c10 *= Math.Log10(d / dh2) / c10 *= Math.Log10(d10 / dh2);
+                    c10 *= Math.Log10(d_ / dh2) / Math.Log10(d10 / dh2);
                 }
             }
             
@@ -27771,7 +27771,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
                 double dinf = Math.Sqrt(0.0016 + 0.000001 * Math.Pow((ha - h2), 2));
                 double dsup = Math.Sqrt(1.0 + 0.000001 * Math.Pow((ha - h2), 2));
                 double Einf = 106.9 - 20 * Math.Log10(dinf);
-                E = Einf + (E5 - Einf) * Math.Log10(dslope / dinf) / Math.Log10(dsup / dinf);
+                E5 = Einf + (E5 - Einf) * Math.Log10(dslope / dinf) / Math.Log10(dsup / dinf);
             }
             
             return E5;
