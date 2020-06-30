@@ -308,7 +308,7 @@ namespace Atdi.Test.Platform.SG
                     //WPF.RunApp.Start(WPF.TypeObject.Points, new WPF.Location[] { new WPF.Location(contourForStationByTriggerFieldStrengthsArgs3.PointEarthGeometricCalc.Longitude, contourForStationByTriggerFieldStrengthsArgs3.PointEarthGeometricCalc.Latitude) }, WPF.TypeObject.Points, zx5);
 
                     List<PointEarthGeometric> pointEarthGeometricslst = new List<PointEarthGeometric>();
-                    var str = System.IO.File.ReadAllText("C:\\Projects\\Area3.txt");
+                    var str = System.IO.File.ReadAllText("C:\\Projects\\AreaTest.txt");
                     string[] a = str.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
                     for (int i=0; i<a.Length;i++)
                     {

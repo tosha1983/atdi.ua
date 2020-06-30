@@ -78,6 +78,14 @@ namespace Atdi.Contracts.Sdrn.DeepServices.EarthGeometry
         /// <returns></returns>
         PointEarthGeometric CalculationCoordinateByLengthAndAzimuth(in PointEarthGeometric PointStart, double distance_km, double azimuth, bool LargeCircleArc = true);
 
+
+        /// <summary>
+        /// Проверка попадания точки point в контур poligon
+        /// </summary>
+        /// <param name="poligon"></param>
+        /// <param name="point"></param>
+        /// <returns></returns>
+        bool CheckHitting(in CheckHittingArgs checkHittingArgs);
     }
         
 }

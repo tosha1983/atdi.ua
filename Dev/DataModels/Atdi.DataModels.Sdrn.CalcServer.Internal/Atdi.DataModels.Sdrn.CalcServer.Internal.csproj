@@ -43,6 +43,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Clients\ClientContext.cs" />
+    <Compile Include="Iterations\BroadcastingFieldStrengthCalcData.cs" />
+    <Compile Include="Iterations\BroadcastingFieldStrengthCalcResult.cs" />
+    <Compile Include="Iterations\Gn06\Input\Gn06TaskParameters.cs" />
+    <Compile Include="Iterations\Gn06\Input\Gn06CalcData.cs" />
+    <Compile Include="Iterations\Gn06\Output\Gn06CalcResult.cs" />
     <Compile Include="Iterations\StationCalibrationCalc\CalcCorellation\Input\AllStationCorellationCalcData.cs" />
     <Compile Include="Iterations\StationCalibrationCalc\CalcCorellation\Input\StationCorellationCalcDataBase.cs" />
     <Compile Include="Iterations\StationCalibrationCalc\CalcCorellation\Output\ParametersStation.cs" />
@@ -86,6 +91,10 @@
       <Project>{d83887b2-4444-4207-a703-c99b94a4c170}</Project>
       <Name>Atdi.DataModels.Sdrn.DeepServices.Gis</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Atdi.DataModels.Sdrn.DeepServices.GN06\Atdi.DataModels.Sdrn.DeepServices.GN06.csproj">
+      <Project>{ee65799e-0a0a-4599-8f5e-30eb23304d49}</Project>
+      <Name>Atdi.DataModels.Sdrn.DeepServices.GN06</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Atdi.DataModels.Sdrn.DeepServices.RadioSystem\Atdi.DataModels.Sdrn.DeepServices.RadioSystem.csproj">
       <Project>{c67fbe11-fef0-48ad-9912-61bf4c61db03}</Project>
       <Name>Atdi.DataModels.Sdrn.DeepServices.RadioSystem</Name>
@@ -95,5 +104,6 @@
       <Name>Atdi.DataModels.Sdrn.DeepServices</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

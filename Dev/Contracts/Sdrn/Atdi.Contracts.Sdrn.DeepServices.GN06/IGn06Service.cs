@@ -18,5 +18,7 @@ namespace Atdi.Contracts.Sdrn.DeepServices.GN06
         void GetStationFromBroadcastingAssignment(BroadcastingAssignment broadcastingAssignmentArgs, ref ContextStation contextStationResult);
 
         void GetBoundaryPointsFromAllotments(in BroadcastingAllotmentWithStep broadcastingAllotmentWithStepArgs, ref Points pointsResult);
+
+        void CalcBarycenterGE06(in BroadcastingCalcBarycenterGE06  broadcastingCalcBarycenterGE06, ref PointEarthGeometric coordBaryCenter);
     }
 }

@@ -49,6 +49,8 @@
   <ItemGroup>
     <Compile Include="AppServerComponent.cs" />
     <Compile Include="AppServerComponentConfig.cs" />
+    <Compile Include="Iterations\BroadcastingFieldStrengthCalcIteration.cs" />
+    <Compile Include="Iterations\GN06\Gn06CalcIteration.cs" />
     <Compile Include="Iterations\StationCalibration\CIDComparisonRDB.cs" />
     <Compile Include="Iterations\StationCalibration\GCIDComparisonRR.cs" />
     <Compile Include="Iterations\StationCalibration\DetermineStationParametersCalcIteration.cs" />
@@ -58,6 +60,7 @@
     <Compile Include="Tasks\CoverageProfilesCalcTask.cs" />
     <Compile Include="Iterations\FieldStrengthCalcIteration.cs" />
     <Compile Include="Iterations\ProfileIndexersCalcIteration.cs" />
+    <Compile Include="Tasks\GN06\Gn06CalcTask.cs" />
     <Compile Include="Tasks\StationCalibrationCalcTask.cs" />
     <Compile Include="Tasks\PointFieldStrengthCalcTask.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -128,6 +131,10 @@
       <Project>{d83887b2-4444-4207-a703-c99b94a4c170}</Project>
       <Name>Atdi.DataModels.Sdrn.DeepServices.Gis</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices.GN06\Atdi.DataModels.Sdrn.DeepServices.GN06.csproj">
+      <Project>{ee65799e-0a0a-4599-8f5e-30eb23304d49}</Project>
+      <Name>Atdi.DataModels.Sdrn.DeepServices.GN06</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices.RadioSystem\Atdi.DataModels.Sdrn.DeepServices.RadioSystem.csproj">
       <Project>{c67fbe11-fef0-48ad-9912-61bf4c61db03}</Project>
       <Name>Atdi.DataModels.Sdrn.DeepServices.RadioSystem</Name>
@@ -157,5 +164,6 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

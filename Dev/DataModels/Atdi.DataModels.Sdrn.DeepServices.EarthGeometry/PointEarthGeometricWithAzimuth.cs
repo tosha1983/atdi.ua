@@ -9,6 +9,8 @@ namespace Atdi.DataModels.Sdrn.DeepServices.EarthGeometry
     public struct PointEarthGeometricWithAzimuth
     {
         public PointEarthGeometric PointEarthGeometric;
+        public PointEarthGeometric PointStart;
+        public PointEarthGeometric PointStop;
         public double Azimuth_deg;
     }
 }

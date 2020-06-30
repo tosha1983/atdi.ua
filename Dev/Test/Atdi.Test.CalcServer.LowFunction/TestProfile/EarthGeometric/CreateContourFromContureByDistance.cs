@@ -86,7 +86,7 @@ namespace Atdi.Test.CalcServer.LowFunction
                         ContourPoints = arrPnts,
                         Distance_km = 5,
                         PointBaryCenter = pointEarthGeometricR,
-                        Step_deg = 0.8
+                        Step_deg = 0.1
                     };
 
                     PointEarthGeometricWithAzimuth[] pointEarthGeometricPtx = new PointEarthGeometricWithAzimuth[10000];
@@ -105,8 +105,8 @@ namespace Atdi.Test.CalcServer.LowFunction
                         inputPnts[u] = new WPF.Location(arrPnts[u].Longitude, arrPnts[u].Latitude);
                     }
 
-                    //inputPnts[inputPnts.Length - 2] = new WPF.Location(30.54, 51);
-                    //inputPnts[inputPnts.Length - 1] = new WPF.Location(30.942532334249936, 50.904220557083228);
+                    //inputPnts[inputPnts.Length - 2] = new WPF.Location(30.54, 51.0899);
+                    //inputPnts[inputPnts.Length - 1] = new WPF.Location(31, 51.0908);
 
 
 
