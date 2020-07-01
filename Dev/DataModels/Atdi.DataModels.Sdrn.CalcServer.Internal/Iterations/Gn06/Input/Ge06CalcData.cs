@@ -9,9 +9,9 @@ using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Gis;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
-	public class Gn06CalcData
+	public struct Ge06CalcData
     {
-        public Gn06TaskParameters Gn06TaskParameters;
+        public Ge06TaskParameters Ge06TaskParameters;
         public PropagationModel PropagationModel;
         public ProjectMapData MapData;
         public CluttersDesc CluttersDesc;

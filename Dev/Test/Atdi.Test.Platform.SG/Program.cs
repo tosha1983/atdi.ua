@@ -25,12 +25,17 @@ using System.Runtime.CompilerServices;
 using System.ServiceModel;
 using WPF = Atdi.Test.DeepServices.Client.WPF;
 using Atdi.Common;
+using Atdi.DataModels.Sdrn.CalcServer.Entities;
+using Atdi.Contracts.CoreServices.DataLayer;
+using Atdi.Contracts.CoreServices.EntityOrm;
 
 namespace Atdi.Test.Platform.SG
 {
 
-    class Program
+
+class Program
     {
+
         [STAThread]
         static void Main(string[] args)
         {
@@ -55,16 +60,88 @@ namespace Atdi.Test.Platform.SG
                     //WPF.MainWindow.MapX.DrawingData = WPF.MapDrawingUpdateData.UpdateData(WPF.TypeObject.Points, new WPF.Location[] { new WPF.Location(30, 50) }, WPF.TypeObject.Points , new WPF.Location[] { new WPF.Location(30, 50.2) });
 
 
-
                     host.Container.Register<IIdwmService, IdwmService>(ServiceLifetime.PerThread);
+                    host.Container.Register<IGn06Service, EstimationAssignmentsService>(ServiceLifetime.PerThread);
+                    host.Container.Register<IDataLayer<EntityDataOrm>>(ServiceLifetime.PerThread);
                     host.Container.Register<ITransformation, TransformationService>(ServiceLifetime.PerThread);
                     host.Container.Register<IEarthGeometricService, EarthGeometricService>(ServiceLifetime.PerThread);
                     var resolver = host.Container.GetResolver<IServicesResolver>();
                     var transformation = resolver.Resolve<ITransformation>();
                     var earthGeometricServiceServices = resolver.Resolve<IEarthGeometricService>();
-                  
+                    var gn06Service = resolver.Resolve<IGn06Service>();
+
+
+                    BroadcastingCalcBarycenterGE06 broadcastingCalcBarycenterGE06 = new BroadcastingCalcBarycenterGE06()
+                    {
+                         BroadcastingAllotment = new GE.BroadcastingAllotment()
+                         {
+                              AllotmentParameters = new GE.AllotmentParameters()
+                              {
+                                   Сontur = new GE.AreaPoint[4]
+                                   {
+                                       new GE.AreaPoint()
+                                       {
+                                            Lon_DEC = 30,
+                                            Lat_DEC = 50
+                                       },
+                                       new GE.AreaPoint()
+                                       {
+                                            Lon_DEC = 30,
+                                            Lat_DEC = 51
+                                       },
+                                       new GE.AreaPoint()
+                                       {
+                                            Lon_DEC = 31,
+                                            Lat_DEC = 51
+                                       },
+                                       new GE.AreaPoint()
+                                       {
+                                            Lon_DEC = 31,
+                                            Lat_DEC = 50
+                                       },
+                                   }
+
+
+                              },
+                               AdminData = new GE.AdministrativeData()
+                               {
+                                    Adm = "UKR"
+                               }
+                         },
+                          BroadcastingAssignments = new GE.BroadcastingAssignment[1]
+                          {
+                               new GE.BroadcastingAssignment()
+                               {
+                                    AdmData = new GE.AdministrativeData()
+                                    {
+                                         Adm = "UKR"
+                                    },
+                                      SiteParameters = new GE.SiteParameters()
+                                      {
+                                           Lon_Dec = 31.5,
+                                           Lat_Dec = 51.5
+                                      }
+
+                                     
+                               }
+                                
+                          }
+
+                    };
+
+                    PointEarthGeometric pointEarthGeometricGe06 = new PointEarthGeometric();
+                    gn06Service.CalcBarycenterGE06(in broadcastingCalcBarycenterGE06, ref pointEarthGeometricGe06);
+
+
+                    //var dataLayer = resolver.Resolve<IDataLayer<EntityDataOrm>>();
+
+                    //var dataLayer = resolver.Resolve<IDataLayer>();
+                    //
 
                     var logger = resolver.Resolve<ILogger>();
+
+
+                   // Test_(dataLayer);
 
                     //var Longitude = 36.2527;
                     //var Latitude = 49.9808;
@@ -429,6 +506,8 @@ namespace Atdi.Test.Platform.SG
                     }
                     //WPF.RunApp.Start(WPF.TypeObject.Points, new WPF.Location[] { new WPF.Location(contourContourFromPointByDistanceArgs4.PointEarthGeometricCalc.Longitude, contourContourFromPointByDistanceArgs4.PointEarthGeometricCalc.Latitude) }, WPF.TypeObject.Points,  zx4);
 
+
+                    
 
 
 

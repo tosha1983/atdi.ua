@@ -29,5 +29,8 @@ namespace XICSM.SdrnCalcServerClient
 			mainMenu.InsertItem(PluginMetadata.Menu.MainTool, "Entity Orm Test", _menuCommands.OnRunEntityOrmTestCommand);
 			mainMenu.InsertItem(PluginMetadata.Menu.MainTool, "Dialog Test", _menuCommands.OnRunDialogTestCommand);
 		}
-	}
+        protected override void AddBoard(IMBoard b)
+        {
+        }
+    }
 }

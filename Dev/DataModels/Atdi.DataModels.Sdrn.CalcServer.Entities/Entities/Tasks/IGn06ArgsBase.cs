@@ -22,6 +22,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks
         bool UseEffectiveHeight { get; set; }
         byte CalculationTypeCode { get; set; }
         string CalculationTypeName { get; set; }
+        // string == BroadcastingContext
         string BroadcastingExtend { get; set; }
     }
 

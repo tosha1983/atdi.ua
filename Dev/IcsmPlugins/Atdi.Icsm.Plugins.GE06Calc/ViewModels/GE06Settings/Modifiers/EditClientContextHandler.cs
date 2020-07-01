@@ -32,6 +32,12 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings.Modifiers
                 .Filter(c => c.Id, command.Id);
             _dataLayer.Executor.Execute(query);
 
+            if (command.ActiveContext)
+            {
+                Properties.Settings.Default.ActiveContext = command.Id;
+                Properties.Settings.Default.Save();
+            }
+
             _eventBus.Send(new OnEditedClientContext { ClientContextId = command.Id });
         }
     }

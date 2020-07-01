@@ -40,6 +40,12 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings.Modifiers
 
             var contextPk = _dataLayer.Executor.Execute<IClientContext_PK>(query);
 
+            if (command.ActiveContext)
+            {
+                Properties.Settings.Default.ActiveContext = contextPk.Id;
+                Properties.Settings.Default.Save();
+            }
+
             _eventBus.Send(new OnCreatedClientContext { ClientContextId = contextPk.Id });
         }
     }

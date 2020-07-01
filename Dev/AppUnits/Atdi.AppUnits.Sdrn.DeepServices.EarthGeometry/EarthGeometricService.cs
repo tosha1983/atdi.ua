@@ -199,6 +199,13 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
 
                         pointResult.CoordinateUnits = CoordinateUnits.deg;
                     }
+                    else
+                    {
+                        if (distance == curNearestDistance)
+                        {
+                            pointResult=point;
+                        }
+                    }
                 }
             }
         }

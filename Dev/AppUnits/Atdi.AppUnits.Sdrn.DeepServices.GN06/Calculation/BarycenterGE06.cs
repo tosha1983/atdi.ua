@@ -17,6 +17,8 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.GN06
     {
         public static void Calc(IEarthGeometricService earthGeometricService, IIdwmService idwmService, in BroadcastingCalcBarycenterGE06 broadcastingCalcBarycenterGE06, ref PointEarthGeometric coordBaryCenter)
         {
+            string[] administrationsBroadcastingAssignments = null;
+            string administrationAllotment = null;
             // Если присутствует BroadcastingAllotment то для определения центра гравитации используем функцию Barycenter с точками BroadcastingAllotment и признаком полигона.
             if (broadcastingCalcBarycenterGE06.BroadcastingAllotment != null)
             {
@@ -24,39 +26,40 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.GN06
                 {
                     if (broadcastingCalcBarycenterGE06.BroadcastingAllotment.AllotmentParameters.Сontur != null)
                     {
-                        var points = broadcastingCalcBarycenterGE06.BroadcastingAllotment.AllotmentParameters.Сontur;
-                        var pointEarthGeometrics = new PointEarthGeometric[points.Length];
-                        var administrations = new string[points.Length];
-                        for (int i = 0; i < points.Length; i++)
+                        var pointsAllotmentParametersСontur = broadcastingCalcBarycenterGE06.BroadcastingAllotment.AllotmentParameters.Сontur;
+                        var pointEarthGeometricsAllotmentParametersСontur = new PointEarthGeometric[pointsAllotmentParametersСontur.Length];
+                        for (int i = 0; i < pointsAllotmentParametersСontur.Length; i++)
                         {
-                            pointEarthGeometrics[i] = new PointEarthGeometric()
+                            pointEarthGeometricsAllotmentParametersСontur[i] = new PointEarthGeometric()
                             {
-                                Longitude = points[i].Lon_DEC,
-                                Latitude = points[i].Lat_DEC,
+                                Longitude = pointsAllotmentParametersСontur[i].Lon_DEC,
+                                Latitude = pointsAllotmentParametersСontur[i].Lat_DEC,
                                 CoordinateUnits = CoordinateUnits.deg
                             };
+                        }
 
-                            administrations[i] = CalcAdministrationBaryCenter(idwmService, pointEarthGeometrics[i]);
-
+                        if (broadcastingCalcBarycenterGE06.BroadcastingAllotment.AdminData != null)
+                        {
+                            administrationAllotment = broadcastingCalcBarycenterGE06.BroadcastingAllotment.AdminData.Adm;
                         }
 
                         var geometryArgs = new GeometryArgs()
                         {
                             TypeGeometryObject = TypeGeometryObject.Polygon,
-                            Points = pointEarthGeometrics
+                            Points = pointEarthGeometricsAllotmentParametersСontur
                         };
 
                         earthGeometricService.CalcBarycenter(in geometryArgs, ref coordBaryCenter);
 
                         var checkHittingArgs = new CheckHittingArgs()
                         {
-                            Poligon = pointEarthGeometrics,
+                            Poligon = pointEarthGeometricsAllotmentParametersСontur,
                             Point = coordBaryCenter
                         };
 
                         var putPointToContourArgs = new PutPointToContourArgs()
                         {
-                            Points = pointEarthGeometrics,
+                            Points = pointEarthGeometricsAllotmentParametersСontur,
                             PointEarthGeometricCalc = coordBaryCenter
                         };
 
@@ -65,64 +68,56 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.GN06
                         {
                             earthGeometricService.PutPointToContour(in putPointToContourArgs, ref coordBaryCenter);
                         }
-
-                        var administrationBaryCenter = CalcAdministrationBaryCenter(idwmService, coordBaryCenter);
-                        for (int i = 0; i < administrations.Length; i++)
-                        {
-                            if (administrations[i] != administrationBaryCenter)
-                            {
-                                var nearestPoint = new Point();
-                                CalcNearestPointByADM(idwmService, pointEarthGeometrics[i], administrations[i], ref nearestPoint);
-                                if ((nearestPoint.Longitude_dec != null) && (nearestPoint.Latitude_dec != null))
-                                {
-                                    coordBaryCenter.Longitude = nearestPoint.Longitude_dec.Value;
-                                    coordBaryCenter.Latitude = nearestPoint.Latitude_dec.Value;
-                                    coordBaryCenter.CoordinateUnits = CoordinateUnits.deg;
-                                    break;
-                                }
-                            }
-                        }
                     }
                 }
             }
             else if ((broadcastingCalcBarycenterGE06.BroadcastingAssignments != null) && (broadcastingCalcBarycenterGE06.BroadcastingAssignments.Length > 0))
             {
                 var broadcastingAssignments = broadcastingCalcBarycenterGE06.BroadcastingAssignments;
-                var pointEarthGeometrics = new PointEarthGeometric[broadcastingAssignments.Length];
-                var administrations = new string[broadcastingAssignments.Length];
+                var pointEarthGeometricsBroadcastingAssignments = new PointEarthGeometric[broadcastingAssignments.Length];
+
                 for (int i = 0; i < broadcastingAssignments.Length; i++)
                 {
-                    pointEarthGeometrics[i] = new PointEarthGeometric()
+                    pointEarthGeometricsBroadcastingAssignments[i] = new PointEarthGeometric()
                     {
                         Longitude = broadcastingAssignments[i].SiteParameters.Lon_Dec,
                         Latitude = broadcastingAssignments[i].SiteParameters.Lat_Dec,
                         CoordinateUnits = CoordinateUnits.deg
                     };
-
-                    administrations[i] = CalcAdministrationBaryCenter(idwmService, pointEarthGeometrics[i]);
+                   
+                    if (broadcastingAssignments[i].AdmData != null)
+                    {
+                        administrationsBroadcastingAssignments[i] = broadcastingAssignments[i].AdmData.Adm;
+                    }
                 }
 
                 var geometryArgs = new GeometryArgs()
                 {
                     TypeGeometryObject = TypeGeometryObject.Points,
-                    Points = pointEarthGeometrics
+                    Points = pointEarthGeometricsBroadcastingAssignments
                 };
 
                 earthGeometricService.CalcBarycenter(in geometryArgs, ref coordBaryCenter);
-                var administrationBaryCenter = CalcAdministrationBaryCenter(idwmService, coordBaryCenter);
-                for (int i = 0; i < administrations.Length; i++)
+            }
+            var administrationBaryCenter = CalcAdministrationBaryCenter(idwmService, coordBaryCenter);
+
+            if (administrationAllotment != null)
+            {
+                if (administrationAllotment != administrationBaryCenter)
                 {
-                    if (administrations[i]!= administrationBaryCenter)
+                    var nearestPoint = new Point();
+                    CalcNearestPointByADM(idwmService, coordBaryCenter, administrationAllotment, ref nearestPoint);
+                }
+            }
+            if (administrationsBroadcastingAssignments != null)
+            {
+                for (int i = 0; i < administrationsBroadcastingAssignments.Length; i++)
+                {
+                    if (administrationsBroadcastingAssignments[i] != administrationBaryCenter)
                     {
                         var nearestPoint = new Point();
-                        CalcNearestPointByADM(idwmService, pointEarthGeometrics[i], administrations[i], ref nearestPoint);
-                        if ((nearestPoint.Longitude_dec != null) && (nearestPoint.Latitude_dec != null))
-                        {
-                            coordBaryCenter.Longitude = nearestPoint.Longitude_dec.Value;
-                            coordBaryCenter.Latitude = nearestPoint.Latitude_dec.Value;
-                            coordBaryCenter.CoordinateUnits = CoordinateUnits.deg;
-                            break;
-                        }
+                        CalcNearestPointByADM(idwmService, coordBaryCenter, administrationsBroadcastingAssignments[i], ref nearestPoint);
+                        break;
                     }
                 }
             }

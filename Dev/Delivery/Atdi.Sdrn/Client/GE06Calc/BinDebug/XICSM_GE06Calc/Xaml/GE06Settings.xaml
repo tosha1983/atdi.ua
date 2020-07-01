@@ -2,8 +2,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:XICSM.SdrnCalcServerClient.WpfControls"
-             xmlns:res="clr-namespace:Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties;assembly=XICSM_SdrnStationCalibrationCalc"
+             xmlns:local="clr-namespace:XICSM.GE06Calc.WpfControls"
+             xmlns:res="clr-namespace:Atdi.Icsm.Plugins.GE06Calc.Properties;assembly=XICSM_GE06Calc"
              xmlns:orm="clr-namespace:Atdi.WpfControls.EntityOrm.Controls;assembly=Atdi.WpfControls.EntityOrm"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
@@ -41,6 +41,7 @@
           <GroupBox Header="{x:Static res:Resources.Projects}" Margin="5">
           <orm:OrmDataGrid Grid.Column="0" Grid.Row="0" IsReadOnly="True" Margin="5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding Projects}" SelectedItem="{Binding CurrentProject}">
             <DataGrid.Columns>
+              <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=Id}"></DataGridTextColumn>
               <DataGridTextColumn Header="{x:Static res:Resources.Name}" Binding="{Binding Path=Name}"></DataGridTextColumn>
               <DataGridTextColumn Header="{x:Static res:Resources.Note}" Binding="{Binding Path=Note}"></DataGridTextColumn>
               <DataGridTextColumn Header="{x:Static res:Resources.OwnerInstance}" Binding="{Binding Path=OwnerInstance}"></DataGridTextColumn>
@@ -63,6 +64,7 @@
         <GroupBox Grid.Row="2" Header="{x:Static res:Resources.BaseContexts}" Margin="5">
           <orm:OrmDataGrid IsReadOnly="True" Margin="5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding BaseClientContexts}" SelectedItem="{Binding CurrentBaseClientContext}">
             <DataGrid.Columns>
+              <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=Id}"></DataGridTextColumn>
               <DataGridTextColumn Header="{x:Static res:Resources.Name}" Binding="{Binding Path=Name}"></DataGridTextColumn>
               <DataGridTextColumn Header="{x:Static res:Resources.Note}" Binding="{Binding Path=Note}"></DataGridTextColumn>
               <DataGridTextColumn Header="{x:Static res:Resources.OwnerInstance}" Binding="{Binding Path=OwnerInstance}"></DataGridTextColumn>
@@ -103,6 +105,7 @@
           </Grid.RowDefinitions>
           <orm:OrmDataGrid IsReadOnly="True" Margin="5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding ClientContexts}" SelectedItem="{Binding CurrentClientContext}">
             <DataGrid.Columns>
+              <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=Id}"></DataGridTextColumn>
               <DataGridTextColumn Header="{x:Static res:Resources.Name}" Binding="{Binding Path=Name}"></DataGridTextColumn>
               <DataGridTextColumn Header="{x:Static res:Resources.Note}" Binding="{Binding Path=Note}"></DataGridTextColumn>
               <DataGridTextColumn Header="{x:Static res:Resources.OwnerInstance}" Binding="{Binding Path=OwnerInstance}"></DataGridTextColumn>
@@ -110,6 +113,7 @@
               <DataGridTextColumn Header="{x:Static res:Resources.TypeName}" Binding="{Binding Path=TypeName}"></DataGridTextColumn>
               <DataGridTextColumn Header="{x:Static res:Resources.StatusName}" Binding="{Binding Path=StatusName}"></DataGridTextColumn>
               <DataGridTextColumn Header="{x:Static res:Resources.StatusNote}" Binding="{Binding Path=StatusNote}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.ActiveContext}" Binding="{Binding Path=ActiveContext}"></DataGridTextColumn>
             </DataGrid.Columns>
             <DataGrid.CellStyle>
               <Style TargetType="{x:Type DataGridCell}">
@@ -131,6 +135,8 @@
             <orm:OrmTextBox CaptionWith="100" Width="300" Caption="{x:Static res:Resources.BaseContext}" Text ="{Binding Path=CurrentClientContextCard.BaseContextName, Mode=TwoWay}" Enabled="False"/>
             <orm:OrmTextBox CaptionWith="100" Width="300" Caption="{x:Static res:Resources.Name}" Text ="{Binding Path=CurrentClientContextCard.Name, Mode=TwoWay}" Enabled="{Binding Path=ClientContextSaveEnabled, Mode=TwoWay}"/>
             <orm:OrmTextBox CaptionWith="100" Width="300" Caption="{x:Static res:Resources.Note}" Text ="{Binding Path=CurrentClientContextCard.Note, Mode=TwoWay}" Enabled="{Binding Path=ClientContextSaveEnabled, Mode=TwoWay}"/>
+            <orm:OrmCheckBox CaptionWith="100" Width="300" Caption="{x:Static res:Resources.ActiveContext}" SelectedValue="{Binding Path=CurrentClientContextCard.ActiveContext, Mode=TwoWay}" IsRequired="True" Enabled="{Binding Path=ClientContextSaveEnabled, Mode=TwoWay}"/>
+            <!--<CheckBox Width="300" IsChecked="{Binding Path=CurrentClientContextCard.ActiveContext, Mode=TwoWay}" IsEnabled="{Binding Path=ClientContextSaveEnabled, Mode=TwoWay}"/>-->
           </WrapPanel>
         </Grid>
         <orm:OrmGridSplitter Grid.Row="1" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center"></orm:OrmGridSplitter>
@@ -144,6 +150,7 @@
           </Grid.RowDefinitions>
           <orm:OrmDataGrid IsReadOnly="True" Margin="5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding CalcTasks}" SelectedItem="{Binding CurrentCalcTask}">
             <DataGrid.Columns>
+              <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=Id}"></DataGridTextColumn>
               <DataGridTextColumn Header="{x:Static res:Resources.TypeName}" Binding="{Binding Path=TypeName}"></DataGridTextColumn>
               <DataGridTextColumn Header="{x:Static res:Resources.StatusName}" Binding="{Binding Path=StatusName}"></DataGridTextColumn>
               <DataGridTextColumn Header="{x:Static res:Resources.StatusNote}" Binding="{Binding Path=StatusNote}"></DataGridTextColumn>
@@ -154,8 +161,8 @@
           </orm:OrmDataGrid>
           <WrapPanel Grid.Column="1" Orientation="Vertical">
             <WrapPanel>
-              <orm:OrmButton Content="{x:Static res:Resources.StartCalc}" Width="70" Height="20" Command="{Binding TaskStartCalcCommand}" IsEnabled="{Binding Path=CalcTaskStartCalcEnabled, Mode=TwoWay}"/>
               <orm:OrmButton Content="{x:Static res:Resources.ShowResult}" Width="70" Height="20" Command="{Binding TaskShowResultCommand}" IsEnabled="{Binding Path=CalcTaskShowResultEnabled, Mode=TwoWay}"/>
+              <orm:OrmButton Content="{x:Static res:Resources.Delete}" Width="70" Height="20" Command="{Binding TaskDeleteCommand}" IsEnabled="{Binding Path=CalcTaskDelEnabled, Mode=TwoWay}"/>
             </WrapPanel>
           </WrapPanel>         
         </Grid>   

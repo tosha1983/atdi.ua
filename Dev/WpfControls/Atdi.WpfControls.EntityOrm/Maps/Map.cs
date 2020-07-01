@@ -11,7 +11,7 @@ using GMap.NET.MapProviders;
 using System.Windows.Shapes;
 using System.Windows.Media;
 
-namespace Atdi.WpfControls.EntityOrm.Maps
+namespace Atdi.WpfControls.EntityOrm.Controls
 {
     public class Map : GMapControl
     {
