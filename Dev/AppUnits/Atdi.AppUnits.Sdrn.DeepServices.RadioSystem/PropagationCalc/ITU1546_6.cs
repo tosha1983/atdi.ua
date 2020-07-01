@@ -27232,11 +27232,6 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             {
                 double Dh1;
                 Dh1 = D06(f, h, 10);
-
-
-
-
-
             }
             if (f < 600)
             {
@@ -27275,8 +27270,8 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             if (f < 600)
             {
                 double Einf, Esup;
-                Einf = Get_sea_100m_10t(h, d);
-                Esup = Get_sea_600m_10t(h, d);
+                Einf = Get_sea_100m_1t(h, d);
+                Esup = Get_sea_600m_1t(h, d);
                 E = Einf + (Esup - Einf) * Math.Log10(f / 100) / Math.Log10(600 / 100);
                 return E;
             }
