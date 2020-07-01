@@ -36,8 +36,8 @@ namespace Atdi.Test.CalcServer.LowFunction
             //TestGE06GetEtalonBroadcastingAssignmentFromAllotment.Test();
 
 
-            //CalcBarycenter testBaryCentr = new CalcBarycenter();
-            //testBaryCentr.Test();
+            CalcBarycenter testBaryCentr = new CalcBarycenter();
+            testBaryCentr.Test();
 
             //PutPointToContour putPointToContour = new PutPointToContour();
             //putPointToContour.Test();
@@ -48,8 +48,8 @@ namespace Atdi.Test.CalcServer.LowFunction
             //CreateContourForStationByTriggerFieldStrengths createContourForStationByTriggerFieldStrengths = new CreateContourForStationByTriggerFieldStrengths();
             //createContourForStationByTriggerFieldStrengths.Test();
 
-            CreateContourFromContureByDistance createContourFromContureByDistance = new CreateContourFromContureByDistance();
-            createContourFromContureByDistance.Test();
+            //CreateContourFromContureByDistance createContourFromContureByDistance = new CreateContourFromContureByDistance();
+            //createContourFromContureByDistance.Test();
 
 
 

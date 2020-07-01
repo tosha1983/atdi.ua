@@ -33,6 +33,9 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
                     var pointIPlus1 = geometryArgs.Points[i + 1];
                     square += (pointI.Longitude * pointIPlus1.Latitude - pointIPlus1.Longitude * pointI.Latitude);
                 }
+                var pointI_ = geometryArgs.Points[geometryArgs.Points.Length - 1];
+                var pointIPlus1_ = geometryArgs.Points[0];
+                square += (pointI_.Longitude * pointIPlus1_.Latitude - pointIPlus1_.Longitude * pointI_.Latitude);
             }
             return square / 2;
         }
@@ -48,6 +51,9 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
                     var pointIPlus1 = geometryArgs.Points[i + 1];
                     Gx += (pointI.Longitude + pointIPlus1.Longitude) * (pointI.Longitude * pointIPlus1.Latitude - pointIPlus1.Longitude * pointI.Latitude);
                 }
+                var pointI_ = geometryArgs.Points[geometryArgs.Points.Length - 1];
+                var pointIPlus1_ = geometryArgs.Points[0];
+                Gx += (pointI_.Longitude + pointIPlus1_.Longitude) * (pointI_.Longitude * pointIPlus1_.Latitude - pointIPlus1_.Longitude * pointI_.Latitude);
             }
             return Gx / (6 * CalcSquare(in geometryArgs));
         }
@@ -63,6 +69,10 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
                     var pointIPlus1 = geometryArgs.Points[i + 1];
                     Gy += (pointI.Latitude + pointIPlus1.Latitude) * (pointI.Longitude * pointIPlus1.Latitude - pointIPlus1.Longitude * pointI.Latitude);
                 }
+                var pointI_ = geometryArgs.Points[geometryArgs.Points.Length - 1];
+                var pointIPlus1_ = geometryArgs.Points[0];
+                Gy += (pointI_.Latitude + pointIPlus1_.Latitude) * (pointI_.Longitude * pointIPlus1_.Latitude - pointIPlus1_.Longitude * pointI_.Latitude);
+
             }
             return Gy / (6 * CalcSquare(in geometryArgs));
         }
