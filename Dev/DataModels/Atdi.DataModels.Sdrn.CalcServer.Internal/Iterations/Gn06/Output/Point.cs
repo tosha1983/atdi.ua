@@ -8,7 +8,7 @@ using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
-	public struct PointResult
+	public struct Point
     {
         public double Longitude;
         public double Latitude;

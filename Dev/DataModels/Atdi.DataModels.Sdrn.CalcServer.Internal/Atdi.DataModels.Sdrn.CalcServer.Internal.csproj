@@ -52,7 +52,7 @@
     <Compile Include="Iterations\Gn06\Output\CalcPointResult.cs" />
     <Compile Include="Iterations\Gn06\Output\CountoursPoint.cs" />
     <Compile Include="Iterations\Gn06\Output\AffectedADMResult.cs" />
-    <Compile Include="Iterations\Gn06\Output\PointResult.cs" />
+    <Compile Include="Iterations\Gn06\Output\Point.cs" />
     <Compile Include="Iterations\Gn06\Output\Enum\PointType.cs" />
     <Compile Include="Iterations\Gn06\Output\Enum\ContourType.cs" />
     <Compile Include="Iterations\Gn06\Output\Ge06CalcResult.cs" />

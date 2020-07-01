@@ -11,7 +11,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
 	public struct Ge06CalcData
     {
-        public Ge06TaskParameters Gn06TaskParameters;
+        public Ge06TaskParameters Ge06TaskParameters;
         public PropagationModel PropagationModel;
         public ProjectMapData MapData;
         public CluttersDesc CluttersDesc;

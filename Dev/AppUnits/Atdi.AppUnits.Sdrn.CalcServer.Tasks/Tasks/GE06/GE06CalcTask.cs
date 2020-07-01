@@ -80,7 +80,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
             var propagationModel = _contextService.GetPropagationModel(this._calcDbScope, this._taskContext.ClientContextId);
             var iterationGe06CalcData = new Ge06CalcData
             {
-                Gn06TaskParameters = this._parameters,
+                Ge06TaskParameters = this._parameters,
                 MapData = mapData,
                 CluttersDesc = _mapRepository.GetCluttersDesc(this._calcDbScope, mapData.Id),
                 PropagationModel = propagationModel,
