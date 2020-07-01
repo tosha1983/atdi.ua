@@ -55,6 +55,10 @@
     <Compile Include="AppComponent.cs" />
     <Compile Include="EntityDataAdapter.cs" />
     <Compile Include="DataLayerBase.cs" />
+    <Compile Include="Extensions\IMQueryMenuNodeExtentions.cs" />
+    <Compile Include="Extensions\IMRecordsetExtentions.cs" />
+    <Compile Include="Extensions\OpenedRecordsetScope.cs" />
+    <Compile Include="Extensions\OthesExtentions.cs" />
     <Compile Include="Helpers\PluginHelper.cs" />
     <Compile Include="LongProcessForm.cs">
       <SubType>Form</SubType>

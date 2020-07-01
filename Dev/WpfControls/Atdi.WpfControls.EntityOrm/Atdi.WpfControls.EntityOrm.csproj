@@ -70,9 +70,6 @@
     <Compile Include="Charts\LineChart.xaml.cs">
       <DependentUpon>LineChart.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\OrmBase.xaml.cs">
-      <DependentUpon>OrmBase.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\OrmButton.cs" />
     <Compile Include="Controls\OrmCheckBox.xaml.cs">
       <DependentUpon>OrmCheckBox.xaml</DependentUpon>
@@ -122,10 +119,6 @@
     <Page Include="Charts\LineChart.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\OrmBase.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\OrmCheckBox.xaml">
       <SubType>Designer</SubType>

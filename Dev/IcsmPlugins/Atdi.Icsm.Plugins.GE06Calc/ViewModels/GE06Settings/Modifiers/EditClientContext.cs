@@ -14,6 +14,8 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings.Modifiers
 
         public string Note;
 
+        public bool ActiveContext;
+
         public bool Success;
     }
 }

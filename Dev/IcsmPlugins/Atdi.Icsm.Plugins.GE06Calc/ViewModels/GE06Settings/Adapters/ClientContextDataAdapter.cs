@@ -41,7 +41,8 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings.Adapters
                 TypeName = reader.GetValue(c => c.TypeName),
                 StatusName = reader.GetValue(c => c.StatusName),
                 StatusNote = reader.GetValue(c => c.StatusNote),
-                OwnerInstance = reader.GetValue(c => c.OwnerInstance)
+                OwnerInstance = reader.GetValue(c => c.OwnerInstance),
+                ActiveContext = Properties.Settings.Default.ActiveContext == reader.GetValue(c => c.Id) ? true : false
             };
         }
     }
