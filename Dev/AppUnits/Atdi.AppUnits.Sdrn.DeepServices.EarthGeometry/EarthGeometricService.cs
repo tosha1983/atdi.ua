@@ -222,7 +222,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
         /// <returns></returns>
         public  PointEarthGeometric CalculationCoordinateByLengthAndAzimuth(in PointEarthGeometric PointStart, double distance_km, double azimuth, bool LargeCircleArc = true)
         {
-            return CreateContourFromContureByDistanceСalculations.CalculationCoordinateByLengthAndAzimuth(in PointStart, distance_km, azimuth, LargeCircleArc);
+            return GeometricСalculations.CalculationCoordinateByLengthAndAzimuth(in PointStart, distance_km, azimuth, LargeCircleArc);
         }
 
 
@@ -380,9 +380,9 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
         /// <param name="contourFromContureByDistanceArgs"></param>
         /// <param name="pointEarthGeometricWithAzimuth"></param>
         /// <param name="sizeResultBuffer"></param>
-        public void CreateContourFromContureByDistance(in ContourFromContureByDistanceArgs contourFromContureByDistanceArgs, ref PointEarthGeometricWithAzimuth[] pointEarthGeometricWithAzimuth, out int sizeResultBuffer)
+        public void CreateContourFromContureByDistance(in ContourFromContureByDistanceArgs contourFromContureByDistanceArgs, ref PointEarthGeometric[] pointEarthGeometric, out int sizeResultBuffer)
         {
-            CreateContourFromContureByDistanceСalculations.CreateContourFromContureByDistance(in contourFromContureByDistanceArgs, ref pointEarthGeometricWithAzimuth, out sizeResultBuffer);
+            CreateContourFromContureByDistanceСalculations.CreateContourFromContureByDistance(in contourFromContureByDistanceArgs, ref pointEarthGeometric, out sizeResultBuffer);
         }
 
 
