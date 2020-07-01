@@ -32,6 +32,8 @@ namespace Atdi.Test.CalcServer.LowFunction
             {
                 try
                 {
+                    double dist1 = 50;
+                    double dist2 = 300;
                     host.Start();
                     host.Container.Register<IIdwmService, IdwmService>(ServiceLifetime.PerThread);
                     host.Container.Register<ITransformation, TransformationService>(ServiceLifetime.PerThread);
@@ -70,19 +72,28 @@ namespace Atdi.Test.CalcServer.LowFunction
                     var arg = new ContourFromContureByDistanceArgs()
                     {
                         ContourPoints = arrPnts,
-                        Distance_km = 5,
+                        Distance_km = dist1,
                         PointBaryCenter = pointEarthGeometricR,
                         Step_deg = 1
                     };
 
                     PointEarthGeometric[] pointEarthGeometricPtx = new PointEarthGeometric[10000];
+                    PointEarthGeometric[] pointEarthGeometricPtx1 = new PointEarthGeometric[10000];
                     earthGeometricServiceServices.CreateContourFromContureByDistance(in arg, ref pointEarthGeometricPtx, out int pointLength);
-
-                    WPF.Location[] outPnts = new WPF.Location[pointLength];
+                    arg.Distance_km =dist2;
+                    earthGeometricServiceServices.CreateContourFromContureByDistance(in arg, ref pointEarthGeometricPtx1, out int pointLength1);
+                    WPF.Location[] outPnts = new WPF.Location[pointLength+ pointLength1+1];
                     for (int u = 0; u < pointLength; u++)
                     {
                         outPnts[u] = new WPF.Location(pointEarthGeometricPtx[u].Longitude, pointEarthGeometricPtx[u].Latitude);
                     }
+                    int max = pointLength;
+                    
+                    for (int u = 0; u < pointLength1; u++)
+                    {
+                        outPnts[u + max] = new WPF.Location(pointEarthGeometricPtx1[u].Longitude, pointEarthGeometricPtx1[u].Latitude);
+                    }
+                    outPnts[pointLength + pointLength1] = new WPF.Location(pointEarthGeometricR.Longitude, pointEarthGeometricR.Latitude);
 
 
                     WPF.Location[] inputPnts = new WPF.Location[arrPnts.Length];
@@ -95,7 +106,7 @@ namespace Atdi.Test.CalcServer.LowFunction
                     //inputPnts[inputPnts.Length - 1] = new WPF.Location(31, 51.0908);
 
 
-                    WPF.RunApp.Start(WPF.TypeObject.Polygon, inputPnts, WPF.TypeObject.Polygon, outPnts);
+                    WPF.RunApp.Start(WPF.TypeObject.Polygon, inputPnts, WPF.TypeObject.Points, outPnts);
 
 
 

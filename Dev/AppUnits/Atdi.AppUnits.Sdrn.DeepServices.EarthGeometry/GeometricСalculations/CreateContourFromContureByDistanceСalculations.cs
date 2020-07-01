@@ -218,12 +218,12 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
         }
         private static PointEarthGeometric GetPointInterseption(PointEarthGeometric BaryCentr, in PointEarthGeometric[] contourPoints,  double Azimut, out double dist_km, bool FarthestPoint = true)
         {//не тестированно
-            double FirstAngle = GeometricСalculations.GetAzimut(BaryCentr.Longitude, BaryCentr.Latitude, contourPoints[0].Longitude, contourPoints[0].Longitude, CoordinateUnits.deg);
+            double FirstAngle = GeometricСalculations.GetAzimut(BaryCentr.Longitude, BaryCentr.Latitude, contourPoints[0].Longitude, contourPoints[0].Latitude, CoordinateUnits.deg);
             PointEarthGeometric point = new PointEarthGeometric(); double dist = 99999;
             bool FlagInter = false; double SecondAngle; bool inter;
-            for (int i = 1; contourPoints.Length < i; i++)
+            for (int i = 1; contourPoints.Length > i; i++)
             {
-                SecondAngle = GeometricСalculations.GetAzimut(BaryCentr.Longitude, BaryCentr.Latitude, contourPoints[i].Longitude, contourPoints[i].Longitude, CoordinateUnits.deg);
+                SecondAngle = GeometricСalculations.GetAzimut(BaryCentr.Longitude, BaryCentr.Latitude, contourPoints[i].Longitude, contourPoints[i].Latitude, CoordinateUnits.deg);
                 // проверка попадания угла 
                 inter = ChackInterAngle(FirstAngle, SecondAngle, Azimut);
                 if (inter)
@@ -232,7 +232,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
                 }
                 FirstAngle = SecondAngle;
             }
-            SecondAngle = GeometricСalculations.GetAzimut(BaryCentr.Longitude, BaryCentr.Latitude, contourPoints[0].Longitude, contourPoints[0].Longitude, CoordinateUnits.deg);
+            SecondAngle = GeometricСalculations.GetAzimut(BaryCentr.Longitude, BaryCentr.Latitude, contourPoints[0].Longitude, contourPoints[0].Latitude, CoordinateUnits.deg);
             // проверка попадания угла 
             inter = ChackInterAngle(FirstAngle, SecondAngle, Azimut);
             if (inter)
@@ -324,7 +324,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
             int index=0;
 
             // расстояние на которое должны быть удален точки искомого контура
-            double s = contourFromContureByDistanceArgs.Distance_km;
+           double s = contourFromContureByDistanceArgs.Distance_km;
             // координаты барицентра
             var baryCenter = contourFromContureByDistanceArgs.PointBaryCenter;
             // цикл по азимутам для нахождения координат перечения
@@ -354,7 +354,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
                     CurrentPoint = GeometricСalculations.CalculationCoordinateByLengthAndAzimuth(baryCenter, CurentDistOnAz, azimuth);
                     DistToPoligon = GetMinDistanceToConture(in contourFromContureByDistanceArgs.ContourPoints, CurrentPoint);
                 }
-                while ((Math.Abs(DistToPoligon - s)< DistanseError_km)&&(iterNum < MaxIterNum));
+                while ((Math.Abs(DistToPoligon - s)> DistanseError_km)&&(iterNum < MaxIterNum));
                 // копируем полученное значение координаты в итоговый массив pointEarthGeometricWithAzimuth
                 ResultPoint[index] = CurrentPoint;
                 index++;
