@@ -301,6 +301,12 @@ into n
 from dual;
 end if;
 
+if inttable_name ='GN06_ALLOTMENT_OR_ASSIGNMENT_RESULT' then
+select CALC.GN06_ALLOTMENT_OR_ASSIGNMENT_RESULT_ID_SEQ.nextval
+into n
+from dual;
+end if;
+
 
 return(n);
 end;
