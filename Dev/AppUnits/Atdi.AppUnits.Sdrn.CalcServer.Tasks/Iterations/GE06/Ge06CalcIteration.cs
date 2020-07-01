@@ -39,6 +39,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         private readonly IGn06Service  _gn06Service;
         private readonly AppServerComponentConfig _appServerComponentConfig;
         private ITaskContext _taskContext;
+        private Ge06CalcData _ge06CalcData;
 
         /// <summary>
         /// Заказываем у контейнера нужные сервисы
@@ -51,6 +52,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             AppServerComponentConfig appServerComponentConfig,
             ITransformation transformation,
             IGn06Service gn06Service,
+            Ge06CalcData ge06CalcData,
             ILogger logger)
         {
             _calcServerDataLayer = calcServerDataLayer;
@@ -60,6 +62,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             _appServerComponentConfig = appServerComponentConfig;
             _transformation = transformation;
             _gn06Service = gn06Service;
+            _ge06CalcData = ge06CalcData;
             _logger = logger;
         }
 
@@ -68,7 +71,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         public Ge06CalcResult[] Run(ITaskContext taskContext, Ge06CalcData data)
         {
             this._taskContext = taskContext;
-            return null;
+            var ge06CalcResults = new Ge06CalcResult[1];
+            // где брать точку point????????????????
+            // нужно последовательно в цикле перебирать все комбинации Allotments и Assignments ??????????????
+            //CalcFieldStrengthInPointGE06((CalculationType)data.Ge06TaskParameters.CalculationTypeCode, data.PropagationModel, data.Ge06TaskParameters.BroadcastingContext.Allotments[i], data.Ge06TaskParameters.BroadcastingContext.Assignments, point)
+
+            return ge06CalcResults;
         }
 
 
@@ -204,7 +212,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             //1) Если модель распространения ITU 1546 для этого необходимо делать отдельную итерацию(Будет подготовлен сам код Юрой или Максимом) на подобии FieldStrengthCalcIteration(1.4.1, 1.4.2)
             var broadcastingFieldStrengthCalcData = new BroadcastingFieldStrengthCalcData()
             {
-                  // заполнить надо
+                 BroadcastingAssignment = broadcastingAssignment,
+                 PropagationModel = propagationModel,
+                 CluttersDesc = this._ge06CalcData.CluttersDesc
+                // заполнить надо
             };
             var iterationCorellationCalc = _iterationsPool.GetIteration<BroadcastingFieldStrengthCalcData, BroadcastingFieldStrengthCalcResult>();
             var resFieldStrengthCalcResult = iterationCorellationCalc.Run(this._taskContext, broadcastingFieldStrengthCalcData);
@@ -214,6 +225,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             var fieldStrengthCalcData = new FieldStrengthCalcData()
             {
                 //следует заполнить 
+
             };
             var iterationFieldStrengthCalcData = _iterationsPool.GetIteration<FieldStrengthCalcData, FieldStrengthCalcResult>();
             var resFieldStrengthCalcData = iterationFieldStrengthCalcData.Run(this._taskContext, fieldStrengthCalcData);
