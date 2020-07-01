@@ -42,14 +42,14 @@ namespace Atdi.Test.CalcServer.LowFunction
             //PutPointToContour putPointToContour = new PutPointToContour();
             //putPointToContour.Test();
 
-            //CreateContourFromPointByDistance createContourFromPointByDistance = new CreateContourFromPointByDistance();
+            ///CreateContourFromPointByDistance createContourFromPointByDistance = new CreateContourFromPointByDistance();
             //createContourFromPointByDistance.Test();
 
             //CreateContourForStationByTriggerFieldStrengths createContourForStationByTriggerFieldStrengths = new CreateContourForStationByTriggerFieldStrengths();
             //createContourForStationByTriggerFieldStrengths.Test();
 
-            //CreateContourFromContureByDistance createContourFromContureByDistance = new CreateContourFromContureByDistance();
-            //createContourFromContureByDistance.Test();
+            CreateContourFromContureByDistance createContourFromContureByDistance = new CreateContourFromContureByDistance();
+            createContourFromContureByDistance.Test();
 
 
 
@@ -63,7 +63,7 @@ namespace Atdi.Test.CalcServer.LowFunction
             //GetADMByPointAndDistanse.Test();
 
             //InterseptionOnSphere.Test();
-            CrossTreckOnSphere.Test();
+            //CrossTreckOnSphere.Test();
 
 
         }

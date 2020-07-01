@@ -19,6 +19,8 @@ using Atdi.Contracts.Sdrn.DeepServices.GN06;
 using GE = Atdi.DataModels.Sdrn.DeepServices.GN06;
 using WPF = Atdi.Test.DeepServices.Client.WPF;
 using System;
+using System.Collections.Generic;
+using Atdi.Common;
 
 namespace Atdi.Test.CalcServer.LowFunction
 {
@@ -38,47 +40,31 @@ namespace Atdi.Test.CalcServer.LowFunction
                     var earthGeometricServiceServices = resolver.Resolve<IEarthGeometricService>();
 
 
-                    var arrPnts = new PointEarthGeometric[5]
-                                            {
-                                              new PointEarthGeometric()
-                                              {
-                                                 Longitude = 30,
-                                                 Latitude = 50,
-                                                 CoordinateUnits = CoordinateUnits.deg
+                    string fileName = System.IO.Path.Combine(Environment.CurrentDirectory, "AreaTest.txt");
 
-                                              },
+                    List<PointEarthGeometric> pointEarthGeometricslst = new List<PointEarthGeometric>();
+                    var str = System.IO.File.ReadAllText(fileName);
+                    string[] a = str.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+                    for (int i = 0; i < a.Length; i++)
+                    {
+                        string[] aa = a[i].Split(new char[] { '\t' }, StringSplitOptions.RemoveEmptyEntries);
+                        if ((aa != null) && (aa.Length > 0))
+                        {
+                            for (int j = 0; j < aa.Length; j++)
+                            {
+                                pointEarthGeometricslst.Add(new PointEarthGeometric()
+                                {
+                                    Longitude = Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.AntennaPattern.Position.DmsToDec(aa[0].ConvertStringToDouble().Value),
+                                    Latitude = Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.AntennaPattern.Position.DmsToDec(aa[1].ConvertStringToDouble().Value),
+                                    CoordinateUnits = CoordinateUnits.deg
+                                });
+                                break;
+                            }
+                        }
+                    }
 
-                                              new PointEarthGeometric()
-                                              {
-                                                 Longitude = 30,
-                                                 Latitude = 51
-                                                 ,
-                                                 CoordinateUnits = CoordinateUnits.deg
-                                              },
-                                              new PointEarthGeometric()
-                                              {
-                                                 Longitude = 31,
-                                                 Latitude = 51
-                                                 ,
-                                                 CoordinateUnits = CoordinateUnits.deg
-                                              },
+                    var arrPnts = pointEarthGeometricslst.ToArray();
 
-                                               new PointEarthGeometric()
-                                              {
-                                                 Longitude = 30.7,
-                                                 Latitude = 50.5
-                                                 ,
-                                                 CoordinateUnits = CoordinateUnits.deg
-                                              },
-
-                                              new PointEarthGeometric()
-                                              {
-                                                 Longitude = 31,
-                                                 Latitude = 50
-                                                 ,
-                                                 CoordinateUnits = CoordinateUnits.deg
-                                              }
-                                            };
                     PointEarthGeometric pointEarthGeometricR = new PointEarthGeometric();
                     earthGeometricServiceServices.CalcBarycenter(new GeometryArgs() { Points = arrPnts, TypeGeometryObject = TypeGeometryObject.Points }, ref pointEarthGeometricR);
                     var arg = new ContourFromContureByDistanceArgs()
@@ -86,16 +72,16 @@ namespace Atdi.Test.CalcServer.LowFunction
                         ContourPoints = arrPnts,
                         Distance_km = 5,
                         PointBaryCenter = pointEarthGeometricR,
-                        Step_deg = 0.1
+                        Step_deg = 1
                     };
 
-                    PointEarthGeometricWithAzimuth[] pointEarthGeometricPtx = new PointEarthGeometricWithAzimuth[10000];
+                    PointEarthGeometric[] pointEarthGeometricPtx = new PointEarthGeometric[10000];
                     earthGeometricServiceServices.CreateContourFromContureByDistance(in arg, ref pointEarthGeometricPtx, out int pointLength);
 
                     WPF.Location[] outPnts = new WPF.Location[pointLength];
                     for (int u = 0; u < pointLength; u++)
                     {
-                        outPnts[u] = new WPF.Location(pointEarthGeometricPtx[u].PointEarthGeometric.Longitude, pointEarthGeometricPtx[u].PointEarthGeometric.Latitude);
+                        outPnts[u] = new WPF.Location(pointEarthGeometricPtx[u].Longitude, pointEarthGeometricPtx[u].Latitude);
                     }
 
 
@@ -107,8 +93,6 @@ namespace Atdi.Test.CalcServer.LowFunction
 
                     //inputPnts[inputPnts.Length - 2] = new WPF.Location(30.54, 51.0899);
                     //inputPnts[inputPnts.Length - 1] = new WPF.Location(31, 51.0908);
-
-
 
 
                     WPF.RunApp.Start(WPF.TypeObject.Polygon, inputPnts, WPF.TypeObject.Polygon, outPnts);

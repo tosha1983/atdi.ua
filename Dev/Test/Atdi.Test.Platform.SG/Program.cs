@@ -454,13 +454,13 @@ class Program
                                        };
 
                                        PointEarthGeometricWithAzimuth[] pointEarthGeometricPtx = new PointEarthGeometricWithAzimuth[2000000];
-                                       earthGeometricServiceServices.CreateContourFromContureByDistance(in arg, ref pointEarthGeometricPtx, out int pointLength);
+                                       //earthGeometricServiceServices.CreateContourFromContureByDistance(in arg, ref pointEarthGeometricPtx, out int pointLength);
 
-                    WPF.Location[] zx9 = new WPF.Location[pointLength];
-                    for (int u = 0; u < pointLength; u++)
-                    {
-                        zx9[u] = new WPF.Location(pointEarthGeometricPtx[u].PointEarthGeometric.Longitude, pointEarthGeometricPtx[u].PointEarthGeometric.Latitude);
-                    }
+                   // WPF.Location[] zx9 = new WPF.Location[pointLength];
+                    //for (int u = 0; u < pointLength; u++)
+                    //{
+                    //    zx9[u] = new WPF.Location(pointEarthGeometricPtx[u].PointEarthGeometric.Longitude, pointEarthGeometricPtx[u].PointEarthGeometric.Latitude);
+                    //}
 
 
                     WPF.Location[] zx11 = new WPF.Location[arrPnts.Length+1];
@@ -472,7 +472,7 @@ class Program
                     
 
                     //WPF.RunApp.Start(WPF.TypeObject.Polygon, new WPF.Location[] { new WPF.Location(30,50), new WPF.Location(30, 51), new WPF.Location(31, 51), new WPF.Location(30.6, 50.6), new WPF.Location(30.6, 50.4), new WPF.Location(31, 50), new WPF.Location(pointEarthGeometricR.Longitude, pointEarthGeometricR.Latitude) }, WPF.TypeObject.Points, new WPF.Location[] { new WPF.Location(0, 0) } /*zx9*/);
-                    WPF.RunApp.Start(WPF.TypeObject.Polygon, zx11, WPF.TypeObject.Polygon,  zx9);
+                    //WPF.RunApp.Start(WPF.TypeObject.Polygon, zx11, WPF.TypeObject.Polygon,  zx9);
 
 
 
