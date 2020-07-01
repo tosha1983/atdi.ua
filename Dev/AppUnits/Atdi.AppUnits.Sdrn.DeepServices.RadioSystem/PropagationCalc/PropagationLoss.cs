@@ -91,7 +91,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
                             (aboveSea_px != 0 && aboveLand_px != 0) ||
                             i == args.ReliefStartIndex + args.ProfileLength - 1)
                         {
-                            //landSeaList.Add(new land_sea { land = aboveLand_px * px2km, sea = aboveSea_px * px2km });
+                            landSeaList.Add(new land_sea { land = aboveLand_px * px2km, sea = aboveSea_px * px2km });
                             aboveSea_px = 0;
                             aboveLand_px = 0;
                         }

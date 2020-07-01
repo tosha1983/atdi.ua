@@ -31,7 +31,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
         private readonly AppServerComponentConfig _appServerComponentConfig;
         private ITaskContext _taskContext;
 		private IDataLayerScope _calcDbScope;
-        private Gn06TaskParameters _parameters;
+        private Ge06TaskParameters _parameters;
        
 
       
@@ -78,7 +78,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
         {
             var mapData = _mapRepository.GetMapByName(this._calcDbScope, this._taskContext.ProjectId, this._parameters.MapName);
             var propagationModel = _contextService.GetPropagationModel(this._calcDbScope, this._taskContext.ClientContextId);
-            var iterationGn06CalcData = new Gn06CalcData
+            var iterationGe06CalcData = new Ge06CalcData
             {
                 Gn06TaskParameters = this._parameters,
                 MapData = mapData,
@@ -91,10 +91,13 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                     MapArea = mapData.Area
                 }
             };
-            var iterationResultGn06 = _iterationsPool.GetIteration<Gn06CalcData, Gn06CalcResult[]>();
-            var resulCalibration = iterationResultGn06.Run(_taskContext, iterationGn06CalcData);
-
-
+            var resultId = CreateGe06Result();
+            var iterationResultGe06 = _iterationsPool.GetIteration<Ge06CalcData, Ge06CalcResult[]>();
+            var resultGe06Calc = iterationResultGe06.Run(_taskContext, iterationGe06CalcData);
+            for (int i = 0; i < resultGe06Calc.Length; i++)
+            {
+                SaveTaskResult(resultGe06Calc[i], resultId);
+            }
             // переводим результат в статус "Completed"
             var updQuery = _calcServerDataLayer.GetBuilder<ICalcResult>()
                .Update()
@@ -135,7 +138,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                 {
                     return null;
                 }
-                return new Gn06TaskParameters()
+                return new Ge06TaskParameters()
                 {
                     CalculationTypeCode = reader.GetValue(c => c.CalculationTypeCode),
                     CalculationTypeName = reader.GetValue(c => c.CalculationTypeName),
@@ -153,6 +156,44 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 
                 };
             });
+        }
+
+        private long CreateGe06Result()
+        {
+            var insertQueryGn06Result = _calcServerDataLayer.GetBuilder<CALC.IGn06Result>()
+                .Insert()
+                .SetValue(c => c.RESULT.Id, _taskContext.ResultId);
+            var key = _calcDbScope.Executor.Execute<CALC.IGn06Result_PK>(insertQueryGn06Result);
+            return key.Id;
+        }
+
+        private void SaveTaskResult(in Ge06CalcResult result, long gn06ResultId)
+        {
+            if (result.ContoursResult != null)
+            {
+                var contoursResult = result.ContoursResult;
+                var insertQueryGn06ContoursResult = _calcServerDataLayer.GetBuilder<CALC.IGn06ContoursResult>()
+                    .Insert()
+                    .SetValue(c => c.AffectedADM, contoursResult.AffectedADM)
+                    .SetValue(c => c.ContourType, (byte)contoursResult.ContourType)
+                    .SetValueAsJson<CountoursPoint[]>(c => c.CountoursPoints, contoursResult.CountoursPoints)
+                    .SetValue(c => c.Distance, contoursResult.Distance)
+                    .SetValue(c => c.FS, contoursResult.FS)
+                    .SetValue(c => c.PointsCount, contoursResult.PointsCount)
+                    .SetValue(c => c.Gn06ResultId, gn06ResultId);
+                var keyGn06ContoursResult = _calcDbScope.Executor.Execute<CALC.IGn06ContoursResult_PK>(insertQueryGn06ContoursResult);
+            }
+            if (result.AffectedADMResult != null)
+            {
+                var affectedADMResult = result.AffectedADMResult;
+                var insertQueryGn06AffectedADMResult = _calcServerDataLayer.GetBuilder<CALC.IGn06AffectedADMResult>()
+                    .Insert()
+                    .SetValue(c => c.ADM, affectedADMResult.ADM)
+                    .SetValue(c => c.AffectedServices, affectedADMResult.AffectedServices)
+                    .SetValue(c => c.Gn06ResultId, gn06ResultId)
+                    .SetValue(c => c.TypeAffected, affectedADMResult.TypeAffected);
+                var keyGn06AffectedADMResult = _calcDbScope.Executor.Execute<CALC.IGn06AffectedADMResult_PK>(insertQueryGn06AffectedADMResult);
+            }
         }
     }
 }
