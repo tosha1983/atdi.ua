@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.DeepServices.GN06
 {
-	public class BroadcastingContext
-	{
-		public BroadcastingContextBase BroadcastingContextICSM;
+    public class BroadcastingContextBase  
+    {
+        public BroadcastingAllotment Allotments;
 
-		public BroadcastingContextBase  broadcastingContextBRIFIC;
-	}
+        public BroadcastingAssignment[] Assignments;
+    }
+   
 }
