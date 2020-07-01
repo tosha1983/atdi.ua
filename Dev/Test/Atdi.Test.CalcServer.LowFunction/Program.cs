@@ -36,8 +36,8 @@ namespace Atdi.Test.CalcServer.LowFunction
             //TestGE06GetEtalonBroadcastingAssignmentFromAllotment.Test();
 
 
-            CalcBarycenter testBaryCentr = new CalcBarycenter();
-            testBaryCentr.Test();
+            //CalcBarycenter testBaryCentr = new CalcBarycenter();
+            //testBaryCentr.Test();
 
             PutPointToContour putPointToContour = new PutPointToContour();
             putPointToContour.Test();
