@@ -60,7 +60,6 @@
     <Compile Include="Extensions\OpenedRecordsetScope.cs" />
     <Compile Include="Extensions\OthesExtentions.cs" />
     <Compile Include="Helpers\PluginHelper.cs" />
-    <Compile Include="IcsmDataAdapter.cs" />
     <Compile Include="LongProcessForm.cs">
       <SubType>Form</SubType>
     </Compile>

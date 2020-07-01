@@ -39,8 +39,8 @@
           <RowDefinition Height="33*"></RowDefinition>
         </Grid.RowDefinitions>
         <WrapPanel>
-          <orm:OrmButton Content="{x:Static res:Resources.Modify}" Width="70" Height="20" Command="{Binding ContextAddCommand}" IsEnabled="{Binding Path=ClientContextAddEnabled, Mode=TwoWay}"/>
-          <orm:OrmButton Content="{x:Static res:Resources.Delete}" Width="70" Height="20" Command="{Binding ContextModifyCommand}" IsEnabled="{Binding Path=ClientContextEditEnabled, Mode=TwoWay}"/>
+          <orm:OrmButton Content="{x:Static res:Resources.Modify}" Width="70" Height="20" Command="{Binding AllotModifyCommand}" IsEnabled="False"/>
+          <orm:OrmButton Content="{x:Static res:Resources.Delete}" Width="70" Height="20" Command="{Binding AllotDeleteCommand}" IsEnabled="False"/>
         </WrapPanel>
         <orm:OrmDataGrid IsReadOnly="True" Margin="5,30,5,5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding AssignmentsAllotmentsList}" SelectedItem="{Binding CurrentAssignmentsAllotments}">
           <DataGrid.Columns>

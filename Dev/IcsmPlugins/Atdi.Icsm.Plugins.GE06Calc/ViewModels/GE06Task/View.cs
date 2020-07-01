@@ -35,6 +35,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
 
         AssignmentsAllotmentsModel[] _assignmentsAllotmentsList;
 
+        public ViewCommand AllotDeleteCommand { get; set; }
         public ViewCommand ConformityCheckCommand { get; set; }
         public ViewCommand FindAffectedCommand { get; set; }
         public ViewCommand CreateContoursByDistanceCommand { get; set; }
@@ -58,6 +59,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
             _eventBus = eventBus;
             _logger = logger;
 
+            this.AllotDeleteCommand = new ViewCommand(this.OnAllotDeleteCommand);
             this.ConformityCheckCommand = new ViewCommand(this.OnConformityCheckCommand);
             this.FindAffectedCommand = new ViewCommand(this.OnFindAffectedCommand);
             this.CreateContoursByDistanceCommand = new ViewCommand(this.OnCreateContoursByDistanceCommand);
@@ -193,12 +195,23 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
             if (assignmentsAllotmentsList.Count > 0)
                 this.AssignmentsAllotmentsList = assignmentsAllotmentsList.ToArray();
         }
-
+        private void OnAllotDeleteCommand(object parameter)
+        {
+            try
+            {
+                
+            }
+            catch (Exception e)
+            {
+                this._logger.Exception(Exceptions.GE06Client, e);
+            }
+        }
         private void OnConformityCheckCommand(object parameter)
         {
             try
             {
                 CreateCalcTask(CalculationType.ConformityCheck);
+                _starter.Stop(this);
             }
             catch (Exception e)
             {
@@ -210,6 +223,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
             try
             {
                 CreateCalcTask(CalculationType.FindAffectedADM);
+                _starter.Stop(this);
             }
             catch (Exception e)
             {
@@ -221,6 +235,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
             try
             {
                 CreateCalcTask(CalculationType.CreateContoursByDistance);
+                _starter.Stop(this);
             }
             catch (Exception e)
             {
@@ -232,6 +247,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
             try
             {
                 CreateCalcTask(CalculationType.CreateContoursByFS);
+                _starter.Stop(this);
             }
             catch (Exception e)
             {

@@ -51,7 +51,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Modifiers
                 .SetValue(c => c.CalculationTypeCode, command.CalculationTypeCode)
                 .SetValue(c => c.CalculationTypeName, command.CalculationTypeName)
                 .SetValueAsJson(c => c.BroadcastingExtend, command.BroadcastingExtend);
-            var pk_StationCalibrationArgs = _dataLayer.Executor.Execute<IStationCalibrationArgs_PK>(queryArgs);
+            var pk_StationCalibrationArgs = _dataLayer.Executor.Execute<IGn06Args_PK>(queryArgs);
 
             _eventBus.Send(new OnCreatedCalcTask { CalcTaskId = pk.Id });
         }
