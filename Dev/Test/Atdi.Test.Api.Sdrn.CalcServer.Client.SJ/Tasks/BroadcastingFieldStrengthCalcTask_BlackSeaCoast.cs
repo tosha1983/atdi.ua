@@ -210,7 +210,7 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client.Tasks
                     if (calcResultObject != null)
                     {
                         // выводим результат
-                        Console.WriteLine($" Task Result ID #{calcResultObject.ResultId}");
+                        //Console.WriteLine($" Task Result ID #{calcResultObject.ResultId}");
                         Console.WriteLine($" StatusCode: {calcResultObject.RESULT.StatusCode}");
                         Console.WriteLine($" StatusName: {calcResultObject.RESULT.StatusName}");
                         Console.WriteLine($" StatusNote: {calcResultObject.RESULT.StatusNote}");
@@ -949,7 +949,7 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client.Tasks
                     && status != CalcResultStatusCode.Processing)
                     {
                         resultObject.RESULT.Id = reader.GetValue(c => c.Id);
-                        resultObject.ResultId = reader.GetValue(c => c.Id);
+                        //resultObject.ResultId = reader.GetValue(c => c.Id);
                         resultObject.RESULT.StatusCode = reader.GetValue(c => c.StatusCode);
                         resultObject.RESULT.StatusName = reader.GetValue(c => c.StatusName);
                         resultObject.RESULT.StatusNote = reader.GetValue(c => c.StatusNote);

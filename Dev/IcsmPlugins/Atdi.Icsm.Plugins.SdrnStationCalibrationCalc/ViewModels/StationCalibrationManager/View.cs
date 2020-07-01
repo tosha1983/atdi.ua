@@ -12,7 +12,7 @@ using Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibration
 using Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibrationManager.Modifiers;
 using Atdi.Platform.Cqrs;
 using Atdi.Platform.Events;
-using MP = Atdi.WpfControls.EntityOrm.Maps;
+using MP = Atdi.WpfControls.EntityOrm.Controls;
 using Atdi.DataModels.Sdrn.CalcServer.Entities;
 using System.Data;
 using System.Windows;

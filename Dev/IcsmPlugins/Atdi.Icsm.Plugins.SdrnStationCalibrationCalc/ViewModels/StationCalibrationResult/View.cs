@@ -9,7 +9,7 @@ using System.Collections.Specialized;
 using System.Collections;
 using Atdi.Platform.Cqrs;
 using Atdi.Platform.Events;
-using MP = Atdi.WpfControls.EntityOrm.Maps;
+using MP = Atdi.WpfControls.EntityOrm.Controls;
 using System.Data;
 using Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibrationResult.Adapters;
 using Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibrationResult.Queries;
