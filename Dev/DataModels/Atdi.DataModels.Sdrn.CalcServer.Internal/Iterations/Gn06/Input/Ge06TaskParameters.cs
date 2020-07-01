@@ -7,7 +7,7 @@ using Atdi.DataModels.Sdrn.DeepServices.GN06;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
-	public class Gn06TaskParameters
+	public class Ge06TaskParameters
     {
         public float? AzimuthStep_deg;
         public bool AdditionalContoursByDistances;

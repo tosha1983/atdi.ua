@@ -418,7 +418,8 @@ namespace Atdi.AppUnits.Sdrn.Infocenter
 						upperleftY -= ySectorSteps[ySegmentIndex] * mapFile.AxisY.Step;
 
 						// смещаемся в буфере
-						yFileOffset += (ySegmentIndex + 1) * mapFile.AxisX.Number * mapFile.StepDataSize * ySectorSteps[ySegmentIndex];
+						//yFileOffset += (ySegmentIndex + 1) * mapFile.AxisX.Number * mapFile.StepDataSize * ySectorSteps[ySegmentIndex];
+						yFileOffset += mapFile.AxisX.Number * mapFile.StepDataSize * ySectorSteps[ySegmentIndex];
 					}
 
 					this.SaveMapStatisticsAndMakeAvailable(dbScope, mapPk.Id, xSectorCount, ySectorCount);

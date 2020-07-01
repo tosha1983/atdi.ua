@@ -82,6 +82,14 @@
       <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
       <Name>Atdi.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\CoreServices\Atdi.Contracts.CoreServices.DataLayer\Atdi.Contracts.CoreServices.DataLayer.csproj">
+      <Project>{e5011dd5-16c5-4cd0-ada3-d783f11c7c61}</Project>
+      <Name>Atdi.Contracts.CoreServices.DataLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\CoreServices\Atdi.Contracts.CoreServices.EntityOrm\Atdi.Contracts.CoreServices.EntityOrm.csproj">
+      <Project>{4247b867-4fab-40de-a539-7026d30cc245}</Project>
+      <Name>Atdi.Contracts.CoreServices.EntityOrm</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeepServices.EarthGeometry\Atdi.Contracts.Sdrn.DeepServices.EarthGeometry.csproj">
       <Project>{2ecedd22-d39d-4d65-a811-5db274afc374}</Project>
       <Name>Atdi.Contracts.Sdrn.DeepServices.EarthGeometry</Name>
@@ -105,6 +113,14 @@
     <ProjectReference Include="..\..\Contracts\WcfServices\Atdi.Contracts.WcfServices.Sdrn.DeepServices.IDWM\Atdi.Contracts.WcfServices.Sdrn.DeepServices.IDWM.csproj">
       <Project>{5952d983-fffd-4dcd-bdb7-b0f02571b5dd}</Project>
       <Name>Atdi.Contracts.WcfServices.Sdrn.DeepServices.IDWM</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.EntityOrm\Atdi.DataModels.EntityOrm.csproj">
+      <Project>{73C8791E-3FC5-4C91-84E5-C19C98096F10}</Project>
+      <Name>Atdi.DataModels.EntityOrm</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.CalcServer.Entities\Atdi.DataModels.Sdrn.CalcServer.Entities.csproj">
+      <Project>{6a72e0c5-f8a4-412f-9395-13abe07367b1}</Project>
+      <Name>Atdi.DataModels.Sdrn.CalcServer.Entities</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices.EarthGeometry\Atdi.DataModels.Sdrn.DeepServices.EarthGeometry.csproj">
       <Project>{32da0c04-3a89-428f-8997-3018aa1375c3}</Project>

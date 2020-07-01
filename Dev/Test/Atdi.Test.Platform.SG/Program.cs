@@ -25,12 +25,17 @@ using System.Runtime.CompilerServices;
 using System.ServiceModel;
 using WPF = Atdi.Test.DeepServices.Client.WPF;
 using Atdi.Common;
+using Atdi.DataModels.Sdrn.CalcServer.Entities;
+using Atdi.Contracts.CoreServices.DataLayer;
+using Atdi.Contracts.CoreServices.EntityOrm;
 
 namespace Atdi.Test.Platform.SG
 {
 
-    class Program
+
+class Program
     {
+
         [STAThread]
         static void Main(string[] args)
         {
@@ -56,15 +61,23 @@ namespace Atdi.Test.Platform.SG
 
 
 
-                    host.Container.Register<IIdwmService, IdwmService>(ServiceLifetime.PerThread);
+                    host.Container.Register<IDataLayer<EntityDataOrm>>(ServiceLifetime.PerThread);
                     host.Container.Register<ITransformation, TransformationService>(ServiceLifetime.PerThread);
                     host.Container.Register<IEarthGeometricService, EarthGeometricService>(ServiceLifetime.PerThread);
                     var resolver = host.Container.GetResolver<IServicesResolver>();
                     var transformation = resolver.Resolve<ITransformation>();
                     var earthGeometricServiceServices = resolver.Resolve<IEarthGeometricService>();
-                  
+
+
+                    var dataLayer = resolver.Resolve<IDataLayer<EntityDataOrm>>();
+
+                    //var dataLayer = resolver.Resolve<IDataLayer>();
+                    //
 
                     var logger = resolver.Resolve<ILogger>();
+
+
+                   // Test_(dataLayer);
 
                     //var Longitude = 36.2527;
                     //var Latitude = 49.9808;

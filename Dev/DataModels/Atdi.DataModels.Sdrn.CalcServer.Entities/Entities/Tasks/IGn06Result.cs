@@ -10,8 +10,8 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks
 	[EntityPrimaryKey]
 	public interface IGn06Result_PK
 	{
-		long ResultId { get; set; }
-	}
+        long Id { get; set; }
+    }
 
 	[Entity]
 	public interface IGn06Result : IGn06Result_PK
