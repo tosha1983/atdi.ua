@@ -183,9 +183,9 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
             var indexerBuffer = default(ProfileIndexer[]);
             var clutterBuffer = default(byte[]);
-            var buildingBuffer = default(byte[]);
+            //var buildingBuffer = default(byte[]);
             var reliefBuffer = default(short[]);
-            var heightBuffer = default(short[]);
+            var heightBuffer = default(short[]);//??
             var profileLenght = 0;
 
             try
@@ -219,10 +219,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     {
                         reliefBuffer = _reliefArrayPool.Take();
                     }
-                    if (profileOptions.Building)
-                    {
-                        buildingBuffer = _buildingArrayPool.Take();
-                    }
+                    //if (profileOptions.Building)
+                    //{
+                    //    buildingBuffer = _buildingArrayPool.Take();
+                    //}
                     if (profileOptions.Clutter)
                     {
                         clutterBuffer = _clutterArrayPool.Take();
@@ -257,15 +257,15 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             }
                         }
 
-                        var buildingValue = MapSpecification.DefaultForBuilding;
-                        if (profileOptions.Height || profileOptions.Building)
-                        {
-                            buildingValue = data.BuildingContent[contentIndex];
-                            if (profileOptions.Building)
-                            {
-                                buildingBuffer[i] = buildingValue;
-                            }
-                        }
+                        //var buildingValue = MapSpecification.DefaultForBuilding;
+                        //if (profileOptions.Height || profileOptions.Building)
+                        //{
+                        //    buildingValue = data.BuildingContent[contentIndex];
+                        //    if (profileOptions.Building)
+                        //    {
+                        //        buildingBuffer[i] = buildingValue;
+                        //    }
+                        //}
 
                         var reliefValue = MapSpecification.DefaultForRelief;
                         if (profileOptions.Height || profileOptions.Relief)
@@ -279,11 +279,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
                         if (profileOptions.Height)
                         {
-                            if (buildingValue != MapSpecification.DefaultForBuilding)
-                            {
-                                heightBuffer[i] = (short)(reliefValue + buildingValue);
-                            }
-                            else
+                            //if (buildingValue != MapSpecification.DefaultForBuilding)
+                            //{
+                            //    heightBuffer[i] = (short)(reliefValue + buildingValue);
+                            //}
+                            //else
                             {
                                 heightBuffer[i] = (short)(reliefValue + clutterH);
                             }
@@ -295,8 +295,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 var d_km = this._earthGeometricService.GetDistance_km(in pointSourceArgs, in pointTargetArgs);
                 var lossArgs = new CalcLossArgs
                 {
-                    Model = data.PropagationModel,
-                    BuildingProfile = buildingBuffer,
+                    Model = data.PropagationModel,//, прибить сюда 1546?
+                    //BuildingProfile = buildingBuffer,
                     BuildingStartIndex = 0,
                     ClutterProfile = clutterBuffer,
                     ClutterStartIndex = 0,
@@ -305,10 +305,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     ReliefProfile = reliefBuffer,
                     ReliefStartIndex = 0,
                     ProfileLength = profileLenght,
-                    //Freq_Mhz = data.Transmitter.Freq_MHz, ?????????
+                    Freq_Mhz = data.BroadcastingAssignment.EmissionCharacteristics.Freq_MHz,// ?????????
                     D_km = d_km,
-                    //Ha_m = data.PointAltitude_m, ???????????????????
-                    //Hb_m = data.TargetAltitude_m, ??????????????????
+                    Ha_m = data.BroadcastingAssignment.SiteParameters.Alt_m, //???????????????????
+                    //Hb_m = data.BroadcastingAssignment.Target, //?????????????????? Похоже что в свойствах таргета нет высоты
                     CluttersDesc = data.CluttersDesc
                 };
 
@@ -320,29 +320,31 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     //Antenna = data.Antenna,  ???????????
                     AzimutToTarget_deg = AzimutToTarget,
                     TiltToTarget_deg = lossResult.TiltaD_Deg,
+                    
                     //PolarizationEquipment = data.Transmitter.Polarization, ????????
                     //PolarizationWave = data.Transmitter.Polarization ????????
                 };
                 var antennaGainD = _signalService.CalcAntennaGain(in antennaGainArgs);
-                double Level_dBm = -1;
+                double Level_dBm = lossResult.;
+                
                 //double Level_dBm = data.Transmitter.MaxPower_dBm - data.Transmitter.Loss_dB + antennaGainD - lossResult.LossD_dB; ????????????
                 double antennaPatternLoss_dB = antennaGainD - antennaGainArgs.Antenna.Gain_dB;
-                if (data.PropagationModel.AbsorptionBlock.Available)
-                {// нужен учет дополнительного пути распространения
-                    double Loss1 = lossResult.LossD_dB - antennaGainD;
-                    antennaGainArgs.TiltToTarget_deg = lossResult.TiltaA_Deg;
-                    var antennaGainA = _signalService.CalcAntennaGain(in antennaGainArgs);
+                //if (data.PropagationModel.AbsorptionBlock.Available)
+                //{// нужен учет дополнительного пути распространения
+                //    double Loss1 = lossResult.LossD_dB - antennaGainD;
+                //    antennaGainArgs.TiltToTarget_deg = lossResult.TiltaA_Deg;
+                //    var antennaGainA = _signalService.CalcAntennaGain(in antennaGainArgs);
 
-                    double Loss2 = lossResult.LossA_dB - antennaGainA;
-                    double LossSum = Loss1;
+                //    double Loss2 = lossResult.LossA_dB - antennaGainA;
+                //    double LossSum = Loss1;
 
-                    if (Loss1 > Loss2)
-                    {
-                        LossSum = Loss2;
-                        antennaPatternLoss_dB = antennaGainA - antennaGainArgs.Antenna.Gain_dB;
-                    }
-                    //Level_dBm = data.Transmitter.MaxPower_dBm - data.Transmitter.Loss_dB - LossSum; ?????????????????????????????????
-                }
+                //    if (Loss1 > Loss2)
+                //    {
+                //        LossSum = Loss2;
+                //        antennaPatternLoss_dB = antennaGainA - antennaGainArgs.Antenna.Gain_dB;
+                //    }
+                //    //Level_dBm = data.Transmitter.MaxPower_dBm - data.Transmitter.Loss_dB - LossSum; ?????????????????????????????????
+                //}
 
                 double FS_dBuVm = -1;
                 //double FS_dBuVm = Level_dBm + 77.2 + 20 * Math.Log10(data.Transmitter.Freq_MHz); ???????????????????
@@ -367,10 +369,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 {
                     _clutterArrayPool.Put(clutterBuffer);
                 }
-                if (buildingBuffer != null)
-                {
-                    _buildingArrayPool.Put(buildingBuffer);
-                }
+                //if (buildingBuffer != null)
+                //{
+                //    _buildingArrayPool.Put(buildingBuffer);
+                //}
                 if (reliefBuffer != null)
                 {
                     _reliefArrayPool.Put(reliefBuffer);
