@@ -47,6 +47,8 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="distance.cs" />
+    <Compile Include="TestProfile\EarthGeometric\Interseption_.cs" />
+    <Compile Include="TestProfile\EarthGeometric\CrossTreck.cs" />
     <Compile Include="TestProfile\EarthGeometric\CalcBarycenter.cs" />
     <Compile Include="TestProfile\EarthGeometric\CreateContourFromContureByDistance.cs" />
     <Compile Include="TestProfile\EarthGeometric\CreateContourForStationByTriggerFieldStrengths.cs" />

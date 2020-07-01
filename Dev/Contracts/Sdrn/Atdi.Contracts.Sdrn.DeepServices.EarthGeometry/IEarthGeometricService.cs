@@ -65,7 +65,7 @@ namespace Atdi.Contracts.Sdrn.DeepServices.EarthGeometry
         /// <param name="contourFromContureByDistanceArgs"></param>
         /// <param name="pointEarthGeometricWithAzimuth"></param>
         /// <param name="sizeResultBuffer"></param>
-        void CreateContourFromContureByDistance(in ContourFromContureByDistanceArgs contourFromContureByDistanceArgs, ref PointEarthGeometricWithAzimuth[] pointEarthGeometricWithAzimuth, out int sizeResultBuffer);
+        void CreateContourFromContureByDistance(in ContourFromContureByDistanceArgs contourFromContureByDistanceArgs, ref PointEarthGeometric[] pointEarthGeometricWithAzimuth, out int sizeResultBuffer);
 
 
         /// <summary>
