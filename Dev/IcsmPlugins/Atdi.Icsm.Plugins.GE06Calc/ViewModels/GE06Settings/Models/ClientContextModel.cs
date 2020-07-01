@@ -22,5 +22,6 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings
         public long ProjectId { get; set; }
         public long BaseContextId { get; set; }
         public string BaseContextName { get; set; }
+        public bool ActiveContext { get; set; }
     }
 }

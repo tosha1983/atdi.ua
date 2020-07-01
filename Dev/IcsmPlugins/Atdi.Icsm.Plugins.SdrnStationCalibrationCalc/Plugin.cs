@@ -24,5 +24,8 @@ namespace XICSM.SdrnStationCalibrationCalc
             //mainMenu.InsertItem(PluginMetadata.Menu.MainTool, "Calibration of stations according measurements", _menuCommands.OnRunCalibrationStationsMeasurementsCommand);
             //mainMenu.InsertItem(PluginMetadata.Menu.MainTool, "Results calibration of stations measurements", _menuCommands.OnRunCalibrationStationsResultCommand);
         }
-	}
+        protected override void AddBoard(IMBoard b)
+        {
+        }
+    }
 }

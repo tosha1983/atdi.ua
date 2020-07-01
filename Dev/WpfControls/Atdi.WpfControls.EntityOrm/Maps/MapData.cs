@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace Atdi.WpfControls.EntityOrm.Maps
+namespace Atdi.WpfControls.EntityOrm.Controls
 {
     public class Location
     {

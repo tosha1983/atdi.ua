@@ -1,0 +1,107 @@
+﻿<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:XICSM.SdrnCalcServerClient.WpfControls"
+             xmlns:res="clr-namespace:Atdi.Icsm.Plugins.GE06Calc.Properties;assembly=XICSM_GE06Calc"
+             xmlns:orm="clr-namespace:Atdi.WpfControls.EntityOrm.Controls;assembly=Atdi.WpfControls.EntityOrm"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+  <UserControl.Resources>    
+    <Style x:Key="DataGridHeaderCentered" TargetType="DataGridColumnHeader">
+      <Setter Property="HorizontalAlignment" Value="Stretch"/>
+      <Setter Property="HorizontalContentAlignment" Value="Center"/>
+    </Style>
+    <Style x:Key="DataGridCellCentered" TargetType="DataGridCell">
+      <Setter Property="TextBlock.TextAlignment" Value="Center" />
+    </Style>
+    <Style x:Key="DataGridCellRighted" TargetType="DataGridCell">
+      <Setter Property="TextBlock.TextAlignment" Value="Right" />
+    </Style>
+  </UserControl.Resources>
+  <DockPanel LastChildFill="True" MinHeight="30">
+    <Grid>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="Auto" />
+        <ColumnDefinition Width="*" />
+      </Grid.ColumnDefinitions>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="*"></RowDefinition>
+      </Grid.RowDefinitions>    
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="66*"></RowDefinition>
+          <RowDefinition Height="Auto"></RowDefinition>
+          <RowDefinition Height="33*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <WrapPanel>
+          <orm:OrmButton Content="{x:Static res:Resources.Modify}" Width="70" Height="20" Command="{Binding ContextAddCommand}" IsEnabled="{Binding Path=ClientContextAddEnabled, Mode=TwoWay}"/>
+          <orm:OrmButton Content="{x:Static res:Resources.Delete}" Width="70" Height="20" Command="{Binding ContextModifyCommand}" IsEnabled="{Binding Path=ClientContextEditEnabled, Mode=TwoWay}"/>
+        </WrapPanel>
+        <orm:OrmDataGrid IsReadOnly="True" Margin="5,30,5,5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding AssignmentsAllotmentsList}" SelectedItem="{Binding CurrentAssignmentsAllotments}">
+          <DataGrid.Columns>
+            <!--<DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=Id}"></DataGridTextColumn>-->
+            <DataGridTextColumn Header="{x:Static res:Resources.Source}" Binding="{Binding Path=Source}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.Type}" Binding="{Binding Path=Type}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.ViewName}" Binding="{Binding Path=ViewName}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.Freq_MHz}" Binding="{Binding Path=Freq_MHz}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.SfnId}" Binding="{Binding Path=SfnId}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.Lon_Dec}" Binding="{Binding Path=Lon_Dec}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.Lat_Dec}" Binding="{Binding Path=Lat_Dec}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.Alt_m}" Binding="{Binding Path=Alt_m}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.AglHeight_m}" Binding="{Binding Path=AglHeight_m}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.MaxEffHeight_m}" Binding="{Binding Path=MaxEffHeight_m}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.Polar}" Binding="{Binding Path=Polar}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.ErpH_dBW}" Binding="{Binding Path=ErpH_dBW}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.ErpV_dBW}" Binding="{Binding Path=ErpV_dBW}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.RefNetworkConfig}" Binding="{Binding Path=RefNetworkConfig}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.Direction}" Binding="{Binding Path=Direction}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.AdmRefId}" Binding="{Binding Path=AdmRefId}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.PlanEntry}" Binding="{Binding Path=PlanEntry}"></DataGridTextColumn>
+          </DataGrid.Columns>
+          <DataGrid.CellStyle>
+            <Style TargetType="{x:Type DataGridCell}">
+              <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                  <Setter Property="Background" Value="#FF0078D7" />
+                </Trigger>
+              </Style.Triggers>
+            </Style>
+          </DataGrid.CellStyle>
+        </orm:OrmDataGrid>
+        <orm:OrmGridSplitter Grid.Row="1" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center"></orm:OrmGridSplitter>
+        <Grid Grid.Row="2">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="350"/>
+          </Grid.ColumnDefinitions>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+          </Grid.RowDefinitions>
+          <WrapPanel Orientation="Vertical">
+            <orm:OrmTextBox   CaptionWith="200" Width="400" Caption="{x:Static res:Resources.AzimuthStep}" Text ="{Binding Path=CurrentCalcTaskCard.AzimuthStep_deg, Mode=TwoWay}"/>
+            <orm:OrmCheckBox  CaptionWith="200" Width="400" Caption="{x:Static res:Resources.AdditionalContoursByDistances}" SelectedValue="{Binding Path=CurrentCalcTaskCard.AdditionalContoursByDistances, Mode=TwoWay}" IsRequired="True"/>
+            <orm:OrmTextBox   CaptionWith="200" Width="400" Caption="{x:Static res:Resources.AdditionalContoursByDistances}" Text ="{Binding Path=CurrentCalcTaskCard.DistancesString, Mode=TwoWay}"/>
+            <orm:OrmCheckBox  CaptionWith="200" Width="400" Caption="{x:Static res:Resources.CoutureByFieldStrength}" SelectedValue="{Binding Path=CurrentCalcTaskCard.ContureByFieldStrength, Mode=TwoWay}" IsRequired="True"/>
+            <orm:OrmTextBox   CaptionWith="200" Width="400" Caption="{x:Static res:Resources.CoutureByFieldStrength}" Text ="{Binding Path=CurrentCalcTaskCard.FieldStrengthString, Mode=TwoWay}"/>
+            <orm:OrmTextBox   CaptionWith="200" Width="400" Caption="{x:Static res:Resources.SubscribersHeight}" Text ="{Binding Path=CurrentCalcTaskCard.SubscribersHeight, Mode=TwoWay}"/>
+            <orm:OrmTextBox   CaptionWith="200" Width="400" Caption="{x:Static res:Resources.PercentageTime}" Text ="{Binding Path=CurrentCalcTaskCard.PercentageTime, Mode=TwoWay}"/>
+            <orm:OrmCheckBox  CaptionWith="200" Width="400" Caption="{x:Static res:Resources.UseEffectiveHeight}" SelectedValue="{Binding Path=CurrentCalcTaskCard.UseEffectiveHeight, Mode=TwoWay}" IsRequired="True"/>
+          </WrapPanel>
+          <WrapPanel Grid.Column="1" Orientation="Vertical">
+            <orm:OrmButton Content="{x:Static res:Resources.ConformityCheck}" Width="300" Height="20" Command="{Binding ConformityCheckCommand}"/>
+            <orm:OrmButton Content="{x:Static res:Resources.FindAffected}" Width="300" Height="20" Command="{Binding FindAffectedCommand}"/>
+            <orm:OrmButton Content="{x:Static res:Resources.CreateContoursByDistance}" Width="300" Height="20" Command="{Binding CreateContoursByDistanceCommand}"/>
+            <orm:OrmButton Content="{x:Static res:Resources.CreateContoursByFS}" Width="300" Height="20" Command="{Binding CreateContoursByFSCommand}"/>
+          </WrapPanel>
+        </Grid>
+      </Grid>
+      <orm:OrmGridSplitter Grid.Column="1" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch"></orm:OrmGridSplitter>
+      <orm:Map Grid.Column="2" DrawingData="{Binding CurrentMapData}"></orm:Map>
+    </Grid>
+  </DockPanel>
+</UserControl>
