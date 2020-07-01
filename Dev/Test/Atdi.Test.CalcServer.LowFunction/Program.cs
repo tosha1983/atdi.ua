@@ -39,8 +39,8 @@ namespace Atdi.Test.CalcServer.LowFunction
             CalcBarycenter testBaryCentr = new CalcBarycenter();
             testBaryCentr.Test();
 
-            //PutPointToContour putPointToContour = new PutPointToContour();
-            //putPointToContour.Test();
+            PutPointToContour putPointToContour = new PutPointToContour();
+            putPointToContour.Test();
 
             ///CreateContourFromPointByDistance createContourFromPointByDistance = new CreateContourFromPointByDistance();
             //createContourFromPointByDistance.Test();

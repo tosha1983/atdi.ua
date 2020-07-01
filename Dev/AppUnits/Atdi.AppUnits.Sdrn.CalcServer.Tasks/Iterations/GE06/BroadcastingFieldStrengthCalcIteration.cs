@@ -325,7 +325,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     //PolarizationWave = data.Transmitter.Polarization ????????
                 };
                 var antennaGainD = _signalService.CalcAntennaGain(in antennaGainArgs);
-                double Level_dBm = lossResult.;
+                double Level_dBm = -1;
                 
                 //double Level_dBm = data.Transmitter.MaxPower_dBm - data.Transmitter.Loss_dB + antennaGainD - lossResult.LossD_dB; ????????????
                 double antennaPatternLoss_dB = antennaGainD - antennaGainArgs.Antenna.Gain_dB;

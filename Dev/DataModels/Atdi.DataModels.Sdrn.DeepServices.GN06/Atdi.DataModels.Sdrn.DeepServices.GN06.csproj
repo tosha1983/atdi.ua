@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="ActionType.cs" />
     <Compile Include="AdministrativeData.cs" />
+    <Compile Include="BroadcastingContextBase.cs" />
     <Compile Include="BroadcastingContext.cs" />
     <Compile Include="PointWithAzimuth.cs" />
     <Compile Include="AreaPoint.cs" />
