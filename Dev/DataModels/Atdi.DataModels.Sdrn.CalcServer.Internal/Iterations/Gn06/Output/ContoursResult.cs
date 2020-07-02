@@ -10,7 +10,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
     {
         public ContourType ContourType;
         public int Distance;
-        public int FS;
+        public double FS;
         public string AffectedADM;
         public int PointsCount;
         public CountoursPoint[] CountoursPoints;

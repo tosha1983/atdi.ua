@@ -48,6 +48,7 @@
     <Compile Include="Iterations\Gn06\Output\BroadcastingFieldStrengthCalcResult.cs" />
     <Compile Include="Iterations\Gn06\Input\Ge06TaskParameters.cs" />
     <Compile Include="Iterations\Gn06\Input\Ge06CalcData.cs" />
+    <Compile Include="Iterations\Gn06\Output\AllotmentOrAssignmentResult.cs" />
     <Compile Include="Iterations\Gn06\Output\ContoursResult.cs" />
     <Compile Include="Iterations\Gn06\Output\CalcPointResult.cs" />
     <Compile Include="Iterations\Gn06\Output\CountoursPoint.cs" />

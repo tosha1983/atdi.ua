@@ -21,6 +21,8 @@ using Atdi.DataModels.DataConstraint;
 using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.PropagationModels;
 using Atdi.DataModels.Sdrn.DeepServices.GN06;
 using Atdi.Contracts.Sdrn.DeepServices.GN06;
+using IdwmDataModel = Atdi.DataModels.Sdrn.DeepServices.IDWM;
+using Idwm = Atdi.Contracts.Sdrn.DeepServices.IDWM;
 
 
 namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
@@ -28,13 +30,14 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
     /// <summary>
     /// 
     /// </summary>
-    public class Ge06CalcIteration : IIterationHandler<Ge06CalcData, Ge06CalcResult[]>
+    public class Ge06CalcIteration : IIterationHandler<Ge06CalcData, Ge06CalcResult>
     {
         private readonly ILogger _logger;
         private readonly IIterationsPool _iterationsPool;
         private readonly IDataLayer<EntityDataOrm<CalcServerEntityOrmContext>> _calcServerDataLayer;
         private readonly IObjectPoolSite _poolSite;
         private readonly ITransformation _transformation;
+        private readonly Idwm.IIdwmService _idwmService;
         private readonly IEarthGeometricService _earthGeometricService;
         private readonly IGn06Service  _gn06Service;
         private readonly AppServerComponentConfig _appServerComponentConfig;
@@ -53,6 +56,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             ITransformation transformation,
             IGn06Service gn06Service,
             Ge06CalcData ge06CalcData,
+            Idwm.IIdwmService idwmService,
             ILogger logger)
         {
             _calcServerDataLayer = calcServerDataLayer;
@@ -63,29 +67,643 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             _transformation = transformation;
             _gn06Service = gn06Service;
             _ge06CalcData = ge06CalcData;
+            _idwmService = idwmService;
             _logger = logger;
         }
 
 
 
-        public Ge06CalcResult[] Run(ITaskContext taskContext, Ge06CalcData data)
+        public Ge06CalcResult Run(ITaskContext taskContext, Ge06CalcData data)
         {
             this._taskContext = taskContext;
-            var ge06CalcResults = new Ge06CalcResult[1];
-            // где брать точку point????????????????
-            // нужно последовательно в цикле перебирать все комбинации Allotments и Assignments ??????????????
-            //CalcFieldStrengthInPointGE06((CalculationType)data.Ge06TaskParameters.CalculationTypeCode, data.PropagationModel, data.Ge06TaskParameters.BroadcastingContext.Allotments[i], data.Ge06TaskParameters.BroadcastingContext.Assignments, point)
+            var ge06CalcResults = new Ge06CalcResult();
+            var ge06CalcResultsForICSM = new Ge06CalcResult();
+            var ge06CalcResultsForBRIFIC = new Ge06CalcResult();
+
+            var affectedADMResult = new List<AffectedADMResult>();
+            var contoursResult = new List<ContoursResult>();
+            var allotmentOrAssignmentResult = new List<AllotmentOrAssignmentResult>();
+
+            var calcForICSM = data.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM;
+            var calcForBRIFIC = data.Ge06TaskParameters.BroadcastingContext.broadcastingContextBRIFIC;
+
+            if ((CalculationType)data.Ge06TaskParameters.CalculationTypeCode == CalculationType.CreateContoursByDistance)
+            {
+                CalculationForCreateContoursByDistance(calcForICSM, data, BroadcastingTypeContext.Icsm, ref ge06CalcResultsForICSM);
+                affectedADMResult.AddRange(ge06CalcResultsForICSM.AffectedADMResult);
+                contoursResult.AddRange(ge06CalcResultsForICSM.ContoursResult);
+                allotmentOrAssignmentResult.AddRange(ge06CalcResultsForICSM.AllotmentOrAssignmentResult);
+
+
+                CalculationForCreateContoursByDistance(calcForBRIFIC, data, BroadcastingTypeContext.Icsm, ref ge06CalcResultsForBRIFIC);
+                affectedADMResult.AddRange(ge06CalcResultsForBRIFIC.AffectedADMResult);
+                contoursResult.AddRange(ge06CalcResultsForBRIFIC.ContoursResult);
+                allotmentOrAssignmentResult.AddRange(ge06CalcResultsForBRIFIC.AllotmentOrAssignmentResult);
+            }
+            else if ((CalculationType)data.Ge06TaskParameters.CalculationTypeCode == CalculationType.CreateContoursByFS)
+            {
+
+                CalculationForCreateContoursByFS(calcForICSM, data, BroadcastingTypeContext.Icsm, ref ge06CalcResultsForICSM);
+                affectedADMResult.AddRange(ge06CalcResultsForICSM.AffectedADMResult);
+                contoursResult.AddRange(ge06CalcResultsForICSM.ContoursResult);
+                allotmentOrAssignmentResult.AddRange(ge06CalcResultsForICSM.AllotmentOrAssignmentResult);
+
+
+                CalculationForCreateContoursByFS(calcForBRIFIC, data, BroadcastingTypeContext.Icsm, ref ge06CalcResultsForBRIFIC);
+                affectedADMResult.AddRange(ge06CalcResultsForBRIFIC.AffectedADMResult);
+                contoursResult.AddRange(ge06CalcResultsForBRIFIC.ContoursResult);
+                allotmentOrAssignmentResult.AddRange(ge06CalcResultsForBRIFIC.AllotmentOrAssignmentResult);
+            }
+
+            ge06CalcResults.AffectedADMResult = affectedADMResult.ToArray();
+            ge06CalcResults.AllotmentOrAssignmentResult = allotmentOrAssignmentResult.ToArray();
+            ge06CalcResults.ContoursResult = contoursResult.ToArray();
 
             return ge06CalcResults;
         }
 
+        private bool ValidationAllotment(BroadcastingAllotment allotments)
+        {
+            bool isSuccess = true;
+            //AdminData
+            if (allotments.AdminData == null)
+            {
+                isSuccess = false;
+            }
+            else if (allotments.AdminData != null)
+            {
+                if (string.IsNullOrEmpty(allotments.AdminData.Adm))
+                {
+                    isSuccess = false;
+                }
+                if (string.IsNullOrEmpty(allotments.AdminData.NoticeType))
+                {
+                    isSuccess = false;
+                }
+            }
+            //AllotmentParameters
+            if (allotments.AllotmentParameters == null)
+            {
+                isSuccess = false;
+            }
+            else if (allotments.AllotmentParameters != null)
+            {
+                if (allotments.AllotmentParameters.ContourId == 0)
+                {
+                    isSuccess = false;
+                }
+                if (string.IsNullOrEmpty(allotments.AllotmentParameters.Name))
+                {
+                    isSuccess = false;
+                }
+                if (allotments.AllotmentParameters.Сontur==null)
+                {
+                    isSuccess = false;
+                }
+            }
+            // DigitalPlanEntryParameters
+            if (allotments.DigitalPlanEntryParameters == null)
+            {
+                isSuccess = false;
+            }
+            // EmissionCharacteristics
+            if (allotments.EmissionCharacteristics == null)
+            {
+                isSuccess = false;
+            }
+            else if (allotments.EmissionCharacteristics != null)
+            {
+                //if (allotments.EmissionCharacteristics.Freq_MHz) ??????????????
+            }
+            // Target
+            if (allotments.Target == null)
+            {
+                isSuccess = false;
+            }
+            else if (allotments.Target != null)
+            {
+                if (string.IsNullOrEmpty(allotments.Target.AdmRefId))
+                {
+                    isSuccess = false;
+                }
+                if (allotments.Target.Freq_MHz==0)
+                {
+                    isSuccess = false;
+                }
+                if (allotments.Target.Lon_Dec == 0)
+                {
+                    isSuccess = false;
+                }
+                if (allotments.Target.Lat_Dec == 0)
+                {
+                    isSuccess = false;
+                }
+            }
+            return isSuccess;
+        }
+
+        private bool ValidationAssignment(BroadcastingAssignment[] assignments)
+        {
+            bool isSuccess = true;
+            for (int i = 0; i < assignments.Length; i++)
+            {
+                // AdmData
+                if (assignments[i].AdmData == null)
+                {
+                    isSuccess = false;
+                }
+                else if (assignments[i].AdmData != null)
+                {
+                    if (string.IsNullOrEmpty(assignments[i].AdmData.Adm))
+                    {
+                        isSuccess = false;
+                    }
+                    if (string.IsNullOrEmpty(assignments[i].AdmData.AdmRefId))
+                    {
+                        isSuccess = false;
+                    }
+                    if (string.IsNullOrEmpty(assignments[i].AdmData.Fragment))
+                    {
+                        isSuccess = false;
+                    }
+                }
+                //AntennaCharacteristics
+                if (assignments[i].AntennaCharacteristics == null)
+                {
+                    isSuccess = false;
+                }
+                else if (assignments[i].AntennaCharacteristics != null)
+                {
+
+                    //MaxEffHeight_m
+                    if (((assignments[i].AntennaCharacteristics.MaxEffHeight_m >= 0) && (assignments[i].AntennaCharacteristics.MaxEffHeight_m <= 800)) == false)
+                    {
+                        isSuccess = false;
+                    }
+                    //EffHeight_m
+                    if (assignments[i].AntennaCharacteristics.EffHeight_m == null)
+                    {
+                        isSuccess = false;
+                    }
+                    else if (assignments[i].AntennaCharacteristics.EffHeight_m != null)
+                    {
+                        if (assignments[i].AntennaCharacteristics.EffHeight_m.Length != 36)
+                        {
+                            isSuccess = false;
+                        }
+                        for (int j = 0; j < assignments[i].AntennaCharacteristics.EffHeight_m.Length; j++)
+                        {
+                            var effHeight_m = assignments[i].AntennaCharacteristics.EffHeight_m[j];
+                            if (((effHeight_m >= -3000) && (effHeight_m <= 3000)) == false)
+                            {
+                                isSuccess = false;
+                            }
+                        }
+                    }
+                    //DiagrV
+                    if (assignments[i].AntennaCharacteristics.DiagrV == null)
+                    {
+                        isSuccess = false;
+                    }
+                    else if (assignments[i].AntennaCharacteristics.DiagrV != null)
+                    {
+                        if (assignments[i].AntennaCharacteristics.DiagrV.Length != 36)
+                        {
+                            isSuccess = false;
+                        }
+                        for (int j = 0; j < assignments[i].AntennaCharacteristics.DiagrV.Length; j++)
+                        {
+                            var diagrV = assignments[i].AntennaCharacteristics.DiagrV[j];
+                            if (((diagrV >= 0) && (diagrV <= 40)) == false)
+                            {
+                                isSuccess = false;
+                            }
+                        }
+                    }
+                    //DiagrH
+                    if (assignments[i].AntennaCharacteristics.DiagrH == null)
+                    {
+                        isSuccess = false;
+                    }
+                    else if (assignments[i].AntennaCharacteristics.DiagrH != null)
+                    {
+                        if (assignments[i].AntennaCharacteristics.DiagrH.Length != 36)
+                        {
+                            isSuccess = false;
+                        }
+                        for (int j = 0; j < assignments[i].AntennaCharacteristics.DiagrH.Length; j++)
+                        {
+                            var diagrH = assignments[i].AntennaCharacteristics.DiagrH[j];
+                            if (((diagrH >= 0) && (diagrH <= 40)) == false)
+                            {
+                                isSuccess = false;
+                            }
+                        }
+                    }
+                }
+                //DigitalPlanEntryParameters
+                if (assignments[i].DigitalPlanEntryParameters == null)
+                {
+                    isSuccess = false;
+                }
+                //EmissionCharacteristics
+                if (assignments[i].EmissionCharacteristics == null)
+                {
+                    isSuccess = false;
+                }
+                else if (assignments[i].EmissionCharacteristics != null)
+                {
+                    //if (assignments[i].EmissionCharacteristics.Freq_MHz) ?????????
+
+                    if (assignments[i].EmissionCharacteristics.ErpH_dBW > 53)
+                    {
+                        isSuccess = false;
+                    }
+                    if (assignments[i].EmissionCharacteristics.ErpV_dBW > 53)
+                    {
+                        isSuccess = false;
+                    }
+                }
+
+                //SiteParameters
+                if (assignments[i].SiteParameters == null)
+                {
+                    isSuccess = false;
+                }
+                else if (assignments[i].SiteParameters != null)
+                {
+                    if (((assignments[i].SiteParameters.Alt_m >= -1000) && (assignments[i].SiteParameters.Alt_m <= 8850)) == false)
+                    {
+                        isSuccess = false;
+                    }
+                    if (string.IsNullOrEmpty(assignments[i].SiteParameters.Name) == false)
+                    {
+                        isSuccess = false;
+                    }
+                }
+
+                if (assignments[i].Target != null)
+                {
+                    if (string.IsNullOrEmpty(assignments[i].Target.AdmRefId))
+                    {
+                        isSuccess = false;
+                    }
+                    if (assignments[i].Target.Freq_MHz == 0)
+                    {
+                        isSuccess = false;
+                    }
+                }
+            }
+            return isSuccess;
+        }
+
+        private void FillAllotmentOrAssignmentResult(BroadcastingContextBase broadcastingContextBase, ref Ge06CalcResult ge06CalcResult)
+        {
+            int countRecordsAllotmentOrAssignmentResult = 0;
+
+            if ((broadcastingContextBase != null) && (broadcastingContextBase.Allotments != null) && (broadcastingContextBase.Assignments != null))
+            {
+                countRecordsAllotmentOrAssignmentResult = broadcastingContextBase.Assignments.Length + 1;
+            }
+            else if ((broadcastingContextBase != null) && (broadcastingContextBase.Allotments == null) && (broadcastingContextBase.Assignments != null))
+            {
+                countRecordsAllotmentOrAssignmentResult = broadcastingContextBase.Assignments.Length;
+            }
+            else if ((broadcastingContextBase != null) && (broadcastingContextBase.Allotments != null) && (broadcastingContextBase.Assignments == null))
+            {
+                countRecordsAllotmentOrAssignmentResult = 1;
+            }
+
+            var affectedADMResult = new AffectedADMResult[countRecordsAllotmentOrAssignmentResult];
+            // как формировать AffectedADMResult ????????????????????????????????
+            if (broadcastingContextBase.Assignments != null)
+            {
+               
+                for (int k = 0; k < broadcastingContextBase.Assignments.Length; k++)
+                {
+                    affectedADMResult[k] = new AffectedADMResult();
+                    affectedADMResult[k].ADM = broadcastingContextBase.Assignments[k].AdmData.Adm;
+                    //affectedADMResult[k].AffectedServices = ???????????????????????????
+                    //affectedADMResult[k].TypeAffected ??????????????????????????????
+                }
+            }
+            if (broadcastingContextBase.Allotments != null)
+            {
+                affectedADMResult[affectedADMResult.Length-1].ADM = broadcastingContextBase.Allotments.AdminData.Adm;
+                //affectedADMResult.AffectedServices = //???????????????????????????
+                //affectedADMResult.TypeAffected = //??????????????????????????????
+            }
+
+            ge06CalcResult.AffectedADMResult = affectedADMResult;
+
+            var  allotmentOrAssignmentResults = new AllotmentOrAssignmentResult[countRecordsAllotmentOrAssignmentResult];
+
+            if ((broadcastingContextBase != null) && (broadcastingContextBase.Allotments != null) && (broadcastingContextBase.Assignments != null))
+            {
+                for (int i = 0; i < broadcastingContextBase.Assignments.Length; i++)
+                {
+                    var assignment = broadcastingContextBase.Assignments[i];
+                    allotmentOrAssignmentResults[i] = new AllotmentOrAssignmentResult()
+                    {
+                        Adm = assignment.AdmData.Adm,
+                        AdmRefId = assignment.AdmData.AdmRefId,
+                        Polar = assignment.EmissionCharacteristics.Polar.ToString(),
+                        Name = assignment.SiteParameters.Name,
+                        Longitude_DEC = assignment.SiteParameters.Lon_Dec,
+                        Latitude_DEC = assignment.SiteParameters.Lat_Dec,
+                        Freq_MHz = assignment.EmissionCharacteristics.Freq_MHz,
+                        TypeTable = "Assignment",
+                        AntennaDirectional = assignment.AntennaCharacteristics.Direction.ToString(),
+                        ErpH_dbW = assignment.EmissionCharacteristics.ErpH_dBW,
+                        ErpV_dbW = assignment.EmissionCharacteristics.ErpV_dBW,
+                        MaxEffHeight_m = assignment.AntennaCharacteristics.MaxEffHeight_m
+                    };
+                }
+
+                allotmentOrAssignmentResults[allotmentOrAssignmentResults.Length-1] = new AllotmentOrAssignmentResult()
+                {
+                    Adm = broadcastingContextBase.Allotments.AdminData.Adm,
+                    AdmRefId = broadcastingContextBase.Allotments.AdminData.AdmRefId,
+                    Polar = broadcastingContextBase.Allotments.EmissionCharacteristics.Polar.ToString(),
+                    Name = broadcastingContextBase.Allotments.AllotmentParameters.Name,
+                    Longitude_DEC = broadcastingContextBase.Allotments.Target.Lon_Dec,
+                    Latitude_DEC = broadcastingContextBase.Allotments.Target.Lat_Dec,
+                    Freq_MHz = broadcastingContextBase.Allotments.EmissionCharacteristics.Freq_MHz,
+                    TypeTable = "Allotment",
+                    //MaxEffHeight_m =  ?????????????????????????
+                    //ErpV_dbW =  ?????????????????????????
+                    //ErpH_dbW=  ?????????????????????????
+                    //AntennaDirectional = calcForICSM.Allotments.Target.
+                };
+              
+            }
+            else if ((broadcastingContextBase != null) && (broadcastingContextBase.Allotments == null) && (broadcastingContextBase.Assignments != null))
+            {
+                for (int i = 0; i < broadcastingContextBase.Assignments.Length; i++)
+                {
+                    var assignment = broadcastingContextBase.Assignments[i];
+                    allotmentOrAssignmentResults[i] = new AllotmentOrAssignmentResult()
+                    {
+                        Adm = assignment.AdmData.Adm,
+                        AdmRefId = assignment.AdmData.AdmRefId,
+                        Polar = assignment.EmissionCharacteristics.Polar.ToString(),
+                        Name = assignment.SiteParameters.Name,
+                        Longitude_DEC = assignment.SiteParameters.Lon_Dec,
+                        Latitude_DEC = assignment.SiteParameters.Lat_Dec,
+                        Freq_MHz = assignment.EmissionCharacteristics.Freq_MHz,
+                        TypeTable = "Assignment",
+                        AntennaDirectional = assignment.AntennaCharacteristics.Direction.ToString(),
+                        ErpH_dbW = assignment.EmissionCharacteristics.ErpH_dBW,
+                        ErpV_dbW = assignment.EmissionCharacteristics.ErpV_dBW,
+                        MaxEffHeight_m = assignment.AntennaCharacteristics.MaxEffHeight_m
+                    };
+                }
+            }
+            else if ((broadcastingContextBase != null) && (broadcastingContextBase.Allotments != null) && (broadcastingContextBase.Assignments == null))
+            {
+                allotmentOrAssignmentResults[0] = new AllotmentOrAssignmentResult()
+                {
+                    Adm = broadcastingContextBase.Allotments.AdminData.Adm,
+                    AdmRefId = broadcastingContextBase.Allotments.AdminData.AdmRefId,
+                    Polar = broadcastingContextBase.Allotments.EmissionCharacteristics.Polar.ToString(),
+                    Name = broadcastingContextBase.Allotments.AllotmentParameters.Name,
+                    Longitude_DEC = broadcastingContextBase.Allotments.Target.Lon_Dec,
+                    Latitude_DEC = broadcastingContextBase.Allotments.Target.Lat_Dec,
+                    Freq_MHz = broadcastingContextBase.Allotments.EmissionCharacteristics.Freq_MHz,
+                    TypeTable = "Allotment",
+                    //MaxEffHeight_m =  ?????????????????????????
+                    //ErpV_dbW =  ?????????????????????????
+                    //ErpH_dbW=  ?????????????????????????
+                    //AntennaDirectional = calcForICSM.Allotments.Target.
+                };
+            }
+
+            ge06CalcResult.AllotmentOrAssignmentResult = allotmentOrAssignmentResults;
+        }
 
         /// <summary>
-        /// Установка модели распространения и ее параметров 
+        /// CalculationType == CreateContoursByDistance
         /// </summary>
-        /// <param name="data"></param>
+        /// <param name="broadcastingContextBase"></param>
+        /// <param name="ge06CalcData"></param>
+        /// <param name="broadcastingTypeContext"></param>
+        /// <param name="ge06CalcResult"></param>
+        private void CalculationForCreateContoursByDistance(BroadcastingContextBase broadcastingContextBase,
+                                            Ge06CalcData ge06CalcData,
+                                            BroadcastingTypeContext broadcastingTypeContext,
+                                            ref Ge06CalcResult ge06CalcResult
+                                            )
+        {
+
+            if (((ValidationAssignment(broadcastingContextBase.Assignments)) && (ValidationAllotment(broadcastingContextBase.Allotments)))==false)
+            {
+                throw new Exception("Input parameters failed validation");
+            }
+
+            var lstContoursResults = new List<ContoursResult>();
+
+            for (int i = 0; i < ge06CalcData.Ge06TaskParameters.Distances.Length; i++)
+            {
+                var broadcastingCalcBarycenterGE06 = new BroadcastingCalcBarycenterGE06()
+                {
+                    BroadcastingAllotment = broadcastingContextBase.Allotments,
+                    BroadcastingAssignments = broadcastingContextBase.Assignments
+                };
+                //1.Определение центра гравитации(2.1)
+                var pointEarthGeometric = new PointEarthGeometric();
+                this._gn06Service.CalcBarycenterGE06(in broadcastingCalcBarycenterGE06, ref pointEarthGeometric);
+                // 2. Построение контуров фиксированной дистанции относительно центра гравитации.
+                // Базируемся на функции CreateContourFromPointByDistance если у нас только BroadcastingAssignment []
+
+                if (broadcastingContextBase.Allotments == null)
+                {
+                    var contourFromPointByDistanceArgs = new ContourFromPointByDistanceArgs()
+                    {
+                        Distance_km = ge06CalcData.Ge06TaskParameters.Distances[i],
+                        Step_deg = ge06CalcData.Ge06TaskParameters.AzimuthStep_deg.Value,
+                        PointEarthGeometricCalc = pointEarthGeometric
+                    };
+
+                    // нужно завести пул !!!!!!!!!!!!!!!!!!
+                    var pointEarthGeometricsResult = new PointEarthGeometric[1000000];
+                    this._earthGeometricService.CreateContourFromPointByDistance(in contourFromPointByDistanceArgs, ref pointEarthGeometricsResult, out int sizeResultBuffer);
+
+                    var contoursResult = new ContoursResult[sizeResultBuffer];
+
+                    for (int k=0; k< sizeResultBuffer; k++)
+                    {
+                        var  point = new Point()
+                        {
+                            Longitude = pointEarthGeometricsResult[k].Longitude,
+                            Latitude = pointEarthGeometricsResult[k].Latitude
+                        };
+
+                        contoursResult[k].FS = CalcFieldStrengthInPointGE06(in ge06CalcData, in ge06CalcData.Point, broadcastingContextBase);
+                        contoursResult[k].AffectedADM= this._idwmService.GetADMByPoint(new IdwmDataModel.Point()
+                        {
+                            Longitude_dec = point.Longitude,
+                            Latitude_dec = point.Latitude
+                        });
+                        if (broadcastingTypeContext == BroadcastingTypeContext.Brific)
+                        {
+                            contoursResult[k].ContourType = ContourType.Etalon;
+                            //contoursResult[k].CountoursPoints = ???????????????????? что тут передавать????????
+                        }
+                        if (broadcastingTypeContext == BroadcastingTypeContext.Icsm)
+                        {
+                            contoursResult[k].ContourType = ContourType.New;
+                            //contoursResult[k].CountoursPoints = ???????????????????? что тут передавать????????
+                        }
+                        contoursResult[k].Distance = ge06CalcData.Ge06TaskParameters.Distances[i];
+                        //contoursResult[k].PointsCount = ???????????????????? что здесь указать????????
+                    }
+
+                    lstContoursResults.AddRange(contoursResult);
+
+                }
+                //или на функции CreateContourFromContureByDistance если у нас есть BroadcastingAllotment 
+                else
+                {
+                    var areaPoints = broadcastingContextBase.Allotments.AllotmentParameters.Сontur;
+                    if ((areaPoints != null) && (areaPoints.Length > 0))
+                    {
+                        var pointEarthGeometrics = new PointEarthGeometric[areaPoints.Length];
+                        for (int h=0; h< areaPoints.Length; h++)
+                        {
+                            pointEarthGeometrics[h] = new PointEarthGeometric(areaPoints[h].Lon_DEC, areaPoints[h].Lat_DEC, CoordinateUnits.deg);
+                        }
+
+                        var contourFromContureByDistanceArgs = new ContourFromContureByDistanceArgs()
+                        {
+                            Step_deg = ge06CalcData.Ge06TaskParameters.AzimuthStep_deg.Value,
+                            Distance_km = ge06CalcData.Ge06TaskParameters.Distances[i],
+                            PointBaryCenter = pointEarthGeometric,
+                            ContourPoints = pointEarthGeometrics
+                        };
+
+                        // нужно завести пул !!!!!!!!!!!!!!!!!!
+                        var pointEarthGeometricsResult = new PointEarthGeometric[1000000];
+                        this._earthGeometricService.CreateContourFromContureByDistance(in contourFromContureByDistanceArgs, ref pointEarthGeometricsResult, out int sizeResultBuffer);
+
+                        var contoursResult = new ContoursResult[sizeResultBuffer];
+                        for (int k = 0; k < sizeResultBuffer; k++)
+                        {
+                            var point = new Point()
+                            {
+                                Longitude = pointEarthGeometricsResult[k].Longitude,
+                                Latitude = pointEarthGeometricsResult[k].Latitude
+                            };
+                            contoursResult[k].FS = CalcFieldStrengthInPointGE06(in ge06CalcData, in ge06CalcData.Point, broadcastingContextBase);
+                            contoursResult[k].AffectedADM = this._idwmService.GetADMByPoint(new IdwmDataModel.Point()
+                            {
+                                Longitude_dec = point.Longitude,
+                                Latitude_dec = point.Latitude
+                            });
+                            if (broadcastingTypeContext == BroadcastingTypeContext.Brific)
+                            {
+                                contoursResult[k].ContourType = ContourType.Etalon;
+                                //contoursResult[k].CountoursPoints = ???????????????????? что тут передавать????????
+                            }
+                            if (broadcastingTypeContext == BroadcastingTypeContext.Icsm)
+                            {
+                                contoursResult[k].ContourType = ContourType.New;
+                                //contoursResult[k].CountoursPoints = ???????????????????? что тут передавать????????
+                            }
+                            contoursResult[k].Distance = ge06CalcData.Ge06TaskParameters.Distances[i];
+                            //contoursResult[k].PointsCount = ???????????????????? что здесь указать????????
+                        }
+
+                        lstContoursResults.AddRange(contoursResult);
+
+                    }
+                }
+            }
+            ge06CalcResult.ContoursResult = lstContoursResults.ToArray();
+            FillAllotmentOrAssignmentResult(broadcastingContextBase, ref ge06CalcResult);
+        }
+
+        /// <summary>
+        /// CalculationType == CreateContoursByFS
+        /// </summary>
+        /// <param name="broadcastingContextBase"></param>
+        /// <param name="ge06CalcData"></param>
+        /// <param name="broadcastingTypeContext"></param>
+        /// <param name="ge06CalcResult"></param>
+        private void CalculationForCreateContoursByFS(BroadcastingContextBase broadcastingContextBase,
+                                           Ge06CalcData ge06CalcData,
+                                           BroadcastingTypeContext broadcastingTypeContext,
+                                           ref Ge06CalcResult ge06CalcResult
+                                           )
+        {
+            if (((ValidationAssignment(broadcastingContextBase.Assignments)) && (ValidationAllotment(broadcastingContextBase.Allotments))) == false)
+            {
+                throw new Exception("Input parameters failed validation");
+            }
+
+            var lstContoursResults = new List<ContoursResult>();
+
+            for (int i = 0; i < ge06CalcData.Ge06TaskParameters.FieldStrength.Length; i++)
+            {
+                var broadcastingCalcBarycenterGE06 = new BroadcastingCalcBarycenterGE06()
+                {
+                    BroadcastingAllotment = broadcastingContextBase.Allotments,
+                    BroadcastingAssignments = broadcastingContextBase.Assignments
+                };
+                //1.Определение центра гравитации(2.1)
+                var pointEarthGeometric = new PointEarthGeometric();
+                this._gn06Service.CalcBarycenterGE06(in broadcastingCalcBarycenterGE06, ref pointEarthGeometric);
+                // 2. Построение контуров фиксированной дистанции относительно центра гравитации.
+                // Базируемся на функции CreateContourFromPointByDistance если у нас только BroadcastingAssignment []
+
+
+                var areaPoints = broadcastingContextBase.Allotments.AllotmentParameters.Сontur;
+                if ((areaPoints != null) && (areaPoints.Length > 0))
+                {
+
+
+                    var contourForStationByTriggerFieldStrengthsArgs = new ContourForStationByTriggerFieldStrengthsArgs()
+                    {
+                        Step_deg = ge06CalcData.Ge06TaskParameters.AzimuthStep_deg.Value,
+                        TriggerFieldStrength = ge06CalcData.Ge06TaskParameters.FieldStrength[i],
+                        PointEarthGeometricCalc = pointEarthGeometric
+                    };
+
+                    // нужно завести пул !!!!!!!!!!!!!!!!!!
+                    var pointEarthGeometricsResult = new PointEarthGeometric[1000000];
+
+
+                    this._earthGeometricService.CreateContourForStationByTriggerFieldStrengths((sourcePoint, destPoint) => CalcFieldStrength(sourcePoint, destPoint), in contourForStationByTriggerFieldStrengthsArgs, ref pointEarthGeometricsResult, out int sizeResultBuffer);
+
+                    /// как формировать ContoursResult ????????????????????????
+                    var contoursResult = new ContoursResult[sizeResultBuffer];
+
+
+                    lstContoursResults.AddRange(contoursResult);
+
+                }
+
+            }
+            ge06CalcResult.ContoursResult = lstContoursResults.ToArray();
+            FillAllotmentOrAssignmentResult(broadcastingContextBase, ref ge06CalcResult);
+        }
+
+        /// <summary>
+        /// Здесь тоже не понятно как обойтись всего двумя параметрами ??????????????
+        /// </summary>
+        /// <param name="pointEarthGeometric1"></param>
+        /// <param name="pointEarthGeometric2"></param>
         /// <returns></returns>
-        private PropagationModel GetPropagationModel(PropagationModel data, CalculationType calculationType)
+        public static double CalcFieldStrength(PointEarthGeometric pointEarthGeometric1, PointEarthGeometric pointEarthGeometric2)
+        {
+            return -1;
+        }
+
+            /// <summary>
+            /// Установка модели распространения и ее параметров 
+            /// </summary>
+            /// <param name="data"></param>
+            /// <returns></returns>
+        private PropagationModel GetPropagationModel(Ge06TaskParameters ge06TaskParameters, PropagationModel data, CalculationType calculationType)
         {
             var propagationModel = new PropagationModel();
             if ((calculationType == CalculationType.CreateContoursByDistance)
@@ -106,21 +724,22 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        private float CalcFieldStrengthInPointGE06(CalculationType calculationType, PropagationModel propagationModel, BroadcastingAllotment broadcastingAllotment, BroadcastingAssignment[] broadcastingAssignments, Point point)
+        private float CalcFieldStrengthInPointGE06(in Ge06CalcData ge06CalcData, in Point point, BroadcastingContextBase broadcastingContext)
         {
+            //Ge06TaskParameters ge06TaskParameters, PropagationModel propagationModel, BroadcastingContextBase broadcastingContextBase
             float resultFieldStrengthCalcResultAllotment = 0;
             var lstFieldStrengthAssignments = new List<float>();
             //1.Необходимо проверить установлена ли необходимая модель распространения и ее параметры являются ли корректными для данного рода расчета(2.2.3). 
-            var propagModel = GetPropagationModel(propagationModel, calculationType);
+            var propagModel = GetPropagationModel(ge06CalcData.Ge06TaskParameters, ge06CalcData.PropagationModel, (CalculationType)ge06CalcData.Ge06TaskParameters.CalculationTypeCode);
             //2.Далее если есть выделение, то необходимо рассчитать напряженность поля от выделения(2.2.1).
-            if (broadcastingAllotment != null)
+            if (broadcastingContext.Allotments != null)
             {
-                 resultFieldStrengthCalcResultAllotment = CalcFieldStrengthInPointFromAllotmentGE06(broadcastingAllotment, propagationModel, point);
+                 resultFieldStrengthCalcResultAllotment = CalcFieldStrengthInPointFromAllotmentGE06(broadcastingContext.Allotments, ge06CalcData.PropagationModel, point);
             }
             //3.Если есть BroadcastingAssignment, то рассчитать напряженность поля от каждой из них(2.2.4).При этом если станций несколько, то определяем суммарную напряженность поля для станций с одинаковым SFN_id методом суммирования мощностей(2.2.2).
-            if (broadcastingAssignments != null)
+            if (broadcastingContext.Assignments != null)
             {
-                var allAssignments = broadcastingAssignments.ToList();
+                var allAssignments = broadcastingContext.Assignments.ToList();
                 var allSfnId = allAssignments.Select(x => x.DigitalPlanEntryParameters.SfnId);
                 if ((allSfnId!=null) && (allSfnId.Count()>0))
                 {
@@ -134,7 +753,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             var sumFieldStrengthInPointFromAssignmentGE06 = new double?[fndAssignments.Count];
                             for (int j = 0; j < fndAssignments.Count; j++)
                             {
-                                sumFieldStrengthInPointFromAssignmentGE06[j] = CalcFieldStrengthInPointFromAssignmentGE06(fndAssignments[j], propagationModel, point);
+                                sumFieldStrengthInPointFromAssignmentGE06[j] = CalcFieldStrengthInPointFromAssignmentGE06(fndAssignments[j], ge06CalcData.PropagationModel, point);
                             }
                             var recalcFieldStrengthInPointFromAssignmentGE06 = SumPowGE06(sumFieldStrengthInPointFromAssignmentGE06);
                             lstFieldStrengthAssignments.Add(recalcFieldStrengthInPointFromAssignmentGE06);

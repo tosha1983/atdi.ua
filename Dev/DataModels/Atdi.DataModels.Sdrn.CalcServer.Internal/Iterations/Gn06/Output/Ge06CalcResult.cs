@@ -10,8 +10,8 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
 	public struct Ge06CalcResult
     {
-        public long IdResult;
-        public AffectedADMResult AffectedADMResult;
-        public ContoursResult  ContoursResult;
+        public AffectedADMResult[] AffectedADMResult;
+        public ContoursResult[]  ContoursResult;
+        public AllotmentOrAssignmentResult[] AllotmentOrAssignmentResult;
     }
 }

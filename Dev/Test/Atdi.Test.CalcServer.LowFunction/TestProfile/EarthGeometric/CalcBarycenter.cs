@@ -41,94 +41,105 @@ namespace Atdi.Test.CalcServer.LowFunction
                     {
                         TypeGeometryObject = TypeGeometryObject.Polygon,
 
-                        //Points = new PointEarthGeometric[4]
-                        //{
-                        //     new PointEarthGeometric()
-                        //       {
-                        //            Longitude = 20,
-                        //            Latitude = 10,
-                        //            CoordinateUnits = CoordinateUnits.deg
-                        //       },
-                        //       new PointEarthGeometric()
-                        //       {
-                        //            Longitude = 20,
-                        //            Latitude = 30,
-                        //            CoordinateUnits = CoordinateUnits.deg
-                        //       },
 
-                        //       new PointEarthGeometric()
-                        //       {
-                        //            Longitude = 30,
-                        //            Latitude = 30,
-                        //            CoordinateUnits = CoordinateUnits.deg
-                        //       },
-                        //       new PointEarthGeometric()
-                        //       {
-                        //            Longitude = 30,
-                        //            Latitude = 10,
-                        //            CoordinateUnits = CoordinateUnits.deg
-                        //       }
-                        //}
+                       
 
 
                         // капля
-                        Points = new PointEarthGeometric[8]
+                        Points = new PointEarthGeometric[14]
                         {
                              new PointEarthGeometric()
                                {
-                                    Longitude = 30.795413,
-                                    Latitude = 50.560265,
+                                    Longitude = -2.9567128,
+                                    Latitude = 52.280058,
                                     CoordinateUnits = CoordinateUnits.deg
                                },
                                new PointEarthGeometric()
                                {
-                                    Longitude = 30.897192,
-                                    Latitude = 50.535627,
+                                    Longitude = -1.7471485,
+                                    Latitude = 52.760043,
                                     CoordinateUnits = CoordinateUnits.deg
                                },
 
                                new PointEarthGeometric()
                                {
-                                    Longitude = 30.955352,
-                                    Latitude = 50.489397,
+                                    Longitude = -0.88317394,
+                                    Latitude = 53.412824,
                                     CoordinateUnits = CoordinateUnits.deg
                                },
                                new PointEarthGeometric()
                                {
-                                    Longitude = 30.935965,
-                                    Latitude = 50.436948,
+                                    Longitude = -0.3455898,
+                                    Latitude = 53.508821,
                                     CoordinateUnits = CoordinateUnits.deg
                                } ,
                                new PointEarthGeometric()
                                {
-                                    Longitude = 30.892346,
-                                    Latitude = 50.390621,
+                                    Longitude = 0.32639037,
+                                    Latitude = 53.412824,
                                     CoordinateUnits = CoordinateUnits.deg
                                },
                         new PointEarthGeometric()
                         {
-                            Longitude = 30.8148,
-                            Latitude = 50.347342,
+                            Longitude = 0.76797734,
+                            Latitude = 53.20163,
                             CoordinateUnits = CoordinateUnits.deg
                         },
 
                                new PointEarthGeometric()
                                {
-                                   Longitude = 30.703328,
-                                   Latitude = 50.35662,
+                                   Longitude = 1.0751683,
+                                   Latitude = 52.52965,
                                    CoordinateUnits = CoordinateUnits.deg
                                } ,
                                new PointEarthGeometric()
                                {
-                                   Longitude = 29.641918,
-                                   Latitude = 50.58489,
+                                   Longitude = 1.0559688,
+                                   Latitude = 51.85767,
                                    CoordinateUnits = CoordinateUnits.deg
                                } ,
-                             
+                             new PointEarthGeometric()
+                               {
+                                   Longitude = 0.55678357,
+                                   Latitude = 51.627277,
+                                   CoordinateUnits = CoordinateUnits.deg
+                               } ,
+                             new PointEarthGeometric()
+                               {
+                                   Longitude = 0.038398867,
+                                   Latitude = 51.454482,
+                                   CoordinateUnits = CoordinateUnits.deg
+                               } ,
+                             new PointEarthGeometric()
+                               {
+                                   Longitude = -0.69117961,
+                                   Latitude = 51.665676,
+                                   CoordinateUnits = CoordinateUnits.deg
+                               } ,
+                             new PointEarthGeometric()
+                               {
+                                   Longitude = -1.5743536,
+                                   Latitude = 51.819271,
+                                   CoordinateUnits = CoordinateUnits.deg
+                               } ,
+                             new PointEarthGeometric()
+                               {
+                                   Longitude = -2.3999292,
+                                   Latitude = 52.049664,
+                                   CoordinateUnits = CoordinateUnits.deg
+                               } ,
+                             new PointEarthGeometric()
+                               {
+                                   Longitude = -2.9183139,
+                                   Latitude = 52.318456,
+                                   CoordinateUnits = CoordinateUnits.deg
+                               } ,
 
                            }
                     };
 
+
+     
 
 
                     //// полумесяц
@@ -217,7 +228,7 @@ namespace Atdi.Test.CalcServer.LowFunction
                     //                Latitude = 50.495564,
                     //                CoordinateUnits = CoordinateUnits.deg
                     //           }
-                             
+
                     //       }
                     //};
 

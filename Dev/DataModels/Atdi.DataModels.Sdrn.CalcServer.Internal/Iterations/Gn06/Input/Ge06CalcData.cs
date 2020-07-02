@@ -16,6 +16,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
         public ProjectMapData MapData;
         public CluttersDesc CluttersDesc;
         public FieldStrengthCalcData FieldStrengthCalcData;
+        public Point Point;
         public string Projection;
     }
 }
