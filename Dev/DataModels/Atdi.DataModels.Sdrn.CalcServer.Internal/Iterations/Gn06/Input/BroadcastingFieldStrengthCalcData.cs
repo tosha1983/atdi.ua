@@ -9,6 +9,7 @@ using Atdi.DataModels.Sdrn.CalcServer.Internal.Maps;
 using Atdi.DataModels.Sdrn.DeepServices.Gis;
 using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Gis;
 using Atdi.DataModels.Sdrn.DeepServices.GN06;
+using Atdi.DataModels.Sdrn.DeepServices.EarthGeometry;
 
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
@@ -19,19 +20,21 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 
         public BroadcastingAssignment BroadcastingAssignment;
 
-		public AtdiCoordinate PointCoordinate;
+        //public AtdiCoordinate PointCoordinate;
 
-		public AtdiCoordinate TargetCoordinate;
+        public PointEarthGeometric TargetCoordinate;
 
-		public AtdiMapArea MapArea;
+        public double TargetAltitude_m;
+
+        public AtdiMapArea MapArea;
 
 		public short[] ReliefContent;
 
 		public byte[] ClutterContent;
 
-		public byte[] BuildingContent;
+		//public byte[] BuildingContent;
 
-		public CluttersDesc CluttersDesc;
+		//public CluttersDesc CluttersDesc;
 
     }
 }
