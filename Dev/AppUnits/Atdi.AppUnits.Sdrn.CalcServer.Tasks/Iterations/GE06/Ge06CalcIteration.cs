@@ -89,13 +89,13 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
             if ((CalculationType)data.Ge06TaskParameters.CalculationTypeCode == CalculationType.CreateContoursByDistance)
             {
-                CalculationForCreateContoursByDistance(calcForICSM, data, BroadcastingTypeContext.Icsm, ref ge06CalcResultsForICSM);
+                CalculationForCreateContoursByDistance(calcForICSM, in data, BroadcastingTypeContext.Icsm, ref ge06CalcResultsForICSM);
                 affectedADMResult.AddRange(ge06CalcResultsForICSM.AffectedADMResult);
                 contoursResult.AddRange(ge06CalcResultsForICSM.ContoursResult);
                 allotmentOrAssignmentResult.AddRange(ge06CalcResultsForICSM.AllotmentOrAssignmentResult);
 
 
-                CalculationForCreateContoursByDistance(calcForBRIFIC, data, BroadcastingTypeContext.Icsm, ref ge06CalcResultsForBRIFIC);
+                CalculationForCreateContoursByDistance(calcForBRIFIC, in data, BroadcastingTypeContext.Icsm, ref ge06CalcResultsForBRIFIC);
                 affectedADMResult.AddRange(ge06CalcResultsForBRIFIC.AffectedADMResult);
                 contoursResult.AddRange(ge06CalcResultsForBRIFIC.ContoursResult);
                 allotmentOrAssignmentResult.AddRange(ge06CalcResultsForBRIFIC.AllotmentOrAssignmentResult);
@@ -103,16 +103,30 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             else if ((CalculationType)data.Ge06TaskParameters.CalculationTypeCode == CalculationType.CreateContoursByFS)
             {
 
-                CalculationForCreateContoursByFS(calcForICSM, data, BroadcastingTypeContext.Icsm, ref ge06CalcResultsForICSM);
+                CalculationForCreateContoursByFS(calcForICSM, in data, BroadcastingTypeContext.Icsm, ref ge06CalcResultsForICSM);
                 affectedADMResult.AddRange(ge06CalcResultsForICSM.AffectedADMResult);
                 contoursResult.AddRange(ge06CalcResultsForICSM.ContoursResult);
                 allotmentOrAssignmentResult.AddRange(ge06CalcResultsForICSM.AllotmentOrAssignmentResult);
 
 
-                CalculationForCreateContoursByFS(calcForBRIFIC, data, BroadcastingTypeContext.Icsm, ref ge06CalcResultsForBRIFIC);
+                CalculationForCreateContoursByFS(calcForBRIFIC, in data, BroadcastingTypeContext.Icsm, ref ge06CalcResultsForBRIFIC);
                 affectedADMResult.AddRange(ge06CalcResultsForBRIFIC.AffectedADMResult);
                 contoursResult.AddRange(ge06CalcResultsForBRIFIC.ContoursResult);
                 allotmentOrAssignmentResult.AddRange(ge06CalcResultsForBRIFIC.AllotmentOrAssignmentResult);
+            }
+            else if ((CalculationType)data.Ge06TaskParameters.CalculationTypeCode == CalculationType.ConformityCheck)
+            {
+                CalculationForConformityCheck(in data, ref ge06CalcResults);
+                affectedADMResult.AddRange(ge06CalcResults.AffectedADMResult);
+                contoursResult.AddRange(ge06CalcResults.ContoursResult);
+                allotmentOrAssignmentResult.AddRange(ge06CalcResults.AllotmentOrAssignmentResult);
+            }
+            else if ((CalculationType)data.Ge06TaskParameters.CalculationTypeCode == CalculationType.FindAffectedADM)
+            {
+                CalculationForFindAffectedADM(in data, ref ge06CalcResultsForICSM);
+                affectedADMResult.AddRange(ge06CalcResultsForICSM.AffectedADMResult);
+                contoursResult.AddRange(ge06CalcResultsForICSM.ContoursResult);
+                allotmentOrAssignmentResult.AddRange(ge06CalcResultsForICSM.AllotmentOrAssignmentResult);
             }
 
             ge06CalcResults.AffectedADMResult = affectedADMResult.ToArray();
@@ -122,6 +136,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             return ge06CalcResults;
         }
 
+        /// <summary>
+        /// Валидация параметров для Allotment
+        /// </summary>
+        /// <param name="allotments"></param>
+        /// <returns></returns>
         private bool ValidationAllotment(BroadcastingAllotment allotments)
         {
             bool isSuccess = true;
@@ -205,6 +224,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             return isSuccess;
         }
 
+        /// <summary>
+        /// Валидация параметров для Assignment
+        /// </summary>
+        /// <param name="assignments"></param>
+        /// <returns></returns>
         private bool ValidationAssignment(BroadcastingAssignment[] assignments)
         {
             bool isSuccess = true;
@@ -363,6 +387,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             return isSuccess;
         }
 
+        /// <summary>
+        /// Заполнение объектов AffectedADMResult[] +  AllotmentOrAssignmentResult
+        /// </summary>
+        /// <param name="broadcastingContextBase"></param>
+        /// <param name="ge06CalcResult"></param>
         private void FillAllotmentOrAssignmentResult(BroadcastingContextBase broadcastingContextBase, ref Ge06CalcResult ge06CalcResult)
         {
             int countRecordsAllotmentOrAssignmentResult = 0;
@@ -488,14 +517,14 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         }
 
         /// <summary>
-        /// CalculationType == CreateContoursByDistance
+        /// Расчет  для CalculationType == CreateContoursByDistance
         /// </summary>
         /// <param name="broadcastingContextBase"></param>
         /// <param name="ge06CalcData"></param>
         /// <param name="broadcastingTypeContext"></param>
         /// <param name="ge06CalcResult"></param>
         private void CalculationForCreateContoursByDistance(BroadcastingContextBase broadcastingContextBase,
-                                            Ge06CalcData ge06CalcData,
+                                            in Ge06CalcData ge06CalcData,
                                             BroadcastingTypeContext broadcastingTypeContext,
                                             ref Ge06CalcResult ge06CalcResult
                                             )
@@ -630,14 +659,14 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         }
 
         /// <summary>
-        /// CalculationType == CreateContoursByFS
+        /// Расчет  для  CalculationType == CreateContoursByFS
         /// </summary>
         /// <param name="broadcastingContextBase"></param>
         /// <param name="ge06CalcData"></param>
         /// <param name="broadcastingTypeContext"></param>
         /// <param name="ge06CalcResult"></param>
         private void CalculationForCreateContoursByFS(BroadcastingContextBase broadcastingContextBase,
-                                           Ge06CalcData ge06CalcData,
+                                           in Ge06CalcData ge06CalcData,
                                            BroadcastingTypeContext broadcastingTypeContext,
                                            ref Ge06CalcResult ge06CalcResult
                                            )
@@ -697,32 +726,31 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         }
 
         /// <summary>
-        /// CalculationType == ConformityCheck
+        /// Расчет  для  CalculationType == ConformityCheck
         /// </summary>
         /// <param name="broadcastingContextBase"></param>
         /// <param name="ge06CalcData"></param>
         /// <param name="broadcastingTypeContext"></param>
         /// <param name="ge06CalcResult"></param>
-        private void CalculationForConformityCheck(BroadcastingContext  broadcastingContext,
-                                          Ge06CalcData ge06CalcData,
-                                          BroadcastingTypeContext broadcastingTypeContext,
+        private void CalculationForConformityCheck(
+                                          in Ge06CalcData ge06CalcData,
                                           ref Ge06CalcResult ge06CalcResult
                                           )
         {
             var lstContoursResults = new List<ContoursResult>();
 
-            if (((broadcastingContext.BroadcastingContextICSM!=null) && (broadcastingContext.broadcastingContextBRIFIC!= null))==false)
+            if (((ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM!=null) && (ge06CalcData.Ge06TaskParameters.BroadcastingContext.broadcastingContextBRIFIC!= null))==false)
             {
                 throw new Exception("Incomplete ICSM data or BRIFIC");
             }
 
             //0. Валидация входных данных. аналогично п.0 4.1. + обязательные наличие хотя по одному объекту для ICSM и BRIFIC
-            if (((ValidationAssignment(broadcastingContext.BroadcastingContextICSM.Assignments)) && (ValidationAllotment(broadcastingContext.BroadcastingContextICSM.Allotments))) == false)
+            if (((ValidationAssignment(ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM.Assignments)) && (ValidationAllotment(ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM.Allotments))) == false)
             {
                 throw new Exception("Input parameters for ICSM failed validation");
             }
 
-            if (((ValidationAssignment(broadcastingContext.broadcastingContextBRIFIC.Assignments)) && (ValidationAllotment(broadcastingContext.broadcastingContextBRIFIC.Allotments))) == false)
+            if (((ValidationAssignment(ge06CalcData.Ge06TaskParameters.BroadcastingContext.broadcastingContextBRIFIC.Assignments)) && (ValidationAllotment(ge06CalcData.Ge06TaskParameters.BroadcastingContext.broadcastingContextBRIFIC.Allotments))) == false)
             {
                 throw new Exception("Input parameters for BRIFIC failed validation");
             }
@@ -730,18 +758,17 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             //1.Определение центра гравитации(2.1)
             var pointEarthGeometric = new PointEarthGeometric();
 
-            if (broadcastingTypeContext == BroadcastingTypeContext.Brific)
-            {
+            
                 //1. Определение центра гравитации, но только для BR IFIC (2.1)
                 var broadcastingCalcBarycenterGE06 = new BroadcastingCalcBarycenterGE06()
                 {
-                    BroadcastingAllotment = broadcastingContext.broadcastingContextBRIFIC.Allotments,
-                    BroadcastingAssignments = broadcastingContext.broadcastingContextBRIFIC.Assignments
+                    BroadcastingAllotment = ge06CalcData.Ge06TaskParameters.BroadcastingContext.broadcastingContextBRIFIC.Allotments,
+                    BroadcastingAssignments = ge06CalcData.Ge06TaskParameters.BroadcastingContext.broadcastingContextBRIFIC.Assignments
                 };
                 //1.Определение центра гравитации(2.1)
 
                 this._gn06Service.CalcBarycenterGE06(in broadcastingCalcBarycenterGE06, ref pointEarthGeometric);
-            }
+            
 
 
             // 2.Определение контрольных точек для записей BR IFIC -> построение контуров для выделений для
@@ -763,34 +790,32 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
 
         /// <summary>
-        /// CalculationType == FindAffectedADM
+        /// Расчет  для  CalculationType == FindAffectedADM
         /// </summary>
         /// <param name="broadcastingContextBase"></param>
         /// <param name="ge06CalcData"></param>
         /// <param name="broadcastingTypeContext"></param>
         /// <param name="ge06CalcResult"></param>
-        private void CalculationForFindAffectedADM(BroadcastingContext broadcastingContext,
-                                           Ge06CalcData ge06CalcData,
-                                           BroadcastingTypeContext broadcastingTypeContext,
+        private void CalculationForFindAffectedADM(
+                                          in Ge06CalcData ge06CalcData,
                                            ref Ge06CalcResult ge06CalcResult
                                           )
         {
-            if (broadcastingContext.BroadcastingContextICSM==null)
+            if (ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM==null)
             {
                 throw new Exception("Input parameters BroadcastingContextICSM is null!");
             }
-            if (((ValidationAssignment(broadcastingContext.BroadcastingContextICSM.Assignments)) && (ValidationAllotment(broadcastingContext.BroadcastingContextICSM.Allotments))) == false)
+            if (((ValidationAssignment(ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM.Assignments)) && (ValidationAllotment(ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM.Allotments))) == false)
             {
                 throw new Exception("Input parameters failed validation");
             }
 
             var lstContoursResults = new List<ContoursResult>();
 
-         
-
+ 
 
             ge06CalcResult.ContoursResult = lstContoursResults.ToArray();
-            FillAllotmentOrAssignmentResult(broadcastingContext.BroadcastingContextICSM, ref ge06CalcResult);
+            FillAllotmentOrAssignmentResult(ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM, ref ge06CalcResult);
         }
 
         /// <summary>
