@@ -9,6 +9,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Modifiers
 {
     public class CreateCalcTask
     {
+        public string MapName;
         public long ContextId;
         public Guid OwnerId;
         public float AzimuthStep_deg;

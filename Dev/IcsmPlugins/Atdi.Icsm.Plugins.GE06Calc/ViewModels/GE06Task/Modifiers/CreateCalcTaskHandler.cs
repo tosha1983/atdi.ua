@@ -28,6 +28,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Modifiers
             var query = _dataLayer.GetBuilder<ICalcTask>()
                 .Create()
                 .SetValue(c => c.CONTEXT.Id, command.ContextId)
+                .SetValue(c => c.MapName, command.MapName)
                 .SetValue(c => c.OwnerTaskId, command.OwnerId)
                 .SetValue(c => c.OwnerInstance, _config.Instance)
                 .SetValue(c => c.TypeCode, (byte)CalcTaskTypeCode.Gn06CalcTask)

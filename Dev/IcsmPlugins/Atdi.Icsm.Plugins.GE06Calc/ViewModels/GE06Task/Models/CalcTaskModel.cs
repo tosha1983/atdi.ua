@@ -9,6 +9,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
 {
     public class CalcTaskModel
     {
+        public string MapName { get; set; }
         public float AzimuthStep_deg { get; set; }
         public bool AdditionalContoursByDistances { get; set; }
         public int[] Distances { get; set; }

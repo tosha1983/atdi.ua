@@ -103,6 +103,7 @@
     <Compile Include="ViewModels\GE06Task\Events\OnRunCalcTask.cs" />
     <Compile Include="ViewModels\GE06Task\Models\AssignmentsAllotmentsModel.cs" />
     <Compile Include="ViewModels\GE06Task\Models\CalcTaskModel.cs" />
+    <Compile Include="ViewModels\GE06Task\Models\ProjectMapsModel.cs" />
     <Compile Include="ViewModels\GE06Task\Modifiers\CreateCalcTask.cs" />
     <Compile Include="ViewModels\GE06Task\Modifiers\CreateCalcTaskHandler.cs" />
     <Compile Include="ViewModels\GE06Task\Modifiers\DeleteCalcTask.cs" />
@@ -119,6 +120,8 @@
     <Compile Include="ViewModels\GE06Task\Queries\GetIcsmAssigmentsByAdmAllotIdExecutor.cs" />
     <Compile Include="ViewModels\GE06Task\Queries\GetIcsmAssigmentsBySfnId.cs" />
     <Compile Include="ViewModels\GE06Task\Queries\GetIcsmAssigmentsBySfnIdExecutor.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\GetProjectMapByClientContextId.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\GetProjectMapByClientContextIdExecutor.cs" />
     <Compile Include="ViewModels\GE06Task\Queries\StringConverter.cs" />
     <Compile Include="ViewModels\GE06Task\Queries\GetAssignmentByIcsmId.cs" />
     <Compile Include="ViewModels\GE06Task\Queries\GetAssignmentByIcsmIdExecutor.cs" />
