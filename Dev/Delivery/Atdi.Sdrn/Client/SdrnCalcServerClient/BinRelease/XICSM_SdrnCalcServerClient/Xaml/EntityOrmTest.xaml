@@ -24,9 +24,10 @@
   <DockPanel LastChildFill="True" MinHeight="30">
     <Grid>
       <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="33*" MinWidth="100"/>
-          <ColumnDefinition Width="Auto" />
-          <ColumnDefinition Width="66*" MinWidth="100"/>
+        <ColumnDefinition Width="25*" MinWidth="100"/>
+        <ColumnDefinition Width="25*" />
+        <ColumnDefinition Width="25*" MinWidth="100"/>
+        <ColumnDefinition Width="25*" MinWidth="100"/>
       </Grid.ColumnDefinitions>
       <Grid.RowDefinitions>
           <RowDefinition Height="*"></RowDefinition>
@@ -42,8 +43,34 @@
           </DataGrid.Columns>
         </DataGrid>
       </GroupBox>
+      <WrapPanel Grid.Column="1" Orientation="Vertical">
+        <orm:OrmEnumBox     HorizontalAlignment="Left" CaptionWith="100" Width="300" Caption="Test EnumBox" Source="{Binding Path=StatusTestEnum}" SelectedValue="{Binding Path=EnumValue, Mode=TwoWay}"/>
+        <orm:OrmCheckBox    HorizontalAlignment="Left" CaptionWith="100" Width="300" Caption="Test CheckBox" SelectedValue="{Binding Path=CheckBoxValue, Mode=TwoWay}"/>
+        <orm:OrmCheckBox    HorizontalAlignment="Left" CaptionWith="100" Width="300" Caption="Test CheckBox" SelectedValue="{Binding Path=CheckBoxValue, Mode=TwoWay}" IsRequired="True"/>
+        <orm:OrmTextBox     HorizontalAlignment="Left" CaptionWith="100" Width="300" Caption="Test TextBox" Text="{Binding Path=EnumValue, Mode=TwoWay}"/>
+        <orm:OrmCheckBox    HorizontalAlignment="Left" CaptionWith="100" Width="150" Caption="Test CheckBox" SelectedValue="{Binding Path=CheckBoxValue, Mode=TwoWay}"/>
+        <orm:OrmCheckBox    HorizontalAlignment="Left" CaptionWith="250" Width="300" Caption="Test CheckBox" SelectedValue="{Binding Path=CheckBoxValue, Mode=TwoWay}" IsRequired="True"/>
+        <orm:OrmDatePicker  HorizontalAlignment="Left" CaptionWith="100" Width="300" Caption="Test DatePicker" SelectedDate="{Binding Path=CheckBoxValue, Mode=TwoWay}"/>
+      </WrapPanel>
+      <WrapPanel Grid.Column="2" Orientation="Vertical">
+        <orm:OrmEnumBox     HorizontalAlignment="Left" Enabled="False" CaptionWith="100" Width="300" Caption="Test EnumBox" Source="{Binding Path=StatusTestEnum}" SelectedValue="{Binding Path=EnumValue, Mode=TwoWay}"/>
+        <orm:OrmCheckBox    HorizontalAlignment="Left" Enabled="False" CaptionWith="100" Width="300" Caption="Test CheckBox" SelectedValue="{Binding Path=CheckBoxValue, Mode=TwoWay}"/>
+        <orm:OrmCheckBox    HorizontalAlignment="Left" Enabled="False" CaptionWith="100" Width="300" Caption="Test CheckBox" SelectedValue="{Binding Path=CheckBoxValue, Mode=TwoWay}" IsRequired="True"/>
+        <orm:OrmTextBox     HorizontalAlignment="Left" Enabled="False" CaptionWith="100" Width="300" Caption="Test TextBox" Text="{Binding Path=EnumValue, Mode=TwoWay}"/>
+        <orm:OrmCheckBox    HorizontalAlignment="Left" Enabled="False" CaptionWith="100" Width="150" Caption="Test CheckBox" SelectedValue="{Binding Path=CheckBoxValue, Mode=TwoWay}"/>
+        <orm:OrmCheckBox    HorizontalAlignment="Left" Enabled="False" CaptionWith="250" Width="300" Caption="Test CheckBox" SelectedValue="{Binding Path=CheckBoxValue, Mode=TwoWay}" IsRequired="True"/>
+        <orm:OrmDatePicker  HorizontalAlignment="Left" Enabled="False" CaptionWith="100" Width="300" Caption="Test DatePicker" SelectedDate="{Binding Path=CheckBoxValue, Mode=TwoWay}"/>
+      </WrapPanel>
+      <WrapPanel Grid.Column="3" Orientation="Vertical">
+        <orm:OrmEnumBox     HorizontalAlignment="Left" Enabled="False" CaptionWith="100" Width="300" Caption="Test EnumBox" Source="{Binding Path=StatusTestEnum}" SelectedValue="{Binding Path=EnumValue, Mode=TwoWay}"/>
+        <orm:OrmCheckBox    HorizontalAlignment="Left" Enabled="False" CaptionWith="100" Width="300" Caption="Test CheckBox" SelectedValue="{Binding Path=CheckBoxValue, Mode=TwoWay}"/>
+        <orm:OrmCheckBox    HorizontalAlignment="Left" Enabled="False" CaptionWith="100" Width="300" Caption="Test CheckBox" SelectedValue="{Binding Path=CheckBoxValue, Mode=TwoWay}" IsRequired="True"/>
+        <orm:OrmTextBox     HorizontalAlignment="Left" Enabled="False" CaptionWith="100" Width="300" Caption="Test TextBox" Text="{Binding Path=EnumValue, Mode=TwoWay}"/>
+        <orm:OrmCheckBox    HorizontalAlignment="Left" Enabled="False" CaptionWith="100" Width="150" Caption="Test CheckBox" SelectedValue="{Binding Path=CheckBoxValue, Mode=TwoWay}"/>
+        <orm:OrmCheckBox    HorizontalAlignment="Left" Enabled="False" CaptionWith="250" Width="300" Caption="Test CheckBox" SelectedValue="{Binding Path=CheckBoxValue, Mode=TwoWay}" IsRequired="True"/>
+        <orm:OrmDatePicker  HorizontalAlignment="Left" Enabled="False" CaptionWith="100" Width="300" Caption="Test DatePicker" SelectedDate="{Binding Path=CheckBoxValue, Mode=TwoWay}"/>
+      </WrapPanel>
 
-      <orm:OrmEnumBox Grid.Column="2" Margin="5,5,5,5" CaptionWith="100" Width="300" Caption="{x:Static res:Resources.StatusName}" Source="{Binding Path=StatusTestEnum}" SelectedValue="{Binding Path=EnumValue, Mode=TwoWay}"/>
     </Grid>
   </DockPanel>
 </UserControl>
