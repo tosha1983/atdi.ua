@@ -964,7 +964,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             {
                  BroadcastingAssignment = broadcastingAssignment,
                  PropagationModel = propagationModel,
-                 CluttersDesc = this._ge06CalcData.CluttersDesc
+                 //CluttersDesc = this._ge06CalcData.CluttersDesc
                 // заполнить надо
             };
             var iterationCorellationCalc = _iterationsPool.GetIteration<BroadcastingFieldStrengthCalcData, BroadcastingFieldStrengthCalcResult>();

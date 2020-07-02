@@ -69,16 +69,14 @@ namespace Atdi.Test.CalcServer.LowFunction
 
                     var arrPnts = pointEarthGeometricslst.ToArray();
 
-
-
                     // нужно заполнить
-                    BroadcastingCalcBarycenterGE06 broadcastingAssignment = new BroadcastingCalcBarycenterGE06();
-                    broadcastingAssignment.BroadcastingAllotment = new  GE.BroadcastingAllotment()
+                    BroadcastingCalcBarycenterGE06 AllotmAsssigments = new BroadcastingCalcBarycenterGE06();
+                    AllotmAsssigments.BroadcastingAllotment = new  GE.BroadcastingAllotment()
                     {
                          AdminData = new GE.AdministrativeData()
                          {
                              Action = GE.ActionType.Add,
-                             Adm = "G",
+                             Adm = "F  ",
                              Fragment = "",
                              NoticeType = "",
                              AdmRefId = ""
@@ -93,14 +91,14 @@ namespace Atdi.Test.CalcServer.LowFunction
                                 Polar =  GE.PolarType.H,
                            }
                     };
-                    broadcastingAssignment.BroadcastingAssignments = new GE.BroadcastingAssignment[3]
+                    AllotmAsssigments.BroadcastingAssignments = new GE.BroadcastingAssignment[3]
                     {
                          new GE.BroadcastingAssignment()
                          {
                               AdmData = new GE.AdministrativeData()
                               {
                                    Action = GE.ActionType.Add,
-                                   Adm = "G"
+                                   Adm = "F  "
                               },
                                SiteParameters = new GE.SiteParameters()
                                {
@@ -114,7 +112,7 @@ namespace Atdi.Test.CalcServer.LowFunction
                               AdmData = new GE.AdministrativeData()
                               {
                                    Action = GE.ActionType.Add,
-                                   Adm = "G"
+                                   Adm = "F  "
                               },
                                SiteParameters = new GE.SiteParameters()
                                {
@@ -128,7 +126,7 @@ namespace Atdi.Test.CalcServer.LowFunction
                               AdmData = new GE.AdministrativeData()
                               {
                                    Action = GE.ActionType.Add,
-                                   Adm = "G"
+                                   Adm = "F  "
                               },
                                SiteParameters = new GE.SiteParameters()
                                {
@@ -139,36 +137,36 @@ namespace Atdi.Test.CalcServer.LowFunction
                          }
                     };
 
+                    // конец создания елотментов и асаймента
 
+                    // сама функция расчета барицентра
                     PointEarthGeometric pointEarthGeometric = new PointEarthGeometric();
-                    gn06Service.CalcBarycenterGE06(broadcastingAssignment, ref pointEarthGeometric);
+                    var idwmServices = resolver.Resolve<IIdwmService>();
+
+                    var adm = idwmServices.GetADMByPoint(new Point() { Latitude_dec = 45, Longitude_dec = 0 });
+                    AllotmAsssigments.BroadcastingAllotment.AdminData.Adm = adm;
+                    gn06Service.CalcBarycenterGE06(AllotmAsssigments, ref pointEarthGeometric);
+                    
 
 
-                    WPF.Location[] inputCoords = new WPF.Location[arrPnts.Length+3];
+                    WPF.Location[] inputCoords = new WPF.Location[arrPnts.Length];
                     for (int u = 0; u < arrPnts.Length; u++)
                     {
                         inputCoords[u] = new WPF.Location(arrPnts[u].Lon_DEC, arrPnts[u].Lat_DEC);
                     }
-
-                    inputCoords[arrPnts.Length] = new WPF.Location(-1.151966, 54.142403);
-                    inputCoords[arrPnts.Length+1] = new WPF.Location(0.15359547, 52.644847);
-                    inputCoords[arrPnts.Length+2] = new WPF.Location(-0.59518244, 49.611336);
-
-
+                    //inputCoords[arrPnts.Length] = new WPF.Location(-1.151966, 54.142403);
+                    //inputCoords[arrPnts.Length+1] = new WPF.Location(0.15359547, 52.644847);
+                    //inputCoords[arrPnts.Length+2] = new WPF.Location(-0.59518244, 49.611336);
                     WPF.Location[] outputCoords = new WPF.Location[1]
                     {
                          new WPF.Location(pointEarthGeometric.Longitude, pointEarthGeometric.Latitude),
-                        
                     };
-                    WPF.RunApp.Start(WPF.TypeObject.Points, inputCoords, WPF.TypeObject.Points, outputCoords);
-
-
+                    WPF.RunApp.Start(WPF.TypeObject.Polygon, inputCoords, WPF.TypeObject.Points, outputCoords);
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine("Exception: " + e.Message);
                 }
-
                 Console.WriteLine($"Press any key to stop test DeepServices GE06 ...");
                 Console.ReadLine();
             }
