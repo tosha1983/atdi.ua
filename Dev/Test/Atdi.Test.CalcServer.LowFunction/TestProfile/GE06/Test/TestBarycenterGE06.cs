@@ -39,11 +39,13 @@ namespace Atdi.Test.CalcServer.LowFunction
                     host.Container.Register<IIdwmService, IdwmService>(ServiceLifetime.PerThread);
                     host.Container.Register<ITransformation, TransformationService>(ServiceLifetime.PerThread);
                     host.Container.Register<IEarthGeometricService, EarthGeometricService>(ServiceLifetime.PerThread);
-                    host.Container.Register<IGn06Service, EstimationAssignmentsService>(ServiceLifetime.PerThread);
+                   // host.Container.Register<IGn06Service, EstimationAssignmentsService>(ServiceLifetime.PerThread);
                     var resolver = host.Container.GetResolver<IServicesResolver>();
                     var gn06Service = resolver.Resolve<IGn06Service>();
+                    var idwmServices = resolver.Resolve<IIdwmService>();
 
-
+                    var point = new Point() { Longitude_dec = 0, Latitude_dec = 45 };
+                    var resultAdm = idwmServices.GetADMByPoint(in point);
 
                     string fileName = System.IO.Path.Combine(Environment.CurrentDirectory, "AreaTestGe06BaryCenter.txt");
 
@@ -73,25 +75,25 @@ namespace Atdi.Test.CalcServer.LowFunction
 
                     // нужно заполнить
                     BroadcastingCalcBarycenterGE06 broadcastingAssignment = new BroadcastingCalcBarycenterGE06();
-                    broadcastingAssignment.BroadcastingAllotment = new  GE.BroadcastingAllotment()
+                    broadcastingAssignment.BroadcastingAllotment = new GE.BroadcastingAllotment()
                     {
-                         AdminData = new GE.AdministrativeData()
-                         {
-                             Action = GE.ActionType.Add,
-                             Adm = "G",
-                             Fragment = "",
-                             NoticeType = "",
-                             AdmRefId = ""
-                         },
-                          AllotmentParameters = new GE.AllotmentParameters()
-                          {
-                               Name="Test",
-                               Сontur = arrPnts,
-                          },
-                           EmissionCharacteristics = new GE.BroadcastingAllotmentEmissionCharacteristics()
-                           {
-                                Polar =  GE.PolarType.H,
-                           }
+                        AdminData = new GE.AdministrativeData()
+                        {
+                            Action = GE.ActionType.Add,
+                            Adm = "F  ",
+                            Fragment = "",
+                            NoticeType = "",
+                            AdmRefId = ""
+                        },
+                        AllotmentParameters = new GE.AllotmentParameters()
+                        {
+                            Name = "Test",
+                            Сontur = arrPnts,
+                        },
+                        EmissionCharacteristics = new GE.BroadcastingAllotmentEmissionCharacteristics()
+                        {
+                            Polar = GE.PolarType.H,
+                        }
                     };
                     broadcastingAssignment.BroadcastingAssignments = new GE.BroadcastingAssignment[3]
                     {
@@ -100,7 +102,7 @@ namespace Atdi.Test.CalcServer.LowFunction
                               AdmData = new GE.AdministrativeData()
                               {
                                    Action = GE.ActionType.Add,
-                                   Adm = "G"
+                                   Adm = "F  "
                               },
                                SiteParameters = new GE.SiteParameters()
                                {

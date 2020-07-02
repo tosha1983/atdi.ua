@@ -108,7 +108,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.GN06
                     var nearestPoint = new Point();
                     CalcNearestPointByADM(idwmService, coordBaryCenter, administrationAllotment, ref nearestPoint);
                     coordBaryCenter.Longitude = nearestPoint.Longitude_dec.Value;
-                    coordBaryCenter.Latitude = nearestPoint.Longitude_dec.Value;
+                    coordBaryCenter.Latitude = nearestPoint.Latitude_dec.Value;
                 }
             }
             if (administrationsBroadcastingAssignments != null)
@@ -120,7 +120,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.GN06
                         var nearestPoint = new Point();
                         CalcNearestPointByADM(idwmService, coordBaryCenter, administrationsBroadcastingAssignments[i], ref nearestPoint);
                         coordBaryCenter.Longitude = nearestPoint.Longitude_dec.Value;
-                        coordBaryCenter.Latitude = nearestPoint.Longitude_dec.Value;
+                        coordBaryCenter.Latitude = nearestPoint.Latitude_dec.Value;
                         break;
                     }
                 }
