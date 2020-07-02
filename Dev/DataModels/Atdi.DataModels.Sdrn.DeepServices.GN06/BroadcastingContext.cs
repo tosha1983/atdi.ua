@@ -8,9 +8,8 @@ namespace Atdi.DataModels.Sdrn.DeepServices.GN06
 {
 	public class BroadcastingContext
 	{
-		public BroadcastingAllotment[] Allotments;
+		public BroadcastingContextBase BroadcastingContextICSM;
 
-		public BroadcastingAssignment[] Assignments;
-
+		public BroadcastingContextBase  broadcastingContextBRIFIC;
 	}
 }

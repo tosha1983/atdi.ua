@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "Gn06AllotmentOrAssignmentResult"
+  Title       = "Geneva 06 allotment or assignment result"
+  Desc        = "The geneva 06 allotment or assignment result"
+  Type        = "Normal"
+  BaseEntity  = ""
+  
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>GN06_ALLOTMENT_OR_ASSIGNMENT_RESULT</Name>
+    <Schema>CALC</Schema>
+  </DataSource>
+  <Fields>
+
+    <Field Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column" Desc="The Id record." Title="Id record"/>
+    <Field Name="Gn06ResultId" SourceType="Column" SourceName="CALCRESULTS_GN06_ID" DataType="Integer.64"  Required="true" Title="Geneva 06 result ID" Desc="The geneva 06 result ID" />
+    <Field Name="Adm" SourceType="Column" SourceName="ADM" DataType="Text.50" Required="false" Title="Administration" Desc="The administration" />
+    <Field Name="TypeTable" SourceType="Column" SourceName="TYPE_TABLE" DataType="Text.50" Required="false" Title="Type (allotment or assignment)" Desc="The type (allotment or assignment)" />
+    <Field Name="Name" SourceType="Column" SourceName="NAME" DataType="Text.100" Required="false" Title="Name" Desc="The site name or allotment name" />
+    <Field Name="Freq_MHz" SourceType="Column" Required="false" SourceName="FREQ_MHZ" DataType="Double.30.10" Title="Freq, MHz" Desc="The freq, Mhz"/>
+    <Field Name="Longitude_DEC" SourceType="Column" Required="false" SourceName="LON_DEC" DataType="Double.30.10" Title="Longitude, dec" Desc="The Longitude, dec"/>
+    <Field Name="Latitude_DEC" SourceType="Column" Required="false" SourceName="LAT_DEC" DataType="Double.30.10" Title="Latitude, dec" Desc="The Latitude, dec"/>
+    <Field Name="MaxEffHeight_m" SourceType="Column" Required="false" SourceName="MAX_EFFECTIVE_HEIGHT_M" DataType="Integer.32" Title="Maximum effective height, m" Desc="The maximum effective height, m"/>
+    <Field Name="Polar" SourceType="Column" SourceName="POLAR" DataType="Text.100" Required="false" Title="Polar" Desc="The polarization" />
+    <Field Name="ErpH_dbW" SourceType="Column" Required="false" SourceName="ERPH_DBW" DataType="Float.22.8" Title="ErpH, dbW" Desc="The ErpH, dbW"/>
+    <Field Name="ErpV_dbW" SourceType="Column" Required="false" SourceName="ERPV_DBW" DataType="Float.22.8" Title="ErpV, dbW" Desc="The ErpV, dbW"/>
+    <Field Name="AntennaDirectional" SourceType="Column" SourceName="ANTENNA_DIRECTIONAL" DataType="Text.50" Required="false" Title="AntennaDirectional" Desc="The antenna directional" />
+    <Field Name="AdmRefId" SourceType="Column" SourceName="ADM_REF_ID" DataType="Text.100" Required="false" Title="AdmRefId" Desc="The AdmRefId" />
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>
+
+

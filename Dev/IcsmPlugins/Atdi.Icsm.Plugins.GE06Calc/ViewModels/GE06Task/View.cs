@@ -263,6 +263,8 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                 return;
             }
 
+            var projectMap  = _objectReader.Read<ProjectMapsModel>().By(new GetProjectMapByClientContextId { ContextId = Properties.Settings.Default.ActiveContext });
+
             var splitVariants = new char[] { ',', ';', ' ' };
             var distances = new List<int>();
             foreach (var item in CurrentCalcTaskCard.DistancesString.Split(splitVariants))
@@ -284,6 +286,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
 
             var modifier = new Modifiers.CreateCalcTask
             {
+                MapName = projectMap.MapName,
                 AzimuthStep_deg = CurrentCalcTaskCard.AzimuthStep_deg,
                 AdditionalContoursByDistances = CurrentCalcTaskCard.AdditionalContoursByDistances,
                 Distances = CurrentCalcTaskCard.Distances,
@@ -310,8 +313,10 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
         }
         private BroadcastingContext GetBroadcastingContext()
         {
-            var allotments = new List<BroadcastingAllotment>();
-            var assignments = new List<BroadcastingAssignment>();
+            var allotmentBrific = new BroadcastingAllotment();
+            var allotmentIcsm = new BroadcastingAllotment();
+            var assignmentsBrific = new List<BroadcastingAssignment>();
+            var assignmentsIcsm = new List<BroadcastingAssignment>();
 
             foreach (var item in AssignmentsAllotmentsList)
             {
@@ -357,7 +362,10 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                             SfnId = item.SfnId
                         }
                     };
-                    allotments.Add(allotment);
+                    if (item.Source == AssignmentsAllotmentsSourceType.Brific)
+                        allotmentBrific = allotment;
+                    else if (item.Source == AssignmentsAllotmentsSourceType.ICSM)
+                        allotmentIcsm = allotment;
                 }
                 if (item.Type == AssignmentsAllotmentsModelType.Assignment)
                 {
@@ -414,10 +422,20 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                             SfnId = item.SfnId
                         }
                     };
-                    assignments.Add(assignment);
+
+                    if (item.Source == AssignmentsAllotmentsSourceType.Brific)
+                        assignmentsBrific.Add(assignment);
+                    else if (item.Source == AssignmentsAllotmentsSourceType.ICSM)
+                        assignmentsIcsm.Add(assignment);
+
+
                 }
             }
-            return new BroadcastingContext() { Allotments = allotments.ToArray(), Assignments = assignments.ToArray() };
+            return new BroadcastingContext()
+            {
+                broadcastingContextBRIFIC = new BroadcastingContextBase() { Allotments = allotmentBrific, Assignments = assignmentsBrific.ToArray() },
+                BroadcastingContextICSM = new BroadcastingContextBase() { Allotments = allotmentIcsm, Assignments = assignmentsIcsm.ToArray() }
+            };
         }
         public override void Dispose()
         {

@@ -39,10 +39,10 @@ namespace Atdi.Test.CalcServer.LowFunction
             //CalcBarycenter testBaryCentr = new CalcBarycenter();
             //testBaryCentr.Test();
 
-            PutPointToContour putPointToContour = new PutPointToContour();
-            putPointToContour.Test();
+            //PutPointToContour putPointToContour = new PutPointToContour();
+            //putPointToContour.Test();
 
-            //CreateContourFromPointByDistance createContourFromPointByDistance = new CreateContourFromPointByDistance();
+            ///CreateContourFromPointByDistance createContourFromPointByDistance = new CreateContourFromPointByDistance();
             //createContourFromPointByDistance.Test();
 
             //CreateContourForStationByTriggerFieldStrengths createContourForStationByTriggerFieldStrengths = new CreateContourForStationByTriggerFieldStrengths();
@@ -61,6 +61,12 @@ namespace Atdi.Test.CalcServer.LowFunction
 
             //GetADMByPointAndDistanse GetADMByPointAndDistanse = new GetADMByPointAndDistanse();
             //GetADMByPointAndDistanse.Test();
+
+            //InterseptionOnSphere.Test();
+            //CrossTreckOnSphere.Test();
+
+
+            TestBarycenterGE06.Test();
 
         }
     }

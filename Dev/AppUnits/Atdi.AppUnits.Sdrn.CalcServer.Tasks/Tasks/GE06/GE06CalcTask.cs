@@ -80,7 +80,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
             var propagationModel = _contextService.GetPropagationModel(this._calcDbScope, this._taskContext.ClientContextId);
             var iterationGe06CalcData = new Ge06CalcData
             {
-                Gn06TaskParameters = this._parameters,
+                Ge06TaskParameters = this._parameters,
                 MapData = mapData,
                 CluttersDesc = _mapRepository.GetCluttersDesc(this._calcDbScope, mapData.Id),
                 PropagationModel = propagationModel,
@@ -92,12 +92,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                 }
             };
             var resultId = CreateGe06Result();
-            var iterationResultGe06 = _iterationsPool.GetIteration<Ge06CalcData, Ge06CalcResult[]>();
+            var iterationResultGe06 = _iterationsPool.GetIteration<Ge06CalcData, Ge06CalcResult>();
             var resultGe06Calc = iterationResultGe06.Run(_taskContext, iterationGe06CalcData);
-            for (int i = 0; i < resultGe06Calc.Length; i++)
-            {
-                SaveTaskResult(resultGe06Calc[i], resultId);
-            }
+            
+            SaveTaskResult(resultGe06Calc, resultId);
+            
             // переводим результат в статус "Completed"
             var updQuery = _calcServerDataLayer.GetBuilder<ICalcResult>()
                .Update()
@@ -167,32 +166,61 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
             return key.Id;
         }
 
-        private void SaveTaskResult(in Ge06CalcResult result, long gn06ResultId)
+        private void SaveTaskResult(in Ge06CalcResult resultGe06Calc, long gn06ResultId)
         {
-            if (result.ContoursResult != null)
+            for (int i = 0; i < resultGe06Calc.ContoursResult.Length; i++)
             {
-                var contoursResult = result.ContoursResult;
-                var insertQueryGn06ContoursResult = _calcServerDataLayer.GetBuilder<CALC.IGn06ContoursResult>()
-                    .Insert()
-                    .SetValue(c => c.AffectedADM, contoursResult.AffectedADM)
-                    .SetValue(c => c.ContourType, (byte)contoursResult.ContourType)
-                    .SetValueAsJson<CountoursPoint[]>(c => c.CountoursPoints, contoursResult.CountoursPoints)
-                    .SetValue(c => c.Distance, contoursResult.Distance)
-                    .SetValue(c => c.FS, contoursResult.FS)
-                    .SetValue(c => c.PointsCount, contoursResult.PointsCount)
-                    .SetValue(c => c.Gn06ResultId, gn06ResultId);
-                var keyGn06ContoursResult = _calcDbScope.Executor.Execute<CALC.IGn06ContoursResult_PK>(insertQueryGn06ContoursResult);
+                if (resultGe06Calc.ContoursResult[i] != null)
+                {
+                    var contoursResult = resultGe06Calc.ContoursResult[i];
+                    var insertQueryGn06ContoursResult = _calcServerDataLayer.GetBuilder<CALC.IGn06ContoursResult>()
+                        .Insert()
+                        .SetValue(c => c.AffectedADM, contoursResult.AffectedADM)
+                        .SetValue(c => c.ContourType, (byte)contoursResult.ContourType)
+                        .SetValueAsJson<CountoursPoint[]>(c => c.CountoursPoints, contoursResult.CountoursPoints)
+                        .SetValue(c => c.Distance, contoursResult.Distance)
+                        .SetValue(c => c.FS, contoursResult.FS)
+                        .SetValue(c => c.PointsCount, contoursResult.PointsCount)
+                        .SetValue(c => c.Gn06ResultId, gn06ResultId);
+                    var keyGn06ContoursResult = _calcDbScope.Executor.Execute<CALC.IGn06ContoursResult_PK>(insertQueryGn06ContoursResult);
+                }
             }
-            if (result.AffectedADMResult != null)
+            for (int i = 0; i < resultGe06Calc.AffectedADMResult.Length; i++)
             {
-                var affectedADMResult = result.AffectedADMResult;
-                var insertQueryGn06AffectedADMResult = _calcServerDataLayer.GetBuilder<CALC.IGn06AffectedADMResult>()
-                    .Insert()
-                    .SetValue(c => c.ADM, affectedADMResult.ADM)
-                    .SetValue(c => c.AffectedServices, affectedADMResult.AffectedServices)
-                    .SetValue(c => c.Gn06ResultId, gn06ResultId)
-                    .SetValue(c => c.TypeAffected, affectedADMResult.TypeAffected);
-                var keyGn06AffectedADMResult = _calcDbScope.Executor.Execute<CALC.IGn06AffectedADMResult_PK>(insertQueryGn06AffectedADMResult);
+                if (resultGe06Calc.AffectedADMResult[i] != null)
+                {
+                    var affectedADMResult = resultGe06Calc.AffectedADMResult[i];
+                    var insertQueryGn06AffectedADMResult = _calcServerDataLayer.GetBuilder<CALC.IGn06AffectedADMResult>()
+                        .Insert()
+                        .SetValue(c => c.ADM, affectedADMResult.ADM)
+                        .SetValue(c => c.AffectedServices, affectedADMResult.AffectedServices)
+                        .SetValue(c => c.Gn06ResultId, gn06ResultId)
+                        .SetValue(c => c.TypeAffected, affectedADMResult.TypeAffected);
+                    var keyGn06AffectedADMResult = _calcDbScope.Executor.Execute<CALC.IGn06AffectedADMResult_PK>(insertQueryGn06AffectedADMResult);
+                }
+            }
+            for (int i = 0; i < resultGe06Calc.AllotmentOrAssignmentResult.Length; i++)
+            {
+                if (resultGe06Calc.AllotmentOrAssignmentResult[i] != null)
+                {
+                    var allotmentOrAssignmentResult = resultGe06Calc.AllotmentOrAssignmentResult[i];
+                    var insertQueryGn06AllotmentOrAssignmentResult = _calcServerDataLayer.GetBuilder<CALC.IGn06AllotmentOrAssignmentResult>()
+                        .Insert()
+                        .SetValue(c => c.Adm, allotmentOrAssignmentResult.Adm)
+                        .SetValue(c => c.AdmRefId, allotmentOrAssignmentResult.AdmRefId)
+                        .SetValue(c => c.AntennaDirectional, allotmentOrAssignmentResult.AntennaDirectional)
+                        .SetValue(c => c.ErpH_dbW, allotmentOrAssignmentResult.ErpH_dbW)
+                        .SetValue(c => c.ErpV_dbW, allotmentOrAssignmentResult.ErpV_dbW)
+                        .SetValue(c => c.Freq_MHz, allotmentOrAssignmentResult.Freq_MHz)
+                        .SetValue(c => c.Latitude_DEC, allotmentOrAssignmentResult.Latitude_DEC)
+                        .SetValue(c => c.Longitude_DEC, allotmentOrAssignmentResult.Longitude_DEC)
+                        .SetValue(c => c.MaxEffHeight_m, allotmentOrAssignmentResult.MaxEffHeight_m)
+                        .SetValue(c => c.Name, allotmentOrAssignmentResult.Name)
+                        .SetValue(c => c.Polar, allotmentOrAssignmentResult.Polar)
+                        .SetValue(c => c.TypeTable, allotmentOrAssignmentResult.TypeTable)
+                        .SetValue(c => c.Gn06ResultId, gn06ResultId);
+                    var keyinsertQueryGn06AllotmentOrAssignmentResult = _calcDbScope.Executor.Execute<CALC.IGn06AllotmentOrAssignmentResult_PK>(insertQueryGn06AllotmentOrAssignmentResult);
+                }
             }
         }
     }

@@ -33,6 +33,9 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
                     var pointIPlus1 = geometryArgs.Points[i + 1];
                     square += (pointI.Longitude * pointIPlus1.Latitude - pointIPlus1.Longitude * pointI.Latitude);
                 }
+                var pointI_ = geometryArgs.Points[geometryArgs.Points.Length - 1];
+                var pointIPlus1_ = geometryArgs.Points[0];
+                square += (pointI_.Longitude * pointIPlus1_.Latitude - pointIPlus1_.Longitude * pointI_.Latitude);
             }
             return square / 2;
         }
@@ -48,6 +51,9 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
                     var pointIPlus1 = geometryArgs.Points[i + 1];
                     Gx += (pointI.Longitude + pointIPlus1.Longitude) * (pointI.Longitude * pointIPlus1.Latitude - pointIPlus1.Longitude * pointI.Latitude);
                 }
+                var pointI_ = geometryArgs.Points[geometryArgs.Points.Length - 1];
+                var pointIPlus1_ = geometryArgs.Points[0];
+                Gx += (pointI_.Longitude + pointIPlus1_.Longitude) * (pointI_.Longitude * pointIPlus1_.Latitude - pointIPlus1_.Longitude * pointI_.Latitude);
             }
             return Gx / (6 * CalcSquare(in geometryArgs));
         }
@@ -63,6 +69,10 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
                     var pointIPlus1 = geometryArgs.Points[i + 1];
                     Gy += (pointI.Latitude + pointIPlus1.Latitude) * (pointI.Longitude * pointIPlus1.Latitude - pointIPlus1.Longitude * pointI.Latitude);
                 }
+                var pointI_ = geometryArgs.Points[geometryArgs.Points.Length - 1];
+                var pointIPlus1_ = geometryArgs.Points[0];
+                Gy += (pointI_.Latitude + pointIPlus1_.Latitude) * (pointI_.Longitude * pointIPlus1_.Latitude - pointIPlus1_.Longitude * pointI_.Latitude);
+
             }
             return Gy / (6 * CalcSquare(in geometryArgs));
         }
@@ -199,6 +209,13 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
 
                         pointResult.CoordinateUnits = CoordinateUnits.deg;
                     }
+                    else
+                    {
+                        if (distance == curNearestDistance)
+                        {
+                            pointResult=point;
+                        }
+                    }
                 }
             }
         }
@@ -215,7 +232,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
         /// <returns></returns>
         public  PointEarthGeometric CalculationCoordinateByLengthAndAzimuth(in PointEarthGeometric PointStart, double distance_km, double azimuth, bool LargeCircleArc = true)
         {
-            return CreateContourFromContureByDistanceСalculations.CalculationCoordinateByLengthAndAzimuth(in PointStart, distance_km, azimuth, LargeCircleArc);
+            return GeometricСalculations.CalculationCoordinateByLengthAndAzimuth(in PointStart, distance_km, azimuth, LargeCircleArc);
         }
 
 
@@ -373,9 +390,9 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
         /// <param name="contourFromContureByDistanceArgs"></param>
         /// <param name="pointEarthGeometricWithAzimuth"></param>
         /// <param name="sizeResultBuffer"></param>
-        public void CreateContourFromContureByDistance(in ContourFromContureByDistanceArgs contourFromContureByDistanceArgs, ref PointEarthGeometricWithAzimuth[] pointEarthGeometricWithAzimuth, out int sizeResultBuffer)
+        public void CreateContourFromContureByDistance(in ContourFromContureByDistanceArgs contourFromContureByDistanceArgs, ref PointEarthGeometric[] pointEarthGeometric, out int sizeResultBuffer)
         {
-            CreateContourFromContureByDistanceСalculations.CreateContourFromContureByDistance(in contourFromContureByDistanceArgs, ref pointEarthGeometricWithAzimuth, out sizeResultBuffer);
+            CreateContourFromContureByDistanceСalculations.CreateContourFromContureByDistance(in contourFromContureByDistanceArgs, ref pointEarthGeometric, out sizeResultBuffer);
         }
 
 

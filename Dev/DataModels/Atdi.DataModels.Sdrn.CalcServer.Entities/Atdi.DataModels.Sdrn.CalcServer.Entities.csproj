@@ -68,6 +68,7 @@
     <Compile Include="Entities\IClientContextDiffraction.cs" />
     <Compile Include="Entities\IClientContextMainBlock.cs" />
     <Compile Include="Entities\IContextStationCoordinates.cs" />
+    <Compile Include="Entities\Tasks\IGn06AllotmentOrAssignmentResult.cs" />
     <Compile Include="Entities\Tasks\IGn06Args.cs" />
     <Compile Include="Entities\Tasks\IGn06ArgsBase.cs" />
     <Compile Include="Entities\Tasks\IGn06ArgsDefault.cs" />
@@ -114,6 +115,7 @@
     <Content Include="DataLayer\Oracle\Functions\CALC.GetID.sql" />
     <Content Include="DataLayer\Oracle\Sequences\CALC.CALCTASKS_GN06_ARGS_DEF_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\CALC.GN06_AFFECTED_ADM_RESULT_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\CALC.GN06_ALLOTMENT_OR_ASSIGNMENT_RESULT_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\CALC.GN06_CONTOURS_RESULT_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\CALC.CALCTASKS_GN06_ARGS_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\CALC.CALCRESULTS_GN06_ID_SEQ.sql" />
@@ -195,6 +197,7 @@
     <Content Include="DataLayer\Oracle\Tables\CALC.CONTEXT_STATION_COORDINATES.sql" />
     <Content Include="DataLayer\Oracle\Tables\CALC.CONTEXT_STATION_PATTERNS.sql" />
     <Content Include="DataLayer\Oracle\Tables\CALC.GN06_AFFECTED_ADM_RESULT.sql" />
+    <Content Include="DataLayer\Oracle\Tables\CALC.GN06_ALLOTMENT_OR_ASSIGNMENT_RESULT.sql" />
     <Content Include="DataLayer\Oracle\Tables\CALC.GN06_CONTOURS_RESULT.sql" />
     <Content Include="DataLayer\Oracle\Tables\CALC.PROJECTS.sql" />
     <Content Include="DataLayer\Oracle\Tables\CALC.PROJECT_MAPS.sql" />
@@ -202,6 +205,7 @@
     <Content Include="DataLayer\Oracle\Tables\CALC.PROJECT_MAP_CONTENT_SOURCES.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.CALCRESULTS_GN06.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.GN06_AFFECTED_ADM_RESULT.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.GN06_ALLOTMENT_OR_ASSIGNMENT_RESULT.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.GN06_CONTOURS_RESULT.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.CALCRESULTS.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.CALCRESULTS_POINTFIELDSTRENGTH.sql" />
@@ -314,6 +318,7 @@
     <Content Include="Metadata\Entities\ClientContextDiffraction.xml" />
     <Content Include="Metadata\Entities\ClientContextMainBlock.xml" />
     <Content Include="Metadata\Entities\ContextStationCoordinates.xml" />
+    <Content Include="Metadata\Entities\Tasks\Gn06AllotmentOrAssignmentResult.xml" />
     <Content Include="Metadata\Entities\Tasks\Gn06ContoursResult.xml" />
     <Content Include="Metadata\Entities\Tasks\Gn06ArgsBase.xml" />
     <Content Include="Metadata\Entities\Tasks\Gn06Args.xml" />

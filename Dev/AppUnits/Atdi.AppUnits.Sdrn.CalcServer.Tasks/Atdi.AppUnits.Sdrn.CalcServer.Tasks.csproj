@@ -50,7 +50,6 @@
     <Compile Include="AppServerComponent.cs" />
     <Compile Include="AppServerComponentConfig.cs" />
     <Compile Include="Iterations\GE06\BroadcastingFieldStrengthCalcIteration.cs" />
-    <Compile Include="Iterations\GE06\Ge06CalcFieldStrengthInPoint.cs" />
     <Compile Include="Iterations\GE06\Ge06CalcIteration.cs" />
     <Compile Include="Iterations\StationCalibration\CIDComparisonRDB.cs" />
     <Compile Include="Iterations\StationCalibration\GCIDComparisonRR.cs" />
@@ -96,6 +95,14 @@
       <Project>{567b4c34-9ff5-4c05-9e7b-d1ed94eadaaf}</Project>
       <Name>Atdi.Contracts.Sdrn.DeepServices.Gis</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeepServices.GN06\Atdi.Contracts.Sdrn.DeepServices.GN06.csproj">
+      <Project>{a3b45d65-031a-455d-984c-309ccc856994}</Project>
+      <Name>Atdi.Contracts.Sdrn.DeepServices.GN06</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeepServices.IDWM\Atdi.Contracts.Sdrn.DeepServices.IDWM.csproj">
+      <Project>{4e1a00f8-68cf-4c16-bdef-2d5ee849c1ec}</Project>
+      <Name>Atdi.Contracts.Sdrn.DeepServices.IDWM</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeepServices.RadioSystem\Atdi.Contracts.Sdrn.DeepServices.RadioSystem.csproj">
       <Project>{d576643b-fcdb-4873-9f08-abcfbb5e9e8f}</Project>
       <Name>Atdi.Contracts.Sdrn.DeepServices.RadioSystem</Name>
@@ -136,6 +143,10 @@
       <Project>{ee65799e-0a0a-4599-8f5e-30eb23304d49}</Project>
       <Name>Atdi.DataModels.Sdrn.DeepServices.GN06</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices.IDWM\Atdi.DataModels.Sdrn.DeepServices.IDWM.csproj">
+      <Project>{a0cb1ec6-1189-454d-a3a7-919a97e7b790}</Project>
+      <Name>Atdi.DataModels.Sdrn.DeepServices.IDWM</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices.RadioSystem\Atdi.DataModels.Sdrn.DeepServices.RadioSystem.csproj">
       <Project>{c67fbe11-fef0-48ad-9912-61bf4c61db03}</Project>
       <Name>Atdi.DataModels.Sdrn.DeepServices.RadioSystem</Name>
@@ -169,9 +180,6 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Iterations\GE06\Allotment\" />
-    <Folder Include="Iterations\GE06\Assignment\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
