@@ -9,22 +9,25 @@ using ICSM;
 
 namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
 {
-    public class GetBrificAssigmentsByAdmAllotIdExecutor : IReadQueryExecutor<GetBrificAssigmentsByAdmAllotId, List<AssignmentsAllotmentsModel>>
+    public class GetBrificAssigmentsByTargetExecutor : IReadQueryExecutor<GetBrificAssigmentsByTarget, List<AssignmentsAllotmentsModel>>
     {
         private readonly AppComponentConfig _config;
         private readonly CalcServerDataLayer _dataLayer;
 
-        public GetBrificAssigmentsByAdmAllotIdExecutor(AppComponentConfig config, CalcServerDataLayer dataLayer)
+        public GetBrificAssigmentsByTargetExecutor(AppComponentConfig config, CalcServerDataLayer dataLayer)
         {
             _config = config;
             _dataLayer = dataLayer;
         }
-        public List<AssignmentsAllotmentsModel> Read(GetBrificAssigmentsByAdmAllotId criterion)
+        public List<AssignmentsAllotmentsModel> Read(GetBrificAssigmentsByTarget criterion)
         {
             var assigns = new List<AssignmentsAllotmentsModel>();
             IMRecordset rs = new IMRecordset("fmtv_terra", IMRecordset.Mode.ReadOnly);
             rs.Select("terrakey,adm,notice_typ,fragment,intent,adm_ref_id,plan_entry,assgn_code,assoc_allot_id,assoc_allot_sfn_id,sfn_id,freq_assgn,polar,erp_h_dbw,erp_v_dbw,ref_plan_cfg,tran_sys,rx_mode,spect_mask,long_dec,lat_dec,site_alt,site_name,ant_dir,hgt_agl,eff_hgtmax,adm_ref_id,freq_assgn");
-            rs.SetWhere("assoc_allot_id", IMRecordset.Operation.Eq, criterion.Adm_Allot_Id);
+            rs.SetWhere("adm_ref_id", IMRecordset.Operation.Eq, criterion.target.AdmRefId);
+            rs.SetWhere("freq_assgn", IMRecordset.Operation.Eq, criterion.target.Freq_MHz);
+            rs.SetWhere("long_dec", IMRecordset.Operation.Eq, criterion.target.Lon_Dec);
+            rs.SetWhere("lat_dec", IMRecordset.Operation.Eq, criterion.target.Lat_Dec);
             for (rs.Open(); !rs.IsEOF(); rs.MoveNext())
             {
                 var assign = new AssignmentsAllotmentsModel() { Source = AssignmentsAllotmentsSourceType.ICSM, Type = AssignmentsAllotmentsModelType.Assignment };

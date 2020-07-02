@@ -116,6 +116,8 @@
     <Compile Include="ViewModels\GE06Task\Queries\GetBrificAssigmentsByAdmAllotIdExecutor.cs" />
     <Compile Include="ViewModels\GE06Task\Queries\GetBrificAssigmentsBySfnId.cs" />
     <Compile Include="ViewModels\GE06Task\Queries\GetBrificAssigmentsBySfnIdExecutor.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\GetBrificAssigmentsByTarget.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\GetBrificAssigmentsByTargetExecutor.cs" />
     <Compile Include="ViewModels\GE06Task\Queries\GetIcsmAssigmentsByAdmAllotId.cs" />
     <Compile Include="ViewModels\GE06Task\Queries\GetIcsmAssigmentsByAdmAllotIdExecutor.cs" />
     <Compile Include="ViewModels\GE06Task\Queries\GetIcsmAssigmentsBySfnId.cs" />

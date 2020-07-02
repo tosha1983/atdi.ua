@@ -56,6 +56,9 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
                 assign.TargetFreq_MHz = rs.GetD("freq_assgn");
                 assign.TargetLon_Dec = rs.GetD("long_dec");
                 assign.TargetLat_Dec = rs.GetD("lat_dec");
+                //assign.EffHeight_m = rs.GetS("EFHGT");
+                //assign.DiagrH = rs.GetS("ATTN_H");
+                //assign.DiagrV = rs.GetS("ATTN_V");
             }
             if (rs.IsOpen())
                 rs.Close();
