@@ -57,15 +57,15 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.GN06
                             Point = coordBaryCenter
                         };
 
-                        var putPointToContourArgs = new PutPointToContourArgs()
-                        {
-                            Points = pointEarthGeometricsAllotmentParametersСontur,
-                            PointEarthGeometricCalc = coordBaryCenter
-                        };
-
                         var isInsideContour = earthGeometricService.CheckHitting(in checkHittingArgs);
                         if (!isInsideContour)
                         {
+                            var putPointToContourArgs = new PutPointToContourArgs()
+                            {
+                                Points = pointEarthGeometricsAllotmentParametersСontur,
+                                PointEarthGeometricCalc = coordBaryCenter
+                            };
+
                             earthGeometricService.PutPointToContour(in putPointToContourArgs, ref coordBaryCenter);
                         }
                     }
@@ -139,7 +139,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.GN06
                  Longitude_dec = pointEarthGeometric.Longitude,
                  Latitude_dec = pointEarthGeometric.Latitude
             };
-            return  idwmService.GetADMByPoint(in point);
+            return  idwmService.GetADMByPoint(in point).TrimStart().TrimEnd();
         }
 
         /// <summary>

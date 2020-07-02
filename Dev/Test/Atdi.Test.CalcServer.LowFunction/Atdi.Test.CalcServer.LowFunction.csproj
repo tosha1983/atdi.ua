@@ -55,6 +55,7 @@
     <Compile Include="TestProfile\EarthGeometric\CreateContourFromPointByDistance.cs" />
     <Compile Include="TestProfile\EarthGeometric\PutPointToContour.cs" />
     <Compile Include="TestProfile\GE06\Test\TestGE06GetBoundaryPointsFromAllotments.cs" />
+    <Compile Include="TestProfile\GE06\Test\TestBarycenterGE06.cs" />
     <Compile Include="TestProfile\GE06\Test\TestGE06GetStationFromBroadcastingAssignment.cs" />
     <Compile Include="TestProfile\GE06\Test\TestGE06GetEtalonBroadcastingAssignmentFromAllotment.cs" />
     <Compile Include="TestProfile\GE06\Test\TestGE06EstimationAssignmentsPointsForEtalonNetwork.cs" />
@@ -180,6 +181,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="AreaTestGe06BaryCenter.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="AreaTest.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
