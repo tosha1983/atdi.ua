@@ -96,6 +96,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Atdi.DataModels.Sdrn.DeepServices.EarthGeometry\Atdi.DataModels.Sdrn.DeepServices.EarthGeometry.csproj">
+      <Project>{32da0c04-3a89-428f-8997-3018aa1375c3}</Project>
+      <Name>Atdi.DataModels.Sdrn.DeepServices.EarthGeometry</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Atdi.DataModels.Sdrn.DeepServices.Gis\Atdi.DataModels.Sdrn.DeepServices.Gis.csproj">
       <Project>{d83887b2-4444-4207-a703-c99b94a4c170}</Project>
       <Name>Atdi.DataModels.Sdrn.DeepServices.Gis</Name>

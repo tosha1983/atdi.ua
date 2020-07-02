@@ -17,6 +17,11 @@ using Atdi.DataModels.Sdrn.DeepServices.GN06;
 using Atdi.DataModels.Sdrn.DeepServices.EarthGeometry;
 using Atdi.Contracts.Sdrn.DeepServices.EarthGeometry;
 
+
+using System.Runtime.InteropServices.WindowsRuntime;
+using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Gis;
+using Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal;
+
 namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 {
     public class BroadcastingFieldStrengthCalcIteration : IIterationHandler<BroadcastingFieldStrengthCalcData, BroadcastingFieldStrengthCalcResult>
@@ -159,6 +164,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
         #endregion
 
+        private static double LinearInterpolationFuncOfAngle(double angle, float angle0, float angle1, float angleValue0, float angleValue1)
+        {
+            double value = angleValue0 + (angleValue1 - angleValue0) / (angle1 - angle0) * (angle - angle0);
+            return value;
+        }
+
         public BroadcastingFieldStrengthCalcIteration(
             ISignalService signalService,
             IEarthGeometricService earthGeometricService,
@@ -179,209 +190,239 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
         public BroadcastingFieldStrengthCalcResult Run(ITaskContext taskContext, BroadcastingFieldStrengthCalcData data)
         {
-            var profileOptions = DefineProfileOptions(data.PropagationModel);
+            //var profileOptions = DefineProfileOptions(data.PropagationModel);
 
-            var indexerBuffer = default(ProfileIndexer[]);
-            var clutterBuffer = default(byte[]);
-            //var buildingBuffer = default(byte[]);
-            var reliefBuffer = default(short[]);
-            var heightBuffer = default(short[]);//??
-            var profileLenght = 0;
+            //var indexerBuffer = default(ProfileIndexer[]);
+            //var clutterBuffer = default(byte[]);
+            
+            //var reliefBuffer = default(short[]);
+
+            //var profileLenght = 0;
 
             try
             {
-                if (profileOptions.IsNotEmpty)
-                {
-                    //  получаем буффер под профиль
-                    indexerBuffer = _indexerArrayPool.Take();
+                //if (profileOptions.IsNotEmpty)
+                //{
+                //    //  получаем буффер под профиль
+                //    indexerBuffer = _indexerArrayPool.Take();
 
-                    // расчитываем профиль
-                    var profileArgs = new CalcProfileIndexersArgs
-                    {
-                        AxisXStep = data.MapArea.AxisX.Step,
-                        AxisYStep = data.MapArea.AxisY.Step,
-                        AxisYNumber = data.MapArea.AxisY.Number,
-                        Target = data.TargetCoordinate,
-                        Point = data.PointCoordinate,
-                        Location = data.MapArea.LowerLeft
-                    };
-                    var profileResult = new CalcProfileIndexersResult
-                    {
-                        Indexers = indexerBuffer,
-                        StartPosition = 0,
-                        IndexerCount = 0
-                    };
-                    _mapService.CalcProfileIndexers(in profileArgs, ref profileResult);
-                    profileLenght = profileResult.IndexerCount;
-
-                    // получаем  буферы массивов
-                    if (profileOptions.Relief)
-                    {
-                        reliefBuffer = _reliefArrayPool.Take();
-                    }
-                    //if (profileOptions.Building)
-                    //{
-                    //    buildingBuffer = _buildingArrayPool.Take();
-                    //}
-                    if (profileOptions.Clutter)
-                    {
-                        clutterBuffer = _clutterArrayPool.Take();
-                    }
-                    if (profileOptions.Height)
-                    {
-                        heightBuffer = _heightArrayPool.Take();
-                    }
-                    // заполняем профель данными
-                    var axisXNumber = data.MapArea.AxisX.Number;
-                    for (int i = 0; i < profileResult.IndexerCount; i++)
-                    {
-                        var indexer = indexerBuffer[i];
-                        var contentIndex = indexer.YIndex * axisXNumber + indexer.XIndex;
-
-
-                        var clutterValue = MapSpecification.DefaultForClutter;
-                        int clutterH = 0;
-                        if (profileOptions.Height || profileOptions.Clutter)
-                        {
-                            clutterValue = data.ClutterContent[contentIndex];
-                            if (profileOptions.Clutter)
-                            {
-                                clutterBuffer[i] = clutterValue;
-
-                                if (data.CluttersDesc.Frequencies != null && data.CluttersDesc.Frequencies.Length > 0 &&
-                                    data.CluttersDesc.Frequencies[0].Clutters != null)
-                                {
-                                    clutterH = data.CluttersDesc.Frequencies[0].Clutters[clutterValue].Height_m;// добавить проверку что это существует.
-                                }
-
-                            }
-                        }
-
-                        //var buildingValue = MapSpecification.DefaultForBuilding;
-                        //if (profileOptions.Height || profileOptions.Building)
-                        //{
-                        //    buildingValue = data.BuildingContent[contentIndex];
-                        //    if (profileOptions.Building)
-                        //    {
-                        //        buildingBuffer[i] = buildingValue;
-                        //    }
-                        //}
-
-                        var reliefValue = MapSpecification.DefaultForRelief;
-                        if (profileOptions.Height || profileOptions.Relief)
-                        {
-                            reliefValue = data.ReliefContent[contentIndex];
-                            if (profileOptions.Relief)
-                            {
-                                reliefBuffer[i] = reliefValue;
-                            }
-                        }
-
-                        if (profileOptions.Height)
-                        {
-                            //if (buildingValue != MapSpecification.DefaultForBuilding)
-                            //{
-                            //    heightBuffer[i] = (short)(reliefValue + buildingValue);
-                            //}
-                            //else
-                            {
-                                heightBuffer[i] = (short)(reliefValue + clutterH);
-                            }
-                        }
-                    }
-                }
-                var pointSourceArgs = new PointEarthGeometric() { Longitude = data.PointCoordinate.X, Latitude = data.PointCoordinate.Y };
-                var pointTargetArgs = new PointEarthGeometric() { Longitude = data.TargetCoordinate.X, Latitude = data.TargetCoordinate.Y };
-                var d_km = this._earthGeometricService.GetDistance_km(in pointSourceArgs, in pointTargetArgs);
-                var lossArgs = new CalcLossArgs
-                {
-                    Model = data.PropagationModel,//, прибить сюда 1546?
-                    //BuildingProfile = buildingBuffer,
-                    BuildingStartIndex = 0,
-                    ClutterProfile = clutterBuffer,
-                    ClutterStartIndex = 0,
-                    HeightProfile = heightBuffer,
-                    HeightStartIndex = 0,
-                    ReliefProfile = reliefBuffer,
-                    ReliefStartIndex = 0,
-                    ProfileLength = profileLenght,
-                    Freq_Mhz = data.BroadcastingAssignment.EmissionCharacteristics.Freq_MHz,// ?????????
-                    D_km = d_km,
-                    Ha_m = data.BroadcastingAssignment.SiteParameters.Alt_m, //???????????????????
-                    //Hb_m = data.BroadcastingAssignment.Target, //?????????????????? Похоже что в свойствах таргета нет высоты
-                    CluttersDesc = data.CluttersDesc
-                };
-
-                var lossResult = new CalcLossResult();
-                _signalService.CalcLoss(in lossArgs, ref lossResult);
-                var AzimutToTarget = this._earthGeometricService.GetAzimut(in pointSourceArgs, in pointTargetArgs);
-                var antennaGainArgs = new CalcAntennaGainArgs
-                {
-                    //Antenna = data.Antenna,  ???????????
-                    AzimutToTarget_deg = AzimutToTarget,
-                    TiltToTarget_deg = lossResult.TiltaD_Deg,
-                    
-                    //PolarizationEquipment = data.Transmitter.Polarization, ????????
-                    //PolarizationWave = data.Transmitter.Polarization ????????
-                };
-                var antennaGainD = _signalService.CalcAntennaGain(in antennaGainArgs);
-                double Level_dBm = -1;
-                
-                //double Level_dBm = data.Transmitter.MaxPower_dBm - data.Transmitter.Loss_dB + antennaGainD - lossResult.LossD_dB; ????????????
-                double antennaPatternLoss_dB = antennaGainD - antennaGainArgs.Antenna.Gain_dB;
-                //if (data.PropagationModel.AbsorptionBlock.Available)
-                //{// нужен учет дополнительного пути распространения
-                //    double Loss1 = lossResult.LossD_dB - antennaGainD;
-                //    antennaGainArgs.TiltToTarget_deg = lossResult.TiltaA_Deg;
-                //    var antennaGainA = _signalService.CalcAntennaGain(in antennaGainArgs);
-
-                //    double Loss2 = lossResult.LossA_dB - antennaGainA;
-                //    double LossSum = Loss1;
-
-                //    if (Loss1 > Loss2)
+                //    // расчитываем профиль
+                //    var profileArgs = new CalcProfileIndexersArgs
                 //    {
-                //        LossSum = Loss2;
-                //        antennaPatternLoss_dB = antennaGainA - antennaGainArgs.Antenna.Gain_dB;
+                //        AxisXStep = data.MapArea.AxisX.Step,
+                //        AxisYStep = data.MapArea.AxisY.Step,
+                //        AxisYNumber = data.MapArea.AxisY.Number,
+                //        Target = data.TargetCoordinate,
+                //        Point = data.PointCoordinate,
+                //        Location = data.MapArea.LowerLeft
+                //    };
+                //    var profileResult = new CalcProfileIndexersResult
+                //    {
+                //        Indexers = indexerBuffer,
+                //        StartPosition = 0,
+                //        IndexerCount = 0
+                //    };
+                //    _mapService.CalcProfileIndexers(in profileArgs, ref profileResult);
+                //    profileLenght = profileResult.IndexerCount;
+
+                //    // получаем  буферы массивов
+                //    if (profileOptions.Relief)
+                //    {
+                //        reliefBuffer = _reliefArrayPool.Take();
                 //    }
-                //    //Level_dBm = data.Transmitter.MaxPower_dBm - data.Transmitter.Loss_dB - LossSum; ?????????????????????????????????
+
+                //    if (profileOptions.Clutter)
+                //    {
+                //        clutterBuffer = _clutterArrayPool.Take();
+                //    }
+
+                //    var axisXNumber = data.MapArea.AxisX.Number;
+                //    for (int i = 0; i < profileResult.IndexerCount; i++)
+                //    {
+                //        var indexer = indexerBuffer[i];
+                //        var contentIndex = indexer.YIndex * axisXNumber + indexer.XIndex;
+
+
+                //        var clutterValue = MapSpecification.DefaultForClutter;
+                //        int clutterH = 0;
+                //        if (profileOptions.Height || profileOptions.Clutter)
+                //        {
+                //            clutterValue = data.ClutterContent[contentIndex];
+                //            if (profileOptions.Clutter)
+                //            {
+                //                clutterBuffer[i] = clutterValue;
+
+                //                if (data.CluttersDesc.Frequencies != null && data.CluttersDesc.Frequencies.Length > 0 &&
+                //                    data.CluttersDesc.Frequencies[0].Clutters != null)
+                //                {
+                //                    clutterH = data.CluttersDesc.Frequencies[0].Clutters[clutterValue].Height_m;// добавить проверку что это существует.
+                //                }
+                //            }
+                //        }
+
+                //        var reliefValue = MapSpecification.DefaultForRelief;
+                //        if (profileOptions.Height || profileOptions.Relief)
+                //        {
+                //            reliefValue = data.ReliefContent[contentIndex];
+                //            if (profileOptions.Relief)
+                //            {
+                //                reliefBuffer[i] = reliefValue;
+                //            }
+                //        }
+                //    }
                 //}
 
-                double FS_dBuVm = -1;
-                //double FS_dBuVm = Level_dBm + 77.2 + 20 * Math.Log10(data.Transmitter.Freq_MHz); ???????????????????
+
+                var pointSourceArgs = new PointEarthGeometric() { Longitude = data.BroadcastingAssignment.SiteParameters.Lon_Dec, Latitude = data.BroadcastingAssignment.SiteParameters.Lat_Dec, CoordinateUnits= CoordinateUnits.deg};
+                var d_km = this._earthGeometricService.GetDistance_km(in pointSourceArgs, in data.TargetCoordinate);
+                var AzimuthToTarget = this._earthGeometricService.GetAzimut(in pointSourceArgs, in data.TargetCoordinate);
+
+                int azimuth0 = (int)(Math.Floor(AzimuthToTarget / 10) * 10);
+                int azimuth1 = azimuth0 + 10;
+                if (azimuth1 == 360)
+                {
+                    azimuth1 = 0;
+                }
+
+                //double antennaGain_dB = 0;
+                double ERP_dBW = 0;
+                switch(data.BroadcastingAssignment.EmissionCharacteristics.Polar)
+                {
+                    case PolarType.H:
+                        ERP_dBW = data.BroadcastingAssignment.EmissionCharacteristics.ErpH_dBW - LinearInterpolationFuncOfAngle(AzimuthToTarget, azimuth0, azimuth0 + 10, data.BroadcastingAssignment.AntennaCharacteristics.DiagrH[azimuth0 / 10], data.BroadcastingAssignment.AntennaCharacteristics.DiagrH[azimuth1 / 10]);
+                        break;
+                    case PolarType.V:
+                        ERP_dBW = data.BroadcastingAssignment.EmissionCharacteristics.ErpV_dBW - LinearInterpolationFuncOfAngle(AzimuthToTarget, azimuth0, azimuth0 + 10, data.BroadcastingAssignment.AntennaCharacteristics.DiagrH[azimuth0 / 10], data.BroadcastingAssignment.AntennaCharacteristics.DiagrV[azimuth1 / 10]);
+                        break;
+                    case PolarType.M:
+                        ERP_dBW = 10 * Math.Log10(Math.Pow(10, 0.1 * (data.BroadcastingAssignment.EmissionCharacteristics.ErpH_dBW - LinearInterpolationFuncOfAngle(AzimuthToTarget, azimuth0, azimuth0 + 10, data.BroadcastingAssignment.AntennaCharacteristics.DiagrH[azimuth0 / 10], data.BroadcastingAssignment.AntennaCharacteristics.DiagrH[azimuth1 / 10]))) + Math.Pow(10, 0.1 * (data.BroadcastingAssignment.EmissionCharacteristics.ErpV_dBW - LinearInterpolationFuncOfAngle(AzimuthToTarget, azimuth0, azimuth0 + 10, data.BroadcastingAssignment.AntennaCharacteristics.DiagrH[azimuth0 / 10], data.BroadcastingAssignment.AntennaCharacteristics.DiagrV[azimuth1 / 10]))));
+                        break;
+                    default:
+                        ERP_dBW = 10 * Math.Log10(Math.Pow(10, 0.1 * (data.BroadcastingAssignment.EmissionCharacteristics.ErpH_dBW - LinearInterpolationFuncOfAngle(AzimuthToTarget, azimuth0, azimuth0 + 10, data.BroadcastingAssignment.AntennaCharacteristics.DiagrH[azimuth0 / 10], data.BroadcastingAssignment.AntennaCharacteristics.DiagrH[azimuth1 / 10]))) + Math.Pow(10, 0.1 * (data.BroadcastingAssignment.EmissionCharacteristics.ErpV_dBW - LinearInterpolationFuncOfAngle(AzimuthToTarget, azimuth0, azimuth0 + 10, data.BroadcastingAssignment.AntennaCharacteristics.DiagrH[azimuth0 / 10], data.BroadcastingAssignment.AntennaCharacteristics.DiagrV[azimuth1 / 10]))));
+                        break;
+
+                }
+
+                //
+
+                // prepare data
+                
+                // параметр нужно будет добавить через буффер
+                List<land_sea> landSeaList = new List<land_sea>();
+                bool h2aboveSea = false;
+
+                double px2km = d_km / (data.ReliefContent.Length - 1);
+                double aboveLand_px = 0;
+                double aboveSea_px = 0;
+                int hMedDist_px = 0;
+                byte waterClutter = 7; // clutter code for sea/inland water should be in config
+                                       //
+                
+                // effective height estimation
+                double effectiveHeight = 0.0;
+                bool isheffGiven = false;
+                for (int i = 0; i < data.BroadcastingAssignment.AntennaCharacteristics.EffHeight_m.Length; i++)
+                {
+                    if (data.BroadcastingAssignment.AntennaCharacteristics.EffHeight_m[i] > 0)
+                    {
+                        isheffGiven = true;
+                    }
+                }
+
+                if (isheffGiven)
+                {
+                    effectiveHeight = LinearInterpolationFuncOfAngle(AzimuthToTarget, azimuth0, azimuth1, data.BroadcastingAssignment.AntennaCharacteristics.EffHeight_m[azimuth0], data.BroadcastingAssignment.AntennaCharacteristics.EffHeight_m[azimuth0 + 10]);
+                }
+                else
+                {
+                    // calculate effective height
+                    int minDistToHeff_px = (int)(3.0 / px2km);
+                    int maxDistToHeff_px = (int)Math.Min(15.0 / px2km, data.ReliefContent.Length);
+
+                    for (int i = minDistToHeff_px; i < maxDistToHeff_px; i++)
+                    {
+                        effectiveHeight += data.ReliefContent[0] - data.ReliefContent[i];
+                        hMedDist_px++;
+
+                    }
+                    if (hMedDist_px > 0)
+                    {
+                        effectiveHeight /= hMedDist_px;
+                        effectiveHeight += data.BroadcastingAssignment.AntennaCharacteristics.AglHeight_m;
+                    }
+                }
+                //
+                for (int i = 0; i <data.ClutterContent.Length; i++)
+                {
+                    // coast line intersection condition
+                    if (i > 0 && data.ClutterContent[i - 1] != data.ClutterContent[i] &&
+                        (data.ClutterContent[i - 1] == waterClutter || data.ClutterContent[i] == waterClutter) &&
+                        (aboveSea_px != 0 && aboveLand_px != 0) ||
+                        i == data.ClutterContent.Length - 1)
+                    {
+                        landSeaList.Add(new land_sea { land = aboveLand_px * px2km, sea = aboveSea_px * px2km });
+                        aboveSea_px = 0;
+                        aboveLand_px = 0;
+                    }
+                    // count relief points that belongs to land or sea propagation
+                    if (data.ClutterContent[i] == waterClutter)
+                    {
+                        aboveSea_px++;
+                        if (i == data.ClutterContent.Length - 1)
+                        {
+                            h2aboveSea = true;
+                        }
+                        else
+                        {
+                            aboveLand_px++;
+                        }
+                    }
+                    
+                }
+
+
+                //double Level_dBm = data.Transmitter.MaxPower_dBm - data.Transmitter.Loss_dB + antennaGainD - lossResult.LossD_dB; ????????????
+
+                double FSfor1kW_dBuVm = 0;//ITU1546_6.Get_E(data.BroadcastingAssignment.AntennaCharacteristics.AglHeight_m, effectiveHeight, d_km, data.BroadcastingAssignment.EmissionCharacteristics.Freq_MHz, data.PropagationModel.Parameters.Time_pc, effectiveHeight, data.TargetAltitude_m, h2aboveSea, landSeaList.ToArray());
+
+                if (data.PropagationModel.MainBlock.ModelType == MainCalcBlockModelType.ITU1546_4)
+                {
+                    FSfor1kW_dBuVm = ITU1546_4.Get_E(data.BroadcastingAssignment.AntennaCharacteristics.AglHeight_m, effectiveHeight, d_km, data.BroadcastingAssignment.EmissionCharacteristics.Freq_MHz, data.PropagationModel.Parameters.Time_pc, effectiveHeight, data.TargetAltitude_m, landSeaList.ToArray());
+                }
+                else
+                {
+                    FSfor1kW_dBuVm = ITU1546_6.Get_E(data.BroadcastingAssignment.AntennaCharacteristics.AglHeight_m, effectiveHeight, d_km, data.BroadcastingAssignment.EmissionCharacteristics.Freq_MHz, data.PropagationModel.Parameters.Time_pc, effectiveHeight, data.TargetAltitude_m, h2aboveSea, landSeaList.ToArray());
+                }
+                
+
+
                 return new BroadcastingFieldStrengthCalcResult
                 {
-                    FS_dBuVm = FS_dBuVm,
-                    Level_dBm = Level_dBm,
-                    AntennaPatternLoss_dB = antennaPatternLoss_dB
+                    FS_dBuVm = FSfor1kW_dBuVm + ERP_dBW - 30,
+                    Level_dBm = FSfor1kW_dBuVm + ERP_dBW - 30 + 139.3 + 20 * Math.Log10(data.BroadcastingAssignment.EmissionCharacteristics.Freq_MHz)
+                    //AntennaPatternLoss_dB = antennaPatternLoss_dB
                 };
             }
             catch (Exception)
             {
                 throw;
             }
-            finally
-            {
-                if (indexerBuffer != null)
-                {
-                    _indexerArrayPool.Put(indexerBuffer);
-                }
-                if (clutterBuffer != null)
-                {
-                    _clutterArrayPool.Put(clutterBuffer);
-                }
-                //if (buildingBuffer != null)
-                //{
-                //    _buildingArrayPool.Put(buildingBuffer);
-                //}
-                if (reliefBuffer != null)
-                {
-                    _reliefArrayPool.Put(reliefBuffer);
-                }
-                if (heightBuffer != null)
-                {
-                    _heightArrayPool.Put(heightBuffer);
-                }
-            }
+            //finally
+            //{
+            //    if (indexerBuffer != null)
+            //    {
+            //        _indexerArrayPool.Put(indexerBuffer);
+            //    }
+            //    if (clutterBuffer != null)
+            //    {
+            //        _clutterArrayPool.Put(clutterBuffer);
+            //    }
+                
+            //    if (reliefBuffer != null)
+            //    {
+            //        _reliefArrayPool.Put(reliefBuffer);
+            //    }
+            //}
         }
 
         private static ProfileOptions DefineProfileOptions(PropagationModel propagModel)
