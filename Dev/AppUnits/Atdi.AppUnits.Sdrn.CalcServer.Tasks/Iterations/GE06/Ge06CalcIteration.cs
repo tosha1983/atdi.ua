@@ -55,7 +55,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             AppServerComponentConfig appServerComponentConfig,
             ITransformation transformation,
             IGn06Service gn06Service,
-            Ge06CalcData ge06CalcData,
+            //Ge06CalcData ge06CalcData,
             Idwm.IIdwmService idwmService,
             ILogger logger)
         {
@@ -66,7 +66,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             _appServerComponentConfig = appServerComponentConfig;
             _transformation = transformation;
             _gn06Service = gn06Service;
-            _ge06CalcData = ge06CalcData;
+            //_ge06CalcData = ge06CalcData;
             _idwmService = idwmService;
             _logger = logger;
         }
@@ -76,6 +76,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         public Ge06CalcResult Run(ITaskContext taskContext, Ge06CalcData data)
         {
             this._taskContext = taskContext;
+
+            this._ge06CalcData = data;
 
             //здесь вызов функции "переопределения" модели распространения в зависимости от входных параметров
             data.PropagationModel = GetPropagationModel(data.Ge06TaskParameters, data.PropagationModel, (CalculationType)data.Ge06TaskParameters.CalculationTypeCode);
@@ -1001,13 +1003,13 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 {
                     BroadcastingAssignment = broadcastingAssignment,
                     PropagationModel = propagationModel,
-                    CluttersDesc = this._ge06CalcData.CluttersDesc,
+                    //CluttersDesc = this._ge06CalcData.CluttersDesc,
                     MapArea = this._ge06CalcData.MapData.Area,
-                    BuildingContent = this._ge06CalcData.MapData.BuildingContent,
+                    //BuildingContent = this._ge06CalcData.MapData.BuildingContent,
                     ClutterContent = this._ge06CalcData.MapData.ClutterContent,
                     ReliefContent = this._ge06CalcData.MapData.ReliefContent,
-                    PointCoordinate = _transformation.ConvertCoordinateToAtdi(new Wgs84Coordinate() { Longitude = broadcastingAssignment.SiteParameters.Lon_Dec, Latitude = broadcastingAssignment.SiteParameters.Lat_Dec }, this._ge06CalcData.Projection),
-                    TargetCoordinate = _transformation.ConvertCoordinateToAtdi(new Wgs84Coordinate() { Longitude = point.Longitude, Latitude = point.Latitude }, this._ge06CalcData.Projection)
+                    //PointCoordinate = _transformation.ConvertCoordinateToAtdi(new Wgs84Coordinate() { Longitude = broadcastingAssignment.SiteParameters.Lon_Dec, Latitude = broadcastingAssignment.SiteParameters.Lat_Dec }, this._ge06CalcData.Projection),
+                    //TargetCoordinate = _transformation.ConvertCoordinateToAtdi(new Wgs84Coordinate() { Longitude = point.Longitude, Latitude = point.Latitude }, this._ge06CalcData.Projection)
                 };
                 var iterationCorellationCalc = _iterationsPool.GetIteration<BroadcastingFieldStrengthCalcData, BroadcastingFieldStrengthCalcResult>();
                 var resFieldStrengthCalcResult = iterationCorellationCalc.Run(this._taskContext, broadcastingFieldStrengthCalcData);

@@ -58,6 +58,6 @@
     
   </Fields>
   <PrimaryKey Clustered="true">
-    <FieldRef Name="ResultId"/>
+    <FieldRef Name="Id"/>
   </PrimaryKey>
 </Entity>
