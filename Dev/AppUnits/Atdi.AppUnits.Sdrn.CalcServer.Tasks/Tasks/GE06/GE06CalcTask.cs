@@ -88,7 +88,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                 FieldStrengthCalcData = new FieldStrengthCalcData
                 {
                     PropagationModel = propagationModel,
-                    MapArea = mapData.Area
+                    MapArea = mapData.Area,
+                    BuildingContent = mapData.BuildingContent,
+                    ClutterContent = mapData.ClutterContent,
+                    ReliefContent = mapData.ReliefContent,
+                    CluttersDesc = _mapRepository.GetCluttersDesc(this._calcDbScope, mapData.Id),
                 }
             };
             var resultId = CreateGe06Result();

@@ -76,6 +76,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         public Ge06CalcResult Run(ITaskContext taskContext, Ge06CalcData data)
         {
             this._taskContext = taskContext;
+
+            //здесь вызов функции "переопределения" модели распространения в зависимости от входных параметров
+            data.PropagationModel = GetPropagationModel(data.Ge06TaskParameters, data.PropagationModel, (CalculationType)data.Ge06TaskParameters.CalculationTypeCode);
+
             var ge06CalcResults = new Ge06CalcResult();
             var ge06CalcResultsForICSM = new Ge06CalcResult();
             var ge06CalcResultsForBRIFIC = new Ge06CalcResult();
@@ -902,9 +906,9 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        private float  CalcFieldStrengthInPointFromAllotmentGE06(BroadcastingAllotment broadcastingAllotment, PropagationModel propagationModel, Point point)
+        private float CalcFieldStrengthInPointFromAllotmentGE06(BroadcastingAllotment broadcastingAllotment, PropagationModel propagationModel, Point point)
         {
-            var lstFieldStrengthAssignments = new List<double?>();
+            var lstAllFieldStrengthAssignments = new List<double?>();
             //1. Формирование эталонной BroadcastingAssignment на базе BroadcastingAllotment (1.3.1).
             var broadcastingAssignment = new BroadcastingAssignment();
             this._gn06Service.GetEtalonBroadcastingAssignmentFromAllotment(broadcastingAllotment, broadcastingAssignment);
@@ -925,13 +929,13 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     BroadcastingAllotment = broadcastingAllotment,
                     PointCalcFieldStrength = new AreaPoint()
                     {
-                        Lon_DEC = points.PointEarthGeometrics[j].Longitude,
-                        Lat_DEC = points.PointEarthGeometrics[j].Latitude
+                        Lon_DEC = point.Longitude,
+                        Lat_DEC = point.Latitude
                     },
                     PointAllotment = new AreaPoint()
                     {
-                        Lon_DEC = point.Longitude,
-                        Lat_DEC = point.Latitude
+                        Lon_DEC = points.PointEarthGeometrics[j].Longitude,
+                        Lat_DEC = points.PointEarthGeometrics[j].Latitude
                     }
                 };
 
@@ -939,14 +943,44 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 var pointWithAzimuthResult = new PointWithAzimuthResult();
                 this._gn06Service.EstimationAssignmentsPointsForEtalonNetwork(in estimationAssignmentsPointsArgs, ref pointWithAzimuthResult);
 
-                //в) Расчет напряженности поля от каждого эталонного BroadcastingAssignment(2.2.4).Перед расчетом производиться корректировка паттерна BroadcastingAssignment в соответствии с его ориентацией(суть корректировки спросить Максима или Юру).
-                var resultFieldStrengthInPointFromAssignmentGE06 = CalcFieldStrengthInPointFromAssignmentGE06(broadcastingAssignment, propagationModel, point);
-                lstFieldStrengthAssignments.Add(resultFieldStrengthInPointFromAssignmentGE06);
+                var lstBroadcastingAssignment = new List<BroadcastingAssignment>();
+                var pointWithAzimuth = pointWithAzimuthResult.PointWithAzimuth;
+                for (int k = 0; k < pointWithAzimuth.Length; k++)
+                {
+                    var broadcastingAssignmentTemp = Atdi.Common.CopyHelper.CreateDeepCopy(broadcastingAssignment);
+                    broadcastingAssignmentTemp.SiteParameters.Lon_Dec = pointWithAzimuth[k].AreaPoint.Lon_DEC;
+                    broadcastingAssignmentTemp.SiteParameters.Lat_Dec = pointWithAzimuth[k].AreaPoint.Lat_DEC;
+                    if (broadcastingAssignmentTemp.EmissionCharacteristics.Polar == PolarType.H)
+                    {
+                        broadcastingAssignmentTemp.EmissionCharacteristics.ErpH_dBW = (float)(broadcastingAssignmentTemp.EmissionCharacteristics.ErpH_dBW - pointWithAzimuth[k].AntDiscrimination_dB);
+                    }
+                    else if (broadcastingAssignmentTemp.EmissionCharacteristics.Polar == PolarType.V)
+                    {
+                        broadcastingAssignmentTemp.EmissionCharacteristics.ErpV_dBW = (float)(broadcastingAssignmentTemp.EmissionCharacteristics.ErpV_dBW - pointWithAzimuth[k].AntDiscrimination_dB);
+                    }
+                    else
+                    {
+                        broadcastingAssignmentTemp.EmissionCharacteristics.ErpH_dBW = (float)(broadcastingAssignmentTemp.EmissionCharacteristics.ErpH_dBW - pointWithAzimuth[k].AntDiscrimination_dB);
+                        broadcastingAssignmentTemp.EmissionCharacteristics.ErpV_dBW = (float)(broadcastingAssignmentTemp.EmissionCharacteristics.ErpV_dBW - pointWithAzimuth[k].AntDiscrimination_dB);
+                    }
+                    lstBroadcastingAssignment.Add(broadcastingAssignmentTemp);
+                }
+                var lstFieldStrengthAssignments = new List<double?>();
+                for (int k = 0; k < lstBroadcastingAssignment.Count; k++)
+                {
+                    var broadcastAssignment = lstBroadcastingAssignment[k];
+                    //в) Расчет напряженности поля от каждого эталонного BroadcastingAssignment(2.2.4).Перед расчетом производиться корректировка паттерна BroadcastingAssignment в соответствии с его ориентацией(суть корректировки спросить Максима или Юру).
+                    var resultFieldStrengthInPointFromAssignmentGE06 = CalcFieldStrengthInPointFromAssignmentGE06(broadcastAssignment, propagationModel, point);
+                    lstFieldStrengthAssignments.Add(resultFieldStrengthInPointFromAssignmentGE06);
+                }
+
+                lstAllFieldStrengthAssignments.Add(SumPowGE06(lstFieldStrengthAssignments.ToArray()));
             }
 
             //г) Определение суммарной напряженности поля(2.2.2) .
+            var maxFieldStrength = lstAllFieldStrengthAssignments.Max();
 
-            return SumPowGE06(lstFieldStrengthAssignments.ToArray());
+            return (float)maxFieldStrength.Value;
         }
 
         /// <summary>
@@ -959,28 +993,48 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         {
             float resultCalcFieldStrength = 0;
 
-            //1) Если модель распространения ITU 1546 для этого необходимо делать отдельную итерацию(Будет подготовлен сам код Юрой или Максимом) на подобии FieldStrengthCalcIteration(1.4.1, 1.4.2)
-            var broadcastingFieldStrengthCalcData = new BroadcastingFieldStrengthCalcData()
+            if (propagationModel.MainBlock.ModelType == MainCalcBlockModelType.ITU1546)
             {
-                 BroadcastingAssignment = broadcastingAssignment,
-                 PropagationModel = propagationModel,
-                 CluttersDesc = this._ge06CalcData.CluttersDesc
-                // заполнить надо
-            };
-            var iterationCorellationCalc = _iterationsPool.GetIteration<BroadcastingFieldStrengthCalcData, BroadcastingFieldStrengthCalcResult>();
-            var resFieldStrengthCalcResult = iterationCorellationCalc.Run(this._taskContext, broadcastingFieldStrengthCalcData);
-            resultCalcFieldStrength = (float)resFieldStrengthCalcResult.FS_dBuVm.Value;
 
-            //2) Если модель распространения не ITU 1546.В данном случае BroadcastingAssignment преобразуется в Station(IContextStation)(1.3.2) и используется для расчета итерация FieldStrengthCalcIteration
-            var fieldStrengthCalcData = new FieldStrengthCalcData()
+                //1) Если модель распространения ITU 1546 для этого необходимо делать отдельную итерацию(Будет подготовлен сам код Юрой или Максимом) на подобии FieldStrengthCalcIteration(1.4.1, 1.4.2)
+                var broadcastingFieldStrengthCalcData = new BroadcastingFieldStrengthCalcData()
+                {
+                    BroadcastingAssignment = broadcastingAssignment,
+                    PropagationModel = propagationModel,
+                    CluttersDesc = this._ge06CalcData.CluttersDesc,
+                    MapArea = this._ge06CalcData.MapData.Area,
+                    BuildingContent = this._ge06CalcData.MapData.BuildingContent,
+                    ClutterContent = this._ge06CalcData.MapData.ClutterContent,
+                    ReliefContent = this._ge06CalcData.MapData.ReliefContent,
+                    PointCoordinate = _transformation.ConvertCoordinateToAtdi(new Wgs84Coordinate() { Longitude = broadcastingAssignment.SiteParameters.Lon_Dec, Latitude = broadcastingAssignment.SiteParameters.Lat_Dec }, this._ge06CalcData.Projection),
+                    TargetCoordinate = _transformation.ConvertCoordinateToAtdi(new Wgs84Coordinate() { Longitude = point.Longitude, Latitude = point.Latitude }, this._ge06CalcData.Projection)
+                };
+                var iterationCorellationCalc = _iterationsPool.GetIteration<BroadcastingFieldStrengthCalcData, BroadcastingFieldStrengthCalcResult>();
+                var resFieldStrengthCalcResult = iterationCorellationCalc.Run(this._taskContext, broadcastingFieldStrengthCalcData);
+                resultCalcFieldStrength = (float)resFieldStrengthCalcResult.FS_dBuVm.Value;
+            }
+            else
             {
-                //следует заполнить 
-
-            };
-            var iterationFieldStrengthCalcData = _iterationsPool.GetIteration<FieldStrengthCalcData, FieldStrengthCalcResult>();
-            var resFieldStrengthCalcData = iterationFieldStrengthCalcData.Run(this._taskContext, fieldStrengthCalcData);
-            resultCalcFieldStrength = (float)resFieldStrengthCalcData.FS_dBuVm.Value;
-
+                var contextStation = new Contracts.Sdrn.DeepServices.GN06.ContextStation();
+                this._gn06Service.GetStationFromBroadcastingAssignment(broadcastingAssignment, ref contextStation);
+                //2) Если модель распространения не ITU 1546.В данном случае BroadcastingAssignment преобразуется в Station(IContextStation)(1.3.2) и используется для расчета итерация FieldStrengthCalcIteration
+                var fieldStrengthCalcData = new FieldStrengthCalcData()
+                {
+                    Antenna = contextStation.ClientContextStation.Antenna,
+                    Transmitter = contextStation.ClientContextStation.Transmitter,
+                    PropagationModel = propagationModel,
+                    CluttersDesc = this._ge06CalcData.CluttersDesc,
+                    MapArea = this._ge06CalcData.MapData.Area,
+                    BuildingContent = this._ge06CalcData.MapData.BuildingContent,
+                    ClutterContent = this._ge06CalcData.MapData.ClutterContent,
+                    ReliefContent = this._ge06CalcData.MapData.ReliefContent,
+                    PointCoordinate = contextStation.ClientContextStation.Coordinate,
+                    TargetCoordinate = _transformation.ConvertCoordinateToAtdi(new Wgs84Coordinate() { Longitude = point.Longitude, Latitude = point.Latitude }, this._ge06CalcData.Projection),
+                };
+                var iterationFieldStrengthCalcData = _iterationsPool.GetIteration<FieldStrengthCalcData, FieldStrengthCalcResult>();
+                var resFieldStrengthCalcData = iterationFieldStrengthCalcData.Run(this._taskContext, fieldStrengthCalcData);
+                resultCalcFieldStrength = (float)resFieldStrengthCalcData.FS_dBuVm.Value;
+            }
             return resultCalcFieldStrength;
         }
 
