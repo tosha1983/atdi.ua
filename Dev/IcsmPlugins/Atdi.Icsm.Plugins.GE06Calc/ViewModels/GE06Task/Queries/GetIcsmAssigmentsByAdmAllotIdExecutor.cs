@@ -23,7 +23,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
         {
             var assigns = new List<AssignmentsAllotmentsModel>();
             IMRecordset rs = new IMRecordset("FMTV_ASSIGN", IMRecordset.Mode.ReadOnly);
-            rs.Select("ID,ADM,NOTICE_TYPE,FRAGMENT,LASTK_REF,ADM_KEY,PLAN_ENTRY,ASSGN_CODE,PLAN_TRG_ADM_REF_ID,SFN_IDENT,ALLOTM_SFN_IDENT,FREQ,POLARIZATION,ERP_H,ERP_V,REF_PLAN_CFG,ADM_KEY");
+            rs.Select("ID,ADM,NOTICE_TYPE,FRAGMENT,LASTK_REF,ADM_KEY,PLAN_ENTRY,ASSGN_CODE,PLAN_TRG_ADM_REF_ID,SFN_IDENT,ALLOTM_SFN_IDENT,FREQ,POLARIZATION,ERP_H,ERP_V,REF_PLAN_CFG,ADM_KEY,TVSYS_CODE,RX_MODE,SPECT_MASK,LONGITUDE,LATITUDE,SITE_ALT,SITE_NAME,ANT_DIR,AGL,EFHGT_MAX,EFHGT,ATTN_H,ATTN_V");
             rs.SetWhere("ALLOTM_ADM_KEY", IMRecordset.Operation.Eq, criterion.Adm_Allot_Id);
             for (rs.Open(); !rs.IsEOF(); rs.MoveNext())
             {
@@ -33,7 +33,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
                 assign.Fragment = rs.GetS("FRAGMENT");
                 assign.Action = StringConverter.ConvertToActionType(rs.GetS("LASTK_REF"));
                 assign.AdmRefId = rs.GetS("ADM_KEY");
-                assign.PlanEntry = StringConverter.ConvertToPlanEntryType(rs.GetS("PLAN_ENTRY"));
+                assign.PlanEntry = StringConverter.ConvertToPlanEntryType(rs.GetI("PLAN_ENTRY"));
                 assign.AssignmentCode = StringConverter.ConvertToAssignmentCodeType(rs.GetS("ASSGN_CODE"));
                 assign.AdmAllotAssociatedId = rs.GetS("PLAN_TRG_ADM_REF_ID");
                 assign.SfnAllotAssociatedId = rs.GetS("SFN_IDENT");
@@ -42,8 +42,21 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
                 assign.ErpH_dBW = (float)rs.GetD("ERP_H");
                 assign.ErpV_dBW = (float)rs.GetD("ERP_V");
                 assign.RefNetworkConfig = StringConverter.ConvertToRefNetworkConfigType(rs.GetS("REF_PLAN_CFG"));
-                assign.AdmRefId = rs.GetS("ADM_KEY");
-                assigns.Add(assign);
+                assign.SystemVariation = StringConverter.ConvertToSystemVariationType(rs.GetS("TVSYS_CODE"));
+                assign.RxMode = StringConverter.ConvertToRxModeType(rs.GetS("RX_MODE"));
+                assign.SpectrumMask = StringConverter.ConvertToSpectrumMaskType(rs.GetS("SPECT_MASK"));
+                assign.Lon_Dec = rs.GetD("LONGITUDE");
+                assign.Lat_Dec = rs.GetD("LATITUDE");
+                assign.Alt_m = (short)rs.GetD("SITE_ALT");
+                assign.Name = rs.GetS("SITE_NAME");
+                assign.Direction = StringConverter.ConvertToAntennaDirectionType(rs.GetS("ANT_DIR"));
+                assign.AglHeight_m = (short)rs.GetD("AGL");
+                assign.MaxEffHeight_m = rs.GetI("EFHGT_MAX");
+                //assign.EffHeight_m = rs.GetS("EFHGT");
+                //assign.DiagrH = rs.GetS("ATTN_H");
+                //assign.DiagrV = rs.GetS("ATTN_V");
+                assign.TargetLon_Dec = rs.GetD("LONGITUDE");
+                assign.TargetLat_Dec = rs.GetD("LATITUDE");
             }
             if (rs.IsOpen())
                 rs.Close();
