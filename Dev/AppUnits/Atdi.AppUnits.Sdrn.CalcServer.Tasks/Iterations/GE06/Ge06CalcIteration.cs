@@ -125,78 +125,81 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         private bool ValidationAllotment(BroadcastingAllotment allotments)
         {
             bool isSuccess = true;
-            //AdminData
-            if (allotments.AdminData == null)
+            if (allotments != null)
             {
-                isSuccess = false;
-            }
-            else if (allotments.AdminData != null)
-            {
-                if (string.IsNullOrEmpty(allotments.AdminData.Adm))
+                //AdminData
+                if (allotments.AdminData == null)
                 {
                     isSuccess = false;
                 }
-                if (string.IsNullOrEmpty(allotments.AdminData.NoticeType))
+                else if (allotments.AdminData != null)
+                {
+                    if (string.IsNullOrEmpty(allotments.AdminData.Adm))
+                    {
+                        isSuccess = false;
+                    }
+                    if (string.IsNullOrEmpty(allotments.AdminData.NoticeType))
+                    {
+                        isSuccess = false;
+                    }
+                }
+                //AllotmentParameters
+                if (allotments.AllotmentParameters == null)
                 {
                     isSuccess = false;
                 }
-            }
-            //AllotmentParameters
-            if (allotments.AllotmentParameters == null)
-            {
-                isSuccess = false;
-            }
-            else if (allotments.AllotmentParameters != null)
-            {
-                if (allotments.AllotmentParameters.ContourId == 0)
+                else if (allotments.AllotmentParameters != null)
+                {
+                    if (allotments.AllotmentParameters.ContourId == 0)
+                    {
+                        isSuccess = false;
+                    }
+                    if (string.IsNullOrEmpty(allotments.AllotmentParameters.Name))
+                    {
+                        isSuccess = false;
+                    }
+                    if (allotments.AllotmentParameters.Сontur == null)
+                    {
+                        isSuccess = false;
+                    }
+                }
+                // DigitalPlanEntryParameters
+                if (allotments.DigitalPlanEntryParameters == null)
                 {
                     isSuccess = false;
                 }
-                if (string.IsNullOrEmpty(allotments.AllotmentParameters.Name))
+                // EmissionCharacteristics
+                if (allotments.EmissionCharacteristics == null)
                 {
                     isSuccess = false;
                 }
-                if (allotments.AllotmentParameters.Сontur==null)
+                else if (allotments.EmissionCharacteristics != null)
+                {
+                    //if (allotments.EmissionCharacteristics.Freq_MHz) ??????????????
+                }
+                // Target
+                if (allotments.Target == null)
                 {
                     isSuccess = false;
                 }
-            }
-            // DigitalPlanEntryParameters
-            if (allotments.DigitalPlanEntryParameters == null)
-            {
-                isSuccess = false;
-            }
-            // EmissionCharacteristics
-            if (allotments.EmissionCharacteristics == null)
-            {
-                isSuccess = false;
-            }
-            else if (allotments.EmissionCharacteristics != null)
-            {
-                //if (allotments.EmissionCharacteristics.Freq_MHz) ??????????????
-            }
-            // Target
-            if (allotments.Target == null)
-            {
-                isSuccess = false;
-            }
-            else if (allotments.Target != null)
-            {
-                if (string.IsNullOrEmpty(allotments.Target.AdmRefId))
+                else if (allotments.Target != null)
                 {
-                    isSuccess = false;
-                }
-                if (allotments.Target.Freq_MHz==0)
-                {
-                    isSuccess = false;
-                }
-                if (allotments.Target.Lon_Dec == 0)
-                {
-                    isSuccess = false;
-                }
-                if (allotments.Target.Lat_Dec == 0)
-                {
-                    isSuccess = false;
+                    if (string.IsNullOrEmpty(allotments.Target.AdmRefId))
+                    {
+                        isSuccess = false;
+                    }
+                    if (allotments.Target.Freq_MHz == 0)
+                    {
+                        isSuccess = false;
+                    }
+                    if (allotments.Target.Lon_Dec == 0)
+                    {
+                        isSuccess = false;
+                    }
+                    if (allotments.Target.Lat_Dec == 0)
+                    {
+                        isSuccess = false;
+                    }
                 }
             }
             return isSuccess;
@@ -205,152 +208,155 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         private bool ValidationAssignment(BroadcastingAssignment[] assignments)
         {
             bool isSuccess = true;
-            for (int i = 0; i < assignments.Length; i++)
+            if (assignments != null)
             {
-                // AdmData
-                if (assignments[i].AdmData == null)
+                for (int i = 0; i < assignments.Length; i++)
                 {
-                    isSuccess = false;
-                }
-                else if (assignments[i].AdmData != null)
-                {
-                    if (string.IsNullOrEmpty(assignments[i].AdmData.Adm))
+                    // AdmData
+                    if (assignments[i].AdmData == null)
                     {
                         isSuccess = false;
                     }
-                    if (string.IsNullOrEmpty(assignments[i].AdmData.AdmRefId))
+                    else if (assignments[i].AdmData != null)
                     {
-                        isSuccess = false;
-                    }
-                    if (string.IsNullOrEmpty(assignments[i].AdmData.Fragment))
-                    {
-                        isSuccess = false;
-                    }
-                }
-                //AntennaCharacteristics
-                if (assignments[i].AntennaCharacteristics == null)
-                {
-                    isSuccess = false;
-                }
-                else if (assignments[i].AntennaCharacteristics != null)
-                {
-
-                    //MaxEffHeight_m
-                    if (((assignments[i].AntennaCharacteristics.MaxEffHeight_m >= 0) && (assignments[i].AntennaCharacteristics.MaxEffHeight_m <= 800)) == false)
-                    {
-                        isSuccess = false;
-                    }
-                    //EffHeight_m
-                    if (assignments[i].AntennaCharacteristics.EffHeight_m == null)
-                    {
-                        isSuccess = false;
-                    }
-                    else if (assignments[i].AntennaCharacteristics.EffHeight_m != null)
-                    {
-                        if (assignments[i].AntennaCharacteristics.EffHeight_m.Length != 36)
+                        if (string.IsNullOrEmpty(assignments[i].AdmData.Adm))
                         {
                             isSuccess = false;
                         }
-                        for (int j = 0; j < assignments[i].AntennaCharacteristics.EffHeight_m.Length; j++)
-                        {
-                            var effHeight_m = assignments[i].AntennaCharacteristics.EffHeight_m[j];
-                            if (((effHeight_m >= -3000) && (effHeight_m <= 3000)) == false)
-                            {
-                                isSuccess = false;
-                            }
-                        }
-                    }
-                    //DiagrV
-                    if (assignments[i].AntennaCharacteristics.DiagrV == null)
-                    {
-                        isSuccess = false;
-                    }
-                    else if (assignments[i].AntennaCharacteristics.DiagrV != null)
-                    {
-                        if (assignments[i].AntennaCharacteristics.DiagrV.Length != 36)
+                        if (string.IsNullOrEmpty(assignments[i].AdmData.AdmRefId))
                         {
                             isSuccess = false;
                         }
-                        for (int j = 0; j < assignments[i].AntennaCharacteristics.DiagrV.Length; j++)
-                        {
-                            var diagrV = assignments[i].AntennaCharacteristics.DiagrV[j];
-                            if (((diagrV >= 0) && (diagrV <= 40)) == false)
-                            {
-                                isSuccess = false;
-                            }
-                        }
-                    }
-                    //DiagrH
-                    if (assignments[i].AntennaCharacteristics.DiagrH == null)
-                    {
-                        isSuccess = false;
-                    }
-                    else if (assignments[i].AntennaCharacteristics.DiagrH != null)
-                    {
-                        if (assignments[i].AntennaCharacteristics.DiagrH.Length != 36)
+                        if (string.IsNullOrEmpty(assignments[i].AdmData.Fragment))
                         {
                             isSuccess = false;
                         }
-                        for (int j = 0; j < assignments[i].AntennaCharacteristics.DiagrH.Length; j++)
+                    }
+                    //AntennaCharacteristics
+                    if (assignments[i].AntennaCharacteristics == null)
+                    {
+                        isSuccess = false;
+                    }
+                    else if (assignments[i].AntennaCharacteristics != null)
+                    {
+
+                        //MaxEffHeight_m
+                        if (((assignments[i].AntennaCharacteristics.MaxEffHeight_m >= 0) && (assignments[i].AntennaCharacteristics.MaxEffHeight_m <= 800)) == false)
                         {
-                            var diagrH = assignments[i].AntennaCharacteristics.DiagrH[j];
-                            if (((diagrH >= 0) && (diagrH <= 40)) == false)
+                            isSuccess = false;
+                        }
+                        //EffHeight_m
+                        if (assignments[i].AntennaCharacteristics.EffHeight_m == null)
+                        {
+                            isSuccess = false;
+                        }
+                        else if (assignments[i].AntennaCharacteristics.EffHeight_m != null)
+                        {
+                            if (assignments[i].AntennaCharacteristics.EffHeight_m.Length != 36)
                             {
                                 isSuccess = false;
                             }
+                            for (int j = 0; j < assignments[i].AntennaCharacteristics.EffHeight_m.Length; j++)
+                            {
+                                var effHeight_m = assignments[i].AntennaCharacteristics.EffHeight_m[j];
+                                if (((effHeight_m >= -3000) && (effHeight_m <= 3000)) == false)
+                                {
+                                    isSuccess = false;
+                                }
+                            }
+                        }
+                        //DiagrV
+                        if (assignments[i].AntennaCharacteristics.DiagrV == null)
+                        {
+                            isSuccess = false;
+                        }
+                        else if (assignments[i].AntennaCharacteristics.DiagrV != null)
+                        {
+                            if (assignments[i].AntennaCharacteristics.DiagrV.Length != 36)
+                            {
+                                isSuccess = false;
+                            }
+                            for (int j = 0; j < assignments[i].AntennaCharacteristics.DiagrV.Length; j++)
+                            {
+                                var diagrV = assignments[i].AntennaCharacteristics.DiagrV[j];
+                                if (((diagrV >= 0) && (diagrV <= 40)) == false)
+                                {
+                                    isSuccess = false;
+                                }
+                            }
+                        }
+                        //DiagrH
+                        if (assignments[i].AntennaCharacteristics.DiagrH == null)
+                        {
+                            isSuccess = false;
+                        }
+                        else if (assignments[i].AntennaCharacteristics.DiagrH != null)
+                        {
+                            if (assignments[i].AntennaCharacteristics.DiagrH.Length != 36)
+                            {
+                                isSuccess = false;
+                            }
+                            for (int j = 0; j < assignments[i].AntennaCharacteristics.DiagrH.Length; j++)
+                            {
+                                var diagrH = assignments[i].AntennaCharacteristics.DiagrH[j];
+                                if (((diagrH >= 0) && (diagrH <= 40)) == false)
+                                {
+                                    isSuccess = false;
+                                }
+                            }
                         }
                     }
-                }
-                //DigitalPlanEntryParameters
-                if (assignments[i].DigitalPlanEntryParameters == null)
-                {
-                    isSuccess = false;
-                }
-                //EmissionCharacteristics
-                if (assignments[i].EmissionCharacteristics == null)
-                {
-                    isSuccess = false;
-                }
-                else if (assignments[i].EmissionCharacteristics != null)
-                {
-                    //if (assignments[i].EmissionCharacteristics.Freq_MHz) ?????????
+                    //DigitalPlanEntryParameters
+                    if (assignments[i].DigitalPlanEntryParameters == null)
+                    {
+                        isSuccess = false;
+                    }
+                    //EmissionCharacteristics
+                    if (assignments[i].EmissionCharacteristics == null)
+                    {
+                        isSuccess = false;
+                    }
+                    else if (assignments[i].EmissionCharacteristics != null)
+                    {
+                        //if (assignments[i].EmissionCharacteristics.Freq_MHz) ?????????
 
-                    if (assignments[i].EmissionCharacteristics.ErpH_dBW > 53)
-                    {
-                        isSuccess = false;
+                        if (assignments[i].EmissionCharacteristics.ErpH_dBW > 53)
+                        {
+                            isSuccess = false;
+                        }
+                        if (assignments[i].EmissionCharacteristics.ErpV_dBW > 53)
+                        {
+                            isSuccess = false;
+                        }
                     }
-                    if (assignments[i].EmissionCharacteristics.ErpV_dBW > 53)
-                    {
-                        isSuccess = false;
-                    }
-                }
 
-                //SiteParameters
-                if (assignments[i].SiteParameters == null)
-                {
-                    isSuccess = false;
-                }
-                else if (assignments[i].SiteParameters != null)
-                {
-                    if (((assignments[i].SiteParameters.Alt_m >= -1000) && (assignments[i].SiteParameters.Alt_m <= 8850)) == false)
+                    //SiteParameters
+                    if (assignments[i].SiteParameters == null)
                     {
                         isSuccess = false;
                     }
-                    if (string.IsNullOrEmpty(assignments[i].SiteParameters.Name) == false)
+                    else if (assignments[i].SiteParameters != null)
                     {
-                        isSuccess = false;
+                        if (((assignments[i].SiteParameters.Alt_m >= -1000) && (assignments[i].SiteParameters.Alt_m <= 8850)) == false)
+                        {
+                            isSuccess = false;
+                        }
+                        if (string.IsNullOrEmpty(assignments[i].SiteParameters.Name) == false)
+                        {
+                            isSuccess = false;
+                        }
                     }
-                }
 
-                if (assignments[i].Target != null)
-                {
-                    if (string.IsNullOrEmpty(assignments[i].Target.AdmRefId))
+                    if (assignments[i].Target != null)
                     {
-                        isSuccess = false;
-                    }
-                    if (assignments[i].Target.Freq_MHz == 0)
-                    {
-                        isSuccess = false;
+                        if (string.IsNullOrEmpty(assignments[i].Target.AdmRefId))
+                        {
+                            isSuccess = false;
+                        }
+                        if (assignments[i].Target.Freq_MHz == 0)
+                        {
+                            isSuccess = false;
+                        }
                     }
                 }
             }
@@ -502,16 +508,17 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
             var lstContoursResults = new List<ContoursResult>();
 
+            var broadcastingCalcBarycenterGE06 = new BroadcastingCalcBarycenterGE06()
+            {
+                BroadcastingAllotment = broadcastingContextBase.Allotments,
+                BroadcastingAssignments = broadcastingContextBase.Assignments
+            };
+            //1.Определение центра гравитации(2.1)
+            var pointEarthGeometric = new PointEarthGeometric();
+            this._gn06Service.CalcBarycenterGE06(in broadcastingCalcBarycenterGE06, ref pointEarthGeometric);
+
             for (int i = 0; i < ge06CalcData.Ge06TaskParameters.Distances.Length; i++)
             {
-                var broadcastingCalcBarycenterGE06 = new BroadcastingCalcBarycenterGE06()
-                {
-                    BroadcastingAllotment = broadcastingContextBase.Allotments,
-                    BroadcastingAssignments = broadcastingContextBase.Assignments
-                };
-                //1.Определение центра гравитации(2.1)
-                var pointEarthGeometric = new PointEarthGeometric();
-                this._gn06Service.CalcBarycenterGE06(in broadcastingCalcBarycenterGE06, ref pointEarthGeometric);
                 // 2. Построение контуров фиксированной дистанции относительно центра гравитации.
                 // Базируемся на функции CreateContourFromPointByDistance если у нас только BroadcastingAssignment []
 
@@ -642,16 +649,18 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
             var lstContoursResults = new List<ContoursResult>();
 
+            var broadcastingCalcBarycenterGE06 = new BroadcastingCalcBarycenterGE06()
+            {
+                BroadcastingAllotment = broadcastingContextBase.Allotments,
+                BroadcastingAssignments = broadcastingContextBase.Assignments
+            };
+            //1.Определение центра гравитации(2.1)
+            var pointEarthGeometric = new PointEarthGeometric();
+            this._gn06Service.CalcBarycenterGE06(in broadcastingCalcBarycenterGE06, ref pointEarthGeometric);
+
             for (int i = 0; i < ge06CalcData.Ge06TaskParameters.FieldStrength.Length; i++)
             {
-                var broadcastingCalcBarycenterGE06 = new BroadcastingCalcBarycenterGE06()
-                {
-                    BroadcastingAllotment = broadcastingContextBase.Allotments,
-                    BroadcastingAssignments = broadcastingContextBase.Assignments
-                };
-                //1.Определение центра гравитации(2.1)
-                var pointEarthGeometric = new PointEarthGeometric();
-                this._gn06Service.CalcBarycenterGE06(in broadcastingCalcBarycenterGE06, ref pointEarthGeometric);
+               
                 // 2. Построение контуров фиксированной дистанции относительно центра гравитации.
                 // Базируемся на функции CreateContourFromPointByDistance если у нас только BroadcastingAssignment []
 
@@ -688,6 +697,103 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         }
 
         /// <summary>
+        /// CalculationType == ConformityCheck
+        /// </summary>
+        /// <param name="broadcastingContextBase"></param>
+        /// <param name="ge06CalcData"></param>
+        /// <param name="broadcastingTypeContext"></param>
+        /// <param name="ge06CalcResult"></param>
+        private void CalculationForConformityCheck(BroadcastingContext  broadcastingContext,
+                                          Ge06CalcData ge06CalcData,
+                                          BroadcastingTypeContext broadcastingTypeContext,
+                                          ref Ge06CalcResult ge06CalcResult
+                                          )
+        {
+            var lstContoursResults = new List<ContoursResult>();
+
+            if (((broadcastingContext.BroadcastingContextICSM!=null) && (broadcastingContext.broadcastingContextBRIFIC!= null))==false)
+            {
+                throw new Exception("Incomplete ICSM data or BRIFIC");
+            }
+
+            //0. Валидация входных данных. аналогично п.0 4.1. + обязательные наличие хотя по одному объекту для ICSM и BRIFIC
+            if (((ValidationAssignment(broadcastingContext.BroadcastingContextICSM.Assignments)) && (ValidationAllotment(broadcastingContext.BroadcastingContextICSM.Allotments))) == false)
+            {
+                throw new Exception("Input parameters for ICSM failed validation");
+            }
+
+            if (((ValidationAssignment(broadcastingContext.broadcastingContextBRIFIC.Assignments)) && (ValidationAllotment(broadcastingContext.broadcastingContextBRIFIC.Allotments))) == false)
+            {
+                throw new Exception("Input parameters for BRIFIC failed validation");
+            }
+
+            //1.Определение центра гравитации(2.1)
+            var pointEarthGeometric = new PointEarthGeometric();
+
+            if (broadcastingTypeContext == BroadcastingTypeContext.Brific)
+            {
+                //1. Определение центра гравитации, но только для BR IFIC (2.1)
+                var broadcastingCalcBarycenterGE06 = new BroadcastingCalcBarycenterGE06()
+                {
+                    BroadcastingAllotment = broadcastingContext.broadcastingContextBRIFIC.Allotments,
+                    BroadcastingAssignments = broadcastingContext.broadcastingContextBRIFIC.Assignments
+                };
+                //1.Определение центра гравитации(2.1)
+
+                this._gn06Service.CalcBarycenterGE06(in broadcastingCalcBarycenterGE06, ref pointEarthGeometric);
+            }
+
+
+            // 2.Определение контрольных точек для записей BR IFIC -> построение контуров для выделений для
+            //     60, 100, 200, 300, 500, 750 и 1000 км.CreateContourFromContureByDistance(если присутствует выделение) 1.1.6 или CreateContourFromPointByDistance если его нет.
+            var distances = new int[7] { 60, 100, 200, 300, 500, 750, 1000 };
+
+
+            for (int i = 0; i < distances.Length; i++)
+            {
+                // 2. Построение контуров фиксированной дистанции относительно центра гравитации.
+                // Базируемся на функции CreateContourFromPointByDistance если у нас только BroadcastingAssignment []
+
+               
+            }
+
+            //ge06CalcResult.ContoursResult = lstContoursResults.ToArray();
+            //FillAllotmentOrAssignmentResult(broadcastingContext.BroadcastingContextICSM, ref ge06CalcResult);
+        }
+
+
+        /// <summary>
+        /// CalculationType == FindAffectedADM
+        /// </summary>
+        /// <param name="broadcastingContextBase"></param>
+        /// <param name="ge06CalcData"></param>
+        /// <param name="broadcastingTypeContext"></param>
+        /// <param name="ge06CalcResult"></param>
+        private void CalculationForFindAffectedADM(BroadcastingContext broadcastingContext,
+                                           Ge06CalcData ge06CalcData,
+                                           BroadcastingTypeContext broadcastingTypeContext,
+                                           ref Ge06CalcResult ge06CalcResult
+                                          )
+        {
+            if (broadcastingContext.BroadcastingContextICSM==null)
+            {
+                throw new Exception("Input parameters BroadcastingContextICSM is null!");
+            }
+            if (((ValidationAssignment(broadcastingContext.BroadcastingContextICSM.Assignments)) && (ValidationAllotment(broadcastingContext.BroadcastingContextICSM.Allotments))) == false)
+            {
+                throw new Exception("Input parameters failed validation");
+            }
+
+            var lstContoursResults = new List<ContoursResult>();
+
+         
+
+
+            ge06CalcResult.ContoursResult = lstContoursResults.ToArray();
+            FillAllotmentOrAssignmentResult(broadcastingContext.BroadcastingContextICSM, ref ge06CalcResult);
+        }
+
+        /// <summary>
         /// Здесь тоже не понятно как обойтись всего двумя параметрами ??????????????
         /// </summary>
         /// <param name="pointEarthGeometric1"></param>
@@ -698,11 +804,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             return -1;
         }
 
-            /// <summary>
-            /// Установка модели распространения и ее параметров 
-            /// </summary>
-            /// <param name="data"></param>
-            /// <returns></returns>
+        /// <summary>
+        /// Установка модели распространения и ее параметров 
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
         private PropagationModel GetPropagationModel(Ge06TaskParameters ge06TaskParameters, PropagationModel data, CalculationType calculationType)
         {
             var propagationModel = new PropagationModel();
