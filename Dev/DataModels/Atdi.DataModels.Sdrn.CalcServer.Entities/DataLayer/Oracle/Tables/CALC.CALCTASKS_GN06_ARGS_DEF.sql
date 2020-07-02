@@ -1,6 +1,6 @@
 ﻿CREATE TABLE CALC.CALCTASKS_GN06_ARGS_DEF
 (
-  ID                               NUMBER(15)   NOT NULL,
+  TASK_ID                          NUMBER(15)   NOT NULL,
   AZIMUTH_STEP_DEG                 NUMBER(22,8),
   ADDITIONAL_CONTOURS_BY_DISTANCE  NUMBER(1),
   INFOC_MEAS_RESULTS               BLOB,

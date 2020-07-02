@@ -120,7 +120,6 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                             .Select(
                                 c => c.AdditionalContoursByDistances,
                                 c => c.AzimuthStep_deg,
-                                c => c.BroadcastingExtend,
                                 c => c.CalculationTypeCode,
                                 c => c.CalculationTypeName,
                                 c => c.ContureByFieldStrength,
