@@ -6,16 +6,19 @@ using System.Threading.Tasks;
 using Atdi.DataModels.Sdrn.CalcServer.Entities;
 using Atdi.Platform.Cqrs;
 using ICSM;
+using Atdi.DataModels.Sdrn.DeepServices.GN06;
 
 namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
 {
     public class GetAllotmentByBrificIdExecutor : IReadQueryExecutor<GetAllotmentByBrificId, AssignmentsAllotmentsModel>
     {
+        private readonly IObjectReader _objectReader;
         private readonly AppComponentConfig _config;
         private readonly CalcServerDataLayer _dataLayer;
 
-        public GetAllotmentByBrificIdExecutor(AppComponentConfig config, CalcServerDataLayer dataLayer)
+        public GetAllotmentByBrificIdExecutor(IObjectReader objectReader, AppComponentConfig config, CalcServerDataLayer dataLayer)
         {
+            _objectReader = objectReader;
             _config = config;
             _dataLayer = dataLayer;
         }
@@ -41,6 +44,8 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
                 allot.SpectrumMask = StringConverter.ConvertToSpectrumMaskType(rs.GetS("spect_mask"));
                 allot.RefNetwork = StringConverter.ConvertToRefNetworkType(rs.GetS("typ_ref_netwk"));
                 allot.AllotmentName = rs.GetS("allot_name");
+                allot.ContourId = _objectReader.Read<int>().By(new GeBrificCounturIdByTerrakey { terrakey = rs.GetI("terrakey")});
+                allot.Сontur = _objectReader.Read<AreaPoint[]>().By(new GetAreaPointBySubAreaKey { SubAreaKey = allot.ContourId });
             }
             if (rs.IsOpen())
                 rs.Close();

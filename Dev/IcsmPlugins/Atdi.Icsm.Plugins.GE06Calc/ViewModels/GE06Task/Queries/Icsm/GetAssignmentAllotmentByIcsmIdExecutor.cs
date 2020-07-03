@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Atdi.DataModels.Sdrn.CalcServer.Entities;
+using Atdi.DataModels.Sdrn.DeepServices.GN06;
 using Atdi.Platform.Cqrs;
 using ICSM;
 
@@ -48,6 +49,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
                     allotAssign.AllotmentName = rs.GetS("A_NAME");
                     if (Int32.TryParse(rs.GetS("ALLOT_AREA").Replace(",", ""), out int ContourId))
                         allotAssign.ContourId = ContourId;
+                    allotAssign.Сontur = _objectReader.Read<AreaPoint[]>().By(new GetAreaPointBySubAreaKey { SubAreaKey = allotAssign.ContourId });
                 }
                 else
                 {
