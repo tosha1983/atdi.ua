@@ -53,9 +53,9 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
                 assign.Direction = StringConverter.ConvertToAntennaDirectionType(rs.GetS("ANT_DIR"));
                 assign.AglHeight_m = (short)rs.GetD("AGL");
                 assign.MaxEffHeight_m = rs.GetI("EFHGT_MAX");
-                //assign.EffHeight_m = rs.GetS("EFHGT");
-                //assign.DiagrH = rs.GetS("ATTN_H");
-                //assign.DiagrV = rs.GetS("ATTN_V");
+                assign.EffHeight_m = StringConverter.ConvertToEffHeight(rs.GetS("EFHGT"));
+                assign.DiagrH = StringConverter.ConvertToDiagrH(rs.GetS("ATTN_H"));
+                assign.DiagrV = StringConverter.ConvertToDiagrV(rs.GetS("ATTN_V"));
                 assign.TargetLon_Dec = rs.GetD("LONGITUDE");
                 assign.TargetLat_Dec = rs.GetD("LATITUDE");
             }

@@ -198,5 +198,40 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
             else
                 return AntennaDirectionType.ND;
         }
+        public static short[] ConvertToEffHeight(string value)
+        {
+            var splitVariants = new char[] { ',', ';', ' ' };
+            var values = new List<short>();
+            foreach (var item in value.Split(splitVariants))
+            {
+                if (short.TryParse(item, out short val))
+                    values.Add(val);
+            }
+            return values.ToArray();
+        }
+        public static float[] ConvertToDiagrH(string value)
+        {
+            value.Replace("VECTOR ", "");
+            var splitVariants = new char[] { ',', ';', ' ' };
+            var values = new List<float>();
+            foreach (var item in value.Split(splitVariants))
+            {
+                if (float.TryParse(item, out float val))
+                    values.Add(val);
+            }
+            return values.ToArray();
+        }
+        public static float[] ConvertToDiagrV(string value)
+        {
+            value.Replace("VECTOR ", "");
+            var splitVariants = new char[] { ',', ';', ' ' };
+            var values = new List<float>();
+            foreach (var item in value.Split(splitVariants))
+            {
+                if (float.TryParse(item, out float val))
+                    values.Add(val);
+            }
+            return values.ToArray();
+        }
     }
 }
