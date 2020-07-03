@@ -615,7 +615,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                 Latitude = pointEarthGeometricsResult[k].Latitude
                             };
 
-                            contoursResult[k].FS = CalcFieldStrengthInPointGE06(in ge06CalcData, in ge06CalcData.Point, broadcastingContextBase);
+                            contoursResult[k].FS = CalcFieldStrengthInPointGE06(in ge06CalcData, in point, broadcastingContextBase);
                             contoursResult[k].AffectedADM = this._idwmService.GetADMByPoint(new IdwmDataModel.Point()
                             {
                                 Longitude_dec = point.Longitude,
@@ -682,7 +682,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                     Longitude = pointEarthGeometricsResult[k].Longitude,
                                     Latitude = pointEarthGeometricsResult[k].Latitude
                                 };
-                                contoursResult[k].FS = CalcFieldStrengthInPointGE06(in ge06CalcData, in ge06CalcData.Point, broadcastingContextBase);
+                                contoursResult[k].FS = CalcFieldStrengthInPointGE06(in ge06CalcData, in point, broadcastingContextBase);
                                 contoursResult[k].AffectedADM = this._idwmService.GetADMByPoint(new IdwmDataModel.Point()
                                 {
                                     Longitude_dec = point.Longitude,
@@ -817,6 +817,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                           ref Ge06CalcResult ge06CalcResult
                                           )
         {
+            var pointEarthGeometricsResult = default(PointEarthGeometric[]);
+
             var lstContoursResults = new List<ContoursResult>();
 
             if (((ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM!=null) && (ge06CalcData.Ge06TaskParameters.BroadcastingContext.broadcastingContextBRIFIC!= null))==false)
@@ -835,37 +837,151 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 throw new Exception("Input parameters for BRIFIC failed validation");
             }
 
+
+            var broadcastingContextBRIFIC = ge06CalcData.Ge06TaskParameters.BroadcastingContext.broadcastingContextBRIFIC;
+            var broadcastingContextICSM = ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM;
+
             //1.Определение центра гравитации(2.1)
             var pointEarthGeometric = new PointEarthGeometric();
 
-            
+            if ((broadcastingContextBRIFIC != null) && (broadcastingContextICSM != null))
+            {
                 //1. Определение центра гравитации, но только для BR IFIC (2.1)
                 var broadcastingCalcBarycenterGE06 = new BroadcastingCalcBarycenterGE06()
                 {
-                    BroadcastingAllotment = ge06CalcData.Ge06TaskParameters.BroadcastingContext.broadcastingContextBRIFIC.Allotments,
-                    BroadcastingAssignments = ge06CalcData.Ge06TaskParameters.BroadcastingContext.broadcastingContextBRIFIC.Assignments
+                    BroadcastingAllotment = broadcastingContextBRIFIC.Allotments,
+                    BroadcastingAssignments = broadcastingContextBRIFIC.Assignments
                 };
+
                 //1.Определение центра гравитации(2.1)
-
                 this._gn06Service.CalcBarycenterGE06(in broadcastingCalcBarycenterGE06, ref pointEarthGeometric);
-            
 
 
-            // 2.Определение контрольных точек для записей BR IFIC -> построение контуров для выделений для
-            //     60, 100, 200, 300, 500, 750 и 1000 км.CreateContourFromContureByDistance(если присутствует выделение) 1.1.6 или CreateContourFromPointByDistance если его нет.
-            var distances = new int[7] { 60, 100, 200, 300, 500, 750, 1000 };
+                // 2.Определение контрольных точек для записей BR IFIC -> построение контуров для выделений для
+                //     60, 100, 200, 300, 500, 750 и 1000 км.CreateContourFromContureByDistance(если присутствует выделение) 1.1.6 или CreateContourFromPointByDistance если его нет.
+                var distances = new int[7] { 60, 100, 200, 300, 500, 750, 1000 };
+                for (int i = 0; i < distances.Length; i++)
+                {
+
+                    if (broadcastingContextBRIFIC.Allotments == null)
+                    {
+                        var contourFromPointByDistanceArgs = new ContourFromPointByDistanceArgs()
+                        {
+                            Distance_km = ge06CalcData.Ge06TaskParameters.Distances[i],
+                            Step_deg = ge06CalcData.Ge06TaskParameters.AzimuthStep_deg.Value,
+                            PointEarthGeometricCalc = pointEarthGeometric
+                        };
 
 
-            for (int i = 0; i < distances.Length; i++)
-            {
-                // 2. Построение контуров фиксированной дистанции относительно центра гравитации.
-                // Базируемся на функции CreateContourFromPointByDistance если у нас только BroadcastingAssignment []
+                        try
+                        {
+                            pointEarthGeometricsResult = _pointEarthGeometricPool.Take();
 
-               
+                            this._earthGeometricService.CreateContourFromPointByDistance(in contourFromPointByDistanceArgs, ref pointEarthGeometricsResult, out int sizeResultBuffer);
+
+                            for (int k = 0; k < sizeResultBuffer; k++)
+                            {
+                                var pointForCalcFS = new Point()
+                                {
+                                    Longitude = pointEarthGeometricsResult[k].Longitude,
+                                    Latitude = pointEarthGeometricsResult[k].Latitude
+                                };
+
+                                //3.Расчет напряженности поля в точках(2.2) для BR IFIC(Модель распространения 1546, процент территории 50, процент времени 1, высота абонента 10м).
+                                var fsBRIFIC = CalcFieldStrengthInPointGE06(in ge06CalcData, in pointForCalcFS, broadcastingContextBRIFIC);
+
+                                //4.Расчет напряженности поля в точках(2.2) для ICSM (Модель распространения 1546, процент территории 50, процент времени 1, высота абонента 10м).
+                                var fsICSM = CalcFieldStrengthInPointGE06(in ge06CalcData, in pointForCalcFS, broadcastingContextICSM);
+
+                                //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                                ///
+                                ///     5. Определение напряженности поля для затронутой службы (таблица ТАБЛИЦА A.1.1 документа GE06 взять http://redmine3.lissoft.com.ua:3003/issues/697) в качестве определяющих данных это технология Broadcasting,  частота и служба stn_cls (п. Системы, испытующие влияние).
+                                ///     6.Построение контура(ов) для напряженности поля относительно центра гравитации для BRIFIC. Базируемся на функции CreateContourForStationByTriggerFieldStrengths. При этом в данный расчет мы должны просунуть функцию 2.2 Расчет напряженности поля в точке.(Модель распространения 1546, процент территории 50, процент времени 1, высота абонента 10м).
+                                ///     7 Расчет напряженности поля в каждой точке, полученной для контура в п 6: для BroadcastingAssignment[] +BroadcastingAllotment(ICSM) используя функцию 2.2.(Модель распространения 1546, процент территории 50, процент времени 1, высота абонента 10м).
+                                ///
+                                /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                            }
+
+                        }
+                        finally
+                        {
+                            if (pointEarthGeometricsResult != null)
+                            {
+                                _pointEarthGeometricPool.Put(pointEarthGeometricsResult);
+                            }
+                        }
+
+                    }
+                    //или на функции CreateContourFromContureByDistance если у нас есть BroadcastingAllotment 
+                    else
+                    {
+                        var areaPoints = broadcastingContextBRIFIC.Allotments.AllotmentParameters.Сontur;
+                        if ((areaPoints != null) && (areaPoints.Length > 0))
+                        {
+                            var pointEarthGeometrics = new PointEarthGeometric[areaPoints.Length];
+                            for (int h = 0; h < areaPoints.Length; h++)
+                            {
+                                pointEarthGeometrics[h] = new PointEarthGeometric(areaPoints[h].Lon_DEC, areaPoints[h].Lat_DEC, CoordinateUnits.deg);
+                            }
+
+                            var contourFromContureByDistanceArgs = new ContourFromContureByDistanceArgs()
+                            {
+                                Step_deg = ge06CalcData.Ge06TaskParameters.AzimuthStep_deg.Value,
+                                Distance_km = ge06CalcData.Ge06TaskParameters.Distances[i],
+                                PointBaryCenter = pointEarthGeometric,
+                                ContourPoints = pointEarthGeometrics
+                            };
+
+
+
+                            try
+                            {
+                                pointEarthGeometricsResult = _pointEarthGeometricPool.Take();
+
+                                this._earthGeometricService.CreateContourFromContureByDistance(in contourFromContureByDistanceArgs, ref pointEarthGeometricsResult, out int sizeResultBuffer);
+
+                                for (int k = 0; k < sizeResultBuffer; k++)
+                                {
+                                    var pointForCalcFS = new Point()
+                                    {
+                                        Longitude = pointEarthGeometricsResult[k].Longitude,
+                                        Latitude = pointEarthGeometricsResult[k].Latitude
+                                    };
+
+                                    //3.Расчет напряженности поля в точках(2.2) для BR IFIC(Модель распространения 1546, процент территории 50, процент времени 1, высота абонента 10м).
+                                    var fsBRIFIC = CalcFieldStrengthInPointGE06(in ge06CalcData, in pointForCalcFS, broadcastingContextBRIFIC);
+
+                                    //4.Расчет напряженности поля в точках(2.2) для ICSM (Модель распространения 1546, процент территории 50, процент времени 1, высота абонента 10м).
+                                    var fsICSM = CalcFieldStrengthInPointGE06(in ge06CalcData, in pointForCalcFS, broadcastingContextICSM);
+
+                                    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                                    ///
+                                    ///     5. Определение напряженности поля для затронутой службы (таблица ТАБЛИЦА A.1.1 документа GE06 взять http://redmine3.lissoft.com.ua:3003/issues/697) в качестве определяющих данных это технология Broadcasting,  частота и служба stn_cls (п. Системы, испытующие влияние).
+                                    ///     6.Построение контура(ов) для напряженности поля относительно центра гравитации для BRIFIC. Базируемся на функции CreateContourForStationByTriggerFieldStrengths. При этом в данный расчет мы должны просунуть функцию 2.2 Расчет напряженности поля в точке.(Модель распространения 1546, процент территории 50, процент времени 1, высота абонента 10м).
+                                    ///     7 Расчет напряженности поля в каждой точке, полученной для контура в п 6: для BroadcastingAssignment[] +BroadcastingAllotment(ICSM) используя функцию 2.2.(Модель распространения 1546, процент территории 50, процент времени 1, высота абонента 10м).
+                                    ///
+                                    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                                }
+
+
+                            }
+                            finally
+                            {
+                                if (pointEarthGeometricsResult != null)
+                                {
+                                    _pointEarthGeometricPool.Put(pointEarthGeometricsResult);
+                                }
+                            }
+                        }
+                    }
+
+                }
             }
 
-            //ge06CalcResult.ContoursResult = lstContoursResults.ToArray();
-            //FillAllotmentOrAssignmentResult(broadcastingContext.BroadcastingContextICSM, ref ge06CalcResult);
+            ge06CalcResult.ContoursResult = lstContoursResults.ToArray();
+            FillAllotmentOrAssignmentResult(broadcastingContextBRIFIC, ref ge06CalcResult);
+            FillAllotmentOrAssignmentResult(broadcastingContextICSM, ref ge06CalcResult);
         }
 
 
@@ -881,6 +997,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                            ref Ge06CalcResult ge06CalcResult
                                           )
         {
+
             if (ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM==null)
             {
                 throw new Exception("Input parameters BroadcastingContextICSM is null!");
@@ -890,9 +1007,124 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 throw new Exception("Input parameters failed validation");
             }
 
+            var pointEarthGeometricsResult = default(PointEarthGeometric[]);
+
             var lstContoursResults = new List<ContoursResult>();
 
- 
+            var broadcastingContextICSM = ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM;
+
+            var pointEarthGeometric = new PointEarthGeometric();
+
+            //1.Определение центра гравитации(2.1)
+            if ((broadcastingContextICSM != null) && (broadcastingContextICSM != null))
+            {
+                var broadcastingCalcBarycenterGE06 = new BroadcastingCalcBarycenterGE06()
+                {
+                    BroadcastingAllotment = broadcastingContextICSM.Allotments,
+                    BroadcastingAssignments = broadcastingContextICSM.Assignments
+                };
+                this._gn06Service.CalcBarycenterGE06(in broadcastingCalcBarycenterGE06, ref pointEarthGeometric);
+            }
+
+
+            if (broadcastingContextICSM.Allotments == null)
+            {
+                var contourFromPointByDistanceArgs = new ContourFromPointByDistanceArgs()
+                {
+                    Distance_km = 1000,
+                    Step_deg = ge06CalcData.Ge06TaskParameters.AzimuthStep_deg.Value,
+                    PointEarthGeometricCalc = pointEarthGeometric
+                };
+
+                try
+                {
+                    pointEarthGeometricsResult = _pointEarthGeometricPool.Take();
+
+                    this._earthGeometricService.CreateContourFromPointByDistance(in contourFromPointByDistanceArgs, ref pointEarthGeometricsResult, out int sizeResultBuffer);
+
+                    // Вычисление администраций в контуре 1.2.3
+                    // Результат: контур и список потенциально затронутых администраций
+                    var admAffected = new List<string>();
+
+                    for (int k = 0; k < sizeResultBuffer; k++)
+                    {
+                        var pointForCalc= new IdwmDataModel.Point()
+                        {
+                            Longitude_dec = pointEarthGeometricsResult[k].Longitude,
+                            Latitude_dec = pointEarthGeometricsResult[k].Latitude
+                        };
+
+                        admAffected.Add(this._idwmService.GetADMByPoint(in pointForCalc));
+                    }
+
+
+
+                }
+                finally
+                {
+                    if (pointEarthGeometricsResult != null)
+                    {
+                        _pointEarthGeometricPool.Put(pointEarthGeometricsResult);
+                    }
+                }
+
+            }
+            //или на функции CreateContourFromContureByDistance если у нас есть BroadcastingAllotment 
+            else
+            {
+                var areaPoints = broadcastingContextICSM.Allotments.AllotmentParameters.Сontur;
+                if ((areaPoints != null) && (areaPoints.Length > 0))
+                {
+                    var pointEarthGeometrics = new PointEarthGeometric[areaPoints.Length];
+                    for (int h = 0; h < areaPoints.Length; h++)
+                    {
+                        pointEarthGeometrics[h] = new PointEarthGeometric(areaPoints[h].Lon_DEC, areaPoints[h].Lat_DEC, CoordinateUnits.deg);
+                    }
+
+                    var contourFromContureByDistanceArgs = new ContourFromContureByDistanceArgs()
+                    {
+                        Step_deg = ge06CalcData.Ge06TaskParameters.AzimuthStep_deg.Value,
+                        Distance_km = 1000,
+                        PointBaryCenter = pointEarthGeometric,
+                        ContourPoints = pointEarthGeometrics
+                    };
+
+
+
+                    try
+                    {
+                        pointEarthGeometricsResult = _pointEarthGeometricPool.Take();
+
+                        this._earthGeometricService.CreateContourFromContureByDistance(in contourFromContureByDistanceArgs, ref pointEarthGeometricsResult, out int sizeResultBuffer);
+
+                        // Вычисление администраций в контуре 1.2.3
+                        // Результат: контур и список потенциально затронутых администраций
+                        var admAffected = new List<string>();
+
+                        for (int k = 0; k < sizeResultBuffer; k++)
+                        {
+                            var pointForCalc = new IdwmDataModel.Point()
+                            {
+                                Longitude_dec = pointEarthGeometricsResult[k].Longitude,
+                                Latitude_dec = pointEarthGeometricsResult[k].Latitude
+                            };
+
+                            admAffected.Add(this._idwmService.GetADMByPoint(in pointForCalc));
+                        }
+                    }
+                    finally
+                    {
+                        if (pointEarthGeometricsResult != null)
+                        {
+                            _pointEarthGeometricPool.Put(pointEarthGeometricsResult);
+                        }
+                    }
+                }
+            }
+
+
+
+
 
             ge06CalcResult.ContoursResult = lstContoursResults.ToArray();
             FillAllotmentOrAssignmentResult(ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM, ref ge06CalcResult);
