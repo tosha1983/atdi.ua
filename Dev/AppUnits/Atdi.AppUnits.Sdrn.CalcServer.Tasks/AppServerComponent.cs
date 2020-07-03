@@ -13,6 +13,7 @@ using Atdi.Platform.Data;
 using Atdi.Platform.DependencyInjection;
 using Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations;
 using Atdi.DataModels.Sdrn.CalcServer.Internal.Clients;
+using Atdi.DataModels.Sdrn.DeepServices.EarthGeometry;
 
 namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 {
@@ -108,8 +109,15 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                 Factory = () => new CalibrationResult[appConfig.ThresholdsStationCalibrationArrayLength.GetValueOrDefault(1_0000)]
             });
 
+            var pointEarthGeometricResultlPool = poolSite.Register(new ObjectPoolDescriptor<PointEarthGeometric[]>()
+            {
+                Key = ObjectPools.GE06PointEarthGeometricObjectPool,
+                MinSize = appConfig.ThresholdsGE06PointEarthGeometricObjectPoolMinSize.GetValueOrDefault(0),
+                MaxSize = appConfig.ThresholdsGE06PointEarthGeometricObjectPoolMaxSize.GetValueOrDefault(10),
+                Factory = () => new PointEarthGeometric[appConfig.ThresholdsGE06PointEarthGeometricArrayLength.GetValueOrDefault(1_00000)]
+            });
 
-            
+
 
             base.OnActivateUnit();
 		}

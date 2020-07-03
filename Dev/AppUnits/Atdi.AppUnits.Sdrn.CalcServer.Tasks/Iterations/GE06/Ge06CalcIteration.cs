@@ -35,6 +35,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         private readonly ILogger _logger;
         private readonly IIterationsPool _iterationsPool;
         private readonly IDataLayer<EntityDataOrm<CalcServerEntityOrmContext>> _calcServerDataLayer;
+        private readonly IObjectPool<PointEarthGeometric[]> _pointEarthGeometricPool;
         private readonly IObjectPoolSite _poolSite;
         private readonly ITransformation _transformation;
         private readonly Idwm.IIdwmService _idwmService;
@@ -55,7 +56,6 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             AppServerComponentConfig appServerComponentConfig,
             ITransformation transformation,
             IGn06Service gn06Service,
-            //Ge06CalcData ge06CalcData,
             Idwm.IIdwmService idwmService,
             ILogger logger)
         {
@@ -66,9 +66,9 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             _appServerComponentConfig = appServerComponentConfig;
             _transformation = transformation;
             _gn06Service = gn06Service;
-            //_ge06CalcData = ge06CalcData;
             _idwmService = idwmService;
             _logger = logger;
+            _pointEarthGeometricPool = _poolSite.GetPool<PointEarthGeometric[]>(ObjectPools.GE06PointEarthGeometricObjectPool);
         }
 
 
@@ -90,18 +90,39 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             var contoursResult = new List<ContoursResult>();
             var allotmentOrAssignmentResult = new List<AllotmentOrAssignmentResult>();
 
-            var calcForICSM = data.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM;
-            var calcForBRIFIC = data.Ge06TaskParameters.BroadcastingContext.broadcastingContextBRIFIC;
+           
 
             if ((CalculationType)data.Ge06TaskParameters.CalculationTypeCode == CalculationType.CreateContoursByDistance)
             {
-                CalculationForCreateContoursByDistance(calcForICSM, in data, BroadcastingTypeContext.Icsm, ref ge06CalcResultsForICSM);
+                //временная проверка
+                if (data.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM!=null)
+                {
+                    if ((data.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM.Allotments != null))
+                    {
+                        if ((data.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM.Allotments.AdminData == null))
+                        {
+                            data.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM.Allotments = null;
+                        }
+                    }
+                }
+                if (data.Ge06TaskParameters.BroadcastingContext.broadcastingContextBRIFIC != null)
+                {
+                    if ((data.Ge06TaskParameters.BroadcastingContext.broadcastingContextBRIFIC.Allotments != null))
+                    {
+                        if ((data.Ge06TaskParameters.BroadcastingContext.broadcastingContextBRIFIC.Allotments.AdminData == null))
+                        {
+                            data.Ge06TaskParameters.BroadcastingContext.broadcastingContextBRIFIC.Allotments = null;
+                        }
+                    }
+                }
+
+                CalculationForCreateContoursByDistance(in data, BroadcastingTypeContext.Icsm, ref ge06CalcResultsForICSM);
                 affectedADMResult.AddRange(ge06CalcResultsForICSM.AffectedADMResult);
                 contoursResult.AddRange(ge06CalcResultsForICSM.ContoursResult);
                 allotmentOrAssignmentResult.AddRange(ge06CalcResultsForICSM.AllotmentOrAssignmentResult);
 
 
-                CalculationForCreateContoursByDistance(calcForBRIFIC, in data, BroadcastingTypeContext.Icsm, ref ge06CalcResultsForBRIFIC);
+                CalculationForCreateContoursByDistance(in data, BroadcastingTypeContext.Icsm, ref ge06CalcResultsForBRIFIC);
                 affectedADMResult.AddRange(ge06CalcResultsForBRIFIC.AffectedADMResult);
                 contoursResult.AddRange(ge06CalcResultsForBRIFIC.ContoursResult);
                 allotmentOrAssignmentResult.AddRange(ge06CalcResultsForBRIFIC.AllotmentOrAssignmentResult);
@@ -109,13 +130,13 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             else if ((CalculationType)data.Ge06TaskParameters.CalculationTypeCode == CalculationType.CreateContoursByFS)
             {
 
-                CalculationForCreateContoursByFS(calcForICSM, in data, BroadcastingTypeContext.Icsm, ref ge06CalcResultsForICSM);
+                CalculationForCreateContoursByFS(in data, BroadcastingTypeContext.Icsm, ref ge06CalcResultsForICSM);
                 affectedADMResult.AddRange(ge06CalcResultsForICSM.AffectedADMResult);
                 contoursResult.AddRange(ge06CalcResultsForICSM.ContoursResult);
                 allotmentOrAssignmentResult.AddRange(ge06CalcResultsForICSM.AllotmentOrAssignmentResult);
 
 
-                CalculationForCreateContoursByFS(calcForBRIFIC, in data, BroadcastingTypeContext.Icsm, ref ge06CalcResultsForBRIFIC);
+                CalculationForCreateContoursByFS(in data, BroadcastingTypeContext.Icsm, ref ge06CalcResultsForBRIFIC);
                 affectedADMResult.AddRange(ge06CalcResultsForBRIFIC.AffectedADMResult);
                 contoursResult.AddRange(ge06CalcResultsForBRIFIC.ContoursResult);
                 allotmentOrAssignmentResult.AddRange(ge06CalcResultsForBRIFIC.AllotmentOrAssignmentResult);
@@ -529,17 +550,28 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         /// <param name="ge06CalcData"></param>
         /// <param name="broadcastingTypeContext"></param>
         /// <param name="ge06CalcResult"></param>
-        private void CalculationForCreateContoursByDistance(BroadcastingContextBase broadcastingContextBase,
+        private void CalculationForCreateContoursByDistance(
                                             in Ge06CalcData ge06CalcData,
                                             BroadcastingTypeContext broadcastingTypeContext,
                                             ref Ge06CalcResult ge06CalcResult
                                             )
         {
+            var pointEarthGeometricsResult = default(PointEarthGeometric[]);
 
-            if (((ValidationAssignment(broadcastingContextBase.Assignments)) && (ValidationAllotment(broadcastingContextBase.Allotments)))==false)
+            BroadcastingContextBase broadcastingContextBase = null;
+            if (broadcastingTypeContext== BroadcastingTypeContext.Brific)
             {
-                throw new Exception("Input parameters failed validation");
+                broadcastingContextBase = ge06CalcData.Ge06TaskParameters.BroadcastingContext.broadcastingContextBRIFIC;
             }
+            if (broadcastingTypeContext == BroadcastingTypeContext.Icsm)
+            {
+                broadcastingContextBase = ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM;
+            }
+
+            //if (((ValidationAssignment(broadcastingContextBase.Assignments)) && (ValidationAllotment(broadcastingContextBase.Allotments)))==false)
+            //{
+            //    throw new Exception("Input parameters failed validation");
+            //}
 
             var lstContoursResults = new List<ContoursResult>();
 
@@ -566,41 +598,52 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         PointEarthGeometricCalc = pointEarthGeometric
                     };
 
-                    // нужно завести пул !!!!!!!!!!!!!!!!!!
-                    var pointEarthGeometricsResult = new PointEarthGeometric[1000000];
-                    this._earthGeometricService.CreateContourFromPointByDistance(in contourFromPointByDistanceArgs, ref pointEarthGeometricsResult, out int sizeResultBuffer);
 
-                    var contoursResult = new ContoursResult[sizeResultBuffer];
-
-                    for (int k=0; k< sizeResultBuffer; k++)
+                    try
                     {
-                        var  point = new Point()
-                        {
-                            Longitude = pointEarthGeometricsResult[k].Longitude,
-                            Latitude = pointEarthGeometricsResult[k].Latitude
-                        };
+                        pointEarthGeometricsResult = _pointEarthGeometricPool.Take();
 
-                        contoursResult[k].FS = CalcFieldStrengthInPointGE06(in ge06CalcData, in ge06CalcData.Point, broadcastingContextBase);
-                        contoursResult[k].AffectedADM= this._idwmService.GetADMByPoint(new IdwmDataModel.Point()
+                        this._earthGeometricService.CreateContourFromPointByDistance(in contourFromPointByDistanceArgs, ref pointEarthGeometricsResult, out int sizeResultBuffer);
+
+                        var contoursResult = new ContoursResult[sizeResultBuffer];
+
+                        for (int k = 0; k < sizeResultBuffer; k++)
                         {
-                            Longitude_dec = point.Longitude,
-                            Latitude_dec = point.Latitude
-                        });
-                        if (broadcastingTypeContext == BroadcastingTypeContext.Brific)
-                        {
-                            contoursResult[k].ContourType = ContourType.Etalon;
-                            //contoursResult[k].CountoursPoints = ???????????????????? что тут передавать????????
+                            var point = new Point()
+                            {
+                                Longitude = pointEarthGeometricsResult[k].Longitude,
+                                Latitude = pointEarthGeometricsResult[k].Latitude
+                            };
+
+                            contoursResult[k].FS = CalcFieldStrengthInPointGE06(in ge06CalcData, in ge06CalcData.Point, broadcastingContextBase);
+                            contoursResult[k].AffectedADM = this._idwmService.GetADMByPoint(new IdwmDataModel.Point()
+                            {
+                                Longitude_dec = point.Longitude,
+                                Latitude_dec = point.Latitude
+                            });
+                            if (broadcastingTypeContext == BroadcastingTypeContext.Brific)
+                            {
+                                contoursResult[k].ContourType = ContourType.Etalon;
+                                //contoursResult[k].CountoursPoints = ???????????????????? что тут передавать????????
+                            }
+                            if (broadcastingTypeContext == BroadcastingTypeContext.Icsm)
+                            {
+                                contoursResult[k].ContourType = ContourType.New;
+                                //contoursResult[k].CountoursPoints = ???????????????????? что тут передавать????????
+                            }
+                            contoursResult[k].Distance = ge06CalcData.Ge06TaskParameters.Distances[i];
+                            //contoursResult[k].PointsCount = ???????????????????? что здесь указать????????
                         }
-                        if (broadcastingTypeContext == BroadcastingTypeContext.Icsm)
-                        {
-                            contoursResult[k].ContourType = ContourType.New;
-                            //contoursResult[k].CountoursPoints = ???????????????????? что тут передавать????????
-                        }
-                        contoursResult[k].Distance = ge06CalcData.Ge06TaskParameters.Distances[i];
-                        //contoursResult[k].PointsCount = ???????????????????? что здесь указать????????
+
+                        lstContoursResults.AddRange(contoursResult);
                     }
-
-                    lstContoursResults.AddRange(contoursResult);
+                    finally
+                    {
+                        if (pointEarthGeometricsResult != null)
+                        {
+                            _pointEarthGeometricPool.Put(pointEarthGeometricsResult);
+                        }
+                    }
 
                 }
                 //или на функции CreateContourFromContureByDistance если у нас есть BroadcastingAllotment 
@@ -623,40 +666,52 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             ContourPoints = pointEarthGeometrics
                         };
 
-                        // нужно завести пул !!!!!!!!!!!!!!!!!!
-                        var pointEarthGeometricsResult = new PointEarthGeometric[1000000];
-                        this._earthGeometricService.CreateContourFromContureByDistance(in contourFromContureByDistanceArgs, ref pointEarthGeometricsResult, out int sizeResultBuffer);
 
-                        var contoursResult = new ContoursResult[sizeResultBuffer];
-                        for (int k = 0; k < sizeResultBuffer; k++)
+                        
+                        try
                         {
-                            var point = new Point()
+                            pointEarthGeometricsResult = _pointEarthGeometricPool.Take();
+
+                            this._earthGeometricService.CreateContourFromContureByDistance(in contourFromContureByDistanceArgs, ref pointEarthGeometricsResult, out int sizeResultBuffer);
+
+                            var contoursResult = new ContoursResult[sizeResultBuffer];
+                            for (int k = 0; k < sizeResultBuffer; k++)
                             {
-                                Longitude = pointEarthGeometricsResult[k].Longitude,
-                                Latitude = pointEarthGeometricsResult[k].Latitude
-                            };
-                            contoursResult[k].FS = CalcFieldStrengthInPointGE06(in ge06CalcData, in ge06CalcData.Point, broadcastingContextBase);
-                            contoursResult[k].AffectedADM = this._idwmService.GetADMByPoint(new IdwmDataModel.Point()
-                            {
-                                Longitude_dec = point.Longitude,
-                                Latitude_dec = point.Latitude
-                            });
-                            if (broadcastingTypeContext == BroadcastingTypeContext.Brific)
-                            {
-                                contoursResult[k].ContourType = ContourType.Etalon;
-                                //contoursResult[k].CountoursPoints = ???????????????????? что тут передавать????????
+                                var point = new Point()
+                                {
+                                    Longitude = pointEarthGeometricsResult[k].Longitude,
+                                    Latitude = pointEarthGeometricsResult[k].Latitude
+                                };
+                                contoursResult[k].FS = CalcFieldStrengthInPointGE06(in ge06CalcData, in ge06CalcData.Point, broadcastingContextBase);
+                                contoursResult[k].AffectedADM = this._idwmService.GetADMByPoint(new IdwmDataModel.Point()
+                                {
+                                    Longitude_dec = point.Longitude,
+                                    Latitude_dec = point.Latitude
+                                });
+                                if (broadcastingTypeContext == BroadcastingTypeContext.Brific)
+                                {
+                                    contoursResult[k].ContourType = ContourType.Etalon;
+                                    //contoursResult[k].CountoursPoints = ???????????????????? что тут передавать????????
+                                }
+                                if (broadcastingTypeContext == BroadcastingTypeContext.Icsm)
+                                {
+                                    contoursResult[k].ContourType = ContourType.New;
+                                    //contoursResult[k].CountoursPoints = ???????????????????? что тут передавать????????
+                                }
+                                contoursResult[k].Distance = ge06CalcData.Ge06TaskParameters.Distances[i];
+                                //contoursResult[k].PointsCount = ???????????????????? что здесь указать????????
                             }
-                            if (broadcastingTypeContext == BroadcastingTypeContext.Icsm)
-                            {
-                                contoursResult[k].ContourType = ContourType.New;
-                                //contoursResult[k].CountoursPoints = ???????????????????? что тут передавать????????
-                            }
-                            contoursResult[k].Distance = ge06CalcData.Ge06TaskParameters.Distances[i];
-                            //contoursResult[k].PointsCount = ???????????????????? что здесь указать????????
+
+                            lstContoursResults.AddRange(contoursResult);
+
                         }
-
-                        lstContoursResults.AddRange(contoursResult);
-
+                        finally
+                        {
+                            if (pointEarthGeometricsResult != null)
+                            {
+                                _pointEarthGeometricPool.Put(pointEarthGeometricsResult);
+                            }
+                        }
                     }
                 }
             }
@@ -671,12 +726,24 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         /// <param name="ge06CalcData"></param>
         /// <param name="broadcastingTypeContext"></param>
         /// <param name="ge06CalcResult"></param>
-        private void CalculationForCreateContoursByFS(BroadcastingContextBase broadcastingContextBase,
+        private void CalculationForCreateContoursByFS(
                                            in Ge06CalcData ge06CalcData,
                                            BroadcastingTypeContext broadcastingTypeContext,
                                            ref Ge06CalcResult ge06CalcResult
                                            )
         {
+            var pointEarthGeometricsResult = default(PointEarthGeometric[]);
+
+            BroadcastingContextBase broadcastingContextBase = null;
+            if (broadcastingTypeContext == BroadcastingTypeContext.Brific)
+            {
+                broadcastingContextBase = ge06CalcData.Ge06TaskParameters.BroadcastingContext.broadcastingContextBRIFIC;
+            }
+            if (broadcastingTypeContext == BroadcastingTypeContext.Icsm)
+            {
+                broadcastingContextBase = ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM;
+            }
+
             if (((ValidationAssignment(broadcastingContextBase.Assignments)) && (ValidationAllotment(broadcastingContextBase.Allotments))) == false)
             {
                 throw new Exception("Input parameters failed validation");
@@ -712,20 +779,27 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         PointEarthGeometricCalc = pointEarthGeometric
                     };
 
-                    // нужно завести пул !!!!!!!!!!!!!!!!!!
-                    var pointEarthGeometricsResult = new PointEarthGeometric[1000000];
+                    
+                    try
+                    {
+                        pointEarthGeometricsResult = _pointEarthGeometricPool.Take();
 
+                        this._earthGeometricService.CreateContourForStationByTriggerFieldStrengths((sourcePoint, destPoint) => CalcFieldStrength(sourcePoint, destPoint), in contourForStationByTriggerFieldStrengthsArgs, ref pointEarthGeometricsResult, out int sizeResultBuffer);
 
-                    this._earthGeometricService.CreateContourForStationByTriggerFieldStrengths((sourcePoint, destPoint) => CalcFieldStrength(sourcePoint, destPoint), in contourForStationByTriggerFieldStrengthsArgs, ref pointEarthGeometricsResult, out int sizeResultBuffer);
+                        ///???????????????????????? как формировать ContoursResult ????????????????????????
+                        var contoursResult = new ContoursResult[sizeResultBuffer];
 
-                    /// как формировать ContoursResult ????????????????????????
-                    var contoursResult = new ContoursResult[sizeResultBuffer];
+                        lstContoursResults.AddRange(contoursResult);
 
-
-                    lstContoursResults.AddRange(contoursResult);
-
+                    }
+                    finally
+                    {
+                        if (pointEarthGeometricsResult != null)
+                        {
+                            _pointEarthGeometricPool.Put(pointEarthGeometricsResult);
+                        }
+                    }
                 }
-
             }
             ge06CalcResult.ContoursResult = lstContoursResults.ToArray();
             FillAllotmentOrAssignmentResult(broadcastingContextBase, ref ge06CalcResult);
