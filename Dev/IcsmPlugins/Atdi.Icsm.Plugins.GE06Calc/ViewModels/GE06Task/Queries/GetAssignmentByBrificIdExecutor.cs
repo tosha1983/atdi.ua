@@ -11,11 +11,13 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
 {
     public class GetAssignmentByBrificIdExecutor : IReadQueryExecutor<GetAssignmentByBrificId, AssignmentsAllotmentsModel>
     {
+        private readonly IObjectReader _objectReader;
         private readonly AppComponentConfig _config;
         private readonly CalcServerDataLayer _dataLayer;
 
-        public GetAssignmentByBrificIdExecutor(AppComponentConfig config, CalcServerDataLayer dataLayer)
+        public GetAssignmentByBrificIdExecutor(IObjectReader objectReader, AppComponentConfig config, CalcServerDataLayer dataLayer)
         {
+            _objectReader = objectReader;
             _config = config;
             _dataLayer = dataLayer;
         }
@@ -52,13 +54,13 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
                 assign.Direction = StringConverter.ConvertToAntennaDirectionType(rs.GetS("ant_dir"));
                 assign.AglHeight_m = (short)rs.GetI("hgt_agl");
                 assign.MaxEffHeight_m = rs.GetI("eff_hgtmax");
+                assign.EffHeight_m = _objectReader.Read<List<short>>().By(new GetBrificEfhgtByTerrakey { terrakey = rs.GetI("terrakey") }).ToArray();
+                assign.DiagrH = _objectReader.Read<List<float>>().By(new GetBrificDiagrByTerrakey { terrakey = rs.GetI("terrakey"), polar = "H" }).ToArray();
+                assign.DiagrV = _objectReader.Read<List<float>>().By(new GetBrificDiagrByTerrakey { terrakey = rs.GetI("terrakey"), polar = "V" }).ToArray();
                 assign.TargetAdmRefId = rs.GetS("adm_ref_id");
                 assign.TargetFreq_MHz = rs.GetD("freq_assgn");
                 assign.TargetLon_Dec = rs.GetD("long_dec");
                 assign.TargetLat_Dec = rs.GetD("lat_dec");
-                //assign.EffHeight_m = rs.GetS("EFHGT");
-                //assign.DiagrH = rs.GetS("ATTN_H");
-                //assign.DiagrV = rs.GetS("ATTN_V");
             }
             if (rs.IsOpen())
                 rs.Close();

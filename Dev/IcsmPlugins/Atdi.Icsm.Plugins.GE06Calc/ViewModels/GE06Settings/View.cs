@@ -363,12 +363,9 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings
         {
             try
             {
-                _starter.Start<VM.GE06TaskResult.View>(isModal: true);
-                //var resultModel = _objectReader.Read<CalcResultModel>().By(new GetCalcResultById { Id = CurrentCalcTask.Id });
-                //if (resultModel != null)
-                //{
-                //    _starter.Start<VM.StationCalibrationResult.View>(isModal: true, f => { f.ResultId = resultModel.Id; });
-                //}
+                var resultId = _objectReader.Read<long?>().By(new GetResultIdByTaskId { TaskId = CurrentCalcTask.Id });
+                if (resultId.HasValue)
+                    _starter.Start<VM.GE06TaskResult.View>(isModal: true);
                 //else
                 //{
                 //    this._logger.Exception(Exceptions.GE06Client, "For selected task not found information in ICalcResults!");
