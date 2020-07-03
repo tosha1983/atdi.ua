@@ -44,8 +44,11 @@ namespace Atdi.Test.CalcServer.LowFunction
                     var gn06Service = resolver.Resolve<IGn06Service>();
                     var idwmServices = resolver.Resolve<IIdwmService>();
 
-                    var point = new Point() { Longitude_dec = 0, Latitude_dec = 45 };
-                    var resultAdm = idwmServices.GetADMByPoint(in point);
+
+                    //var point2 = new Point();
+                    //var point = new Point() { Longitude_dec = -1.151966, Latitude_dec = 54.142403 };
+                    //var resultAdm = idwmServices.GetADMByPoint(in point);
+                    //idwmServices.GetNearestPointByADM(new PointByADM() {  Point = point, Administration = "F"}, ref point2);
 
                     string fileName = System.IO.Path.Combine(Environment.CurrentDirectory, "AreaTestGe06BaryCenter.txt");
 
@@ -80,7 +83,7 @@ namespace Atdi.Test.CalcServer.LowFunction
                         AdminData = new GE.AdministrativeData()
                         {
                             Action = GE.ActionType.Add,
-                            Adm = "F  ",
+                            Adm = "F",
                             Fragment = "",
                             NoticeType = "",
                             AdmRefId = ""
@@ -102,7 +105,7 @@ namespace Atdi.Test.CalcServer.LowFunction
                               AdmData = new GE.AdministrativeData()
                               {
                                    Action = GE.ActionType.Add,
-                                   Adm = "F  "
+                                   Adm = "F"
                               },
                                SiteParameters = new GE.SiteParameters()
                                {

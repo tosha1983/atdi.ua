@@ -139,7 +139,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.GN06
                  Longitude_dec = pointEarthGeometric.Longitude,
                  Latitude_dec = pointEarthGeometric.Latitude
             };
-            return  idwmService.GetADMByPoint(in point).TrimStart().TrimEnd();
+            return  idwmService.GetADMByPoint(in point);
         }
 
         /// <summary>
