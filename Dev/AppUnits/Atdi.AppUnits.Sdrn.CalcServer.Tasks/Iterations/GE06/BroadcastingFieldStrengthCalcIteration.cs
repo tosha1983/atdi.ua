@@ -290,18 +290,42 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 switch(data.BroadcastingAssignment.EmissionCharacteristics.Polar)
                 {
                     case PolarType.H:
-                        ERP_dBW = data.BroadcastingAssignment.EmissionCharacteristics.ErpH_dBW - LinearInterpolationFuncOfAngle(AzimuthToTarget, azimuth0, azimuth0 + 10, data.BroadcastingAssignment.AntennaCharacteristics.DiagrH[azimuth0 / 10], data.BroadcastingAssignment.AntennaCharacteristics.DiagrH[azimuth1 / 10]);
+                        if (data.BroadcastingAssignment.AntennaCharacteristics.DiagrH != null)
+                        {
+                            ERP_dBW = data.BroadcastingAssignment.EmissionCharacteristics.ErpH_dBW - LinearInterpolationFuncOfAngle(AzimuthToTarget, azimuth0, azimuth0 + 10, data.BroadcastingAssignment.AntennaCharacteristics.DiagrH[azimuth0 / 10], data.BroadcastingAssignment.AntennaCharacteristics.DiagrH[azimuth1 / 10]);
+                        }
+                        else
+                        {
+                            ERP_dBW = data.BroadcastingAssignment.EmissionCharacteristics.ErpH_dBW;
+                        }
                         break;
                     case PolarType.V:
-                        ERP_dBW = data.BroadcastingAssignment.EmissionCharacteristics.ErpV_dBW - LinearInterpolationFuncOfAngle(AzimuthToTarget, azimuth0, azimuth0 + 10, data.BroadcastingAssignment.AntennaCharacteristics.DiagrH[azimuth0 / 10], data.BroadcastingAssignment.AntennaCharacteristics.DiagrV[azimuth1 / 10]);
+                        if (data.BroadcastingAssignment.AntennaCharacteristics.DiagrV != null)
+                        {
+                            ERP_dBW = data.BroadcastingAssignment.EmissionCharacteristics.ErpV_dBW - LinearInterpolationFuncOfAngle(AzimuthToTarget, azimuth0, azimuth0 + 10, data.BroadcastingAssignment.AntennaCharacteristics.DiagrH[azimuth0 / 10], data.BroadcastingAssignment.AntennaCharacteristics.DiagrV[azimuth1 / 10]);
+                        }
+                        else
+                        {
+                            ERP_dBW = data.BroadcastingAssignment.EmissionCharacteristics.ErpV_dBW;
+                        }
                         break;
                     case PolarType.M:
-                        ERP_dBW = 10 * Math.Log10(Math.Pow(10, 0.1 * (data.BroadcastingAssignment.EmissionCharacteristics.ErpH_dBW - LinearInterpolationFuncOfAngle(AzimuthToTarget, azimuth0, azimuth0 + 10, data.BroadcastingAssignment.AntennaCharacteristics.DiagrH[azimuth0 / 10], data.BroadcastingAssignment.AntennaCharacteristics.DiagrH[azimuth1 / 10]))) + Math.Pow(10, 0.1 * (data.BroadcastingAssignment.EmissionCharacteristics.ErpV_dBW - LinearInterpolationFuncOfAngle(AzimuthToTarget, azimuth0, azimuth0 + 10, data.BroadcastingAssignment.AntennaCharacteristics.DiagrH[azimuth0 / 10], data.BroadcastingAssignment.AntennaCharacteristics.DiagrV[azimuth1 / 10]))));
+                        if (data.BroadcastingAssignment.AntennaCharacteristics.DiagrH != null && data.BroadcastingAssignment.AntennaCharacteristics.DiagrV != null)
+                        {
+                            ERP_dBW = 10 * Math.Log10(Math.Pow(10, 0.1 * (data.BroadcastingAssignment.EmissionCharacteristics.ErpH_dBW - LinearInterpolationFuncOfAngle(AzimuthToTarget, azimuth0, azimuth0 + 10, data.BroadcastingAssignment.AntennaCharacteristics.DiagrH[azimuth0 / 10], data.BroadcastingAssignment.AntennaCharacteristics.DiagrH[azimuth1 / 10]))) + Math.Pow(10, 0.1 * (data.BroadcastingAssignment.EmissionCharacteristics.ErpV_dBW - LinearInterpolationFuncOfAngle(AzimuthToTarget, azimuth0, azimuth0 + 10, data.BroadcastingAssignment.AntennaCharacteristics.DiagrH[azimuth0 / 10], data.BroadcastingAssignment.AntennaCharacteristics.DiagrV[azimuth1 / 10]))));
+                        }
+                        else
+                        {
+                            ERP_dBW = 10 * Math.Log10(Math.Pow(10, 0.1 * data.BroadcastingAssignment.EmissionCharacteristics.ErpH_dBW) + Math.Pow(10, 0.1 * data.BroadcastingAssignment.EmissionCharacteristics.ErpV_dBW));
+                        }
                         break;
                     default:
                         ERP_dBW = 10 * Math.Log10(Math.Pow(10, 0.1 * (data.BroadcastingAssignment.EmissionCharacteristics.ErpH_dBW - LinearInterpolationFuncOfAngle(AzimuthToTarget, azimuth0, azimuth0 + 10, data.BroadcastingAssignment.AntennaCharacteristics.DiagrH[azimuth0 / 10], data.BroadcastingAssignment.AntennaCharacteristics.DiagrH[azimuth1 / 10]))) + Math.Pow(10, 0.1 * (data.BroadcastingAssignment.EmissionCharacteristics.ErpV_dBW - LinearInterpolationFuncOfAngle(AzimuthToTarget, azimuth0, azimuth0 + 10, data.BroadcastingAssignment.AntennaCharacteristics.DiagrH[azimuth0 / 10], data.BroadcastingAssignment.AntennaCharacteristics.DiagrV[azimuth1 / 10]))));
+                        if (data.BroadcastingAssignment.AntennaCharacteristics.DiagrH != null && data.BroadcastingAssignment.AntennaCharacteristics.DiagrV != null)
+                        {
+                            ERP_dBW = 10 * Math.Log10(Math.Pow(10, 0.1 * (data.BroadcastingAssignment.EmissionCharacteristics.ErpH_dBW - LinearInterpolationFuncOfAngle(AzimuthToTarget, azimuth0, azimuth0 + 10, data.BroadcastingAssignment.AntennaCharacteristics.DiagrH[azimuth0 / 10], data.BroadcastingAssignment.AntennaCharacteristics.DiagrH[azimuth1 / 10]))) + Math.Pow(10, 0.1 * (data.BroadcastingAssignment.EmissionCharacteristics.ErpV_dBW - LinearInterpolationFuncOfAngle(AzimuthToTarget, azimuth0, azimuth0 + 10, data.BroadcastingAssignment.AntennaCharacteristics.DiagrH[azimuth0 / 10], data.BroadcastingAssignment.AntennaCharacteristics.DiagrV[azimuth1 / 10]))));
+                        }
                         break;
-
                 }
 
                 //
@@ -322,64 +346,83 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 // effective height estimation
                 double effectiveHeight = 0.0;
                 bool isheffGiven = false;
-                for (int i = 0; i < data.BroadcastingAssignment.AntennaCharacteristics.EffHeight_m.Length; i++)
+                if (data.BroadcastingAssignment.AntennaCharacteristics.EffHeight_m != null)
                 {
-                    if (data.BroadcastingAssignment.AntennaCharacteristics.EffHeight_m[i] > 0)
+                    for (int i = 0; i < data.BroadcastingAssignment.AntennaCharacteristics.EffHeight_m.Length; i++)
                     {
-                        isheffGiven = true;
+                        if (data.BroadcastingAssignment.AntennaCharacteristics.EffHeight_m[i] > 0)
+                        {
+                            isheffGiven = true;
+                            break;
+                        }
                     }
                 }
+                
 
                 if (isheffGiven)
                 {
-                    effectiveHeight = LinearInterpolationFuncOfAngle(AzimuthToTarget, azimuth0, azimuth1, data.BroadcastingAssignment.AntennaCharacteristics.EffHeight_m[azimuth0], data.BroadcastingAssignment.AntennaCharacteristics.EffHeight_m[azimuth0 + 10]);
+                    effectiveHeight = LinearInterpolationFuncOfAngle(AzimuthToTarget, azimuth0, azimuth1, data.BroadcastingAssignment.AntennaCharacteristics.EffHeight_m[azimuth0 / 10], data.BroadcastingAssignment.AntennaCharacteristics.EffHeight_m[azimuth1 / 10]);
                 }
-                else
+                else if (data.ReliefContent != null )
                 {
                     // calculate effective height
                     int minDistToHeff_px = (int)(3.0 / px2km);
                     int maxDistToHeff_px = (int)Math.Min(15.0 / px2km, data.ReliefContent.Length);
-
-                    for (int i = minDistToHeff_px; i < maxDistToHeff_px; i++)
+                    if (minDistToHeff_px < maxDistToHeff_px)
                     {
-                        effectiveHeight += data.ReliefContent[0] - data.ReliefContent[i];
-                        hMedDist_px++;
+                        for (int i = minDistToHeff_px; i < maxDistToHeff_px; i++)
+                        {
+                            effectiveHeight += data.ReliefContent[0] - data.ReliefContent[i];
+                            hMedDist_px++;
 
+                        }
+                        if (hMedDist_px > 0)
+                        {
+                            effectiveHeight /= hMedDist_px;
+                            effectiveHeight += data.BroadcastingAssignment.AntennaCharacteristics.AglHeight_m;
+                        }
                     }
-                    if (hMedDist_px > 0)
-                    {
-                        effectiveHeight /= hMedDist_px;
-                        effectiveHeight += data.BroadcastingAssignment.AntennaCharacteristics.AglHeight_m;
-                    }
+                }
+                else
+                {
+                    effectiveHeight += data.BroadcastingAssignment.AntennaCharacteristics.AglHeight_m;
                 }
                 //
-                for (int i = 0; i <data.ClutterContent.Length; i++)
+                if (data.ClutterContent != null)
                 {
-                    // coast line intersection condition
-                    if (i > 0 && data.ClutterContent[i - 1] != data.ClutterContent[i] &&
-                        (data.ClutterContent[i - 1] == waterClutter || data.ClutterContent[i] == waterClutter) &&
-                        (aboveSea_px != 0 && aboveLand_px != 0) ||
-                        i == data.ClutterContent.Length - 1)
+                    for (int i = 0; i < data.ClutterContent.Length; i++)
                     {
-                        landSeaList.Add(new LandSea { land = aboveLand_px * px2km, sea = aboveSea_px * px2km });
-                        aboveSea_px = 0;
-                        aboveLand_px = 0;
-                    }
-                    // count relief points that belongs to land or sea propagation
-                    if (data.ClutterContent[i] == waterClutter)
-                    {
-                        aboveSea_px++;
-                        if (i == data.ClutterContent.Length - 1)
+                        // coast line intersection condition
+                        if (i > 0 && data.ClutterContent[i - 1] != data.ClutterContent[i] &&
+                            (data.ClutterContent[i - 1] == waterClutter || data.ClutterContent[i] == waterClutter) &&
+                            (aboveSea_px != 0 && aboveLand_px != 0) ||
+                            i == data.ClutterContent.Length - 1)
                         {
-                            h2aboveSea = true;
+                            landSeaList.Add(new LandSea { land = aboveLand_px * px2km, sea = aboveSea_px * px2km });
+                            aboveSea_px = 0;
+                            aboveLand_px = 0;
                         }
-                        else
+                        // count relief points that belongs to land or sea propagation
+                        if (data.ClutterContent[i] == waterClutter)
                         {
-                            aboveLand_px++;
+                            aboveSea_px++;
+                            if (i == data.ClutterContent.Length - 1)
+                            {
+                                h2aboveSea = true;
+                            }
+                            else
+                            {
+                                aboveLand_px++;
+                            }
                         }
+
                     }
-                    
                 }
+                else
+                {
+                    landSeaList.Add(new LandSea { land = d_km, sea = 0 });
+                }
+                
 
 
                 //double Level_dBm = data.Transmitter.MaxPower_dBm - data.Transmitter.Loss_dB + antennaGainD - lossResult.LossD_dB; ????????????
@@ -423,7 +466,9 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     _signalService.CalcFS_ITU1546_6(in calcFSArgs, ref calcFSResult);
                     FSfor1kW_dBuVm = calcFSResult.FSResult;
                 }
-                
+
+                //var fS_dBuVm = FSfor1kW_dBuVm + ERP_dBW - 30;
+                //var level_dBm = ERP_dBW + 30 + fS_dBuVm - 139.3 - 20 * Math.Log10(data.BroadcastingAssignment.EmissionCharacteristics.Freq_MHz);
 
                 return new BroadcastingFieldStrengthCalcResult
                 {
@@ -432,7 +477,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     //AntennaPatternLoss_dB = antennaPatternLoss_dB
                 };
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 throw;
             }
