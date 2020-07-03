@@ -52,7 +52,7 @@ namespace Atdi.WcfServices.Sdrn.DeepServices.IDWM
         public Point GetNearestPointByADM(PointByADM pointByADM)
         {
             var resultPoint = new Point();
-            string administration = pointByADM.Administration;
+            string administration = pointByADM.Administration.PadRight(3, ' ');
             if (_isIdwmInit)
             {
                 var nearestCountries = _idwmVal.GetNearestCountries(IdwmNET.Idwm.DecToRadian((float)pointByADM.Point.Longitude), IdwmNET.Idwm.DecToRadian((float)pointByADM.Point.Latitude), 100000, new string[] { }, 1000);
@@ -79,7 +79,7 @@ namespace Atdi.WcfServices.Sdrn.DeepServices.IDWM
         {
             if (_isIdwmInit)
             {
-                return _idwmVal.GetCountry(IdwmNET.Idwm.DecToRadian((float)point.Longitude), IdwmNET.Idwm.DecToRadian((float)point.Latitude));
+                return _idwmVal.GetCountry(IdwmNET.Idwm.DecToRadian((float)point.Longitude), IdwmNET.Idwm.DecToRadian((float)point.Latitude)).TrimStart().TrimEnd();
             }
             else
             {
@@ -95,7 +95,7 @@ namespace Atdi.WcfServices.Sdrn.DeepServices.IDWM
         private Point GetCoordByMinDistance(PointByADM pointByADM)
         {
             var resultPoint = new Point();
-            string administration = pointByADM.Administration;
+            string administration = pointByADM.Administration.PadRight(3,' ');
             if (_isIdwmInit)
             {
                 var nearestCountries = _idwmVal.GetNearestCountries(IdwmNET.Idwm.DecToRadian((float)pointByADM.Point.Longitude), IdwmNET.Idwm.DecToRadian((float)pointByADM.Point.Latitude), 100000, new string[] { }, 1000);
@@ -137,7 +137,7 @@ namespace Atdi.WcfServices.Sdrn.DeepServices.IDWM
                                     Longitude = ((float)((nearesCountries[i].rLongitude * 180) / Math.PI)),
                                     Latitude = ((float)((nearesCountries[i].rLatitude * 180) / Math.PI))
                                 },
-                                Administration = nearesCountries[i].country,
+                                Administration = nearesCountries[i].country.TrimStart().TrimEnd(),
                                 Azimuth = nearesCountries[i].azimuth,
                                 Distance = nearesCountries[i].distance
 
