@@ -42,8 +42,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Modifiers
                     .SetValue(c => c.CallerResultId, Guid.NewGuid())
                     .SetValue(c => c.StatusCode, (byte)CalcResultStatusCode.Created)
                     .SetValue(c => c.StatusName, CalcResultStatusCode.Created.ToString())
-                    .SetValue(c => c.StatusNote, "The result was created by the client")
-                    ;
+                    .SetValue(c => c.StatusNote, "The result was created by the client");
                 var resultPk = _dataLayer.Executor.Execute<ICalcResult_PK>(insQuery);
 
                 if (resultPk != null)
@@ -56,7 +55,6 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Modifiers
                         .Filter(c => c.CallerInstance, _config.Instance)
                         .Filter(c => c.TASK.Id, command.Id)
                         .Filter(c => c.Id, resultPk.Id);
-
                     var count = _dataLayer.Executor.Execute(updCalcResultQuery);
                 }
 

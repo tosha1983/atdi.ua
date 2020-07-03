@@ -118,6 +118,8 @@
     <Compile Include="ViewModels\GE06Task\Queries\GetBrificAssigmentsBySfnIdExecutor.cs" />
     <Compile Include="ViewModels\GE06Task\Queries\GetBrificAssigmentsByTarget.cs" />
     <Compile Include="ViewModels\GE06Task\Queries\GetBrificAssigmentsByTargetExecutor.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\GetIcsmAllotmentsByAdmRefId.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\GetIcsmAllotmentsByAdmRefIdExecutor.cs" />
     <Compile Include="ViewModels\GE06Task\Queries\GetIcsmAssigmentsByAdmAllotId.cs" />
     <Compile Include="ViewModels\GE06Task\Queries\GetIcsmAssigmentsByAdmAllotIdExecutor.cs" />
     <Compile Include="ViewModels\GE06Task\Queries\GetIcsmAssigmentsBySfnId.cs" />
@@ -125,8 +127,8 @@
     <Compile Include="ViewModels\GE06Task\Queries\GetProjectMapByClientContextId.cs" />
     <Compile Include="ViewModels\GE06Task\Queries\GetProjectMapByClientContextIdExecutor.cs" />
     <Compile Include="ViewModels\GE06Task\Queries\StringConverter.cs" />
-    <Compile Include="ViewModels\GE06Task\Queries\GetAssignmentByIcsmId.cs" />
-    <Compile Include="ViewModels\GE06Task\Queries\GetAssignmentByIcsmIdExecutor.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\GetAssignmentAllotmentByIcsmId.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\GetAssignmentAllotmentByIcsmIdExecutor.cs" />
     <Compile Include="ViewModels\GE06Task\Queries\GetAssignmentByBrificIdExecutor.cs" />
     <Compile Include="ViewModels\GE06Task\Queries\GetAssignmentByBrificId.cs" />
     <Compile Include="ViewModels\GE06Task\Queries\GetAllotmentByBrificId.cs" />
