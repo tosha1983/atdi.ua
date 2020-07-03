@@ -35,5 +35,11 @@ namespace Atdi.DataModels.Sdrn.DeepServices.GN06
 		/// ITU Name: "Adm_ref_id".
 		/// </summary>
 		public string AdmRefId; //M ADM_KEY ICSM 
-	}
+
+        /// <summary>
+        /// ITU Name: "stn_cls".
+        /// </summary>
+        public string StnClass; //M 
+
+    }
 }
