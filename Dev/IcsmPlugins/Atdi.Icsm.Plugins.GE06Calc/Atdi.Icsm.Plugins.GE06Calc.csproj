@@ -96,7 +96,15 @@
     <Compile Include="ViewModels\GE06Settings\Modifiers\EditClientContextHandler.cs" />
     <Compile Include="ViewModels\GE06Settings\Queries\GetClientContextById.cs" />
     <Compile Include="ViewModels\GE06Settings\Queries\GetClientContextByIdExecutor.cs" />
+    <Compile Include="ViewModels\GE06Settings\Queries\GetResultIdByTaskId.cs" />
+    <Compile Include="ViewModels\GE06Settings\Queries\GetResultIdByTaskIdExecutor.cs" />
     <Compile Include="ViewModels\GE06Settings\View.cs" />
+    <Compile Include="ViewModels\GE06TaskResult\Adapters\AffectedADMDataAdapter.cs" />
+    <Compile Include="ViewModels\GE06TaskResult\Adapters\AllotmentOrAssignmentDataAdapter.cs" />
+    <Compile Include="ViewModels\GE06TaskResult\Adapters\ContourDataAdapter.cs" />
+    <Compile Include="ViewModels\GE06TaskResult\Models\AffectedADMModel.cs" />
+    <Compile Include="ViewModels\GE06TaskResult\Models\AllotmentOrAssignmentModel.cs" />
+    <Compile Include="ViewModels\GE06TaskResult\Models\ContourModel.cs" />
     <Compile Include="ViewModels\GE06TaskResult\View.cs" />
     <Compile Include="ViewModels\GE06Task\Events\OnCreatedCalcTask.cs" />
     <Compile Include="ViewModels\GE06Task\Events\OnDeletedCalcTask.cs" />
@@ -118,6 +126,10 @@
     <Compile Include="ViewModels\GE06Task\Queries\GetBrificAssigmentsBySfnIdExecutor.cs" />
     <Compile Include="ViewModels\GE06Task\Queries\GetBrificAssigmentsByTarget.cs" />
     <Compile Include="ViewModels\GE06Task\Queries\GetBrificAssigmentsByTargetExecutor.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\GetBrificDiagrByTerrakey.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\GetBrificDiagrByTerrakeyExecutor.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\GetBrificEfhgtByTerrakey.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\GetBrificEfhgtByTerrakeyExecutor.cs" />
     <Compile Include="ViewModels\GE06Task\Queries\GetIcsmAllotmentsByAdmRefId.cs" />
     <Compile Include="ViewModels\GE06Task\Queries\GetIcsmAllotmentsByAdmRefIdExecutor.cs" />
     <Compile Include="ViewModels\GE06Task\Queries\GetIcsmAssigmentsByAdmAllotId.cs" />
@@ -187,9 +199,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Environment\" />
-    <Folder Include="ViewModels\GE06TaskResult\Adapters\" />
     <Folder Include="ViewModels\GE06TaskResult\Events\" />
-    <Folder Include="ViewModels\GE06TaskResult\Models\" />
     <Folder Include="ViewModels\GE06TaskResult\Modifiers\" />
     <Folder Include="ViewModels\GE06TaskResult\Queries\" />
     <Folder Include="ViewModels\GE06Task\Adapters\" />

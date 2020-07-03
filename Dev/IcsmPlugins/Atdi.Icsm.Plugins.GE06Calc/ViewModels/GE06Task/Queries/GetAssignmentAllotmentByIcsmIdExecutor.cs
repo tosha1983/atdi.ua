@@ -11,11 +11,13 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
 {
     public class GetAssignmentAllotmentByIcsmIdExecutor : IReadQueryExecutor<GetAssignmentAllotmentByIcsmId, AssignmentsAllotmentsModel>
     {
+        private readonly IObjectReader _objectReader;
         private readonly AppComponentConfig _config;
         private readonly CalcServerDataLayer _dataLayer;
 
-        public GetAssignmentAllotmentByIcsmIdExecutor(AppComponentConfig config, CalcServerDataLayer dataLayer)
+        public GetAssignmentAllotmentByIcsmIdExecutor(IObjectReader objectReader, AppComponentConfig config, CalcServerDataLayer dataLayer)
         {
+            _objectReader = objectReader;
             _config = config;
             _dataLayer = dataLayer;
         }
@@ -74,9 +76,9 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
                     allotAssign.Direction = StringConverter.ConvertToAntennaDirectionType(rs.GetS("ANT_DIR"));
                     allotAssign.AglHeight_m = (short)rs.GetD("AGL");
                     allotAssign.MaxEffHeight_m = rs.GetI("EFHGT_MAX");
-                    //allotAssign.EffHeight_m = rs.GetS("EFHGT");
-                    //allotAssign.DiagrH = rs.GetS("ATTN_H");
-                    //allotAssign.DiagrV = rs.GetS("ATTN_V");
+                    allotAssign.EffHeight_m = StringConverter.ConvertToEffHeight(rs.GetS("EFHGT"));
+                    allotAssign.DiagrH = StringConverter.ConvertToDiagrH(rs.GetS("ATTN_H"));
+                    allotAssign.DiagrV = StringConverter.ConvertToDiagrV(rs.GetS("ATTN_V"));
                     allotAssign.TargetLon_Dec = rs.GetD("LONGITUDE");
                     allotAssign.TargetLat_Dec = rs.GetD("LATITUDE");
                 }
