@@ -20,6 +20,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.GN06
             {
                 Coordinate = new AtdiCoordinate()
             };
+            outputContextStation.ClientContextStation.Antenna = new StationAntenna();
             outputContextStation.ClientContextStation.Antenna.Azimuth_deg = 0;
             outputContextStation.ClientContextStation.Antenna.Gain_dB = 0;
             outputContextStation.ClientContextStation.Antenna.Tilt_deg = 0;
