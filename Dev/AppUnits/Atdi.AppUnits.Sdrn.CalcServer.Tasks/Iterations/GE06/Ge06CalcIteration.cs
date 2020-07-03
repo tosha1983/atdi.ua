@@ -1145,18 +1145,36 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        private PropagationModel GetPropagationModel(Ge06TaskParameters ge06TaskParameters, PropagationModel data, CalculationType calculationType)
+        private PropagationModel GetPropagationModel(Ge06TaskParameters ge06TaskParameters, PropagationModel ContextDataModel, CalculationType calculationType)
         {
             var propagationModel = new PropagationModel();
-            if ((calculationType == CalculationType.CreateContoursByDistance)
-                || (calculationType == CalculationType.CreateContoursByFS))
+            switch (calculationType)
             {
-                //?????????????
-            }
-            else if ((calculationType == CalculationType.ConformityCheck)
-               || (calculationType == CalculationType.FindAffectedADM))
-            {
-                //?????????????
+                case CalculationType.CreateContoursByDistance:
+                case CalculationType.CreateContoursByFS:
+                case CalculationType.ConformityCheck:
+                case CalculationType.FindAffectedADM:
+                default:
+                    propagationModel.MainBlock.ModelType = MainCalcBlockModelType.ITU1546;
+                    propagationModel.AbsorptionBlock.Available = false;
+                    propagationModel.AdditionalBlock.Available = false;
+                    propagationModel.AtmosphericBlock.Available = false;
+                    propagationModel.ClutterBlock.Available = false;
+                    propagationModel.DiffractionBlock.Available = false;
+                    propagationModel.DuctingBlock.Available = false;
+                    propagationModel.ReflectionBlock.Available = false;
+                    propagationModel.SubPathDiffractionBlock.Available = false;
+                    propagationModel.TropoBlock.Available = false;
+                    propagationModel.Parameters.EarthRadius_km = 8500;
+                    propagationModel.Parameters.Location_pc = 50;
+                    if (!(ge06TaskParameters.PercentageTime is null))
+                    { propagationModel.Parameters.Time_pc = (float)ge06TaskParameters.PercentageTime; }
+                    else if ((ContextDataModel.Parameters.Time_pc > 0.01) || (ContextDataModel.Parameters.Time_pc < 99))
+                    { propagationModel.Parameters.Time_pc = ContextDataModel.Parameters.Time_pc; }
+                    else
+                    { ContextDataModel.Parameters.Time_pc = 50; }
+
+                    break;
             }
             return propagationModel;
         }
@@ -1300,9 +1318,17 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         {
             float resultCalcFieldStrength = 0;
 
-            if (propagationModel.MainBlock.ModelType == MainCalcBlockModelType.ITU1546)
+            if ((propagationModel.MainBlock.ModelType == MainCalcBlockModelType.ITU1546)||(propagationModel.MainBlock.ModelType == MainCalcBlockModelType.ITU1546_4)
+                ||(propagationModel.AbsorptionBlock.Available == false)
+                || (propagationModel.AdditionalBlock.Available == false)
+                || (propagationModel.AtmosphericBlock.Available == false)
+                || (propagationModel.ClutterBlock.Available == false)
+                || (propagationModel.DiffractionBlock.Available == false)
+                || (propagationModel.DuctingBlock.Available == false)
+                || (propagationModel.ReflectionBlock.Available == false)
+                || (propagationModel.SubPathDiffractionBlock.Available == false)
+                || (propagationModel.TropoBlock.Available == false))
             {
-
                 //1) Если модель распространения ITU 1546 для этого необходимо делать отдельную итерацию(Будет подготовлен сам код Юрой или Максимом) на подобии FieldStrengthCalcIteration(1.4.1, 1.4.2)
                 var broadcastingFieldStrengthCalcData = new BroadcastingFieldStrengthCalcData()
                 {
@@ -1314,7 +1340,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     ClutterContent = this._ge06CalcData.MapData.ClutterContent,
                     ReliefContent = this._ge06CalcData.MapData.ReliefContent,
                     //PointCoordinate = _transformation.ConvertCoordinateToAtdi(new Wgs84Coordinate() { Longitude = broadcastingAssignment.SiteParameters.Lon_Dec, Latitude = broadcastingAssignment.SiteParameters.Lat_Dec }, this._ge06CalcData.Projection),
-                    //TargetCoordinate = _transformation.ConvertCoordinateToAtdi(new Wgs84Coordinate() { Longitude = point.Longitude, Latitude = point.Latitude }, this._ge06CalcData.Projection)
+                    TargetCoordinate = new PointEarthGeometric() { Longitude = point.Longitude, Latitude = point.Latitude, CoordinateUnits = CoordinateUnits.deg },
                 };
                 var iterationCorellationCalc = _iterationsPool.GetIteration<BroadcastingFieldStrengthCalcData, BroadcastingFieldStrengthCalcResult>();
                 var resFieldStrengthCalcResult = iterationCorellationCalc.Run(this._taskContext, broadcastingFieldStrengthCalcData);
