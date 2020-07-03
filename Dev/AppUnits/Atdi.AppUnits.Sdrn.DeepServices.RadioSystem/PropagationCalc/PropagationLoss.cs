@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.PropagationModels;
 using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.SignalService;
 using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Gis;
+using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.FieldStrength;
 
 namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
 {
@@ -71,7 +72,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
 
                     double asl_m = args.Hb_m + args.ReliefProfile[args.ReliefStartIndex + args.ProfileLength - 1];
                     //параметр нужно будет добавить через буффер
-                    List<land_sea> landSeaList = new List<land_sea>();
+                    List<LandSea> landSeaList = new List<LandSea>();
                     bool h2aboveSea = false;
 
                     double px2km = args.D_km / (args.ProfileLength - 1);
@@ -91,7 +92,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
                             (aboveSea_px != 0 && aboveLand_px != 0) ||
                             i == args.ReliefStartIndex + args.ProfileLength - 1)
                         {
-                            landSeaList.Add(new land_sea { land = aboveLand_px * px2km, sea = aboveSea_px * px2km });
+                            landSeaList.Add(new LandSea { land = aboveLand_px * px2km, sea = aboveSea_px * px2km });
                             aboveSea_px = 0;
                             aboveLand_px = 0;
                         }

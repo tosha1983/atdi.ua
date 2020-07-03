@@ -88,7 +88,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                 FieldStrengthCalcData = new FieldStrengthCalcData
                 {
                     PropagationModel = propagationModel,
-                    MapArea = mapData.Area
+                    MapArea = mapData.Area,
+                    BuildingContent = mapData.BuildingContent,
+                    ClutterContent = mapData.ClutterContent,
+                    ReliefContent = mapData.ReliefContent,
+                    CluttersDesc = _mapRepository.GetCluttersDesc(this._calcDbScope, mapData.Id),
                 }
             };
             var resultId = CreateGe06Result();
@@ -116,7 +120,6 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                             .Select(
                                 c => c.AdditionalContoursByDistances,
                                 c => c.AzimuthStep_deg,
-                                c => c.BroadcastingExtend,
                                 c => c.CalculationTypeCode,
                                 c => c.CalculationTypeName,
                                 c => c.ContureByFieldStrength,
@@ -192,7 +195,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                     var affectedADMResult = resultGe06Calc.AffectedADMResult[i];
                     var insertQueryGn06AffectedADMResult = _calcServerDataLayer.GetBuilder<CALC.IGn06AffectedADMResult>()
                         .Insert()
-                        .SetValue(c => c.ADM, affectedADMResult.ADM)
+                        .SetValue(c => c.Adm, affectedADMResult.ADM)
                         .SetValue(c => c.AffectedServices, affectedADMResult.AffectedServices)
                         .SetValue(c => c.Gn06ResultId, gn06ResultId)
                         .SetValue(c => c.TypeAffected, affectedADMResult.TypeAffected);

@@ -31,9 +31,13 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
         private readonly ILogger _logger;
 
         private CalcTaskModel _currentCalcTaskCard;
+        private IList _currentAssignmentsAllotments;
         private IMQueryMenuNode.Context _context;
+        private bool _conformityCheckEnabled = false;
+        private bool _findAffectedEnabled = false;
 
-        AssignmentsAllotmentsModel[] _assignmentsAllotmentsList;
+        List<AssignmentsAllotmentsModel> _assignmentsAllotmentsList;
+        AssignmentsAllotmentsModel[] _assignmentsAllotmentsArray;
 
         public ViewCommand AllotDeleteCommand { get; set; }
         public ViewCommand ConformityCheckCommand { get; set; }
@@ -43,10 +47,6 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
 
         private IEventHandlerToken<Events.OnCreatedCalcTask> _onCreatedCalcTaskToken;
         public View(
-            //ProjectDataAdapter projectDataAdapter,
-            //BaseClientContextDataAdapter baseContextDataAdapter,
-            //ClientContextDataAdapter contextDataAdapter,
-            //CalcTaskDataAdapter calcTaskDataAdapter,
             IObjectReader objectReader,
             ICommandDispatcher commandDispatcher,
             ViewStarter starter,
@@ -64,9 +64,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
             this.FindAffectedCommand = new ViewCommand(this.OnFindAffectedCommand);
             this.CreateContoursByDistanceCommand = new ViewCommand(this.OnCreateContoursByDistanceCommand);
             this.CreateContoursByFSCommand = new ViewCommand(this.OnCreateContoursByFSCommand);
-
-            //this.TaskDeleteCommand = new ViewCommand(this.OnTaskDeleteCommand);
-            //this.TaskShowResultCommand = new ViewCommand(this.OnTaskShowResultCommand);
+            this._assignmentsAllotmentsList = new List<AssignmentsAllotmentsModel>();
 
             this.CurrentCalcTaskCard = new CalcTaskModel()
             {
@@ -81,38 +79,42 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
             };
 
             _onCreatedCalcTaskToken = _eventBus.Subscribe<Events.OnCreatedCalcTask>(this.OnCreatedCalcTaskHandle);
-
-            //this.Projects = projectDataAdapter;
-            //this.BaseClientContexts = baseContextDataAdapter;
-            //this.ClientContexts = contextDataAdapter;
-            //this.CalcTasks = calcTaskDataAdapter;
-
-            //_onCreatedClientContextToken = _eventBus.Subscribe<Events.OnCreatedClientContext>(this.OnCreatedClientContextHandle);
-            //_onEditedClientContextToken = _eventBus.Subscribe<Events.OnEditedClientContext>(this.OnEditedClientContextHandle);
-            //_onDeletedClientContextToken = _eventBus.Subscribe<Events.OnDeletedClientContext>(this.OnDeletedClientContextHandle);
-            //_onDeletedCalcTaskToken = _eventBus.Subscribe<CT.Events.OnDeletedCalcTask>(this.OnDeletedCalcTaskHandle);
-
-            //ReloadProjects();
         }
-
         public CalcTaskModel CurrentCalcTaskCard
         {
             get => this._currentCalcTaskCard;
             set => this.Set(ref this._currentCalcTaskCard, value);
         }
+        public IList CurrentAssignmentsAllotments
+        {
+            get => this._currentAssignmentsAllotments;
+            set => this.Set(ref this._currentAssignmentsAllotments, value);
+        }
+
+        public bool ConformityCheckEnabled
+        {
+            get => this._conformityCheckEnabled;
+            set => this.Set(ref this._conformityCheckEnabled, value);
+        }
+        public bool FindAffectedEnabled
+        {
+            get => this._findAffectedEnabled;
+            set => this.Set(ref this._findAffectedEnabled, value);
+        }
+
         public IMQueryMenuNode.Context Context
         {
             get => this._context;
             set => this.Set(ref this._context, value, () => { this.OnChangedContext(value); });
         }
-        public AssignmentsAllotmentsModel[] AssignmentsAllotmentsList
+        public AssignmentsAllotmentsModel[] AssignmentsAllotmentsArray
         {
-            get => this._assignmentsAllotmentsList;
-            set => this.Set(ref this._assignmentsAllotmentsList, value);
+            get => this._assignmentsAllotmentsArray;
+            set => this.Set(ref this._assignmentsAllotmentsArray, value);
         }
         private void OnChangedContext(IMQueryMenuNode.Context context)
         {
-            var assignmentsAllotmentsList = new List<AssignmentsAllotmentsModel>();
+            this._assignmentsAllotmentsList.Clear();
             if (context != null)
             {
                 if (context.TableName == "ge06_allot_terra")
@@ -120,37 +122,38 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                     var allot = _objectReader.Read<AssignmentsAllotmentsModel>().By(new GetAllotmentByBrificId { Id = context.TableId });
                     if (allot != null)
                     {
-                        assignmentsAllotmentsList.Add(allot);
+                        this._assignmentsAllotmentsList.Add(allot);
 
                         if (!string.IsNullOrEmpty(allot.AdmRefId))
                         {
                             var allotsIcsm = _objectReader.Read<List<AssignmentsAllotmentsModel>>().By(new GetIcsmAssigmentsByAdmAllotId { Adm_Allot_Id = allot.AdmRefId });
                             if (allotsIcsm != null)
                             {
-                                assignmentsAllotmentsList.AddRange(allotsIcsm);
+                                this._assignmentsAllotmentsList.AddRange(allotsIcsm);
                             }
 
-                            var allotsBrific = _objectReader.Read<List<AssignmentsAllotmentsModel>>().By(new GetBrificAssigmentsByAdmAllotId { Adm_Allot_Id = allot.AdmRefId });
-                            if (allotsBrific != null)
+                            var assignBrific = _objectReader.Read<List<AssignmentsAllotmentsModel>>().By(new GetBrificAssigmentsByAdmAllotId { Adm_Allot_Id = allot.AdmRefId });
+                            if (assignBrific != null)
                             {
-                                assignmentsAllotmentsList.AddRange(allotsBrific);
+                                this._assignmentsAllotmentsList.AddRange(assignBrific);
                             }
                         }
                     }
                 }
+
                 if (context.TableName == "fmtv_terra")
                 {
                     var assign = _objectReader.Read<AssignmentsAllotmentsModel>().By(new GetAssignmentByBrificId { Id = context.TableId });
                     if (assign != null)
                     {
-                        assignmentsAllotmentsList.Add(assign);
+                        this._assignmentsAllotmentsList.Add(assign);
 
                         if (!string.IsNullOrEmpty(assign.AdmAllotAssociatedId))
                         {
-                            var allotsIcsm = _objectReader.Read<List<AssignmentsAllotmentsModel>>().By(new GetBrificAllotmentsByAdmRefId { Adm_Ref_Id = assign.AdmAllotAssociatedId });
-                            if (allotsIcsm != null)
+                            var allotsBrific = _objectReader.Read<List<AssignmentsAllotmentsModel>>().By(new GetBrificAllotmentsByAdmRefId { Adm_Ref_Id = assign.AdmAllotAssociatedId });
+                            if (allotsBrific != null)
                             {
-                                assignmentsAllotmentsList.AddRange(allotsIcsm);
+                                this._assignmentsAllotmentsList.AddRange(allotsBrific);
                             }
                         }
 
@@ -159,24 +162,37 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                             var assignIcsm = _objectReader.Read<List<AssignmentsAllotmentsModel>>().By(new GetIcsmAssigmentsBySfnId { SfnId = assign.SfnId });
                             if (assignIcsm != null)
                             {
-                                assignmentsAllotmentsList.AddRange(assignIcsm);
+                                this._assignmentsAllotmentsList.AddRange(assignIcsm);
                             }
                         }
                     }
                 }
+
                 if (context.TableName == "FMTV_ASSIGN")
                 {
                     var assign = _objectReader.Read<AssignmentsAllotmentsModel>().By(new GetAssignmentByIcsmId { Id = context.TableId });
                     if (assign != null)
                     {
-                        assignmentsAllotmentsList.Add(assign);
+                        this._assignmentsAllotmentsList.Add(assign);
 
                         if (!string.IsNullOrEmpty(assign.AdmAllotAssociatedId))
                         {
-                            var allotsIcsm = _objectReader.Read<List<AssignmentsAllotmentsModel>>().By(new GetBrificAllotmentsByAdmRefId { Adm_Ref_Id = assign.AdmAllotAssociatedId });
-                            if (allotsIcsm != null)
+                            var allotsBrific = _objectReader.Read<List<AssignmentsAllotmentsModel>>().By(new GetBrificAllotmentsByAdmRefId { Adm_Ref_Id = assign.AdmAllotAssociatedId });
+                            if (allotsBrific != null)
                             {
-                                assignmentsAllotmentsList.AddRange(allotsIcsm);
+                                this._assignmentsAllotmentsList.AddRange(allotsBrific);
+                            }
+
+                            foreach (var item in allotsBrific)
+                            {
+                                if (!string.IsNullOrEmpty(item.AdmRefId))
+                                {
+                                    var assignBrific = _objectReader.Read<List<AssignmentsAllotmentsModel>>().By(new GetBrificAssigmentsByAdmAllotId { Adm_Allot_Id = item.AdmRefId });
+                                    if (assignBrific != null)
+                                    {
+                                        this._assignmentsAllotmentsList.AddRange(assignBrific);
+                                    }
+                                }
                             }
                         }
 
@@ -185,21 +201,46 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                             var assignBrific = _objectReader.Read<List<AssignmentsAllotmentsModel>>().By(new GetBrificAssigmentsBySfnId { SfnId = assign.SfnId });
                             if (assignBrific != null)
                             {
-                                assignmentsAllotmentsList.AddRange(assignBrific);
+                                this._assignmentsAllotmentsList.AddRange(assignBrific);
+                            }
+
+                            foreach (var item in assignBrific)
+                            {
+                                if (!string.IsNullOrEmpty(item.AdmAllotAssociatedId))
+                                {
+                                    var allotsBrific = _objectReader.Read<List<AssignmentsAllotmentsModel>>().By(new GetBrificAllotmentsByAdmRefId { Adm_Ref_Id = item.AdmAllotAssociatedId });
+                                    if (allotsBrific != null)
+                                    {
+                                        this._assignmentsAllotmentsList.AddRange(allotsBrific);
+                                    }
+                                }
                             }
                         }
                     }
-                    // need add recursion
+                    var assignBrificTarget = _objectReader.Read<List<AssignmentsAllotmentsModel>>().By(new GetBrificAssigmentsByTarget { target = new BroadcastingAssignmentTarget() { AdmRefId = assign.TargetAdmRefId, Freq_MHz = assign.TargetFreq_MHz, Lat_Dec = assign.TargetLat_Dec, Lon_Dec = assign.TargetLon_Dec } });
+                    if (assignBrificTarget != null)
+                    {
+                        this._assignmentsAllotmentsList.AddRange(assignBrificTarget);
+                    }
                 }
+
+                this.AssignmentsAllotmentsArray = this._assignmentsAllotmentsList.ToArray();
+                UpdateEnableButoonState();
             }
-            if (assignmentsAllotmentsList.Count > 0)
-                this.AssignmentsAllotmentsList = assignmentsAllotmentsList.ToArray();
         }
         private void OnAllotDeleteCommand(object parameter)
         {
             try
             {
-                
+                if (this._currentAssignmentsAllotments != null)
+                {
+                    foreach (AssignmentsAllotmentsModel item in this._currentAssignmentsAllotments)
+                    {
+                        this._assignmentsAllotmentsList.Remove(item);
+                    }
+                    this.AssignmentsAllotmentsArray = this._assignmentsAllotmentsList.ToArray();
+                    UpdateEnableButoonState();
+                }
             }
             catch (Exception e)
             {
@@ -263,6 +304,13 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                 return;
             }
 
+            if (this._assignmentsAllotmentsList.Where(c => c.Source == AssignmentsAllotmentsSourceType.Brific && c.Type == AssignmentsAllotmentsModelType.Allotment).Count() > 1
+                || this._assignmentsAllotmentsList.Where(c => c.Source == AssignmentsAllotmentsSourceType.ICSM && c.Type == AssignmentsAllotmentsModelType.Allotment).Count() > 1)
+            {
+                _starter.ShowException("Warning!", new Exception($"Еhe table cannot have more than one Allotment"));
+                return;
+            }
+
             var projectMap  = _objectReader.Read<ProjectMapsModel>().By(new GetProjectMapByClientContextId { ContextId = Properties.Settings.Default.ActiveContext });
 
             var splitVariants = new char[] { ',', ';', ' ' };
@@ -318,7 +366,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
             var assignmentsBrific = new List<BroadcastingAssignment>();
             var assignmentsIcsm = new List<BroadcastingAssignment>();
 
-            foreach (var item in AssignmentsAllotmentsList)
+            foreach (var item in this._assignmentsAllotmentsList)
             {
                 if (item.Type == AssignmentsAllotmentsModelType.Allotment)
                 {
@@ -427,8 +475,6 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                         assignmentsBrific.Add(assignment);
                     else if (item.Source == AssignmentsAllotmentsSourceType.ICSM)
                         assignmentsIcsm.Add(assignment);
-
-
                 }
             }
             return new BroadcastingContext()
@@ -436,6 +482,24 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                 broadcastingContextBRIFIC = new BroadcastingContextBase() { Allotments = allotmentBrific, Assignments = assignmentsBrific.ToArray() },
                 BroadcastingContextICSM = new BroadcastingContextBase() { Allotments = allotmentIcsm, Assignments = assignmentsIcsm.ToArray() }
             };
+        }
+        private void UpdateEnableButoonState()
+        {
+            bool isHaveIcsmObject = false;
+            bool isHaveBrificObject = false;
+            foreach (var item in this._assignmentsAllotmentsList)
+            {
+                if (item.Source == AssignmentsAllotmentsSourceType.ICSM)
+                    isHaveIcsmObject = true;
+
+                if (item.Source == AssignmentsAllotmentsSourceType.Brific)
+                    isHaveBrificObject = true;
+
+                if (isHaveIcsmObject && isHaveBrificObject)
+                    break;
+            }
+            ConformityCheckEnabled = (isHaveIcsmObject && isHaveBrificObject);
+            FindAffectedEnabled = isHaveIcsmObject;
         }
         public override void Dispose()
         {

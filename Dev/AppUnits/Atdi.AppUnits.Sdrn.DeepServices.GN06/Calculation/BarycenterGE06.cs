@@ -38,10 +38,9 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.GN06
                             };
                         }
 
-                        if (broadcastingCalcBarycenterGE06.BroadcastingAllotment.AdminData != null)
-                        {
-                            administrationAllotment = broadcastingCalcBarycenterGE06.BroadcastingAllotment.AdminData.Adm;
-                        }
+                        
+                        administrationAllotment = broadcastingCalcBarycenterGE06.BroadcastingAllotment.AdminData.Adm;
+                        
 
                         var geometryArgs = new GeometryArgs()
                         {
@@ -75,7 +74,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.GN06
             {
                 var broadcastingAssignments = broadcastingCalcBarycenterGE06.BroadcastingAssignments;
                 var pointEarthGeometricsBroadcastingAssignments = new PointEarthGeometric[broadcastingAssignments.Length];
-
+                administrationsBroadcastingAssignments = new string[broadcastingAssignments.Length];
                 for (int i = 0; i < broadcastingAssignments.Length; i++)
                 {
                     pointEarthGeometricsBroadcastingAssignments[i] = new PointEarthGeometric()
@@ -85,10 +84,9 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.GN06
                         CoordinateUnits = CoordinateUnits.deg
                     };
                    
-                    if (broadcastingAssignments[i].AdmData != null)
-                    {
-                        administrationsBroadcastingAssignments[i] = broadcastingAssignments[i].AdmData.Adm;
-                    }
+                    
+                    administrationsBroadcastingAssignments[i] = broadcastingAssignments[i].AdmData.Adm;
+                    
                 }
 
                 var geometryArgs = new GeometryArgs()
@@ -108,7 +106,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.GN06
                     var nearestPoint = new Point();
                     CalcNearestPointByADM(idwmService, coordBaryCenter, administrationAllotment, ref nearestPoint);
                     coordBaryCenter.Longitude = nearestPoint.Longitude_dec.Value;
-                    coordBaryCenter.Latitude = nearestPoint.Longitude_dec.Value;
+                    coordBaryCenter.Latitude = nearestPoint.Latitude_dec.Value;
                 }
             }
             if (administrationsBroadcastingAssignments != null)
@@ -120,7 +118,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.GN06
                         var nearestPoint = new Point();
                         CalcNearestPointByADM(idwmService, coordBaryCenter, administrationsBroadcastingAssignments[i], ref nearestPoint);
                         coordBaryCenter.Longitude = nearestPoint.Longitude_dec.Value;
-                        coordBaryCenter.Latitude = nearestPoint.Longitude_dec.Value;
+                        coordBaryCenter.Latitude = nearestPoint.Latitude_dec.Value;
                         break;
                     }
                 }
@@ -139,7 +137,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.GN06
                  Longitude_dec = pointEarthGeometric.Longitude,
                  Latitude_dec = pointEarthGeometric.Latitude
             };
-            return  idwmService.GetADMByPoint(in point).TrimStart().TrimEnd();
+            return  idwmService.GetADMByPoint(in point);
         }
 
         /// <summary>

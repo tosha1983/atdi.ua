@@ -66,5 +66,4 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
             return assigns;
         }
     }
-
 }

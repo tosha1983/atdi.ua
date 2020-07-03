@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.FieldStrength;
 
 //namespace Atdi.Test.DeepServices.PropagaionModels
 namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
@@ -27506,7 +27507,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             }
             return E;
         }
-        private double Get_E_(double ha, double hef, double d, double f, double p, double h_gr, params land_sea[] list1)
+        private double Get_E_(double ha, double hef, double d, double f, double p, double h_gr, params LandSea[] list1)
         {
             double E;
             double dT, dsT, delta, dlT;
@@ -27591,7 +27592,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
         /// <param name="h2">высота антенны абонента, м (по умолчанию 10м)</param>
         /// <param name="list1">Суша - вода</param>
         /// <returns>напряженность поля в дБ(мкВ/м)</returns>
-        public static double Get_E(double ha, double hef, double d, double f, double p, double h_gr, double h2, bool h2aboveSea, params land_sea[] list1)
+        public static double Get_E(double ha, double hef, double d, double f, double p, double h_gr, double h2, bool h2aboveSea, params LandSea[] list1)
 
         {
             // проверка входных данных

@@ -17,7 +17,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks
     public interface IGn06AffectedADMResult : IGn06AffectedADMResult_PK
     {
         long Gn06ResultId { get; set; }
-        string ADM { get; set; }
+        string Adm { get; set; }
         string TypeAffected { get; set; }
         string AffectedServices { get; set; }
     }
