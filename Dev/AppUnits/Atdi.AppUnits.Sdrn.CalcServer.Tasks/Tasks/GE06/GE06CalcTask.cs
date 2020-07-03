@@ -195,7 +195,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                     var affectedADMResult = resultGe06Calc.AffectedADMResult[i];
                     var insertQueryGn06AffectedADMResult = _calcServerDataLayer.GetBuilder<CALC.IGn06AffectedADMResult>()
                         .Insert()
-                        .SetValue(c => c.ADM, affectedADMResult.ADM)
+                        .SetValue(c => c.Adm, affectedADMResult.ADM)
                         .SetValue(c => c.AffectedServices, affectedADMResult.AffectedServices)
                         .SetValue(c => c.Gn06ResultId, gn06ResultId)
                         .SetValue(c => c.TypeAffected, affectedADMResult.TypeAffected);
