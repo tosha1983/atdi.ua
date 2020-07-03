@@ -64,36 +64,48 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.GN06
         }
         private static StationAntennaPattern GetantennaPattern(AntennaCharacteristics BroadcastAntennaCharacteristics, PolarType  polarType, float Pow_dBW)
         {
-
-            var broadcastPatternH = BroadcastAntennaCharacteristics.DiagrH;
-            var broadcastPatternV = BroadcastAntennaCharacteristics.DiagrV;
-            StationAntennaPattern stationAntennaPattern = new StationAntennaPattern
+            if ((BroadcastAntennaCharacteristics.Direction == AntennaDirectionType.ND)
+                ||((polarType == PolarType.H)&&((BroadcastAntennaCharacteristics.DiagrH is null)||(BroadcastAntennaCharacteristics.DiagrH.Length<36)))
+                || ((polarType == PolarType.V) && ((BroadcastAntennaCharacteristics.DiagrV is null) || (BroadcastAntennaCharacteristics.DiagrV.Length < 36)))
+                || ((polarType == PolarType.M) && ((BroadcastAntennaCharacteristics.DiagrH is null) || (BroadcastAntennaCharacteristics.DiagrH.Length < 36)|| (BroadcastAntennaCharacteristics.DiagrV is null) || (BroadcastAntennaCharacteristics.DiagrV.Length < 36)))
+                )
             {
-                Angle_deg = new double[36],
-                Loss_dB = new float[36]
-            };
-            for (int i = 0; i < 36; i++)
-            {
-                stationAntennaPattern.Angle_deg[i] = i * 10.0;
-                switch (polarType)
-                {
-                    case PolarType.H:
-                        if (broadcastPatternH.Length > i) { stationAntennaPattern.Loss_dB[i] = Pow_dBW - broadcastPatternH[i]; }
-                        else { stationAntennaPattern.Loss_dB[i] = 0; }
-                        break;
-                    case PolarType.V:
-                        if (broadcastPatternV.Length > i) { stationAntennaPattern.Loss_dB[i] = Pow_dBW - broadcastPatternV[i]; }
-                        else { stationAntennaPattern.Loss_dB[i] = 0; }
-                        break;
-                    case PolarType.M:
-                        if ((broadcastPatternH.Length > i)&&(broadcastPatternV.Length > i))
-                        { stationAntennaPattern.Loss_dB[i] = (float)(Pow_dBW - 10 * Math.Log10(Math.Pow(10, broadcastPatternV[i]/10.0)+ Math.Pow(10, broadcastPatternH[i] / 10.0))); }
-                        else { stationAntennaPattern.Loss_dB[i] = 0; }
-                        break;
-                }
-                if (stationAntennaPattern.Loss_dB[i] < 0) { stationAntennaPattern.Loss_dB[i] = 0; }
+                StationAntennaPattern stationAntennaPattern = new StationAntennaPattern() { Angle_deg = new double[2] {0, 360}, Loss_dB = new float[2] {0,0} };
+                return stationAntennaPattern;
             }
-            return stationAntennaPattern;
+            else
+            {
+
+                var broadcastPatternH = BroadcastAntennaCharacteristics.DiagrH;
+                var broadcastPatternV = BroadcastAntennaCharacteristics.DiagrV;
+                StationAntennaPattern stationAntennaPattern = new StationAntennaPattern
+                {
+                    Angle_deg = new double[36],
+                    Loss_dB = new float[36]
+                };
+                for (int i = 0; i < 36; i++)
+                {
+                    stationAntennaPattern.Angle_deg[i] = i * 10.0;
+                    switch (polarType)
+                    {
+                        case PolarType.H:
+                            if (broadcastPatternH.Length > i) { stationAntennaPattern.Loss_dB[i] = Pow_dBW - broadcastPatternH[i]; }
+                            else { stationAntennaPattern.Loss_dB[i] = 0; }
+                            break;
+                        case PolarType.V:
+                            if (broadcastPatternV.Length > i) { stationAntennaPattern.Loss_dB[i] = Pow_dBW - broadcastPatternV[i]; }
+                            else { stationAntennaPattern.Loss_dB[i] = 0; }
+                            break;
+                        case PolarType.M:
+                            if ((broadcastPatternH.Length > i) && (broadcastPatternV.Length > i))
+                            { stationAntennaPattern.Loss_dB[i] = (float)(Pow_dBW - 10 * Math.Log10(Math.Pow(10, broadcastPatternV[i] / 10.0) + Math.Pow(10, broadcastPatternH[i] / 10.0))); }
+                            else { stationAntennaPattern.Loss_dB[i] = 0; }
+                            break;
+                    }
+                    if (stationAntennaPattern.Loss_dB[i] < 0) { stationAntennaPattern.Loss_dB[i] = 0; }
+                }
+                return stationAntennaPattern;
+            }
         }
     }
 }
