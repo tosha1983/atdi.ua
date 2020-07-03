@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
 {
-    public class GetAssignmentByIcsmId
+    public class GetIcsmAllotmentsByAdmRefId
     {
-        public int Id;
+        public string Adm_Ref_Id;
     }
 }
