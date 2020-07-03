@@ -11,8 +11,8 @@ namespace Atdi.AppServer.Sdrn.CalcServer
     {
         static void Main(string[] args)
         {
-            Console.WriteLine($"Press any key to start SDRN Calculation App Server (SG) ...");
-            Console.ReadLine();
+            //Console.WriteLine($"Press any key to start SDRN Calculation App Server (SG) ...");
+            //Console.ReadLine();
 
             using (var host = PlatformConfigurator.BuildHost())
             {

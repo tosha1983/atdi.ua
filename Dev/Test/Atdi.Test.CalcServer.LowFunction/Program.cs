@@ -66,6 +66,7 @@ namespace Atdi.Test.CalcServer.LowFunction
             //CrossTreckOnSphere.Test();
 
 
+
             TestBarycenterGE06.Test();
 
         }

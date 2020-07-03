@@ -11,8 +11,8 @@ namespace Atdi.AppServer.Sdrn.Infocenter
     {
         static void Main(string[] args)
         {
-            Console.WriteLine($"Press any key to start SDRN Infocenter App Server (SG) ...");
-            Console.ReadLine();
+            //Console.WriteLine($"Press any key to start SDRN Infocenter App Server (SG) ...");
+            //Console.ReadLine();
 
             using (var host = PlatformConfigurator.BuildHost())
             {
