@@ -39,7 +39,7 @@ namespace Atdi.Test.CalcServer.LowFunction
                     host.Container.Register<IIdwmService, IdwmService>(ServiceLifetime.PerThread);
                     host.Container.Register<ITransformation, TransformationService>(ServiceLifetime.PerThread);
                     host.Container.Register<IEarthGeometricService, EarthGeometricService>(ServiceLifetime.PerThread);
-                    host.Container.Register<IGn06Service, EstimationAssignmentsService>(ServiceLifetime.PerThread);
+                    //host.Container.Register<IGn06Service, EstimationAssignmentsService>(ServiceLifetime.PerThread);
                     var resolver = host.Container.GetResolver<IServicesResolver>();
                     var gn06Service = resolver.Resolve<IGn06Service>();
 
@@ -76,7 +76,7 @@ namespace Atdi.Test.CalcServer.LowFunction
                          AdminData = new GE.AdministrativeData()
                          {
                              Action = GE.ActionType.Add,
-                             Adm = "F  ",
+                             Adm = "F",
                              Fragment = "",
                              NoticeType = "",
                              AdmRefId = ""
@@ -98,7 +98,7 @@ namespace Atdi.Test.CalcServer.LowFunction
                               AdmData = new GE.AdministrativeData()
                               {
                                    Action = GE.ActionType.Add,
-                                   Adm = "F  "
+                                   Adm = "F"
                               },
                                SiteParameters = new GE.SiteParameters()
                                {
@@ -112,7 +112,7 @@ namespace Atdi.Test.CalcServer.LowFunction
                               AdmData = new GE.AdministrativeData()
                               {
                                    Action = GE.ActionType.Add,
-                                   Adm = "F  "
+                                   Adm = "F"
                               },
                                SiteParameters = new GE.SiteParameters()
                                {
@@ -126,7 +126,7 @@ namespace Atdi.Test.CalcServer.LowFunction
                               AdmData = new GE.AdministrativeData()
                               {
                                    Action = GE.ActionType.Add,
-                                   Adm = "F  "
+                                   Adm = "F"
                               },
                                SiteParameters = new GE.SiteParameters()
                                {
@@ -141,10 +141,10 @@ namespace Atdi.Test.CalcServer.LowFunction
 
                     // сама функция расчета барицентра
                     PointEarthGeometric pointEarthGeometric = new PointEarthGeometric();
-                    var idwmServices = resolver.Resolve<IIdwmService>();
+                    //var idwmServices = resolver.Resolve<IIdwmService>();
 
-                    var adm = idwmServices.GetADMByPoint(new Point() { Latitude_dec = 45, Longitude_dec = 0 });
-                    AllotmAsssigments.BroadcastingAllotment.AdminData.Adm = adm;
+                    //var adm = idwmServices.GetADMByPoint(new Point() { Latitude_dec = 45, Longitude_dec = 0 });
+                    //AllotmAsssigments.BroadcastingAllotment.AdminData.Adm = adm;
                     gn06Service.CalcBarycenterGE06(AllotmAsssigments, ref pointEarthGeometric);
                     
 

@@ -82,6 +82,10 @@
       <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
       <Name>Atdi.Platform</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\WcfServices\Atdi.WcfServices.Sdrn.DeepServices.IDWM\Atdi.WcfServices.Sdrn.DeepServices.IDWM.csproj">
+      <Project>{4335fb35-c8ac-4012-a4df-73df135451a6}</Project>
+      <Name>Atdi.WcfServices.Sdrn.DeepServices.IDWM</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
