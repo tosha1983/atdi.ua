@@ -624,15 +624,15 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             if (broadcastingTypeContext == BroadcastingTypeContext.Brific)
                             {
                                 contoursResult[k].ContourType = ContourType.Etalon;
-                                //contoursResult[k].CountoursPoints = ???????????????????? что тут передавать????????
                             }
                             if (broadcastingTypeContext == BroadcastingTypeContext.Icsm)
                             {
                                 contoursResult[k].ContourType = ContourType.New;
-                                //contoursResult[k].CountoursPoints = ???????????????????? что тут передавать????????
                             }
                             contoursResult[k].Distance = ge06CalcData.Ge06TaskParameters.Distances[i];
                             //contoursResult[k].PointsCount = ???????????????????? что здесь указать????????
+                            //contoursResult[k].CountoursPoints = ???????????????????? что тут передавать????????
+
                         }
 
                         lstContoursResults.AddRange(contoursResult);
@@ -691,15 +691,14 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                 if (broadcastingTypeContext == BroadcastingTypeContext.Brific)
                                 {
                                     contoursResult[k].ContourType = ContourType.Etalon;
-                                    //contoursResult[k].CountoursPoints = ???????????????????? что тут передавать????????
                                 }
                                 if (broadcastingTypeContext == BroadcastingTypeContext.Icsm)
                                 {
                                     contoursResult[k].ContourType = ContourType.New;
-                                    //contoursResult[k].CountoursPoints = ???????????????????? что тут передавать????????
                                 }
                                 contoursResult[k].Distance = ge06CalcData.Ge06TaskParameters.Distances[i];
                                 //contoursResult[k].PointsCount = ???????????????????? что здесь указать????????
+                                //contoursResult[k].CountoursPoints = ???????????????????? что тут передавать????????
                             }
 
                             lstContoursResults.AddRange(contoursResult);
