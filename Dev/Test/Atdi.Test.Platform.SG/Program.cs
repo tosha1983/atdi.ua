@@ -374,7 +374,7 @@ class Program
 
                     PointEarthGeometric[] pointEarthGeometric3 = new PointEarthGeometric[3000];
 
-                    earthGeometricServiceServices.CreateContourForStationByTriggerFieldStrengths((sourcePoint, destPoint) => CalcFieldStrength(sourcePoint, destPoint), in contourForStationByTriggerFieldStrengthsArgs3, ref pointEarthGeometric3, out int sizeBuffer);
+                    earthGeometricServiceServices.CreateContourForStationByTriggerFieldStrengths((destPoint) => CalcFieldStrength(destPoint), in contourForStationByTriggerFieldStrengthsArgs3, ref pointEarthGeometric3, out int sizeBuffer);
                     WPF.Location[] zx5 = new WPF.Location[sizeBuffer];
                     for (int u = 0; u < sizeBuffer; u++)
                     {
@@ -551,51 +551,52 @@ class Program
             return x / all;
         }
 
-        public static double CalcFieldStrength(PointEarthGeometric pointEarthGeometric1, PointEarthGeometric pointEarthGeometric2)
+        public static double CalcFieldStrength(PointEarthGeometric pointEarthGeometric1)
         {
-            var dLat = Deg2Rad(pointEarthGeometric2.Latitude - pointEarthGeometric1.Latitude);
-            var dLon = Deg2Rad(pointEarthGeometric2.Longitude - pointEarthGeometric1.Longitude);
-            var a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) + Math.Cos(Deg2Rad(pointEarthGeometric1.Latitude)) * Math.Cos(Deg2Rad(pointEarthGeometric2.Latitude)) * Math.Sin(dLon / 2) * Math.Sin(dLon / 2);
-            var c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
-            var d = 6371 * c *1000;
+            return -1;
+            //var dLat = Deg2Rad(pointEarthGeometric2.Latitude - pointEarthGeometric1.Latitude);
+            //var dLon = Deg2Rad(pointEarthGeometric2.Longitude - pointEarthGeometric1.Longitude);
+            //var a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) + Math.Cos(Deg2Rad(pointEarthGeometric1.Latitude)) * Math.Cos(Deg2Rad(pointEarthGeometric2.Latitude)) * Math.Sin(dLon / 2) * Math.Sin(dLon / 2);
+            //var c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
+            //var d = 6371 * c *1000;
 
 
-            if (d <= 50)
-            {
-                return getVal(d, 50);
-            }
-            else if ((d >= 50) && (d <= 1000))
-            {
-                return 1+ getVal(d, 1000);
-            }
-            else if ((d >= 1000) && (d <= 5000))
-            {
-                return 2+ getVal(d, 5000);
-            }
-            else if ((d >= 5000) && (d <= 10000))
-            {
-                return 3+ getVal(d, 10000);
-            }
-            else if ((d >= 10000) && (d <= 20000))
-            {
-                return 4+ getVal(d, 20000);
-            }
-            else if ((d >= 20000) && (d <= 50000))
-            {
-                return 5+ getVal(d, 50000);
-            }
-            else if ((d >= 50000) && (d <= 100000))
-            {
-                return 6+ getVal(d, 100000);
-            }
-            else if ((d >= 100000) && (d <= 500000))
-            {
-                return 7+ getVal(d, 500000);
-            }
-            else
-            {
-                return 9;
-            }
+            //if (d <= 50)
+            //{
+            //    return getVal(d, 50);
+            //}
+            //else if ((d >= 50) && (d <= 1000))
+            //{
+            //    return 1+ getVal(d, 1000);
+            //}
+            //else if ((d >= 1000) && (d <= 5000))
+            //{
+            //    return 2+ getVal(d, 5000);
+            //}
+            //else if ((d >= 5000) && (d <= 10000))
+            //{
+            //    return 3+ getVal(d, 10000);
+            //}
+            //else if ((d >= 10000) && (d <= 20000))
+            //{
+            //    return 4+ getVal(d, 20000);
+            //}
+            //else if ((d >= 20000) && (d <= 50000))
+            //{
+            //    return 5+ getVal(d, 50000);
+            //}
+            //else if ((d >= 50000) && (d <= 100000))
+            //{
+            //    return 6+ getVal(d, 100000);
+            //}
+            //else if ((d >= 100000) && (d <= 500000))
+            //{
+            //    return 7+ getVal(d, 500000);
+            //}
+            //else
+            //{
+            //    return 9;
+            //}
         }
 
     }

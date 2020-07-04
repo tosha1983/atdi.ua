@@ -31,7 +31,7 @@ namespace Atdi.Contracts.Sdrn.DeepServices.EarthGeometry
         /// <param name="pointResult"></param>
         /// <param name="sizeResultBuffer"></param>
         /// 
-        void CreateContourForStationByTriggerFieldStrengths(Func<PointEarthGeometric, PointEarthGeometric, double> calcFieldStrengths, in ContourForStationByTriggerFieldStrengthsArgs contourForStationByTriggerFieldStrengthsArgs, ref PointEarthGeometric[] pointResult, out int sizeResultBuffer);
+        void CreateContourForStationByTriggerFieldStrengths(Func<PointEarthGeometric, double> calcFieldStrengths, in ContourForStationByTriggerFieldStrengthsArgs contourForStationByTriggerFieldStrengthsArgs, ref PointEarthGeometric[] pointResult, out int sizeResultBuffer);
 
         /// <summary>
         /// Функция по формированию контура от точки

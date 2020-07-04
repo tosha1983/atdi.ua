@@ -41,5 +41,10 @@ namespace Atdi.DataModels.Sdrn.DeepServices.GN06
         /// </summary>
         public string StnClass; //M 
 
+        /// <summary>
+        /// ITU Name: "is_digital".
+        /// </summary>
+        public bool IsDigital; //M 
+
     }
 }

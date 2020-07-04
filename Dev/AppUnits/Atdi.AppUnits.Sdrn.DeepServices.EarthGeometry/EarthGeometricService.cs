@@ -241,32 +241,34 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
 
         }
 
-        public void CreateContourForStationByTriggerFieldStrengths(Func<PointEarthGeometric, PointEarthGeometric, double> calcFieldStrengths, in ContourForStationByTriggerFieldStrengthsArgs contourForStationByTriggerFieldStrengthsArgs, ref PointEarthGeometric[] pointResult, out int sizeResultBuffer)
+        public void CreateContourForStationByTriggerFieldStrengths(Func<PointEarthGeometric, double> calcFieldStrengths, in ContourForStationByTriggerFieldStrengthsArgs contourForStationByTriggerFieldStrengthsArgs, ref PointEarthGeometric[] pointResult, out int sizeResultBuffer)
         {
             double d0_m = 500.0;
+            double step = 10.0;
             double mindistance_m = 0.05;
             int index = 0;
             for (double azimuth = 0; azimuth < 360; azimuth = index * contourForStationByTriggerFieldStrengthsArgs.Step_deg)
             {
 
                 var coordRecalc = CalculationCoordinateByLengthAndAzimuth(in contourForStationByTriggerFieldStrengthsArgs.PointEarthGeometricCalc, d0_m, azimuth);
-                var calcFieldStrength = calcFieldStrengths(contourForStationByTriggerFieldStrengthsArgs.PointEarthGeometricCalc, coordRecalc);
+                var calcFieldStrength = calcFieldStrengths(coordRecalc);
                 var d1_m = d0_m;
                 while (true)
                 {
                     if (calcFieldStrength < contourForStationByTriggerFieldStrengthsArgs.TriggerFieldStrength)
                     {
-                        d1_m += (d1_m / 2.0);
+                        d1_m -= (d1_m / step);
                         coordRecalc = CalculationCoordinateByLengthAndAzimuth(in contourForStationByTriggerFieldStrengthsArgs.PointEarthGeometricCalc, d1_m, azimuth);
-                        calcFieldStrength = calcFieldStrengths(contourForStationByTriggerFieldStrengthsArgs.PointEarthGeometricCalc, coordRecalc);
+                        calcFieldStrength = calcFieldStrengths(coordRecalc);
                     }
                     else if (calcFieldStrength > contourForStationByTriggerFieldStrengthsArgs.TriggerFieldStrength)
                     {
-                        d1_m -= (d1_m / 2.0);
+                        d1_m += (d1_m / step);
                         coordRecalc = CalculationCoordinateByLengthAndAzimuth(in contourForStationByTriggerFieldStrengthsArgs.PointEarthGeometricCalc, d1_m, azimuth);
-                        calcFieldStrength = calcFieldStrengths(contourForStationByTriggerFieldStrengthsArgs.PointEarthGeometricCalc, coordRecalc);
+                        calcFieldStrength = calcFieldStrengths(coordRecalc);
                     }
-                    if ((Math.Round(calcFieldStrength, 2) == contourForStationByTriggerFieldStrengthsArgs.TriggerFieldStrength) || (d1_m < mindistance_m))
+
+                    if ((Math.Abs(calcFieldStrength -contourForStationByTriggerFieldStrengthsArgs.TriggerFieldStrength)<0.1) || (d1_m < mindistance_m))
                     {
                         pointResult[index] = coordRecalc;
                         pointResult[index].CoordinateUnits = CoordinateUnits.deg;

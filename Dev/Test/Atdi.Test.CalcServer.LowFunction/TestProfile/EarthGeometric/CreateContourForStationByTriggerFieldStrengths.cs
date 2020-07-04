@@ -50,7 +50,7 @@ namespace Atdi.Test.CalcServer.LowFunction
 
                     PointEarthGeometric[] pointEarthGeometric3 = new PointEarthGeometric[3000];
 
-                    earthGeometricServiceServices.CreateContourForStationByTriggerFieldStrengths((sourcePoint, destPoint) => CalcFieldStrength(sourcePoint, destPoint), in contourForStationByTriggerFieldStrengthsArgs, ref pointEarthGeometric3, out int sizeBuffer);
+                    earthGeometricServiceServices.CreateContourForStationByTriggerFieldStrengths((destinationPoint) => CalcFieldStrength(destinationPoint), in contourForStationByTriggerFieldStrengthsArgs, ref pointEarthGeometric3, out int sizeBuffer);
                     WPF.Location[] OutCoords = new WPF.Location[sizeBuffer];
                     for (int u = 0; u < sizeBuffer; u++)
                     {
@@ -73,7 +73,7 @@ namespace Atdi.Test.CalcServer.LowFunction
 
        
         /// метод расчета напряженности по двум точкам 
-        public static double CalcFieldStrength(PointEarthGeometric pointEarthGeometric1, PointEarthGeometric pointEarthGeometric2)
+        public static double CalcFieldStrength(PointEarthGeometric destPoint)
         {
             return -1;
         }
