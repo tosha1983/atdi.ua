@@ -44,7 +44,7 @@ namespace Atdi.DataModels.Sdrn.DeepServices.GN06
         /// <summary>
         /// ITU Name: "is_digital".
         /// </summary>
-        public bool IsDigital; //M 
+        public bool? IsDigital; //M 
 
     }
 }

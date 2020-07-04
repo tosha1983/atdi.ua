@@ -1668,8 +1668,9 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         /// <param name="staClass"></param>
         /// <param name="isDigital"></param>
         /// <returns></returns>
-        private float CalcThresholdFieldStrength(double freq_MHz, string staClass, bool isDigital = true)
+        private float CalcThresholdFieldStrength(double freq_MHz, string staClass, bool? isDigitalTemp = true)
         {
+            bool isDigital = isDigitalTemp.GetValueOrDefault();
             float resFreq_MHz = 0;
             if (((freq_MHz>=174) && (freq_MHz <= 230)) && (staClass== "BT") && (isDigital==true))
             {

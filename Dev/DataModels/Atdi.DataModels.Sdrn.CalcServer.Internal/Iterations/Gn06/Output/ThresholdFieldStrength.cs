@@ -10,7 +10,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
     {
         public double Freq_MHz;
         public string StaClass;
-        public bool  IsDigital;
+        public bool?  IsDigital;
         public float ThresholdFS;
     }
 }
