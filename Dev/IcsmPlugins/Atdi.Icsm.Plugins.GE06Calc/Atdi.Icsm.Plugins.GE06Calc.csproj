@@ -126,6 +126,7 @@
     <Compile Include="ViewModels\GE06Task\Queries\Brific\GetBrificAssigmentsBySfnIdExecutor.cs" />
     <Compile Include="ViewModels\GE06Task\Queries\Brific\GetBrificAssigmentsByTarget.cs" />
     <Compile Include="ViewModels\GE06Task\Queries\Brific\GetBrificAssigmentsByTargetExecutor.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\DataMaper.cs" />
     <Compile Include="ViewModels\GE06Task\Queries\SubQueries\GetBrificAreaPointBySubAreaKey.cs" />
     <Compile Include="ViewModels\GE06Task\Queries\SubQueries\GetBrificAreaPointBySubAreaKeyExecutor.cs" />
     <Compile Include="ViewModels\GE06Task\Queries\SubQueries\GeBrificCounturIdByTerrakey.cs" />
