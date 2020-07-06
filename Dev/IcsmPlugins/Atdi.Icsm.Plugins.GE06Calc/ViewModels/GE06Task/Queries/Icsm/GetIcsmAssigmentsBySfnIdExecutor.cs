@@ -32,7 +32,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
             rs.SetWhere("IS_ALLOTM", IMRecordset.Operation.Eq, "N");
             for (rs.Open(); !rs.IsEOF(); rs.MoveNext())
             {
-                var assign = new AssignmentsAllotmentsModel() { Source = AssignmentsAllotmentsSourceType.Brific, Type = AssignmentsAllotmentsModelType.Assignment };
+                var assign = new AssignmentsAllotmentsModel() { Source = AssignmentsAllotmentsSourceType.ICSM, Type = AssignmentsAllotmentsModelType.Assignment };
                 _mapper.GetIcsmAssignment(assign, rs);
                 assigns.Add(assign);
             }

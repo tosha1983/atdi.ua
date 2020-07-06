@@ -34,7 +34,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
             rs.SetWhere("lat_dec", IMRecordset.Operation.Eq, criterion.target.Lat_Dec);
             for (rs.Open(); !rs.IsEOF(); rs.MoveNext())
             {
-                var assign = new AssignmentsAllotmentsModel() { Source = AssignmentsAllotmentsSourceType.ICSM, Type = AssignmentsAllotmentsModelType.Assignment };
+                var assign = new AssignmentsAllotmentsModel() { Source = AssignmentsAllotmentsSourceType.Brific, Type = AssignmentsAllotmentsModelType.Assignment };
                 _mapper.GetBrificAssignment(assign, rs);
                 assigns.Add(assign);
             }
