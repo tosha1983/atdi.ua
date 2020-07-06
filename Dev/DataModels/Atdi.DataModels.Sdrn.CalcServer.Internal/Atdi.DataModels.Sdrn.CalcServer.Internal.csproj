@@ -51,6 +51,9 @@
     <Compile Include="Iterations\Gn06\Output\AllotmentOrAssignmentResult.cs" />
     <Compile Include="Iterations\Gn06\Output\ContoursResult.cs" />
     <Compile Include="Iterations\Gn06\Output\CalcPointResult.cs" />
+    <Compile Include="Iterations\Gn06\Output\FmtvTerra.cs" />
+    <Compile Include="Iterations\Gn06\Output\Enum\TypeThresholdFS.cs" />
+    <Compile Include="Iterations\Gn06\Output\ThresholdFieldStrengthParameters.cs" />
     <Compile Include="Iterations\Gn06\Output\ThresholdFieldStrength.cs" />
     <Compile Include="Iterations\Gn06\Output\CountoursPoint.cs" />
     <Compile Include="Iterations\Gn06\Output\AffectedADMResult.cs" />

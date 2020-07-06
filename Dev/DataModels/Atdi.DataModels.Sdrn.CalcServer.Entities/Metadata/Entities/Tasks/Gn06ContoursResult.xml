@@ -20,7 +20,7 @@
     <Field Name="FS" SourceType="Column" SourceName="FS" DataType="Integer.32" Required="false" Title="FS" Desc="The FS" />
     <Field Name="AffectedADM" SourceType="Column" SourceName="AFFECTED_ADM" DataType="Text.50" Required="false" Title="Affected administration" Desc="The affected administration" />
     <Field Name="PointsCount" SourceType="Column" SourceName="POINTS_COUNT" DataType="Integer.32" Required="false" Title="Points count" Desc="The points count" />
-    <Field Name="CountoursPoints" SourceType="Column" SourceName="CONTOURS_POINTS" DataType="Text.MAX" Required="false" Title="Countours points extended object" Desc="The countours points extended object" />
+    <Field Name="CountoursPoints" SourceType="Column" SourceName="CONTOURS_POINTS" DataType="Text.Bytes" Required="false" Title="Countours points extended object" Desc="The countours points extended object" />
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>

@@ -60,6 +60,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
         [ComponentConfigProperty("Thresholds.GE06PointEarthGeometric.ArrayLength")]
         public int? ThresholdsGE06PointEarthGeometricArrayLength { get; set; }
 
+        [ComponentConfigProperty("Brific.DBSource")]
+        public string BrificDBSource { get; set; }
 
     }
 }
