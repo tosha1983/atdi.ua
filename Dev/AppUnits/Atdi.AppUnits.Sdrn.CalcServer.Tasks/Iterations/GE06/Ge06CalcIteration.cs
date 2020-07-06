@@ -2270,7 +2270,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             float resultFieldStrengthCalcResultAllotment = -9999;
             var lstFieldStrengthAssignments = new List<float>();
             //1.Необходимо проверить установлена ли необходимая модель распространения и ее параметры являются ли корректными для данного рода расчета(2.2.3). 
-            //var propagModel = GE06PropagationModel.GetPropagationModel(ge06CalcData.Ge06TaskParameters, ge06CalcData.PropagationModel, (CalculationType)ge06CalcData.Ge06TaskParameters.CalculationTypeCode);
+            var propagModel = GE06PropagationModel.GetPropagationModel(ge06CalcData.Ge06TaskParameters, ge06CalcData.PropagationModel, (CalculationType)ge06CalcData.Ge06TaskParameters.CalculationTypeCode);
             //2.Далее если есть выделение, то необходимо рассчитать напряженность поля от выделения(2.2.1).
             if (broadcastingContext.Allotments != null)
             {

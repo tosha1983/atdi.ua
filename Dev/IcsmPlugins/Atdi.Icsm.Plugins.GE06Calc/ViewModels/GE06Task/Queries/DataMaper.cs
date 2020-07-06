@@ -94,8 +94,8 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
             allot.SpectrumMask = StringConverter.ConvertToSpectrumMaskType(rs.GetS("spect_mask"));
             allot.RefNetwork = StringConverter.ConvertToRefNetworkType(rs.GetS("typ_ref_netwk"));
             allot.AllotmentName = rs.GetS("allot_name");
-            allot.ContourId = _objectReader.Read<int>().By(new GeBrificCounturIdByTerrakey { terrakey = rs.GetI("terrakey") });
-            allot.Сontur = _objectReader.Read<AreaPoint[]>().By(new GetBrificAreaPointBySubAreaKey { SubAreaKey = allot.ContourId });
+            allot.ContourId = _objectReader.Read<int>().By(new GetBrificCounturIdByTerrakey { terrakey = rs.GetI("terrakey") });
+            allot.Сontur = _objectReader.Read<AreaPoint[]>().By(new GetBrificAreaPointBySubAreaKey { SubAreaKey = _objectReader.Read<int>().By(new GetBrificSubAreaKeyByTerrakey { terrakey = rs.GetI("terrakey") }) });
         }
 
         public string SelectStatementBrificAssignment = "terrakey,adm,notice_typ,fragment,intent,adm_ref_id,plan_entry,assgn_code,assoc_allot_id,assoc_allot_sfn_id,sfn_id,freq_assgn,polar,erp_h_dbw,erp_v_dbw,ref_plan_cfg,tran_sys,rx_mode,spect_mask,long_dec,lat_dec,site_alt,site_name,ant_dir,hgt_agl,eff_hgtmax,adm_ref_id,freq_assgn,stn_cls,is_digital";

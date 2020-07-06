@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
 {
-    public class GeBrificCounturIdByTerrakey
+    public class GetBrificSubAreaKeyByTerrakey
     {
         public int terrakey;
     }

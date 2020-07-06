@@ -9,17 +9,17 @@ using ICSM;
 
 namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
 {
-    public class GeBrificCounturIdByTerrakeyExecutor : IReadQueryExecutor<GeBrificCounturIdByTerrakey, int>
+    public class GetBrificCounturIdByTerrakeyExecutor : IReadQueryExecutor<GetBrificCounturIdByTerrakey, int>
     {
         private readonly AppComponentConfig _config;
         private readonly CalcServerDataLayer _dataLayer;
 
-        public GeBrificCounturIdByTerrakeyExecutor(AppComponentConfig config, CalcServerDataLayer dataLayer)
+        public GetBrificCounturIdByTerrakeyExecutor(AppComponentConfig config, CalcServerDataLayer dataLayer)
         {
             _config = config;
             _dataLayer = dataLayer;
         }
-        public int Read(GeBrificCounturIdByTerrakey criterion)
+        public int Read(GetBrificCounturIdByTerrakey criterion)
         {
             int countourId = 0;
             IMRecordset rs = new IMRecordset("ge06_allot_sub_area_xref", IMRecordset.Mode.ReadOnly);

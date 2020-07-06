@@ -70,11 +70,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         isSuccess = false;
                     }
                 }
-                // DigitalPlanEntryParameters
-                if (allotments.DigitalPlanEntryParameters == null)
-                {
-                    isSuccess = false;
-                }
+                
                 // EmissionCharacteristics
                 if (allotments.EmissionCharacteristics == null)
                 {
@@ -82,7 +78,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 }
                 else if (allotments.EmissionCharacteristics != null)
                 {
-                    //if (allotments.EmissionCharacteristics.Freq_MHz) ??????????????
+                    if ((((allotments.EmissionCharacteristics.Freq_MHz>=174) && (allotments.EmissionCharacteristics.Freq_MHz <= 230))
+                        || ((allotments.EmissionCharacteristics.Freq_MHz >= 470) && (allotments.EmissionCharacteristics.Freq_MHz <= 582))
+                        || ((allotments.EmissionCharacteristics.Freq_MHz >= 582) && (allotments.EmissionCharacteristics.Freq_MHz <= 862)))==false)
+                    {
+                        isSuccess = false;
+                    }
                 }
                 // Target
                 if (allotments.Target == null)
@@ -95,15 +96,9 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     {
                         isSuccess = false;
                     }
-                    if (allotments.Target.Freq_MHz == 0)
-                    {
-                        isSuccess = false;
-                    }
-                    if (allotments.Target.Lon_Dec == 0)
-                    {
-                        isSuccess = false;
-                    }
-                    if (allotments.Target.Lat_Dec == 0)
+                    if ((((allotments.Target.Freq_MHz >= 174) && (allotments.Target.Freq_MHz <= 230))
+                        || ((allotments.Target.Freq_MHz >= 470) && (allotments.Target.Freq_MHz <= 582))
+                        || ((allotments.Target.Freq_MHz >= 582) && (allotments.Target.Freq_MHz <= 862))) == false)
                     {
                         isSuccess = false;
                     }
@@ -177,68 +172,91 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                 }
                             }
                         }
-                        //DiagrV
-                        if (assignments[i].AntennaCharacteristics.DiagrV == null)
+                        //EmissionCharacteristics
+                        if (assignments[i].EmissionCharacteristics == null)
                         {
                             isSuccess = false;
                         }
-                        else if (assignments[i].AntennaCharacteristics.DiagrV != null)
+                        else if (assignments[i].EmissionCharacteristics != null)
                         {
-                            if (assignments[i].AntennaCharacteristics.DiagrV.Length != 36)
+                            if ((((assignments[i].EmissionCharacteristics.Freq_MHz >= 174) && (assignments[i].EmissionCharacteristics.Freq_MHz <= 230))
+                            || ((assignments[i].EmissionCharacteristics.Freq_MHz >= 470) && (assignments[i].EmissionCharacteristics.Freq_MHz <= 582))
+                            || ((assignments[i].EmissionCharacteristics.Freq_MHz >= 582) && (assignments[i].EmissionCharacteristics.Freq_MHz <= 862))) == false)
                             {
                                 isSuccess = false;
                             }
-                            for (int j = 0; j < assignments[i].AntennaCharacteristics.DiagrV.Length; j++)
-                            {
-                                var diagrV = assignments[i].AntennaCharacteristics.DiagrV[j];
-                                if (((diagrV >= 0) && (diagrV <= 40)) == false)
-                                {
-                                    isSuccess = false;
-                                }
-                            }
-                        }
-                        //DiagrH
-                        if (assignments[i].AntennaCharacteristics.DiagrH == null)
-                        {
-                            isSuccess = false;
-                        }
-                        else if (assignments[i].AntennaCharacteristics.DiagrH != null)
-                        {
-                            if (assignments[i].AntennaCharacteristics.DiagrH.Length != 36)
-                            {
-                                isSuccess = false;
-                            }
-                            for (int j = 0; j < assignments[i].AntennaCharacteristics.DiagrH.Length; j++)
-                            {
-                                var diagrH = assignments[i].AntennaCharacteristics.DiagrH[j];
-                                if (((diagrH >= 0) && (diagrH <= 40)) == false)
-                                {
-                                    isSuccess = false;
-                                }
-                            }
-                        }
-                    }
-                    //DigitalPlanEntryParameters
-                    if (assignments[i].DigitalPlanEntryParameters == null)
-                    {
-                        isSuccess = false;
-                    }
-                    //EmissionCharacteristics
-                    if (assignments[i].EmissionCharacteristics == null)
-                    {
-                        isSuccess = false;
-                    }
-                    else if (assignments[i].EmissionCharacteristics != null)
-                    {
-                        //if (assignments[i].EmissionCharacteristics.Freq_MHz) ?????????
 
-                        if (assignments[i].EmissionCharacteristics.ErpH_dBW > 53)
-                        {
-                            isSuccess = false;
+                            if (assignments[i].AntennaCharacteristics.Direction == AntennaDirectionType.D)
+                            {
+                                if ((assignments[i].EmissionCharacteristics.Polar == PolarType.H) && (assignments[i].EmissionCharacteristics.Polar == PolarType.M))
+                                {
+                                    if (assignments[i].EmissionCharacteristics.ErpH_dBW > 53)
+                                    {
+                                        isSuccess = false;
+                                    }
+                                }
+                                if ((assignments[i].EmissionCharacteristics.Polar == PolarType.V) && (assignments[i].EmissionCharacteristics.Polar == PolarType.M))
+                                {
+                                    if (assignments[i].EmissionCharacteristics.ErpV_dBW > 53)
+                                    {
+                                        isSuccess = false;
+                                    }
+                                }
+
+                             
+                            }
+
+                         
                         }
-                        if (assignments[i].EmissionCharacteristics.ErpV_dBW > 53)
+                        
+                        if (assignments[i].AntennaCharacteristics.Direction == AntennaDirectionType.D)
                         {
-                            isSuccess = false;
+                            //DiagrV
+                            if ((assignments[i].EmissionCharacteristics.Polar == PolarType.V) && (assignments[i].EmissionCharacteristics.Polar == PolarType.M))
+                            {
+                                if (assignments[i].AntennaCharacteristics.DiagrV == null)
+                                {
+                                    isSuccess = false;
+                                }
+                                else if (assignments[i].AntennaCharacteristics.DiagrV != null)
+                                {
+                                    if (assignments[i].AntennaCharacteristics.DiagrV.Length != 36)
+                                    {
+                                        isSuccess = false;
+                                    }
+                                    for (int j = 0; j < assignments[i].AntennaCharacteristics.DiagrV.Length; j++)
+                                    {
+                                        var diagrV = assignments[i].AntennaCharacteristics.DiagrV[j];
+                                        if (((diagrV >= 0) && (diagrV <= 40)) == false)
+                                        {
+                                            isSuccess = false;
+                                        }
+                                    }
+                                }
+                            }
+                            if ((assignments[i].EmissionCharacteristics.Polar == PolarType.H) && (assignments[i].EmissionCharacteristics.Polar == PolarType.M))
+                            {
+                                //DiagrH
+                                if (assignments[i].AntennaCharacteristics.DiagrH == null)
+                                {
+                                    isSuccess = false;
+                                }
+                                else if (assignments[i].AntennaCharacteristics.DiagrH != null)
+                                {
+                                    if (assignments[i].AntennaCharacteristics.DiagrH.Length != 36)
+                                    {
+                                        isSuccess = false;
+                                    }
+                                    for (int j = 0; j < assignments[i].AntennaCharacteristics.DiagrH.Length; j++)
+                                    {
+                                        var diagrH = assignments[i].AntennaCharacteristics.DiagrH[j];
+                                        if (((diagrH >= 0) && (diagrH <= 40)) == false)
+                                        {
+                                            isSuccess = false;
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
 
@@ -253,10 +271,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         {
                             isSuccess = false;
                         }
-                        if (string.IsNullOrEmpty(assignments[i].SiteParameters.Name) == false)
-                        {
-                            isSuccess = false;
-                        }
+                        //if (string.IsNullOrEmpty(assignments[i].SiteParameters.Name))
+                        //{
+                        //    isSuccess = false;
+                        //}
                     }
 
                     if (assignments[i].Target != null)
@@ -265,7 +283,9 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         {
                             isSuccess = false;
                         }
-                        if (assignments[i].Target.Freq_MHz == 0)
+                        if ((((assignments[i].Target.Freq_MHz >= 174) && (assignments[i].Target.Freq_MHz <= 230))
+                        || ((assignments[i].Target.Freq_MHz >= 470) && (assignments[i].Target.Freq_MHz <= 582))
+                        || ((assignments[i].Target.Freq_MHz >= 582) && (assignments[i].Target.Freq_MHz <= 862))) == false)
                         {
                             isSuccess = false;
                         }
