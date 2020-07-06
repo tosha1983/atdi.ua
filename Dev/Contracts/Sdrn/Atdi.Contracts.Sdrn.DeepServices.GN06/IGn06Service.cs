@@ -11,7 +11,7 @@ namespace Atdi.Contracts.Sdrn.DeepServices.GN06
 {
 	public interface IGn06Service
 	{
-        void EstimationAssignmentsPointsForEtalonNetwork(in EstimationAssignmentsPointsArgs estimationAssignmentsPointsArgs, ref PointWithAzimuthResult pointWithAzimuthResult);
+        void EstimationAssignmentsPointsForEtalonNetwork(in EstimationAssignmentsPointsArgs estimationAssignmentsPointsArgs, ref PointsWithAzimuthResult pointWithAzimuthResult);
 
         void GetEtalonBroadcastingAssignmentFromAllotment(BroadcastingAllotment broadcastingAllotmentArgs, BroadcastingAssignment broadcastingAssignmentResult);
 

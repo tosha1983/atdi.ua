@@ -21,11 +21,16 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.GN06
         }
 
 
-        public void EstimationAssignmentsPointsForEtalonNetwork(in EstimationAssignmentsPointsArgs  estimationAssignmentsPointsArgs, ref PointWithAzimuthResult pointWithAzimuthResult)
+        public void EstimationAssignmentsPointsForEtalonNetwork(in EstimationAssignmentsPointsArgs  estimationAssignmentsPointsArgs, ref PointsWithAzimuthResult pointWithAzimuthResult)
         {
              EstimationAssignmentsCalculation.Calc(in estimationAssignmentsPointsArgs,  ref pointWithAzimuthResult, this._earthGeometricService);
         }
 
+        /// <summary>
+        /// Преобразование алотмента в асаймент
+        /// </summary>
+        /// <param name="broadcastingAllotmentArgs">Входной элотмент</param>
+        /// <param name="broadcastingAssignmentResult">Выходной асаймент</param>
         public void GetEtalonBroadcastingAssignmentFromAllotment(BroadcastingAllotment broadcastingAllotmentArgs, BroadcastingAssignment broadcastingAssignmentResult)
         {
             EtalonBroadcastingAssignmentFromAllotment.Calc(broadcastingAllotmentArgs, broadcastingAssignmentResult);
