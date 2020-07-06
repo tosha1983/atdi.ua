@@ -9,6 +9,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
 {
     public class AssignmentsAllotmentsModel
     {
+        public string Id { get; set; }
         public AssignmentsAllotmentsSourceType Source { get; set; }
         public AssignmentsAllotmentsModelType Type { get; set; }
         public string ViewName { get; set; }
@@ -55,7 +56,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
         // AllotmentParameters
         public string AllotmentName { get; set; } 
         public int ContourId { get; set; }
-        public AreaPoint[] Сontur { get; set; }
+        public AreaPoint[] Contur { get; set; }
 
         // AntennaCharacteristics
         public AntennaDirectionType Direction { get; set; } 

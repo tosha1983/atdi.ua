@@ -74,7 +74,7 @@ namespace Atdi.Test.CalcServer.LowFunction
                        {
                            ContourId = 1,
                            Name = "Name",
-                           Сontur = arrPnts
+                           Contur = arrPnts
                            //Сontur = new GE.AreaPoint[4]
                            //  {
                            //       new GE.AreaPoint()
@@ -108,10 +108,10 @@ namespace Atdi.Test.CalcServer.LowFunction
                     gn06Service.GetBoundaryPointsFromAllotments(in broadcastingAllotmentWithStep, ref points);
                     // на карту 
                     WPF.Location[] InputData = new WPF.Location[4] {
-                        new WPF.Location(broadcastingAllotmentWithStep.BroadcastingAllotment.AllotmentParameters.Сontur[0].Lon_DEC, broadcastingAllotmentWithStep.BroadcastingAllotment.AllotmentParameters.Сontur[0].Lat_DEC),
-                        new WPF.Location(broadcastingAllotmentWithStep.BroadcastingAllotment.AllotmentParameters.Сontur[1].Lon_DEC, broadcastingAllotmentWithStep.BroadcastingAllotment.AllotmentParameters.Сontur[1].Lat_DEC),
-                        new WPF.Location(broadcastingAllotmentWithStep.BroadcastingAllotment.AllotmentParameters.Сontur[2].Lon_DEC, broadcastingAllotmentWithStep.BroadcastingAllotment.AllotmentParameters.Сontur[2].Lat_DEC),
-                        new WPF.Location(broadcastingAllotmentWithStep.BroadcastingAllotment.AllotmentParameters.Сontur[3].Lon_DEC, broadcastingAllotmentWithStep.BroadcastingAllotment.AllotmentParameters.Сontur[3].Lat_DEC)
+                        new WPF.Location(broadcastingAllotmentWithStep.BroadcastingAllotment.AllotmentParameters.Contur[0].Lon_DEC, broadcastingAllotmentWithStep.BroadcastingAllotment.AllotmentParameters.Contur[0].Lat_DEC),
+                        new WPF.Location(broadcastingAllotmentWithStep.BroadcastingAllotment.AllotmentParameters.Contur[1].Lon_DEC, broadcastingAllotmentWithStep.BroadcastingAllotment.AllotmentParameters.Contur[1].Lat_DEC),
+                        new WPF.Location(broadcastingAllotmentWithStep.BroadcastingAllotment.AllotmentParameters.Contur[2].Lon_DEC, broadcastingAllotmentWithStep.BroadcastingAllotment.AllotmentParameters.Contur[2].Lat_DEC),
+                        new WPF.Location(broadcastingAllotmentWithStep.BroadcastingAllotment.AllotmentParameters.Contur[3].Lon_DEC, broadcastingAllotmentWithStep.BroadcastingAllotment.AllotmentParameters.Contur[3].Lat_DEC)
                     };
                     WPF.Location[] OutputData = new WPF.Location[points.SizeResultBuffer];
                     for (int j = 0; points.SizeResultBuffer > j; j++)

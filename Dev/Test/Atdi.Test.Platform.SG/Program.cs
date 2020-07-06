@@ -77,7 +77,7 @@ class Program
                          {
                               AllotmentParameters = new GE.AllotmentParameters()
                               {
-                                   Сontur = new GE.AreaPoint[4]
+                                   Contur = new GE.AreaPoint[4]
                                    {
                                        new GE.AreaPoint()
                                        {

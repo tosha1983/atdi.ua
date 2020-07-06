@@ -24,9 +24,9 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.GN06
             {
                 if (broadcastingCalcBarycenterGE06.BroadcastingAllotment.AllotmentParameters != null)
                 {
-                    if (broadcastingCalcBarycenterGE06.BroadcastingAllotment.AllotmentParameters.Сontur != null)
+                    if (broadcastingCalcBarycenterGE06.BroadcastingAllotment.AllotmentParameters.Contur != null)
                     {
-                        var pointsAllotmentParametersСontur = broadcastingCalcBarycenterGE06.BroadcastingAllotment.AllotmentParameters.Сontur;
+                        var pointsAllotmentParametersСontur = broadcastingCalcBarycenterGE06.BroadcastingAllotment.AllotmentParameters.Contur;
                         var pointEarthGeometricsAllotmentParametersСontur = new PointEarthGeometric[pointsAllotmentParametersСontur.Length];
                         for (int i = 0; i < pointsAllotmentParametersСontur.Length; i++)
                         {

@@ -61,6 +61,7 @@
     <Compile Include="AppComponentConfig.cs" />
     <Compile Include="DataLayers\CalcServerDataLayer.cs" />
     <Compile Include="DataLayers\InfocenterDataLayer.cs" />
+    <Compile Include="Environment\MapsDrawingHelper.cs" />
     <Compile Include="Metadata\FMTV_Assign.cs" />
     <Compile Include="Metadata\FMTV_terra.cs" />
     <Compile Include="Metadata\GE06_allot_terra.cs" />
@@ -207,7 +208,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Environment\" />
     <Folder Include="ViewModels\GE06TaskResult\Events\" />
     <Folder Include="ViewModels\GE06TaskResult\Modifiers\" />
     <Folder Include="ViewModels\GE06TaskResult\Queries\" />

@@ -14,9 +14,9 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.GN06
         public static void Calc(IEarthGeometricService earthGeometricService, in BroadcastingAllotmentWithStep broadcastingAllotment, ref Points pointsResult)
         {
             double step_km = broadcastingAllotment.step_km == null ? 5 : broadcastingAllotment.step_km.Value;
-            if ((broadcastingAllotment.BroadcastingAllotment.AllotmentParameters is null) || (broadcastingAllotment.BroadcastingAllotment.AllotmentParameters.Сontur is null) || (broadcastingAllotment.BroadcastingAllotment.AllotmentParameters.Сontur.Length < 3))
+            if ((broadcastingAllotment.BroadcastingAllotment.AllotmentParameters is null) || (broadcastingAllotment.BroadcastingAllotment.AllotmentParameters.Contur is null) || (broadcastingAllotment.BroadcastingAllotment.AllotmentParameters.Contur.Length < 3))
             { pointsResult.SizeResultBuffer = 0; return; }
-            var conture = broadcastingAllotment.BroadcastingAllotment.AllotmentParameters.Сontur;
+            var conture = broadcastingAllotment.BroadcastingAllotment.AllotmentParameters.Contur;
             PointEarthGeometric firstPoint = new PointEarthGeometric()
             { Latitude = conture[0].Lat_DEC, Longitude = conture[0].Lon_DEC, CoordinateUnits = CoordinateUnits.deg };
             var oldPoint = firstPoint;
