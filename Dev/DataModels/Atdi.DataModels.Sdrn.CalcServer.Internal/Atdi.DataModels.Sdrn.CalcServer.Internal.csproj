@@ -100,6 +100,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Atdi.DataModels.Sdrn.CalcServer.Entities\Atdi.DataModels.Sdrn.CalcServer.Entities.csproj">
+      <Project>{6a72e0c5-f8a4-412f-9395-13abe07367b1}</Project>
+      <Name>Atdi.DataModels.Sdrn.CalcServer.Entities</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Atdi.DataModels.Sdrn.DeepServices.EarthGeometry\Atdi.DataModels.Sdrn.DeepServices.EarthGeometry.csproj">
       <Project>{32da0c04-3a89-428f-8997-3018aa1375c3}</Project>
       <Name>Atdi.DataModels.Sdrn.DeepServices.EarthGeometry</Name>

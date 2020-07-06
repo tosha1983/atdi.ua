@@ -14,7 +14,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.GN06
         public const double AntDiscriminationTDAB_dB =12;
 
 
-        public static void Calc(in EstimationAssignmentsPointsArgs estimationAssignmentsPointsArgs, ref PointWithAzimuthResult pointWithAzimuthResult, IEarthGeometricService earthGeometricService)
+        public static void Calc(in EstimationAssignmentsPointsArgs estimationAssignmentsPointsArgs, ref PointsWithAzimuthResult pointWithAzimuthResult, IEarthGeometricService earthGeometricService)
         {
             // определение параметров эталонной сети D - размер соты, d_ минимальное растояние между передатчиками
             var broadcastingAllotment = estimationAssignmentsPointsArgs.BroadcastingAllotment;
@@ -96,22 +96,22 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.GN06
                     break;
             }
         }
-        private static void GetCoordinat(IEarthGeometricService earthGeometricService, RefNetworkType refNetworkType, ref PointWithAzimuthResult pointResult, PointEarthGeometric centr, double azimutFromCentrToAllotmentPoint_deg, double dist, bool smallDistance)
+        private static void GetCoordinat(IEarthGeometricService earthGeometricService, RefNetworkType refNetworkType, ref PointsWithAzimuthResult pointResult, PointEarthGeometric centr, double azimutFromCentrToAllotmentPoint_deg, double dist, bool smallDistance)
         {
             switch (refNetworkType)
             {
                 case RefNetworkType.RN1:
                 case RefNetworkType.RN5:
                 case RefNetworkType.RN6:
-                    pointResult.PointWithAzimuth[0] = new PointWithAzimuth();
-                    pointResult.PointWithAzimuth[0].AreaPoint = new AreaPoint() { Lat_DEC = centr.Latitude, Lon_DEC = centr.Longitude};
+                    pointResult.PointsWithAzimuth[0] = new PointWithAzimuth();
+                    pointResult.PointsWithAzimuth[0].AreaPoint = new AreaPoint() { Lat_DEC = centr.Latitude, Lon_DEC = centr.Longitude};
                     for (int i = 1; i <= 6; i++)
                     {
                         double Az = azimutFromCentrToAllotmentPoint_deg - 30 + 60*i;
                         if (Az >= 360) {Az = Az - 360;}
                         var Point = earthGeometricService.CalculationCoordinateByLengthAndAzimuth(in centr, dist, Az);
-                        pointResult.PointWithAzimuth[i] = new PointWithAzimuth();
-                        pointResult.PointWithAzimuth[i].AreaPoint = new AreaPoint() { Lat_DEC = Point.Latitude, Lon_DEC = Point.Longitude};  
+                        pointResult.PointsWithAzimuth[i] = new PointWithAzimuth();
+                        pointResult.PointsWithAzimuth[i].AreaPoint = new AreaPoint() { Lat_DEC = Point.Latitude, Lon_DEC = Point.Longitude};  
                     }
                     break;
                 case RefNetworkType.RN2:
@@ -122,8 +122,8 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.GN06
                         double Az = azimutFromCentrToAllotmentPoint_deg + 30 + 120 * i;
                         if (Az >= 360) { Az = Az - 360; }
                         var Point = earthGeometricService.CalculationCoordinateByLengthAndAzimuth(in centr, dist, Az);
-                        pointResult.PointWithAzimuth[i] = new PointWithAzimuth();
-                        pointResult.PointWithAzimuth[i].AreaPoint = new AreaPoint() { Lat_DEC = Point.Latitude, Lon_DEC = Point.Longitude };
+                        pointResult.PointsWithAzimuth[i] = new PointWithAzimuth();
+                        pointResult.PointsWithAzimuth[i].AreaPoint = new AreaPoint() { Lat_DEC = Point.Latitude, Lon_DEC = Point.Longitude };
                     }
                     break;
             }
@@ -132,35 +132,35 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.GN06
                 case RefNetworkType.RN1:
                     for (int i = 0; i <= 6; i++)
                     {
-                        pointResult.PointWithAzimuth[i].AntDiscrimination_dB = 0; 
+                        pointResult.PointsWithAzimuth[i].AntDiscrimination_dB = 0; 
                     }
                     break;
                 case RefNetworkType.RN2:
                 case RefNetworkType.RN3:
                     for (int i = 0; i <= 2; i++)
                     {
-                        pointResult.PointWithAzimuth[i].AntDiscrimination_dB = 0;
+                        pointResult.PointsWithAzimuth[i].AntDiscrimination_dB = 0;
                     }
                     break;
                 case RefNetworkType.RN4:
-                    pointResult.PointWithAzimuth[0].AntDiscrimination_dB = AntDiscriminationDVBT_dB;
-                    pointResult.PointWithAzimuth[1].AntDiscrimination_dB = 0;
-                    if (smallDistance) { pointResult.PointWithAzimuth[2].AntDiscrimination_dB = 0; } else { pointResult.PointWithAzimuth[2].AntDiscrimination_dB = AntDiscriminationDVBT_dB; }
+                    pointResult.PointsWithAzimuth[0].AntDiscrimination_dB = AntDiscriminationDVBT_dB;
+                    pointResult.PointsWithAzimuth[1].AntDiscrimination_dB = 0;
+                    if (smallDistance) { pointResult.PointsWithAzimuth[2].AntDiscrimination_dB = 0; } else { pointResult.PointsWithAzimuth[2].AntDiscrimination_dB = AntDiscriminationDVBT_dB; }
                     break;
                 case RefNetworkType.RN5:
                 case RefNetworkType.RN6:
-                    pointResult.PointWithAzimuth[1].AntDiscrimination_dB = AntDiscriminationTDAB_dB;
-                    pointResult.PointWithAzimuth[6].AntDiscrimination_dB = AntDiscriminationTDAB_dB;
-                    pointResult.PointWithAzimuth[0].AntDiscrimination_dB = 0;
-                    pointResult.PointWithAzimuth[3].AntDiscrimination_dB = 0;
-                    pointResult.PointWithAzimuth[4].AntDiscrimination_dB = 0;
+                    pointResult.PointsWithAzimuth[1].AntDiscrimination_dB = AntDiscriminationTDAB_dB;
+                    pointResult.PointsWithAzimuth[6].AntDiscrimination_dB = AntDiscriminationTDAB_dB;
+                    pointResult.PointsWithAzimuth[0].AntDiscrimination_dB = 0;
+                    pointResult.PointsWithAzimuth[3].AntDiscrimination_dB = 0;
+                    pointResult.PointsWithAzimuth[4].AntDiscrimination_dB = 0;
                     if (smallDistance)
                     {
-                        pointResult.PointWithAzimuth[2].AntDiscrimination_dB = 0;
-                        pointResult.PointWithAzimuth[5].AntDiscrimination_dB = 0;}
+                        pointResult.PointsWithAzimuth[2].AntDiscrimination_dB = 0;
+                        pointResult.PointsWithAzimuth[5].AntDiscrimination_dB = 0;}
                     else {
-                        pointResult.PointWithAzimuth[2].AntDiscrimination_dB = AntDiscriminationTDAB_dB;
-                        pointResult.PointWithAzimuth[5].AntDiscrimination_dB = AntDiscriminationTDAB_dB;
+                        pointResult.PointsWithAzimuth[2].AntDiscrimination_dB = AntDiscriminationTDAB_dB;
+                        pointResult.PointsWithAzimuth[5].AntDiscrimination_dB = AntDiscriminationTDAB_dB;
                     }
                     break;
             }

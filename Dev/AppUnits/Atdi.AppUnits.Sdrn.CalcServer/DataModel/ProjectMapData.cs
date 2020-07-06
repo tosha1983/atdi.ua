@@ -1,4 +1,5 @@
-﻿using Atdi.DataModels.Sdrn.CalcServer.Internal.Maps;
+﻿using Atdi.DataModels.Sdrn.CalcServer.Entities;
+using Atdi.DataModels.Sdrn.CalcServer.Internal.Maps;
 using Atdi.DataModels.Sdrn.DeepServices.Gis;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.DataModel
 	internal class ProjectMapData
 	{
 		public long ProjectMapId;
+
+		public string MapName;
+
+		public ProjectMapSourceTypeCode? SourceType;
 
 		public string Projection;
 

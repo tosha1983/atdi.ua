@@ -582,7 +582,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     {
                         Step_deg = ge06CalcData.Ge06TaskParameters.AzimuthStep_deg.Value,
                         TriggerFieldStrength = ge06CalcData.Ge06TaskParameters.FieldStrength[i],
-                        PointEarthGeometricCalc = pointEarthGeometricBarycenter
+                        BaryCenter = pointEarthGeometricBarycenter
                     };
 
 
@@ -955,7 +955,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                     {
                                         Step_deg = ge06CalcData.Ge06TaskParameters.AzimuthStep_deg.Value,
                                         TriggerFieldStrength = triggerFS,
-                                        PointEarthGeometricCalc = pointEarthGeometricBarycenter
+                                        BaryCenter = pointEarthGeometricBarycenter
                                     };
 
                                     var propModel = this._ge06CalcData.PropagationModel;
@@ -1145,7 +1145,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                 {
                                                     Step_deg = ge06CalcData.Ge06TaskParameters.AzimuthStep_deg.Value,
                                                     TriggerFieldStrength = triggerFS,
-                                                    PointEarthGeometricCalc = pointEarthGeometricBarycenter
+                                                    BaryCenter = pointEarthGeometricBarycenter
                                                 };
 
                                                 var propModel = this._ge06CalcData.PropagationModel;
@@ -1522,7 +1522,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                 {
                                     Step_deg = ge06CalcData.Ge06TaskParameters.AzimuthStep_deg.Value,
                                     TriggerFieldStrength = triggerFS.ThresholdFS,
-                                    PointEarthGeometricCalc = pointEarthGeometricBarycenter
+                                    BaryCenter = pointEarthGeometricBarycenter
                                 };
 
                                 // Модель распространения 1546, процент территории 50, процент времени 1, высота абонента 10м
@@ -1630,7 +1630,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                     {
                                         Step_deg = ge06CalcData.Ge06TaskParameters.AzimuthStep_deg.Value,
                                         TriggerFieldStrength = triggerInformation.ThresholdFS,
-                                        PointEarthGeometricCalc = pointEarthGeometricBarycenter
+                                        BaryCenter = pointEarthGeometricBarycenter
                                     };
 
 
@@ -1897,7 +1897,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                     {
                                         Step_deg = ge06CalcData.Ge06TaskParameters.AzimuthStep_deg.Value,
                                         TriggerFieldStrength = triggerFS.ThresholdFS,
-                                        PointEarthGeometricCalc = pointEarthGeometricBarycenter
+                                        BaryCenter = pointEarthGeometricBarycenter
                                     };
 
                                     // Модель распространения 1546, процент территории 50, процент времени 1, высота абонента 10м
@@ -2005,7 +2005,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                         {
                                             Step_deg = ge06CalcData.Ge06TaskParameters.AzimuthStep_deg.Value,
                                             TriggerFieldStrength = triggerInformation.ThresholdFS,
-                                            PointEarthGeometricCalc = pointEarthGeometricBarycenter
+                                            BaryCenter = pointEarthGeometricBarycenter
                                         };
 
 
@@ -2290,7 +2290,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         var fndAssignments = allAssignments.FindAll(x => x.DigitalPlanEntryParameters.SfnId == arrSfnId[k]);
                         if ((fndAssignments!=null) && (fndAssignments.Count>0))
                         {
-                            var sumFieldStrengthInPointFromAssignmentGE06 = new double?[fndAssignments.Count];
+                            var sumFieldStrengthInPointFromAssignmentGE06 = new double[fndAssignments.Count];
                             for (int j = 0; j < fndAssignments.Count; j++)
                             {
                                 sumFieldStrengthInPointFromAssignmentGE06[j] = CalcFieldStrengthInPointFromAssignmentGE06(fndAssignments[j], ge06CalcData.PropagationModel, point);
@@ -2313,9 +2313,9 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         /// <returns></returns>
         private float CalcFieldStrengthInPointFromAllotmentGE06(BroadcastingAllotment broadcastingAllotment, PropagationModel propagationModel, Point point)
         {
-            var lstAllFieldStrengthAssignments = new List<double?>();
+            var lstAllFieldStrengthAssignments = new List<double>();
             //1. Формирование эталонной BroadcastingAssignment на базе BroadcastingAllotment (1.3.1).
-            var broadcastingAssignment = new BroadcastingAssignment();
+            var broadcastingAssignment = new BroadcastingAssignment(); 
             this._gn06Service.GetEtalonBroadcastingAssignmentFromAllotment(broadcastingAllotment, broadcastingAssignment);
             //2. Вычисляются все граничные точки выделения (1.3.3). 
             var broadcastingAllotmentWithStep = new BroadcastingAllotmentWithStep()
@@ -2326,6 +2326,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             this._gn06Service.GetBoundaryPointsFromAllotments(in broadcastingAllotmentWithStep, ref points);
 
             //3.Для каждой граничной точки формируется цикл по расчету напряженности поля от эталонной сети которая касается граничной точки в точке(исходные данные). При этом расчете совершаются 3 действия:
+            var pointsWithAzimuthResult = new PointsWithAzimuthResult();
+            pointsWithAzimuthResult.PointsWithAzimuth = new PointWithAzimuth[7];
+            var lstBroadcastingAssignment = new BroadcastingAssignment[7];
+            double maxFieldStrength = -9999;
             for (int j=0; j< points.SizeResultBuffer; j++)
             {
 
@@ -2345,12 +2349,13 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 };
 
                 //а) Определения положений эталонных присвоений BroadcastingAssignment 1.1.5;
-                var pointWithAzimuthResult = new PointWithAzimuthResult();
-                this._gn06Service.EstimationAssignmentsPointsForEtalonNetwork(in estimationAssignmentsPointsArgs, ref pointWithAzimuthResult);
+                
+                
+                this._gn06Service.EstimationAssignmentsPointsForEtalonNetwork(in estimationAssignmentsPointsArgs, ref pointsWithAzimuthResult);
 
-                var lstBroadcastingAssignment = new List<BroadcastingAssignment>();
-                var pointWithAzimuth = pointWithAzimuthResult.PointWithAzimuth;
-                for (int k = 0; k < pointWithAzimuth.Length; k++)
+
+                var pointWithAzimuth = pointsWithAzimuthResult.PointsWithAzimuth;
+                for (int k = 0; k < pointsWithAzimuthResult.sizeResultBuffer; k++)
                 {
                     var broadcastingAssignmentTemp = Atdi.Common.CopyHelper.CreateDeepCopy(broadcastingAssignment);
                     broadcastingAssignmentTemp.SiteParameters.Lon_Dec = pointWithAzimuth[k].AreaPoint.Lon_DEC;
@@ -2368,24 +2373,25 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         broadcastingAssignmentTemp.EmissionCharacteristics.ErpH_dBW = (float)(broadcastingAssignmentTemp.EmissionCharacteristics.ErpH_dBW - pointWithAzimuth[k].AntDiscrimination_dB);
                         broadcastingAssignmentTemp.EmissionCharacteristics.ErpV_dBW = (float)(broadcastingAssignmentTemp.EmissionCharacteristics.ErpV_dBW - pointWithAzimuth[k].AntDiscrimination_dB);
                     }
-                    lstBroadcastingAssignment.Add(broadcastingAssignmentTemp);
+                    lstBroadcastingAssignment[k] = broadcastingAssignmentTemp;
                 }
-                var lstFieldStrengthAssignments = new List<double?>();
-                for (int k = 0; k < lstBroadcastingAssignment.Count; k++)
+                var lstFieldStrengthAssignments = new double[pointsWithAzimuthResult.sizeResultBuffer];
+                for (int k = 0; k < lstBroadcastingAssignment.Length; k++)
                 {
                     var broadcastAssignment = lstBroadcastingAssignment[k];
                     //в) Расчет напряженности поля от каждого эталонного BroadcastingAssignment(2.2.4).Перед расчетом производиться корректировка паттерна BroadcastingAssignment в соответствии с его ориентацией(суть корректировки спросить Максима или Юру).
                     var resultFieldStrengthInPointFromAssignmentGE06 = CalcFieldStrengthInPointFromAssignmentGE06(broadcastAssignment, propagationModel, point);
-                    lstFieldStrengthAssignments.Add(resultFieldStrengthInPointFromAssignmentGE06);
+                    lstFieldStrengthAssignments[k]=resultFieldStrengthInPointFromAssignmentGE06;
                 }
 
-                lstAllFieldStrengthAssignments.Add(SumPowGE06(lstFieldStrengthAssignments.ToArray()));
+                if (SumPowGE06(lstFieldStrengthAssignments) > maxFieldStrength)
+                {
+                    maxFieldStrength = SumPowGE06(lstFieldStrengthAssignments);
+                }
             }
 
             //г) Определение суммарной напряженности поля(2.2.2) .
-            var maxFieldStrength = lstAllFieldStrengthAssignments.Max();
-
-            return (float)maxFieldStrength.Value;
+            return (float)maxFieldStrength;
         }
 
         /// <summary>
@@ -2456,15 +2462,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         /// </summary>
         /// <param name="fs"></param>
         /// <returns></returns>
-        private float SumPowGE06(double?[] fs)
+        private float SumPowGE06(double[] fs)
         {
             double resFS = 0.0;
             for (int j = 0; j < fs.Length; j++)
             {
-                if (fs[j] != null)
-                {
-                    resFS += Math.Pow(10, fs[j].Value / 10.0);
-                }
+                resFS += Math.Pow(10, fs[j] / 10.0);
             }
             return (float)(10 * Math.Log10(resFS));
         }

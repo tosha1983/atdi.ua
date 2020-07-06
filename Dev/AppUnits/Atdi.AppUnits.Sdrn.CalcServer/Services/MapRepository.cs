@@ -15,18 +15,27 @@ using Atdi.AppUnits.Sdrn.CalcServer.Helpers;
 using Atdi.Common.Extensions;
 using Atdi.DataModels.Sdrn.DeepServices.Gis;
 using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Gis;
+using Atdi.DataModels.Sdrn.DeepServices.Gis.Maps;
+using Atdi.Contracts.Sdrn.DeepServices.Gis;
+using System.IO;
 
 namespace Atdi.AppUnits.Sdrn.CalcServer.Services
 {
 	internal class MapRepository : IMapRepository
 	{
+		private readonly IMapStorage _gisMapStorage;
+		private readonly AppServerComponentConfig _config;
 		private readonly IDataLayer<EntityDataOrm<CalcServerEntityOrmContext>> _calcServerDataLayer;
 		private readonly ILogger _logger;
 
 		public MapRepository(
+			IMapStorage gisMapStorage,
+			AppServerComponentConfig config,
 			IDataLayer<EntityDataOrm<CalcServerEntityOrmContext>> calcServerDataLayer,
 			ILogger logger)
 		{
+			_gisMapStorage = gisMapStorage;
+			_config = config;
 			_calcServerDataLayer = calcServerDataLayer;
 			_logger = logger;
 		}
@@ -39,14 +48,30 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Services
 				throw new InvalidOperationException($"Failed to load map by name '{mapName}' for project with ID #{projectId}");
 			}
 
-			mapData.ReliefContent =
-				this.LoadProjectMapContent<short>(dbScope, mapData.Id, ProjectMapType.Relief);
+			if (mapData.SourceType == ProjectMapSourceTypeCode.LocalStorage)
+			{
+				var localStorageFolder = _config.MapsLocalStorageFolder;
+				mapData.ReliefContent =
+					this.LoadProjectMapContentFromLocalStorage<short>(localStorageFolder, mapName, MapContentType.Relief);
 
-			mapData.ClutterContent =
-				this.LoadProjectMapContent<byte>(dbScope, mapData.Id, ProjectMapType.Clutter);
+				mapData.ClutterContent =
+					this.LoadProjectMapContentFromLocalStorage<byte>(localStorageFolder, mapName, MapContentType.Clutter);
 
-			mapData.BuildingContent =
-				this.LoadProjectMapContent<byte>(dbScope, mapData.Id, ProjectMapType.Building);
+				mapData.BuildingContent =
+					this.LoadProjectMapContentFromLocalStorage<byte>(localStorageFolder, mapName, MapContentType.Building);
+			}
+			else
+			{
+				mapData.ReliefContent =
+					this.LoadProjectMapContent<short>(dbScope, mapData.Id, ProjectMapType.Relief);
+
+				mapData.ClutterContent =
+					this.LoadProjectMapContent<byte>(dbScope, mapData.Id, ProjectMapType.Clutter);
+
+				mapData.BuildingContent =
+					this.LoadProjectMapContent<byte>(dbScope, mapData.Id, ProjectMapType.Building);
+			}
+			
 
 			return mapData;
 		}
@@ -64,7 +89,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Services
 					c => c.UpperLeftX,
 					c => c.UpperLeftY,
 					c => c.LowerRightX,
-					c => c.LowerRightY
+					c => c.LowerRightY,
+					c => c.SourceTypeCode
 				)
 				.Where(c => c.MapName, ConditionOperator.Equal, mapName)
 				.Where(c => c.PROJECT.Id, ConditionOperator.Equal, projectId);
@@ -75,9 +101,13 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Services
 				{
 					return null;
 				}
+
+				var sourceTypeCode = reader.GetValue(c => c.SourceTypeCode).GetValueOrDefault();
 				return new ProjectMapData()
 				{
 					Id = reader.GetValue(c => c.Id),
+					SourceType = (ProjectMapSourceTypeCode)sourceTypeCode,
+					MapName = mapName,
 					AxisX = new AtdiAxis()
 					{
 						Number = reader.GetValue(c => c.AxisXNumber).GetValueOrDefault(),
@@ -100,6 +130,70 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Services
 					}
 				};
 			});
+		}
+
+		private ProjectMapData LoadProjectMap(IDataLayerScope calcDbScope, long mapId)
+		{
+			var query = _calcServerDataLayer.GetBuilder<IProjectMap>()
+				.From()
+				.Select(
+					c => c.Id,
+					c => c.MapName,
+					c => c.AxisXNumber,
+					c => c.AxisXStep,
+					c => c.AxisYNumber,
+					c => c.AxisYStep,
+					c => c.UpperLeftX,
+					c => c.UpperLeftY,
+					c => c.LowerRightX,
+					c => c.LowerRightY,
+					c => c.SourceTypeCode
+				)
+				.Where(c => c.Id, ConditionOperator.Equal, mapId);
+
+			return calcDbScope.Executor.ExecuteAndFetch(query, reader =>
+			{
+				if (!reader.Read())
+				{
+					return null;
+				}
+
+				var sourceTypeCode = reader.GetValue(c => c.SourceTypeCode).GetValueOrDefault();
+				return new ProjectMapData()
+				{
+					Id = reader.GetValue(c => c.Id),
+					MapName = reader.GetValue(c => c.MapName),
+					SourceType = (ProjectMapSourceTypeCode)sourceTypeCode,
+					AxisX = new AtdiAxis()
+					{
+						Number = reader.GetValue(c => c.AxisXNumber).GetValueOrDefault(),
+						Step = reader.GetValue(c => c.AxisXStep).GetValueOrDefault()
+					},
+					AxisY = new AtdiAxis()
+					{
+						Number = reader.GetValue(c => c.AxisYNumber).GetValueOrDefault(),
+						Step = reader.GetValue(c => c.AxisYStep).GetValueOrDefault()
+					},
+					UpperLeft = new AtdiCoordinate()
+					{
+						X = reader.GetValue(c => c.UpperLeftX).GetValueOrDefault(),
+						Y = reader.GetValue(c => c.UpperLeftY).GetValueOrDefault(),
+					},
+					LowerRight = new AtdiCoordinate()
+					{
+						X = reader.GetValue(c => c.LowerRightX).GetValueOrDefault(),
+						Y = reader.GetValue(c => c.LowerRightY).GetValueOrDefault(),
+					}
+				};
+			});
+		}
+
+		private T[] LoadProjectMapContentFromLocalStorage<T>(string folder, string mapName, MapContentType contentType)
+		{
+			var ext = _gisMapStorage.DefineMapFileExtension(contentType);
+			var path =  Path.Combine(folder, $"{mapName}{ext}");
+			var result = _gisMapStorage.GetContent<T>(path);
+			return result;
 		}
 
 		private T[] LoadProjectMapContent<T>(IDataLayerScope calcDbScope, long mapId, ProjectMapType mapType)
@@ -172,8 +266,57 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Services
 
 		}
 
+		private CluttersDesc LoadCluttersDescFromLocalStorage(string mapName)
+		{
+			var localStorageFolder = _config.MapsLocalStorageFolder;
+			var path = Path.Combine(localStorageFolder, $"{mapName}.sol.json");
+			var desc = _gisMapStorage.GetClattersDesc(path);
+
+			var result = new CluttersDesc()
+			{
+				Frequencies = desc.Frequencies
+					.OrderByDescending(f => f.Freq_MHz)
+					.Select( f =>
+					{
+						var freq = new CluttersDescFreq
+						{
+							Freq_MHz = f.Freq_MHz,
+							Clutters = new CluttersDescFreqClutter[MapSpecification.CluttersMaxCount]
+						};
+
+						foreach (var clutter in f.Clutters)
+						{
+							freq.Clutters[clutter.Code] = new CluttersDescFreqClutter
+							{
+								Reflection = clutter.Reflection,
+								FlatLoss_dB = clutter.FlatLoss_dB,
+								LinearLoss_dBkm = clutter.LinearLoss_dBkm
+							};
+						}
+						return freq;
+					}).ToArray()
+			};
+
+			foreach (var c in desc.Clutters)
+			{
+				foreach (var freq in result.Frequencies)
+				{
+					freq.Clutters[c.Code].Height_m = c.Height_m;
+				}
+			}
+			return result;
+		}
+
 		public CluttersDesc GetCluttersDesc(IDataLayerScope dbScope, long mapId)
 		{
+			var projectMap = this.LoadProjectMap(dbScope, mapId);
+
+			if (projectMap.SourceType == ProjectMapSourceTypeCode.LocalStorage)
+			{
+				//  загрузка из локального хранилища
+				return this.LoadCluttersDescFromLocalStorage(projectMap.MapName);
+			}
+
 			var selDescQuery = _calcServerDataLayer.GetBuilder<ICluttersDesc>()
 				.From()
 				.Select(

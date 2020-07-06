@@ -12,9 +12,9 @@ namespace Atdi.Contracts.Sdrn.DeepServices.GN06
 	/// <summary>
 	/// 
 	/// </summary>
-	public struct PointWithAzimuthResult
+	public struct PointsWithAzimuthResult
     {
-       public PointWithAzimuth[] PointWithAzimuth;
+       public PointWithAzimuth[] PointsWithAzimuth;
        public int sizeResultBuffer;
     }
 }
