@@ -34,10 +34,12 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
             {
                 if (rs.GetS("IS_ALLOTM") == "Y")
                 {
+                    allotAssign.Type = AssignmentsAllotmentsModelType.Allotment;
                     _mapper.GetIcsmAllotment(allotAssign, rs);
                 }
                 else
                 {
+                    allotAssign.Type = AssignmentsAllotmentsModelType.Assignment;
                     _mapper.GetIcsmAssignment(allotAssign, rs);
                 }
             }

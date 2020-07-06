@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
 {
-    public class GetBrificAreaPointBySubAreaKey
+    public class GetIcsmAreaPointByContourId
     {
-        public int SubAreaKey;
+        public int ContourId;
     }
 }

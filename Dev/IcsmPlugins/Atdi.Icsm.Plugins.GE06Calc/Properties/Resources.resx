@@ -255,4 +255,31 @@
   <data name="ViewName" xml:space="preserve">
     <value>ViewName</value>
   </data>
+  <data name="Adm" xml:space="preserve">
+    <value>Adm</value>
+  </data>
+  <data name="AffectedADM" xml:space="preserve">
+    <value>Affected ADM</value>
+  </data>
+  <data name="AffectedServices" xml:space="preserve">
+    <value>Affected services</value>
+  </data>
+  <data name="ContourType" xml:space="preserve">
+    <value>Contour type</value>
+  </data>
+  <data name="CountoursPoints" xml:space="preserve">
+    <value>Countours points</value>
+  </data>
+  <data name="Distance" xml:space="preserve">
+    <value>Distance</value>
+  </data>
+  <data name="FS" xml:space="preserve">
+    <value>FS</value>
+  </data>
+  <data name="PointsCount" xml:space="preserve">
+    <value>Points count</value>
+  </data>
+  <data name="TypeAffected" xml:space="preserve">
+    <value>Type affected</value>
+  </data>
 </root>

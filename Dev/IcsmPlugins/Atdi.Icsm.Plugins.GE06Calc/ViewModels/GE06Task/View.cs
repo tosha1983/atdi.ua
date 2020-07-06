@@ -420,7 +420,9 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                             NoticeType = item.NoticeType,
                             Fragment = item.Fragment,
                             Action = item.Action,
-                            AdmRefId = item.AdmRefId
+                            AdmRefId = item.AdmRefId,
+                            IsDigital = item.IsDigital,
+                            StnClass = item.StnClass
                         },
                         Target = new BroadcastingAssignmentTarget()
                         {
@@ -467,7 +469,9 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                             NoticeType = item.NoticeType,
                             Fragment = item.Fragment,
                             Action = item.Action,
-                            AdmRefId = item.AdmRefId
+                            AdmRefId = item.AdmRefId,
+                            IsDigital = item.IsDigital,
+                            StnClass = item.StnClass
                         },
                         Target = new BroadcastingAssignmentTarget()
                         {

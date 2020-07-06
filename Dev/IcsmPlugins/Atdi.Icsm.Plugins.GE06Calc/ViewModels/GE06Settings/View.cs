@@ -365,7 +365,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings
             {
                 var resultId = _objectReader.Read<long?>().By(new GetResultIdByTaskId { TaskId = CurrentCalcTask.Id });
                 if (resultId.HasValue)
-                    _starter.Start<VM.GE06TaskResult.View>(isModal: true);
+                    _starter.Start<VM.GE06TaskResult.View>(isModal: true, c => c.ResultId = resultId.Value);
                 //else
                 //{
                 //    this._logger.Exception(Exceptions.GE06Client, "For selected task not found information in ICalcResults!");

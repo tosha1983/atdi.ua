@@ -79,11 +79,38 @@ namespace Atdi.Icsm.Plugins.GE06Calc.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Adm.
+        /// </summary>
+        public static string Adm {
+            get {
+                return ResourceManager.GetString("Adm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to AdmRefId.
         /// </summary>
         public static string AdmRefId {
             get {
                 return ResourceManager.GetString("AdmRefId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Affected ADM.
+        /// </summary>
+        public static string AffectedADM {
+            get {
+                return ResourceManager.GetString("AffectedADM", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Affected services.
+        /// </summary>
+        public static string AffectedServices {
+            get {
+                return ResourceManager.GetString("AffectedServices", resourceCulture);
             }
         }
         
@@ -138,6 +165,24 @@ namespace Atdi.Icsm.Plugins.GE06Calc.Properties {
         public static string ConformityCheck {
             get {
                 return ResourceManager.GetString("ConformityCheck", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contour type.
+        /// </summary>
+        public static string ContourType {
+            get {
+                return ResourceManager.GetString("ContourType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Countours points.
+        /// </summary>
+        public static string CountoursPoints {
+            get {
+                return ResourceManager.GetString("CountoursPoints", resourceCulture);
             }
         }
         
@@ -205,6 +250,15 @@ namespace Atdi.Icsm.Plugins.GE06Calc.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Distance.
+        /// </summary>
+        public static string Distance {
+            get {
+                return ResourceManager.GetString("Distance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ErpH_dBW.
         /// </summary>
         public static string ErpH_dBW {
@@ -237,6 +291,15 @@ namespace Atdi.Icsm.Plugins.GE06Calc.Properties {
         public static string Freq_MHz {
             get {
                 return ResourceManager.GetString("Freq_MHz", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to FS.
+        /// </summary>
+        public static string FS {
+            get {
+                return ResourceManager.GetString("FS", resourceCulture);
             }
         }
         
@@ -336,6 +399,15 @@ namespace Atdi.Icsm.Plugins.GE06Calc.Properties {
         public static string PlanEntry {
             get {
                 return ResourceManager.GetString("PlanEntry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Points count.
+        /// </summary>
+        public static string PointsCount {
+            get {
+                return ResourceManager.GetString("PointsCount", resourceCulture);
             }
         }
         
@@ -444,6 +516,15 @@ namespace Atdi.Icsm.Plugins.GE06Calc.Properties {
         public static string Type {
             get {
                 return ResourceManager.GetString("Type", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type affected.
+        /// </summary>
+        public static string TypeAffected {
+            get {
+                return ResourceManager.GetString("TypeAffected", resourceCulture);
             }
         }
         

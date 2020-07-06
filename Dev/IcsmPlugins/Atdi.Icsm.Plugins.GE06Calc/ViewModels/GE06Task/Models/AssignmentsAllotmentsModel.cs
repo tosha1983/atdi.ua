@@ -19,6 +19,8 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
         public string Fragment { get; set; }
         public ActionType Action { get; set; }
         public string AdmRefId { get; set; }
+        public string StnClass { get; set; }
+        public bool? IsDigital { get; set; }
 
         // DigitalPlanEntryParameters
         public PlanEntryType PlanEntry { get; set; }

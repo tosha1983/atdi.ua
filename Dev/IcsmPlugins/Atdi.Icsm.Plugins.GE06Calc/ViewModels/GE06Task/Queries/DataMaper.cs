@@ -17,7 +17,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
         {
             _objectReader = objectReader;
         }
-        public string SelectStatementIcsmAll = "ID,ADM,IS_ALLOTM,NOTICE_TYPE,FRAGMENT,LASTK_REF,ADM_KEY,PLAN_ENTRY,ASSGN_CODE,PLAN_TRG_ADM_REF_ID,SFN_IDENT,ALLOTM_SFN_IDENT,FREQ,POLARIZATION,ERP_H,ERP_V,REF_PLAN_CFG,ADM_KEY,TVSYS_CODE,RX_MODE,SPECT_MASK,LONGITUDE,LATITUDE,SITE_ALT,SITE_NAME,ANT_DIR,AGL,EFHGT_MAX,EFHGT,ATTN_H,ATTN_V";
+        public string SelectStatementIcsmAll = "ID,ADM,IS_ALLOTM,NOTICE_TYPE,FRAGMENT,LASTK_REF,ADM_KEY,PLAN_ENTRY,ASSGN_CODE,PLAN_TRG_ADM_REF_ID,SFN_IDENT,ALLOTM_SFN_IDENT,FREQ,POLARIZATION,ERP_H,ERP_V,REF_PLAN_CFG,ADM_KEY,TVSYS_CODE,RX_MODE,SPECT_MASK,LONGITUDE,LATITUDE,SITE_ALT,SITE_NAME,ANT_DIR,AGL,EFHGT_MAX,EFHGT,ATTN_H,ATTN_V,TYP_REF_NTWK,A_NAME,ALLOT_AREA,CLASS,DIGITAL";
 
         public string SelectStatementIcsmAllotment = "ID,ADM,IS_ALLOTM,NOTICE_TYPE,FRAGMENT,LASTK_REF,ADM_KEY,PLAN_ENTRY,PLAN_TRG_ADM_REF_ID,SFN_IDENT,FREQ,POLARIZATION,REF_PLAN_CFG,SPECT_MASK,TYP_REF_NTWK,A_NAME,ALLOT_AREA";
         public void GetIcsmAllotment(AssignmentsAllotmentsModel allot, IMRecordset rs)
@@ -27,7 +27,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
             allot.Fragment = rs.GetS("FRAGMENT");
             allot.Action = StringConverter.ConvertToActionType(rs.GetS("LASTK_REF"));
             allot.AdmRefId = rs.GetS("ADM_KEY");
-            allot.PlanEntry = StringConverter.ConvertToPlanEntryType(rs.GetS("PLAN_ENTRY"));
+            allot.PlanEntry = StringConverter.ConvertToPlanEntryType(rs.GetI("PLAN_ENTRY"));
             allot.AdmAllotAssociatedId = rs.GetS("PLAN_TRG_ADM_REF_ID");
             allot.SfnId = rs.GetS("SFN_IDENT");
             allot.Freq_MHz = rs.GetD("FREQ");
@@ -38,9 +38,10 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
             allot.AllotmentName = rs.GetS("A_NAME");
             if (Int32.TryParse(rs.GetS("ALLOT_AREA").Replace(",", ""), out int ContourId))
                 allot.ContourId = ContourId;
+            allot.Сontur = _objectReader.Read<AreaPoint[]>().By(new GetIcsmAreaPointByContourId { ContourId = allot.ContourId });
         }
 
-        public string SelectStatementIcsmAssignment = "ID,ADM,IS_ALLOTM,NOTICE_TYPE,FRAGMENT,LASTK_REF,ADM_KEY,PLAN_ENTRY,ASSGN_CODE,PLAN_TRG_ADM_REF_ID,SFN_IDENT,ALLOTM_SFN_IDENT,FREQ,POLARIZATION,ERP_H,ERP_V,REF_PLAN_CFG,ADM_KEY,TVSYS_CODE,RX_MODE,SPECT_MASK,LONGITUDE,LATITUDE,SITE_ALT,SITE_NAME,ANT_DIR,AGL,EFHGT_MAX,EFHGT,ATTN_H,ATTN_V";
+        public string SelectStatementIcsmAssignment = "ID,ADM,IS_ALLOTM,NOTICE_TYPE,FRAGMENT,LASTK_REF,ADM_KEY,PLAN_ENTRY,ASSGN_CODE,PLAN_TRG_ADM_REF_ID,SFN_IDENT,ALLOTM_SFN_IDENT,FREQ,POLARIZATION,ERP_H,ERP_V,REF_PLAN_CFG,ADM_KEY,TVSYS_CODE,RX_MODE,SPECT_MASK,LONGITUDE,LATITUDE,SITE_ALT,SITE_NAME,ANT_DIR,AGL,EFHGT_MAX,EFHGT,ATTN_H,ATTN_V,CLASS,DIGITAL";
         public void GetIcsmAssignment(AssignmentsAllotmentsModel assign, IMRecordset rs)
         {
             assign.Adm = rs.GetS("ADM");
@@ -72,6 +73,8 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
             assign.DiagrV = StringConverter.ConvertToDiagrV(rs.GetS("ATTN_V"));
             assign.TargetLon_Dec = rs.GetD("LONGITUDE");
             assign.TargetLat_Dec = rs.GetD("LATITUDE");
+            assign.StnClass = rs.GetS("CLASS");
+            assign.IsDigital = rs.GetD("DIGITAL") == 1 ? true : false;
         }
 
         public string SelectStatementBrificAllotment = "terrakey,adm,notice_typ,fragment,intent,adm_ref_id,plan_entry,allot_name,sfn_id,freq_assgn,polar,ref_plan_cfg,spect_mask,typ_ref_netwk";
@@ -92,10 +95,10 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
             allot.RefNetwork = StringConverter.ConvertToRefNetworkType(rs.GetS("typ_ref_netwk"));
             allot.AllotmentName = rs.GetS("allot_name");
             allot.ContourId = _objectReader.Read<int>().By(new GeBrificCounturIdByTerrakey { terrakey = rs.GetI("terrakey") });
-            allot.Сontur = _objectReader.Read<AreaPoint[]>().By(new GetAreaPointBySubAreaKey { SubAreaKey = allot.ContourId });
+            allot.Сontur = _objectReader.Read<AreaPoint[]>().By(new GetBrificAreaPointBySubAreaKey { SubAreaKey = allot.ContourId });
         }
 
-        public string SelectStatementBrificAssignment = "terrakey,adm,notice_typ,fragment,intent,adm_ref_id,plan_entry,assgn_code,assoc_allot_id,assoc_allot_sfn_id,sfn_id,freq_assgn,polar,erp_h_dbw,erp_v_dbw,ref_plan_cfg,tran_sys,rx_mode,spect_mask,long_dec,lat_dec,site_alt,site_name,ant_dir,hgt_agl,eff_hgtmax,adm_ref_id,freq_assgn";
+        public string SelectStatementBrificAssignment = "terrakey,adm,notice_typ,fragment,intent,adm_ref_id,plan_entry,assgn_code,assoc_allot_id,assoc_allot_sfn_id,sfn_id,freq_assgn,polar,erp_h_dbw,erp_v_dbw,ref_plan_cfg,tran_sys,rx_mode,spect_mask,long_dec,lat_dec,site_alt,site_name,ant_dir,hgt_agl,eff_hgtmax,adm_ref_id,freq_assgn,stn_cls,is_digital";
         public void GetBrificAssignment(AssignmentsAllotmentsModel assign, IMRecordset rs)
         {
             assign.Adm = rs.GetS("adm");
@@ -130,6 +133,8 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
             assign.TargetFreq_MHz = rs.GetD("freq_assgn");
             assign.TargetLon_Dec = rs.GetD("long_dec");
             assign.TargetLat_Dec = rs.GetD("lat_dec");
+            assign.StnClass = rs.GetS("stn_cls");
+            assign.IsDigital = bool.Parse(rs.GetS("is_digital"));
         }
     }
 }

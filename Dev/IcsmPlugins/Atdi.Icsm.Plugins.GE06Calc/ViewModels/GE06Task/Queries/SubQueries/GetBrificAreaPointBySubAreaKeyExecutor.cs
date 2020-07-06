@@ -10,7 +10,7 @@ using Atdi.DataModels.Sdrn.DeepServices.GN06;
 
 namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
 {
-    public class GetAreaPointBySubAreaKeyExecutor : IReadQueryExecutor<GetAreaPointBySubAreaKey, AreaPoint[]>
+    public class GetAreaPointBySubAreaKeyExecutor : IReadQueryExecutor<GetBrificAreaPointBySubAreaKey, AreaPoint[]>
     {
         private readonly AppComponentConfig _config;
         private readonly CalcServerDataLayer _dataLayer;
@@ -20,7 +20,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
             _config = config;
             _dataLayer = dataLayer;
         }
-        public AreaPoint[] Read(GetAreaPointBySubAreaKey criterion)
+        public AreaPoint[] Read(GetBrificAreaPointBySubAreaKey criterion)
         {
             var values = new List<AreaPoint>();
             IMRecordset rs = new IMRecordset("ge06_sub_area_pt", IMRecordset.Mode.ReadOnly);

@@ -150,6 +150,8 @@
     <Compile Include="ViewModels\GE06Task\Queries\Brific\GetAssignmentByBrificId.cs" />
     <Compile Include="ViewModels\GE06Task\Queries\Brific\GetAllotmentByBrificId.cs" />
     <Compile Include="ViewModels\GE06Task\Queries\Brific\GetAllotmentByBrificIdExecutor.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\SubQueries\GetIcsmAreaPointByContourId.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\SubQueries\GetIcsmAreaPointByContourIdExecutor.cs" />
     <Compile Include="ViewModels\GE06Task\View.cs" />
   </ItemGroup>
   <ItemGroup>
