@@ -182,7 +182,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                         .SetValue(c => c.ContourType, (byte)contoursResult.ContourType)
                         .SetValueAsJson<CountoursPoint[]>(c => c.CountoursPoints, contoursResult.CountoursPoints)
                         .SetValue(c => c.Distance, contoursResult.Distance)
-                        .SetValue(c => c.FS, contoursResult.FS)
+                        .SetValue(c => c.FS, (int)contoursResult.FS)
                         .SetValue(c => c.PointsCount, contoursResult.PointsCount)
                         .SetValue(c => c.Gn06ResultId, gn06ResultId);
                     var keyGn06ContoursResult = _calcDbScope.Executor.Execute<CALC.IGn06ContoursResult_PK>(insertQueryGn06ContoursResult);

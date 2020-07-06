@@ -243,13 +243,14 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
 
         public void CreateContourForStationByTriggerFieldStrengths(Func<PointEarthGeometric, double> calcFieldStrengths, in ContourForStationByTriggerFieldStrengthsArgs contourForStationByTriggerFieldStrengthsArgs, ref PointEarthGeometric[] pointResult, out int sizeResultBuffer)
         {
+            double epsilon = 1.0;
             double d0_m = 500.0;
-            double step = 10.0;
+            double step = 2.0;
             double mindistance_m = 0.05;
             int index = 0;
             for (double azimuth = 0; azimuth < 360; azimuth = index * contourForStationByTriggerFieldStrengthsArgs.Step_deg)
             {
-
+                int cntIteration = 0;
                 var coordRecalc = CalculationCoordinateByLengthAndAzimuth(in contourForStationByTriggerFieldStrengthsArgs.PointEarthGeometricCalc, d0_m, azimuth);
                 var calcFieldStrength = calcFieldStrengths(coordRecalc);
                 var d1_m = d0_m;
@@ -268,12 +269,27 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
                         calcFieldStrength = calcFieldStrengths(coordRecalc);
                     }
 
-                    if ((Math.Abs(calcFieldStrength -contourForStationByTriggerFieldStrengthsArgs.TriggerFieldStrength)<0.1) || (d1_m < mindistance_m))
+                    if (d1_m == 0)
+                    {
+                        d1_m = d0_m;
+                        if (cntIteration > 10)
+                        {
+                            step = 10;
+                        }
+                    }
+
+                    if ((Math.Abs(calcFieldStrength -contourForStationByTriggerFieldStrengthsArgs.TriggerFieldStrength)< epsilon) || (d1_m < mindistance_m))
                     {
                         pointResult[index] = coordRecalc;
                         pointResult[index].CoordinateUnits = CoordinateUnits.deg;
                         break;
                     }
+                    if (cntIteration > 10)
+                    {
+                        step = 10;
+                    }
+
+                    cntIteration++;
                 }
                 index++;
             }
