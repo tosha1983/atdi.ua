@@ -65,15 +65,15 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     //{
                     //    isSuccess = false;
                     //}
-                    if (allotments.AllotmentParameters.Сontur == null)
+                    if (allotments.AllotmentParameters.Contur == null)
                     {
                         isSuccess = false;
                     }
-                    else if (allotments.AllotmentParameters.Сontur.Length < 3)
+                    else if (allotments.AllotmentParameters.Contur.Length < 3)
                     {
                         isSuccess = false;
                     }
-                    else if (!ValidationAllotmentsPoint(allotments.AllotmentParameters.Сontur))
+                    else if (!ValidationAllotmentsPoint(allotments.AllotmentParameters.Contur))
                     {
                         isSuccess = false;
                     }
