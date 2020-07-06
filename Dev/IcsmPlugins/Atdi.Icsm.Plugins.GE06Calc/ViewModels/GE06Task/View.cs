@@ -17,6 +17,8 @@ using System.Windows;
 using ICSM;
 using Atdi.DataModels.Sdrn.DeepServices.GN06;
 using Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks;
+using Atdi.WpfControls.EntityOrm.Controls;
+using Atdi.Icsm.Plugins.GE06Calc.Environment;
 
 namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
 {
@@ -44,6 +46,8 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
         public ViewCommand FindAffectedCommand { get; set; }
         public ViewCommand CreateContoursByDistanceCommand { get; set; }
         public ViewCommand CreateContoursByFSCommand { get; set; }
+
+        private MapDrawingData _currentMapData;
 
         private IEventHandlerToken<Events.OnCreatedCalcTask> _onCreatedCalcTaskToken;
         public View(
@@ -88,7 +92,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
         public IList CurrentAssignmentsAllotments
         {
             get => this._currentAssignmentsAllotments;
-            set => this.Set(ref this._currentAssignmentsAllotments, value);
+            set => this.Set(ref this._currentAssignmentsAllotments, value, () => { this.RedrawMap(); });
         }
 
         public bool ConformityCheckEnabled
@@ -111,6 +115,11 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
         {
             get => this._assignmentsAllotmentsArray;
             set => this.Set(ref this._assignmentsAllotmentsArray, value);
+        }
+        public MapDrawingData CurrentMapData
+        {
+            get => this._currentMapData;
+            set => this.Set(ref this._currentMapData, value);
         }
         private void OnChangedContext(IMQueryMenuNode.Context context)
         {
@@ -285,7 +294,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                     }
                 }
 
-                this.AssignmentsAllotmentsArray = this._assignmentsAllotmentsList.ToArray();
+                this.AssignmentsAllotmentsArray = this._assignmentsAllotmentsList.GroupBy(x => x.Id).Select(group => group.First()).ToArray();
                 UpdateEnableButoonState();
             }
         }
@@ -462,7 +471,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                         {
                             Name = item.Name,
                             ContourId = item.ContourId,
-                            Сontur = item.Сontur
+                            Contur = item.Contur
                         },
                         DigitalPlanEntryParameters = new DigitalPlanEntryParameters()
                         {
@@ -566,6 +575,40 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
             ConformityCheckEnabled = (isHaveIcsmObject && isHaveBrificObject);
             FindAffectedEnabled = isHaveIcsmObject;
         }
+        private void RedrawMap()
+        {
+            var data = new MapDrawingData();
+            var polygons = new List<MapDrawingDataPolygon>();
+            var points = new List<MapDrawingDataPoint>();
+
+            if (this._currentAssignmentsAllotments != null)
+            {
+                foreach (AssignmentsAllotmentsModel item in this._currentAssignmentsAllotments)
+                {
+                    if (item.Type == AssignmentsAllotmentsModelType.Assignment)
+                    {
+                        points.Add(MapsDrawingHelper.MakeDrawingPointForStation(item.Lon_Dec, item.Lat_Dec));
+                    }
+                    if (item.Type == AssignmentsAllotmentsModelType.Allotment)
+                    {
+                        var polygonPoints = new List<Location>();
+
+                        item.Contur.ToList().ForEach(areaPoint =>
+                        {
+                            polygonPoints.Add(new Location() { Lat = areaPoint.Lat_DEC, Lon = areaPoint.Lon_DEC });
+                        });
+
+                        polygons.Add(new MapDrawingDataPolygon() { Points = polygonPoints.ToArray(), Color = System.Windows.Media.Colors.Red, Fill = System.Windows.Media.Colors.Red });
+                    }
+                }
+            }
+                
+            data.Polygons = polygons.ToArray();
+            data.Points = points.ToArray();
+
+            this.CurrentMapData = data;
+        }
+
         public override void Dispose()
         {
             _onCreatedCalcTaskToken?.Dispose();

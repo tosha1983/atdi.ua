@@ -22,6 +22,8 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
         public string SelectStatementIcsmAllotment = "ID,ADM,IS_ALLOTM,NOTICE_TYPE,FRAGMENT,LASTK_REF,ADM_KEY,PLAN_ENTRY,PLAN_TRG_ADM_REF_ID,SFN_IDENT,FREQ,POLARIZATION,REF_PLAN_CFG,SPECT_MASK,TYP_REF_NTWK,A_NAME,ALLOT_AREA";
         public void GetIcsmAllotment(AssignmentsAllotmentsModel allot, IMRecordset rs)
         {
+            allot.Id = "I" + rs.GetI("ID").ToString();
+            allot.ViewName = rs.GetS("A_NAME");
             allot.Adm = rs.GetS("ADM");
             allot.NoticeType = rs.GetS("NOTICE_TYPE");
             allot.Fragment = rs.GetS("FRAGMENT");
@@ -38,12 +40,14 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
             allot.AllotmentName = rs.GetS("A_NAME");
             if (Int32.TryParse(rs.GetS("ALLOT_AREA").Replace(",", ""), out int ContourId))
                 allot.ContourId = ContourId;
-            allot.Сontur = _objectReader.Read<AreaPoint[]>().By(new GetIcsmAreaPointByContourId { ContourId = allot.ContourId });
+            allot.Contur = _objectReader.Read<AreaPoint[]>().By(new GetIcsmAreaPointByContourId { ContourId = allot.ContourId });
         }
 
         public string SelectStatementIcsmAssignment = "ID,ADM,IS_ALLOTM,NOTICE_TYPE,FRAGMENT,LASTK_REF,ADM_KEY,PLAN_ENTRY,ASSGN_CODE,PLAN_TRG_ADM_REF_ID,SFN_IDENT,ALLOTM_SFN_IDENT,FREQ,POLARIZATION,ERP_H,ERP_V,REF_PLAN_CFG,ADM_KEY,TVSYS_CODE,RX_MODE,SPECT_MASK,LONGITUDE,LATITUDE,SITE_ALT,SITE_NAME,ANT_DIR,AGL,EFHGT_MAX,EFHGT,ATTN_H,ATTN_V,CLASS,DIGITAL";
         public void GetIcsmAssignment(AssignmentsAllotmentsModel assign, IMRecordset rs)
         {
+            assign.Id = "I" + rs.GetI("ID").ToString();
+            assign.ViewName = rs.GetS("SITE_NAME");
             assign.Adm = rs.GetS("ADM");
             assign.NoticeType = rs.GetS("NOTICE_TYPE");
             assign.Fragment = rs.GetS("FRAGMENT");
@@ -80,6 +84,8 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
         public string SelectStatementBrificAllotment = "terrakey,adm,notice_typ,fragment,intent,adm_ref_id,plan_entry,allot_name,sfn_id,freq_assgn,polar,ref_plan_cfg,spect_mask,typ_ref_netwk";
         public void GetBrificAllotment(AssignmentsAllotmentsModel allot, IMRecordset rs)
         {
+            allot.Id = "B" + rs.GetI("terrakey").ToString();
+            allot.ViewName = rs.GetS("allot_name");
             allot.Adm = rs.GetS("adm");
             allot.NoticeType = rs.GetS("notice_typ");
             allot.Fragment = rs.GetS("fragment");
@@ -95,12 +101,14 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
             allot.RefNetwork = StringConverter.ConvertToRefNetworkType(rs.GetS("typ_ref_netwk"));
             allot.AllotmentName = rs.GetS("allot_name");
             allot.ContourId = _objectReader.Read<int>().By(new GetBrificCounturIdByTerrakey { terrakey = rs.GetI("terrakey") });
-            allot.Сontur = _objectReader.Read<AreaPoint[]>().By(new GetBrificAreaPointBySubAreaKey { SubAreaKey = _objectReader.Read<int>().By(new GetBrificSubAreaKeyByTerrakey { terrakey = rs.GetI("terrakey") }) });
+            allot.Contur = _objectReader.Read<AreaPoint[]>().By(new GetBrificAreaPointBySubAreaKey { SubAreaKey = _objectReader.Read<int>().By(new GetBrificSubAreaKeyByTerrakey { terrakey = rs.GetI("terrakey") }) });
         }
 
         public string SelectStatementBrificAssignment = "terrakey,adm,notice_typ,fragment,intent,adm_ref_id,plan_entry,assgn_code,assoc_allot_id,assoc_allot_sfn_id,sfn_id,freq_assgn,polar,erp_h_dbw,erp_v_dbw,ref_plan_cfg,tran_sys,rx_mode,spect_mask,long_dec,lat_dec,site_alt,site_name,ant_dir,hgt_agl,eff_hgtmax,adm_ref_id,freq_assgn,stn_cls,is_digital";
         public void GetBrificAssignment(AssignmentsAllotmentsModel assign, IMRecordset rs)
         {
+            assign.Id = "B" + rs.GetI("terrakey").ToString();
+            assign.ViewName = rs.GetS("site_name");
             assign.Adm = rs.GetS("adm");
             assign.NoticeType = rs.GetS("notice_typ");
             assign.Fragment = rs.GetS("fragment");
