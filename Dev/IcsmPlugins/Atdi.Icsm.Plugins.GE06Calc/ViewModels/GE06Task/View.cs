@@ -170,6 +170,16 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                                 this._assignmentsAllotmentsList.AddRange(assignIcsm);
                             }
                         }
+
+                        if (!string.IsNullOrEmpty(assign.SfnId))
+                        {
+                            var assignBrific = _objectReader.Read<List<AssignmentsAllotmentsModel>>().By(new GetBrificAssigmentsBySfnId { SfnId = assign.SfnId });
+                            if (assignBrific != null)
+                            {
+                                this._assignmentsAllotmentsList.AddRange(assignBrific);
+                            }
+
+                        }
                     }
                 }
 
@@ -205,6 +215,15 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                                             this._assignmentsAllotmentsList.AddRange(assignBrific);
                                         }
                                     }
+                                }
+                            }
+
+                            if (!string.IsNullOrEmpty(allotAssign.SfnId))
+                            {
+                                var assignIcsm = _objectReader.Read<List<AssignmentsAllotmentsModel>>().By(new GetIcsmAssigmentsBySfnId { SfnId = allotAssign.SfnId });
+                                if (assignIcsm != null)
+                                {
+                                    this._assignmentsAllotmentsList.AddRange(assignIcsm);
                                 }
                             }
 
