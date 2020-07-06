@@ -15,6 +15,8 @@ using ES = Atdi.DataModels.Sdrn.Infocenter.Entities;
 using Atdi.Platform.Logging;
 using Atdi.Platform.Workflows;
 using Newtonsoft.Json;
+using Atdi.DataModels.Sdrn.DeepServices.Gis.Maps;
+using JSN = Atdi.DataModels.Sdrn.DeepServices.Gis.Maps.Json;
 
 namespace Atdi.AppUnits.Sdrn.Infocenter
 {
@@ -54,7 +56,10 @@ namespace Atdi.AppUnits.Sdrn.Infocenter
 
 			// находим файлы
 			var fileNames = Directory.EnumerateFiles(folderName, "*.*", SearchOption.TopDirectoryOnly)
-				.Where(s => s.EndsWith(".geo") || s.EndsWith(".blg") || s.EndsWith(".sol")).ToArray();
+				.Where(s => s.EndsWith(".geo", StringComparison.OrdinalIgnoreCase) 
+			             || s.EndsWith(".blg", StringComparison.OrdinalIgnoreCase) 
+			             || s.EndsWith(".sol", StringComparison.OrdinalIgnoreCase)
+			             ).ToArray();
 			//Directory.GetFiles(folderName, "*.geo,*.blg,*.sol", SearchOption.TopDirectoryOnly);
 
 			if (fileNames != null && fileNames.Length > 0)
@@ -134,7 +139,7 @@ namespace Atdi.AppUnits.Sdrn.Infocenter
 		{
 			try
 			{
-				var cluttersDesc = JsonConvert.DeserializeObject<CluttersDesc>(File.ReadAllText(path));
+				var cluttersDesc = JsonConvert.DeserializeObject<JSN.CluttersDesc>(File.ReadAllText(path));
 
 				var descQuery = _dataLayer.GetBuilder<ES.ICluttersDesc>()
 					.Insert()
@@ -418,7 +423,8 @@ namespace Atdi.AppUnits.Sdrn.Infocenter
 						upperleftY -= ySectorSteps[ySegmentIndex] * mapFile.AxisY.Step;
 
 						// смещаемся в буфере
-						yFileOffset += (ySegmentIndex + 1) * mapFile.AxisX.Number * mapFile.StepDataSize * ySectorSteps[ySegmentIndex];
+						//yFileOffset += (ySegmentIndex + 1) * mapFile.AxisX.Number * mapFile.StepDataSize * ySectorSteps[ySegmentIndex];
+						yFileOffset +=  mapFile.AxisX.Number * mapFile.StepDataSize * ySectorSteps[ySegmentIndex];
 					}
 
 					this.SaveMapStatisticsAndMakeAvailable(dbScope, mapPk.Id, xSectorCount, ySectorCount);
@@ -530,18 +536,82 @@ namespace Atdi.AppUnits.Sdrn.Infocenter
 
 			const uint CoordinatesSize = 15;
 
+			// required properties
 			map.Coordinates.UpperLeft.X = DecodeInt(body, CoordinatesUpperLeftXOffset, CoordinatesSize);
 			map.Coordinates.UpperLeft.Y = DecodeInt(body, CoordinatesUpperLeftYOffset, CoordinatesSize);
-			map.Coordinates.UpperRight.X = DecodeInt(body, CoordinatesUpperRightXOffset, CoordinatesSize);
-			map.Coordinates.UpperRight.Y = DecodeInt(body, CoordinatesUpperRightYOffset, CoordinatesSize);
-
-			map.Coordinates.LowerLeft.X = DecodeInt(body, CoordinatesLowerLeftXOffset, CoordinatesSize);
-			map.Coordinates.LowerLeft.Y = DecodeInt(body, CoordinatesLowerLeftYOffset, CoordinatesSize);
-			map.Coordinates.LowerRight.X = DecodeInt(body, CoordinatesLowerRightXOffset, CoordinatesSize);
-			map.Coordinates.LowerRight.Y = DecodeInt(body, CoordinatesLowerRightYOffset, CoordinatesSize);
 
 			map.AxisX.Step = DecodeInt(body, 280, 10);
 			map.AxisY.Step = DecodeInt(body, 290, 10);
+
+			map.AxisX.Number = DecodeInt(body, 320, 10);
+			map.AxisY.Number = DecodeInt(body, 330, 10);
+
+			map.Projection = DecodeProjectionString(body, 340, 8);
+
+			// not required properties
+
+			// UpperRight
+			var notRequiredIntValue = DecodeIntAsNotRequired(body, CoordinatesUpperRightXOffset, CoordinatesSize);
+			if (notRequiredIntValue.HasValue)
+			{
+				map.Coordinates.UpperRight.X = notRequiredIntValue.Value;
+			}
+			else
+			{
+				map.Coordinates.UpperRight.X = map.Coordinates.UpperLeft.X + map.AxisX.Step * map.AxisX.Number;
+			}
+			notRequiredIntValue = DecodeIntAsNotRequired(body, CoordinatesUpperRightYOffset, CoordinatesSize);
+			if (notRequiredIntValue.HasValue)
+			{
+				map.Coordinates.UpperRight.Y = notRequiredIntValue.Value;
+			}
+			else
+			{
+				map.Coordinates.UpperRight.Y = map.Coordinates.UpperLeft.Y;
+			}
+
+			// LowerLeft
+			notRequiredIntValue = DecodeIntAsNotRequired(body, CoordinatesLowerLeftXOffset, CoordinatesSize);
+			if (notRequiredIntValue.HasValue)
+			{
+				map.Coordinates.LowerLeft.X = notRequiredIntValue.Value;
+			}
+			else
+			{
+				map.Coordinates.LowerLeft.X = map.Coordinates.UpperLeft.X;
+			}
+			notRequiredIntValue = DecodeIntAsNotRequired(body, CoordinatesLowerLeftYOffset, CoordinatesSize);
+			if (notRequiredIntValue.HasValue)
+			{
+				map.Coordinates.LowerLeft.Y = notRequiredIntValue.Value;
+			}
+			else
+			{
+				map.Coordinates.LowerLeft.Y = map.Coordinates.UpperLeft.Y - map.AxisY.Step * map.AxisY.Number;
+			}
+
+			// LowerRight
+			notRequiredIntValue = DecodeIntAsNotRequired(body, CoordinatesLowerRightXOffset, CoordinatesSize);
+			if (notRequiredIntValue.HasValue)
+			{
+				map.Coordinates.LowerRight.X = notRequiredIntValue.Value;
+			}
+			else
+			{
+				map.Coordinates.LowerRight.X = map.Coordinates.UpperRight.X;
+			}
+			notRequiredIntValue = DecodeIntAsNotRequired(body, CoordinatesLowerRightYOffset, CoordinatesSize);
+			if (notRequiredIntValue.HasValue)
+			{
+				map.Coordinates.LowerRight.Y = notRequiredIntValue.Value;
+			}
+			else
+			{
+				map.Coordinates.LowerRight.Y = map.Coordinates.LowerLeft.Y;
+			}
+				
+
+			
 
 			map.StepUnit = DecodeString(body, 300, 1);
 			// без указания единици измерения карты считаем ее "в метрах"
@@ -550,10 +620,7 @@ namespace Atdi.AppUnits.Sdrn.Infocenter
 				map.StepUnit = "M";
 			}
 
-			map.AxisX.Number = DecodeInt(body, 320, 10);
-			map.AxisY.Number = DecodeInt(body, 330, 10);
-
-			map.Projection = DecodeString(body, 340, 6);
+			
 			map.Info = DecodeString(body, 0, 160);
 			//map.Min = DecodeInt(body, 380, 10);
 			//map.Max = DecodeInt(body, 390, 10);
@@ -671,11 +738,45 @@ namespace Atdi.AppUnits.Sdrn.Infocenter
             }
         }
 
-        private static string DecodeString(byte[] source, uint offset, uint size)
+        private static int? DecodeIntAsNotRequired(byte[] source, uint offset, uint size)
+        {
+	        var statement = Encoding.ASCII.GetString(source, (int)offset, (int)size).Replace("\0", "").Replace(".", CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator);
+	        try
+	        {
+		        if (string.IsNullOrEmpty(statement))
+		        {
+			        return null;
+		        }
+		        return Convert.ToInt32((decimal.Parse(statement)));
+	        }
+	        catch (Exception e)
+	        {
+		        throw new InvalidOperationException($"Cannot decode source as int: '{statement}', NumberDecimalSeparator='{CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator}'", e);
+	        }
+        }
+
+		private static string DecodeString(byte[] source, uint offset, uint size)
 		{
 			var statement = Encoding.ASCII.GetString(source, (int)offset, (int)size).Replace("\0", "");
 			return statement;
 		}
+
+		private static string DecodeProjectionString(byte[] source, uint offset, uint size)
+		{
+			var statement = Encoding.ASCII.GetString(source, (int)offset, (int)size); //.Replace("\0", "");
+			var result = new StringBuilder();
+			foreach (var c in statement)
+			{
+				if (c == '\0')
+				{
+					return result.ToString();
+				}
+
+				result.Append(c);
+			}
+			return result.ToString();
+		}
+
 		private static Type DefineMapStepDataType(AtdiMapType mapType)
 		{
 			if (mapType == AtdiMapType.Clutter || mapType == AtdiMapType.Building)

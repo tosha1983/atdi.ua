@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.DataModels.Sdrn.Infocenter
+namespace Atdi.DataModels.Sdrn.DeepServices.Gis.Maps.Json
 {
 	public class CluttersDescFreqClutter
 	{

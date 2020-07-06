@@ -71,5 +71,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 		[ComponentConfigProperty("Threshold.MaxSteps")]
 		public int? ThresholdMaxSteps { get; set; }
 
+		[ComponentConfigProperty("Maps.LocalStorage.Folder")]
+		public string MapsLocalStorageFolder { get; set; }
 	}
 }

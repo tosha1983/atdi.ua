@@ -49,6 +49,11 @@
     <Compile Include="AtdiMapArea.cs" />
     <Compile Include="MapService\CalcProfileIndexersArgs.cs" />
     <Compile Include="MapService\CalcProfileIndexersResult.cs" />
+    <Compile Include="Maps\Json\CluttersDesc.cs" />
+    <Compile Include="Maps\Json\CluttersDescClutter.cs" />
+    <Compile Include="Maps\Json\CluttersDescFreq.cs" />
+    <Compile Include="Maps\Json\CluttersDescFreqClutter.cs" />
+    <Compile Include="Maps\MapMetadata.cs" />
     <Compile Include="ProfileIndexer.cs" />
     <Compile Include="Wgs84Site.cs" />
     <Compile Include="Wgs84Coordinate.cs" />

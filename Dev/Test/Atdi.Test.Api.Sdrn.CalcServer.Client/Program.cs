@@ -92,14 +92,24 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client
 			//Console.ReadLine();
 
 			//var mapFile = LoadProjectMapContent(2);
-			var sector1 = MapService.LoadMapSectorContent(27);
-			var sector2 = MapService.LoadMapSectorContent(28);
-			var sector3 = MapService.LoadMapSectorContent(29);
-			var sector4 = MapService.LoadMapSectorContent(30);
+			var sector1 = MapService.LoadMapSectorContent(43);
+			var sector2 = MapService.LoadMapSectorContent(44);
+			var sector3 = MapService.LoadMapSectorContent(45);
+			var sector4 = MapService.LoadMapSectorContent(46);
+			var sector5 = MapService.LoadMapSectorContent(47);
+			var sector6 = MapService.LoadMapSectorContent(48);
+			var sector7 = MapService.LoadMapSectorContent(49);
+			var sector8 = MapService.LoadMapSectorContent(50);
+			var sector9 = MapService.LoadMapSectorContent(51);
 			MapMaker.Make(sector1, @"C:\Temp\Maps\Out", true );
 			MapMaker.Make(sector2, @"C:\Temp\Maps\Out", true);
 			MapMaker.Make(sector3, @"C:\Temp\Maps\Out", true);
 			MapMaker.Make(sector4, @"C:\Temp\Maps\Out", true);
+			MapMaker.Make(sector5, @"C:\Temp\Maps\Out", true);
+			MapMaker.Make(sector6, @"C:\Temp\Maps\Out", true);
+			MapMaker.Make(sector7, @"C:\Temp\Maps\Out", true);
+			MapMaker.Make(sector8, @"C:\Temp\Maps\Out", true);
+			MapMaker.Make(sector9, @"C:\Temp\Maps\Out", true);
 
 			Console.ReadLine();
 		}
