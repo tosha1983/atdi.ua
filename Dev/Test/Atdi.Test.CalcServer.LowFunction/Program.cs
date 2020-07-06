@@ -26,17 +26,23 @@ namespace Atdi.Test.CalcServer.LowFunction
             //var TestDistance = new TestDistance();
             //TestDistance.Test1();
 
-            var TestGE06 = new TestGE06();
-            TestGE06.Test();
 
-           
+            //TestGE06GetBoundaryPointsFromAllotments.Test();
+
+            //TestGE06EstimationAssignmentsPointsForEtalonNetwork.Test();
+
+            //TestGE06GetEtalonBroadcastingAssignmentFromAllotment.Test();
+
+            //TestGE06GetEtalonBroadcastingAssignmentFromAllotment.Test();
+
+
             //CalcBarycenter testBaryCentr = new CalcBarycenter();
             //testBaryCentr.Test();
 
             //PutPointToContour putPointToContour = new PutPointToContour();
             //putPointToContour.Test();
 
-            //CreateContourFromPointByDistance createContourFromPointByDistance = new CreateContourFromPointByDistance();
+            ///CreateContourFromPointByDistance createContourFromPointByDistance = new CreateContourFromPointByDistance();
             //createContourFromPointByDistance.Test();
 
             //CreateContourForStationByTriggerFieldStrengths createContourForStationByTriggerFieldStrengths = new CreateContourForStationByTriggerFieldStrengths();
@@ -55,7 +61,14 @@ namespace Atdi.Test.CalcServer.LowFunction
 
             //GetADMByPointAndDistanse GetADMByPointAndDistanse = new GetADMByPointAndDistanse();
             //GetADMByPointAndDistanse.Test();
-           
+
+            //InterseptionOnSphere.Test();
+            //CrossTreckOnSphere.Test();
+
+
+
+            TestBarycenterGE06.Test();
+
         }
     }
 }

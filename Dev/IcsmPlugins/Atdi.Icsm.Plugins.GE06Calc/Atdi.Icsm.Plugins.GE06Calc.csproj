@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,6 +30,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="NetPlugins">
@@ -59,14 +61,23 @@
     <Compile Include="AppComponentConfig.cs" />
     <Compile Include="DataLayers\CalcServerDataLayer.cs" />
     <Compile Include="DataLayers\InfocenterDataLayer.cs" />
+    <Compile Include="Environment\MapsDrawingHelper.cs" />
+    <Compile Include="Metadata\FMTV_Assign.cs" />
+    <Compile Include="Metadata\FMTV_terra.cs" />
+    <Compile Include="Metadata\GE06_allot_terra.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="PluginMenuCommands.cs" />
     <Compile Include="PluginMetadata.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Resource.Designer.cs">
+    <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Resource.resx</DependentUpon>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\GE06Settings\Adapters\BaseClientContextDataAdapter.cs" />
     <Compile Include="ViewModels\GE06Settings\Adapters\CalcTaskDataAdapter.cs" />
@@ -86,7 +97,65 @@
     <Compile Include="ViewModels\GE06Settings\Modifiers\EditClientContextHandler.cs" />
     <Compile Include="ViewModels\GE06Settings\Queries\GetClientContextById.cs" />
     <Compile Include="ViewModels\GE06Settings\Queries\GetClientContextByIdExecutor.cs" />
+    <Compile Include="ViewModels\GE06Settings\Queries\GetResultIdByTaskId.cs" />
+    <Compile Include="ViewModels\GE06Settings\Queries\GetResultIdByTaskIdExecutor.cs" />
     <Compile Include="ViewModels\GE06Settings\View.cs" />
+    <Compile Include="ViewModels\GE06TaskResult\Adapters\AffectedADMDataAdapter.cs" />
+    <Compile Include="ViewModels\GE06TaskResult\Adapters\AllotmentOrAssignmentDataAdapter.cs" />
+    <Compile Include="ViewModels\GE06TaskResult\Adapters\ContourDataAdapter.cs" />
+    <Compile Include="ViewModels\GE06TaskResult\Models\AffectedADMModel.cs" />
+    <Compile Include="ViewModels\GE06TaskResult\Models\AllotmentOrAssignmentModel.cs" />
+    <Compile Include="ViewModels\GE06TaskResult\Models\ContourModel.cs" />
+    <Compile Include="ViewModels\GE06TaskResult\View.cs" />
+    <Compile Include="ViewModels\GE06Task\Events\OnCreatedCalcTask.cs" />
+    <Compile Include="ViewModels\GE06Task\Events\OnDeletedCalcTask.cs" />
+    <Compile Include="ViewModels\GE06Task\Events\OnRunCalcTask.cs" />
+    <Compile Include="ViewModels\GE06Task\Models\AssignmentsAllotmentsModel.cs" />
+    <Compile Include="ViewModels\GE06Task\Models\CalcTaskModel.cs" />
+    <Compile Include="ViewModels\GE06Task\Models\ProjectMapsModel.cs" />
+    <Compile Include="ViewModels\GE06Task\Modifiers\CreateCalcTask.cs" />
+    <Compile Include="ViewModels\GE06Task\Modifiers\CreateCalcTaskHandler.cs" />
+    <Compile Include="ViewModels\GE06Task\Modifiers\DeleteCalcTask.cs" />
+    <Compile Include="ViewModels\GE06Task\Modifiers\DeleteCalcTaskHandler.cs" />
+    <Compile Include="ViewModels\GE06Task\Modifiers\RunCalcTask.cs" />
+    <Compile Include="ViewModels\GE06Task\Modifiers\RunCalcTaskHandler.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\Brific\GetBrificAllotmentsByAdmRefId.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\Brific\GetBrificAllotmentsByAdmRefIdExecutor.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\Brific\GetBrificAssigmentsByAdmAllotId.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\Brific\GetBrificAssigmentsByAdmAllotIdExecutor.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\Brific\GetBrificAssigmentsBySfnId.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\Brific\GetBrificAssigmentsBySfnIdExecutor.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\Brific\GetBrificAssigmentsByTarget.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\Brific\GetBrificAssigmentsByTargetExecutor.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\DataMaper.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\SubQueries\GetBrificAreaPointBySubAreaKey.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\SubQueries\GetBrificAreaPointBySubAreaKeyExecutor.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\SubQueries\GetBrificCounturIdByTerrakey.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\SubQueries\GetBrificCounturIdByTerrakeyExecutor.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\SubQueries\GetBrificDiagrByTerrakey.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\SubQueries\GetBrificDiagrByTerrakeyExecutor.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\SubQueries\GetBrificEfhgtByTerrakey.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\SubQueries\GetBrificEfhgtByTerrakeyExecutor.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\Icsm\GetIcsmAllotmentsByAdmRefId.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\Icsm\GetIcsmAllotmentsByAdmRefIdExecutor.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\Icsm\GetIcsmAssigmentsByAdmAllotId.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\Icsm\GetIcsmAssigmentsByAdmAllotIdExecutor.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\Icsm\GetIcsmAssigmentsBySfnId.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\Icsm\GetIcsmAssigmentsBySfnIdExecutor.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\SubQueries\GetProjectMapByClientContextId.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\SubQueries\GetProjectMapByClientContextIdExecutor.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\StringConverter.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\Icsm\GetAssignmentAllotmentByIcsmId.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\Icsm\GetAssignmentAllotmentByIcsmIdExecutor.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\Brific\GetAssignmentByBrificIdExecutor.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\Brific\GetAssignmentByBrificId.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\Brific\GetAllotmentByBrificId.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\Brific\GetAllotmentByBrificIdExecutor.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\SubQueries\GetBrificSubAreaKeyByTerrakey.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\SubQueries\GetBrificSubAreaKeyByTerrakeyExecutor.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\SubQueries\GetIcsmAreaPointByContourId.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\SubQueries\GetIcsmAreaPointByContourIdExecutor.cs" />
+    <Compile Include="ViewModels\GE06Task\View.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Api\Atdi.Api.EntityOrm.WebClient\Atdi.Api.EntityOrm.WebClient.csproj">
@@ -104,6 +173,10 @@
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.CalcServer.Entities\Atdi.DataModels.Sdrn.CalcServer.Entities.csproj">
       <Project>{6a72e0c5-f8a4-412f-9395-13abe07367b1}</Project>
       <Name>Atdi.DataModels.Sdrn.CalcServer.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices.GN06\Atdi.DataModels.Sdrn.DeepServices.GN06.csproj">
+      <Project>{ee65799e-0a0a-4599-8f5e-30eb23304d49}</Project>
+      <Name>Atdi.DataModels.Sdrn.DeepServices.GN06</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.Infocenter.Entities\Atdi.DataModels.Sdrn.Infocenter.Entities.csproj">
       <Project>{b793c198-41c4-4e9e-9e18-479a8a51b0b0}</Project>
@@ -135,15 +208,26 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="ViewModels\GE06TaskResult\Events\" />
+    <Folder Include="ViewModels\GE06TaskResult\Modifiers\" />
+    <Folder Include="ViewModels\GE06TaskResult\Queries\" />
+    <Folder Include="ViewModels\GE06Task\Adapters\" />
     <Folder Include="Xaml\" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Properties\Resource.resx">
+    <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.ru-RU.resx" />
     <EmbeddedResource Include="Properties\Resources.uk-UA.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>PublicSettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

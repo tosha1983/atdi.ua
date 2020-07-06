@@ -30,6 +30,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -43,8 +44,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IGn06Service.cs" />
-    <Compile Include="Models\Points.cs" />
-    <Compile Include="Models\ContextStation.cs" />
+    <Compile Include="Models\Args\BroadcastingCalcBarycenterGE06.cs" />
+    <Compile Include="Models\Args\EstimationAssignmentsPointsArgs.cs" />
+    <Compile Include="Models\Args\BroadcastingAllotmentWithStep.cs" />
+    <Compile Include="Models\Results\PointWithAzimuthResult.cs" />
+    <Compile Include="Models\Results\Points.cs" />
+    <Compile Include="Models\Args\ContextStation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -73,5 +78,6 @@
       <Name>Atdi.Contracts.Sdrn.DeepServices</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

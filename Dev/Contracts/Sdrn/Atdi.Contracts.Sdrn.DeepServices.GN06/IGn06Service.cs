@@ -11,12 +11,14 @@ namespace Atdi.Contracts.Sdrn.DeepServices.GN06
 {
 	public interface IGn06Service
 	{
-        void EstimationAssignmentsPointsForEtalonNetwork(in BroadcastingAllotment  broadcastingAllotment, in AreaPoint pointAllotment, in AreaPoint pointCalcFieldStrength, ref PointWithAzimuth[] pointResult, out int sizeResultBuffer);
+        void EstimationAssignmentsPointsForEtalonNetwork(in EstimationAssignmentsPointsArgs estimationAssignmentsPointsArgs, ref PointsWithAzimuthResult pointWithAzimuthResult);
 
-        void GetEtalonBroadcastingAssignmentFromAllotment(BroadcastingAllotment inputBroadcastingAllotment, BroadcastingAssignment outputBroadcastingAssignment);
+        void GetEtalonBroadcastingAssignmentFromAllotment(BroadcastingAllotment broadcastingAllotmentArgs, BroadcastingAssignment broadcastingAssignmentResult);
 
-        void GetStationFromBroadcastingAssignment(BroadcastingAssignment inputBroadcastingAssignment, ref ContextStation outputContextStation);
+        void GetStationFromBroadcastingAssignment(BroadcastingAssignment broadcastingAssignmentArgs, ref ContextStation contextStationResult);
 
-        void GetBoundaryPointsFromAllotments(BroadcastingAllotment broadcastingAllotment, ref Points pointsResult);
+        void GetBoundaryPointsFromAllotments(in BroadcastingAllotmentWithStep broadcastingAllotmentWithStepArgs, ref Points pointsResult);
+
+        void CalcBarycenterGE06(in BroadcastingCalcBarycenterGE06  broadcastingCalcBarycenterGE06, ref PointEarthGeometric coordBaryCenter);
     }
 }

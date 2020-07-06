@@ -34,6 +34,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Windows" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -45,6 +46,7 @@
   <ItemGroup>
     <Compile Include="AppServerComponent.cs" />
     <Compile Include="EarthGeometricService.cs" />
+    <Compile Include="GeometricСalculations\CreateContourFromContureByDistanceСalculations.cs" />
     <Compile Include="GeometricСalculations\GeometricСalculations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Specification.cs" />

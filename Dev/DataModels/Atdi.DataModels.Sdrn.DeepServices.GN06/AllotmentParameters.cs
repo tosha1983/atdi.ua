@@ -20,6 +20,6 @@ namespace Atdi.DataModels.Sdrn.DeepServices.GN06
         /// <summary>
         /// Контур с точками
         /// </summary>
-        public AreaPoint[] Сontur;//M
+        public AreaPoint[] Contur;//M
 	}
 }

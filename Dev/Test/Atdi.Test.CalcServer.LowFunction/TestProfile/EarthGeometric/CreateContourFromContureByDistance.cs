@@ -19,6 +19,8 @@ using Atdi.Contracts.Sdrn.DeepServices.GN06;
 using GE = Atdi.DataModels.Sdrn.DeepServices.GN06;
 using WPF = Atdi.Test.DeepServices.Client.WPF;
 using System;
+using System.Collections.Generic;
+using Atdi.Common;
 
 namespace Atdi.Test.CalcServer.LowFunction
 {
@@ -30,6 +32,8 @@ namespace Atdi.Test.CalcServer.LowFunction
             {
                 try
                 {
+                    double dist1 = 50;
+                    double dist2 = 300;
                     host.Start();
                     host.Container.Register<IIdwmService, IdwmService>(ServiceLifetime.PerThread);
                     host.Container.Register<ITransformation, TransformationService>(ServiceLifetime.PerThread);
@@ -38,94 +42,58 @@ namespace Atdi.Test.CalcServer.LowFunction
                     var earthGeometricServiceServices = resolver.Resolve<IEarthGeometricService>();
 
 
-                    var arrPnts = new PointEarthGeometric[9]
+                    string fileName = System.IO.Path.Combine(Environment.CurrentDirectory, "AreaTest.txt");
+
+                    List<PointEarthGeometric> pointEarthGeometricslst = new List<PointEarthGeometric>();
+                    var str = System.IO.File.ReadAllText(fileName);
+                    string[] a = str.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+                    for (int i = 0; i < a.Length; i++)
+                    {
+                        string[] aa = a[i].Split(new char[] { '\t' }, StringSplitOptions.RemoveEmptyEntries);
+                        if ((aa != null) && (aa.Length > 0))
                         {
-                                              new PointEarthGeometric()
-                                              {
-                                                 Longitude = 30,
-                                                 Latitude = 50,
-                                                 CoordinateUnits = CoordinateUnits.deg
+                            for (int j = 0; j < aa.Length; j++)
+                            {
+                                pointEarthGeometricslst.Add(new PointEarthGeometric()
+                                {
+                                    Longitude = Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.AntennaPattern.Position.DmsToDec(aa[0].ConvertStringToDouble().Value),
+                                    Latitude = Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.AntennaPattern.Position.DmsToDec(aa[1].ConvertStringToDouble().Value),
+                                    CoordinateUnits = CoordinateUnits.deg
+                                });
+                                break;
+                            }
+                        }
+                    }
 
-                                              },
-                                              new PointEarthGeometric()
-                                              {
-                                                 Longitude = 30,
-                                                 Latitude = 50.001,
-                                                 CoordinateUnits = CoordinateUnits.deg
+                    var arrPnts = pointEarthGeometricslst.ToArray();
 
-                                              },
-                                              new PointEarthGeometric()
-                                              {
-                                                 Longitude = 30,
-                                                 Latitude = 50.003,
-                                                 CoordinateUnits = CoordinateUnits.deg
-
-                                              },
-                                              new PointEarthGeometric()
-                                              {
-                                                 Longitude = 30,
-                                                 Latitude = 51
-                                                 ,
-                                                 CoordinateUnits = CoordinateUnits.deg
-                                              },
-                                              new PointEarthGeometric()
-                                              {
-                                                 Longitude = 31,
-                                                 Latitude = 51
-                                                 ,
-                                                 CoordinateUnits = CoordinateUnits.deg
-                                              },
-
-                                              new PointEarthGeometric()
-                                              {
-                                                 Longitude = 30.6,
-                                                 Latitude = 50.6
-                                                 ,
-                                                 CoordinateUnits = CoordinateUnits.deg
-                                              },
-
-                                              new PointEarthGeometric()
-                                              {
-                                                 Longitude = 30.6,
-                                                 Latitude = 50.4
-                                                 ,
-                                                 CoordinateUnits = CoordinateUnits.deg
-                                              },
-
-                                              new PointEarthGeometric()
-                                              {
-                                                 Longitude = 30.7,
-                                                 Latitude = 50.1
-                                                 ,
-                                                 CoordinateUnits = CoordinateUnits.deg
-                                              },
-
-                                              new PointEarthGeometric()
-                                              {
-                                                 Longitude = 31,
-                                                 Latitude = 50
-                                                 ,
-                                                 CoordinateUnits = CoordinateUnits.deg
-                                              }
-                        };
                     PointEarthGeometric pointEarthGeometricR = new PointEarthGeometric();
                     earthGeometricServiceServices.CalcBarycenter(new GeometryArgs() { Points = arrPnts, TypeGeometryObject = TypeGeometryObject.Points }, ref pointEarthGeometricR);
                     var arg = new ContourFromContureByDistanceArgs()
                     {
                         ContourPoints = arrPnts,
-                        Distance_km = 10,
+                        Distance_km = dist1,
                         PointBaryCenter = pointEarthGeometricR,
-                        Step_deg = 3
+                        Step_deg = 1
                     };
 
-                    PointEarthGeometricWithAzimuth[] pointEarthGeometricPtx = new PointEarthGeometricWithAzimuth[10000];
+                    PointEarthGeometric[] pointEarthGeometricPtx = new PointEarthGeometric[10000];
+                    PointEarthGeometric[] pointEarthGeometricPtx1 = new PointEarthGeometric[10000];
                     earthGeometricServiceServices.CreateContourFromContureByDistance(in arg, ref pointEarthGeometricPtx, out int pointLength);
-
-                    WPF.Location[] outPnts = new WPF.Location[pointLength];
+                    arg.Distance_km =dist2;
+                    earthGeometricServiceServices.CreateContourFromContureByDistance(in arg, ref pointEarthGeometricPtx1, out int pointLength1);
+                    WPF.Location[] outPnts = new WPF.Location[pointLength+ pointLength1+1];
                     for (int u = 0; u < pointLength; u++)
                     {
-                        outPnts[u] = new WPF.Location(pointEarthGeometricPtx[u].PointEarthGeometric.Longitude, pointEarthGeometricPtx[u].PointEarthGeometric.Latitude);
+                        outPnts[u] = new WPF.Location(pointEarthGeometricPtx[u].Longitude, pointEarthGeometricPtx[u].Latitude);
                     }
+                    int max = pointLength;
+                    
+                    for (int u = 0; u < pointLength1; u++)
+                    {
+                        outPnts[u + max] = new WPF.Location(pointEarthGeometricPtx1[u].Longitude, pointEarthGeometricPtx1[u].Latitude);
+                    }
+                    outPnts[pointLength + pointLength1] = new WPF.Location(pointEarthGeometricR.Longitude, pointEarthGeometricR.Latitude);
 
 
                     WPF.Location[] inputPnts = new WPF.Location[arrPnts.Length];
@@ -133,6 +101,10 @@ namespace Atdi.Test.CalcServer.LowFunction
                     {
                         inputPnts[u] = new WPF.Location(arrPnts[u].Longitude, arrPnts[u].Latitude);
                     }
+
+                    //inputPnts[inputPnts.Length - 2] = new WPF.Location(30.54, 51.0899);
+                    //inputPnts[inputPnts.Length - 1] = new WPF.Location(31, 51.0908);
+
 
                     WPF.RunApp.Start(WPF.TypeObject.Polygon, inputPnts, WPF.TypeObject.Points, outPnts);
 

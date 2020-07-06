@@ -78,6 +78,10 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
         /// </summary>
         StationCalibrationCalcTask = 3,
 
+        /// <summary>
+        /// Расчет согласно спецификации GN06
+        /// </summary>
+        Gn06CalcTask = 4,
 
         /// <summary>
         /// Первая тестовая расчетная задача

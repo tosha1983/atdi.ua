@@ -12,16 +12,17 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks
 	[Entity]
 	public interface IGn06ArgsBase
 	{
-        float AzimuthStep_deg { get; set; }
+        float? AzimuthStep_deg { get; set; }
         bool AdditionalContoursByDistances { get; set; }
         int[] Distances { get; set; }
         bool ContureByFieldStrength { get; set; }
         int[] FieldStrength { get; set; }
-        int SubscribersHeight { get; set; }
-        double PercentageTime { get; set; }
+        int? SubscribersHeight { get; set; }
+        double? PercentageTime { get; set; }
         bool UseEffectiveHeight { get; set; }
         byte CalculationTypeCode { get; set; }
         string CalculationTypeName { get; set; }
+        // string == BroadcastingContext
         string BroadcastingExtend { get; set; }
     }
 

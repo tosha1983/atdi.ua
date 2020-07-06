@@ -8,8 +8,8 @@ namespace Atdi.DataModels.Sdrn.DeepServices.EarthGeometry
 {
     public enum CoordinateUnits
     {
-        m = 0,
-        deg = 1,
+        deg = 0,
+        m = 1,
     }
 }
 

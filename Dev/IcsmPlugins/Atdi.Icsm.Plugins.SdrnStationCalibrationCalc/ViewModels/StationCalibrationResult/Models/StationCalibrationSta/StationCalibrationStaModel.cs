@@ -34,7 +34,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
         public double? New_Lon_dec_deg { get; set; }
         public float? New_Power_dB { get; set; }
         public long ResultId { get; set; }
-        public float Freq_MHz { get; set; }
+        public double Freq_MHz { get; set; }
         public string Standard { get; set; }
     }
 }

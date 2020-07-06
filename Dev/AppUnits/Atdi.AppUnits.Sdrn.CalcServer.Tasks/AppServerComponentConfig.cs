@@ -51,6 +51,17 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
         [ComponentConfigProperty("Threshold.DriveTestAndStation.CDMA.MinDistance")]
         public int? MinDistanceBetweenDriveTestAndStation_CDMA { get; set; }
 
+        [ComponentConfigProperty("Thresholds.GE06PointEarthGeometric.ObjectPool.MinSize")]
+        public int? ThresholdsGE06PointEarthGeometricObjectPoolMinSize { get; set; }
+
+        [ComponentConfigProperty("Thresholds.GE06PointEarthGeometric.ObjectPool.MaxSize")]
+        public int? ThresholdsGE06PointEarthGeometricObjectPoolMaxSize { get; set; }
+
+        [ComponentConfigProperty("Thresholds.GE06PointEarthGeometric.ArrayLength")]
+        public int? ThresholdsGE06PointEarthGeometricArrayLength { get; set; }
+
+        [ComponentConfigProperty("Brific.DBSource")]
+        public string BrificDBSource { get; set; }
 
     }
 }

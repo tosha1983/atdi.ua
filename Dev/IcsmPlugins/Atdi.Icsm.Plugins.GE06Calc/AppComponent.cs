@@ -24,7 +24,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc
             var currentAssembly = typeof(AppComponentConfig).Assembly;
 
             var componentConfig = this.Config.Extract<AppComponentConfig>();
-            //componentConfig.VerifyLicense();
+            componentConfig.VerifyLicense();
 
             this.Container.RegisterInstance(componentConfig, ServiceLifetime.Singleton);
 

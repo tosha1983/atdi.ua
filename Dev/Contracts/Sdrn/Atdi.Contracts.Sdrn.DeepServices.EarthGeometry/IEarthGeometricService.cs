@@ -30,7 +30,8 @@ namespace Atdi.Contracts.Sdrn.DeepServices.EarthGeometry
         /// <param name="contourForStationByTriggerFieldStrengthsArgs"></param>
         /// <param name="pointResult"></param>
         /// <param name="sizeResultBuffer"></param>
-        void CreateContourForStationByTriggerFieldStrengths(Func<PointEarthGeometric, PointEarthGeometric, double> calcFieldStrengths, in ContourForStationByTriggerFieldStrengthsArgs contourForStationByTriggerFieldStrengthsArgs, ref PointEarthGeometric[] pointResult, out int sizeResultBuffer);
+        /// 
+        void CreateContourForStationByTriggerFieldStrengths(Func<PointEarthGeometric, double> calcFieldStrengths, in ContourForStationByTriggerFieldStrengthsArgs contourForStationByTriggerFieldStrengthsArgs, ref PointEarthGeometric[] pointResult, out int sizeResultBuffer);
 
         /// <summary>
         /// Функция по формированию контура от точки
@@ -65,7 +66,7 @@ namespace Atdi.Contracts.Sdrn.DeepServices.EarthGeometry
         /// <param name="contourFromContureByDistanceArgs"></param>
         /// <param name="pointEarthGeometricWithAzimuth"></param>
         /// <param name="sizeResultBuffer"></param>
-        void CreateContourFromContureByDistance(in ContourFromContureByDistanceArgs contourFromContureByDistanceArgs, ref PointEarthGeometricWithAzimuth[] pointEarthGeometricWithAzimuth, out int sizeResultBuffer);
+        void CreateContourFromContureByDistance(in ContourFromContureByDistanceArgs contourFromContureByDistanceArgs, ref PointEarthGeometric[] pointEarthGeometricWithAzimuth, out int sizeResultBuffer);
 
 
         /// <summary>
@@ -78,6 +79,14 @@ namespace Atdi.Contracts.Sdrn.DeepServices.EarthGeometry
         /// <returns></returns>
         PointEarthGeometric CalculationCoordinateByLengthAndAzimuth(in PointEarthGeometric PointStart, double distance_km, double azimuth, bool LargeCircleArc = true);
 
+
+        /// <summary>
+        /// Проверка попадания точки point в контур poligon
+        /// </summary>
+        /// <param name="poligon"></param>
+        /// <param name="point"></param>
+        /// <returns></returns>
+        bool CheckHitting(in CheckHittingArgs checkHittingArgs);
     }
         
 }

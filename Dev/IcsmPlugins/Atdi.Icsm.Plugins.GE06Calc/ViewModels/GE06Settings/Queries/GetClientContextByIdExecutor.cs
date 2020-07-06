@@ -42,7 +42,8 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings.Queries
                 Name = reader.GetValue(c => c.Name),
                 Note = reader.GetValue(c => c.Note),
                 TypeCode = reader.GetValue(c => c.TypeCode),
-                BaseContextName = reader.GetValue(c => c.BASE_CONTEXT.Name)
+                BaseContextName = reader.GetValue(c => c.BASE_CONTEXT.Name),
+                ActiveContext = Properties.Settings.Default.ActiveContext == reader.GetValue(c => c.Id) ? true : false
             };
         }
     }

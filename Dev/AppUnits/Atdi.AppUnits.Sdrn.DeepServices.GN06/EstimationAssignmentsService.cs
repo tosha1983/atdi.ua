@@ -1,5 +1,7 @@
 ﻿using System;
 using Atdi.Platform;
+using Atdi.Contracts.Sdrn.DeepServices.IDWM;
+using Atdi.DataModels.Sdrn.DeepServices.IDWM;
 using Atdi.Contracts.Sdrn.DeepServices.GN06;
 using Atdi.DataModels.Sdrn.DeepServices.GN06;
 using Atdi.DataModels.Sdrn.DeepServices.EarthGeometry;
@@ -11,30 +13,42 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.GN06
     public class EstimationAssignmentsService : IGn06Service
     {
         private readonly IEarthGeometricService _earthGeometricService;
-        public EstimationAssignmentsService(IEarthGeometricService earthGeometricService)
+        private readonly IIdwmService  _idwmService;
+        public EstimationAssignmentsService(IEarthGeometricService earthGeometricService, IIdwmService idwmService)
         {
             this._earthGeometricService = earthGeometricService;
+            this._idwmService = idwmService;
         }
 
 
-        public void EstimationAssignmentsPointsForEtalonNetwork(in BroadcastingAllotment broadcastingAllotment, in AreaPoint pointAllotment, in AreaPoint pointCalcFieldStrength, ref PointWithAzimuth[] pointResult, out int sizeResultBuffer)
+        public void EstimationAssignmentsPointsForEtalonNetwork(in EstimationAssignmentsPointsArgs  estimationAssignmentsPointsArgs, ref PointsWithAzimuthResult pointWithAzimuthResult)
         {
-             EstimationAssignmentsCalculation.Calc(in broadcastingAllotment, in pointAllotment, in pointCalcFieldStrength, ref pointResult, this._earthGeometricService, out sizeResultBuffer);
+             EstimationAssignmentsCalculation.Calc(in estimationAssignmentsPointsArgs,  ref pointWithAzimuthResult, this._earthGeometricService);
         }
 
-        public void GetEtalonBroadcastingAssignmentFromAllotment(BroadcastingAllotment inputBroadcastingAllotment, BroadcastingAssignment outputBroadcastingAssignment)
+        /// <summary>
+        /// Преобразование алотмента в асаймент
+        /// </summary>
+        /// <param name="broadcastingAllotmentArgs">Входной элотмент</param>
+        /// <param name="broadcastingAssignmentResult">Выходной асаймент</param>
+        public void GetEtalonBroadcastingAssignmentFromAllotment(BroadcastingAllotment broadcastingAllotmentArgs, BroadcastingAssignment broadcastingAssignmentResult)
         {
-            EtalonBroadcastingAssignmentFromAllotment.Calc(inputBroadcastingAllotment, outputBroadcastingAssignment);
+            EtalonBroadcastingAssignmentFromAllotment.Calc(broadcastingAllotmentArgs, broadcastingAssignmentResult);
         }
 
-        public void GetStationFromBroadcastingAssignment(BroadcastingAssignment inputBroadcastingAssignment, ref ContextStation outputContextStation)
+        public void GetStationFromBroadcastingAssignment(BroadcastingAssignment broadcastingAssignmentArgs, ref ContextStation contextStationResult)
         {
-            StationFromBroadcastingAssignment.Calc(inputBroadcastingAssignment, ref outputContextStation);
+            StationFromBroadcastingAssignment.Calc(broadcastingAssignmentArgs, ref contextStationResult);
         }
 
-        public void GetBoundaryPointsFromAllotments(BroadcastingAllotment broadcastingAllotment, ref Points pointsResult)
+        public void GetBoundaryPointsFromAllotments(in BroadcastingAllotmentWithStep broadcastingAllotmentWithStepArgs, ref Points pointsResult)
         {
-            BoundaryPointsFromAllotments.Calc(broadcastingAllotment, ref pointsResult);
+            BoundaryPointsFromAllotments.Calc(this._earthGeometricService, broadcastingAllotmentWithStepArgs, ref pointsResult);
+        }
+
+        public void CalcBarycenterGE06(in BroadcastingCalcBarycenterGE06 broadcastingCalcBarycenterGE06, ref PointEarthGeometric coordBaryCenter)
+        {
+            BarycenterGE06.Calc(this._earthGeometricService, this._idwmService, broadcastingCalcBarycenterGE06, ref coordBaryCenter);
         }
 
         public void Dispose()
@@ -43,3 +57,5 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.GN06
         }
     }
 }
+
+

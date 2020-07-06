@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.PropagationModels;
 using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.SignalService;
 using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Gis;
+using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.FieldStrength;
 
 namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
 {
@@ -71,7 +72,8 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
 
                     double asl_m = args.Hb_m + args.ReliefProfile[args.ReliefStartIndex + args.ProfileLength - 1];
                     //параметр нужно будет добавить через буффер
-                    List<land_sea> landSeaList = new List<land_sea>();
+                    List<LandSea> landSeaList = new List<LandSea>();
+                    bool h2aboveSea = false;
 
                     double px2km = args.D_km / (args.ProfileLength - 1);
                     double aboveLand_px = 0;
@@ -90,7 +92,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
                             (aboveSea_px != 0 && aboveLand_px != 0) ||
                             i == args.ReliefStartIndex + args.ProfileLength - 1)
                         {
-                            //landSeaList.Add(new land_sea { land = aboveLand_px * px2km, sea = aboveSea_px * px2km });
+                            landSeaList.Add(new LandSea { land = aboveLand_px * px2km, sea = aboveSea_px * px2km });
                             aboveSea_px = 0;
                             aboveLand_px = 0;
                         }
@@ -98,6 +100,11 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
                         if (args.ClutterProfile[i] == waterClutter)
                         {
                             aboveSea_px++;
+                            if (i == args.ReliefStartIndex + args.ProfileLength - 1)
+                            {
+                                h2aboveSea = true;
+                            }
+                            
                         }
                         else { aboveLand_px++; }
 
@@ -120,7 +127,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
                     //landSeaList.Add(new land_sea { land = 0, sea = args.D_km });
                     //landSeaList.Add(new land_sea { land = 9.2, sea = 12.8 });
                     //landSeaList.Add(new land_sea { land = 6.0, sea = 0 });
-                    double E_dBuVm = (ITU1546_6.Get_E(args.Ha_m, hEffective_m, args.D_km, args.Freq_Mhz, args.Model.Parameters.Time_pc, asl_m, args.Hb_m, landSeaList.ToArray()));
+                    double E_dBuVm = (ITU1546_6.Get_E(args.Ha_m, hEffective_m, args.D_km, args.Freq_Mhz, args.Model.Parameters.Time_pc, asl_m, args.Hb_m, h2aboveSea, landSeaList.ToArray()));
                     Lbf_dB = (float)(139.3 - E_dBuVm + 20 * Math.Log10(args.Freq_Mhz));
                     break;
 

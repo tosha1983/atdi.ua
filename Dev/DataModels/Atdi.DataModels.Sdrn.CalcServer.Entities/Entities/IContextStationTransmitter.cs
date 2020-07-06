@@ -18,7 +18,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 	{
         double[] Freqs_MHz { get; set; }
 
-        float Freq_MHz { get; set; }
+        double Freq_MHz { get; set; }
 
 		double BW_kHz { get; set; }
 

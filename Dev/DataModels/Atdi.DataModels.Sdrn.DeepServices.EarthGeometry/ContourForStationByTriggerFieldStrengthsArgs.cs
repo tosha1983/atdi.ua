@@ -11,7 +11,7 @@ namespace Atdi.DataModels.Sdrn.DeepServices.EarthGeometry
         /// <summary>
         /// точка (координата в DEC)
         /// </summary>
-        public PointEarthGeometric  PointEarthGeometricCalc;
+        public PointEarthGeometric  BaryCenter;
         /// <summary>
         /// шаг (градусы)
         /// </summary>
