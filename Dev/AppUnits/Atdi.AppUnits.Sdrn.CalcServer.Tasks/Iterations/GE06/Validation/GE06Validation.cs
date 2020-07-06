@@ -65,7 +65,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     {
                         isSuccess = false;
                     }
-                    if (allotments.AllotmentParameters.Сontur == null)
+                    if (allotments.AllotmentParameters.Contur == null)
                     {
                         isSuccess = false;
                     }

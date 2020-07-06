@@ -84,7 +84,7 @@ namespace Atdi.Test.CalcServer.LowFunction
                           AllotmentParameters = new GE.AllotmentParameters()
                           {
                                Name="Test",
-                               Сontur = arrPnts,
+                              Contur = arrPnts,
                           },
                            EmissionCharacteristics = new GE.BroadcastingAllotmentEmissionCharacteristics()
                            {

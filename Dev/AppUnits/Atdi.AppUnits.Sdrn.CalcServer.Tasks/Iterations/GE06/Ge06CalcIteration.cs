@@ -355,7 +355,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     {
                         if (broadcastingContextBase.Allotments.AllotmentParameters != null)
                         {
-                            var areaPoints = broadcastingContextBase.Allotments.AllotmentParameters.Сontur;
+                            var areaPoints = broadcastingContextBase.Allotments.AllotmentParameters.Contur;
                             if ((areaPoints != null) && (areaPoints.Length > 0))
                             {
                                 var pointEarthGeometrics = new PointEarthGeometric[areaPoints.Length];
@@ -1041,7 +1041,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         {
                             if (broadcastingContextBRIFIC.Allotments.AllotmentParameters != null)
                             {
-                                var areaPoints = broadcastingContextBRIFIC.Allotments.AllotmentParameters.Сontur;
+                                var areaPoints = broadcastingContextBRIFIC.Allotments.AllotmentParameters.Contur;
                                 if ((areaPoints != null) && (areaPoints.Length > 0))
                                 {
 
@@ -1789,7 +1789,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             //или на функции CreateContourFromContureByDistance если у нас есть BroadcastingAllotment 
             else
             {
-                var areaPoints = broadcastingContextICSM.Allotments.AllotmentParameters.Сontur;
+                var areaPoints = broadcastingContextICSM.Allotments.AllotmentParameters.Contur;
                 var freq_MHz = broadcastingContextICSM.Allotments.Target.Freq_MHz;
                 var isDigital = broadcastingContextICSM.Allotments.AdminData.IsDigital;
                 var stnCls = broadcastingContextICSM.Allotments.AdminData.StnClass;
