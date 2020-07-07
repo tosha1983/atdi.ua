@@ -17,13 +17,14 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
         {
             _objectReader = objectReader;
         }
-        public string SelectStatementIcsmAll = "ID,ADM,IS_ALLOTM,NOTICE_TYPE,FRAGMENT,LASTK_REF,ADM_KEY,PLAN_ENTRY,ASSGN_CODE,PLAN_TRG_ADM_REF_ID,SFN_IDENT,ALLOTM_SFN_IDENT,FREQ,POLARIZATION,ERP_H,ERP_V,REF_PLAN_CFG,ADM_KEY,TVSYS_CODE,RX_MODE,SPECT_MASK,LONGITUDE,LATITUDE,SITE_ALT,SITE_NAME,ANT_DIR,AGL,EFHGT_MAX,EFHGT,ATTN_H,ATTN_V,TYP_REF_NTWK,A_NAME,ALLOT_AREA,CLASS,DIGITAL";
+        public string SelectStatementIcsmAll = "ID,ADM,IS_ALLOTM,NOTICE_TYPE,FRAGMENT,LASTK_REF,ADM_KEY,PLAN_ENTRY,ASSGN_CODE,PLAN_TRG_ADM_REF_ID,SFN_IDENT,ALLOTM_SFN_IDENT,FREQ,POLARIZATION,ERP_H,ERP_V,REF_PLAN_CFG,ADM_KEY,TVSYS_CODE,RX_MODE,SPECT_MASK,LONGITUDE,LATITUDE,SITE_ALT,SITE_NAME,ANT_DIR,AGL,EFHGT_MAX,EFHGT,ATTN_H,ATTN_V,TYP_REF_NTWK,A_NAME,ALLOT_AREA,CLASS,DIGITAL,PLAN_ASSGN_NO";
 
-        public string SelectStatementIcsmAllotment = "ID,ADM,IS_ALLOTM,NOTICE_TYPE,FRAGMENT,LASTK_REF,ADM_KEY,PLAN_ENTRY,PLAN_TRG_ADM_REF_ID,SFN_IDENT,FREQ,POLARIZATION,REF_PLAN_CFG,SPECT_MASK,TYP_REF_NTWK,A_NAME,ALLOT_AREA";
+        public string SelectStatementIcsmAllotment = "ID,ADM,IS_ALLOTM,NOTICE_TYPE,FRAGMENT,LASTK_REF,ADM_KEY,PLAN_ENTRY,PLAN_TRG_ADM_REF_ID,SFN_IDENT,FREQ,POLARIZATION,REF_PLAN_CFG,SPECT_MASK,TYP_REF_NTWK,A_NAME,ALLOT_AREA,PLAN_ASSGN_NO";
         public void GetIcsmAllotment(AssignmentsAllotmentsModel allot, IMRecordset rs)
         {
             allot.Id = "I" + rs.GetI("ID").ToString();
             allot.ViewName = rs.GetS("A_NAME");
+            allot.PlanAssgnNo = rs.GetS("PLAN_ASSGN_NO");
             allot.Adm = rs.GetS("ADM");
             allot.NoticeType = rs.GetS("NOTICE_TYPE");
             allot.Fragment = rs.GetS("FRAGMENT");
@@ -43,11 +44,12 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
             allot.Contur = _objectReader.Read<AreaPoint[]>().By(new GetIcsmAreaPointByContourId { ContourId = allot.ContourId });
         }
 
-        public string SelectStatementIcsmAssignment = "ID,ADM,IS_ALLOTM,NOTICE_TYPE,FRAGMENT,LASTK_REF,ADM_KEY,PLAN_ENTRY,ASSGN_CODE,PLAN_TRG_ADM_REF_ID,SFN_IDENT,ALLOTM_SFN_IDENT,FREQ,POLARIZATION,ERP_H,ERP_V,REF_PLAN_CFG,ADM_KEY,TVSYS_CODE,RX_MODE,SPECT_MASK,LONGITUDE,LATITUDE,SITE_ALT,SITE_NAME,ANT_DIR,AGL,EFHGT_MAX,EFHGT,ATTN_H,ATTN_V,CLASS,DIGITAL";
+        public string SelectStatementIcsmAssignment = "ID,ADM,IS_ALLOTM,NOTICE_TYPE,FRAGMENT,LASTK_REF,ADM_KEY,PLAN_ENTRY,ASSGN_CODE,PLAN_TRG_ADM_REF_ID,SFN_IDENT,ALLOTM_SFN_IDENT,FREQ,POLARIZATION,ERP_H,ERP_V,REF_PLAN_CFG,ADM_KEY,TVSYS_CODE,RX_MODE,SPECT_MASK,LONGITUDE,LATITUDE,SITE_ALT,SITE_NAME,ANT_DIR,AGL,EFHGT_MAX,EFHGT,ATTN_H,ATTN_V,CLASS,DIGITAL,PLAN_ASSGN_NO";
         public void GetIcsmAssignment(AssignmentsAllotmentsModel assign, IMRecordset rs)
         {
             assign.Id = "I" + rs.GetI("ID").ToString();
             assign.ViewName = rs.GetS("SITE_NAME");
+            assign.PlanAssgnNo = rs.GetS("PLAN_ASSGN_NO");
             assign.Adm = rs.GetS("ADM");
             assign.NoticeType = rs.GetS("NOTICE_TYPE");
             assign.Fragment = rs.GetS("FRAGMENT");
@@ -73,8 +75,8 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
             assign.AglHeight_m = (short)rs.GetD("AGL");
             assign.MaxEffHeight_m = rs.GetI("EFHGT_MAX");
             assign.EffHeight_m = StringConverter.ConvertToEffHeight(rs.GetS("EFHGT"));
-            assign.DiagrH = StringConverter.ConvertToDiagrH(rs.GetS("ATTN_H"));
-            assign.DiagrV = StringConverter.ConvertToDiagrV(rs.GetS("ATTN_V"));
+            assign.DiagrH = StringConverter.ConvertToDiagr(rs.GetS("ATTN_H"));
+            assign.DiagrV = StringConverter.ConvertToDiagr(rs.GetS("ATTN_V"));
             assign.TargetLon_Dec = rs.GetD("LONGITUDE");
             assign.TargetLat_Dec = rs.GetD("LATITUDE");
             assign.StnClass = rs.GetS("CLASS");
@@ -86,6 +88,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
         {
             allot.Id = "B" + rs.GetI("terrakey").ToString();
             allot.ViewName = rs.GetS("allot_name");
+            allot.PlanAssgnNo = rs.GetS("adm_ref_id");
             allot.Adm = rs.GetS("adm");
             allot.NoticeType = rs.GetS("notice_typ");
             allot.Fragment = rs.GetS("fragment");
@@ -109,6 +112,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
         {
             assign.Id = "B" + rs.GetI("terrakey").ToString();
             assign.ViewName = rs.GetS("site_name");
+            assign.PlanAssgnNo = rs.GetS("adm_ref_id");
             assign.Adm = rs.GetS("adm");
             assign.NoticeType = rs.GetS("notice_typ");
             assign.Fragment = rs.GetS("fragment");

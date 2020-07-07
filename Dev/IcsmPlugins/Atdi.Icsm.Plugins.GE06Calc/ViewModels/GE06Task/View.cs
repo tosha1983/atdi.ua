@@ -169,7 +169,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                             {
                                 this._assignmentsAllotmentsList.AddRange(allotsBrific);
                             }
-                            var allotsIcsm = _objectReader.Read<List<AssignmentsAllotmentsModel>>().By(new GetIcsmAllotmentsByAdmRefId { Adm_Ref_Id = assign.AdmAllotAssociatedId });
+                            var allotsIcsm = _objectReader.Read<List<AssignmentsAllotmentsModel>>().By(new GetIcsmAllotmentsByAdmRefId { Adm_Ref_Id = assign.AdmRefId });
                             if (allotsIcsm != null)
                             {
                                 this._assignmentsAllotmentsList.AddRange(allotsIcsm);
@@ -213,7 +213,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                                     this._assignmentsAllotmentsList.AddRange(allotsBrific);
                                 }
 
-                                var allotsIcsm = _objectReader.Read<List<AssignmentsAllotmentsModel>>().By(new GetIcsmAllotmentsByAdmRefId { Adm_Ref_Id = allotAssign.AdmAllotAssociatedId });
+                                var allotsIcsm = _objectReader.Read<List<AssignmentsAllotmentsModel>>().By(new GetIcsmAllotmentsByAdmRefId { Adm_Ref_Id = allotAssign.AdmRefId });
                                 if (allotsIcsm != null)
                                 {
                                     this._assignmentsAllotmentsList.AddRange(allotsIcsm);
@@ -258,6 +258,23 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                                     }
                                 }
                             }
+
+                            var assignBrificTarget = _objectReader.Read<List<AssignmentsAllotmentsModel>>().By(new GetBrificAssigmentsByTarget { target = new BroadcastingAssignmentTarget() { AdmRefId = allotAssign.TargetAdmRefId, Freq_MHz = allotAssign.TargetFreq_MHz, Lat_Dec = allotAssign.TargetLat_Dec, Lon_Dec = allotAssign.TargetLon_Dec } });
+                            if (assignBrificTarget != null)
+                            {
+                                this._assignmentsAllotmentsList.AddRange(assignBrificTarget);
+                            }
+                            foreach (var item in assignBrificTarget)
+                            {
+                                if (!string.IsNullOrEmpty(item.AdmAllotAssociatedId))
+                                {
+                                    var allotsBrific = _objectReader.Read<List<AssignmentsAllotmentsModel>>().By(new GetBrificAllotmentsByAdmRefId { Adm_Ref_Id = item.AdmAllotAssociatedId });
+                                    if (allotsBrific != null)
+                                    {
+                                        this._assignmentsAllotmentsList.AddRange(allotsBrific);
+                                    }
+                                }
+                            }
                         }
                         if (allotAssign.Type == AssignmentsAllotmentsModelType.Allotment)
                         {
@@ -274,7 +291,6 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                                 {
                                     this._assignmentsAllotmentsList.AddRange(assignBrific);
                                 }
-
                                 foreach (var item in assignBrific)
                                 {
                                     if (!string.IsNullOrEmpty(item.AdmAllotAssociatedId))
@@ -286,13 +302,42 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                                         }
                                     }
                                 }
+
+                                var allotsIcsmTarget = _objectReader.Read<List<AssignmentsAllotmentsModel>>().By(new GetIcsmAllotmentsByTarget { PlanAssignNo = allotAssign.PlanAssgnNo });
+                                if (allotsIcsmTarget != null)
+                                {
+                                    this._assignmentsAllotmentsList.AddRange(allotsIcsmTarget);
+                                }
+                                foreach (var item in allotsIcsmTarget)
+                                {
+                                    if (!string.IsNullOrEmpty(item.AdmRefId))
+                                    {
+                                        var assignBrificTarget = _objectReader.Read<List<AssignmentsAllotmentsModel>>().By(new GetBrificAssigmentsByAdmAllotId { Adm_Allot_Id = item.AdmRefId });
+                                        if (assignBrificTarget != null)
+                                        {
+                                            this._assignmentsAllotmentsList.AddRange(assignBrificTarget);
+                                        }
+                                    }
+                                }
+
+                                var allotsBrificTarget = _objectReader.Read<List<AssignmentsAllotmentsModel>>().By(new GetBrificAllotmentsByTarget { PlanAssignNo = allotAssign.PlanAssgnNo });
+                                if (allotsBrificTarget != null)
+                                {
+                                    this._assignmentsAllotmentsList.AddRange(allotsBrificTarget);
+                                }
+                                foreach (var item in allotsBrificTarget)
+                                {
+                                    if (!string.IsNullOrEmpty(item.AdmRefId))
+                                    {
+                                        var assignBrificTarget = _objectReader.Read<List<AssignmentsAllotmentsModel>>().By(new GetBrificAssigmentsByAdmAllotId { Adm_Allot_Id = item.AdmRefId });
+                                        if (assignBrificTarget != null)
+                                        {
+                                            this._assignmentsAllotmentsList.AddRange(assignBrificTarget);
+                                        }
+                                    }
+                                }
                             }
                         }
-                    }
-                    var assignBrificTarget = _objectReader.Read<List<AssignmentsAllotmentsModel>>().By(new GetBrificAssigmentsByTarget { target = new BroadcastingAssignmentTarget() { AdmRefId = allotAssign.TargetAdmRefId, Freq_MHz = allotAssign.TargetFreq_MHz, Lat_Dec = allotAssign.TargetLat_Dec, Lon_Dec = allotAssign.TargetLon_Dec } });
-                    if (assignBrificTarget != null)
-                    {
-                        this._assignmentsAllotmentsList.AddRange(assignBrificTarget);
                     }
                 }
                 this._assignmentsAllotmentsList = this._assignmentsAllotmentsList.GroupBy(x => x.Id).Select(group => group.First()).ToList();
