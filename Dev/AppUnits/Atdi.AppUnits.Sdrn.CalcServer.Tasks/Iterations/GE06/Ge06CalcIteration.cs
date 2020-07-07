@@ -78,11 +78,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             LoadDataBrific.SetBRIFICDirectory(this._appServerComponentConfig.BrificDBSource);
 
             this._taskContext = taskContext;
+            this._ge06CalcData = data;
 
             //здесь вызов функции "переопределения" модели распространения в зависимости от входных параметров
-            //data.PropagationModel = GetPropagationModel(this._ge06CalcData.Ge06TaskParameters, this._ge06CalcData.PropagationModel, (CalculationType)this._ge06CalcData.Ge06TaskParameters.CalculationTypeCode);
-
+            data.PropagationModel = GE06PropagationModel.GetPropagationModel(this._ge06CalcData.Ge06TaskParameters, this._ge06CalcData.PropagationModel, (CalculationType)this._ge06CalcData.Ge06TaskParameters.CalculationTypeCode);
             this._ge06CalcData = data;
+
 
             var ge06CalcResults = new Ge06CalcResult();
             var ge06CalcResultsForICSM = new Ge06CalcResult();
