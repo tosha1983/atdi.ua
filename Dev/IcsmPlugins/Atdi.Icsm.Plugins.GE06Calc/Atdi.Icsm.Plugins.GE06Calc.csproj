@@ -121,13 +121,17 @@
     <Compile Include="ViewModels\GE06Task\Modifiers\RunCalcTaskHandler.cs" />
     <Compile Include="ViewModels\GE06Task\Queries\Brific\GetBrificAllotmentsByAdmRefId.cs" />
     <Compile Include="ViewModels\GE06Task\Queries\Brific\GetBrificAllotmentsByAdmRefIdExecutor.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\Brific\GetBrificAllotmentsByTargetExecutor.cs" />
     <Compile Include="ViewModels\GE06Task\Queries\Brific\GetBrificAssigmentsByAdmAllotId.cs" />
     <Compile Include="ViewModels\GE06Task\Queries\Brific\GetBrificAssigmentsByAdmAllotIdExecutor.cs" />
     <Compile Include="ViewModels\GE06Task\Queries\Brific\GetBrificAssigmentsBySfnId.cs" />
     <Compile Include="ViewModels\GE06Task\Queries\Brific\GetBrificAssigmentsBySfnIdExecutor.cs" />
     <Compile Include="ViewModels\GE06Task\Queries\Brific\GetBrificAssigmentsByTarget.cs" />
     <Compile Include="ViewModels\GE06Task\Queries\Brific\GetBrificAssigmentsByTargetExecutor.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\Brific\GetBrificAllotmentsByTarget.cs" />
     <Compile Include="ViewModels\GE06Task\Queries\DataMaper.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\Icsm\GetIcsmAllotmentsByTarget.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\Icsm\GetIcsmAllotmentsByTargetExecutor.cs" />
     <Compile Include="ViewModels\GE06Task\Queries\SubQueries\GetBrificAreaPointBySubAreaKey.cs" />
     <Compile Include="ViewModels\GE06Task\Queries\SubQueries\GetBrificAreaPointBySubAreaKeyExecutor.cs" />
     <Compile Include="ViewModels\GE06Task\Queries\SubQueries\GetBrificCounturIdByTerrakey.cs" />
