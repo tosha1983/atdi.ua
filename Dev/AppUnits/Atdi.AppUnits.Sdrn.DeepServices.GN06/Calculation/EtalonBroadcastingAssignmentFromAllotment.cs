@@ -90,7 +90,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.GN06
                     erp = 39;
                     break;
             }
-            erp = erp * k;
+            erp = erp + k;
             return erp;
 
         }

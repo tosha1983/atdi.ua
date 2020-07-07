@@ -32,6 +32,8 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 
 		public byte[] ClutterContent;
 
+        public string Projection;
+
 		//public byte[] BuildingContent;
 
 		//public CluttersDesc CluttersDesc;
