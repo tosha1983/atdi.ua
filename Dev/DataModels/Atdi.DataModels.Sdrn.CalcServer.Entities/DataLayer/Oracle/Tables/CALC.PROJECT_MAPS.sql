@@ -24,7 +24,9 @@
   CRD_UPL_X            NUMBER(9),
   CRD_UPL_Y            NUMBER(9),
   CRD_LWR_X            NUMBER(9),
-  CRD_LWR_Y            NUMBER(9)
+  CRD_LWR_Y            NUMBER(9),
+  SOURCE_TYPE_NAME     NVARCHAR2(50),
+  SOURCE_TYPE_CODE     NUMBER(3)
 )
 TABLESPACE USERS
 PCTUSED    0
