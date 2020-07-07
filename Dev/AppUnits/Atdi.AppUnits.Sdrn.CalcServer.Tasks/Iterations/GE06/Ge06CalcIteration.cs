@@ -36,6 +36,9 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         private readonly IIterationsPool _iterationsPool;
         private readonly IDataLayer<EntityDataOrm<CalcServerEntityOrmContext>> _calcServerDataLayer;
         private readonly IObjectPool<PointEarthGeometric[]> _pointEarthGeometricPool;
+        //private readonly IObjectPool<Dictionary<CountoursPoint, string>> _countoursPointByAdministrationPool;
+        //private readonly IObjectPool<ContoursResult[]> _countoursResultPool;
+        //private readonly IObjectPool<CountoursPoint[]> _countoursPointPool;
         private readonly IObjectPoolSite _poolSite;
         private readonly ITransformation _transformation;
         private readonly Idwm.IIdwmService _idwmService;
@@ -118,7 +121,16 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
             if ((CalculationType)data.Ge06TaskParameters.CalculationTypeCode == CalculationType.CreateContoursByDistance)
             {
-                GE06CalcContoursByDistance.Calculation(in data, BroadcastingTypeContext.Icsm, ref ge06CalcResultsForICSM, _pointEarthGeometricPool, _iterationsPool, _poolSite, _transformation, _taskContext, _gn06Service, _earthGeometricService, _idwmService);
+                GE06CalcContoursByDistance.Calculation(in data, BroadcastingTypeContext.Icsm,
+                                                        ref ge06CalcResultsForICSM,
+                                                        _pointEarthGeometricPool,
+                                                        _iterationsPool,
+                                                        _poolSite,
+                                                        _transformation,
+                                                        _taskContext,
+                                                        _gn06Service,
+                                                        _earthGeometricService,
+                                                        _idwmService);
                 if (ge06CalcResultsForICSM.AffectedADMResult != null)
                 {
                     affectedADMResult.AddRange(ge06CalcResultsForICSM.AffectedADMResult);
@@ -133,7 +145,16 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 }
 
 
-                GE06CalcContoursByDistance.Calculation(in data, BroadcastingTypeContext.Brific, ref ge06CalcResultsForBRIFIC, _pointEarthGeometricPool, _iterationsPool, _poolSite, _transformation, _taskContext, _gn06Service, _earthGeometricService, _idwmService);
+                GE06CalcContoursByDistance.Calculation(in data, BroadcastingTypeContext.Brific,
+                                                        ref ge06CalcResultsForBRIFIC,
+                                                        _pointEarthGeometricPool,
+                                                        _iterationsPool,
+                                                        _poolSite,
+                                                        _transformation,
+                                                        _taskContext,
+                                                        _gn06Service,
+                                                        _earthGeometricService,
+                                                        _idwmService);
                 if (ge06CalcResultsForBRIFIC.AffectedADMResult != null)
                 {
                     affectedADMResult.AddRange(ge06CalcResultsForBRIFIC.AffectedADMResult);
@@ -149,7 +170,16 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             }
             else if ((CalculationType)data.Ge06TaskParameters.CalculationTypeCode == CalculationType.CreateContoursByFS)
             {
-                GE06CalcContoursByFS.Calculation(data, BroadcastingTypeContext.Icsm, ref ge06CalcResultsForICSM, _pointEarthGeometricPool, _iterationsPool, _poolSite, _transformation, _taskContext, _gn06Service, _earthGeometricService, _idwmService);
+                GE06CalcContoursByFS.Calculation(data, BroadcastingTypeContext.Icsm,
+                                                ref ge06CalcResultsForICSM,
+                                                _pointEarthGeometricPool,
+                                                _iterationsPool,
+                                                _poolSite,
+                                                _transformation,
+                                                _taskContext,
+                                                _gn06Service,
+                                                _earthGeometricService,
+                                                _idwmService);
                 if (ge06CalcResultsForICSM.AffectedADMResult != null)
                 {
                     affectedADMResult.AddRange(ge06CalcResultsForICSM.AffectedADMResult);
@@ -163,7 +193,17 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     allotmentOrAssignmentResult.AddRange(ge06CalcResultsForICSM.AllotmentOrAssignmentResult);
                 }
 
-                GE06CalcContoursByFS.Calculation(data, BroadcastingTypeContext.Brific, ref ge06CalcResultsForBRIFIC, _pointEarthGeometricPool, _iterationsPool, _poolSite, _transformation, _taskContext, _gn06Service, _earthGeometricService, _idwmService);
+                GE06CalcContoursByFS.Calculation(data, 
+                                                 BroadcastingTypeContext.Brific,
+                                                 ref ge06CalcResultsForBRIFIC,
+                                                 _pointEarthGeometricPool,
+                                                 _iterationsPool,
+                                                 _poolSite,
+                                                 _transformation,
+                                                 _taskContext,
+                                                 _gn06Service,
+                                                 _earthGeometricService,
+                                                 _idwmService);
                 if (ge06CalcResultsForBRIFIC.AffectedADMResult != null)
                 {
                     affectedADMResult.AddRange(ge06CalcResultsForBRIFIC.AffectedADMResult);
@@ -180,7 +220,16 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             }
             else if ((CalculationType)data.Ge06TaskParameters.CalculationTypeCode == CalculationType.ConformityCheck)
             {
-                GE06CalcConformityCheck.Calculation(data, ref ge06CalcResults, _pointEarthGeometricPool, _iterationsPool, _poolSite, _transformation, _taskContext, _gn06Service, _earthGeometricService, _idwmService);
+                GE06CalcConformityCheck.Calculation(data,
+                                                    ref ge06CalcResults,
+                                                    _pointEarthGeometricPool,
+                                                    _iterationsPool,
+                                                    _poolSite,
+                                                    _transformation,
+                                                    _taskContext,
+                                                    _gn06Service,
+                                                    _earthGeometricService,
+                                                    _idwmService);
                 if (ge06CalcResultsForICSM.AffectedADMResult != null)
                 {
                     affectedADMResult.AddRange(ge06CalcResultsForICSM.AffectedADMResult);
@@ -196,7 +245,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             }
             else if ((CalculationType)data.Ge06TaskParameters.CalculationTypeCode == CalculationType.FindAffectedADM)
             {
-                GE06CalcFindAffectedADM.Calculation(data, ref ge06CalcResultsForICSM, _pointEarthGeometricPool, _iterationsPool, _poolSite, _transformation, _taskContext, _gn06Service, _earthGeometricService, _idwmService);
+                GE06CalcFindAffectedADM.Calculation(data,
+                                                    ref ge06CalcResultsForICSM, _pointEarthGeometricPool, _iterationsPool, _poolSite, _transformation, _taskContext, _gn06Service, _earthGeometricService, _idwmService);
                 
                 if (ge06CalcResultsForBRIFIC.AffectedADMResult != null)
                 {
