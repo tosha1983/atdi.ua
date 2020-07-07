@@ -178,6 +178,10 @@
       <Project>{6a72e0c5-f8a4-412f-9395-13abe07367b1}</Project>
       <Name>Atdi.DataModels.Sdrn.CalcServer.Entities</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.CalcServer.Internal\Atdi.DataModels.Sdrn.CalcServer.Internal.csproj">
+      <Project>{04ab56c1-7a30-411d-9bb2-be4b641cf268}</Project>
+      <Name>Atdi.DataModels.Sdrn.CalcServer.Internal</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices.GN06\Atdi.DataModels.Sdrn.DeepServices.GN06.csproj">
       <Project>{ee65799e-0a0a-4599-8f5e-30eb23304d49}</Project>
       <Name>Atdi.DataModels.Sdrn.DeepServices.GN06</Name>

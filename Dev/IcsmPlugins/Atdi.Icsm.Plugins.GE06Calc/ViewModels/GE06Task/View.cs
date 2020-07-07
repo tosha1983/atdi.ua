@@ -92,7 +92,6 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
         public IList CurrentAssignmentsAllotments
         {
             get => this._currentAssignmentsAllotments;
-            //set => this.Set(ref this._currentAssignmentsAllotments, value, this.RedrawMap);
             set
             {
                 this._currentAssignmentsAllotments = value;

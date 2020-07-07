@@ -201,9 +201,9 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
         }
         public static short[] ConvertToEffHeight(string value)
         {
-            var splitVariants = new char[] { ',', ';', ' ' };
+            value = value.Replace("+", " +").Replace("-", " -").Replace("  ", " ");
             var values = new List<short>();
-            foreach (var item in value.Split(splitVariants))
+            foreach (var item in value.Split(' '))
             {
                 if (short.TryParse(item, out short val))
                     values.Add(val);
@@ -213,9 +213,13 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
         public static float[] ConvertToDiagr(string value)
         {
             string sep = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
-            var valueA = value.Replace("VECTOR 10 ", "").Replace(".", sep);
+
+            if (!value.Contains("VECTOR 10 "))
+                return null;
+
+            value = value.Replace("VECTOR 10 ", "").Replace(".", sep);
             var values = new List<float>();
-            foreach (var item in valueA.Split(' '))
+            foreach (var item in value.Split(' '))
             {
                 if (float.TryParse(item, out float val))
                     values.Add(val);

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations;
 
 namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06TaskResult
 {
@@ -15,6 +16,6 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06TaskResult
         public int FS { get; set; }
         public string AffectedADM { get; set; }
         public int PointsCount { get; set; }
-        public string CountoursPoints { get; set; }
+        public CountoursPoint[] CountoursPoints { get; set; }
     }
 }

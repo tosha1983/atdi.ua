@@ -56,7 +56,8 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
 
                     if (areaLon > -180 && areaLon < 180 && areaLat > -90 && areaLat < 90)
                     {
-                        conturs.Add(new AreaPoint() { Lon_DEC = IMPosition.Dec2Dms(areaLon), Lat_DEC = IMPosition.Dec2Dms(areaLat) });
+                        //conturs.Add(new AreaPoint() { Lon_DEC = IMPosition.Dec2Dms(areaLon), Lat_DEC = IMPosition.Dec2Dms(areaLat) });
+                        conturs.Add(new AreaPoint() { Lon_DEC = areaLon, Lat_DEC = areaLat });
                     }
                 }
             }
