@@ -195,6 +195,10 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.Gis
                     var code = epsgCodeString.Replace(PrefixEpsgS.ToString(), "");
                     return PrefixAtdiProjectionS + code;
                 }
+                else if (epsgCodeString.StartsWith(Epsg4326.ToString()))
+                {
+                    return PrefixAtdiProjectionEPSG + epsgCode.ToString();
+                }
                 else
                 {
                     throw new NotImplementedException(Events.ForEPSGNoAlgorithmConvertingToAtdiNameProjection.With(epsgCode).Text);
