@@ -141,7 +141,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                     return null;
                 }
                 return new Ge06TaskParameters()
-                {
+                {checked 
                     CalculationTypeCode = reader.GetValue(c => c.CalculationTypeCode),
                     CalculationTypeName = reader.GetValue(c => c.CalculationTypeName),
                     AdditionalContoursByDistances = reader.GetValue(c => c.AdditionalContoursByDistances),
