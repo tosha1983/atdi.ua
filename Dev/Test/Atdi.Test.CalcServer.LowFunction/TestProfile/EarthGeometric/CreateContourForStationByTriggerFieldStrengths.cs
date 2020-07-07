@@ -39,7 +39,7 @@ namespace Atdi.Test.CalcServer.LowFunction
 
                     ContourForStationByTriggerFieldStrengthsArgs contourForStationByTriggerFieldStrengthsArgs = new ContourForStationByTriggerFieldStrengthsArgs()
                     {
-                        PointEarthGeometricCalc = new PointEarthGeometric()
+                        BaryCenter = new PointEarthGeometric()
                         {
                             Longitude = 30,
                             Latitude = 50
@@ -58,7 +58,7 @@ namespace Atdi.Test.CalcServer.LowFunction
                     }
 
 
-                    WPF.RunApp.Start(WPF.TypeObject.Points, new WPF.Location[] { new WPF.Location(contourForStationByTriggerFieldStrengthsArgs.PointEarthGeometricCalc.Longitude, contourForStationByTriggerFieldStrengthsArgs.PointEarthGeometricCalc.Latitude) }, WPF.TypeObject.Points, OutCoords);
+                    WPF.RunApp.Start(WPF.TypeObject.Points, new WPF.Location[] { new WPF.Location(contourForStationByTriggerFieldStrengthsArgs.BaryCenter.Longitude, contourForStationByTriggerFieldStrengthsArgs.BaryCenter.Latitude) }, WPF.TypeObject.Points, OutCoords);
 
                 }
                 catch (Exception e)

@@ -363,7 +363,7 @@ class Program
                     
                     ContourForStationByTriggerFieldStrengthsArgs contourForStationByTriggerFieldStrengthsArgs3 = new ContourForStationByTriggerFieldStrengthsArgs()
                     {
-                        PointEarthGeometricCalc = new PointEarthGeometric()
+                        BaryCenter = new PointEarthGeometric()
                         {
                             Longitude = 30,
                             Latitude = 50
