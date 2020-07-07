@@ -92,7 +92,12 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
         public IList CurrentAssignmentsAllotments
         {
             get => this._currentAssignmentsAllotments;
-            set => this.Set(ref this._currentAssignmentsAllotments, value, () => { this.RedrawMap(); });
+            //set => this.Set(ref this._currentAssignmentsAllotments, value, this.RedrawMap);
+            set
+            {
+                this._currentAssignmentsAllotments = value;
+                RedrawMap();
+            }
         }
 
         public bool ConformityCheckEnabled
@@ -187,7 +192,6 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                             {
                                 this._assignmentsAllotmentsList.AddRange(assignBrific);
                             }
-
                         }
                     }
                 }
@@ -208,6 +212,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                                 {
                                     this._assignmentsAllotmentsList.AddRange(allotsBrific);
                                 }
+
                                 var allotsIcsm = _objectReader.Read<List<AssignmentsAllotmentsModel>>().By(new GetIcsmAllotmentsByAdmRefId { Adm_Ref_Id = allotAssign.AdmAllotAssociatedId });
                                 if (allotsIcsm != null)
                                 {
@@ -234,10 +239,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                                 {
                                     this._assignmentsAllotmentsList.AddRange(assignIcsm);
                                 }
-                            }
 
-                            if (!string.IsNullOrEmpty(allotAssign.SfnId))
-                            {
                                 var assignBrific = _objectReader.Read<List<AssignmentsAllotmentsModel>>().By(new GetBrificAssigmentsBySfnId { SfnId = allotAssign.SfnId });
                                 if (assignBrific != null)
                                 {
@@ -293,8 +295,8 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                         this._assignmentsAllotmentsList.AddRange(assignBrificTarget);
                     }
                 }
-
-                this.AssignmentsAllotmentsArray = this._assignmentsAllotmentsList.GroupBy(x => x.Id).Select(group => group.First()).ToArray();
+                this._assignmentsAllotmentsList = this._assignmentsAllotmentsList.GroupBy(x => x.Id).Select(group => group.First()).ToList();
+                this.AssignmentsAllotmentsArray = _assignmentsAllotmentsList.ToArray();
                 UpdateEnableButoonState();
             }
         }
@@ -374,8 +376,8 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                 return;
             }
 
-            if (this._assignmentsAllotmentsList.Where(c => c.Source == AssignmentsAllotmentsSourceType.Brific && c.Type == AssignmentsAllotmentsModelType.Allotment).Count() > 1
-                || this._assignmentsAllotmentsList.Where(c => c.Source == AssignmentsAllotmentsSourceType.ICSM && c.Type == AssignmentsAllotmentsModelType.Allotment).Count() > 1)
+            if (this.AssignmentsAllotmentsArray.Where(c => c.Source == AssignmentsAllotmentsSourceType.Brific && c.Type == AssignmentsAllotmentsModelType.Allotment).Count() > 1
+                || this.AssignmentsAllotmentsArray.Where(c => c.Source == AssignmentsAllotmentsSourceType.ICSM && c.Type == AssignmentsAllotmentsModelType.Allotment).Count() > 1)
             {
                 _starter.ShowException("Warning!", new Exception($"Еhe table cannot have more than one Allotment"));
                 return;
@@ -436,7 +438,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
             var assignmentsBrific = new List<BroadcastingAssignment>();
             var assignmentsIcsm = new List<BroadcastingAssignment>();
 
-            foreach (var item in this._assignmentsAllotmentsList)
+            foreach (var item in this.AssignmentsAllotmentsArray)
             {
                 if (item.Type == AssignmentsAllotmentsModelType.Allotment)
                 {
@@ -561,7 +563,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
         {
             bool isHaveIcsmObject = false;
             bool isHaveBrificObject = false;
-            foreach (var item in this._assignmentsAllotmentsList)
+            foreach (var item in this.AssignmentsAllotmentsArray)
             {
                 if (item.Source == AssignmentsAllotmentsSourceType.ICSM)
                     isHaveIcsmObject = true;
@@ -587,7 +589,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                 {
                     if (item.Type == AssignmentsAllotmentsModelType.Assignment)
                     {
-                        points.Add(MapsDrawingHelper.MakeDrawingPointForStation(item.Lon_Dec, item.Lat_Dec));
+                        points.Add(MapsDrawingHelper.MakeDrawingPointForSensor(item.Lon_Dec, item.Lat_Dec));
                     }
                     if (item.Type == AssignmentsAllotmentsModelType.Allotment)
                     {
@@ -602,7 +604,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                     }
                 }
             }
-                
+
             data.Polygons = polygons.ToArray();
             data.Points = points.ToArray();
 

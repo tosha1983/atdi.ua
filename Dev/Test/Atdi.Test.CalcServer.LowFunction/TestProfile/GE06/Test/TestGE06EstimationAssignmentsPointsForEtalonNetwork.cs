@@ -61,15 +61,15 @@ namespace Atdi.Test.CalcServer.LowFunction
                     estimationAssignmentsPointsArgs.BroadcastingAllotment = broadcastingAllotment;
                     estimationAssignmentsPointsArgs.PointAllotment = AllotmentPoint;
                     estimationAssignmentsPointsArgs.PointCalcFieldStrength = Point;
-                    PointWithAzimuthResult pointWithAzimuthResult = new PointWithAzimuthResult();
-                    pointWithAzimuthResult.PointWithAzimuth = new GE.PointWithAzimuth[7];
+                    PointsWithAzimuthResult pointWithAzimuthResult = new PointsWithAzimuthResult();
+                    pointWithAzimuthResult.PointsWithAzimuth = new GE.PointWithAzimuth[7];
 
                     gn06Service.EstimationAssignmentsPointsForEtalonNetwork(in estimationAssignmentsPointsArgs, ref pointWithAzimuthResult);
                     // на карту 
                     WPF.Location[] InputData = new WPF.Location[2] { new WPF.Location(Point.Lon_DEC, Point.Lat_DEC), new WPF.Location(AllotmentPoint.Lon_DEC, AllotmentPoint.Lat_DEC) };
                     WPF.Location[] OutputData = new WPF.Location[pointWithAzimuthResult.sizeResultBuffer];
                     for (int j = 0; pointWithAzimuthResult.sizeResultBuffer > j; j++)
-                    { OutputData[j] = new WPF.Location(pointWithAzimuthResult.PointWithAzimuth[j].AreaPoint.Lon_DEC, pointWithAzimuthResult.PointWithAzimuth[j].AreaPoint.Lat_DEC); }
+                    { OutputData[j] = new WPF.Location(pointWithAzimuthResult.PointsWithAzimuth[j].AreaPoint.Lon_DEC, pointWithAzimuthResult.PointsWithAzimuth[j].AreaPoint.Lat_DEC); }
                     WPF.RunApp.Start(WPF.TypeObject.Points, InputData, WPF.TypeObject.Points, OutputData);
 
                 }

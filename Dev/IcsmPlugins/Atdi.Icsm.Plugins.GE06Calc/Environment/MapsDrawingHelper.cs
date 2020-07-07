@@ -19,6 +19,16 @@ namespace Atdi.Icsm.Plugins.GE06Calc.Environment
             Height = 10,
             Name = name
         };
+        public static MapDrawingDataPoint MakeDrawingPointForSensor(double lon, double lat, string name = "") => new MapDrawingDataPoint
+        {
+            Color = System.Windows.Media.Brushes.Blue,
+            Fill = System.Windows.Media.Brushes.Blue,
+            Location = new Location() { Lat = lat, Lon = lon },
+            Opacity = 0.85,
+            Width = 10,
+            Height = 10,
+            Name = name
+        };
         public static MapDrawingDataPoint MakeDrawingPointForStation(double lon, double lat, string name = "") => new MapDrawingDataPoint
         {
             Color = System.Windows.Media.Brushes.Green,
