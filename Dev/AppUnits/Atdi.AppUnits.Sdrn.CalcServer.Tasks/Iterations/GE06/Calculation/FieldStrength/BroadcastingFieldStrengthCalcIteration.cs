@@ -36,6 +36,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         private readonly IObjectPool<short[]> _reliefArrayPool;
         private readonly IObjectPool<short[]> _heightArrayPool;
         private readonly IEarthGeometricService _earthGeometricService;
+        private readonly ITransformation _transformation;
 
 
 
@@ -175,7 +176,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             ISignalService signalService,
             IEarthGeometricService earthGeometricService,
             IMapService mapService,
-            IObjectPoolSite poolSite)
+            IObjectPoolSite poolSite,
+            ITransformation transformation)
         {
             _signalService = signalService;
             _mapService = mapService;
@@ -187,91 +189,93 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             _buildingArrayPool = _poolSite.GetPool<byte[]>(ObjectPools.GisProfileBuildingArrayObjectPool);
             _reliefArrayPool = _poolSite.GetPool<short[]>(ObjectPools.GisProfileReliefArrayObjectPool);
             _heightArrayPool = _poolSite.GetPool<short[]>(ObjectPools.GisProfileHeightArrayObjectPool);
+            _transformation = transformation;
         }
 
         public BroadcastingFieldStrengthCalcResult Run(ITaskContext taskContext, BroadcastingFieldStrengthCalcData data)
         {
-            //var profileOptions = DefineProfileOptions(data.PropagationModel);
+            var profileOptions = DefineProfileOptions(data.PropagationModel);
 
-            //var indexerBuffer = default(ProfileIndexer[]);
-            //var clutterBuffer = default(byte[]);
-            
-            //var reliefBuffer = default(short[]);
+            var indexerBuffer = default(ProfileIndexer[]);
+            var clutterBuffer = default(byte[]);
 
-            //var profileLenght = 0;
+            var reliefBuffer = default(short[]);
+
+            var profileLenght = 0;
 
             try
             {
-                //if (profileOptions.IsNotEmpty)
-                //{
-                //    //  получаем буффер под профиль
-                //    indexerBuffer = _indexerArrayPool.Take();
+                if (profileOptions.IsNotEmpty)
+                {
+                    //  получаем буффер под профиль
+                    indexerBuffer = _indexerArrayPool.Take();
 
-                //    // расчитываем профиль
-                //    var profileArgs = new CalcProfileIndexersArgs
-                //    {
-                //        AxisXStep = data.MapArea.AxisX.Step,
-                //        AxisYStep = data.MapArea.AxisY.Step,
-                //        AxisYNumber = data.MapArea.AxisY.Number,
-                //        Target = data.TargetCoordinate,
-                //        Point = data.PointCoordinate,
-                //        Location = data.MapArea.LowerLeft
-                //    };
-                //    var profileResult = new CalcProfileIndexersResult
-                //    {
-                //        Indexers = indexerBuffer,
-                //        StartPosition = 0,
-                //        IndexerCount = 0
-                //    };
-                //    _mapService.CalcProfileIndexers(in profileArgs, ref profileResult);
-                //    profileLenght = profileResult.IndexerCount;
+                    // расчитываем профиль
+                    var profileArgs = new CalcProfileIndexersArgs
+                    {
+                        AxisXStep = data.MapArea.AxisX.Step,
+                        AxisYStep = data.MapArea.AxisY.Step,
+                        AxisYNumber = data.MapArea.AxisY.Number,
+                        Target = _transformation.ConvertCoordinateToAtdi( new Wgs84Coordinate { Longitude = data.TargetCoordinate.Longitude, Latitude = data.TargetCoordinate.Latitude  }, data.Projection),
+                        Point = _transformation.ConvertCoordinateToAtdi(new Wgs84Coordinate { Longitude = data.BroadcastingAssignment.SiteParameters.Lon_Dec, Latitude = data.BroadcastingAssignment.SiteParameters.Lat_Dec }, data.Projection),
+                        Location = data.MapArea.LowerLeft
+                    };
+                    var profileResult = new CalcProfileIndexersResult
+                    {
+                        Indexers = indexerBuffer,
+                        StartPosition = 0,
+                        IndexerCount = 0
+                    };
+                    _mapService.CalcProfileIndexers(in profileArgs, ref profileResult);
+                    profileLenght = profileResult.IndexerCount;
 
-                //    // получаем  буферы массивов
-                //    if (profileOptions.Relief)
-                //    {
-                //        reliefBuffer = _reliefArrayPool.Take();
-                //    }
+                    // получаем  буферы массивов
+                    if (profileOptions.Relief)
+                    {
+                        reliefBuffer = _reliefArrayPool.Take();
+                    }
 
-                //    if (profileOptions.Clutter)
-                //    {
-                //        clutterBuffer = _clutterArrayPool.Take();
-                //    }
+                    if (profileOptions.Clutter)
+                    {
+                        clutterBuffer = _clutterArrayPool.Take();
+                    }
 
-                //    var axisXNumber = data.MapArea.AxisX.Number;
-                //    for (int i = 0; i < profileResult.IndexerCount; i++)
-                //    {
-                //        var indexer = indexerBuffer[i];
-                //        var contentIndex = indexer.YIndex * axisXNumber + indexer.XIndex;
+                    var axisXNumber = data.MapArea.AxisX.Number;
+                    for (int i = 0; i < profileResult.IndexerCount; i++)
+                    {
+                        var indexer = indexerBuffer[i];
+                        var contentIndex = indexer.YIndex * axisXNumber + indexer.XIndex;
 
 
-                //        var clutterValue = MapSpecification.DefaultForClutter;
-                //        int clutterH = 0;
-                //        if (profileOptions.Height || profileOptions.Clutter)
-                //        {
-                //            clutterValue = data.ClutterContent[contentIndex];
-                //            if (profileOptions.Clutter)
-                //            {
-                //                clutterBuffer[i] = clutterValue;
+                        var clutterValue = MapSpecification.DefaultForClutter;
+                        int clutterH = 0;
+                        if (profileOptions.Clutter)
+                        {
+                            clutterValue = data.ClutterContent[contentIndex];
+                            clutterBuffer[i] = clutterValue;
+                            //if (profileOptions.Clutter)
+                            //{
+                            //    clutterBuffer[i] = clutterValue;
 
-                //                if (data.CluttersDesc.Frequencies != null && data.CluttersDesc.Frequencies.Length > 0 &&
-                //                    data.CluttersDesc.Frequencies[0].Clutters != null)
-                //                {
-                //                    clutterH = data.CluttersDesc.Frequencies[0].Clutters[clutterValue].Height_m;// добавить проверку что это существует.
-                //                }
-                //            }
-                //        }
+                            //    if (data.CluttersDesc.Frequencies != null && data.CluttersDesc.Frequencies.Length > 0 &&
+                            //        data.CluttersDesc.Frequencies[0].Clutters != null)
+                            //    {
+                            //        clutterH = data.CluttersDesc.Frequencies[0].Clutters[clutterValue].Height_m;// добавить проверку что это существует.
+                            //    }
+                            //}
+                        }
 
-                //        var reliefValue = MapSpecification.DefaultForRelief;
-                //        if (profileOptions.Height || profileOptions.Relief)
-                //        {
-                //            reliefValue = data.ReliefContent[contentIndex];
-                //            if (profileOptions.Relief)
-                //            {
-                //                reliefBuffer[i] = reliefValue;
-                //            }
-                //        }
-                //    }
-                //}
+                        var reliefValue = MapSpecification.DefaultForRelief;
+                        if (profileOptions.Height || profileOptions.Relief)
+                        {
+                            reliefValue = data.ReliefContent[contentIndex];
+                            if (profileOptions.Relief)
+                            {
+                                reliefBuffer[i] = reliefValue;
+                            }
+                        }
+                    }
+                }
 
 
                 var pointSourceArgs = new PointEarthGeometric() { Longitude = data.BroadcastingAssignment.SiteParameters.Lon_Dec, Latitude = data.BroadcastingAssignment.SiteParameters.Lat_Dec, CoordinateUnits= CoordinateUnits.deg};
@@ -340,7 +344,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 List<LandSea> landSeaList = new List<LandSea>();
                 bool h2aboveSea = false;
 
-                double px2km = d_km / (data.ReliefContent.Length - 1);
+                double px2km = d_km / (profileLenght - 1);
                 double aboveLand_px = 0;
                 double aboveSea_px = 0;
                 int hMedDist_px = 0;
@@ -371,12 +375,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 {
                     // calculate effective height
                     int minDistToHeff_px = (int)(3.0 / px2km);
-                    int maxDistToHeff_px = (int)Math.Min(15.0 / px2km, data.ReliefContent.Length);
+                    int maxDistToHeff_px = (int)Math.Min(15.0 / px2km, profileLenght - 1);
                     if (minDistToHeff_px < maxDistToHeff_px)
                     {
                         for (int i = minDistToHeff_px; i < maxDistToHeff_px; i++)
                         {
-                            effectiveHeight += data.ReliefContent[0] - data.ReliefContent[i];
+                            effectiveHeight += reliefBuffer[0] - reliefBuffer[i];
                             hMedDist_px++;
 
                         }
@@ -394,23 +398,23 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 //
                 if (data.ClutterContent != null)
                 {
-                    for (int i = 0; i < data.ClutterContent.Length; i++)
+                    for (int i = 0; i < profileLenght; i++)
                     {
                         // coast line intersection condition
-                        if (i > 0 && data.ClutterContent[i - 1] != data.ClutterContent[i] &&
-                            (data.ClutterContent[i - 1] == waterClutter || data.ClutterContent[i] == waterClutter) &&
+                        if (i > 0 && clutterBuffer[i - 1] != clutterBuffer[i] &&
+                            (clutterBuffer[i - 1] == waterClutter || clutterBuffer[i] == waterClutter) &&
                             (aboveSea_px != 0 && aboveLand_px != 0) ||
-                            i == data.ClutterContent.Length - 1)
+                            i == clutterBuffer.Length - 1)
                         {
                             landSeaList.Add(new LandSea { land = aboveLand_px * px2km, sea = aboveSea_px * px2km });
                             aboveSea_px = 0;
                             aboveLand_px = 0;
                         }
                         // count relief points that belongs to land or sea propagation
-                        if (data.ClutterContent[i] == waterClutter)
+                        if (clutterBuffer[i] == waterClutter)
                         {
                             aboveSea_px++;
-                            if (i == data.ClutterContent.Length - 1)
+                            if (i == clutterBuffer.Length - 1)
                             {
                                 h2aboveSea = true;
                             }
@@ -485,22 +489,22 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             {
                 throw;
             }
-            //finally
-            //{
-            //    if (indexerBuffer != null)
-            //    {
-            //        _indexerArrayPool.Put(indexerBuffer);
-            //    }
-            //    if (clutterBuffer != null)
-            //    {
-            //        _clutterArrayPool.Put(clutterBuffer);
-            //    }
-                
-            //    if (reliefBuffer != null)
-            //    {
-            //        _reliefArrayPool.Put(reliefBuffer);
-            //    }
-            //}
+            finally
+            {
+                if (indexerBuffer != null)
+                {
+                    _indexerArrayPool.Put(indexerBuffer);
+                }
+                if (clutterBuffer != null)
+                {
+                    _clutterArrayPool.Put(clutterBuffer);
+                }
+
+                if (reliefBuffer != null)
+                {
+                    _reliefArrayPool.Put(reliefBuffer);
+                }
+            }
         }
 
         private static ProfileOptions DefineProfileOptions(PropagationModel propagModel)
