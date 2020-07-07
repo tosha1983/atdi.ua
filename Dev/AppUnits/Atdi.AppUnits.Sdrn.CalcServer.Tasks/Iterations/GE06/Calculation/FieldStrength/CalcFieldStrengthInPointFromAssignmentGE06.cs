@@ -59,6 +59,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     MapArea = projectMapData.Area,
                     ClutterContent = projectMapData.ClutterContent,
                     ReliefContent = projectMapData.ReliefContent,
+                    Projection = projection,
                     TargetCoordinate = new PointEarthGeometric() { Longitude = point.Longitude, Latitude = point.Latitude, CoordinateUnits = CoordinateUnits.deg },
                 };
                 var iterationCorellationCalc = iterationsPool.GetIteration<BroadcastingFieldStrengthCalcData, BroadcastingFieldStrengthCalcResult>();
