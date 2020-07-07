@@ -11,6 +11,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.Gis
     public class TransformationService : ITransformation
     {
         private const uint Epsg4326 = 4326;
+        private const uint Epsg3035 = 3035;
         private const uint PrefixEpsgN = 326;
         private const uint PrefixEpsgS = 327;
         private const string PrefixAtdiProjectionN = "4UTN";
@@ -195,7 +196,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.Gis
                     var code = epsgCodeString.Replace(PrefixEpsgS.ToString(), "");
                     return PrefixAtdiProjectionS + code;
                 }
-                else if (epsgCodeString.StartsWith(Epsg4326.ToString()))
+                else if ((epsgCodeString.StartsWith(Epsg4326.ToString())) || (epsgCodeString.StartsWith(Epsg3035.ToString()))) 
                 {
                     return PrefixAtdiProjectionEPSG + epsgCode.ToString();
                 }
