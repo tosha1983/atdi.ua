@@ -179,7 +179,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             isSuccess = false;
                         }
                         //EffHeight_m
-                        if (assignments[i].AntennaCharacteristics.EffHeight_m != null)
+                        if ((assignments[i].AntennaCharacteristics.EffHeight_m != null) && (assignments[i].AntennaCharacteristics.EffHeight_m.Length>0))
                         {
                             if (assignments[i].AntennaCharacteristics.EffHeight_m.Length != 36)
                             {
@@ -240,7 +240,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                 {
                                     isSuccess = false;
                                 }
-                                else if (assignments[i].AntennaCharacteristics.DiagrV != null)
+                                else if ((assignments[i].AntennaCharacteristics.DiagrV != null) && (assignments[i].AntennaCharacteristics.DiagrV.Length>0))
                                 {
                                     if (assignments[i].AntennaCharacteristics.DiagrV.Length != 36)
                                     {
@@ -263,7 +263,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                 {
                                     isSuccess = false;
                                 }
-                                else if (assignments[i].AntennaCharacteristics.DiagrH != null)
+                                else if ((assignments[i].AntennaCharacteristics.DiagrH != null) && (assignments[i].AntennaCharacteristics.DiagrH.Length>0))
                                 {
                                     if (assignments[i].AntennaCharacteristics.DiagrH.Length != 36)
                                     {
