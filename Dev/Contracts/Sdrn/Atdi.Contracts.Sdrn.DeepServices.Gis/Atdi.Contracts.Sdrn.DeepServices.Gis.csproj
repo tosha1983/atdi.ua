@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IMapService.cs" />
+    <Compile Include="IMapStorage.cs" />
     <Compile Include="ITransformation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

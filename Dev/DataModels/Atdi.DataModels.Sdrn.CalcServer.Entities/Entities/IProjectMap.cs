@@ -33,6 +33,10 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 
 		string StatusNote { get; set; }
 
+		byte? SourceTypeCode { get; set; }
+
+		string SourceTypeName { get; set; }
+
 		string StepUnit { get; set; }
 
 		int OwnerAxisXNumber { get; set; }
@@ -91,5 +95,20 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 		/// Карта более неактуальна для использования
 		/// </summary>
 		Archived = 5
+	}
+
+	public enum ProjectMapSourceTypeCode
+	{
+		Unknown = 0,
+
+		/// <summary>
+		/// Используемая карта размещена в локальном хранилище
+		/// </summary>
+		LocalStorage = 1,
+
+		/// <summary>
+		/// Используемая карта поставляется Ифоцентром
+		/// </summary>
+		Infocenter = 2
 	}
 }

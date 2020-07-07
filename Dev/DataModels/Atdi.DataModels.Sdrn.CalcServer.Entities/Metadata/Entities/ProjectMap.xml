@@ -23,7 +23,8 @@
     <Field Name="StatusName" SourceType="Column" SourceName="STATUS_NAME" DataType="Text.50" Title="Status Name" Desc="The name of the status of the project map" />
     <Field Name="StatusNote" SourceType="Column" SourceName="STATUS_NOTE" DataType="Text.MAX" Title="Status Note" Desc="The note of the status of the project map"/>
 
-    
+    <Field Name="SourceTypeCode" SourceType="Column" SourceName="SOURCE_TYPE_CODE" DataType="Code.u08" Required="false" Title="Source Type Code" Desc="The code of the source type of the project map"  />
+    <Field Name="SourceTypeName" SourceType="Column" SourceName="SOURCE_TYPE_NAME" DataType="Text.50" Required="false" Title="Source Type Name" Desc="The name of the source type  of the project map" />
 
     <Field Name="StepUnit" DataType="Text.10" SourceName="STEP_UNIT" SourceType="Column" Desc="The unit of the map step" Title="Step unit" Required="true"/>
 
