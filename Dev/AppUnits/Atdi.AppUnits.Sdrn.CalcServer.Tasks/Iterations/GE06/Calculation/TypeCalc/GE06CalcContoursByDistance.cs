@@ -53,10 +53,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
             var affectedServices = new List<string>();
 
-            //if (((GE06Validation.ValidationAssignment(broadcastingContextBase.Assignments)) && (GE06Validation.ValidationAllotment(broadcastingContextBase.Allotments))) == false)
-            //{
-            //    throw new Exception("Input parameters failed validation");
-            //}
+            if (((GE06Validation.ValidationAssignment(broadcastingContextBase.Assignments)) && (GE06Validation.ValidationAllotment(broadcastingContextBase.Allotments))) == false)
+            {
+                throw new Exception("Input parameters failed validation");
+            }
 
 
             if (broadcastingContextBase.Allotments != null)
