@@ -15,7 +15,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.Gis
         private const uint PrefixEpsgS = 327;
         private const string PrefixAtdiProjectionN = "4UTN";
         private const string PrefixAtdiProjectionS = "4UTS";
-
+        private const string PrefixAtdiProjectionEPSG = "EPSG";
 
         public TransformationService()
         {
@@ -219,6 +219,11 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.Gis
                 {
                     var code = atdiProjection.Replace(PrefixAtdiProjectionS, "");
                     return Convert.ToUInt32(PrefixEpsgS.ToString() + code);
+                }
+                else if (atdiProjection.Contains(PrefixAtdiProjectionEPSG))
+                {
+                    var code = atdiProjection.Replace(PrefixAtdiProjectionEPSG, "");
+                    return Convert.ToUInt32(code);
                 }
                 else
                 {

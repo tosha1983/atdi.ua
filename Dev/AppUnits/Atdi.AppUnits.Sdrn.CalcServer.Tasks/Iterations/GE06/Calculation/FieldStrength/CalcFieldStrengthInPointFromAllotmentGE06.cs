@@ -36,7 +36,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                 IGn06Service gn06Service,
                                 ProjectMapData projectMapData,
                                 CluttersDesc cluttersDesc,
-                                string projection
+                                string projection,
+                                float Hrx_m 
                                 )
         {
             var pointEarthGeometricsResult = default(PointEarthGeometric[]);
@@ -127,7 +128,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                                                                                        gn06Service,
                                                                                                                        projectMapData,
                                                                                                                        cluttersDesc,
-                                                                                                                       projection);
+                                                                                                                       projection,
+                                                                                                                       Hrx_m);
                     lstFieldStrengthAssignments[k] = resultFieldStrengthInPointFromAssignmentGE06;
                 }
 

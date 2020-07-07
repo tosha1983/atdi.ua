@@ -65,7 +65,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                                                                         gn06Service,
                                                                                                         ge06CalcData.MapData,
                                                                                                         ge06CalcData.CluttersDesc,
-                                                                                                        ge06CalcData.Projection
+                                                                                                        ge06CalcData.Projection,
+                                                                                                        ge06CalcData.Ge06TaskParameters.SubscribersHeight.Value
                                                                                                         );
             }
             //3.Если есть BroadcastingAssignment, то рассчитать напряженность поля от каждой из них(2.2.4).При этом если станций несколько, то определяем суммарную напряженность поля для станций с одинаковым SFN_id методом суммирования мощностей(2.2.2).
@@ -95,7 +96,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                                                                                                 gn06Service,
                                                                                                                                 ge06CalcData.MapData,
                                                                                                                                 ge06CalcData.CluttersDesc,
-                                                                                                                                ge06CalcData.Projection
+                                                                                                                                ge06CalcData.Projection,
+                                                                                                                                ge06CalcData.Ge06TaskParameters.SubscribersHeight.Value
                                                                                                                                 );
 
                             }

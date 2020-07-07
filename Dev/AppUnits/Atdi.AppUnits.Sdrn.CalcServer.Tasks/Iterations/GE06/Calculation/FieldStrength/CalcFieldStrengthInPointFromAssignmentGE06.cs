@@ -36,7 +36,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                                        IGn06Service gn06Service,
                                                                        ProjectMapData projectMapData,
                                                                        CluttersDesc cluttersDesc,
-                                                                       string projection)
+                                                                       string projection,
+                                                                       float Hrx_m)
         {
             float resultCalcFieldStrength = 0;
 
@@ -61,6 +62,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     ReliefContent = projectMapData.ReliefContent,
                     Projection = projection,
                     TargetCoordinate = new PointEarthGeometric() { Longitude = point.Longitude, Latitude = point.Latitude, CoordinateUnits = CoordinateUnits.deg },
+                    TargetAltitude_m = Hrx_m
                 };
                 var iterationCorellationCalc = iterationsPool.GetIteration<BroadcastingFieldStrengthCalcData, BroadcastingFieldStrengthCalcResult>();
                 var resFieldStrengthCalcResult = iterationCorellationCalc.Run(taskContext, broadcastingFieldStrengthCalcData);
