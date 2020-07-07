@@ -481,7 +481,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 return new BroadcastingFieldStrengthCalcResult
                 {
                     FS_dBuVm = FSfor1kW_dBuVm + ERP_dBW - 30,
-                    Level_dBm = FSfor1kW_dBuVm + ERP_dBW - 30 + 139.3 + 20 * Math.Log10(data.BroadcastingAssignment.EmissionCharacteristics.Freq_MHz)
+                    Level_dBm = FS_dBuVm - 139.3 - 20 * Math.Log10(data.BroadcastingAssignment.EmissionCharacteristics.Freq_MHz)
                     //AntennaPatternLoss_dB = antennaPatternLoss_dB
                 };
             }
