@@ -7,6 +7,7 @@ using Atdi.DataModels.Sdrn.CalcServer.Entities;
 using Atdi.Platform.Cqrs;
 using Atdi.DataModels.Sdrn.DeepServices.GN06;
 using ICSM;
+using System.Globalization;
 
 namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
 {
@@ -209,24 +210,12 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
             }
             return values.ToArray();
         }
-        public static float[] ConvertToDiagrH(string value)
+        public static float[] ConvertToDiagr(string value)
         {
-            value.Replace("VECTOR ", "");
-            var splitVariants = new char[] { ',', ';', ' ' };
+            string sep = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+            var valueA = value.Replace("VECTOR 10 ", "").Replace(".", sep);
             var values = new List<float>();
-            foreach (var item in value.Split(splitVariants))
-            {
-                if (float.TryParse(item, out float val))
-                    values.Add(val);
-            }
-            return values.ToArray();
-        }
-        public static float[] ConvertToDiagrV(string value)
-        {
-            value.Replace("VECTOR ", "");
-            var splitVariants = new char[] { ',', ';', ' ' };
-            var values = new List<float>();
-            foreach (var item in value.Split(splitVariants))
+            foreach (var item in valueA.Split(' '))
             {
                 if (float.TryParse(item, out float val))
                     values.Add(val);

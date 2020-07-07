@@ -13,6 +13,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
         public AssignmentsAllotmentsSourceType Source { get; set; }
         public AssignmentsAllotmentsModelType Type { get; set; }
         public string ViewName { get; set; }
+        public string PlanAssgnNo { get; set; }
 
         // AdministrativeData
         public string Adm { get; set; }
