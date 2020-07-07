@@ -226,17 +226,5 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
             }
             return values.ToArray();
         }
-        public static short[] ConvertToContourId(string value)
-        {
-            var splitVariants = new char[] { ',', ';', ' ' };
-            var values = new List<short>();
-            foreach (var item in value.Split(splitVariants))
-            {
-                if (short.TryParse(item, out short val))
-                    values.Add(val);
-            }
-            return values.ToArray();
-        }
-
     }
 }

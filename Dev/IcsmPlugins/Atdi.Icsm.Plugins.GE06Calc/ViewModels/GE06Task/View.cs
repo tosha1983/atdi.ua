@@ -98,7 +98,6 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                 RedrawMap();
             }
         }
-
         public bool ConformityCheckEnabled
         {
             get => this._conformityCheckEnabled;
@@ -109,7 +108,6 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
             get => this._findAffectedEnabled;
             set => this.Set(ref this._findAffectedEnabled, value);
         }
-
         public IMQueryMenuNode.Context Context
         {
             get => this._context;
@@ -211,13 +209,6 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                                 {
                                     this._assignmentsAllotmentsList.AddRange(allotsBrific);
                                 }
-
-                                var allotsIcsm = _objectReader.Read<List<AssignmentsAllotmentsModel>>().By(new GetIcsmAllotmentsByAdmRefId { Adm_Ref_Id = allotAssign.AdmRefId });
-                                if (allotsIcsm != null)
-                                {
-                                    this._assignmentsAllotmentsList.AddRange(allotsIcsm);
-                                }
-
                                 foreach (var item in allotsBrific)
                                 {
                                     if (!string.IsNullOrEmpty(item.AdmRefId))
@@ -228,6 +219,12 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                                             this._assignmentsAllotmentsList.AddRange(assignBrific);
                                         }
                                     }
+                                }
+
+                                var allotsIcsm = _objectReader.Read<List<AssignmentsAllotmentsModel>>().By(new GetIcsmAllotmentsByAdmRefId { Adm_Ref_Id = allotAssign.AdmRefId });
+                                if (allotsIcsm != null)
+                                {
+                                    this._assignmentsAllotmentsList.AddRange(allotsIcsm);
                                 }
                             }
 
@@ -423,7 +420,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
             if (this.AssignmentsAllotmentsArray.Where(c => c.Source == AssignmentsAllotmentsSourceType.Brific && c.Type == AssignmentsAllotmentsModelType.Allotment).Count() > 1
                 || this.AssignmentsAllotmentsArray.Where(c => c.Source == AssignmentsAllotmentsSourceType.ICSM && c.Type == AssignmentsAllotmentsModelType.Allotment).Count() > 1)
             {
-                _starter.ShowException("Warning!", new Exception($"Еhe table cannot have more than one Allotment"));
+                _starter.ShowException("Warning!", new Exception($"The table cannot have more than one Allotment"));
                 return;
             }
 
