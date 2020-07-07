@@ -37,6 +37,8 @@
 
 	public sealed class CalcEvent : ICalcEvent
 	{
+		public string Type { get; set; }
+
 		public string Message { get; set; }
 		public float Percent { get; set; }
 		public int CurrentStep { get; set; }

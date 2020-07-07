@@ -276,6 +276,10 @@ namespace Atdi.CoreServices.DataLayer.Oracle
             if (parameter.DataType == DataType.String && parameter.Value != null)
             {
                 sqlParameter.Size = Convert.ToString(parameter.Value).Length;
+                if (sqlParameter.Size > (32 * 1024))
+                {
+	                sqlParameter.OracleDbType = OracleDbType.NClob;
+                }
             }
             if (parameter.DataType == DataType.Bytes && parameter.Value != null)
             {
@@ -341,9 +345,10 @@ namespace Atdi.CoreServices.DataLayer.Oracle
                     return OracleDbType.Decimal;
                 case DataType.ClrType:
                     return OracleDbType.Blob;
-                case DataType.Undefined:
                 case DataType.Json:
-                default:
+	                return OracleDbType.NClob;
+				case DataType.Undefined:
+				default:
                     throw new InvalidCastException($"Unsupported DataType with name '{dataType}'");
             }
 

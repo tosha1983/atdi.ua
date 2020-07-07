@@ -267,7 +267,8 @@ namespace Atdi.CoreServices.DataLayer.SqlServer
         {
             switch (dataType)
             {
-                case DataType.String:
+	            case DataType.Json:
+				case DataType.String:
                     return SqlDbType.NVarChar;
                 case DataType.Boolean:
                     return SqlDbType.Bit;
@@ -315,8 +316,7 @@ namespace Atdi.CoreServices.DataLayer.SqlServer
                     return SqlDbType.Decimal;
                 case DataType.ClrType:
                     return SqlDbType.VarBinary;
-                case DataType.Json:
-                case DataType.Undefined:
+	            case DataType.Undefined:
                 default:
                     throw new InvalidCastException($"Unsupported DataType with name '{dataType}'");
             }
