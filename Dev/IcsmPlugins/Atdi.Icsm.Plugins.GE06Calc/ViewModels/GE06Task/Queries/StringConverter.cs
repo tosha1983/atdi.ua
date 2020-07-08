@@ -37,24 +37,17 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
         }
         public static PlanEntryType ConvertToPlanEntryType(int value)
         {
-            if (value != IM.NullI)
-            {
-                if (value == 1)
-                    return PlanEntryType.SingleAssignment;
-                else if (value == 2)
-                    return PlanEntryType.SFN;
-                else if (value == 3)
-                    return PlanEntryType.Allotment;
-                else if (value == 4)
-                    return PlanEntryType.AllotmentWithLinkedAssignmentAndSfn;
-                else if (value == 5)
-                    return PlanEntryType.AllotmentWithSingleLinkedAssignmentAndNoSfn;
-                else if (value == 1)
-                    return PlanEntryType.SingleAssignment;
-                else
-                    return PlanEntryType.Unknown;
-            }
-            else 
+            if (value == 1)
+                return PlanEntryType.SingleAssignment;
+            else if (value == 2)
+                return PlanEntryType.SFN;
+            else if (value == 3)
+                return PlanEntryType.Allotment;
+            else if (value == 4)
+                return PlanEntryType.AllotmentWithLinkedAssignmentAndSfn;
+            else if (value == 5)
+                return PlanEntryType.AllotmentWithSingleLinkedAssignmentAndNoSfn;
+            else
                 return PlanEntryType.Unknown;
         }
         public static AssignmentCodeType ConvertToAssignmentCodeType(string value)
