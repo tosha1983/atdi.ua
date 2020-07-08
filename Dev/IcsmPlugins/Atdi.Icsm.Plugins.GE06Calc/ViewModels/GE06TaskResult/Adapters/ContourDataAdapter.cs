@@ -36,6 +36,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06TaskResult.Adapters
             {
                 Id = reader.GetValue(c => c.Id),
                 Gn06ResultId = reader.GetValue(c => c.Gn06ResultId),
+                ContourType = reader.GetValue(c => c.ContourType),
                 Distance = reader.GetValue(c => c.Distance),
                 FS = reader.GetValue(c => c.FS),
                 AffectedADM = reader.GetValue(c => c.AffectedADM),
