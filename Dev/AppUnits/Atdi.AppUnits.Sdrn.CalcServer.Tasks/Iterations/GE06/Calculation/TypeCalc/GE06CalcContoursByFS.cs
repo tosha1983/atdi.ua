@@ -135,7 +135,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
                         // модель из контекста, высота абонента из формы, процент времени из формы
                         var propModel = ge06CalcData.PropagationModel;
-                        GE06PropagationModel.GetPropagationModelForContoursByFS(ref propModel, 50, (float)ge06CalcData.Ge06TaskParameters.PercentageTime.Value, ge06CalcData.Ge06TaskParameters.SubscribersHeight.Value);
+                        GE06PropagationModel.GetPropagationModelForContoursByFS(ref propModel, 50, (float)ge06CalcData.Ge06TaskParameters.PercentageTime.Value);
                         ge06CalcData.PropagationModel = propModel;
 
 

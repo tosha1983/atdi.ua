@@ -254,7 +254,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
                 var d_km = Step;
                 var coordRecalc = CalculationCoordinateByLengthAndAzimuth(in contourForStationByTriggerFieldStrengthsArgs.BaryCenter, d_km, azimuth);
                 calcFieldStrength = calcFieldStrengths(coordRecalc);
-                while ((Math.Abs(calcFieldStrength - contourForStationByTriggerFieldStrengthsArgs.TriggerFieldStrength) > epsilon) || (Step > MinStep_m) || (cntIteration < 20))
+                while ((Math.Abs(calcFieldStrength - contourForStationByTriggerFieldStrengthsArgs.TriggerFieldStrength) > epsilon) && (Step > MinStep_m) && (cntIteration < 20))
                 {
                     Step = Step / 2.0;
                     if (calcFieldStrength > contourForStationByTriggerFieldStrengthsArgs.TriggerFieldStrength)
@@ -265,49 +265,10 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
                     calcFieldStrength = calcFieldStrengths(coordRecalc);
                     cntIteration++;
                 }
-                
-
-                
-                //var coordRecalc = CalculationCoordinateByLengthAndAzimuth(in contourForStationByTriggerFieldStrengthsArgs.BaryCenter, d0_m, azimuth);
-                //var calcFieldStrength = calcFieldStrengths(coordRecalc);
-                //var d1_m = d0_m;
-                //while (true)
-                //{
-                //    if (calcFieldStrength < contourForStationByTriggerFieldStrengthsArgs.TriggerFieldStrength)
-                //    {
-                //        d1_m -= (d1_m / step);
-                //        coordRecalc = CalculationCoordinateByLengthAndAzimuth(in contourForStationByTriggerFieldStrengthsArgs.BaryCenter, d1_m, azimuth);
-                //        calcFieldStrength = calcFieldStrengths(coordRecalc);
-                //    }
-                //    else if (calcFieldStrength > contourForStationByTriggerFieldStrengthsArgs.TriggerFieldStrength)
-                //    {
-                //        d1_m += (d1_m / step);
-                //        coordRecalc = CalculationCoordinateByLengthAndAzimuth(in contourForStationByTriggerFieldStrengthsArgs.BaryCenter, d1_m, azimuth);
-                //        calcFieldStrength = calcFieldStrengths(coordRecalc);
-                //    }
-
-                //    if (d1_m == 0)
-                //    {
-                //        d1_m = d0_m;
-                //        if (cntIteration > 10)
-                //        {
-                //            step = 10;
-                //        }
-                //    }
-
-                //    if ((Math.Abs(calcFieldStrength -contourForStationByTriggerFieldStrengthsArgs.TriggerFieldStrength)< epsilon) || (d1_m < mindistance_m))
-                //    {
-                //        pointResult[index] = coordRecalc;
-                //        pointResult[index].CoordinateUnits = CoordinateUnits.deg;
-                //        break;
-                //    }
-                //    if (cntIteration > 10)
-                //    {
-                //        step = 10;
-                //    }
-
-                //    cntIteration++;
-                //}
+                pointResult[index] = new PointEarthGeometric();
+                pointResult[index].Longitude = coordRecalc.Longitude;
+                pointResult[index].Latitude = coordRecalc.Latitude;
+                pointResult[index].CoordinateUnits = CoordinateUnits.deg;
                 index++;
             }
             sizeResultBuffer = index;

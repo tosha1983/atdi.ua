@@ -229,7 +229,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
                                 //3.Расчет напряженности поля в точках(2.2) для BR IFIC(Модель распространения 1546, процент территории 50, процент времени 1, высота абонента 10м).
                                 var propModel = ge06CalcData.PropagationModel;
-                                GE06PropagationModel.GetPropagationModelForConformityCheck(ref propModel, 50, 1, 10);
+                                GE06PropagationModel.GetPropagationModelForConformityCheck(ref propModel, 50, 1);
                                 ge06CalcData.PropagationModel = propModel;
 
 
@@ -266,7 +266,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
                                 //4.Расчет напряженности поля в точках(2.2) для ICSM (Модель распространения 1546, процент территории 50, процент времени 1, высота абонента 10м).
                                 propModel = ge06CalcData.PropagationModel;
-                                GE06PropagationModel.GetPropagationModelForConformityCheck(ref propModel, 50, 1, 10);
+                                GE06PropagationModel.GetPropagationModelForConformityCheck(ref propModel, 50, 1);
                                 ge06CalcData.PropagationModel = propModel;
 
                                 var countoursPointICSM = new CountoursPoint();
@@ -320,7 +320,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                     };
 
                                     var propModel = ge06CalcData.PropagationModel;
-                                    GE06PropagationModel.GetPropagationModelForConformityCheck(ref propModel, 50, 1, 10);
+                                    GE06PropagationModel.GetPropagationModelForConformityCheck(ref propModel, 50, 1);
                                     ge06CalcData.PropagationModel = propModel;
 
                                     earthGeometricService.CreateContourForStationByTriggerFieldStrengths((destinationPoint) => GE06CalcContoursByFS.CalcFieldStrengthBRIFIC(destinationPoint,
@@ -351,7 +351,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                             // Расчет напряженности поля в каждой точке, полученной для контура в п 6: для BroadcastingAssignment[] +BroadcastingAllotment(ICSM) используя функцию 2.2.(Модель распространения 1546, процент территории 50, процент времени 1, высота абонента 10м).
 
                                             propModel = ge06CalcData.PropagationModel;
-                                            GE06PropagationModel.GetPropagationModelForConformityCheck(ref propModel, 50, 1, 10);
+                                            GE06PropagationModel.GetPropagationModelForConformityCheck(ref propModel, 50, 1);
                                             ge06CalcData.PropagationModel = propModel;
 
                                             var fs = (int)CalcFieldStrengthInPointGE06.Calc(ge06CalcData,
@@ -458,7 +458,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                             };
                                             //3.Расчет напряженности поля в точках(2.2) для BR IFIC(Модель распространения 1546, процент территории 50, процент времени 1, высота абонента 10м).
                                             var propModel = ge06CalcData.PropagationModel;
-                                            GE06PropagationModel.GetPropagationModelForConformityCheck(ref propModel, 50, 1, 10);
+                                            GE06PropagationModel.GetPropagationModelForConformityCheck(ref propModel, 50, 1);
                                             ge06CalcData.PropagationModel = propModel;
 
 
@@ -494,7 +494,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
 
                                             propModel = ge06CalcData.PropagationModel;
-                                            GE06PropagationModel.GetPropagationModelForConformityCheck(ref propModel, 50, 1, 10);
+                                            GE06PropagationModel.GetPropagationModelForConformityCheck(ref propModel, 50, 1);
                                             ge06CalcData.PropagationModel = propModel;
 
                                             //4.Расчет напряженности поля в точках(2.2) для ICSM (Модель распространения 1546, процент территории 50, процент времени 1, высота абонента 10м).
@@ -555,7 +555,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                 };
 
                                                 var propModel = ge06CalcData.PropagationModel;
-                                                GE06PropagationModel.GetPropagationModelForConformityCheck(ref propModel, 50, 1, 10);
+                                                GE06PropagationModel.GetPropagationModelForConformityCheck(ref propModel, 50, 1);
                                                 ge06CalcData.PropagationModel = propModel;
 
                                                 earthGeometricService.CreateContourForStationByTriggerFieldStrengths((destinationPoint) => GE06CalcContoursByFS.CalcFieldStrengthBRIFIC(destinationPoint,
@@ -583,7 +583,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                         };
 
                                                         propModel = ge06CalcData.PropagationModel;
-                                                        GE06PropagationModel.GetPropagationModelForConformityCheck(ref propModel, 50, 1, 10);
+                                                        GE06PropagationModel.GetPropagationModelForConformityCheck(ref propModel, 50, 1);
                                                         ge06CalcData.PropagationModel = propModel;
 
                                                         // Расчет напряженности поля в каждой точке, полученной для контура в п 6: для BroadcastingAssignment[] +BroadcastingAllotment(ICSM) используя функцию 2.2.(Модель распространения 1546, процент территории 50, процент времени 1, высота абонента 10м).
