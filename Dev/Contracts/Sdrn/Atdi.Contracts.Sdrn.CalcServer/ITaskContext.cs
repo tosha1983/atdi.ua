@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Atdi.DataModels.Sdrn.CalcServer;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,7 +19,9 @@ namespace Atdi.Contracts.Sdrn.CalcServer
 
 		long ClientContextId { get; }
 
-		void SendEvent(ICalcEvent @event);
+		void SendEvent<TData>(CalcResultEvent<TData> @event);
+
+		void SendEvent(CalcResultEvent @event);
 
 		//TResult RunIteration<TData, TResult>(TData data);
 

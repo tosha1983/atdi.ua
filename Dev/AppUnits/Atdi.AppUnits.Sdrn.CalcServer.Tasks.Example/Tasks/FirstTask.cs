@@ -8,6 +8,7 @@ using Atdi.Contracts.CoreServices.DataLayer;
 using Atdi.Contracts.CoreServices.EntityOrm;
 using Atdi.Contracts.Sdrn.CalcServer;
 using Atdi.DataModels.Sdrn.CalcServer;
+using Atdi.DataModels.Sdrn.CalcServer.Entities;
 using Atdi.Platform.Logging;
 
 namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Example.Tasks
@@ -63,9 +64,32 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Example.Tasks
 
 				var firstData = new FirstIterationData();
 				var firstResult = _iterationsPool.GetIteration<FirstIterationData, FirstIterationResult>().Run(_taskContext, firstData);
-				
+
 				// в процессе можно генерировать евенты
-				_taskContext.SendEvent(new CalcEvent{ Message = "Some step", Percent = 10});
+
+				// так сообщим клиенту как мы будет двигать прогепс
+				_taskContext.SendEvent(new CalcResultEvent<ProgressOption>
+				{
+					Level = CalcResultEventLevel.Info,
+					Context = "Итерация №123",
+					Message = "Некоторое сообщение",
+					Data = new ProgressOption
+					{
+						Bound = 100, // до 100 %
+						Unit = "%"
+					}
+				});
+
+				_taskContext.SendEvent(new CalcResultEvent<CurrentProgress>
+				{
+					Level = CalcResultEventLevel.Info,
+					Context = "Итерация №123",
+					Message = "Некоторое сообщение",
+					Data = new CurrentProgress
+					{
+						State = 10 // 10%
+					}
+				});
 			}
 			catch (Exception e)
 			{
