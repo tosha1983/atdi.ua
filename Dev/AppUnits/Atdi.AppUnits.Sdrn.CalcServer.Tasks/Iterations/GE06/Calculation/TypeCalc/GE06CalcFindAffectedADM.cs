@@ -210,7 +210,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
                                 // Модель распространения 1546, процент территории 50, процент времени 1, высота абонента 10м
                                 var propModel = ge06CalcData.PropagationModel;
-                                GE06PropagationModel.GetPropagationModelForFindAffectedADM(ref propModel, 50, 1, 10);
+                                GE06PropagationModel.GetPropagationModelForFindAffectedADM(ref propModel, 50, 1);
                                 ge06CalcData.PropagationModel = propModel;
 
                                 earthGeometricService.CreateContourForStationByTriggerFieldStrengths((destinationPoint) => GE06CalcContoursByFS.CalcFieldStrengthICSM(destinationPoint, ge06CalcData, pointEarthGeometricPool, iterationHandlerBroadcastingFieldStrengthCalcData, iterationHandlerFieldStrengthCalcData, poolSite, transformation, taskContext, gn06Service), in contourForStationByTriggerFieldStrengthsArgs, ref pointEarthGeometricsResultICSM, out int sizeResultBufferICSM);
@@ -321,7 +321,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
                                     // Модель распространения 1546, процент территории 50, процент времени c таблиц пороговых значений, высота абонента c таблиц пороговых значений
                                     var propModel = ge06CalcData.PropagationModel;
-                                    GE06PropagationModel.GetPropagationModelForFindAffectedADM(ref propModel, 50, triggerInformation.Time_pc, triggerInformation.Height_m);
+                                    GE06PropagationModel.GetPropagationModelForFindAffectedADM(ref propModel, 50, triggerInformation.Time_pc);
                                     ge06CalcData.PropagationModel = propModel;
 
                                     earthGeometricService.CreateContourForStationByTriggerFieldStrengths((destinationPoint) => GE06CalcContoursByFS.CalcFieldStrengthICSM(destinationPoint, ge06CalcData, pointEarthGeometricPool, iterationHandlerBroadcastingFieldStrengthCalcData, iterationHandlerFieldStrengthCalcData, poolSite, transformation, taskContext, gn06Service), in contourForStationByTriggerFieldStrengthsArgs, ref pointEarthGeometricsResultAffectedICSM, out int sizeResultBufferRecalcICSM);
@@ -599,7 +599,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
                                     // Модель распространения 1546, процент территории 50, процент времени 1, высота абонента 10м
                                     var propModel = ge06CalcData.PropagationModel;
-                                    GE06PropagationModel.GetPropagationModelForFindAffectedADM(ref propModel, 50, 1, 10);
+                                    GE06PropagationModel.GetPropagationModelForFindAffectedADM(ref propModel, 50, 1);
                                     ge06CalcData.PropagationModel = propModel;
 
                                     earthGeometricService.CreateContourForStationByTriggerFieldStrengths((destinationPoint) => GE06CalcContoursByFS.CalcFieldStrengthICSM(destinationPoint, ge06CalcData, pointEarthGeometricPool, iterationHandlerBroadcastingFieldStrengthCalcData, iterationHandlerFieldStrengthCalcData, poolSite, transformation, taskContext, gn06Service), in contourForStationByTriggerFieldStrengthsArgs, ref pointEarthGeometricsResultICSM, out int sizeResultBufferICSM);
@@ -710,7 +710,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
                                         // Модель распространения 1546, процент территории 50, процент времени c таблиц пороговых значений, высота абонента c таблиц пороговых значений
                                         var propModel = ge06CalcData.PropagationModel;
-                                        GE06PropagationModel.GetPropagationModelForFindAffectedADM(ref propModel, 50, triggerInformation.Time_pc, triggerInformation.Height_m);
+                                        GE06PropagationModel.GetPropagationModelForFindAffectedADM(ref propModel, 50, triggerInformation.Time_pc);
                                         ge06CalcData.PropagationModel = propModel;
 
                                         earthGeometricService.CreateContourForStationByTriggerFieldStrengths((destinationPoint) => GE06CalcContoursByFS.CalcFieldStrengthICSM(destinationPoint, ge06CalcData, pointEarthGeometricPool, iterationHandlerBroadcastingFieldStrengthCalcData, iterationHandlerFieldStrengthCalcData, poolSite, transformation, taskContext, gn06Service), in contourForStationByTriggerFieldStrengthsArgs, ref pointEarthGeometricsResultAffectedICSM, out int sizeResultBufferRecalcICSM);
