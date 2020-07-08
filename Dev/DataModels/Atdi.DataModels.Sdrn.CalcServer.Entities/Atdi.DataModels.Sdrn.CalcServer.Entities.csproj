@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\ICalcResultEvent.cs" />
     <Compile Include="Entities\ICalcResult.cs" />
     <Compile Include="Entities\ICluttersDesc.cs" />
     <Compile Include="Entities\ICluttersDescClutter.cs" />
@@ -203,6 +204,7 @@
     <Content Include="DataLayer\Oracle\Tables\CALC.PROJECT_MAPS.sql" />
     <Content Include="DataLayer\Oracle\Tables\CALC.PROJECT_MAP_CONTENTS.sql" />
     <Content Include="DataLayer\Oracle\Tables\CALC.PROJECT_MAP_CONTENT_SOURCES.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.CALCRESULT_EVENTS.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.CALCRESULTS_GN06.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.GN06_AFFECTED_ADM_RESULT.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.GN06_ALLOTMENT_OR_ASSIGNMENT_RESULT.sql" />
@@ -300,6 +302,7 @@
     <Content Include="Metadata\DataTypes\Database\Text.Bytes.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.MAX.xml" />
     <Content Include="Metadata\DataTypes\Database\Time.xml" />
+    <Content Include="Metadata\Entities\CalcResultEvent.xml" />
     <Content Include="Metadata\Entities\CalcResult.xml" />
     <Content Include="Metadata\Entities\CluttersDesc.xml" />
     <Content Include="Metadata\Entities\CluttersDescClutter.xml" />
