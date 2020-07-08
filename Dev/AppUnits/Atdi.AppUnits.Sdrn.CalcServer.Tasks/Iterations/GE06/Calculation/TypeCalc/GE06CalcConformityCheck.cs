@@ -94,7 +94,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
 
 
-            // поиск сведений о попроговых значениях напряженности поля 
+            // поиск сведений о пороговых значениях напряженности поля 
             var thresholdFieldStrengths = new List<ThresholdFieldStrength>();
 
             var thresholdFieldStrengthsBRIFICAllotments = ThresholdFS.GetThresholdFieldStrengthByAllotments(broadcastingContextBRIFIC.Allotments, TypeThresholdFS.OnlyBroadcastingService);
@@ -153,11 +153,24 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 ///список затронутых служб для ICSM
                 if (broadcastingContextICSM.Allotments != null)
                 {
-                    if (!affectedServices.Contains(broadcastingContextICSM.Allotments.AdminData.StnClass))
+                    if ((broadcastingContextICSM.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC1)
+                           || (broadcastingContextICSM.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC2)
+                               || (broadcastingContextICSM.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC3))
                     {
-                        affectedServices.Add(broadcastingContextICSM.Allotments.AdminData.StnClass);
+                        if (!affectedServices.Contains("BT"))
+                        {
+                            affectedServices.Add("BT");
+                        }
                     }
-
+                    else if ((broadcastingContextICSM.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC4)
+                        || (broadcastingContextICSM.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC5)
+                            )
+                    {
+                        if (!affectedServices.Contains("BC"))
+                        {
+                            affectedServices.Add("BC");
+                        }
+                    }
                 }
                 if (broadcastingContextICSM.Assignments != null)
                 {
