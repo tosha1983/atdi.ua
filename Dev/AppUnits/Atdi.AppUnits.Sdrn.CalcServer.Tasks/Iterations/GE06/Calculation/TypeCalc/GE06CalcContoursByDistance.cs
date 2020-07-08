@@ -28,7 +28,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                             BroadcastingTypeContext broadcastingTypeContext,
                                             ref Ge06CalcResult ge06CalcResult,
                                             IObjectPool<PointEarthGeometric[]> pointEarthGeometricPool,
-                                            IIterationsPool iterationsPool,
+                                            IIterationHandler<BroadcastingFieldStrengthCalcData, BroadcastingFieldStrengthCalcResult> iterationHandlerBroadcastingFieldStrengthCalcData,
+                                            IIterationHandler<FieldStrengthCalcData, FieldStrengthCalcResult> iterationHandlerFieldStrengthCalcData,
                                             IObjectPoolSite poolSite,
                                             ITransformation transformation,
                                             ITaskContext taskContext,
@@ -50,18 +51,41 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 broadcastingContextBase = ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM;
             }
 
-
-            var affectedServices = new List<string>();
-
-            if (((GE06Validation.ValidationAssignment(broadcastingContextBase.Assignments)) && (GE06Validation.ValidationAllotment(broadcastingContextBase.Allotments))) == false)
+           
+            string notValidBroadcastingAssignment = string.Empty;
+            string notValidBroadcastingAllotment = string.Empty;
+            if (((GE06Validation.ValidationAssignment(broadcastingContextBase.Assignments, out notValidBroadcastingAssignment)) && (GE06Validation.ValidationAllotment(broadcastingContextBase.Allotments, out notValidBroadcastingAllotment))) == false)
             {
-                throw new Exception("Input parameters failed validation");
+                string message = "";
+                if (!string.IsNullOrEmpty(notValidBroadcastingAssignment))
+                {
+                    message+= $"The following Assignments are not validated: {notValidBroadcastingAssignment}";
+                }
+                if (!string.IsNullOrEmpty(notValidBroadcastingAllotment))
+                {
+                    message += $"The following Alotment are not validated: {notValidBroadcastingAllotment}";
+                }
+                throw new Exception(message);
             }
 
-
+            var affectedServices = new List<string>();
             if (broadcastingContextBase.Allotments != null)
             {
-                affectedServices.Add(broadcastingContextBase.Allotments.AdminData.StnClass);
+                if (broadcastingContextBase.Allotments.EmissionCharacteristics != null)
+                {
+                    if ((broadcastingContextBase.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC1)
+                        || (broadcastingContextBase.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC2)
+                            || (broadcastingContextBase.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC3))
+                    {
+                        affectedServices.Add("BT");
+                    }
+                    else if ((broadcastingContextBase.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC4)
+                        || (broadcastingContextBase.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC5)
+                            )
+                    {
+                        affectedServices.Add("BC");
+                    }
+                }
             }
             if (broadcastingContextBase.Assignments != null)
             {
@@ -130,7 +154,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                                                             in point,
                                                                                             broadcastingTypeContext,
                                                                                             pointEarthGeometricPool,
-                                                                                            iterationsPool,
+                                                                                            iterationHandlerBroadcastingFieldStrengthCalcData,
+                                                                                            iterationHandlerFieldStrengthCalcData,
                                                                                             poolSite,
                                                                                             transformation,
                                                                                             taskContext,
@@ -214,7 +239,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                                                             in point,
                                                                                             broadcastingTypeContext,
                                                                                             pointEarthGeometricPool,
-                                                                                            iterationsPool,
+                                                                                            iterationHandlerBroadcastingFieldStrengthCalcData,
+                                                                                            iterationHandlerFieldStrengthCalcData,
                                                                                             poolSite,
                                                                                             transformation,
                                                                                             taskContext,
