@@ -133,6 +133,15 @@ namespace Atdi.Icsm.Plugins.GE06Calc.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Antenna directional.
+        /// </summary>
+        public static string AntennaDirectional {
+            get {
+                return ResourceManager.GetString("AntennaDirectional", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Azimuth step.
         /// </summary>
         public static string AzimuthStep {

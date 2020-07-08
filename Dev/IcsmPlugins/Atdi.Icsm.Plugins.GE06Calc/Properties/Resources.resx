@@ -282,4 +282,7 @@
   <data name="TypeAffected" xml:space="preserve">
     <value>Type affected</value>
   </data>
+  <data name="AntennaDirectional" xml:space="preserve">
+    <value>Antenna directional</value>
+  </data>
 </root>
