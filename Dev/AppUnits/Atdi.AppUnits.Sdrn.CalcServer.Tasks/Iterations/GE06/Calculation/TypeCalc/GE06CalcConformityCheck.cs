@@ -93,23 +93,106 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             var broadcastingContextICSM = ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM;
 
 
+            ///список затронутых служб для ICSM
+            if (broadcastingContextICSM.Allotments != null)
+            {
+                if ((broadcastingContextICSM.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC1)
+                       || (broadcastingContextICSM.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC2)
+                           || (broadcastingContextICSM.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC3))
+                {
+                    broadcastingContextICSM.Allotments.AdminData.StnClass = "BT";
+                    broadcastingContextICSM.Allotments.AdminData.IsDigital = true;
+                }
+                else if ((broadcastingContextICSM.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC4)
+                    || (broadcastingContextICSM.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC5)
+                        )
+                {
+                    broadcastingContextICSM.Allotments.AdminData.StnClass = "BC";
+                    broadcastingContextICSM.Allotments.AdminData.IsDigital = false;
+                }
+            }
+            //if (broadcastingContextICSM.Assignments != null)
+            //{
+            //    for (int i = 0; i < broadcastingContextICSM.Assignments.Length; i++)
+            //    {
+            //        if (broadcastingContextICSM.Assignments[i].AdmData != null)
+            //        {
+            //            broadcastingContextICSM.Assignments[i].AdmData.IsDigital = true;
+            //        }
+            //    }
+            //}
+
+            ///список затронутых служб для BRIFIC
+            if (broadcastingContextBRIFIC.Allotments != null)
+            {
+                if ((broadcastingContextBRIFIC.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC1)
+                       || (broadcastingContextBRIFIC.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC2)
+                           || (broadcastingContextBRIFIC.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC3))
+                {
+                    broadcastingContextBRIFIC.Allotments.AdminData.StnClass = "BT";
+                    broadcastingContextBRIFIC.Allotments.AdminData.IsDigital = true;
+                }
+                else if ((broadcastingContextBRIFIC.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC4)
+                    || (broadcastingContextBRIFIC.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC5)
+                        )
+                {
+                    broadcastingContextBRIFIC.Allotments.AdminData.StnClass = "BC";
+                    broadcastingContextBRIFIC.Allotments.AdminData.IsDigital = false;
+                }
+            }
+            if (broadcastingContextBRIFIC.Assignments != null)
+            {
+                for (int i = 0; i < broadcastingContextBRIFIC.Assignments.Length; i++)
+                {
+                    if (broadcastingContextBRIFIC.Assignments[i].AdmData!=null)
+                    {
+                        broadcastingContextBRIFIC.Assignments[i].AdmData.IsDigital = true;
+                    }
+                }
+            }
+
+
+
 
             // поиск сведений о пороговых значениях напряженности поля 
             var thresholdFieldStrengths = new List<ThresholdFieldStrength>();
 
             var thresholdFieldStrengthsBRIFICAllotments = ThresholdFS.GetThresholdFieldStrengthByAllotments(broadcastingContextBRIFIC.Allotments, TypeThresholdFS.OnlyBroadcastingService);
             var thresholdFieldStrengthsBRIFICAssignments = ThresholdFS.GetThresholdFieldStrengthByAssignments(broadcastingContextBRIFIC.Assignments, TypeThresholdFS.OnlyBroadcastingService);
-            thresholdFieldStrengths.AddRange(thresholdFieldStrengthsBRIFICAllotments);
-            thresholdFieldStrengths.AddRange(thresholdFieldStrengthsBRIFICAssignments);
-
-
+            for (int v = 0; v < thresholdFieldStrengthsBRIFICAllotments.Length; v++)
+            {
+                if (thresholdFieldStrengths.Find(x => x.Freq_MHz == thresholdFieldStrengthsBRIFICAllotments[v].Freq_MHz && x.StaClass == thresholdFieldStrengthsBRIFICAllotments[v].StaClass && x.IsDigital == thresholdFieldStrengthsBRIFICAllotments[v].IsDigital) == null)
+                {
+                    thresholdFieldStrengths.Add(thresholdFieldStrengthsBRIFICAllotments[v]);
+                }
+            }
+            for (int v = 0; v < thresholdFieldStrengthsBRIFICAssignments.Length; v++)
+            {
+                if (thresholdFieldStrengths.Find(x => x.Freq_MHz == thresholdFieldStrengthsBRIFICAssignments[v].Freq_MHz && x.StaClass == thresholdFieldStrengthsBRIFICAssignments[v].StaClass && x.IsDigital == thresholdFieldStrengthsBRIFICAssignments[v].IsDigital) == null)
+                {
+                    thresholdFieldStrengths.Add(thresholdFieldStrengthsBRIFICAssignments[v]);
+                }
+            }
 
 
 
             var thresholdFieldStrengthsICSMAllotments = ThresholdFS.GetThresholdFieldStrengthByAllotments(broadcastingContextICSM.Allotments, TypeThresholdFS.OnlyBroadcastingService);
             var thresholdFieldStrengthsICSMAssignments = ThresholdFS.GetThresholdFieldStrengthByAssignments(broadcastingContextICSM.Assignments, TypeThresholdFS.OnlyBroadcastingService);
-            thresholdFieldStrengths.AddRange(thresholdFieldStrengthsICSMAllotments);
-            thresholdFieldStrengths.AddRange(thresholdFieldStrengthsICSMAssignments);
+
+            for (int v = 0; v < thresholdFieldStrengthsICSMAllotments.Length; v++)
+            {
+                if (thresholdFieldStrengths.Find(x => x.Freq_MHz == thresholdFieldStrengthsICSMAllotments[v].Freq_MHz && x.StaClass == thresholdFieldStrengthsICSMAllotments[v].StaClass && x.IsDigital == thresholdFieldStrengthsICSMAllotments[v].IsDigital) == null)
+                {
+                    thresholdFieldStrengths.Add(thresholdFieldStrengthsICSMAllotments[v]);
+                }
+            }
+            for (int v = 0; v < thresholdFieldStrengthsICSMAssignments.Length; v++)
+            {
+                if (thresholdFieldStrengths.Find(x => x.Freq_MHz == thresholdFieldStrengthsICSMAssignments[v].Freq_MHz && x.StaClass == thresholdFieldStrengthsICSMAssignments[v].StaClass && x.IsDigital == thresholdFieldStrengthsICSMAssignments[v].IsDigital) == null)
+                {
+                    thresholdFieldStrengths.Add(thresholdFieldStrengthsICSMAssignments[v]);
+                }
+            }
 
 
 
@@ -123,20 +206,9 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 ///список затронутых служб для брифика
                 if (broadcastingContextBRIFIC.Allotments != null)
                 {
-                    if (broadcastingContextBRIFIC.Allotments.EmissionCharacteristics != null)
+                    if (broadcastingContextBRIFIC.Allotments.AdminData != null)
                     {
-                        if ((broadcastingContextBRIFIC.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC1)
-                            || (broadcastingContextBRIFIC.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC2)
-                                || (broadcastingContextBRIFIC.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC3))
-                        {
-                            affectedServices.Add("BT");
-                        }
-                        else if ((broadcastingContextBRIFIC.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC4)
-                            || (broadcastingContextBRIFIC.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC5)
-                                )
-                        {
-                            affectedServices.Add("BC");
-                        }
+                        affectedServices.Add(broadcastingContextBRIFIC.Allotments.AdminData.StnClass);
                     }
                 }
                 if (broadcastingContextBRIFIC.Assignments != null)
@@ -153,23 +225,9 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 ///список затронутых служб для ICSM
                 if (broadcastingContextICSM.Allotments != null)
                 {
-                    if ((broadcastingContextICSM.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC1)
-                           || (broadcastingContextICSM.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC2)
-                               || (broadcastingContextICSM.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC3))
+                    if (broadcastingContextICSM.Allotments.AdminData != null)
                     {
-                        if (!affectedServices.Contains("BT"))
-                        {
-                            affectedServices.Add("BT");
-                        }
-                    }
-                    else if ((broadcastingContextICSM.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC4)
-                        || (broadcastingContextICSM.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC5)
-                            )
-                    {
-                        if (!affectedServices.Contains("BC"))
-                        {
-                            affectedServices.Add("BC");
-                        }
+                        affectedServices.Add(broadcastingContextICSM.Allotments.AdminData.StnClass);
                     }
                 }
                 if (broadcastingContextICSM.Assignments != null)
@@ -199,459 +257,172 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
                 // 2.Определение контрольных точек для записей BR IFIC -> построение контуров для выделений для
                 //     60, 100, 200, 300, 500, 750 и 1000 км.CreateContourFromContureByDistance(если присутствует выделение) 1.1.6 или CreateContourFromPointByDistance если его нет.
+                // Константы используемые для расчет ConformytyCheck
                 var distances = new int[7] { 60, 100, 200, 300, 500, 750, 1000 };
-                for (int i = 0; i < distances.Length; i++)
+                float ProsentTime = 1;
+                float ProsentTerr = 50;
+                int Height = 10;
+
+                try
                 {
+                    pointEarthGeometricsResult = pointEarthGeometricPool.Take();
 
-                    if (broadcastingContextBRIFIC.Allotments == null)
+                    //установка модели распространения
+                    var propModel = ge06CalcData.PropagationModel;
+                    GE06PropagationModel.GetPropagationModelForConformityCheck(ref propModel, ProsentTerr, ProsentTime);
+                    ge06CalcData.PropagationModel = propModel;
+                    ge06CalcData.Ge06TaskParameters.SubscribersHeight = Height;
+
+                    // цикл по определению контуров по фиксированнім дистанциям и напряженностей поля в точка в них 
+                    for (int i = 0; i < distances.Length; i++)
                     {
-                        try
-                        {
-                            pointEarthGeometricsResult = pointEarthGeometricPool.Take();
-                            pointEarthGeometricsResultBRIFIC = pointEarthGeometricPool.Take();
+                        int sizeResultBuffer = 0;
+                        // строим контура и считаем напряженность поля для assigments
 
+                        if ((broadcastingContextBRIFIC.Allotments == null) || (broadcastingContextBRIFIC.Allotments.AllotmentParameters != null) || (broadcastingContextBRIFIC.Allotments.AllotmentParameters.Contur is null)
+                            || (broadcastingContextBRIFIC.Allotments.AllotmentParameters.Contur.Length < 3))
+                        {
                             var contourFromPointByDistanceArgs = new ContourFromPointByDistanceArgs()
                             {
-                                Distance_km = ge06CalcData.Ge06TaskParameters.Distances[i],
+                                Distance_km = distances[i],
                                 Step_deg = ge06CalcData.Ge06TaskParameters.AzimuthStep_deg.Value,
                                 PointEarthGeometricCalc = pointEarthGeometricBarycenter
                             };
-
-                            earthGeometricService.CreateContourFromPointByDistance(in contourFromPointByDistanceArgs, ref pointEarthGeometricsResult, out int sizeResultBuffer);
-
-                            for (int k = 0; k < sizeResultBuffer; k++)
-                            {
-                                var pointForCalcFS = new Point()
-                                {
-                                    Longitude = pointEarthGeometricsResult[k].Longitude,
-                                    Latitude = pointEarthGeometricsResult[k].Latitude
-                                };
-
-                                //3.Расчет напряженности поля в точках(2.2) для BR IFIC(Модель распространения 1546, процент территории 50, процент времени 1, высота абонента 10м).
-                                var propModel = ge06CalcData.PropagationModel;
-                                GE06PropagationModel.GetPropagationModelForConformityCheck(ref propModel, 50, 1);
-                                ge06CalcData.PropagationModel = propModel;
-
-
-
-                                var countoursPointBRIFIC = new CountoursPoint();
-                                countoursPointBRIFIC.Distance = distances[i];
-                                countoursPointBRIFIC.Lon_DEC = pointForCalcFS.Longitude;
-                                countoursPointBRIFIC.Lat_DEC = pointForCalcFS.Latitude;
-                                //countoursPoints[t].Height = ??????????
-                                countoursPointBRIFIC.PointType = PointType.Etalon;
-                                countoursPointBRIFIC.FS = (int)CalcFieldStrengthInPointGE06.Calc(ge06CalcData,
-                                                                                            in pointForCalcFS,
-                                                                                            BroadcastingTypeContext.Brific,
-                                                                                            pointEarthGeometricPool,
-                                                                                            iterationHandlerBroadcastingFieldStrengthCalcData,
-                                                                                            iterationHandlerFieldStrengthCalcData,
-                                                                                            poolSite,
-                                                                                            transformation,
-                                                                                            taskContext,
-                                                                                            gn06Service
-                                                                                            );
-
-
-
-                                var adm = idwmService.GetADMByPoint(new IdwmDataModel.Point()
-                                {
-                                    Longitude_dec = pointForCalcFS.Longitude,
-                                    Latitude_dec = pointForCalcFS.Latitude
-                                });
-
-                                dicCountoursPointsByBRIFIC.Add(countoursPointBRIFIC, adm);
-
-
-
-                                //4.Расчет напряженности поля в точках(2.2) для ICSM (Модель распространения 1546, процент территории 50, процент времени 1, высота абонента 10м).
-                                propModel = ge06CalcData.PropagationModel;
-                                GE06PropagationModel.GetPropagationModelForConformityCheck(ref propModel, 50, 1);
-                                ge06CalcData.PropagationModel = propModel;
-
-                                var countoursPointICSM = new CountoursPoint();
-                                countoursPointICSM.Distance = distances[i];
-                                countoursPointICSM.Lon_DEC = pointForCalcFS.Longitude;
-                                countoursPointICSM.Lat_DEC = pointForCalcFS.Latitude;
-                                //countoursPoints[t].Height = ??????????
-
-                                countoursPointICSM.PointType = PointType.Correct;
-
-
-                                countoursPointICSM.FS = (int)CalcFieldStrengthInPointGE06.Calc(ge06CalcData,
-                                                                                            in pointForCalcFS,
-                                                                                            BroadcastingTypeContext.Icsm,
-                                                                                            pointEarthGeometricPool,
-                                                                                            iterationHandlerBroadcastingFieldStrengthCalcData,
-                                                                                            iterationHandlerFieldStrengthCalcData,
-                                                                                            poolSite,
-                                                                                            transformation,
-                                                                                            taskContext,
-                                                                                            gn06Service
-                                                                                            );
-
-
-                                adm = idwmService.GetADMByPoint(new IdwmDataModel.Point()
-                                {
-                                    Longitude_dec = pointForCalcFS.Longitude,
-                                    Latitude_dec = pointForCalcFS.Latitude
-                                });
-
-                                dicCountoursPointsByICSM.Add(countoursPointICSM, adm);
-
-                            }
-
-                            /// Определение напряженности поля для затронутой службы (таблица ТАБЛИЦА A.1.1 документа GE06 взять http://redmine3.lissoft.com.ua:3003/issues/697) в качестве определяющих данных это технология Broadcasting,  частота и служба stn_cls (п. Системы, испытующие влияние).
-                            var triggersFS = thresholdFieldStrengths.Select(x => x.ThresholdFS);
-
-                            if (triggersFS != null)
-                            {
-                                var arrTriggersFS = triggersFS.ToArray();
-                                for (int d = 0; d < arrTriggersFS.Length; d++)
-                                {
-                                    var triggerFS = arrTriggersFS[d];
-
-                                    // Построение контура (ов) для напряженности поля относительно центра гравитации для BRIFIC.
-                                    var contourForStationByTriggerFieldStrengthsArgs = new ContourForStationByTriggerFieldStrengthsArgs()
-                                    {
-                                        Step_deg = ge06CalcData.Ge06TaskParameters.AzimuthStep_deg.Value,
-                                        TriggerFieldStrength = triggerFS,
-                                        BaryCenter = pointEarthGeometricBarycenter
-                                    };
-
-                                    var propModel = ge06CalcData.PropagationModel;
-                                    GE06PropagationModel.GetPropagationModelForConformityCheck(ref propModel, 50, 1);
-                                    ge06CalcData.PropagationModel = propModel;
-
-                                    earthGeometricService.CreateContourForStationByTriggerFieldStrengths((destinationPoint) => GE06CalcContoursByFS.CalcFieldStrengthBRIFIC(destinationPoint,
-                                                                                                                                                                            ge06CalcData,
-                                                                                                                                                                            pointEarthGeometricPool,
-                                                                                                                                                                            iterationHandlerBroadcastingFieldStrengthCalcData,
-                                                                                                                                                                            iterationHandlerFieldStrengthCalcData,
-                                                                                                                                                                            poolSite,
-                                                                                                                                                                            transformation,
-                                                                                                                                                                            taskContext,
-                                                                                                                                                                            gn06Service),
-                                                                                                                                                                            in contourForStationByTriggerFieldStrengthsArgs,
-                                                                                                                                                                            ref pointEarthGeometricsResultBRIFIC,
-                                                                                                                                                                            out int sizeResultBufferBRIFIC);
-                                    if (sizeResultBufferBRIFIC > 0)
-                                    {
-                                        var countoursPoints = new CountoursPoint[sizeResultBufferBRIFIC];
-                                        for (int t = 0; t < sizeResultBufferBRIFIC; t++)
-                                        {
-                                            countoursPoints[t] = new CountoursPoint();
-
-                                            var pointForCalcFsBRIFIC = new Point()
-                                            {
-                                                Longitude = pointEarthGeometricsResultBRIFIC[t].Longitude,
-                                                Latitude = pointEarthGeometricsResultBRIFIC[t].Latitude
-                                            };
-
-                                            // Расчет напряженности поля в каждой точке, полученной для контура в п 6: для BroadcastingAssignment[] +BroadcastingAllotment(ICSM) используя функцию 2.2.(Модель распространения 1546, процент территории 50, процент времени 1, высота абонента 10м).
-
-                                            propModel = ge06CalcData.PropagationModel;
-                                            GE06PropagationModel.GetPropagationModelForConformityCheck(ref propModel, 50, 1);
-                                            ge06CalcData.PropagationModel = propModel;
-
-                                            var fs = (int)CalcFieldStrengthInPointGE06.Calc(ge06CalcData,
-                                                                                            in pointForCalcFsBRIFIC,
-                                                                                            BroadcastingTypeContext.Icsm,
-                                                                                            pointEarthGeometricPool,
-                                                                                            iterationHandlerBroadcastingFieldStrengthCalcData,
-                                                                                            iterationHandlerFieldStrengthCalcData,
-                                                                                            poolSite,
-                                                                                            transformation,
-                                                                                            taskContext,
-                                                                                            gn06Service
-                                                                                            );
-
-                                            if (triggerFS != -9999)
-                                            {
-                                                if (fs > triggerFS)
-                                                {
-                                                    countoursPoints[t].PointType = PointType.Affected;
-                                                }
-                                                else
-                                                {
-                                                    countoursPoints[t].PointType = PointType.Correct;
-                                                }
-                                            }
-                                            else
-                                            {
-                                                countoursPoints[t].PointType = PointType.Correct;
-                                            }
-                                            countoursPoints[t].FS = (int)fs;
-
-
-                                            countoursPoints[t].Distance = distances[i];
-                                            countoursPoints[t].Lon_DEC = pointForCalcFsBRIFIC.Longitude;
-                                            countoursPoints[t].Lat_DEC = pointForCalcFsBRIFIC.Latitude;
-                                            //countoursPoints[t].Height = ??????????
-
-                                            var adm = idwmService.GetADMByPoint(new IdwmDataModel.Point()
-                                            {
-                                                Longitude_dec = pointForCalcFsBRIFIC.Longitude,
-                                                Latitude_dec = pointForCalcFsBRIFIC.Latitude
-                                            });
-
-                                            dicCountoursPointsByICSM.Add(countoursPoints[t], adm);
-
-                                        }
-                                    }
-                                }
-                            }
-
+                            earthGeometricService.CreateContourFromPointByDistance(in contourFromPointByDistanceArgs, ref pointEarthGeometricsResult, out sizeResultBuffer);
                         }
-                        finally
+                        else
                         {
-                            if (pointEarthGeometricsResult != null)
+                            var areaPoints = broadcastingContextBRIFIC.Allotments.AllotmentParameters.Contur;
+                            var pointEarthGeometrics = new PointEarthGeometric[areaPoints.Length];
+                            for (int h = 0; h < areaPoints.Length; h++)
+                            { pointEarthGeometrics[h] = new PointEarthGeometric(areaPoints[h].Lon_DEC, areaPoints[h].Lat_DEC, CoordinateUnits.deg); }
+                            var contourFromContureByDistanceArgs = new ContourFromContureByDistanceArgs()
                             {
-                                pointEarthGeometricPool.Put(pointEarthGeometricsResult);
-                            }
-                            if (pointEarthGeometricsResultBRIFIC != null)
-                            {
-                                pointEarthGeometricPool.Put(pointEarthGeometricsResultBRIFIC);
-                            }
+                                Step_deg = ge06CalcData.Ge06TaskParameters.AzimuthStep_deg.Value,
+                                Distance_km = distances[i],
+                                PointBaryCenter = pointEarthGeometricBarycenter,
+                                ContourPoints = pointEarthGeometrics
+                            };
+                            earthGeometricService.CreateContourFromContureByDistance(in contourFromContureByDistanceArgs, ref pointEarthGeometricsResult, out sizeResultBuffer);
                         }
 
+                        // контур получен 
+
+                        // проводим расчет напряженности поля для контура BRIFIC и ICSM (п 2, 3, 4)
+                        for (int k = 0; k < sizeResultBuffer; k++)
+                        {
+                            var pointForCalcFS = new Point()
+                            {
+                                Longitude = pointEarthGeometricsResult[k].Longitude,
+                                Latitude = pointEarthGeometricsResult[k].Latitude
+                            };
+
+
+                            // расчет напряженности поля BRIFIC
+                            var BRIFICFS = CalcFieldStrengthInPointGE06.Calc(ge06CalcData,
+                                in pointForCalcFS,
+                                BroadcastingTypeContext.Brific,
+                                pointEarthGeometricPool, iterationHandlerBroadcastingFieldStrengthCalcData, iterationHandlerFieldStrengthCalcData, poolSite, transformation, taskContext, gn06Service);
+
+                            // предварительное заполнение результатов BRIFIC
+                            var countoursPointBRIFIC = new CountoursPoint();
+                            countoursPointBRIFIC.Distance = distances[i];
+                            countoursPointBRIFIC.Lon_DEC = pointForCalcFS.Longitude;
+                            countoursPointBRIFIC.Lat_DEC = pointForCalcFS.Latitude;
+                            countoursPointBRIFIC.Height = Height;
+                            countoursPointBRIFIC.PointType = PointType.Etalon;
+                            countoursPointBRIFIC.FS = (int)BRIFICFS;
+                            var adm = idwmService.GetADMByPoint(new IdwmDataModel.Point() { Longitude_dec = pointForCalcFS.Longitude, Latitude_dec = pointForCalcFS.Latitude });
+                            dicCountoursPointsByBRIFIC.Add(countoursPointBRIFIC, adm);
+
+                            // расчет напряженности поля ICSM
+                            var ICSMFS = CalcFieldStrengthInPointGE06.Calc(ge06CalcData,
+                                in pointForCalcFS,
+                                BroadcastingTypeContext.Icsm,
+                                pointEarthGeometricPool, iterationHandlerBroadcastingFieldStrengthCalcData, iterationHandlerFieldStrengthCalcData, poolSite, transformation, taskContext, gn06Service);
+
+                            // предварительное заполнение результатов ICSM
+                            var countoursPointICSM = new CountoursPoint();
+                            countoursPointICSM.Distance = distances[i];
+                            countoursPointICSM.Lon_DEC = pointForCalcFS.Longitude;
+                            countoursPointICSM.Lat_DEC = pointForCalcFS.Latitude;
+                            countoursPointICSM.Height = Height;
+                            countoursPointICSM.FS = (int)ICSMFS;
+                            if (BRIFICFS >= ICSMFS) { countoursPointICSM.PointType = PointType.Correct; }
+                            else { countoursPointICSM.PointType = PointType.Affected; }
+                            dicCountoursPointsByICSM.Add(countoursPointICSM, adm);
+                        }
                     }
-                    //или на функции CreateContourFromContureByDistance если у нас есть BroadcastingAllotment 
-                    else
+
+                    //построение контуров напряженности поля (п 5, 6,7)
+                    var triggersFS = thresholdFieldStrengths.Select(x => x.ThresholdFS);
+                    if (triggersFS != null)
                     {
-                        if (broadcastingContextBRIFIC.Allotments != null)
+                        var arrTriggersFS = triggersFS.ToArray();
+                        // идем по значениям напряженности поля
+                        for (int d = 0; d < arrTriggersFS.Length; d++)
                         {
-                            if (broadcastingContextBRIFIC.Allotments.AllotmentParameters != null)
+                            var triggerFS = arrTriggersFS[d];
+                            // Построение контура для напряженности поля относительно центра гравитации для BRIFIC.
+                            var contourForStationByTriggerFieldStrengthsArgs = new ContourForStationByTriggerFieldStrengthsArgs()
                             {
-                                var areaPoints = broadcastingContextBRIFIC.Allotments.AllotmentParameters.Contur;
-                                if ((areaPoints != null) && (areaPoints.Length > 0))
+                                Step_deg = ge06CalcData.Ge06TaskParameters.AzimuthStep_deg.Value,
+                                TriggerFieldStrength = triggerFS,
+                                BaryCenter = pointEarthGeometricBarycenter
+                            };
+                            earthGeometricService.CreateContourForStationByTriggerFieldStrengths((destinationPoint) => GE06CalcContoursByFS.CalcFieldStrengthBRIFIC(destinationPoint,
+                                ge06CalcData, pointEarthGeometricPool, iterationHandlerBroadcastingFieldStrengthCalcData, iterationHandlerFieldStrengthCalcData, poolSite, transformation, taskContext, gn06Service),
+                                in contourForStationByTriggerFieldStrengthsArgs, ref pointEarthGeometricsResult, out int sizeResultBufferBRIFIC);
+                            // Конец построения контура для напряженности поля относительно центра гравитации для BRIFIC. 
+
+                            // расчент напряженности поля на контур BRIFIC от ICSM
+                            if (sizeResultBufferBRIFIC > 0)
+                            {
+                                for (int t = 0; t < sizeResultBufferBRIFIC; t++)
                                 {
-
-                                    try
+                                    // расчент напряженности поля на контур BRIFIC от ICSM в точке
+                                    var pointForCalcFsBRIFIC = new Point()
                                     {
-                                        pointEarthGeometricsResult = pointEarthGeometricPool.Take();
-                                        pointEarthGeometricsResultBRIFIC = pointEarthGeometricPool.Take();
+                                        Longitude = pointEarthGeometricsResultBRIFIC[t].Longitude,
+                                        Latitude = pointEarthGeometricsResultBRIFIC[t].Latitude
+                                    };
+                                    var ICSMFS = CalcFieldStrengthInPointGE06.Calc(ge06CalcData,
+                                        in pointForCalcFsBRIFIC,
+                                        BroadcastingTypeContext.Icsm,
+                                        pointEarthGeometricPool, iterationHandlerBroadcastingFieldStrengthCalcData, iterationHandlerFieldStrengthCalcData, poolSite, transformation, taskContext, gn06Service);
 
+                                    // предварительное сохранение результатов
+                                    // предварительное заполнение результатов BRIFIC
+                                    var countoursPointBRIFIC = new CountoursPoint();
+                                    countoursPointBRIFIC.Lon_DEC = pointForCalcFsBRIFIC.Longitude;
+                                    countoursPointBRIFIC.Lat_DEC = pointForCalcFsBRIFIC.Latitude;
+                                    countoursPointBRIFIC.Height = Height;
+                                    countoursPointBRIFIC.PointType = PointType.Etalon;
+                                    countoursPointBRIFIC.FS = (int)triggerFS;
+                                    var adm = idwmService.GetADMByPoint(new IdwmDataModel.Point() { Longitude_dec = pointForCalcFsBRIFIC.Longitude, Latitude_dec = pointForCalcFsBRIFIC.Latitude });
+                                    dicCountoursPointsByBRIFIC.Add(countoursPointBRIFIC, adm);
 
-                                        var pointEarthGeometrics = new PointEarthGeometric[areaPoints.Length];
-                                        for (int h = 0; h < areaPoints.Length; h++)
-                                        {
-                                            pointEarthGeometrics[h] = new PointEarthGeometric(areaPoints[h].Lon_DEC, areaPoints[h].Lat_DEC, CoordinateUnits.deg);
-                                        }
-
-                                        var contourFromContureByDistanceArgs = new ContourFromContureByDistanceArgs()
-                                        {
-                                            Step_deg = ge06CalcData.Ge06TaskParameters.AzimuthStep_deg.Value,
-                                            Distance_km = ge06CalcData.Ge06TaskParameters.Distances[i],
-                                            PointBaryCenter = pointEarthGeometricBarycenter,
-                                            ContourPoints = pointEarthGeometrics
-                                        };
-
-                                        earthGeometricService.CreateContourFromContureByDistance(in contourFromContureByDistanceArgs, ref pointEarthGeometricsResult, out int sizeResultBuffer);
-
-                                        for (int k = 0; k < sizeResultBuffer; k++)
-                                        {
-                                            var pointForCalcFS = new Point()
-                                            {
-                                                Longitude = pointEarthGeometricsResult[k].Longitude,
-                                                Latitude = pointEarthGeometricsResult[k].Latitude
-                                            };
-                                            //3.Расчет напряженности поля в точках(2.2) для BR IFIC(Модель распространения 1546, процент территории 50, процент времени 1, высота абонента 10м).
-                                            var propModel = ge06CalcData.PropagationModel;
-                                            GE06PropagationModel.GetPropagationModelForConformityCheck(ref propModel, 50, 1);
-                                            ge06CalcData.PropagationModel = propModel;
-
-
-
-                                            var countoursPointBRIFIC = new CountoursPoint();
-                                            countoursPointBRIFIC.Distance = distances[i];
-                                            countoursPointBRIFIC.Lon_DEC = pointForCalcFS.Longitude;
-                                            countoursPointBRIFIC.Lat_DEC = pointForCalcFS.Latitude;
-                                            //countoursPoints[t].Height = ??????????
-                                            countoursPointBRIFIC.PointType = PointType.Etalon;
-                                            countoursPointBRIFIC.FS = (int)CalcFieldStrengthInPointGE06.Calc(ge06CalcData,
-                                                                                            in pointForCalcFS,
-                                                                                            BroadcastingTypeContext.Brific,
-                                                                                            pointEarthGeometricPool,
-                                                                                            iterationHandlerBroadcastingFieldStrengthCalcData,
-                                                                                            iterationHandlerFieldStrengthCalcData,
-                                                                                            poolSite,
-                                                                                            transformation,
-                                                                                            taskContext,
-                                                                                            gn06Service
-                                                                                            );
-
-
-                                            var adm = idwmService.GetADMByPoint(new IdwmDataModel.Point()
-                                            {
-                                                Longitude_dec = pointForCalcFS.Longitude,
-                                                Latitude_dec = pointForCalcFS.Latitude
-                                            });
-
-                                            dicCountoursPointsByBRIFIC.Add(countoursPointBRIFIC, adm);
-
-
-
-
-                                            propModel = ge06CalcData.PropagationModel;
-                                            GE06PropagationModel.GetPropagationModelForConformityCheck(ref propModel, 50, 1);
-                                            ge06CalcData.PropagationModel = propModel;
-
-                                            //4.Расчет напряженности поля в точках(2.2) для ICSM (Модель распространения 1546, процент территории 50, процент времени 1, высота абонента 10м).
-
-
-                                            var countoursPointICSM = new CountoursPoint();
-                                            countoursPointICSM.Distance = distances[i];
-                                            countoursPointICSM.Lon_DEC = pointForCalcFS.Longitude;
-                                            countoursPointICSM.Lat_DEC = pointForCalcFS.Latitude;
-                                            //countoursPoints[t].Height = ??????????
-
-                                            countoursPointICSM.PointType = PointType.Correct;
-
-
-                                            countoursPointICSM.FS = (int)CalcFieldStrengthInPointGE06.Calc(ge06CalcData,
-                                                                                            in pointForCalcFS,
-                                                                                            BroadcastingTypeContext.Icsm,
-                                                                                            pointEarthGeometricPool,
-                                                                                            iterationHandlerBroadcastingFieldStrengthCalcData,
-                                                                                            iterationHandlerFieldStrengthCalcData,
-                                                                                            poolSite,
-                                                                                            transformation,
-                                                                                            taskContext,
-                                                                                            gn06Service
-                                                                                            );
-
-
-                                            adm = idwmService.GetADMByPoint(new IdwmDataModel.Point()
-                                            {
-                                                Longitude_dec = pointForCalcFS.Longitude,
-                                                Latitude_dec = pointForCalcFS.Latitude
-                                            });
-
-                                            dicCountoursPointsByICSM.Add(countoursPointICSM, adm);
-                                        }
-
-
-
-
-                                        /// Определение напряженности поля для затронутой службы (таблица ТАБЛИЦА A.1.1 документа GE06 взять http://redmine3.lissoft.com.ua:3003/issues/697) в качестве определяющих данных это технология Broadcasting,  частота и служба stn_cls (п. Системы, испытующие влияние).
-                                        var triggersFS = thresholdFieldStrengths.Select(x => x.ThresholdFS);
-
-                                        if (triggersFS != null)
-                                        {
-                                            var arrTriggersFS = triggersFS.ToArray();
-                                            for (int d = 0; d < arrTriggersFS.Length; d++)
-                                            {
-
-                                                var triggerFS = arrTriggersFS[d];
-
-                                                // Построение контура (ов) для напряженности поля относительно центра гравитации для BRIFIC.
-
-                                                var contourForStationByTriggerFieldStrengthsArgs = new ContourForStationByTriggerFieldStrengthsArgs()
-                                                {
-                                                    Step_deg = ge06CalcData.Ge06TaskParameters.AzimuthStep_deg.Value,
-                                                    TriggerFieldStrength = triggerFS,
-                                                    BaryCenter = pointEarthGeometricBarycenter
-                                                };
-
-                                                var propModel = ge06CalcData.PropagationModel;
-                                                GE06PropagationModel.GetPropagationModelForConformityCheck(ref propModel, 50, 1);
-                                                ge06CalcData.PropagationModel = propModel;
-
-                                                earthGeometricService.CreateContourForStationByTriggerFieldStrengths((destinationPoint) => GE06CalcContoursByFS.CalcFieldStrengthBRIFIC(destinationPoint,
-                                                                                                                                                                                        ge06CalcData,
-                                                                                                                                                                                        pointEarthGeometricPool,
-                                                                                                                                                                                        iterationHandlerBroadcastingFieldStrengthCalcData,
-                                                                                                                                                                                        iterationHandlerFieldStrengthCalcData,
-                                                                                                                                                                                        poolSite,
-                                                                                                                                                                                        transformation,
-                                                                                                                                                                                        taskContext,
-                                                                                                                                                                                        gn06Service),
-                                                                                                                                                                                        in contourForStationByTriggerFieldStrengthsArgs,
-                                                                                                                                                                                        ref pointEarthGeometricsResultBRIFIC,
-                                                                                                                                                                                        out int sizeResultBufferBRIFIC);
-                                                if (sizeResultBufferBRIFIC > 0)
-                                                {
-                                                    var countoursPoints = new CountoursPoint[sizeResultBufferBRIFIC];
-                                                    for (int t = 0; t < sizeResultBufferBRIFIC; t++)
-                                                    {
-                                                        countoursPoints[t] = new CountoursPoint();
-                                                        var pointForCalcFsBRIFIC = new Point()
-                                                        {
-                                                            Longitude = pointEarthGeometricsResultBRIFIC[t].Longitude,
-                                                            Latitude = pointEarthGeometricsResultBRIFIC[t].Latitude
-                                                        };
-
-                                                        propModel = ge06CalcData.PropagationModel;
-                                                        GE06PropagationModel.GetPropagationModelForConformityCheck(ref propModel, 50, 1);
-                                                        ge06CalcData.PropagationModel = propModel;
-
-                                                        // Расчет напряженности поля в каждой точке, полученной для контура в п 6: для BroadcastingAssignment[] +BroadcastingAllotment(ICSM) используя функцию 2.2.(Модель распространения 1546, процент территории 50, процент времени 1, высота абонента 10м).
-                                                        countoursPoints[t].FS = (int)CalcFieldStrengthInPointGE06.Calc(ge06CalcData,
-                                                                                            in pointForCalcFsBRIFIC,
-                                                                                            BroadcastingTypeContext.Icsm,
-                                                                                            pointEarthGeometricPool,
-                                                                                            iterationHandlerBroadcastingFieldStrengthCalcData,
-                                                                                            iterationHandlerFieldStrengthCalcData,
-                                                                                            poolSite,
-                                                                                            transformation,
-                                                                                            taskContext,
-                                                                                            gn06Service
-                                                                                            );
-
-
-                                                        if (triggerFS != -9999)
-                                                        {
-                                                            if (countoursPoints[t].FS > triggerFS)
-                                                            {
-                                                                countoursPoints[t].PointType = PointType.Affected;
-                                                            }
-                                                            else
-                                                            {
-                                                                countoursPoints[t].PointType = PointType.Correct;
-                                                            }
-                                                        }
-                                                        else
-                                                        {
-                                                            countoursPoints[t].PointType = PointType.Correct;
-                                                        }
-
-
-                                                        countoursPoints[t].Distance = distances[i];
-                                                        countoursPoints[t].Lon_DEC = pointForCalcFsBRIFIC.Longitude;
-                                                        countoursPoints[t].Lat_DEC = pointForCalcFsBRIFIC.Latitude;
-                                                        //countoursPoints[t].Height = ??????????
-
-                                                        var adm = idwmService.GetADMByPoint(new IdwmDataModel.Point()
-                                                        {
-                                                            Longitude_dec = pointForCalcFsBRIFIC.Longitude,
-                                                            Latitude_dec = pointForCalcFsBRIFIC.Latitude
-                                                        });
-
-                                                        dicCountoursPointsByICSM.Add(countoursPoints[t], adm);
-
-                                                    }
-                                                }
-                                            }
-                                        }
-
-                                    }
-                                    finally
-                                    {
-                                        if (pointEarthGeometricsResult != null)
-                                        {
-                                            pointEarthGeometricPool.Put(pointEarthGeometricsResult);
-                                        }
-                                        if (pointEarthGeometricsResultBRIFIC != null)
-                                        {
-                                            pointEarthGeometricPool.Put(pointEarthGeometricsResultBRIFIC);
-                                        }
-                                    }
+                                    // предварительное заполнение результатов ICSM
+                                    var countoursPointICSM = new CountoursPoint();
+                                    countoursPointICSM.Lon_DEC = pointForCalcFsBRIFIC.Longitude;
+                                    countoursPointICSM.Lat_DEC = pointForCalcFsBRIFIC.Latitude;
+                                    countoursPointICSM.Height = Height;
+                                    countoursPointICSM.FS = (int)ICSMFS;
+                                    if (triggerFS >= ICSMFS) { countoursPointICSM.PointType = PointType.Correct; }
+                                    else { countoursPointICSM.PointType = PointType.Affected; }
+                                    dicCountoursPointsByICSM.Add(countoursPointICSM, adm);
                                 }
                             }
                         }
                     }
 
+                }
+                finally
+                {
+                    if (pointEarthGeometricsResult != null)
+                    {
+                        pointEarthGeometricPool.Put(pointEarthGeometricsResult);
+                    }
                 }
 
                 // формирование результата ContoursResult для BRIFIC

@@ -190,7 +190,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 IsDigital = true,
                 MinFreq_MHz = 174,
                 MaxFreq_MHz = 230,
-                ThresholdFS = 17
+                ThresholdFS = 17,
+                Height_m = 10
             });
 
             ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
@@ -200,7 +201,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 IsDigital = true,
                 MinFreq_MHz = 470,
                 MaxFreq_MHz = 582,
-                ThresholdFS = 21
+                ThresholdFS = 21,
+                Height_m = 10
             });
 
             ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
@@ -210,7 +212,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 IsDigital = true,
                 MinFreq_MHz = 582,
                 MaxFreq_MHz = 718,
-                ThresholdFS = 23
+                ThresholdFS = 23,
+                Height_m = 10
             });
 
             ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
@@ -220,7 +223,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 IsDigital = true,
                 MinFreq_MHz = 718,
                 MaxFreq_MHz = 862,
-                ThresholdFS = 25
+                ThresholdFS = 25,
+                Height_m = 10
             });
 
 
@@ -231,7 +235,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 IsDigital = false,
                 MinFreq_MHz = 174,
                 MaxFreq_MHz = 230,
-                ThresholdFS = 10
+                ThresholdFS = 10,
+                Height_m = 10
             });
 
             ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
@@ -241,7 +246,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 IsDigital = false,
                 MinFreq_MHz = 470,
                 MaxFreq_MHz = 582,
-                ThresholdFS = 18
+                ThresholdFS = 18,
+                Height_m = 10
             });
 
             ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
@@ -251,7 +257,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 IsDigital = false,
                 MinFreq_MHz = 582,
                 MaxFreq_MHz = 718,
-                ThresholdFS = 20
+                ThresholdFS = 20,
+                Height_m = 10
             });
 
             ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
@@ -261,7 +268,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 IsDigital = false,
                 MinFreq_MHz = 718,
                 MaxFreq_MHz = 862,
-                ThresholdFS = 22
+                ThresholdFS = 22,
+                Height_m = 10
             });
 
             ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
@@ -271,7 +279,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 IsDigital = false,
                 MinFreq_MHz = 174,
                 MaxFreq_MHz = 230,
-                ThresholdFS = 12
+                ThresholdFS = 12,
+                Height_m = 10
             });
         }
 
