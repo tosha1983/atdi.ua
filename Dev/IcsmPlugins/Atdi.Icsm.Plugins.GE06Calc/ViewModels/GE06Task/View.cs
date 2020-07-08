@@ -220,7 +220,10 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                                         }
                                     }
                                 }
+                            }
 
+                            if (!string.IsNullOrEmpty(allotAssign.AdmRefId))
+                            {
                                 var allotsIcsm = _objectReader.Read<List<AssignmentsAllotmentsModel>>().By(new GetIcsmAllotmentsByAdmRefId { Adm_Ref_Id = allotAssign.AdmRefId });
                                 if (allotsIcsm != null)
                                 {
