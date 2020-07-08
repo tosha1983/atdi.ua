@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Atdi.Contracts.Api.EntityOrm.WebClient;
 using CS_ES = Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks;
+using Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations;
 
 namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06TaskResult.Adapters
 {
@@ -39,7 +40,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06TaskResult.Adapters
                 FS = reader.GetValue(c => c.FS),
                 AffectedADM = reader.GetValue(c => c.AffectedADM),
                 PointsCount = reader.GetValue(c => c.PointsCount),
-                CountoursPoints = reader.GetValue(c => c.CountoursPoints)
+                CountoursPoints = reader.GetValueAs<CountoursPoint[]>(c => c.CountoursPoints)
             };
         }
     }
