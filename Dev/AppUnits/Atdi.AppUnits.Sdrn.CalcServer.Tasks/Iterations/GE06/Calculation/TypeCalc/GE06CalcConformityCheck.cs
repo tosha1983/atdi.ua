@@ -27,7 +27,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                           Ge06CalcData ge06CalcData,
                                           ref Ge06CalcResult ge06CalcResult,
                                           IObjectPool<PointEarthGeometric[]> pointEarthGeometricPool,
-                                          IIterationsPool iterationsPool,
+                                          IIterationHandler<BroadcastingFieldStrengthCalcData, BroadcastingFieldStrengthCalcResult> iterationHandlerBroadcastingFieldStrengthCalcData,
+                                          IIterationHandler<FieldStrengthCalcData, FieldStrengthCalcResult> iterationHandlerFieldStrengthCalcData,
                                           IObjectPoolSite poolSite,
                                           ITransformation transformation,
                                           ITaskContext taskContext,
@@ -54,14 +55,37 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             }
 
             //0. Валидация входных данных. аналогично п.0 4.1. + обязательные наличие хотя по одному объекту для ICSM и BRIFIC
-            if (((GE06Validation.ValidationAssignment(ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM.Assignments)) && (GE06Validation.ValidationAllotment(ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM.Allotments))) == false)
+            string notValidBroadcastingAssignmentICSM = string.Empty;
+            string notValidBroadcastingAllotmentsICSM = string.Empty;
+            string notValidBroadcastingAssignmentBRIFIC = string.Empty;
+            string notValidBroadcastingAllotmentsBRIFIC = string.Empty;
+            string message = string.Empty;
+            if (((GE06Validation.ValidationAssignment(ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM.Assignments, out notValidBroadcastingAssignmentICSM)) && (GE06Validation.ValidationAllotment(ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM.Allotments, out  notValidBroadcastingAllotmentsICSM))) == false)
             {
-                throw new Exception("Input parameters for ICSM failed validation");
+                if (!string.IsNullOrEmpty(notValidBroadcastingAssignmentICSM))
+                {
+                    message += $"The following Assignments for ICSM are not validated: {notValidBroadcastingAssignmentICSM}";
+                }
+                if (!string.IsNullOrEmpty(notValidBroadcastingAllotmentsICSM))
+                {
+                    message += $"The following Allotment for ICSM are not validated: {notValidBroadcastingAllotmentsICSM}";
+                }
+            }
+            if (((GE06Validation.ValidationAssignment(ge06CalcData.Ge06TaskParameters.BroadcastingContext.broadcastingContextBRIFIC.Assignments, out notValidBroadcastingAssignmentBRIFIC)) && (GE06Validation.ValidationAllotment(ge06CalcData.Ge06TaskParameters.BroadcastingContext.broadcastingContextBRIFIC.Allotments, out  notValidBroadcastingAllotmentsBRIFIC))) == false)
+            {
+                if (!string.IsNullOrEmpty(notValidBroadcastingAssignmentICSM))
+                {
+                    message += $"The following Assignments for BRIFIC are not validated: {notValidBroadcastingAssignmentBRIFIC}";
+                }
+                if (!string.IsNullOrEmpty(notValidBroadcastingAllotmentsICSM))
+                {
+                    message += $"The following Allotment for BRIFIC are not validated: {notValidBroadcastingAllotmentsBRIFIC}";
+                }
             }
 
-            if (((GE06Validation.ValidationAssignment(ge06CalcData.Ge06TaskParameters.BroadcastingContext.broadcastingContextBRIFIC.Assignments)) && (GE06Validation.ValidationAllotment(ge06CalcData.Ge06TaskParameters.BroadcastingContext.broadcastingContextBRIFIC.Allotments))) == false)
+            if (!string.IsNullOrEmpty(message))
             {
-                throw new Exception("Input parameters for BRIFIC failed validation");
+                throw new Exception(message);
             }
 
 
@@ -70,7 +94,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
 
 
-            // поиск сведений о попроговых значениях напряженности поля 
+            // поиск сведений о пороговых значениях напряженности поля 
             var thresholdFieldStrengths = new List<ThresholdFieldStrength>();
 
             var thresholdFieldStrengthsBRIFICAllotments = ThresholdFS.GetThresholdFieldStrengthByAllotments(broadcastingContextBRIFIC.Allotments, TypeThresholdFS.OnlyBroadcastingService);
@@ -99,11 +123,21 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 ///список затронутых служб для брифика
                 if (broadcastingContextBRIFIC.Allotments != null)
                 {
-                    if (!affectedServices.Contains(broadcastingContextBRIFIC.Allotments.AdminData.StnClass))
+                    if (broadcastingContextBRIFIC.Allotments.EmissionCharacteristics != null)
                     {
-                        affectedServices.Add(broadcastingContextBRIFIC.Allotments.AdminData.StnClass);
+                        if ((broadcastingContextBRIFIC.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC1)
+                            || (broadcastingContextBRIFIC.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC2)
+                                || (broadcastingContextBRIFIC.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC3))
+                        {
+                            affectedServices.Add("BT");
+                        }
+                        else if ((broadcastingContextBRIFIC.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC4)
+                            || (broadcastingContextBRIFIC.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC5)
+                                )
+                        {
+                            affectedServices.Add("BC");
+                        }
                     }
-
                 }
                 if (broadcastingContextBRIFIC.Assignments != null)
                 {
@@ -119,11 +153,24 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 ///список затронутых служб для ICSM
                 if (broadcastingContextICSM.Allotments != null)
                 {
-                    if (!affectedServices.Contains(broadcastingContextICSM.Allotments.AdminData.StnClass))
+                    if ((broadcastingContextICSM.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC1)
+                           || (broadcastingContextICSM.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC2)
+                               || (broadcastingContextICSM.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC3))
                     {
-                        affectedServices.Add(broadcastingContextICSM.Allotments.AdminData.StnClass);
+                        if (!affectedServices.Contains("BT"))
+                        {
+                            affectedServices.Add("BT");
+                        }
                     }
-
+                    else if ((broadcastingContextICSM.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC4)
+                        || (broadcastingContextICSM.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC5)
+                            )
+                    {
+                        if (!affectedServices.Contains("BC"))
+                        {
+                            affectedServices.Add("BC");
+                        }
+                    }
                 }
                 if (broadcastingContextICSM.Assignments != null)
                 {
@@ -197,7 +244,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                                                             in pointForCalcFS,
                                                                                             BroadcastingTypeContext.Brific,
                                                                                             pointEarthGeometricPool,
-                                                                                            iterationsPool,
+                                                                                            iterationHandlerBroadcastingFieldStrengthCalcData,
+                                                                                            iterationHandlerFieldStrengthCalcData,
                                                                                             poolSite,
                                                                                             transformation,
                                                                                             taskContext,
@@ -234,7 +282,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                                                             in pointForCalcFS,
                                                                                             BroadcastingTypeContext.Icsm,
                                                                                             pointEarthGeometricPool,
-                                                                                            iterationsPool,
+                                                                                            iterationHandlerBroadcastingFieldStrengthCalcData,
+                                                                                            iterationHandlerFieldStrengthCalcData,
                                                                                             poolSite,
                                                                                             transformation,
                                                                                             taskContext,
@@ -274,7 +323,18 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                     GE06PropagationModel.GetPropagationModelForConformityCheck(ref propModel, 50, 1, 10);
                                     ge06CalcData.PropagationModel = propModel;
 
-                                    earthGeometricService.CreateContourForStationByTriggerFieldStrengths((destinationPoint) => GE06CalcContoursByFS.CalcFieldStrengthBRIFIC(destinationPoint, ge06CalcData, pointEarthGeometricPool, iterationsPool, poolSite, transformation, taskContext, gn06Service), in contourForStationByTriggerFieldStrengthsArgs, ref pointEarthGeometricsResultBRIFIC, out int sizeResultBufferBRIFIC);
+                                    earthGeometricService.CreateContourForStationByTriggerFieldStrengths((destinationPoint) => GE06CalcContoursByFS.CalcFieldStrengthBRIFIC(destinationPoint,
+                                                                                                                                                                            ge06CalcData,
+                                                                                                                                                                            pointEarthGeometricPool,
+                                                                                                                                                                            iterationHandlerBroadcastingFieldStrengthCalcData,
+                                                                                                                                                                            iterationHandlerFieldStrengthCalcData,
+                                                                                                                                                                            poolSite,
+                                                                                                                                                                            transformation,
+                                                                                                                                                                            taskContext,
+                                                                                                                                                                            gn06Service),
+                                                                                                                                                                            in contourForStationByTriggerFieldStrengthsArgs,
+                                                                                                                                                                            ref pointEarthGeometricsResultBRIFIC,
+                                                                                                                                                                            out int sizeResultBufferBRIFIC);
                                     if (sizeResultBufferBRIFIC > 0)
                                     {
                                         var countoursPoints = new CountoursPoint[sizeResultBufferBRIFIC];
@@ -298,7 +358,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                                                             in pointForCalcFsBRIFIC,
                                                                                             BroadcastingTypeContext.Icsm,
                                                                                             pointEarthGeometricPool,
-                                                                                            iterationsPool,
+                                                                                            iterationHandlerBroadcastingFieldStrengthCalcData,
+                                                                                            iterationHandlerFieldStrengthCalcData,
                                                                                             poolSite,
                                                                                             transformation,
                                                                                             taskContext,
@@ -412,7 +473,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                                                             in pointForCalcFS,
                                                                                             BroadcastingTypeContext.Brific,
                                                                                             pointEarthGeometricPool,
-                                                                                            iterationsPool,
+                                                                                            iterationHandlerBroadcastingFieldStrengthCalcData,
+                                                                                            iterationHandlerFieldStrengthCalcData,
                                                                                             poolSite,
                                                                                             transformation,
                                                                                             taskContext,
@@ -451,7 +513,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                                                             in pointForCalcFS,
                                                                                             BroadcastingTypeContext.Icsm,
                                                                                             pointEarthGeometricPool,
-                                                                                            iterationsPool,
+                                                                                            iterationHandlerBroadcastingFieldStrengthCalcData,
+                                                                                            iterationHandlerFieldStrengthCalcData,
                                                                                             poolSite,
                                                                                             transformation,
                                                                                             taskContext,
@@ -495,7 +558,18 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                 GE06PropagationModel.GetPropagationModelForConformityCheck(ref propModel, 50, 1, 10);
                                                 ge06CalcData.PropagationModel = propModel;
 
-                                                earthGeometricService.CreateContourForStationByTriggerFieldStrengths((destinationPoint) => GE06CalcContoursByFS.CalcFieldStrengthBRIFIC(destinationPoint, ge06CalcData, pointEarthGeometricPool, iterationsPool, poolSite, transformation, taskContext, gn06Service), in contourForStationByTriggerFieldStrengthsArgs, ref pointEarthGeometricsResultBRIFIC, out int sizeResultBufferBRIFIC);
+                                                earthGeometricService.CreateContourForStationByTriggerFieldStrengths((destinationPoint) => GE06CalcContoursByFS.CalcFieldStrengthBRIFIC(destinationPoint,
+                                                                                                                                                                                        ge06CalcData,
+                                                                                                                                                                                        pointEarthGeometricPool,
+                                                                                                                                                                                        iterationHandlerBroadcastingFieldStrengthCalcData,
+                                                                                                                                                                                        iterationHandlerFieldStrengthCalcData,
+                                                                                                                                                                                        poolSite,
+                                                                                                                                                                                        transformation,
+                                                                                                                                                                                        taskContext,
+                                                                                                                                                                                        gn06Service),
+                                                                                                                                                                                        in contourForStationByTriggerFieldStrengthsArgs,
+                                                                                                                                                                                        ref pointEarthGeometricsResultBRIFIC,
+                                                                                                                                                                                        out int sizeResultBufferBRIFIC);
                                                 if (sizeResultBufferBRIFIC > 0)
                                                 {
                                                     var countoursPoints = new CountoursPoint[sizeResultBufferBRIFIC];
@@ -517,7 +591,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                                                             in pointForCalcFsBRIFIC,
                                                                                             BroadcastingTypeContext.Icsm,
                                                                                             pointEarthGeometricPool,
-                                                                                            iterationsPool,
+                                                                                            iterationHandlerBroadcastingFieldStrengthCalcData,
+                                                                                            iterationHandlerFieldStrengthCalcData,
                                                                                             poolSite,
                                                                                             transformation,
                                                                                             taskContext,

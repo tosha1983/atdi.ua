@@ -29,8 +29,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         /// </summary>
         /// <param name="allotments"></param>
         /// <returns></returns>
-        public static bool ValidationAllotment(BroadcastingAllotment allotments)
+        public static bool ValidationAllotment(BroadcastingAllotment allotments, out string notValidAdmRefIds)
         {
+            string notIdentified = "Allotment with parameters that could not be identified;";
+            notValidAdmRefIds = "";
             bool isSuccess = true;
             if (allotments != null)
             {
@@ -116,6 +118,25 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 //        isSuccess = false;
                 //    }
                 //}
+
+                if (!isSuccess)
+                {
+                    if (allotments.AdminData != null)
+                    {
+                        if (!string.IsNullOrEmpty(allotments.AdminData.AdmRefId))
+                        {
+                            notValidAdmRefIds += $"AdmRefId = '{allotments.AdminData.AdmRefId}';";
+                        }
+                        else
+                        {
+                            notValidAdmRefIds += notIdentified;
+                        }
+                    }
+                    else
+                    {
+                        notValidAdmRefIds += notIdentified;
+                    }
+                }
             }
             return isSuccess;
         }
@@ -138,13 +159,16 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         /// </summary>
         /// <param name="assignments"></param>
         /// <returns></returns>
-        public static bool ValidationAssignment(BroadcastingAssignment[] assignments)
+        public static bool ValidationAssignment(BroadcastingAssignment[] assignments, out string notValidAdmRefIds)
         {
+            notValidAdmRefIds = "";
+            string notIdentified = "Assignment with parameters that could not be identified;";
             bool isSuccess = true;
             if (assignments != null)
             {
                 for (int i = 0; i < assignments.Length; i++)
                 {
+                    isSuccess = true;
                     // AdmData
                     if (assignments[i].AdmData == null)
                     {
@@ -318,6 +342,47 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     //        isSuccess = false;
                     //    }
                     //}
+
+                    if (!isSuccess)
+                    {
+                        if (assignments[i].AdmData != null)
+                        {
+                            if (!string.IsNullOrEmpty(assignments[i].AdmData.AdmRefId))
+                            {
+                                notValidAdmRefIds += $"AdmRefId = '{assignments[i].AdmData.AdmRefId}';";
+                            }
+                            else if (assignments[i].SiteParameters != null)
+                            {
+                                if (!string.IsNullOrEmpty(assignments[i].SiteParameters.Name))
+                                {
+                                    notValidAdmRefIds += $"Site.Name = '{assignments[i].SiteParameters.Name}';";
+                                }
+                                else
+                                {
+                                    notValidAdmRefIds += notIdentified;
+                                }
+                            }
+                            else
+                            {
+                                notValidAdmRefIds += notIdentified;
+                            }
+                        }
+                        else if (assignments[i].SiteParameters != null)
+                        {
+                            if (!string.IsNullOrEmpty(assignments[i].SiteParameters.Name))
+                            {
+                                notValidAdmRefIds += $"Site.Name = '{assignments[i].SiteParameters.Name}';";
+                            }
+                            else
+                            {
+                                notValidAdmRefIds += notIdentified;
+                            }
+                        }
+                        else 
+                        {
+                            notValidAdmRefIds += notIdentified;
+                        }
+                    }
                 }
             }
             return isSuccess;

@@ -79,6 +79,9 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         public Ge06CalcResult Run(ITaskContext taskContext, Ge06CalcData data)
         {
             LoadDataBrific.SetBRIFICDirectory(this._appServerComponentConfig.BrificDBSource);
+            var iterationHandlerBroadcastingFieldStrengthCalcData = _iterationsPool.GetIteration<BroadcastingFieldStrengthCalcData, BroadcastingFieldStrengthCalcResult>();
+            var iterationHandlerFieldStrengthCalcData = _iterationsPool.GetIteration<FieldStrengthCalcData, FieldStrengthCalcResult>();
+
 
             this._taskContext = taskContext;
             this._ge06CalcData = data;
@@ -120,12 +123,15 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             }
 
 
+
+
             if ((CalculationType)data.Ge06TaskParameters.CalculationTypeCode == CalculationType.CreateContoursByDistance)
             {
                 GE06CalcContoursByDistance.Calculation(in data, BroadcastingTypeContext.Icsm,
                                                         ref ge06CalcResultsForICSM,
                                                         _pointEarthGeometricPool,
-                                                        _iterationsPool,
+                                                        iterationHandlerBroadcastingFieldStrengthCalcData,
+                                                        iterationHandlerFieldStrengthCalcData,
                                                         _poolSite,
                                                         _transformation,
                                                         _taskContext,
@@ -149,7 +155,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 GE06CalcContoursByDistance.Calculation(in data, BroadcastingTypeContext.Brific,
                                                         ref ge06CalcResultsForBRIFIC,
                                                         _pointEarthGeometricPool,
-                                                        _iterationsPool,
+                                                        iterationHandlerBroadcastingFieldStrengthCalcData,
+                                                        iterationHandlerFieldStrengthCalcData,
                                                         _poolSite,
                                                         _transformation,
                                                         _taskContext,
@@ -174,7 +181,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 GE06CalcContoursByFS.Calculation(data, BroadcastingTypeContext.Icsm,
                                                 ref ge06CalcResultsForICSM,
                                                 _pointEarthGeometricPool,
-                                                _iterationsPool,
+                                                iterationHandlerBroadcastingFieldStrengthCalcData,
+                                                iterationHandlerFieldStrengthCalcData,
                                                 _poolSite,
                                                 _transformation,
                                                 _taskContext,
@@ -198,7 +206,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                  BroadcastingTypeContext.Brific,
                                                  ref ge06CalcResultsForBRIFIC,
                                                  _pointEarthGeometricPool,
-                                                 _iterationsPool,
+                                                 iterationHandlerBroadcastingFieldStrengthCalcData,
+                                                 iterationHandlerFieldStrengthCalcData,
                                                  _poolSite,
                                                  _transformation,
                                                  _taskContext,
@@ -224,7 +233,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 GE06CalcConformityCheck.Calculation(data,
                                                     ref ge06CalcResults,
                                                     _pointEarthGeometricPool,
-                                                    _iterationsPool,
+                                                    iterationHandlerBroadcastingFieldStrengthCalcData,
+                                                    iterationHandlerFieldStrengthCalcData,
                                                     _poolSite,
                                                     _transformation,
                                                     _taskContext,
@@ -247,7 +257,16 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             else if ((CalculationType)data.Ge06TaskParameters.CalculationTypeCode == CalculationType.FindAffectedADM)
             {
                 GE06CalcFindAffectedADM.Calculation(data,
-                                                    ref ge06CalcResultsForICSM, _pointEarthGeometricPool, _iterationsPool, _poolSite, _transformation, _taskContext, _gn06Service, _earthGeometricService, _idwmService);
+                                                    ref ge06CalcResultsForICSM,
+                                                    _pointEarthGeometricPool,
+                                                    iterationHandlerBroadcastingFieldStrengthCalcData,
+                                                    iterationHandlerFieldStrengthCalcData,
+                                                    _poolSite,
+                                                    _transformation,
+                                                    _taskContext,
+                                                    _gn06Service,
+                                                    _earthGeometricService,
+                                                    _idwmService);
                 
                 if (ge06CalcResultsForBRIFIC.AffectedADMResult != null)
                 {
