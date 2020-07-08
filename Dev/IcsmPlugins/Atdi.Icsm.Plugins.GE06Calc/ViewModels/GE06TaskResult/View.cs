@@ -17,6 +17,8 @@ using System.Windows;
 using ICSM;
 using Atdi.DataModels.Sdrn.DeepServices.GN06;
 using Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks;
+using Atdi.WpfControls.EntityOrm.Controls;
+using Atdi.Icsm.Plugins.GE06Calc.Environment;
 
 namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06TaskResult
 {
@@ -31,11 +33,14 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06TaskResult
         private readonly ILogger _logger;
 
         private long _resultId;
+        private IList _currentAssignmentsAllotments;
 
         public AllotmentOrAssignmentDataAdapter AllotmentOrAssignments { get; set; }
         public ContourDataAdapter Contours { get; set; }
         public AffectedADMDataAdapter AffectedADMs { get; set; }
-        
+
+        private MapDrawingData _currentMapData;
+
         public View(
             AllotmentOrAssignmentDataAdapter allotmentOrAssignmentDataAdapter,
             ContourDataAdapter contourDataAdapter,
@@ -62,6 +67,20 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06TaskResult
             get => this._resultId;
             set => this.Set(ref this._resultId, value, () => { this.OnChangedResultId(value); });
         }
+        public MapDrawingData CurrentMapData
+        {
+            get => this._currentMapData;
+            set => this.Set(ref this._currentMapData, value);
+        }
+        public IList CurrentAssignmentsAllotments
+        {
+            get => this._currentAssignmentsAllotments;
+            set
+            {
+                this._currentAssignmentsAllotments = value;
+                RedrawMap();
+            }
+        }
         private void OnChangedResultId(long resultId)
         {
             this.AllotmentOrAssignments.ResultId = resultId;
@@ -70,6 +89,39 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06TaskResult
             this.Contours.Refresh();
             this.AffectedADMs.ResultId = resultId;
             this.AffectedADMs.Refresh();
+        }
+        private void RedrawMap()
+        {
+            var data = new MapDrawingData();
+            var polygons = new List<MapDrawingDataPolygon>();
+            var points = new List<MapDrawingDataPoint>();
+
+            if (this._currentAssignmentsAllotments != null)
+            {
+                foreach (AllotmentOrAssignmentModel item in this._currentAssignmentsAllotments)
+                {
+                    if (item.Longitude_DEC.HasValue && item.Latitude_DEC.HasValue)
+                    {
+                        points.Add(MapsDrawingHelper.MakeDrawingPointForSensor(item.Longitude_DEC.Value, item.Latitude_DEC.Value));
+                    }
+                    //if (item.Type == AssignmentsAllotmentsModelType.Allotment)
+                    //{
+                    //    var polygonPoints = new List<Location>();
+
+                    //    item.Contur.ToList().ForEach(areaPoint =>
+                    //    {
+                    //        polygonPoints.Add(new Location() { Lat = areaPoint.Lat_DEC, Lon = areaPoint.Lon_DEC });
+                    //    });
+
+                    //    polygons.Add(new MapDrawingDataPolygon() { Points = polygonPoints.ToArray(), Color = System.Windows.Media.Colors.Red, Fill = System.Windows.Media.Colors.Red });
+                    //}
+                }
+            }
+
+            data.Polygons = polygons.ToArray();
+            data.Points = points.ToArray();
+
+            this.CurrentMapData = data;
         }
         public override void Dispose()
         {

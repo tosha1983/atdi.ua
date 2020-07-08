@@ -24,11 +24,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         /// <param name="broadcastingTypeContext"></param>
         /// <param name="ge06CalcResult"></param>
         public static void Calculation(
-                                           Ge06CalcData ge06CalcData,
-                                           BroadcastingTypeContext broadcastingTypeContext,
-                                           ref Ge06CalcResult ge06CalcResult,
+                                            Ge06CalcData ge06CalcData,
+                                            BroadcastingTypeContext broadcastingTypeContext,
+                                            ref Ge06CalcResult ge06CalcResult,
                                             IObjectPool<PointEarthGeometric[]> pointEarthGeometricPool,
-                                            IIterationsPool iterationsPool,
+                                            IIterationHandler<BroadcastingFieldStrengthCalcData, BroadcastingFieldStrengthCalcResult> iterationHandlerBroadcastingFieldStrengthCalcData,
+                                            IIterationHandler<FieldStrengthCalcData, FieldStrengthCalcResult> iterationHandlerFieldStrengthCalcData,
                                             IObjectPoolSite poolSite,
                                             ITransformation transformation,
                                             ITaskContext taskContext,
@@ -51,15 +52,38 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 broadcastingContextBase = ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM;
             }
 
-            if (((GE06Validation.ValidationAssignment(broadcastingContextBase.Assignments)) && (GE06Validation.ValidationAllotment(broadcastingContextBase.Allotments))) == false)
+            string notValidBroadcastingAssignment = string.Empty;
+            string notValidBroadcastingAllotment = string.Empty;
+
+            if (((GE06Validation.ValidationAssignment(broadcastingContextBase.Assignments, out notValidBroadcastingAssignment)) && (GE06Validation.ValidationAllotment(broadcastingContextBase.Allotments, out notValidBroadcastingAllotment))) == false)
             {
-                throw new Exception("Input parameters failed validation");
+                string message = "";
+                if (!string.IsNullOrEmpty(notValidBroadcastingAssignment))
+                {
+                    message += $"The following Assignments are not validated: {notValidBroadcastingAssignment}";
+                }
+                if (!string.IsNullOrEmpty(notValidBroadcastingAllotment))
+                {
+                    message += $"The following Allotment are not validated: {notValidBroadcastingAllotment}";
+                }
+                throw new Exception(message);
             }
 
 
             if (broadcastingContextBase.Allotments != null)
             {
-                affectedServices.Add(broadcastingContextBase.Allotments.AdminData.StnClass);
+                if ((broadcastingContextBase.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC1)
+                           || (broadcastingContextBase.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC2)
+                               || (broadcastingContextBase.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC3))
+                {
+                    affectedServices.Add("BT");
+                }
+                else if ((broadcastingContextBase.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC4)
+                    || (broadcastingContextBase.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC5)
+                        )
+                {
+                    affectedServices.Add("BC");
+                }
             }
             if (broadcastingContextBase.Assignments != null)
             {
@@ -96,8 +120,6 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     // 2. Построение контуров фиксированной дистанции относительно центра гравитации.
                     // Базируемся на функции CreateContourFromPointByDistance если у нас только BroadcastingAssignment []
 
-
-
                     var contourForStationByTriggerFieldStrengthsArgs = new ContourForStationByTriggerFieldStrengthsArgs()
                     {
                         Step_deg = ge06CalcData.Ge06TaskParameters.AzimuthStep_deg.Value,
@@ -109,23 +131,37 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     try
                     {
                         pointEarthGeometricsResult = pointEarthGeometricPool.Take();
-
-
                         int sizeResultBuffer = 0;
 
                         // модель из контекста, высота абонента из формы, процент времени из формы
                         var propModel = ge06CalcData.PropagationModel;
-                        GE06PropagationModel.GetPropagationModelForContoursByFS(ref propModel, 50, (float)ge06CalcData.Ge06TaskParameters.PercentageTime.Value, ge06CalcData.Ge06TaskParameters.SubscribersHeight.Value);
+                        GE06PropagationModel.GetPropagationModelForContoursByFS(ref propModel, 50, (float)ge06CalcData.Ge06TaskParameters.PercentageTime.Value);
                         ge06CalcData.PropagationModel = propModel;
 
 
                         if (broadcastingTypeContext == BroadcastingTypeContext.Brific)
                         {
-                            earthGeometricService.CreateContourForStationByTriggerFieldStrengths((destinationPoint) => CalcFieldStrengthBRIFIC(destinationPoint, ge06CalcData,  pointEarthGeometricPool, iterationsPool, poolSite, transformation, taskContext, gn06Service ), in contourForStationByTriggerFieldStrengthsArgs, ref pointEarthGeometricsResult, out sizeResultBuffer);
+                            earthGeometricService.CreateContourForStationByTriggerFieldStrengths((destinationPoint) => CalcFieldStrengthBRIFIC(destinationPoint,
+                                                                                                                                               ge06CalcData,
+                                                                                                                                               pointEarthGeometricPool,
+                                                                                                                                               iterationHandlerBroadcastingFieldStrengthCalcData,
+                                                                                                                                               iterationHandlerFieldStrengthCalcData,
+                                                                                                                                               poolSite,
+                                                                                                                                               transformation,
+                                                                                                                                               taskContext,
+                                                                                                                                               gn06Service), in contourForStationByTriggerFieldStrengthsArgs, ref pointEarthGeometricsResult, out sizeResultBuffer);
                         }
                         if (broadcastingTypeContext == BroadcastingTypeContext.Icsm)
                         {
-                            earthGeometricService.CreateContourForStationByTriggerFieldStrengths((destinationPoint) => CalcFieldStrengthICSM(destinationPoint, ge06CalcData, pointEarthGeometricPool, iterationsPool, poolSite, transformation, taskContext, gn06Service), in contourForStationByTriggerFieldStrengthsArgs, ref pointEarthGeometricsResult, out sizeResultBuffer);
+                            earthGeometricService.CreateContourForStationByTriggerFieldStrengths((destinationPoint) => CalcFieldStrengthICSM(destinationPoint,
+                                                                                                                                             ge06CalcData,
+                                                                                                                                             pointEarthGeometricPool,
+                                                                                                                                             iterationHandlerBroadcastingFieldStrengthCalcData,
+                                                                                                                                             iterationHandlerFieldStrengthCalcData,
+                                                                                                                                             poolSite,
+                                                                                                                                             transformation,
+                                                                                                                                             taskContext,
+                                                                                                                                             gn06Service), in contourForStationByTriggerFieldStrengthsArgs, ref pointEarthGeometricsResult, out sizeResultBuffer);
                         }
                         if (sizeResultBuffer > 0)
                         {
@@ -262,7 +298,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         public static double CalcFieldStrengthBRIFIC(PointEarthGeometric destinationPoint,
                                             Ge06CalcData ge06CalcData,
                                             IObjectPool<PointEarthGeometric[]> pointEarthGeometricPool,
-                                            IIterationsPool iterationsPool,
+                                            IIterationHandler<BroadcastingFieldStrengthCalcData, BroadcastingFieldStrengthCalcResult> iterationHandlerBroadcastingFieldStrengthCalcData,
+                                            IIterationHandler<FieldStrengthCalcData, FieldStrengthCalcResult> iterationHandlerFieldStrengthCalcData,
                                             IObjectPoolSite poolSite,
                                             ITransformation transformation,
                                             ITaskContext taskContext,
@@ -281,7 +318,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                      in point,
                                                      BroadcastingTypeContext.Brific,
                                                      pointEarthGeometricPool,
-                                                     iterationsPool,
+                                                     iterationHandlerBroadcastingFieldStrengthCalcData,
+                                                     iterationHandlerFieldStrengthCalcData,
                                                      poolSite,
                                                      transformation,
                                                      taskContext,
@@ -298,7 +336,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         public static double CalcFieldStrengthICSM(PointEarthGeometric destinationPoint, 
                                             Ge06CalcData ge06CalcData,
                                             IObjectPool<PointEarthGeometric[]> pointEarthGeometricPool,
-                                            IIterationsPool iterationsPool,
+                                            IIterationHandler<BroadcastingFieldStrengthCalcData, BroadcastingFieldStrengthCalcResult> iterationHandlerBroadcastingFieldStrengthCalcData,
+                                            IIterationHandler<FieldStrengthCalcData, FieldStrengthCalcResult> iterationHandlerFieldStrengthCalcData,
                                             IObjectPoolSite poolSite,
                                             ITransformation transformation,
                                             ITaskContext taskContext,
@@ -315,7 +354,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                   in point,
                                                   BroadcastingTypeContext.Icsm,
                                                   pointEarthGeometricPool,
-                                                  iterationsPool,
+                                                  iterationHandlerBroadcastingFieldStrengthCalcData,
+                                                  iterationHandlerFieldStrengthCalcData,
                                                   poolSite,
                                                   transformation,
                                                   taskContext,

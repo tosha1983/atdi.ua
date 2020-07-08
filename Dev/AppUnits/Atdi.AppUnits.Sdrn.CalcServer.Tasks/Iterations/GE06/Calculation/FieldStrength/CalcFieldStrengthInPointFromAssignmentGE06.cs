@@ -29,14 +29,16 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         public static float Calc(BroadcastingAssignment broadcastingAssignment,
                                                                        PropagationModel propagationModel,
                                                                        Point point,
-                                                                       IIterationsPool iterationsPool,
+                                                                       IIterationHandler<BroadcastingFieldStrengthCalcData, BroadcastingFieldStrengthCalcResult> iterationHandlerBroadcastingFieldStrengthCalcData,
+                                                                       IIterationHandler<FieldStrengthCalcData, FieldStrengthCalcResult> iterationHandlerFieldStrengthCalcData,
                                                                        IObjectPoolSite poolSite,
                                                                        ITransformation transformation,
                                                                        ITaskContext taskContext,
                                                                        IGn06Service gn06Service,
                                                                        ProjectMapData projectMapData,
                                                                        CluttersDesc cluttersDesc,
-                                                                       string projection)
+                                                                       string projection,
+                                                                       float Hrx_m)
         {
             float resultCalcFieldStrength = 0;
 
@@ -59,10 +61,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     MapArea = projectMapData.Area,
                     ClutterContent = projectMapData.ClutterContent,
                     ReliefContent = projectMapData.ReliefContent,
+                    Projection = projection,
                     TargetCoordinate = new PointEarthGeometric() { Longitude = point.Longitude, Latitude = point.Latitude, CoordinateUnits = CoordinateUnits.deg },
+                    TargetAltitude_m = Hrx_m
                 };
-                var iterationCorellationCalc = iterationsPool.GetIteration<BroadcastingFieldStrengthCalcData, BroadcastingFieldStrengthCalcResult>();
-                var resFieldStrengthCalcResult = iterationCorellationCalc.Run(taskContext, broadcastingFieldStrengthCalcData);
+                var resFieldStrengthCalcResult = iterationHandlerBroadcastingFieldStrengthCalcData.Run(taskContext, broadcastingFieldStrengthCalcData);
                 resultCalcFieldStrength = (float)resFieldStrengthCalcResult.FS_dBuVm.Value;
             }
             else
@@ -83,8 +86,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     PointCoordinate = contextStation.ClientContextStation.Coordinate,
                     TargetCoordinate = transformation.ConvertCoordinateToAtdi(new Wgs84Coordinate() { Longitude = point.Longitude, Latitude = point.Latitude }, projection),
                 };
-                var iterationFieldStrengthCalcData = iterationsPool.GetIteration<FieldStrengthCalcData, FieldStrengthCalcResult>();
-                var resFieldStrengthCalcData = iterationFieldStrengthCalcData.Run(taskContext, fieldStrengthCalcData);
+                var resFieldStrengthCalcData = iterationHandlerFieldStrengthCalcData.Run(taskContext, fieldStrengthCalcData);
                 resultCalcFieldStrength = (float)resFieldStrengthCalcData.FS_dBuVm.Value;
             }
             return resultCalcFieldStrength;

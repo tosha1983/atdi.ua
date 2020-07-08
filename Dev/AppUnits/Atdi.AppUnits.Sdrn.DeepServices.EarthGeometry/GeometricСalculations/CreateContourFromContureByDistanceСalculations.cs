@@ -359,7 +359,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
                 ResultPoint[index] = CurrentPoint;
                 index++;
             }
-            sizeResultBuffer = index++;
+            sizeResultBuffer = index;
         }
     }
 }
