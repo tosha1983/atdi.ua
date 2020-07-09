@@ -101,7 +101,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             var broadcastingContextICSM = ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM;
 
 
-            ///список затронутых служб для ICSM
+
             if (broadcastingContextICSM.Allotments != null)
             {
                 if ((broadcastingContextICSM.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC1)
@@ -120,7 +120,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 }
             }
 
-            ///список затронутых служб для BRIFIC
+
             if (broadcastingContextBRIFIC.Allotments != null)
             {
                 if ((broadcastingContextBRIFIC.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC1)
