@@ -8,6 +8,7 @@ using Atdi.Contracts.Sdrn.DeepServices.Gis;
 using Atdi.DataModels.Sdrn.DeepServices.EarthGeometry;
 using Atdi.Contracts.Sdrn.DeepServices.EarthGeometry;
 using Atdi.Contracts.Sdrn.DeepServices.GN06;
+using Atdi.DataModels.Sdrn.DeepServices.GN06;
 using Idwm = Atdi.Contracts.Sdrn.DeepServices.IDWM;
 using IdwmDataModel = Atdi.DataModels.Sdrn.DeepServices.IDWM;
 
@@ -38,7 +39,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                           )
         {
 
-            if (ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM == null)
+
+
+
+            if ((ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM == null)||
+                (((ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM.Allotments==null)||(ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM.Allotments.AllotmentParameters.Contur == null)|| (ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM.Allotments.AllotmentParameters.Contur.Length <3)) &&
+                (ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM.Assignments == null)||((ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM.Assignments.Length == 0))))
             {
                 throw new Exception("Input parameters BroadcastingContextICSM is null!");
             }
@@ -59,19 +65,17 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 throw new Exception(message);
             }
 
-
+            float ProsentTime = 1;
+            float ProsentTerr = 50;
+            int Height = 10;
+            var countoursPointExtendedBuffer = default(CountoursPointExtended[]);
 
             var pointEarthGeometricsResult = default(PointEarthGeometric[]);
             var pointEarthGeometricsResultICSM = default(PointEarthGeometric[]);
             var pointEarthGeometricsResultAffectedICSM = default(PointEarthGeometric[]);
-
-
-
             var lstContoursResults = new List<ContoursResult>();
-
             var broadcastingContextICSM = ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM;
-
-
+            // Определение класов входящих данных 
             if (broadcastingContextICSM.Allotments != null)
             {
                 if ((broadcastingContextICSM.Allotments.EmissionCharacteristics.RefNetworkConfig == DataModels.Sdrn.DeepServices.GN06.RefNetworkConfigType.RPC1)
@@ -89,6 +93,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     broadcastingContextICSM.Allotments.AdminData.IsDigital = false;
                 }
             }
+            // Конец определения класов входящих данных.
+
 
             // Определение пороговых напряженностей для защиты систем радиовещательной службы
             // входными данными являются Allotments + Assignments[]
@@ -97,6 +103,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             var thresholdFieldStrengthsICSMAssignmentsP = ThresholdFS.GetThresholdFieldStrengthByAssignments(broadcastingContextICSM.Assignments, TypeThresholdFS.OnlyBroadcastingService);
             thresholdFieldStrengthsPrimaryServices.AddRange(thresholdFieldStrengthsICSMAllotmentsP);
             thresholdFieldStrengthsPrimaryServices.AddRange(thresholdFieldStrengthsICSMAssignmentsP);
+            thresholdFieldStrengthsPrimaryServices.Distinct();
 
             // Определение пороговых напряженностей для защиты всех служб в том числе радиовещательной службы
             // входными данными являются Allotments + Assignments[]
@@ -105,34 +112,154 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             var thresholdFieldStrengthsICSMAssignmentsA = ThresholdFS.GetThresholdFieldStrengthByAssignments(broadcastingContextICSM.Assignments, TypeThresholdFS.All);
             thresholdFieldStrengthsAnotherServices.AddRange(thresholdFieldStrengthsICSMAllotmentsA);
             thresholdFieldStrengthsAnotherServices.AddRange(thresholdFieldStrengthsICSMAssignmentsA);
+            thresholdFieldStrengthsAnotherServices.Distinct();
 
 
 
 
             var dicCountoursPointsByICSM = new Dictionary<CountoursPoint, string>();
-
             var listAffectedADMResults = new List<AffectedADMResult>();
-
             ///список потенциально затронутых администраций (TypeAffected = 1000).
             var admPotentiallyAffected_1000 = new List<string>();
-
             // список затронутых (радиовещательные службы затронуты) администраций. TypeAffected = Broadcast
             var admPotentiallyAffected_Broadcast = new List<string>();
 
-
-
             var pointEarthGeometricBarycenter = new PointEarthGeometric();
-
-            //1.Определение центра гравитации(2.1)
-            if ((broadcastingContextICSM != null) && (broadcastingContextICSM != null))
+            //1.А Определение центра гравитации(2.1)
+            var broadcastingCalcBarycenterGE06 = new BroadcastingCalcBarycenterGE06()
+            { BroadcastingAllotment = broadcastingContextICSM.Allotments,
+                BroadcastingAssignments = broadcastingContextICSM.Assignments};
+            gn06Service.CalcBarycenterGE06(in broadcastingCalcBarycenterGE06, ref pointEarthGeometricBarycenter);
+            try
             {
-                var broadcastingCalcBarycenterGE06 = new BroadcastingCalcBarycenterGE06()
+                // Получение элементов из пула
+                pointEarthGeometricsResult = pointEarthGeometricPool.Take();
+                pointEarthGeometricsResultICSM = pointEarthGeometricPool.Take();
+                pointEarthGeometricsResultAffectedICSM = pointEarthGeometricPool.Take();
+                countoursPointExtendedBuffer = countoursPointExtendedPool.Take();
+
+                //1.Б Построение контура 
+                int sizeResultBuffer = 0;
+                if ((broadcastingContextICSM.Allotments != null) && (broadcastingContextICSM.Allotments.AllotmentParameters.Contur != null) && (broadcastingContextICSM.Allotments.AllotmentParameters.Contur.Length > 3))
                 {
-                    BroadcastingAllotment = broadcastingContextICSM.Allotments,
-                    BroadcastingAssignments = broadcastingContextICSM.Assignments
-                };
-                gn06Service.CalcBarycenterGE06(in broadcastingCalcBarycenterGE06, ref pointEarthGeometricBarycenter);
+                    var areaPoints = broadcastingContextICSM.Allotments.AllotmentParameters.Contur;
+                    var pointEarthGeometrics = new PointEarthGeometric[areaPoints.Length];
+                    for (int h = 0; h < areaPoints.Length; h++)
+                    {
+                        pointEarthGeometrics[h] = new PointEarthGeometric(areaPoints[h].Lon_DEC, areaPoints[h].Lat_DEC, CoordinateUnits.deg);
+                    }
+                    var contourFromContureByDistanceArgs = new ContourFromContureByDistanceArgs()
+                    {
+                        Step_deg = ge06CalcData.Ge06TaskParameters.AzimuthStep_deg.Value,
+                        Distance_km = 1000,
+                        PointBaryCenter = pointEarthGeometricBarycenter,
+                        ContourPoints = pointEarthGeometrics
+                    };
+                    earthGeometricService.CreateContourFromContureByDistance(in contourFromContureByDistanceArgs, ref pointEarthGeometricsResult, out sizeResultBuffer);
+                }
+                else
+                {
+                    var contourFromPointByDistanceArgs = new ContourFromPointByDistanceArgs()
+                    {
+                        Distance_km = 1000,
+                        Step_deg = ge06CalcData.Ge06TaskParameters.AzimuthStep_deg.Value,
+                        PointEarthGeometricCalc = pointEarthGeometricBarycenter
+                    };
+                    earthGeometricService.CreateContourFromPointByDistance(in contourFromPointByDistanceArgs, ref pointEarthGeometricsResult, out sizeResultBuffer);
+                }
+                // 1.B Вычисление администраций в контуре 
+                var countoursPoint1000 = new CountoursPoint[sizeResultBuffer];
+                for (int k = 0; k < sizeResultBuffer; k++)
+                {
+                    var pointForCalc = new IdwmDataModel.Point()
+                    {
+                        Longitude_dec = pointEarthGeometricsResult[k].Longitude,
+                        Latitude_dec = pointEarthGeometricsResult[k].Latitude
+                    };
+                    var adm = idwmService.GetADMByPoint(pointForCalc);
+                    countoursPoint1000[k] = new CountoursPoint();
+                    countoursPoint1000[k].Lon_DEC = pointForCalc.Longitude_dec.Value;
+                    countoursPoint1000[k].Lat_DEC = pointForCalc.Latitude_dec.Value;
+                    countoursPoint1000[k].PointType = PointType.Affected;
+                    if (!admPotentiallyAffected_1000.Contains(adm)){admPotentiallyAffected_1000.Add(adm);}
+                }
+
+                // 3. Определение затронутых других первичных служб 
+
+                var thresholdFieldStrengths = thresholdFieldStrengthsAnotherServices; //на самом деле тут найдем все затронутые сервисы
+
+                // 2. Определение администраций с затронутой радиовещательной службой 4. и прочими службами
+                if (thresholdFieldStrengths != null)
+                {
+                    int[] arrFieldStrength = null;
+                    var arrTriggersFS = thresholdFieldStrengths.ToArray();
+                    arrFieldStrength = new int[arrTriggersFS.Length];
+                    int indexForCountoursPointExtendedBuffer = 0;
+                    int indexResult = 0;
+                    // идем по значениям напряженности поля
+
+                    for (int d = 0; d < arrTriggersFS.Length; d++)
+                    {
+                        // Установка соответсвующей модели распространения 
+                        var propModel = ge06CalcData.PropagationModel;
+                        GE06PropagationModel.GetPropagationModelForConformityCheck(ref propModel, ProsentTerr, arrTriggersFS[d].Time_pc);
+                        ge06CalcData.PropagationModel = propModel;
+                        ge06CalcData.Ge06TaskParameters.SubscribersHeight = (int)arrTriggersFS[d].Height_m;
+
+                    
+                        // Построение контура для напряженности поля относительно центра гравитации для ICSM
+                        var contourForStationByTriggerFieldStrengthsArgs = new ContourForStationByTriggerFieldStrengthsArgs()
+                        {
+                            Step_deg = ge06CalcData.Ge06TaskParameters.AzimuthStep_deg.Value,
+                            TriggerFieldStrength = arrTriggersFS[d].ThresholdFS,
+                            BaryCenter = pointEarthGeometricBarycenter
+                        };
+                        earthGeometricService.CreateContourForStationByTriggerFieldStrengths((destinationPoint) => GE06CalcContoursByFS.CalcFieldStrengthICSM(destinationPoint,
+                            ge06CalcData, pointEarthGeometricPool, iterationHandlerBroadcastingFieldStrengthCalcData, iterationHandlerFieldStrengthCalcData, poolSite, transformation, taskContext, gn06Service),
+                            in contourForStationByTriggerFieldStrengthsArgs, ref pointEarthGeometricsResult, out int sizeResultBufferICSM);
+                        // Конец построения контура для напряженности поля относительно центра гравитации для ICSM. 
+                        // запись результатов по контуру
+                        if (sizeResultBufferICSM > 0)
+                        {
+                            for (int t = 0; t < sizeResultBufferICSM; t++)
+                            {
+                                // предварительное сохранение результатов
+                                countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer] = new CountoursPointExtended();
+                                countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].Lon_DEC = pointEarthGeometricsResult[t].Longitude;
+                                countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].Lat_DEC = pointEarthGeometricsResult[t].Latitude;
+                                countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].Height = (int)arrTriggersFS[d].Height_m;
+                                countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].FS = (int)arrTriggersFS[d].ThresholdFS;
+                                countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].PointType = PointType.Affected;
+                                var adm = idwmService.GetADMByPoint(new IdwmDataModel.Point() { Longitude_dec = pointEarthGeometricsResult[t].Longitude, Latitude_dec = pointEarthGeometricsResult[t].Latitude });
+                                countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].administration = adm;
+                                countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].broadcastingTypeCalculation = BroadcastingTypeCalculation.FieldStrength;
+                                countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].Id = indexResult;
+                                countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].Service = arrTriggersFS[d].StaClass;
+                                indexForCountoursPointExtendedBuffer++;
+                            }
+                            indexResult++;
+                        }
+                    }
+                }
             }
+            finally
+            {
+                if (pointEarthGeometricsResult != null)
+                {
+                    pointEarthGeometricPool.Put(pointEarthGeometricsResult);
+                }
+                if (pointEarthGeometricsResultICSM != null)
+                {
+                    pointEarthGeometricPool.Put(pointEarthGeometricsResultICSM);
+                }
+                if (pointEarthGeometricsResultAffectedICSM != null)
+                {
+                    pointEarthGeometricPool.Put(pointEarthGeometricsResultAffectedICSM);
+                }
+            }
+            // тут конец расчетам нужна обработка результатов 
+
+            // тут должны быть первичные службы ...
 
 
             if ((broadcastingContextICSM.Allotments == null) && ((broadcastingContextICSM.Assignments != null) && (broadcastingContextICSM.Assignments.Length > 0)))
