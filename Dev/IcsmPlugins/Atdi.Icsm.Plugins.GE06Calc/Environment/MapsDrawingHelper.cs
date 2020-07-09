@@ -29,11 +29,21 @@ namespace Atdi.Icsm.Plugins.GE06Calc.Environment
             Height = 10,
             Name = name
         };
-        public static MapDrawingDataPoint MakeDrawingPointForStation(double lon, double lat, string name = "") => new MapDrawingDataPoint
+        public static MapDrawingDataPoint MakeDrawingPointForCountour(double lon, double lat, string name = "") => new MapDrawingDataPoint
         {
             Color = System.Windows.Media.Brushes.Green,
             Fill = System.Windows.Media.Brushes.ForestGreen,
             Location = new Location() { Lat = lat, Lon = lon},
+            Opacity = 0.85,
+            Width = 10,
+            Height = 10,
+            Name = name
+        };
+        public static MapDrawingDataPoint MakeDrawingPointForCountourAffected(double lon, double lat, string name = "") => new MapDrawingDataPoint
+        {
+            Color = System.Windows.Media.Brushes.Red,
+            Fill = System.Windows.Media.Brushes.DarkRed,
+            Location = new Location() { Lat = lat, Lon = lon },
             Opacity = 0.85,
             Width = 10,
             Height = 10,
