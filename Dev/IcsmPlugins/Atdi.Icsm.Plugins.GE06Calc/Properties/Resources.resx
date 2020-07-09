@@ -288,4 +288,10 @@
   <data name="ExportToHTZ" xml:space="preserve">
     <value>Export to HTZ</value>
   </data>
+  <data name="PrepareContext" xml:space="preserve">
+    <value>Prepare  context</value>
+  </data>
+  <data name="Prepared" xml:space="preserve">
+    <value>Prepared</value>
+  </data>
 </root>

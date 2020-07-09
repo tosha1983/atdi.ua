@@ -44,10 +44,9 @@
         </WrapPanel>
         <orm:OrmDataGrid IsReadOnly="True" Margin="5,30,5,5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding AssignmentsAllotmentsArray}" SelectedItemsList="{Binding CurrentAssignmentsAllotments, Mode=TwoWay}">
           <DataGrid.Columns>
-            <!--<DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=Id}"></DataGridTextColumn>-->
             <DataGridTextColumn Header="{x:Static res:Resources.Source}" Binding="{Binding Path=Source}"></DataGridTextColumn>
             <DataGridTextColumn Header="{x:Static res:Resources.Type}" Binding="{Binding Path=Type}"></DataGridTextColumn>
-            <DataGridTextColumn Header="{x:Static res:Resources.ViewName}" Binding="{Binding Path=ViewName}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.Name}" Binding="{Binding Path=ViewName}"></DataGridTextColumn>
             <DataGridTextColumn Header="{x:Static res:Resources.Freq_MHz}" Binding="{Binding Path=Freq_MHz}"></DataGridTextColumn>
             <DataGridTextColumn Header="{x:Static res:Resources.SfnId}" Binding="{Binding Path=SfnId}"></DataGridTextColumn>
             <DataGridTextColumn Header="{x:Static res:Resources.Lon_Dec}" Binding="{Binding Path=Lon_Dec}"></DataGridTextColumn>

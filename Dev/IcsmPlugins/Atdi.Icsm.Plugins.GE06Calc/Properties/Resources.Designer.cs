@@ -439,6 +439,24 @@ namespace Atdi.Icsm.Plugins.GE06Calc.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Prepare  context.
+        /// </summary>
+        public static string PrepareContext {
+            get {
+                return ResourceManager.GetString("PrepareContext", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Prepared.
+        /// </summary>
+        public static string Prepared {
+            get {
+                return ResourceManager.GetString("Prepared", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Projection.
         /// </summary>
         public static string Projection {

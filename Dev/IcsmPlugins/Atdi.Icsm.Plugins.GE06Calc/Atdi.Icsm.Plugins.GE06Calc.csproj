@@ -86,6 +86,7 @@
     <Compile Include="ViewModels\GE06Settings\Events\OnCreatedClientContext.cs" />
     <Compile Include="ViewModels\GE06Settings\Events\OnDeletedClientContext.cs" />
     <Compile Include="ViewModels\GE06Settings\Events\OnEditedClientContext.cs" />
+    <Compile Include="ViewModels\GE06Settings\Events\OnPreparedClientContext.cs" />
     <Compile Include="ViewModels\GE06Settings\Models\CalcTaskModel.cs" />
     <Compile Include="ViewModels\GE06Settings\Models\ClientContextModel.cs" />
     <Compile Include="ViewModels\GE06Settings\Models\ProjectModel.cs" />
@@ -95,6 +96,8 @@
     <Compile Include="ViewModels\GE06Settings\Modifiers\DeleteClientContextHandler.cs" />
     <Compile Include="ViewModels\GE06Settings\Modifiers\EditClientContext.cs" />
     <Compile Include="ViewModels\GE06Settings\Modifiers\EditClientContextHandler.cs" />
+    <Compile Include="ViewModels\GE06Settings\Modifiers\PrepareClientContext.cs" />
+    <Compile Include="ViewModels\GE06Settings\Modifiers\PrepareClientContextHandler.cs" />
     <Compile Include="ViewModels\GE06Settings\Queries\GetClientContextById.cs" />
     <Compile Include="ViewModels\GE06Settings\Queries\GetClientContextByIdExecutor.cs" />
     <Compile Include="ViewModels\GE06Settings\Queries\GetResultIdByTaskId.cs" />
