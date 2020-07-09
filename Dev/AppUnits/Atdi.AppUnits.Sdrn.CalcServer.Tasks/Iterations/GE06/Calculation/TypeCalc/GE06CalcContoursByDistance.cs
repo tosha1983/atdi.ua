@@ -11,6 +11,9 @@ using Atdi.Contracts.Sdrn.DeepServices.EarthGeometry;
 using Atdi.Contracts.Sdrn.DeepServices.GN06;
 using Idwm = Atdi.Contracts.Sdrn.DeepServices.IDWM;
 using IdwmDataModel = Atdi.DataModels.Sdrn.DeepServices.IDWM;
+using Atdi.DataModels.Sdrn.CalcServer;
+using Atdi.DataModels.Sdrn.CalcServer.Entities;
+
 
 namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 {
@@ -71,6 +74,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 {
                     message += $"The following Alotment are not validated: {notValidBroadcastingAllotment}";
                 }
+                taskContext.SendEvent(new CalcResultEvent
+                { 
+                     Level = CalcResultEventLevel.Error,
+                     Context = "Ge06CalcIteration",
+                     Message = message
+                });
                 throw new Exception(message);
             }
 
@@ -83,13 +92,19 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         || (broadcastingContextBase.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC2)
                             || (broadcastingContextBase.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC3))
                     {
-                        affectedServices.Add("BT");
+                        if (!affectedServices.Contains("BT"))
+                        {
+                            affectedServices.Add("BT");
+                        }
                     }
                     else if ((broadcastingContextBase.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC4)
                         || (broadcastingContextBase.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC5)
                             )
                     {
-                        affectedServices.Add("BC");
+                        if (!affectedServices.Contains("BC"))
+                        {
+                            affectedServices.Add("BC");
+                        }
                     }
                 }
             }
