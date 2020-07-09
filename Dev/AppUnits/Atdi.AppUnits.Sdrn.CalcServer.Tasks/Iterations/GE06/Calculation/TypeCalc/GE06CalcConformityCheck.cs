@@ -11,6 +11,8 @@ using Atdi.Contracts.Sdrn.DeepServices.EarthGeometry;
 using Atdi.Contracts.Sdrn.DeepServices.GN06;
 using Idwm = Atdi.Contracts.Sdrn.DeepServices.IDWM;
 using IdwmDataModel = Atdi.DataModels.Sdrn.DeepServices.IDWM;
+using Atdi.DataModels.Sdrn.CalcServer;
+using Atdi.DataModels.Sdrn.CalcServer.Entities;
 
 namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 {
@@ -53,6 +55,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
             if (((ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM != null) && (ge06CalcData.Ge06TaskParameters.BroadcastingContext.broadcastingContextBRIFIC != null)) == false)
             {
+                taskContext.SendEvent(new CalcResultEvent
+                {
+                    Level = CalcResultEventLevel.Error,
+                    Context = "Ge06CalcIteration",
+                    Message = "Incomplete ICSM data or BRIFIC"
+                });
                 throw new Exception("Incomplete ICSM data or BRIFIC");
             }
 
@@ -87,6 +95,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
             if (!string.IsNullOrEmpty(message))
             {
+                taskContext.SendEvent(new CalcResultEvent
+                {
+                    Level = CalcResultEventLevel.Error,
+                    Context = "Ge06CalcIteration",
+                    Message = message
+                });
                 throw new Exception(message);
             }
 
@@ -534,11 +548,26 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     }
                     if (countoursPointsICSMLocal.Count != 0)
                     {
+
+                        var arrCountoursPoint = new CountoursPoint[countoursPointsICSMLocal.Count];
+                        for (int x = 0; x < countoursPointsICSMLocal.Count; x++)
+                        {
+                            arrCountoursPoint[x] = new CountoursPoint()
+                            {
+                                Distance = countoursPointsICSMLocal[x].Distance,
+                                FS = countoursPointsICSMLocal[x].FS,
+                                Height = countoursPointsICSMLocal[x].Height,
+                                Lat_DEC = countoursPointsICSMLocal[x].Lat_DEC,
+                                Lon_DEC = countoursPointsICSMLocal[x].Lon_DEC,
+                                PointType = countoursPointsICSMLocal[x].PointType
+                            };
+                        }
+
                         ContoursResult contourICSM = new ContoursResult
                         {
                             AffectedADM = adm,
-                            CountoursPoints = countoursPointsICSMLocal.ToArray(),
-                            PointsCount = countoursPointsICSMLocal.Count
+                            CountoursPoints = arrCountoursPoint,
+                            PointsCount = arrCountoursPoint.Length
                         };
                         if (broadcastingTypeCalculation == BroadcastingTypeCalculation.Distance)
                         { contourICSM.Distance = countoursPointsICSMLocal[0].Distance;}

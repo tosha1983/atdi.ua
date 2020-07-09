@@ -13,7 +13,7 @@
   <Fields>
     <Field Name="StationId" SourceType="Column" SourceName="STATION_ID" DataType="Integer.64"  Required="true" Title="Station" Desc="The station in which the record of the receiver is created" />
 
-    <Field Name="Freq_MHz" SourceType="Column" Required="true" SourceName="FREQ_MHZ" DataType="Float.22.8" Title="Freq, MHz" Desc="The Freq in MHz"/>
+    <Field Name="Freq_MHz" SourceType="Column" Required="true" SourceName="FREQ_MHZ" DataType="Double.30.10" Title="Freq, MHz" Desc="The Freq in MHz"/>
     <Field Name="BW_kHz" SourceType="Column" Required="true" SourceName="BW_KHZ" DataType="Double.30.10" Title="BW, kHz" Desc="The BW in kHz"/>
     <Field Name="Loss_dB" SourceType="Column" Required="true" SourceName="LOSS_DB" DataType="Float.22.8" Title="Loss, dB" Desc="The Loss in dB"/>
     <Field Name="MaxPower_dBm" SourceType="Column" Required="true" SourceName="MAX_POWER_DBM" DataType="Float.22.8" Title="PowMax, dBm" Desc="The PowMax in dBm"/>

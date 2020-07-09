@@ -43,6 +43,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings
         public ViewCommand ContextSaveCommand { get; set; }
         public ViewCommand TaskDeleteCommand { get; set; }
         public ViewCommand TaskShowResultCommand { get; set; }
+        public ViewCommand PrepareContextCommand { get; set; }
 
         public ProjectDataAdapter Projects { get; set; }
         public BaseClientContextDataAdapter BaseClientContexts { get; set; }
@@ -52,6 +53,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings
         private IEventHandlerToken<Events.OnCreatedClientContext> _onCreatedClientContextToken;
         private IEventHandlerToken<Events.OnEditedClientContext> _onEditedClientContextToken;
         private IEventHandlerToken<Events.OnDeletedClientContext> _onDeletedClientContextToken;
+        private IEventHandlerToken<Events.OnPreparedClientContext> _onPreparedClientContextToken;
         private IEventHandlerToken<CT.Events.OnDeletedCalcTask> _onDeletedCalcTaskToken;
 
         public View(
@@ -79,6 +81,8 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings
             this.TaskDeleteCommand = new ViewCommand(this.OnTaskDeleteCommand);
             this.TaskShowResultCommand = new ViewCommand(this.OnTaskShowResultCommand);
 
+            this.PrepareContextCommand = new ViewCommand(this.OnPrepareContextCommand);
+
             this.CurrentClientContextCard = new ClientContextModel();
 
             this.Projects = projectDataAdapter;
@@ -89,6 +93,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings
             _onCreatedClientContextToken = _eventBus.Subscribe<Events.OnCreatedClientContext>(this.OnCreatedClientContextHandle);
             _onEditedClientContextToken = _eventBus.Subscribe<Events.OnEditedClientContext>(this.OnEditedClientContextHandle);
             _onDeletedClientContextToken = _eventBus.Subscribe<Events.OnDeletedClientContext>(this.OnDeletedClientContextHandle);
+            _onPreparedClientContextToken = _eventBus.Subscribe<Events.OnPreparedClientContext>(this.OnOnPreparedClientContexttHandle);
             _onDeletedCalcTaskToken = _eventBus.Subscribe<CT.Events.OnDeletedCalcTask>(this.OnDeletedCalcTaskHandle);
 
             ReloadProjects();
@@ -377,6 +382,22 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings
             }
         }
 
+        private void OnPrepareContextCommand(object parameter)
+        {
+            try
+            {
+                var projectModifier = new Modifiers.PrepareClientContext
+                {
+                    ContextId = CurrentClientContext.Id
+                };
+                _commandDispatcher.Send(projectModifier);
+            }
+            catch (Exception e)
+            {
+                this._logger.Exception(Exceptions.GE06Client, e);
+            }
+        }
+
         private void OnCreatedClientContextHandle(Events.OnCreatedClientContext data)
         {
             ReloadClientContext();
@@ -386,6 +407,10 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings
             ReloadClientContext();
         }
         private void OnDeletedClientContextHandle(Events.OnDeletedClientContext data)
+        {
+            ReloadClientContext();
+        }
+        private void OnOnPreparedClientContexttHandle(Events.OnPreparedClientContext data)
         {
             ReloadClientContext();
         }
@@ -401,6 +426,8 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings
             _onEditedClientContextToken = null;
             _onDeletedClientContextToken?.Dispose();
             _onDeletedClientContextToken = null;
+            _onPreparedClientContextToken?.Dispose();
+            _onPreparedClientContextToken = null;
             _onDeletedCalcTaskToken?.Dispose();
             _onDeletedCalcTaskToken = null;
         }

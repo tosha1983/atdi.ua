@@ -11,6 +11,8 @@ using Atdi.Contracts.Sdrn.DeepServices.GN06;
 using Atdi.DataModels.Sdrn.DeepServices.GN06;
 using Idwm = Atdi.Contracts.Sdrn.DeepServices.IDWM;
 using IdwmDataModel = Atdi.DataModels.Sdrn.DeepServices.IDWM;
+using Atdi.DataModels.Sdrn.CalcServer;
+using Atdi.DataModels.Sdrn.CalcServer.Entities;
 
 
 namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
@@ -46,6 +48,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 (((ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM.Allotments==null)||(ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM.Allotments.AllotmentParameters.Contur == null)|| (ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM.Allotments.AllotmentParameters.Contur.Length <3)) &&
                 (ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM.Assignments == null)||((ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM.Assignments.Length == 0))))
             {
+                taskContext.SendEvent(new CalcResultEvent
+                {
+                    Level = CalcResultEventLevel.Error,
+                    Context = "Ge06CalcIteration",
+                    Message = "Input parameters BroadcastingContextICSM is null!"
+                });
                 throw new Exception("Input parameters BroadcastingContextICSM is null!");
             }
 
@@ -62,6 +70,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 {
                     message += $"The following Alotment are not validated: {notValidBroadcastingAllotment}";
                 }
+                taskContext.SendEvent(new CalcResultEvent
+                {
+                    Level = CalcResultEventLevel.Error,
+                    Context = "Ge06CalcIteration",
+                    Message = message
+                });
                 throw new Exception(message);
             }
 

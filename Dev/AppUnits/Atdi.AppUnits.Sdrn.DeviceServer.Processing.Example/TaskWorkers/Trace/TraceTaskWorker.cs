@@ -19,7 +19,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Example.TaskWorkers
 {
     internal class TraceTaskResultData
     {
-        public int Index;
         public Guid TaskId;
         public Guid CommandId;
         public float[] FloatValues;

@@ -115,15 +115,11 @@
               <DataGridTextColumn Header="{x:Static res:Resources.StatusNote}" Binding="{Binding Path=StatusNote}"></DataGridTextColumn>
               <DataGridTextColumn Header="{x:Static res:Resources.ActiveContext}" Binding="{Binding Path=ActiveContext}"></DataGridTextColumn>
             </DataGrid.Columns>
-            <DataGrid.CellStyle>
-              <Style TargetType="{x:Type DataGridCell}">
-                <Style.Triggers>
-                  <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="Background" Value="#FF0078D7" />
-                  </Trigger>
-                </Style.Triggers>
-              </Style>
-            </DataGrid.CellStyle>
+            <DataGrid.ContextMenu>
+              <ContextMenu>
+                <MenuItem Header="{x:Static res:Resources.PrepareContext}" Command="{Binding PrepareContextCommand}"/>
+              </ContextMenu>
+            </DataGrid.ContextMenu>
           </orm:OrmDataGrid>
           <WrapPanel Grid.Column="1" Orientation="Vertical">
             <WrapPanel>

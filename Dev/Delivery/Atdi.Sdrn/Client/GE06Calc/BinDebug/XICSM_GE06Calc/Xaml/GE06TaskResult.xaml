@@ -38,9 +38,10 @@
         <Grid.RowDefinitions>
           <RowDefinition Height="33*"></RowDefinition>
           <RowDefinition Height="33*"></RowDefinition>
+          <RowDefinition Height="Auto"></RowDefinition>
           <RowDefinition Height="33*"></RowDefinition>
         </Grid.RowDefinitions>
-        <orm:OrmDataGrid Grid.Row="0" IsReadOnly="True" Margin="5,5,5,5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding AllotmentOrAssignments}">
+        <orm:OrmDataGrid Grid.Row="0" IsReadOnly="True" Margin="5,5,5,5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding AllotmentOrAssignments}" SelectedItemsList="{Binding CurrentAllotmentOrAssignments, Mode=TwoWay}">
           <DataGrid.Columns>
             <DataGridTextColumn Header="{x:Static res:Resources.Adm}" Binding="{Binding Path=Adm}"></DataGridTextColumn>
             <DataGridTextColumn Header="{x:Static res:Resources.Type}" Binding="{Binding Path=TypeTable}"></DataGridTextColumn>
@@ -55,19 +56,39 @@
             <DataGridTextColumn Header="{x:Static res:Resources.AntennaDirectional}" Binding="{Binding Path=AntennaDirectional}"></DataGridTextColumn>
             <DataGridTextColumn Header="{x:Static res:Resources.AdmRefId}" Binding="{Binding Path=AdmRefId}"></DataGridTextColumn>
           </DataGrid.Columns>
+          <!--<DataGrid.CellStyle>
+            <Style TargetType="{x:Type DataGridCell}">
+              <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                  <Setter Property="Background" Value="#FF0078D7" />
+                </Trigger>
+              </Style.Triggers>
+            </Style>
+          </DataGrid.CellStyle>-->
         </orm:OrmDataGrid>
-        <orm:OrmDataGrid Grid.Row="1" IsReadOnly="True" Margin="5,5,5,5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding Contours}">
+        <orm:OrmDataGrid Grid.Row="1" IsReadOnly="True" Margin="5,30,5,5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding Contours}" SelectedItemsList="{Binding CurrentContours, Mode=TwoWay}">
           <DataGrid.Columns>
-            <DataGridTextColumn Header="{x:Static res:Resources.ContourType}" Binding="{Binding Path=ContourType}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.ContourType}" Binding="{Binding Path=ContourTypeName}"></DataGridTextColumn>
             <DataGridTextColumn Header="{x:Static res:Resources.Distance}" Binding="{Binding Path=Distance}"></DataGridTextColumn>
             <DataGridTextColumn Header="{x:Static res:Resources.FS}" Binding="{Binding Path=FS}"></DataGridTextColumn>
             <DataGridTextColumn Header="{x:Static res:Resources.AffectedADM}" Binding="{Binding Path=AffectedADM}"></DataGridTextColumn>
             <DataGridTextColumn Header="{x:Static res:Resources.PointsCount}" Binding="{Binding Path=PointsCount}"></DataGridTextColumn>
           </DataGrid.Columns>
+          <!--<DataGrid.CellStyle>
+            <Style TargetType="{x:Type DataGridCell}">
+              <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                  <Setter Property="Background" Value="#FF0078D7" />
+                </Trigger>
+              </Style.Triggers>
+            </Style>
+          </DataGrid.CellStyle>-->
         </orm:OrmDataGrid>
-        <orm:OrmDataGrid Grid.Row="2" IsReadOnly="True" Margin="5,5,5,5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding AffectedADMs}">
+        <WrapPanel Grid.Row="2">
+          <orm:OrmButton Content="{x:Static res:Resources.ExportToHTZ}" Width="100" Height="20" Command="{Binding ExportToHTZCommand}"/>
+        </WrapPanel>
+        <orm:OrmDataGrid Grid.Row="3" IsReadOnly="True" Margin="5,5,5,5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding AffectedADMs}">
           <DataGrid.Columns>
-            <!--<DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=Id}"></DataGridTextColumn>-->
             <DataGridTextColumn Header="{x:Static res:Resources.Adm}" Binding="{Binding Path=Adm}"></DataGridTextColumn>
             <DataGridTextColumn Header="{x:Static res:Resources.TypeAffected}" Binding="{Binding Path=TypeAffected}"></DataGridTextColumn>
             <DataGridTextColumn Header="{x:Static res:Resources.AffectedServices}" Binding="{Binding Path=AffectedServices}"></DataGridTextColumn>

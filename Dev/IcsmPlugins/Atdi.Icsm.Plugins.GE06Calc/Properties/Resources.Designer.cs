@@ -286,6 +286,15 @@ namespace Atdi.Icsm.Plugins.GE06Calc.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Export to HTZ.
+        /// </summary>
+        public static string ExportToHTZ {
+            get {
+                return ResourceManager.GetString("ExportToHTZ", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Find affected ADM Ann. 4 Sec. I.
         /// </summary>
         public static string FindAffected {
@@ -426,6 +435,24 @@ namespace Atdi.Icsm.Plugins.GE06Calc.Properties {
         public static string Polar {
             get {
                 return ResourceManager.GetString("Polar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Prepare  context.
+        /// </summary>
+        public static string PrepareContext {
+            get {
+                return ResourceManager.GetString("PrepareContext", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Prepared.
+        /// </summary>
+        public static string Prepared {
+            get {
+                return ResourceManager.GetString("Prepared", resourceCulture);
             }
         }
         

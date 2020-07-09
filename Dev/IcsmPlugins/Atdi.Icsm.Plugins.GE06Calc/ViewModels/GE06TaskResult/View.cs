@@ -19,6 +19,8 @@ using Atdi.DataModels.Sdrn.DeepServices.GN06;
 using Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks;
 using Atdi.WpfControls.EntityOrm.Controls;
 using Atdi.Icsm.Plugins.GE06Calc.Environment;
+using FRM = System.Windows.Forms;
+using System.IO;
 
 namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06TaskResult
 {
@@ -35,12 +37,12 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06TaskResult
         private long _resultId;
         private IList _currentAllotmentOrAssignments;
         private IList _currentContours;
+        private MapDrawingData _currentMapData;
 
         public AllotmentOrAssignmentDataAdapter AllotmentOrAssignments { get; set; }
         public ContourDataAdapter Contours { get; set; }
         public AffectedADMDataAdapter AffectedADMs { get; set; }
-
-        private MapDrawingData _currentMapData;
+        public ViewCommand ExportToHTZCommand { get; set; }
 
         public View(
             AllotmentOrAssignmentDataAdapter allotmentOrAssignmentDataAdapter,
@@ -58,6 +60,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06TaskResult
             _eventBus = eventBus;
             _logger = logger;
 
+            this.ExportToHTZCommand = new ViewCommand(this.OnExportToHTZCommand);
             this.AllotmentOrAssignments = allotmentOrAssignmentDataAdapter;
             this.Contours = contourDataAdapter;
             this.AffectedADMs = affectedADMDataAdapter;
@@ -99,6 +102,45 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06TaskResult
             this.Contours.Refresh();
             this.AffectedADMs.ResultId = resultId;
             this.AffectedADMs.Refresh();
+        }
+        private void OnExportToHTZCommand(object parameter)
+        {
+            try
+            {
+                if (this._currentContours != null)
+                {
+                    FRM.SaveFileDialog sfd = new FRM.SaveFileDialog() { Filter = "CSV (*.csv)|*.csv", FileName = $"HTZ_{this.ResultId.ToString()}.csv" };
+                    if (sfd.ShowDialog() == FRM.DialogResult.OK)
+                    {
+                        if (File.Exists(sfd.FileName))
+                        {
+                            try
+                            {
+                                File.Delete(sfd.FileName);
+                            }
+                            catch (IOException ex)
+                            {
+                                //MessageBox.Show("It wasn't possible to write the data to the disk." + ex.Message);
+                            }
+                        }
+                        var output = new List<string>();
+                        output.Add("X or longitude;Y or latitude;Coord. code;Azimuth deg;Info 1;Info 2;Envelop dbuV/m");
+
+                        foreach (ContourModel item in this._currentContours)
+                        {
+                            foreach (var point in item.CountoursPoints)
+                            {
+                                output.Add($"{point.Lon_DEC.ToString()};{point.Lat_DEC.ToString()};4DEC;;;;{point.FS.ToString()}");
+                            }
+                        }
+                        System.IO.File.WriteAllLines(sfd.FileName, output.ToArray(), System.Text.Encoding.UTF8);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                this._logger.Exception(Exceptions.GE06Client, e);
+            }
         }
         private void RedrawMap()
         {

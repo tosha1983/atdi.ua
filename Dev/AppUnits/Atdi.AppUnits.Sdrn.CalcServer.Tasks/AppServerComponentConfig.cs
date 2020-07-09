@@ -61,14 +61,14 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
         public int? ThresholdsGE06PointEarthGeometricArrayLength { get; set; }
 
 
-        [ComponentConfigProperty("Thresholds.CountoursCountoursPointExtendedPool.ObjectPool.MinSize")]
-        public int? ThresholdsCountoursCountoursPointExtendedPoolMinSize { get; set; }
+        [ComponentConfigProperty("Thresholds.CountoursPointExtendedPool.ObjectPool.MinSize")]
+        public int? ThresholdsCountoursPointExtendedPoolMinSize { get; set; }
 
-        [ComponentConfigProperty("Thresholds.CountoursCountoursPointExtendedPool.ObjectPool.MaxSize")]
-        public int? ThresholdsCountoursCountoursPointExtendedPoolMaxSize { get; set; }
+        [ComponentConfigProperty("Thresholds.CountoursPointExtendedPool.ObjectPool.MaxSize")]
+        public int? ThresholdsCountoursPointExtendedPoolMaxSize { get; set; }
 
-        [ComponentConfigProperty("Thresholds.CountoursCountoursPointExtendedPool.ArrayLength")]
-        public int? ThresholdsCountoursCountoursPointExtendedPoolArrayLength { get; set; }
+        [ComponentConfigProperty("Thresholds.CountoursPointExtendedPool.ArrayLength")]
+        public int? ThresholdsCountoursPointExtendedPoolArrayLength { get; set; }
 
 
         [ComponentConfigProperty("Thresholds.CountoursResultPool.ObjectPool.MinSize")]

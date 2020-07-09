@@ -308,6 +308,14 @@ from dual;
 end if;
 
 
+
+if inttable_name ='CALCRESULT_EVENTS' then
+select CALC.CALCRESULT_EVENTS_ID_SEQ.nextval
+into n
+from dual;
+end if;
+
+
 return(n);
 end;
 /
