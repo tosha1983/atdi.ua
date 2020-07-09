@@ -521,7 +521,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
         public double RefLevel = -40;
 
 
-        private double Range = 100;
+
 
         public double LowestLevel { get; set; } = -140;
         #endregion

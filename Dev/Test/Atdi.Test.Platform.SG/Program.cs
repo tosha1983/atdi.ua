@@ -15,7 +15,6 @@ using Atdi.Contracts.Sdrn.DeepServices.IDWM;
 using Atdi.AppUnits.Sdrn.DeepServices.IDWM;
 using Atdi.DataModels.Sdrn.DeepServices.IDWM;
 using Atdi.Contracts.Sdrn.DeepServices.EarthGeometry;
-using Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry;
 using Atdi.DataModels.Sdrn.DeepServices.EarthGeometry;
 using Atdi.AppUnits.Sdrn.DeepServices.GN06;
 using Atdi.Contracts.Sdrn.DeepServices.GN06;
@@ -64,7 +63,7 @@ class Program
                     host.Container.Register<IGn06Service, EstimationAssignmentsService>(ServiceLifetime.PerThread);
                     host.Container.Register<IDataLayer<EntityDataOrm>>(ServiceLifetime.PerThread);
                     host.Container.Register<ITransformation, TransformationService>(ServiceLifetime.PerThread);
-                    host.Container.Register<IEarthGeometricService, EarthGeometricService>(ServiceLifetime.PerThread);
+                    //host.Container.Register<IEarthGeometricService, EarthGeometricService>(ServiceLifetime.PerThread);
                     var resolver = host.Container.GetResolver<IServicesResolver>();
                     var transformation = resolver.Resolve<ITransformation>();
                     var earthGeometricServiceServices = resolver.Resolve<IEarthGeometricService>();
@@ -384,31 +383,31 @@ class Program
 
                     //WPF.RunApp.Start(WPF.TypeObject.Points, new WPF.Location[] { new WPF.Location(contourForStationByTriggerFieldStrengthsArgs3.PointEarthGeometricCalc.Longitude, contourForStationByTriggerFieldStrengthsArgs3.PointEarthGeometricCalc.Latitude) }, WPF.TypeObject.Points, zx5);
 
-                    List<PointEarthGeometric> pointEarthGeometricslst = new List<PointEarthGeometric>();
-                    var str = System.IO.File.ReadAllText("C:\\Projects\\AreaTest.txt");
-                    string[] a = str.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
-                    for (int i=0; i<a.Length;i++)
-                    {
-                        string[] aa = a[i].Split(new char[] { '\t'}, StringSplitOptions.RemoveEmptyEntries);
-                        if ((aa != null) && (aa.Length > 0))
-                        {
-                            for (int j = 0; j < aa.Length; j++)
-                            {
+                    //List<PointEarthGeometric> pointEarthGeometricslst = new List<PointEarthGeometric>();
+                    //var str = System.IO.File.ReadAllText("C:\\Projects\\AreaTest.txt");
+                    //string[] a = str.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+                    //for (int i=0; i<a.Length;i++)
+                    //{
+                    //    string[] aa = a[i].Split(new char[] { '\t'}, StringSplitOptions.RemoveEmptyEntries);
+                    //    if ((aa != null) && (aa.Length > 0))
+                    //    {
+                    //        for (int j = 0; j < aa.Length; j++)
+                    //        {
                                 
 
-                                pointEarthGeometricslst.Add(new PointEarthGeometric()
-                                {
-                                    Longitude = Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.AntennaPattern.Position.DmsToDec(aa[0].ConvertStringToDouble().Value),
-                                    Latitude = Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.AntennaPattern.Position.DmsToDec(aa[1].ConvertStringToDouble().Value),
-                                    CoordinateUnits = CoordinateUnits.deg
+                    //            pointEarthGeometricslst.Add(new PointEarthGeometric()
+                    //            {
+                    //                Longitude = Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.AntennaPattern.Position.DmsToDec(aa[0].ConvertStringToDouble().Value),
+                    //                Latitude = Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.AntennaPattern.Position.DmsToDec(aa[1].ConvertStringToDouble().Value),
+                    //                CoordinateUnits = CoordinateUnits.deg
 
-                                });
-                                break;
-                            }
-                        }
-                    }
+                    //            });
+                    //            break;
+                    //        }
+                    //    }
+                    //}
                     
-                    var arrPnts = pointEarthGeometricslst.ToArray();
+                    //var arrPnts = pointEarthGeometricslst.ToArray();
 
                     //var arrPnts = new PointEarthGeometric[4]
                     //                        {
@@ -443,17 +442,17 @@ class Program
                     //                             CoordinateUnits = CoordinateUnits.deg
                     //                          }
                     //                        };
-                    PointEarthGeometric pointEarthGeometricR = new PointEarthGeometric();
-                                       earthGeometricServiceServices.CalcBarycenter( new GeometryArgs() { Points = arrPnts, TypeGeometryObject = TypeGeometryObject.Points} , ref pointEarthGeometricR);
-                                       var arg = new ContourFromContureByDistanceArgs()
-                                       {
-                                           ContourPoints = arrPnts,
-                                           Distance_km = 40,
-                                           PointBaryCenter = pointEarthGeometricR,
-                                           Step_deg = 0.1
-                                       };
+                    //PointEarthGeometric pointEarthGeometricR = new PointEarthGeometric();
+                    //                   earthGeometricServiceServices.CalcBarycenter( new GeometryArgs() { Points = arrPnts, TypeGeometryObject = TypeGeometryObject.Points} , ref pointEarthGeometricR);
+                    //                   var arg = new ContourFromContureByDistanceArgs()
+                    //                   {
+                    //                       ContourPoints = arrPnts,
+                    //                       Distance_km = 40,
+                    //                       PointBaryCenter = pointEarthGeometricR,
+                    //                       Step_deg = 0.1
+                    //                   };
 
-                                       PointEarthGeometricWithAzimuth[] pointEarthGeometricPtx = new PointEarthGeometricWithAzimuth[2000000];
+                    //                   PointEarthGeometricWithAzimuth[] pointEarthGeometricPtx = new PointEarthGeometricWithAzimuth[2000000];
                                        //earthGeometricServiceServices.CreateContourFromContureByDistance(in arg, ref pointEarthGeometricPtx, out int pointLength);
 
                    // WPF.Location[] zx9 = new WPF.Location[pointLength];
@@ -463,12 +462,12 @@ class Program
                     //}
 
 
-                    WPF.Location[] zx11 = new WPF.Location[arrPnts.Length+1];
-                    for (int u = 0; u < arrPnts.Length; u++)
-                    {
-                        zx11[u] = new WPF.Location(arrPnts[u].Longitude, arrPnts[u].Latitude);
-                    }
-                    zx11[zx11.Length - 1] = new WPF.Location(pointEarthGeometricR.Longitude, pointEarthGeometricR.Latitude);
+                    //WPF.Location[] zx11 = new WPF.Location[arrPnts.Length+1];
+                    //for (int u = 0; u < arrPnts.Length; u++)
+                    //{
+                    //    zx11[u] = new WPF.Location(arrPnts[u].Longitude, arrPnts[u].Latitude);
+                    //}
+                    //zx11[zx11.Length - 1] = new WPF.Location(pointEarthGeometricR.Longitude, pointEarthGeometricR.Latitude);
                     
 
                     //WPF.RunApp.Start(WPF.TypeObject.Polygon, new WPF.Location[] { new WPF.Location(30,50), new WPF.Location(30, 51), new WPF.Location(31, 51), new WPF.Location(30.6, 50.6), new WPF.Location(30.6, 50.4), new WPF.Location(31, 50), new WPF.Location(pointEarthGeometricR.Longitude, pointEarthGeometricR.Latitude) }, WPF.TypeObject.Points, new WPF.Location[] { new WPF.Location(0, 0) } /*zx9*/);

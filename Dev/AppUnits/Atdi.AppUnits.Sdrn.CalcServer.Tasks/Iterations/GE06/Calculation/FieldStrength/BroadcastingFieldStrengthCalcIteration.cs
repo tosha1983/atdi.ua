@@ -248,7 +248,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
 
                         var clutterValue = MapSpecification.DefaultForClutter;
-                        int clutterH = 0;
+                        //int clutterH = 0;
                         if (profileOptions.Clutter)
                         {
                             clutterValue = data.ClutterContent[contentIndex];
@@ -485,7 +485,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     //AntennaPatternLoss_dB = antennaPatternLoss_dB
                 };
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }
