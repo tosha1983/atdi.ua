@@ -13,6 +13,7 @@ using Idwm = Atdi.Contracts.Sdrn.DeepServices.IDWM;
 using IdwmDataModel = Atdi.DataModels.Sdrn.DeepServices.IDWM;
 using Atdi.DataModels.Sdrn.CalcServer;
 using Atdi.DataModels.Sdrn.CalcServer.Entities;
+using Atdi.Common;
 
 
 namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
@@ -215,6 +216,318 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
                 // 3. Определение затронутых других первичных служб 
 
+                var pointCalc = new IdwmDataModel.PointAndDistance()
+                {
+                    Distance = 1000,
+                    Point = new IdwmDataModel.Point()
+                    {
+                        Longitude_dec = pointEarthGeometricBarycenter.Longitude,
+                        Latitude_dec = pointEarthGeometricBarycenter.Latitude,
+                    }
+                };
+
+                var forDeleteThresholdFieldStrength = new List<ThresholdFieldStrength>();
+
+                for (int p=0; p< forDeleteThresholdFieldStrength.Count; p++)
+                {
+                    thresholdFieldStrengthsAnotherServices.RemoveAll(x => x.Freq_MHz == forDeleteThresholdFieldStrength[p].Freq_MHz && x.StaClass == forDeleteThresholdFieldStrength[p].StaClass);
+                }
+
+
+                // создаем массив для хранения сведений о всех администрациях, которые попадают в радиус 1000 км от точки pointEarthGeometricBarycenter
+                var allFindAdministrations = new IdwmDataModel.AdministrationsResult[1000];
+                idwmService.GetADMByPointAndDistance(in pointCalc,  ref allFindAdministrations, out int SizeBufferFindAdministrations);
+                var selectedDataFromBrific = new List<FmtvTerra>();
+                for (int j = 0; j < thresholdFieldStrengthsAnotherServices.Count; j++)
+                {
+                    var triggerInformationTemp = thresholdFieldStrengthsAnotherServices[j];
+                    var freqTemp_MHz = triggerInformationTemp.Freq_MHz;
+                    var staClass = triggerInformationTemp.StaClass;
+                    for (int n = 0; n < SizeBufferFindAdministrations; n++)
+                    {
+                        var admTemp = allFindAdministrations[n].Administration;
+
+                        //первичные службы не анализируем (они всегда должны включаться в механизм расчета)
+
+                        //selectedDataFromBrific.AddRange(LoadDataBrific.LoadBroadcastingService_TDAB(admTemp, freqTemp_MHz));
+                        //selectedDataFromBrific.AddRange(LoadDataBrific.LoadBroadcastingService_DVBT(admTemp, freqTemp_MHz));
+                        //selectedDataFromBrific.AddRange(LoadDataBrific.LoadBroadcastingServiceAnalog_TV(admTemp, freqTemp_MHz));
+
+                        // анализ по всем остальным службам
+                        switch (staClass)
+                        {
+                            case "NV":
+                                FmtvTerra[] brificNV = LoadDataBrific.LoadBroadcastingService_NV(admTemp, freqTemp_MHz);
+                                if ((brificNV != null) && (brificNV.Length > 0))
+                                {
+                                    selectedDataFromBrific.AddRange(brificNV);
+                                }
+                                else
+                                {
+                                    forDeleteThresholdFieldStrength.Add(triggerInformationTemp);
+                                }
+                                break;
+                            case "NR":
+                                var brificNR = LoadDataBrific.LoadBroadcastingService_NR(admTemp, freqTemp_MHz);
+                                if ((brificNR != null) && (brificNR.Length > 0))
+                                {
+                                    selectedDataFromBrific.AddRange(brificNR);
+                                }
+                                else
+                                {
+                                    forDeleteThresholdFieldStrength.Add(triggerInformationTemp);
+                                }
+                                break;
+                            case "NS":
+                                var brificNS = LoadDataBrific.LoadBroadcastingService_NS(admTemp, freqTemp_MHz);
+                                if ((brificNS != null) && (brificNS.Length > 0))
+                                {
+                                    selectedDataFromBrific.AddRange(brificNS);
+                                }
+                                else
+                                {
+                                    forDeleteThresholdFieldStrength.Add(triggerInformationTemp);
+                                }
+                                break;
+                            case "NT":
+                                var brificNT = LoadDataBrific.LoadBroadcastingService_NT(admTemp, freqTemp_MHz);
+                                if ((brificNT != null) && (brificNT.Length > 0))
+                                {
+                                    selectedDataFromBrific.AddRange(brificNT);
+                                }
+                                else
+                                {
+                                    forDeleteThresholdFieldStrength.Add(triggerInformationTemp);
+                                }
+                                break;
+                            case "NA":
+                                var brificNA = LoadDataBrific.LoadBroadcastingService_NA(admTemp, freqTemp_MHz);
+                                if ((brificNA != null) && (brificNA.Length > 0))
+                                {
+                                    selectedDataFromBrific.AddRange(brificNA);
+                                }
+                                else
+                                {
+                                    forDeleteThresholdFieldStrength.Add(triggerInformationTemp);
+                                }
+                                break;
+                            case "NB":
+                                var brificNB = LoadDataBrific.LoadBroadcastingService_NB(admTemp, freqTemp_MHz);
+                                if ((brificNB != null) && (brificNB.Length > 0))
+                                {
+                                    selectedDataFromBrific.AddRange(brificNB);
+                                }
+                                else
+                                {
+                                    forDeleteThresholdFieldStrength.Add(triggerInformationTemp);
+                                }
+                                break;
+                            case "XN":
+                                var brificXN = LoadDataBrific.LoadBroadcastingService_XN(admTemp, freqTemp_MHz);
+                                if ((brificXN != null) && (brificXN.Length > 0))
+                                {
+                                    selectedDataFromBrific.AddRange(brificXN);
+                                }
+                                else
+                                {
+                                    forDeleteThresholdFieldStrength.Add(triggerInformationTemp);
+                                }
+                                break;
+                            case "YN":
+                                var brificYN = LoadDataBrific.LoadBroadcastingService_XN(admTemp, freqTemp_MHz);
+                                if ((brificYN != null) && (brificYN.Length > 0))
+                                {
+                                    selectedDataFromBrific.AddRange(brificYN);
+                                }
+                                else
+                                {
+                                    forDeleteThresholdFieldStrength.Add(triggerInformationTemp);
+                                }
+                                break;
+                            case "ZC":
+                                var brificZC = LoadDataBrific.LoadBroadcastingService_ZC(admTemp, freqTemp_MHz);
+                                if ((brificZC != null) && (brificZC.Length > 0))
+                                {
+                                    selectedDataFromBrific.AddRange(brificZC);
+                                }
+                                else
+                                {
+                                    forDeleteThresholdFieldStrength.Add(triggerInformationTemp);
+                                }
+                                break;
+                            case "XG":
+                                var brificXG = LoadDataBrific.LoadBroadcastingService_ZC(admTemp, freqTemp_MHz);
+                                if ((brificXG != null) && (brificXG.Length > 0))
+                                {
+                                    selectedDataFromBrific.AddRange(brificXG);
+                                }
+                                else
+                                {
+                                    forDeleteThresholdFieldStrength.Add(triggerInformationTemp);
+                                }
+                                break;
+                            case "AB":
+                                var brificAB = LoadDataBrific.LoadNavigationServices_AB(admTemp, freqTemp_MHz);
+                                if ((brificAB != null) && (brificAB.Length > 0))
+                                {
+                                    selectedDataFromBrific.AddRange(brificAB);
+                                }
+                                else
+                                {
+                                    forDeleteThresholdFieldStrength.Add(triggerInformationTemp);
+                                }
+                                break;
+                            case "AA8":
+                                var brificAA8 = LoadDataBrific.LoadNavigationServices_AA8(admTemp, freqTemp_MHz);
+                                if ((brificAA8 != null) && (brificAA8.Length > 0))
+                                {
+                                    selectedDataFromBrific.AddRange(brificAA8);
+                                }
+                                else
+                                {
+                                    forDeleteThresholdFieldStrength.Add(triggerInformationTemp);
+                                }
+                                break;
+                            case "BD":
+                                var brificBD = LoadDataBrific.LoadNavigationServices_BD(admTemp, freqTemp_MHz);
+                                if ((brificBD != null) && (brificBD.Length > 0))
+                                {
+                                    selectedDataFromBrific.AddRange(brificBD);
+                                }
+                                else
+                                {
+                                    forDeleteThresholdFieldStrength.Add(triggerInformationTemp);
+                                }
+                                break;
+                            case "BA":
+                                var brificBA = LoadDataBrific.LoadNavigationServices_BA(admTemp, freqTemp_MHz);
+                                if ((brificBA != null) && (brificBA.Length > 0))
+                                {
+                                    selectedDataFromBrific.AddRange(brificBA);
+                                }
+                                else
+                                {
+                                    forDeleteThresholdFieldStrength.Add(triggerInformationTemp);
+                                }
+                                break;
+                            case "FF":
+                                var brificFF = LoadDataBrific.LoadFixedServices_FF(admTemp, freqTemp_MHz);
+                                if ((brificFF != null) && (brificFF.Length > 0))
+                                {
+                                    selectedDataFromBrific.AddRange(brificFF);
+                                }
+                                else
+                                {
+                                    forDeleteThresholdFieldStrength.Add(triggerInformationTemp);
+                                }
+                                break;
+                            case "FN":
+                                var brificFN = LoadDataBrific.LoadFixedServices_FN(admTemp, freqTemp_MHz);
+                                if ((brificFN != null) && (brificFN.Length > 0))
+                                {
+                                    selectedDataFromBrific.AddRange(brificFN);
+                                }
+                                else
+                                {
+                                    forDeleteThresholdFieldStrength.Add(triggerInformationTemp);
+                                }
+                                break;
+                            case "FK":
+                                var brificFK = LoadDataBrific.LoadFixedServices_FK(admTemp, freqTemp_MHz);
+                                if ((brificFK != null) && (brificFK.Length > 0))
+                                {
+                                    selectedDataFromBrific.AddRange(brificFK);
+                                }
+                                else
+                                {
+                                    forDeleteThresholdFieldStrength.Add(triggerInformationTemp);
+                                }
+                                break;
+                            case "MU":
+                                var brificMU = LoadDataBrific.LoadMobileServices_MU(admTemp, freqTemp_MHz);
+                                if ((brificMU != null) && (brificMU.Length > 0))
+                                {
+                                    selectedDataFromBrific.AddRange(brificMU);
+                                }
+                                else
+                                {
+                                    forDeleteThresholdFieldStrength.Add(triggerInformationTemp);
+                                }
+                                break;
+                            case "M1":
+                            case "RA":
+                                var brificM1_RA = LoadDataBrific.LoadMobileServices_M1_RA(admTemp, freqTemp_MHz);
+                                if ((brificM1_RA != null) && (brificM1_RA.Length > 0))
+                                {
+                                    selectedDataFromBrific.AddRange(brificM1_RA);
+                                }
+                                else
+                                {
+                                    forDeleteThresholdFieldStrength.Add(triggerInformationTemp);
+                                }
+                                break;
+                            case "M2":
+                                var brificM2 = LoadDataBrific.LoadMobileServices_M2(admTemp, freqTemp_MHz);
+                                if ((brificM2 != null) && (brificM2.Length > 0))
+                                {
+                                    selectedDataFromBrific.AddRange(brificM2);
+                                }
+                                else
+                                {
+                                    forDeleteThresholdFieldStrength.Add(triggerInformationTemp);
+                                }
+                                break;
+                            case "XA":
+                                var brificXA = LoadDataBrific.LoadMobileServices_XA(admTemp, freqTemp_MHz);
+                                if ((brificXA != null) && (brificXA.Length > 0))
+                                {
+                                    selectedDataFromBrific.AddRange(brificXA);
+                                }
+                                else
+                                {
+                                    forDeleteThresholdFieldStrength.Add(triggerInformationTemp);
+                                }
+                                break;
+                            case "XM":
+                                var brificXM = LoadDataBrific.LoadMobileServices_XM(admTemp, freqTemp_MHz);
+                                if ((brificXM != null) && (brificXM.Length > 0))
+                                {
+                                    selectedDataFromBrific.AddRange(brificXM);
+                                }
+                                else
+                                {
+                                    forDeleteThresholdFieldStrength.Add(triggerInformationTemp);
+                                }
+                                break;
+                            case "MA":
+                                var brificMA = LoadDataBrific.LoadMobileServices_MA(admTemp, freqTemp_MHz);
+                                if ((brificMA != null) && (brificMA.Length > 0))
+                                {
+                                    selectedDataFromBrific.AddRange(brificMA);
+                                }
+                                else
+                                {
+                                    forDeleteThresholdFieldStrength.Add(triggerInformationTemp);
+                                }
+                                break;
+                            case "MT":
+                                var brificMT = LoadDataBrific.LoadMobileServices_MT(admTemp, freqTemp_MHz);
+                                if ((brificMT != null) && (brificMT.Length > 0))
+                                {
+                                    selectedDataFromBrific.AddRange(brificMT);
+                                }
+                                else
+                                {
+                                    forDeleteThresholdFieldStrength.Add(triggerInformationTemp);
+                                }
+                                break;
+                        }
+                    }
+                }
+                
+
+
+
                 var thresholdFieldStrengths = thresholdFieldStrengthsAnotherServices; //на самом деле тут найдем все затронутые сервисы
 
                 // 2. Определение администраций с затронутой радиовещательной службой 4. и прочими службами
@@ -293,57 +606,9 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             }
             // тут конец расчетам нужна обработка результатов 
 
+
             // тут должны быть первичные службы ...
-            var selectedDataFromBrific = new List<FmtvTerra>();
-            if (admPotentiallyAffected_1000.Count > 0)
-            {
-                for (int n = 0; n < admPotentiallyAffected_1000.Count; n++)
-                {
-                    var admTemp = admPotentiallyAffected_1000[n];
-
-                    for (int j = 0; j < thresholdFieldStrengthsAnotherServices.Count; j++)
-                    {
-                        var triggerInformationTemp = thresholdFieldStrengthsAnotherServices[j];
-
-                        var freqTemp_MHz = triggerInformationTemp.Freq_MHz;
-
-                        // здесь идет выборка с БД Брифика по каждой службе по заданной частоте и администрации
-                        // формируем итоговый список затронутых служуб ..
-                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadBroadcastingService_TDAB(admTemp, freqTemp_MHz));
-                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadBroadcastingService_DVBT(admTemp, freqTemp_MHz));
-                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadBroadcastingServiceAnalog_TV(admTemp, freqTemp_MHz));
-                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadBroadcastingService_NV(admTemp, freqTemp_MHz));
-                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadBroadcastingService_NR(admTemp, freqTemp_MHz));
-                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadBroadcastingService_NS(admTemp, freqTemp_MHz));
-                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadBroadcastingService_NT(admTemp, freqTemp_MHz));
-                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadBroadcastingService_NA(admTemp, freqTemp_MHz));
-                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadBroadcastingService_NB(admTemp, freqTemp_MHz));
-                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadBroadcastingService_XN(admTemp, freqTemp_MHz));
-                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadBroadcastingService_YN(admTemp, freqTemp_MHz));
-                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadBroadcastingService_ZC(admTemp, freqTemp_MHz));
-                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadNavigationServices_XG(admTemp, freqTemp_MHz));
-                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadNavigationServices_AB(admTemp, freqTemp_MHz));
-                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadNavigationServices_AA8(admTemp, freqTemp_MHz));
-                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadNavigationServices_BD(admTemp, freqTemp_MHz));
-                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadNavigationServices_BA(admTemp, freqTemp_MHz));
-                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadFixedServices_FF(admTemp, freqTemp_MHz));
-                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadFixedServices_FN(admTemp, freqTemp_MHz));
-                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadFixedServices_FK(admTemp, freqTemp_MHz));
-                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadMobileServices_MU(admTemp, freqTemp_MHz));
-                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadMobileServices_M1_RA(admTemp, freqTemp_MHz));
-                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadMobileServices_M2(admTemp, freqTemp_MHz));
-                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadMobileServices_XA(admTemp, freqTemp_MHz));
-                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadMobileServices_XM(admTemp, freqTemp_MHz));
-                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadMobileServices_MA(admTemp, freqTemp_MHz));
-                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadMobileServices_MT(admTemp, freqTemp_MHz));
-
-                        // в списке selectedDataFromBrific получаем набор сведений из брифика с координатами конкретных присвоений, которые могут пересекаться с исходными Alllotment + Assignments[]
-
-
-
-                    }
-                }
-            }
+           
 
 
 
