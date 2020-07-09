@@ -30,6 +30,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                           Ge06CalcData ge06CalcData,
                                           ref Ge06CalcResult ge06CalcResult,
                                           IObjectPool<PointEarthGeometric[]> pointEarthGeometricPool,
+                                          IObjectPool<CountoursPointExtended[]> countoursPointExtendedPool,
+                                          IObjectPool<ContoursResult[]> contoursResultPool,
                                           IIterationHandler<BroadcastingFieldStrengthCalcData, BroadcastingFieldStrengthCalcResult> iterationHandlerBroadcastingFieldStrengthCalcData,
                                           IIterationHandler<FieldStrengthCalcData, FieldStrengthCalcResult> iterationHandlerFieldStrengthCalcData,
                                           IObjectPoolSite poolSite,
@@ -83,10 +85,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             float ProsentTerr = 50;
             int Height = 10;
             var countoursPointExtendedBuffer = default(CountoursPointExtended[]);
-
             var pointEarthGeometricsResult = default(PointEarthGeometric[]);
             var pointEarthGeometricsResultICSM = default(PointEarthGeometric[]);
             var pointEarthGeometricsResultAffectedICSM = default(PointEarthGeometric[]);
+            var contoursResultBuffer = default(ContoursResult[]);
             var lstContoursResults = new List<ContoursResult>();
             var broadcastingContextICSM = ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM;
             // Определение класов входящих данных 
@@ -110,25 +112,38 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             // Конец определения класов входящих данных.
 
 
-            // Определение пороговых напряженностей для защиты систем радиовещательной службы
-            // входными данными являются Allotments + Assignments[]
+            //// Определение пороговых напряженностей для защиты систем радиовещательной службы
+            //// входными данными являются Allotments + Assignments[]
             var thresholdFieldStrengthsPrimaryServices = new List<ThresholdFieldStrength>();
-            var thresholdFieldStrengthsICSMAllotmentsP = ThresholdFS.GetThresholdFieldStrengthByAllotments(broadcastingContextICSM.Allotments, TypeThresholdFS.OnlyBroadcastingService);
-            var thresholdFieldStrengthsICSMAssignmentsP = ThresholdFS.GetThresholdFieldStrengthByAssignments(broadcastingContextICSM.Assignments, TypeThresholdFS.OnlyBroadcastingService);
-            thresholdFieldStrengthsPrimaryServices.AddRange(thresholdFieldStrengthsICSMAllotmentsP);
-            thresholdFieldStrengthsPrimaryServices.AddRange(thresholdFieldStrengthsICSMAssignmentsP);
-            thresholdFieldStrengthsPrimaryServices.Distinct();
+            //var thresholdFieldStrengthsICSMAllotmentsP = ThresholdFS.GetThresholdFieldStrengthByAllotments(broadcastingContextICSM.Allotments, TypeThresholdFS.OnlyBroadcastingService);
+            //var thresholdFieldStrengthsICSMAssignmentsP = ThresholdFS.GetThresholdFieldStrengthByAssignments(broadcastingContextICSM.Assignments, TypeThresholdFS.OnlyBroadcastingService);
+            //thresholdFieldStrengthsPrimaryServices.AddRange(thresholdFieldStrengthsICSMAllotmentsP);
+            //thresholdFieldStrengthsPrimaryServices.AddRange(thresholdFieldStrengthsICSMAssignmentsP);
+            //thresholdFieldStrengthsPrimaryServices.Distinct();
+
+
+
 
             // Определение пороговых напряженностей для защиты всех служб в том числе радиовещательной службы
             // входными данными являются Allotments + Assignments[]
             var thresholdFieldStrengthsAnotherServices = new List<ThresholdFieldStrength>();
-            var thresholdFieldStrengthsICSMAllotmentsA = ThresholdFS.GetThresholdFieldStrengthByAllotments(broadcastingContextICSM.Allotments, TypeThresholdFS.All);
-            var thresholdFieldStrengthsICSMAssignmentsA = ThresholdFS.GetThresholdFieldStrengthByAssignments(broadcastingContextICSM.Assignments, TypeThresholdFS.All);
-            thresholdFieldStrengthsAnotherServices.AddRange(thresholdFieldStrengthsICSMAllotmentsA);
-            thresholdFieldStrengthsAnotherServices.AddRange(thresholdFieldStrengthsICSMAssignmentsA);
-            thresholdFieldStrengthsAnotherServices.Distinct();
+            var thresholdFieldStrengthsICSMAllotmentsAll = ThresholdFS.GetThresholdFieldStrengthByAllotments(broadcastingContextICSM.Allotments, TypeThresholdFS.All);
+            var thresholdFieldStrengthsICSMAssignmentsAll = ThresholdFS.GetThresholdFieldStrengthByAssignments(broadcastingContextICSM.Assignments, TypeThresholdFS.All);
 
-
+            for (int v = 0; v < thresholdFieldStrengthsICSMAllotmentsAll.Length; v++)
+            {
+                if (thresholdFieldStrengthsAnotherServices.Find(x => x.Freq_MHz == thresholdFieldStrengthsICSMAllotmentsAll[v].Freq_MHz && x.StaClass == thresholdFieldStrengthsICSMAllotmentsAll[v].StaClass && x.IsDigital == thresholdFieldStrengthsICSMAllotmentsAll[v].IsDigital) == null)
+                {
+                    thresholdFieldStrengthsAnotherServices.Add(thresholdFieldStrengthsICSMAllotmentsAll[v]);
+                }
+            }
+            for (int v = 0; v < thresholdFieldStrengthsICSMAssignmentsAll.Length; v++)
+            {
+                if (thresholdFieldStrengthsAnotherServices.Find(x => x.Freq_MHz == thresholdFieldStrengthsICSMAssignmentsAll[v].Freq_MHz && x.StaClass == thresholdFieldStrengthsICSMAssignmentsAll[v].StaClass && x.IsDigital == thresholdFieldStrengthsICSMAssignmentsAll[v].IsDigital) == null)
+                {
+                    thresholdFieldStrengthsAnotherServices.Add(thresholdFieldStrengthsICSMAssignmentsAll[v]);
+                }
+            }
 
 
             var dicCountoursPointsByICSM = new Dictionary<CountoursPoint, string>();
@@ -270,10 +285,79 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 {
                     pointEarthGeometricPool.Put(pointEarthGeometricsResultAffectedICSM);
                 }
+                if (countoursPointExtendedBuffer != null)
+                {
+                    countoursPointExtendedPool.Put(countoursPointExtendedBuffer);
+                }
+                
             }
             // тут конец расчетам нужна обработка результатов 
 
             // тут должны быть первичные службы ...
+            var selectedDataFromBrific = new List<FmtvTerra>();
+            if (admPotentiallyAffected_1000.Count > 0)
+            {
+                for (int n = 0; n < admPotentiallyAffected_1000.Count; n++)
+                {
+                    var admTemp = admPotentiallyAffected_1000[n];
+
+                    for (int j = 0; j < thresholdFieldStrengthsAnotherServices.Count; j++)
+                    {
+                        var triggerInformationTemp = thresholdFieldStrengthsAnotherServices[j];
+
+                        var freqTemp_MHz = triggerInformationTemp.Freq_MHz;
+
+                        // здесь идет выборка с БД Брифика по каждой службе по заданной частоте и администрации
+                        // формируем итоговый список затронутых служуб ..
+                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadBroadcastingService_TDAB(admTemp, freqTemp_MHz));
+                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadBroadcastingService_DVBT(admTemp, freqTemp_MHz));
+                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadBroadcastingServiceAnalog_TV(admTemp, freqTemp_MHz));
+                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadBroadcastingService_NV(admTemp, freqTemp_MHz));
+                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadBroadcastingService_NR(admTemp, freqTemp_MHz));
+                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadBroadcastingService_NS(admTemp, freqTemp_MHz));
+                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadBroadcastingService_NT(admTemp, freqTemp_MHz));
+                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadBroadcastingService_NA(admTemp, freqTemp_MHz));
+                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadBroadcastingService_NB(admTemp, freqTemp_MHz));
+                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadBroadcastingService_XN(admTemp, freqTemp_MHz));
+                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadBroadcastingService_YN(admTemp, freqTemp_MHz));
+                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadBroadcastingService_ZC(admTemp, freqTemp_MHz));
+                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadNavigationServices_XG(admTemp, freqTemp_MHz));
+                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadNavigationServices_AB(admTemp, freqTemp_MHz));
+                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadNavigationServices_AA8(admTemp, freqTemp_MHz));
+                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadNavigationServices_BD(admTemp, freqTemp_MHz));
+                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadNavigationServices_BA(admTemp, freqTemp_MHz));
+                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadFixedServices_FF(admTemp, freqTemp_MHz));
+                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadFixedServices_FN(admTemp, freqTemp_MHz));
+                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadFixedServices_FK(admTemp, freqTemp_MHz));
+                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadMobileServices_MU(admTemp, freqTemp_MHz));
+                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadMobileServices_M1_RA(admTemp, freqTemp_MHz));
+                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadMobileServices_M2(admTemp, freqTemp_MHz));
+                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadMobileServices_XA(admTemp, freqTemp_MHz));
+                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadMobileServices_XM(admTemp, freqTemp_MHz));
+                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadMobileServices_MA(admTemp, freqTemp_MHz));
+                        selectedDataFromBrific.AddRange(LoadDataBrific.LoadMobileServices_MT(admTemp, freqTemp_MHz));
+
+                        // в списке selectedDataFromBrific получаем набор сведений из брифика с координатами конкретных присвоений, которые могут пересекаться с исходными Alllotment + Assignments[]
+
+
+
+                    }
+                }
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
             if ((broadcastingContextICSM.Allotments == null) && ((broadcastingContextICSM.Assignments != null) && (broadcastingContextICSM.Assignments.Length > 0)))

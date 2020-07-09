@@ -270,6 +270,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 GE06CalcFindAffectedADM.Calculation(data,
                                                     ref ge06CalcResultsForICSM,
                                                     _pointEarthGeometricPool,
+                                                     _countoursPointExtendedPool,
+                                                    _countoursResultPool,
                                                     iterationHandlerBroadcastingFieldStrengthCalcData,
                                                     iterationHandlerFieldStrengthCalcData,
                                                     _poolSite,

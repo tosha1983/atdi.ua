@@ -445,8 +445,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             {
                 Standard = "DVB-T",
                 StaClass = "NR",
-                MinFreq_MHz = 790,
-                MaxFreq_MHz = 862,
+                MinFreq_MHz = 174,
+                MaxFreq_MHz = 230,
                 ThresholdFS = 50,
                 IsBaseStation = false,
                 Height_m = 1.5f
@@ -466,8 +466,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             {
                 Standard = "DVB-T",
                 StaClass = "NS",
-                MinFreq_MHz = 790,
-                MaxFreq_MHz = 862,
+                MinFreq_MHz = 174,
+                MaxFreq_MHz = 230,
                 ThresholdFS = 37,
                 IsBaseStation = false,
                 Height_m = 10.0f
@@ -487,57 +487,57 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             {
                 Standard = "DVB-T",
                 StaClass = "NT",
-                MinFreq_MHz = 790,
-                MaxFreq_MHz = 862,
+                MinFreq_MHz = 174,
+                MaxFreq_MHz = 230,
                 ThresholdFS = 39,
                 IsBaseStation = false,
                 Height_m = 1.5f
             });
 
 
-            ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
-            {
-                Standard = "DVB-T",
-                StaClass = "NA",
-                MinFreq_MHz = 470,
-                MaxFreq_MHz = 862,
-                ThresholdFS = 18,
-                IsBaseStation = true,
-                Height_m = 20.0f
-            });
+            //ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
+            //{
+            //    Standard = "DVB-T",
+            //    StaClass = "NA",
+            //    MinFreq_MHz = 470,
+            //    MaxFreq_MHz = 862,
+            //    ThresholdFS = 18,
+            //    IsBaseStation = true,
+            //    Height_m = 20.0f
+            //});
 
-            ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
-            {
-                Standard = "DVB-T",
-                StaClass = "NA",
-                MinFreq_MHz = 790,
-                MaxFreq_MHz = 862,
-                ThresholdFS = 18,
-                IsBaseStation = true,
-                Height_m = 20.0f
-            });
+            //ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
+            //{
+            //    Standard = "DVB-T",
+            //    StaClass = "NA",
+            //    MinFreq_MHz = 790,
+            //    MaxFreq_MHz = 862,
+            //    ThresholdFS = 18,
+            //    IsBaseStation = true,
+            //    Height_m = 20.0f
+            //});
 
-            ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
-            {
-                Standard = "DVB-T",
-                StaClass = "NB",
-                MinFreq_MHz = 174,
-                MaxFreq_MHz = 230,
-                ThresholdFS = -9999, ///??????????????? расчет по формуле
-                IsBaseStation = true,
-                Height_m = 20.0f
-            });
+            //ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
+            //{
+            //    Standard = "DVB-T",
+            //    StaClass = "NB",
+            //    MinFreq_MHz = 174,
+            //    MaxFreq_MHz = 230,
+            //    ThresholdFS = -9999, ///??????????????? расчет по формуле
+            //    IsBaseStation = true,
+            //    Height_m = 20.0f
+            //});
 
-            ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
-            {
-                Standard = "DVB-T",
-                StaClass = "NB",
-                MinFreq_MHz = 470,
-                MaxFreq_MHz = 862,
-                ThresholdFS = -9999, ///??????????????? расчет по формуле
-                IsBaseStation = true,
-                Height_m = 20.0f
-            });
+            //ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
+            //{
+            //    Standard = "DVB-T",
+            //    StaClass = "NB",
+            //    MinFreq_MHz = 470,
+            //    MaxFreq_MHz = 862,
+            //    ThresholdFS = -9999, ///??????????????? расчет по формуле
+            //    IsBaseStation = true,
+            //    Height_m = 20.0f
+            //});
 
 
             ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
@@ -682,25 +682,25 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 Height_m = 37.5f
             });
 
-            ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
-            {
-                StaClass = "FK",
-                MinFreq_MHz = 174,
-                MaxFreq_MHz = 230,
-                ThresholdFS = -9999, // необходимость применения формулы
-                IsBaseStation = true,
-                Height_m = 37.5f
-            });
+            //ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
+            //{
+            //    StaClass = "FK",
+            //    MinFreq_MHz = 174,
+            //    MaxFreq_MHz = 230,
+            //    ThresholdFS = -9999, // необходимость применения формулы
+            //    IsBaseStation = true,
+            //    Height_m = 37.5f
+            //});
 
-            ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
-            {
-                StaClass = "FK",
-                MinFreq_MHz = 470,
-                MaxFreq_MHz = 862,
-                ThresholdFS = -9999, // необходимость применения формулы
-                IsBaseStation = true,
-                Height_m = 37.5f
-            });
+            //ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
+            //{
+            //    StaClass = "FK",
+            //    MinFreq_MHz = 470,
+            //    MaxFreq_MHz = 862,
+            //    ThresholdFS = -9999, // необходимость применения формулы
+            //    IsBaseStation = true,
+            //    Height_m = 37.5f
+            //});
         }
     }
 }
