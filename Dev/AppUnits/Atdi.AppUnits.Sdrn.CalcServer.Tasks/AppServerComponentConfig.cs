@@ -60,6 +60,28 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
         [ComponentConfigProperty("Thresholds.GE06PointEarthGeometric.ArrayLength")]
         public int? ThresholdsGE06PointEarthGeometricArrayLength { get; set; }
 
+
+        [ComponentConfigProperty("Thresholds.CountoursCountoursPointExtendedPool.ObjectPool.MinSize")]
+        public int? ThresholdsCountoursCountoursPointExtendedPoolMinSize { get; set; }
+
+        [ComponentConfigProperty("Thresholds.CountoursCountoursPointExtendedPool.ObjectPool.MaxSize")]
+        public int? ThresholdsCountoursCountoursPointExtendedPoolMaxSize { get; set; }
+
+        [ComponentConfigProperty("Thresholds.CountoursCountoursPointExtendedPool.ArrayLength")]
+        public int? ThresholdsCountoursCountoursPointExtendedPoolArrayLength { get; set; }
+
+
+        [ComponentConfigProperty("Thresholds.CountoursResultPool.ObjectPool.MinSize")]
+        public int? ThresholdsCountoursResultPoolMinSize { get; set; }
+
+        [ComponentConfigProperty("Thresholds.CountoursResultPool.ObjectPool.MaxSize")]
+        public int? ThresholdsCountoursResultPoolMaxSize { get; set; }
+
+        [ComponentConfigProperty("Thresholds.CountoursResultPool.ArrayLength")]
+        public int? ThresholdsCountoursResultPoolArrayLength { get; set; }
+
+
+
         [ComponentConfigProperty("Brific.DBSource")]
         public string BrificDBSource { get; set; }
 

@@ -118,6 +118,22 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
             });
 
 
+            var countoursCountoursPointExtendedPool = poolSite.Register(new ObjectPoolDescriptor<CountoursPointExtended[]>()
+            {
+                Key = ObjectPools.GE06CountoursPointExtendedPool,
+                MinSize = appConfig.ThresholdsCountoursCountoursPointExtendedPoolMinSize.GetValueOrDefault(0),
+                MaxSize = appConfig.ThresholdsCountoursCountoursPointExtendedPoolMaxSize.GetValueOrDefault(10),
+                Factory = () => new CountoursPointExtended[appConfig.ThresholdsCountoursCountoursPointExtendedPoolArrayLength.GetValueOrDefault(1_0000)]
+            });
+
+            var countoursResultPool = poolSite.Register(new ObjectPoolDescriptor<ContoursResult[]>()
+            {
+                Key = ObjectPools.GE06CountoursResultPool,
+                MinSize = appConfig.ThresholdsCountoursResultPoolMinSize.GetValueOrDefault(0),
+                MaxSize = appConfig.ThresholdsCountoursResultPoolMaxSize.GetValueOrDefault(10),
+                Factory = () => new ContoursResult[appConfig.ThresholdsCountoursResultPoolArrayLength.GetValueOrDefault(1_0000)]
+            });
+
 
             base.OnActivateUnit();
 		}
