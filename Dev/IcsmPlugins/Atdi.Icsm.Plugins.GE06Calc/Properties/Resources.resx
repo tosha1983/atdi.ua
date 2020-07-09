@@ -285,4 +285,7 @@
   <data name="AntennaDirectional" xml:space="preserve">
     <value>Antenna directional</value>
   </data>
+  <data name="ExportToHTZ" xml:space="preserve">
+    <value>Export to HTZ</value>
+  </data>
 </root>
