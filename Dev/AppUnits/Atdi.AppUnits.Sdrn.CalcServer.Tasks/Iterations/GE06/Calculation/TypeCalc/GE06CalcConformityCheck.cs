@@ -534,11 +534,26 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     }
                     if (countoursPointsICSMLocal.Count != 0)
                     {
+
+                        var arrCountoursPoint = new CountoursPoint[countoursPointsICSMLocal.Count];
+                        for (int x = 0; x < countoursPointsICSMLocal.Count; x++)
+                        {
+                            arrCountoursPoint[x] = new CountoursPoint()
+                            {
+                                Distance = countoursPointsICSMLocal[x].Distance,
+                                FS = countoursPointsICSMLocal[x].FS,
+                                Height = countoursPointsICSMLocal[x].Height,
+                                Lat_DEC = countoursPointsICSMLocal[x].Lat_DEC,
+                                Lon_DEC = countoursPointsICSMLocal[x].Lon_DEC,
+                                PointType = countoursPointsICSMLocal[x].PointType
+                            };
+                        }
+
                         ContoursResult contourICSM = new ContoursResult
                         {
                             AffectedADM = adm,
-                            CountoursPoints = countoursPointsICSMLocal.ToArray(),
-                            PointsCount = countoursPointsICSMLocal.Count
+                            CountoursPoints = arrCountoursPoint,
+                            PointsCount = arrCountoursPoint.Length
                         };
                         if (broadcastingTypeCalculation == BroadcastingTypeCalculation.Distance)
                         { contourICSM.Distance = countoursPointsICSMLocal[0].Distance;}
