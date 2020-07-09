@@ -217,6 +217,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
                 var thresholdFieldStrengths = thresholdFieldStrengthsAnotherServices; //на самом деле тут найдем все затронутые сервисы
 
+
                 // 2. Определение администраций с затронутой радиовещательной службой 4. и прочими службами
                 if (thresholdFieldStrengths != null)
                 {
