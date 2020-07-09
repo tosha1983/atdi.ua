@@ -12,6 +12,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
         public string administration;
         public BroadcastingTypeContext  broadcastingTypeContext;
         public BroadcastingTypeCalculation broadcastingTypeCalculation;
+        public int Id;
     }
 }
     
