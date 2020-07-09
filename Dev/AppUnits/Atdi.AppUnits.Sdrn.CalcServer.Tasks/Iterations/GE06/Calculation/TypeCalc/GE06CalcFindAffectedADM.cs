@@ -20,6 +20,248 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 {
     public static class GE06CalcFindAffectedADM
     {
+
+        /// <summary>
+        /// Поиск для администраций, которые попали в контер 1000 км всех затронутых служб и соотвествующих им пороговых значений напряженности поля
+        /// </summary>
+        /// <param name="thresholdFieldStrengthsAnotherServices">Входной набор пороговых напряженностей поля</param>
+        /// <param name="outArrFmtvTerra">Выходной массив сведений о затронутых службах из БД BRIFIC</param>
+        /// <param name="pointEarthGeometricBarycenter">Точка барицентра</param>
+        /// <param name="idwmService">сервис idwm</param>
+        /// <returns></returns>
+        public static ThresholdFieldStrength[] ClarifyAffectedServicesFromBrific(List<ThresholdFieldStrength> thresholdFieldStrengthsAnotherServices, out FmtvTerra[] outArrFmtvTerra, PointEarthGeometric pointEarthGeometricBarycenter, Idwm.IIdwmService idwmService)
+        {
+            var pointCalc = new IdwmDataModel.PointAndDistance()
+            {
+                Distance = 1000,
+                Point = new IdwmDataModel.Point()
+                {
+                    Longitude_dec = pointEarthGeometricBarycenter.Longitude,
+                    Latitude_dec = pointEarthGeometricBarycenter.Latitude,
+                }
+            };
+
+            // создаем массив для хранения сведений о всех администрациях, которые попадают в радиус 1000 км от точки pointEarthGeometricBarycenter
+            var allFindAdministrations = new IdwmDataModel.AdministrationsResult[1000];
+            idwmService.GetADMByPointAndDistance(in pointCalc, ref allFindAdministrations, out int SizeBufferFindAdministrations);
+            var selectedDataFromBrific = new List<FmtvTerra>();
+            for (int j = 0; j < thresholdFieldStrengthsAnotherServices.Count; j++)
+            {
+                var triggerInformationTemp = thresholdFieldStrengthsAnotherServices[j];
+                var minFreq_MHz = triggerInformationTemp.MinFreq_MHz;
+                var maxFreq_MHz = triggerInformationTemp.MaxFreq_MHz;
+                var staClass = triggerInformationTemp.StaClass;
+                var systemType = triggerInformationTemp.System_type;
+
+                for (int n = 0; n < SizeBufferFindAdministrations; n++)
+                {
+                    var admTemp = allFindAdministrations[n].Administration;
+                    switch (systemType)
+                    {
+                        case "NV":
+                            FmtvTerra[] brificNV = LoadDataBrific.LoadBroadcastingService_NV(admTemp, minFreq_MHz, maxFreq_MHz, staClass);
+                            if ((brificNV != null) && (brificNV.Length > 0))
+                            {
+                                selectedDataFromBrific.AddRange(brificNV);
+                            }
+                            break;
+                        case "NR":
+                            var brificNR = LoadDataBrific.LoadBroadcastingService_NR(admTemp, minFreq_MHz, maxFreq_MHz, staClass);
+                            if ((brificNR != null) && (brificNR.Length > 0))
+                            {
+                                selectedDataFromBrific.AddRange(brificNR);
+                            }
+                            break;
+                        case "NS":
+                            var brificNS = LoadDataBrific.LoadBroadcastingService_NS(admTemp, minFreq_MHz, maxFreq_MHz, staClass);
+                            if ((brificNS != null) && (brificNS.Length > 0))
+                            {
+                                selectedDataFromBrific.AddRange(brificNS);
+                            }
+                            break;
+                        case "NT":
+                            var brificNT = LoadDataBrific.LoadBroadcastingService_NT(admTemp, minFreq_MHz, maxFreq_MHz, staClass);
+                            if ((brificNT != null) && (brificNT.Length > 0))
+                            {
+                                selectedDataFromBrific.AddRange(brificNT);
+                            }
+                            break;
+                        case "NA":
+                            var brificNA = LoadDataBrific.LoadBroadcastingService_NA(admTemp, minFreq_MHz, maxFreq_MHz, staClass);
+                            if ((brificNA != null) && (brificNA.Length > 0))
+                            {
+                                selectedDataFromBrific.AddRange(brificNA);
+                            }
+                            break;
+                        case "NB":
+                            var brificNB = LoadDataBrific.LoadBroadcastingService_NB(admTemp, minFreq_MHz, maxFreq_MHz, staClass);
+                            if ((brificNB != null) && (brificNB.Length > 0))
+                            {
+                                selectedDataFromBrific.AddRange(brificNB);
+                            }
+                            break;
+                        case "XN":
+                            var brificXN = LoadDataBrific.LoadBroadcastingService_XN(admTemp, minFreq_MHz, maxFreq_MHz, staClass);
+                            if ((brificXN != null) && (brificXN.Length > 0))
+                            {
+                                selectedDataFromBrific.AddRange(brificXN);
+                            }
+                            break;
+                        case "YN":
+                            var brificYN = LoadDataBrific.LoadBroadcastingService_XN(admTemp, minFreq_MHz, maxFreq_MHz, staClass);
+                            if ((brificYN != null) && (brificYN.Length > 0))
+                            {
+                                selectedDataFromBrific.AddRange(brificYN);
+                            }
+                            break;
+                        case "ZC":
+                            var brificZC = LoadDataBrific.LoadBroadcastingService_ZC(admTemp, minFreq_MHz, maxFreq_MHz, staClass);
+                            if ((brificZC != null) && (brificZC.Length > 0))
+                            {
+                                selectedDataFromBrific.AddRange(brificZC);
+                            }
+                            break;
+                        case "XG":
+                            var brificXG = LoadDataBrific.LoadBroadcastingService_ZC(admTemp, minFreq_MHz, maxFreq_MHz, staClass);
+                            if ((brificXG != null) && (brificXG.Length > 0))
+                            {
+                                selectedDataFromBrific.AddRange(brificXG);
+                            }
+                            break;
+                        case "AB":
+                            var brificAB = LoadDataBrific.LoadNavigationServices_AB(admTemp, minFreq_MHz, maxFreq_MHz, staClass);
+                            if ((brificAB != null) && (brificAB.Length > 0))
+                            {
+                                selectedDataFromBrific.AddRange(brificAB);
+                            }
+                            break;
+                        case "AA8":
+                            var brificAA8 = LoadDataBrific.LoadNavigationServices_AA8(admTemp, minFreq_MHz, maxFreq_MHz, staClass);
+                            if ((brificAA8 != null) && (brificAA8.Length > 0))
+                            {
+                                selectedDataFromBrific.AddRange(brificAA8);
+                            }
+                            break;
+                        case "BD":
+                            var brificBD = LoadDataBrific.LoadNavigationServices_BD(admTemp, minFreq_MHz, maxFreq_MHz, staClass);
+                            if ((brificBD != null) && (brificBD.Length > 0))
+                            {
+                                selectedDataFromBrific.AddRange(brificBD);
+                            }
+                            break;
+                        case "BA":
+                            var brificBA = LoadDataBrific.LoadNavigationServices_BA(admTemp, minFreq_MHz, maxFreq_MHz, staClass);
+                            if ((brificBA != null) && (brificBA.Length > 0))
+                            {
+                                selectedDataFromBrific.AddRange(brificBA);
+                            }
+                            break;
+                        case "FF":
+                            var brificFF = LoadDataBrific.LoadFixedServices_FF(admTemp, minFreq_MHz, maxFreq_MHz, staClass);
+                            if ((brificFF != null) && (brificFF.Length > 0))
+                            {
+                                selectedDataFromBrific.AddRange(brificFF);
+                            }
+                            break;
+                        case "FN":
+                            var brificFN = LoadDataBrific.LoadFixedServices_FN(admTemp, minFreq_MHz, maxFreq_MHz, staClass);
+                            if ((brificFN != null) && (brificFN.Length > 0))
+                            {
+                                selectedDataFromBrific.AddRange(brificFN);
+                            }
+                            break;
+                        case "FK":
+                            var brificFK = LoadDataBrific.LoadFixedServices_FK(admTemp, minFreq_MHz, maxFreq_MHz, staClass);
+                            if ((brificFK != null) && (brificFK.Length > 0))
+                            {
+                                selectedDataFromBrific.AddRange(brificFK);
+                            }
+                            break;
+                        case "MU":
+                            var brificMU = LoadDataBrific.LoadMobileServices_MU(admTemp, minFreq_MHz, maxFreq_MHz, staClass);
+                            if ((brificMU != null) && (brificMU.Length > 0))
+                            {
+                                selectedDataFromBrific.AddRange(brificMU);
+                            }
+                            break;
+                        case "M1":
+                            var brificM1 = LoadDataBrific.LoadMobileServices_M1(admTemp, minFreq_MHz, maxFreq_MHz, staClass);
+                            if ((brificM1 != null) && (brificM1.Length > 0))
+                            {
+                                selectedDataFromBrific.AddRange(brificM1);
+                            }
+                            break;
+                        case "RA":
+                            var brific_RA = LoadDataBrific.LoadMobileServices_RA(admTemp, minFreq_MHz, maxFreq_MHz, staClass);
+                            if ((brific_RA != null) && (brific_RA.Length > 0))
+                            {
+                                selectedDataFromBrific.AddRange(brific_RA);
+                            }
+                            break;
+                        case "M2":
+                            var brificM2 = LoadDataBrific.LoadMobileServices_M2(admTemp, minFreq_MHz, maxFreq_MHz, staClass);
+                            if ((brificM2 != null) && (brificM2.Length > 0))
+                            {
+                                selectedDataFromBrific.AddRange(brificM2);
+                            }
+                            break;
+                        case "XA":
+                            var brificXA = LoadDataBrific.LoadMobileServices_XA(admTemp, minFreq_MHz, maxFreq_MHz, staClass);
+                            if ((brificXA != null) && (brificXA.Length > 0))
+                            {
+                                selectedDataFromBrific.AddRange(brificXA);
+                            }
+                            break;
+                        case "XM":
+                            var brificXM = LoadDataBrific.LoadMobileServices_XM(admTemp, minFreq_MHz, maxFreq_MHz, staClass);
+                            if ((brificXM != null) && (brificXM.Length > 0))
+                            {
+                                selectedDataFromBrific.AddRange(brificXM);
+                            }
+                            break;
+                        case "MA":
+                            var brificMA = LoadDataBrific.LoadMobileServices_MA(admTemp, minFreq_MHz, maxFreq_MHz, staClass);
+                            if ((brificMA != null) && (brificMA.Length > 0))
+                            {
+                                selectedDataFromBrific.AddRange(brificMA);
+                            }
+                            break;
+                        case "MT":
+                            var brificMT = LoadDataBrific.LoadMobileServices_MT(admTemp, minFreq_MHz, maxFreq_MHz, staClass);
+                            if ((brificMT != null) && (brificMT.Length > 0))
+                            {
+                                selectedDataFromBrific.AddRange(brificMT);
+                            }
+                            break;
+                    }
+                }
+            }
+            outArrFmtvTerra = selectedDataFromBrific.ToArray();
+            return ThresholdFS.GetThresholdFieldStrengthByFmtvTerra(outArrFmtvTerra, TypeThresholdFS.All);
+        }
+        /// <summary>
+        /// Результат по контурам
+        /// </summary>
+        /// <param name="countoursPointExtendeds"></param>
+        /// <param name="sizeCountoursPointExtendedBuffer"></param>
+        /// <returns></returns>
+        public static ContoursResult[] GenerateAdministrationContour(CountoursPointExtended[] countoursPointExtendeds, int sizeCountoursPointExtendedBuffer)
+        {
+            return null;
+        }
+        /// <summary>
+        /// Результат по администрациям
+        /// </summary>
+        /// <param name="countoursPointExtendeds"></param>
+        /// <param name="sizeCountoursPointExtendedBuffer"></param>
+        /// <param name="arrFmtvTerra"></param>
+        /// <returns></returns>
+        public static AffectedADMResult[] GenerateAdministration(CountoursPointExtended[] countoursPointExtendeds, int sizeCountoursPointExtendedBuffer, FmtvTerra[] arrFmtvTerra)
+        {
+            return null;
+        }
+
+
         /// <summary>
         /// Расчет  для  CalculationType == FindAffectedADM
         /// </summary>
@@ -82,14 +324,13 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 throw new Exception(message);
             }
 
-            float ProsentTime = 1;
+            
             float ProsentTerr = 50;
             int Height = 10;
             var countoursPointExtendedBuffer = default(CountoursPointExtended[]);
             var pointEarthGeometricsResult = default(PointEarthGeometric[]);
             var pointEarthGeometricsResultICSM = default(PointEarthGeometric[]);
             var pointEarthGeometricsResultAffectedICSM = default(PointEarthGeometric[]);
-            var contoursResultBuffer = default(ContoursResult[]);
             var lstContoursResults = new List<ContoursResult>();
             var broadcastingContextICSM = ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM;
             // Определение класов входящих данных 
@@ -111,18 +352,6 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 }
             }
             // Конец определения класов входящих данных.
-
-
-            //// Определение пороговых напряженностей для защиты систем радиовещательной службы
-            //// входными данными являются Allotments + Assignments[]
-            var thresholdFieldStrengthsPrimaryServices = new List<ThresholdFieldStrength>();
-            //var thresholdFieldStrengthsICSMAllotmentsP = ThresholdFS.GetThresholdFieldStrengthByAllotments(broadcastingContextICSM.Allotments, TypeThresholdFS.OnlyBroadcastingService);
-            //var thresholdFieldStrengthsICSMAssignmentsP = ThresholdFS.GetThresholdFieldStrengthByAssignments(broadcastingContextICSM.Assignments, TypeThresholdFS.OnlyBroadcastingService);
-            //thresholdFieldStrengthsPrimaryServices.AddRange(thresholdFieldStrengthsICSMAllotmentsP);
-            //thresholdFieldStrengthsPrimaryServices.AddRange(thresholdFieldStrengthsICSMAssignmentsP);
-            //thresholdFieldStrengthsPrimaryServices.Distinct();
-
-
 
 
             // Определение пороговых напряженностей для защиты всех служб в том числе радиовещательной службы
@@ -157,10 +386,13 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             var pointEarthGeometricBarycenter = new PointEarthGeometric();
             //1.А Определение центра гравитации(2.1)
             var broadcastingCalcBarycenterGE06 = new BroadcastingCalcBarycenterGE06()
-            {
-                BroadcastingAllotment = broadcastingContextICSM.Allotments,
+            { BroadcastingAllotment = broadcastingContextICSM.Allotments,
                 BroadcastingAssignments = broadcastingContextICSM.Assignments};
-                gn06Service.CalcBarycenterGE06(in broadcastingCalcBarycenterGE06, ref pointEarthGeometricBarycenter);
+            gn06Service.CalcBarycenterGE06(in broadcastingCalcBarycenterGE06, ref pointEarthGeometricBarycenter);
+
+
+            var thresholdFieldStrengths = ClarifyAffectedServicesFromBrific(thresholdFieldStrengthsAnotherServices, out FmtvTerra[] outArrFmtvTerra, pointEarthGeometricBarycenter, idwmService);
+
             try
             {
                 // Получение элементов из пула
@@ -217,318 +449,9 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
                 // 3. Определение затронутых других первичных служб 
 
-                var pointCalc = new IdwmDataModel.PointAndDistance()
-                {
-                    Distance = 1000,
-                    Point = new IdwmDataModel.Point()
-                    {
-                        Longitude_dec = pointEarthGeometricBarycenter.Longitude,
-                        Latitude_dec = pointEarthGeometricBarycenter.Latitude,
-                    }
-                };
+                //var thresholdFieldStrengths = ClarifyAffectedServicesFromBrific(thresholdFieldStrengthsAnotherServices, out FmtvTerra[] outArrFmtvTerra, pointEarthGeometricBarycenter, idwmService);
+                //var thresholdFieldStrengths = thresholdFieldStrengthsAnotherServices; //на самом деле тут найдем все затронутые сервисы
 
-                //var forDeleteThresholdFieldStrength = new List<ThresholdFieldStrength>();
-
-                //for (int p=0; p< forDeleteThresholdFieldStrength.Count; p++)
-                //{
-                //    thresholdFieldStrengthsAnotherServices.RemoveAll(x => x.Freq_MHz == forDeleteThresholdFieldStrength[p].Freq_MHz && x.StaClass == forDeleteThresholdFieldStrength[p].StaClass);
-                //}
-
-                // создаем массив для хранения сведений о всех администрациях, которые попадают в радиус 1000 км от точки pointEarthGeometricBarycenter
-                var allFindAdministrations = new IdwmDataModel.AdministrationsResult[1000];
-                idwmService.GetADMByPointAndDistance(in pointCalc,  ref allFindAdministrations, out int SizeBufferFindAdministrations);
-                var selectedDataFromBrific = new List<FmtvTerra>();
-                for (int j = 0; j < thresholdFieldStrengthsAnotherServices.Count; j++)
-                {
-                    var triggerInformationTemp = thresholdFieldStrengthsAnotherServices[j];
-                    var freqTemp_MHz = triggerInformationTemp.Freq_MHz;
-                    var staClass = triggerInformationTemp.StaClass;
-                    for (int n = 0; n < SizeBufferFindAdministrations; n++)
-                    {
-                        var admTemp = allFindAdministrations[n].Administration;
-
-                        //первичные службы не анализируем (они всегда должны включаться в механизм расчета)
-
-                        //selectedDataFromBrific.AddRange(LoadDataBrific.LoadBroadcastingService_TDAB(admTemp, freqTemp_MHz));
-                        //selectedDataFromBrific.AddRange(LoadDataBrific.LoadBroadcastingService_DVBT(admTemp, freqTemp_MHz));
-                        //selectedDataFromBrific.AddRange(LoadDataBrific.LoadBroadcastingServiceAnalog_TV(admTemp, freqTemp_MHz));
-
-                        // анализ по всем остальным службам
-                        switch (staClass)
-                        {
-                            case "NV":
-                                FmtvTerra[] brificNV = LoadDataBrific.LoadBroadcastingService_NV(admTemp, freqTemp_MHz);
-                                if ((brificNV != null) && (brificNV.Length > 0))
-                                {
-                                    selectedDataFromBrific.AddRange(brificNV);
-                                }
-                                else
-                                {
-                                    forDeleteThresholdFieldStrength.Add(triggerInformationTemp);
-                                }
-                                break;
-                            case "NR":
-                                var brificNR = LoadDataBrific.LoadBroadcastingService_NR(admTemp, freqTemp_MHz);
-                                if ((brificNR != null) && (brificNR.Length > 0))
-                                {
-                                    selectedDataFromBrific.AddRange(brificNR);
-                                }
-                                else
-                                {
-                                    forDeleteThresholdFieldStrength.Add(triggerInformationTemp);
-                                }
-                                break;
-                            case "NS":
-                                var brificNS = LoadDataBrific.LoadBroadcastingService_NS(admTemp, freqTemp_MHz);
-                                if ((brificNS != null) && (brificNS.Length > 0))
-                                {
-                                    selectedDataFromBrific.AddRange(brificNS);
-                                }
-                                else
-                                {
-                                    forDeleteThresholdFieldStrength.Add(triggerInformationTemp);
-                                }
-                                break;
-                            case "NT":
-                                var brificNT = LoadDataBrific.LoadBroadcastingService_NT(admTemp, freqTemp_MHz);
-                                if ((brificNT != null) && (brificNT.Length > 0))
-                                {
-                                    selectedDataFromBrific.AddRange(brificNT);
-                                }
-                                else
-                                {
-                                    forDeleteThresholdFieldStrength.Add(triggerInformationTemp);
-                                }
-                                break;
-                            case "NA":
-                                var brificNA = LoadDataBrific.LoadBroadcastingService_NA(admTemp, freqTemp_MHz);
-                                if ((brificNA != null) && (brificNA.Length > 0))
-                                {
-                                    selectedDataFromBrific.AddRange(brificNA);
-                                }
-                                else
-                                {
-                                    forDeleteThresholdFieldStrength.Add(triggerInformationTemp);
-                                }
-                                break;
-                            case "NB":
-                                var brificNB = LoadDataBrific.LoadBroadcastingService_NB(admTemp, freqTemp_MHz);
-                                if ((brificNB != null) && (brificNB.Length > 0))
-                                {
-                                    selectedDataFromBrific.AddRange(brificNB);
-                                }
-                                else
-                                {
-                                    forDeleteThresholdFieldStrength.Add(triggerInformationTemp);
-                                }
-                                break;
-                            case "XN":
-                                var brificXN = LoadDataBrific.LoadBroadcastingService_XN(admTemp, freqTemp_MHz);
-                                if ((brificXN != null) && (brificXN.Length > 0))
-                                {
-                                    selectedDataFromBrific.AddRange(brificXN);
-                                }
-                                else
-                                {
-                                    forDeleteThresholdFieldStrength.Add(triggerInformationTemp);
-                                }
-                                break;
-                            case "YN":
-                                var brificYN = LoadDataBrific.LoadBroadcastingService_XN(admTemp, freqTemp_MHz);
-                                if ((brificYN != null) && (brificYN.Length > 0))
-                                {
-                                    selectedDataFromBrific.AddRange(brificYN);
-                                }
-                                else
-                                {
-                                    forDeleteThresholdFieldStrength.Add(triggerInformationTemp);
-                                }
-                                break;
-                            case "ZC":
-                                var brificZC = LoadDataBrific.LoadBroadcastingService_ZC(admTemp, freqTemp_MHz);
-                                if ((brificZC != null) && (brificZC.Length > 0))
-                                {
-                                    selectedDataFromBrific.AddRange(brificZC);
-                                }
-                                else
-                                {
-                                    forDeleteThresholdFieldStrength.Add(triggerInformationTemp);
-                                }
-                                break;
-                            case "XG":
-                                var brificXG = LoadDataBrific.LoadBroadcastingService_ZC(admTemp, freqTemp_MHz);
-                                if ((brificXG != null) && (brificXG.Length > 0))
-                                {
-                                    selectedDataFromBrific.AddRange(brificXG);
-                                }
-                                else
-                                {
-                                    forDeleteThresholdFieldStrength.Add(triggerInformationTemp);
-                                }
-                                break;
-                            case "AB":
-                                var brificAB = LoadDataBrific.LoadNavigationServices_AB(admTemp, freqTemp_MHz);
-                                if ((brificAB != null) && (brificAB.Length > 0))
-                                {
-                                    selectedDataFromBrific.AddRange(brificAB);
-                                }
-                                else
-                                {
-                                    forDeleteThresholdFieldStrength.Add(triggerInformationTemp);
-                                }
-                                break;
-                            case "AA8":
-                                var brificAA8 = LoadDataBrific.LoadNavigationServices_AA8(admTemp, freqTemp_MHz);
-                                if ((brificAA8 != null) && (brificAA8.Length > 0))
-                                {
-                                    selectedDataFromBrific.AddRange(brificAA8);
-                                }
-                                else
-                                {
-                                    forDeleteThresholdFieldStrength.Add(triggerInformationTemp);
-                                }
-                                break;
-                            case "BD":
-                                var brificBD = LoadDataBrific.LoadNavigationServices_BD(admTemp, freqTemp_MHz);
-                                if ((brificBD != null) && (brificBD.Length > 0))
-                                {
-                                    selectedDataFromBrific.AddRange(brificBD);
-                                }
-                                else
-                                {
-                                    forDeleteThresholdFieldStrength.Add(triggerInformationTemp);
-                                }
-                                break;
-                            case "BA":
-                                var brificBA = LoadDataBrific.LoadNavigationServices_BA(admTemp, freqTemp_MHz);
-                                if ((brificBA != null) && (brificBA.Length > 0))
-                                {
-                                    selectedDataFromBrific.AddRange(brificBA);
-                                }
-                                else
-                                {
-                                    forDeleteThresholdFieldStrength.Add(triggerInformationTemp);
-                                }
-                                break;
-                            case "FF":
-                                var brificFF = LoadDataBrific.LoadFixedServices_FF(admTemp, freqTemp_MHz);
-                                if ((brificFF != null) && (brificFF.Length > 0))
-                                {
-                                    selectedDataFromBrific.AddRange(brificFF);
-                                }
-                                else
-                                {
-                                    forDeleteThresholdFieldStrength.Add(triggerInformationTemp);
-                                }
-                                break;
-                            case "FN":
-                                var brificFN = LoadDataBrific.LoadFixedServices_FN(admTemp, freqTemp_MHz);
-                                if ((brificFN != null) && (brificFN.Length > 0))
-                                {
-                                    selectedDataFromBrific.AddRange(brificFN);
-                                }
-                                else
-                                {
-                                    forDeleteThresholdFieldStrength.Add(triggerInformationTemp);
-                                }
-                                break;
-                            case "FK":
-                                var brificFK = LoadDataBrific.LoadFixedServices_FK(admTemp, freqTemp_MHz);
-                                if ((brificFK != null) && (brificFK.Length > 0))
-                                {
-                                    selectedDataFromBrific.AddRange(brificFK);
-                                }
-                                else
-                                {
-                                    forDeleteThresholdFieldStrength.Add(triggerInformationTemp);
-                                }
-                                break;
-                            case "MU":
-                                var brificMU = LoadDataBrific.LoadMobileServices_MU(admTemp, freqTemp_MHz);
-                                if ((brificMU != null) && (brificMU.Length > 0))
-                                {
-                                    selectedDataFromBrific.AddRange(brificMU);
-                                }
-                                else
-                                {
-                                    forDeleteThresholdFieldStrength.Add(triggerInformationTemp);
-                                }
-                                break;
-                            case "M1":
-                            case "RA":
-                                var brificM1_RA = LoadDataBrific.LoadMobileServices_M1_RA(admTemp, freqTemp_MHz);
-                                if ((brificM1_RA != null) && (brificM1_RA.Length > 0))
-                                {
-                                    selectedDataFromBrific.AddRange(brificM1_RA);
-                                }
-                                else
-                                {
-                                    forDeleteThresholdFieldStrength.Add(triggerInformationTemp);
-                                }
-                                break;
-                            case "M2":
-                                var brificM2 = LoadDataBrific.LoadMobileServices_M2(admTemp, freqTemp_MHz);
-                                if ((brificM2 != null) && (brificM2.Length > 0))
-                                {
-                                    selectedDataFromBrific.AddRange(brificM2);
-                                }
-                                else
-                                {
-                                    forDeleteThresholdFieldStrength.Add(triggerInformationTemp);
-                                }
-                                break;
-                            case "XA":
-                                var brificXA = LoadDataBrific.LoadMobileServices_XA(admTemp, freqTemp_MHz);
-                                if ((brificXA != null) && (brificXA.Length > 0))
-                                {
-                                    selectedDataFromBrific.AddRange(brificXA);
-                                }
-                                else
-                                {
-                                    forDeleteThresholdFieldStrength.Add(triggerInformationTemp);
-                                }
-                                break;
-                            case "XM":
-                                var brificXM = LoadDataBrific.LoadMobileServices_XM(admTemp, freqTemp_MHz);
-                                if ((brificXM != null) && (brificXM.Length > 0))
-                                {
-                                    selectedDataFromBrific.AddRange(brificXM);
-                                }
-                                else
-                                {
-                                    forDeleteThresholdFieldStrength.Add(triggerInformationTemp);
-                                }
-                                break;
-                            case "MA":
-                                var brificMA = LoadDataBrific.LoadMobileServices_MA(admTemp, freqTemp_MHz);
-                                if ((brificMA != null) && (brificMA.Length > 0))
-                                {
-                                    selectedDataFromBrific.AddRange(brificMA);
-                                }
-                                else
-                                {
-                                    forDeleteThresholdFieldStrength.Add(triggerInformationTemp);
-                                }
-                                break;
-                            case "MT":
-                                var brificMT = LoadDataBrific.LoadMobileServices_MT(admTemp, freqTemp_MHz);
-                                if ((brificMT != null) && (brificMT.Length > 0))
-                                {
-                                    selectedDataFromBrific.AddRange(brificMT);
-                                }
-                                else
-                                {
-                                    forDeleteThresholdFieldStrength.Add(triggerInformationTemp);
-                                }
-                                break;
-                        }
-                    }
-                }
-                
-
-
-
-                var thresholdFieldStrengths = thresholdFieldStrengthsAnotherServices; //на самом деле тут найдем все затронутые сервисы
 
 
                 // 2. Определение администраций с затронутой радиовещательной службой 4. и прочими службами
@@ -583,6 +506,17 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             indexResult++;
                         }
                     }
+
+
+                    // пример вызова метода проаерки попадания точки в контур (входными данными являются переменная типа CheckHittingArgs)
+                    //earthGeometricService.CheckHitting(in CheckHittingArgs);
+
+                    // функция по формированию контуров
+                    ge06CalcResult.ContoursResult = GenerateAdministrationContour(countoursPointExtendedBuffer, indexForCountoursPointExtendedBuffer);
+
+                    // функция по формированию администраций
+                    ge06CalcResult.AffectedADMResult = GenerateAdministration(countoursPointExtendedBuffer, indexForCountoursPointExtendedBuffer, outArrFmtvTerra);
+
                 }
             }
             finally
@@ -606,609 +540,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 
             }
             // тут конец расчетам нужна обработка результатов 
-
-
-            // тут должны быть первичные службы ...
-           
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            if ((broadcastingContextICSM.Allotments == null) && ((broadcastingContextICSM.Assignments != null) && (broadcastingContextICSM.Assignments.Length > 0)))
-            {
-                var contourFromPointByDistanceArgs = new ContourFromPointByDistanceArgs()
-                {
-                    Distance_km = 1000,
-                    Step_deg = ge06CalcData.Ge06TaskParameters.AzimuthStep_deg.Value,
-                    PointEarthGeometricCalc = pointEarthGeometricBarycenter
-                };
-
-                try
-                {
-                    pointEarthGeometricsResult = pointEarthGeometricPool.Take();
-                    pointEarthGeometricsResultICSM = pointEarthGeometricPool.Take();
-                    pointEarthGeometricsResultAffectedICSM = pointEarthGeometricPool.Take();
-
-                    earthGeometricService.CreateContourFromPointByDistance(in contourFromPointByDistanceArgs, ref pointEarthGeometricsResult, out int sizeResultBuffer);
-
-                    var countoursPoint = new CountoursPoint[sizeResultBuffer];
-                    for (int k = 0; k < sizeResultBuffer; k++)
-                    {
-                        countoursPoint[k] = new CountoursPoint();
-                        //countoursPoint[k].Distance = 1000;
-
-                        var pointForCalc = new IdwmDataModel.Point()
-                        {
-                            Longitude_dec = pointEarthGeometricsResult[k].Longitude,
-                            Latitude_dec = pointEarthGeometricsResult[k].Latitude
-                        };
-
-                        countoursPoint[k].Lon_DEC = pointForCalc.Longitude_dec.Value;
-                        countoursPoint[k].Lat_DEC = pointForCalc.Latitude_dec.Value;
-
-                        countoursPoint[k].PointType = PointType.Correct;
-
-
-                        var adm = idwmService.GetADMByPoint(pointForCalc);
-
-                        if (!admPotentiallyAffected_1000.Contains(adm))
-                        {
-                            admPotentiallyAffected_1000.Add(adm);
-                        }
-                    }
-
-                    // формируем контур
-                    lstContoursResults.Add(new ContoursResult()
-                    {
-                        //AffectedADM = , что здесь нужно указать???? 
-                        ContourType = ContourType.Correct,
-                        CountoursPoints = countoursPoint,
-                        Distance = 1000,
-                        PointsCount = countoursPoint.Length
-                    });
-
-
-                    // формируем список потенциально затронутых администраций
-                    if (admPotentiallyAffected_1000.Count > 0)
-                    {
-                        var distAdmAffected = admPotentiallyAffected_1000.ToList().Distinct().ToArray();
-                        var affectedADMRes = new AffectedADMResult[distAdmAffected.Count()];
-                        for (int k = 0; k < affectedADMRes.Length; k++)
-                        {
-                            affectedADMRes[k] = new AffectedADMResult();
-                            affectedADMRes[k].ADM = distAdmAffected[k];
-                            //affectedADMRes[k].AffectedServices = stnCls; ?????????? откуда эту информацию брать ??????????
-                            affectedADMRes[k].TypeAffected = "1000";
-                        }
-                        listAffectedADMResults.AddRange(affectedADMRes);
-                    }
-
-                    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    ////    2.Определение администраций с затронутой радиовещательной службой.
-                    ////    Результат: список затронутых(радиовещательные службы затронуты) администраций.TypeAffected = Broadcast
-                    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    var triggersDataPrimaryServices = thresholdFieldStrengthsPrimaryServices;
-                    if ((triggersDataPrimaryServices != null) && (triggersDataPrimaryServices.Count > 0))
-                    {
-                        var arrTriggersFS = triggersDataPrimaryServices;
-                        if (arrTriggersFS != null)
-                        {
-                            var triggerFSData = arrTriggersFS.ToArray();
-                            for (int d = 0; d < triggerFSData.Length; d++)
-                            {
-                                var triggerFS = triggerFSData[d];
-
-                                var contourForStationByTriggerFieldStrengthsArgs = new ContourForStationByTriggerFieldStrengthsArgs()
-                                {
-                                    Step_deg = ge06CalcData.Ge06TaskParameters.AzimuthStep_deg.Value,
-                                    TriggerFieldStrength = triggerFS.ThresholdFS,
-                                    BaryCenter = pointEarthGeometricBarycenter
-                                };
-
-                                // Модель распространения 1546, процент территории 50, процент времени 1, высота абонента 10м
-                                var propModel = ge06CalcData.PropagationModel;
-                                GE06PropagationModel.GetPropagationModelForFindAffectedADM(ref propModel, 50, 1);
-                                ge06CalcData.PropagationModel = propModel;
-
-                                earthGeometricService.CreateContourForStationByTriggerFieldStrengths((destinationPoint) => GE06CalcContoursByFS.CalcFieldStrengthICSM(destinationPoint, ge06CalcData, pointEarthGeometricPool, iterationHandlerBroadcastingFieldStrengthCalcData, iterationHandlerFieldStrengthCalcData, poolSite, transformation, taskContext, gn06Service), in contourForStationByTriggerFieldStrengthsArgs, ref pointEarthGeometricsResultICSM, out int sizeResultBufferICSM);
-                                if (sizeResultBufferICSM > 0)
-                                {
-                                    for (int t = 0; t < sizeResultBufferICSM; t++)
-                                    {
-                                        var pointForCalcFsICSM = new Point()
-                                        {
-                                            Longitude = pointEarthGeometricsResultICSM[t].Longitude,
-                                            Latitude = pointEarthGeometricsResultICSM[t].Latitude
-                                        };
-
-                                        var adm = idwmService.GetADMByPoint(new IdwmDataModel.Point()
-                                        {
-                                            Longitude_dec = pointForCalcFsICSM.Longitude,
-                                            Latitude_dec = pointForCalcFsICSM.Latitude
-                                        });
-                                        if (!admPotentiallyAffected_Broadcast.Contains(adm))
-                                        {
-                                            // формирование очередного AffectedADMResult
-                                            var affectedADMResTemp = new AffectedADMResult();
-                                            affectedADMResTemp.ADM = adm;
-                                            affectedADMResTemp.AffectedServices = triggerFS.StaClass;
-                                            affectedADMResTemp.TypeAffected = "Broadcast";
-                                            listAffectedADMResults.Add(affectedADMResTemp);
-
-                                            admPotentiallyAffected_Broadcast.Add(adm);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                finally
-                {
-                    if (pointEarthGeometricsResult != null)
-                    {
-                        pointEarthGeometricPool.Put(pointEarthGeometricsResult);
-                    }
-                    if (pointEarthGeometricsResultICSM != null)
-                    {
-                        pointEarthGeometricPool.Put(pointEarthGeometricsResultICSM);
-                    }
-                    if (pointEarthGeometricsResultAffectedICSM != null)
-                    {
-                        pointEarthGeometricPool.Put(pointEarthGeometricsResultAffectedICSM);
-                    }
-                }
-            }
-            //или на функции CreateContourFromContureByDistance если у нас есть BroadcastingAllotment 
-            else
-            {
-                var areaPoints = broadcastingContextICSM.Allotments.AllotmentParameters.Contur;
-                var freq_MHz = broadcastingContextICSM.Allotments.Target.Freq_MHz;
-                var isDigital = broadcastingContextICSM.Allotments.AdminData.IsDigital;
-                string stnCls = "";
-
-                if ((broadcastingContextICSM.Allotments.EmissionCharacteristics.RefNetworkConfig == DataModels.Sdrn.DeepServices.GN06.RefNetworkConfigType.RPC1)
-                || (broadcastingContextICSM.Allotments.EmissionCharacteristics.RefNetworkConfig == DataModels.Sdrn.DeepServices.GN06.RefNetworkConfigType.RPC2)
-                || (broadcastingContextICSM.Allotments.EmissionCharacteristics.RefNetworkConfig == DataModels.Sdrn.DeepServices.GN06.RefNetworkConfigType.RPC3))
-                {
-                    stnCls = "BT";
-                }
-                else if ((broadcastingContextICSM.Allotments.EmissionCharacteristics.RefNetworkConfig == DataModels.Sdrn.DeepServices.GN06.RefNetworkConfigType.RPC4)
-                || (broadcastingContextICSM.Allotments.EmissionCharacteristics.RefNetworkConfig == DataModels.Sdrn.DeepServices.GN06.RefNetworkConfigType.RPC5))
-                {
-                    stnCls = "BC";
-                }
-
-
-                if ((areaPoints != null) && (areaPoints.Length > 0))
-                {
-                    var pointEarthGeometrics = new PointEarthGeometric[areaPoints.Length];
-                    for (int h = 0; h < areaPoints.Length; h++)
-                    {
-                        pointEarthGeometrics[h] = new PointEarthGeometric(areaPoints[h].Lon_DEC, areaPoints[h].Lat_DEC, CoordinateUnits.deg);
-                    }
-
-                    var contourFromContureByDistanceArgs = new ContourFromContureByDistanceArgs()
-                    {
-                        Step_deg = ge06CalcData.Ge06TaskParameters.AzimuthStep_deg.Value,
-                        Distance_km = 1000,
-                        PointBaryCenter = pointEarthGeometricBarycenter,
-                        ContourPoints = pointEarthGeometrics
-                    };
-
-
-                    try
-                    {
-                        /// Определение напряженности поля для затронутой службы (таблица ТАБЛИЦА A.1.1 документа GE06 взять http://redmine3.lissoft.com.ua:3003/issues/697) в качестве определяющих данных это технология Broadcasting,  частота и служба stn_cls (п. Системы, испытующие влияние).
-
-
-                        pointEarthGeometricsResult = pointEarthGeometricPool.Take();
-                        pointEarthGeometricsResultICSM = pointEarthGeometricPool.Take();
-                        pointEarthGeometricsResultAffectedICSM = pointEarthGeometricPool.Take();
-
-                        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                        ////
-                        ///   1 .Построение контура 1000км
-                        ////  Результат: контур и список потенциально затронутых администраций (TypeAffected = 1000).
-                        ///
-                        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                        earthGeometricService.CreateContourFromContureByDistance(in contourFromContureByDistanceArgs, ref pointEarthGeometricsResult, out int sizeResultBuffer);
-                        var countoursPoint = new CountoursPoint[sizeResultBuffer];
-                        for (int k = 0; k < sizeResultBuffer; k++)
-                        {
-                            countoursPoint[k] = new CountoursPoint();
-                            //countoursPoint[k].Distance = 1000;
-
-                            var pointForCalc = new IdwmDataModel.Point()
-                            {
-                                Longitude_dec = pointEarthGeometricsResult[k].Longitude,
-                                Latitude_dec = pointEarthGeometricsResult[k].Latitude
-                            };
-
-                            countoursPoint[k].Lon_DEC = pointForCalc.Longitude_dec.Value;
-                            countoursPoint[k].Lat_DEC = pointForCalc.Latitude_dec.Value;
-
-                            countoursPoint[k].PointType = PointType.Correct;
-
-
-                            var adm = idwmService.GetADMByPoint(pointForCalc);
-
-                            if (!admPotentiallyAffected_1000.Contains(adm))
-                            {
-                                admPotentiallyAffected_1000.Add(adm);
-                            }
-                        }
-
-                        // формируем контур
-                        lstContoursResults.Add(new ContoursResult()
-                        {
-                            //AffectedADM = , что здесь нужно указать???? 
-                            ContourType = ContourType.Correct,
-                            CountoursPoints = countoursPoint,
-                            Distance = 1000,
-                            PointsCount = countoursPoint.Length
-                        });
-
-
-                        // формируем список потенциально затронутых администраций
-                        if (admPotentiallyAffected_1000.Count > 0)
-                        {
-                            var distAdmAffected = admPotentiallyAffected_1000.ToList().Distinct().ToArray();
-                            var affectedADMRes = new AffectedADMResult[distAdmAffected.Count()];
-                            for (int k = 0; k < affectedADMRes.Length; k++)
-                            {
-                                affectedADMRes[k] = new AffectedADMResult();
-                                affectedADMRes[k].ADM = distAdmAffected[k];
-                                affectedADMRes[k].AffectedServices = stnCls;
-                                affectedADMRes[k].TypeAffected = "1000";
-                            }
-                            listAffectedADMResults.AddRange(affectedADMRes);
-                        }
-
-                        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                        ////    2.Определение администраций с затронутой радиовещательной службой.
-                        ////    Результат: список затронутых(радиовещательные службы затронуты) администраций.TypeAffected = Broadcast
-                        ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-                        var triggersDataPrimaryServices = thresholdFieldStrengthsPrimaryServices;
-                        if ((triggersDataPrimaryServices != null) && (triggersDataPrimaryServices.Count > 0))
-                        {
-                            var arrTriggersFS = triggersDataPrimaryServices;
-                            if (arrTriggersFS != null)
-                            {
-                                var triggerFSData = arrTriggersFS.ToArray();
-                                for (int d = 0; d < triggerFSData.Length; d++)
-                                {
-                                    var triggerFS = triggerFSData[d];
-
-                                    var contourForStationByTriggerFieldStrengthsArgs = new ContourForStationByTriggerFieldStrengthsArgs()
-                                    {
-                                        Step_deg = ge06CalcData.Ge06TaskParameters.AzimuthStep_deg.Value,
-                                        TriggerFieldStrength = triggerFS.ThresholdFS,
-                                        BaryCenter = pointEarthGeometricBarycenter
-                                    };
-
-                                    // Модель распространения 1546, процент территории 50, процент времени 1, высота абонента 10м
-                                    var propModel = ge06CalcData.PropagationModel;
-                                    GE06PropagationModel.GetPropagationModelForFindAffectedADM(ref propModel, 50, 1);
-                                    ge06CalcData.PropagationModel = propModel;
-
-                                    earthGeometricService.CreateContourForStationByTriggerFieldStrengths((destinationPoint) => GE06CalcContoursByFS.CalcFieldStrengthICSM(destinationPoint, ge06CalcData, pointEarthGeometricPool, iterationHandlerBroadcastingFieldStrengthCalcData, iterationHandlerFieldStrengthCalcData, poolSite, transformation, taskContext, gn06Service), in contourForStationByTriggerFieldStrengthsArgs, ref pointEarthGeometricsResultICSM, out int sizeResultBufferICSM);
-                                    if (sizeResultBufferICSM > 0)
-                                    {
-                                        for (int t = 0; t < sizeResultBufferICSM; t++)
-                                        {
-                                            var pointForCalcFsICSM = new Point()
-                                            {
-                                                Longitude = pointEarthGeometricsResultICSM[t].Longitude,
-                                                Latitude = pointEarthGeometricsResultICSM[t].Latitude
-                                            };
-
-                                            var adm = idwmService.GetADMByPoint(new IdwmDataModel.Point()
-                                            {
-                                                Longitude_dec = pointForCalcFsICSM.Longitude,
-                                                Latitude_dec = pointForCalcFsICSM.Latitude
-                                            });
-                                            if (!admPotentiallyAffected_Broadcast.Contains(adm))
-                                            {
-                                                // формирование очередного AffectedADMResult
-                                                var affectedADMResTemp = new AffectedADMResult();
-                                                affectedADMResTemp.ADM = adm;
-                                                affectedADMResTemp.AffectedServices = triggerFS.StaClass;
-                                                affectedADMResTemp.TypeAffected = "Broadcast";
-                                                listAffectedADMResults.Add(affectedADMResTemp);
-
-                                                admPotentiallyAffected_Broadcast.Add(adm);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        //////////////////////////////////////////////////////////////////////////////////////////////////
-                        ////
-                        ///     3.Выбор присвоений других служб, которые расположены в контуре 1000 км
-                        ////    А) Расматриваються только администрации полученные в п.1
-                        ///
-                        /////////////////////////////////////////////////////////////////////////////////////////////////////
-                        //поиск в БД BRIFIC по службе, администрации и частоте сведений по присвоениям, с которыми  может пересекаться Assignments или Allotment
-                        var fmtvTerra = new List<FmtvTerra>();
-                        if (admPotentiallyAffected_1000.Count > 0)
-                        {
-                            for (int n = 0; n < admPotentiallyAffected_1000.Count; n++)
-                            {
-                                var admTemp = admPotentiallyAffected_1000[n];
-
-                                for (int j = 0; j < thresholdFieldStrengthsAnotherServices.Count; j++)
-                                {
-                                    var triggerInformationTemp = thresholdFieldStrengthsAnotherServices[j];
-
-                                    var freqTemp_MHz = triggerInformationTemp.Freq_MHz;
-
-                                    fmtvTerra.AddRange(LoadDataBrific.LoadBroadcastingService_TDAB(admTemp, freqTemp_MHz));
-                                    fmtvTerra.AddRange(LoadDataBrific.LoadBroadcastingService_DVBT(admTemp, freqTemp_MHz));
-                                    fmtvTerra.AddRange(LoadDataBrific.LoadBroadcastingServiceAnalog_TV(admTemp, freqTemp_MHz));
-                                    fmtvTerra.AddRange(LoadDataBrific.LoadBroadcastingService_NV(admTemp, freqTemp_MHz));
-                                    fmtvTerra.AddRange(LoadDataBrific.LoadBroadcastingService_NR(admTemp, freqTemp_MHz));
-                                    fmtvTerra.AddRange(LoadDataBrific.LoadBroadcastingService_NS(admTemp, freqTemp_MHz));
-                                    fmtvTerra.AddRange(LoadDataBrific.LoadBroadcastingService_NT(admTemp, freqTemp_MHz));
-                                    fmtvTerra.AddRange(LoadDataBrific.LoadBroadcastingService_NA(admTemp, freqTemp_MHz));
-                                    fmtvTerra.AddRange(LoadDataBrific.LoadBroadcastingService_NB(admTemp, freqTemp_MHz));
-                                    fmtvTerra.AddRange(LoadDataBrific.LoadBroadcastingService_XN(admTemp, freqTemp_MHz));
-                                    fmtvTerra.AddRange(LoadDataBrific.LoadBroadcastingService_YN(admTemp, freqTemp_MHz));
-                                    fmtvTerra.AddRange(LoadDataBrific.LoadBroadcastingService_ZC(admTemp, freqTemp_MHz));
-                                    fmtvTerra.AddRange(LoadDataBrific.LoadNavigationServices_XG(admTemp, freqTemp_MHz));
-                                    fmtvTerra.AddRange(LoadDataBrific.LoadNavigationServices_AB(admTemp, freqTemp_MHz));
-                                    fmtvTerra.AddRange(LoadDataBrific.LoadNavigationServices_AA8(admTemp, freqTemp_MHz));
-                                    fmtvTerra.AddRange(LoadDataBrific.LoadNavigationServices_BD(admTemp, freqTemp_MHz));
-                                    fmtvTerra.AddRange(LoadDataBrific.LoadNavigationServices_BA(admTemp, freqTemp_MHz));
-                                    fmtvTerra.AddRange(LoadDataBrific.LoadFixedServices_FF(admTemp, freqTemp_MHz));
-                                    fmtvTerra.AddRange(LoadDataBrific.LoadFixedServices_FN(admTemp, freqTemp_MHz));
-                                    fmtvTerra.AddRange(LoadDataBrific.LoadFixedServices_FK(admTemp, freqTemp_MHz));
-                                    fmtvTerra.AddRange(LoadDataBrific.LoadMobileServices_MU(admTemp, freqTemp_MHz));
-                                    fmtvTerra.AddRange(LoadDataBrific.LoadMobileServices_M1_RA(admTemp, freqTemp_MHz));
-                                    fmtvTerra.AddRange(LoadDataBrific.LoadMobileServices_M2(admTemp, freqTemp_MHz));
-                                    fmtvTerra.AddRange(LoadDataBrific.LoadMobileServices_XA(admTemp, freqTemp_MHz));
-                                    fmtvTerra.AddRange(LoadDataBrific.LoadMobileServices_XM(admTemp, freqTemp_MHz));
-                                    fmtvTerra.AddRange(LoadDataBrific.LoadMobileServices_MA(admTemp, freqTemp_MHz));
-                                    fmtvTerra.AddRange(LoadDataBrific.LoadMobileServices_MT(admTemp, freqTemp_MHz));
-
-
-
-                                    // Определение пороговых напряженностей для защиты служб в том числе радиовещательной службы
-                                    // входными данными является массив полученных на пред. шаге присвоений из БРИФИК, полученных в виде массва FmtvTerra[]
-                                    // выходными данными будет набор пороговых значений напряженностей поля для затронутых служб по заданной частоте
-                                    var thresholdFieldStrengthsByFmtvTerraAnotherServices = ThresholdFS.GetThresholdFieldStrengthByFmtvTerra(fmtvTerra.ToArray(), TypeThresholdFS.All);
-
-                                    for (int b = 0; b < thresholdFieldStrengthsByFmtvTerraAnotherServices.Length; b++)
-                                    {
-
-                                        var triggerInformation = thresholdFieldStrengthsByFmtvTerraAnotherServices[b];
-
-                                        var freqMHz = triggerInformation.Freq_MHz;
-
-
-                                        var contourForStationByTriggerFieldStrengthsArgs = new ContourForStationByTriggerFieldStrengthsArgs()
-                                        {
-                                            Step_deg = ge06CalcData.Ge06TaskParameters.AzimuthStep_deg.Value,
-                                            TriggerFieldStrength = triggerInformation.ThresholdFS,
-                                            BaryCenter = pointEarthGeometricBarycenter
-                                        };
-
-
-
-
-                                        // Модель распространения 1546, процент территории 50, процент времени c таблиц пороговых значений, высота абонента c таблиц пороговых значений
-                                        var propModel = ge06CalcData.PropagationModel;
-                                        GE06PropagationModel.GetPropagationModelForFindAffectedADM(ref propModel, 50, triggerInformation.Time_pc);
-                                        ge06CalcData.PropagationModel = propModel;
-
-                                        earthGeometricService.CreateContourForStationByTriggerFieldStrengths((destinationPoint) => GE06CalcContoursByFS.CalcFieldStrengthICSM(destinationPoint, ge06CalcData, pointEarthGeometricPool, iterationHandlerBroadcastingFieldStrengthCalcData, iterationHandlerFieldStrengthCalcData, poolSite, transformation, taskContext, gn06Service), in contourForStationByTriggerFieldStrengthsArgs, ref pointEarthGeometricsResultAffectedICSM, out int sizeResultBufferRecalcICSM);
-                                        if (sizeResultBufferRecalcICSM > 0)
-                                        {
-
-                                            /// проверка попадания найденных ранее точек "fmtvTerra" из БРИФИК для заданной администрации в контур pointEarthGeometricsResultAffectedICSM
-                                            /// если есть хотябы одна точка некоторой адиминистрации, которая попадает в этот контур pointEarthGeometricsResultAffectedICSM, то флагу isFindAffectedPointsInContour выставляем true
-                                            string typeAffected = "";
-                                            for (int m = 0; m < fmtvTerra.Count; m++)
-                                            {
-
-                                                var countourPointsForCheckHittingArgs = new PointEarthGeometric[sizeResultBufferRecalcICSM];
-                                                for (int t = 0; t < sizeResultBufferRecalcICSM; t++)
-                                                {
-                                                    countourPointsForCheckHittingArgs[t] = new PointEarthGeometric()
-                                                    {
-                                                        Longitude = pointEarthGeometricsResultAffectedICSM[t].Longitude,
-                                                        Latitude = pointEarthGeometricsResultAffectedICSM[t].Latitude,
-                                                        CoordinateUnits = CoordinateUnits.deg
-                                                    };
-                                                }
-
-                                                var checkHittingArgs = new CheckHittingArgs()
-                                                {
-                                                    Poligon = countourPointsForCheckHittingArgs,
-                                                    Point = new PointEarthGeometric()
-                                                    {
-                                                        Longitude = fmtvTerra[m].Longitude_dec,
-                                                        Latitude = fmtvTerra[m].Latitude_dec,
-                                                        CoordinateUnits = CoordinateUnits.deg
-                                                    }
-                                                };
-
-                                                // если точка  fmtvTerra[m].long_dec, fmtvTerra[m].lat_dec принадлежит контуру  pointEarthGeometricsResultAffectedICSM
-                                                // то переменной typeAffected присваивается значение "Assignment"
-                                                if (earthGeometricService.CheckHitting(in checkHittingArgs))
-                                                {
-                                                    typeAffected = "Assignment";
-                                                    break;
-                                                }
-                                            }
-
-
-
-
-
-                                            var countoursPoints = new CountoursPoint[sizeResultBufferRecalcICSM];
-                                            for (int t = 0; t < sizeResultBufferRecalcICSM; t++)
-                                            {
-                                                // нахождение администрации к которой принадлежит точка контура pointEarthGeometricsResultAffectedICSM
-                                                var adminRecalc = idwmService.GetADMByPoint(new IdwmDataModel.Point()
-                                                {
-                                                    Longitude_dec = pointEarthGeometricsResultAffectedICSM[t].Longitude,
-                                                    Latitude_dec = pointEarthGeometricsResultAffectedICSM[t].Latitude
-                                                });
-
-                                                // если точка контура pointEarthGeometricsResultAffectedICSM принадлежит администрации admTemp
-                                                // то переменной typeAffected присваивается значение "Territory"
-                                                if (adminRecalc == admTemp)
-                                                {
-                                                    if (typeAffected != "Assignment")
-                                                    {
-                                                        typeAffected = "Territory";
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    // если точка контура не пересекает администрацию admTemp,
-                                                    //тогда рассматривается следующая точка контура
-                                                    if (typeAffected != "Assignment")
-                                                    {
-                                                        continue;
-                                                    }
-                                                }
-
-
-                                                countoursPoints[t] = new CountoursPoint();
-                                                var pointForCalcFs = new Point()
-                                                {
-                                                    Longitude = pointEarthGeometricsResultAffectedICSM[t].Longitude,
-                                                    Latitude = pointEarthGeometricsResultAffectedICSM[t].Latitude
-                                                };
-
-                                                //propModel = this._ge06CalcData.PropagationModel;
-                                                //GetPropagationModelForConformityCheck(ref propModel, 50, triggerInformation.Time_pc, triggerInformation.Height_m);
-                                                //ge06CalcData.PropagationModel = propModel;
-
-                                                // Расчет напряженности поля в каждой точке, полученной для контура в п 6: для BroadcastingAssignment[] +BroadcastingAllotment(ICSM) используя функцию 2.2.(Модель распространения 1546, процент территории 50, процент времени 1, высота абонента 10м).
-                                                //countoursPoints[t].FS = CalcFieldStrengthInPointGE06(ge06CalcData, in pointForCalcFs, BroadcastingTypeContext.Icsm);
-
-                                                countoursPoints[t].FS = (int)triggerInformation.ThresholdFS;
-                                                countoursPoints[t].PointType = PointType.Affected;
-
-
-                                                countoursPoints[t].Distance = 1000;
-                                                countoursPoints[t].Lon_DEC = pointForCalcFs.Longitude;
-                                                countoursPoints[t].Lat_DEC = pointForCalcFs.Latitude;
-                                                //countoursPoints[t].Height = ??????????
-
-
-                                                var adm = idwmService.GetADMByPoint(new IdwmDataModel.Point()
-                                                {
-                                                    Longitude_dec = pointForCalcFs.Longitude,
-                                                    Latitude_dec = pointForCalcFs.Latitude
-                                                });
-
-
-                                                dicCountoursPointsByICSM.Add(countoursPoints[t], adm);
-
-
-                                            }
-
-                                            if (!string.IsNullOrEmpty(typeAffected))
-                                            {
-                                                if (listAffectedADMResults.Find(x => x.TypeAffected == typeAffected && x.ADM == admTemp && x.AffectedServices.Contains(triggerInformation.StaClass)) == null)
-                                                {
-                                                    // формирование очередного AffectedADMResult
-                                                    var affectedADMResTemp = new AffectedADMResult();
-                                                    affectedADMResTemp.ADM = admTemp;
-                                                    affectedADMResTemp.AffectedServices = triggerInformation.StaClass;
-                                                    affectedADMResTemp.TypeAffected = typeAffected;
-                                                    listAffectedADMResults.Add(affectedADMResTemp);
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    finally
-                    {
-                        if (pointEarthGeometricsResult != null)
-                        {
-                            pointEarthGeometricPool.Put(pointEarthGeometricsResult);
-                        }
-                        if (pointEarthGeometricsResultICSM != null)
-                        {
-                            pointEarthGeometricPool.Put(pointEarthGeometricsResultICSM);
-                        }
-                        if (pointEarthGeometricsResultAffectedICSM != null)
-                        {
-                            pointEarthGeometricPool.Put(pointEarthGeometricsResultAffectedICSM);
-                        }
-                    }
-                }
-            }
-
-            // формирование результата ContoursResult для ICSM
-            var lstCountoursPointsICSM = dicCountoursPointsByICSM.ToList();
-            if (lstCountoursPointsICSM != null)
-            {
-
-                var distinctAdmByAdm = lstCountoursPointsICSM.Select(c => c.Value).Distinct();
-                if (distinctAdmByAdm != null)
-                {
-                    var arrDistinctAdmByDistance = distinctAdmByAdm.ToArray();
-                    for (int k = 0; k < arrDistinctAdmByDistance.Length; k++)
-                    {
-                        var listContourPoints = lstCountoursPointsICSM.FindAll(c => c.Value == arrDistinctAdmByDistance[k]);
-                        if (listContourPoints != null)
-                        {
-
-                            var contourType = ContourType.Unknown;
-
-                            var allPoints = listContourPoints.Select(c => c.Key).ToList();
-
-                            if (allPoints.Find(x => x.PointType == PointType.Affected) != null)
-                            {
-                                contourType = ContourType.Affected;
-                            }
-                            else
-                            {
-                                contourType = ContourType.Correct;
-                            }
-
-                            lstContoursResults.Add(new ContoursResult()
-                            {
-                                AffectedADM = arrDistinctAdmByDistance[k],
-                                ContourType = contourType,
-                                CountoursPoints = allPoints.ToArray(),
-                                //Distance = distances[i],
-                                PointsCount = allPoints.Count
-                            });
-                        }
-                    }
-                }
-            }
-
-
-            ge06CalcResult.AffectedADMResult = listAffectedADMResults.ToArray();
-            ge06CalcResult.ContoursResult = lstContoursResults.ToArray();
             GE06FillData.FillAllotmentOrAssignmentResult(ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM, ref ge06CalcResult);
         }
     }
-
-
 }

@@ -53,69 +53,67 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
 
 
-
-
         ///	Системы подвижной службы 
         ///	NV
-        public static FmtvTerra[] LoadBroadcastingService_NV(string adm, double freq)
+        public static FmtvTerra[] LoadBroadcastingService_NV(string adm, double minFreq_MHz, double maxFreq_MHz, string staClass)
         {
-            return DbSqLite.LoadBroadcastingService_NV(adm, freq);
+            return DbSqLite.LoadBroadcastingService_NV(adm, minFreq_MHz, maxFreq_MHz, staClass);
         }
 
         ///	Системы подвижной службы 
         ///	NR
-        public static FmtvTerra[] LoadBroadcastingService_NR(string adm, double freq)
+        public static FmtvTerra[] LoadBroadcastingService_NR(string adm, double minFreq_MHz, double maxFreq_MHz, string staClass)
         {
-            return DbSqLite.LoadBroadcastingService_NR(adm, freq);
+            return DbSqLite.LoadBroadcastingService_NR(adm, minFreq_MHz, maxFreq_MHz, staClass);
         }
 
         ///	Системы подвижной службы 
         ///	NS
-        public static FmtvTerra[] LoadBroadcastingService_NS(string adm, double freq)
+        public static FmtvTerra[] LoadBroadcastingService_NS(string adm, double minFreq_MHz, double maxFreq_MHz, string staClass)
         {
-            return DbSqLite.LoadBroadcastingService_NS(adm, freq);
+            return DbSqLite.LoadBroadcastingService_NS(adm, minFreq_MHz, maxFreq_MHz, staClass);
         }
 
         ///	Системы подвижной службы 
         ///	NT
-        public static FmtvTerra[] LoadBroadcastingService_NT(string adm, double freq)
+        public static FmtvTerra[] LoadBroadcastingService_NT(string adm, double minFreq_MHz, double maxFreq_MHz, string staClass)
         {
-            return DbSqLite.LoadBroadcastingService_NT(adm, freq);
+            return DbSqLite.LoadBroadcastingService_NT(adm, minFreq_MHz, maxFreq_MHz, staClass);
         }
 
         ///	Системы подвижной службы 
         ///	NA
-        public static FmtvTerra[] LoadBroadcastingService_NA(string adm, double freq)
+        public static FmtvTerra[] LoadBroadcastingService_NA(string adm, double minFreq_MHz, double maxFreq_MHz, string staClass)
         {
-            return DbSqLite.LoadBroadcastingService_NA(adm, freq);
+            return DbSqLite.LoadBroadcastingService_NA(adm, minFreq_MHz, maxFreq_MHz, staClass);
         }
 
         ///	Системы подвижной службы 
         ///	NB
-        public static FmtvTerra[] LoadBroadcastingService_NB(string adm, double freq)
+        public static FmtvTerra[] LoadBroadcastingService_NB(string adm, double minFreq_MHz, double maxFreq_MHz, string staClass)
         {
-            return DbSqLite.LoadBroadcastingService_NB(adm, freq);
+            return DbSqLite.LoadBroadcastingService_NB(adm, minFreq_MHz, maxFreq_MHz, staClass);
         }
 
         ///	Системы подвижной службы 
         ///	XN
-        public static FmtvTerra[] LoadBroadcastingService_XN(string adm, double freq)
+        public static FmtvTerra[] LoadBroadcastingService_XN(string adm, double minFreq_MHz, double maxFreq_MHz, string staClass)
         {
-            return DbSqLite.LoadBroadcastingService_XN(adm, freq);
+            return DbSqLite.LoadBroadcastingService_XN(adm, minFreq_MHz, maxFreq_MHz, staClass);
         }
 
         ///	Системы подвижной службы 
         ///	YN
-        public static FmtvTerra[] LoadBroadcastingService_YN(string adm, double freq)
+        public static FmtvTerra[] LoadBroadcastingService_YN(string adm, double minFreq_MHz, double maxFreq_MHz, string staClass)
         {
-            return DbSqLite.LoadBroadcastingService_YN(adm, freq);
+            return DbSqLite.LoadBroadcastingService_YN(adm, minFreq_MHz, maxFreq_MHz, staClass);
         }
 
         ///	Системы подвижной службы 
         ///	ZC
-        public static FmtvTerra[] LoadBroadcastingService_ZC(string adm, double freq)
+        public static FmtvTerra[] LoadBroadcastingService_ZC(string adm, double minFreq_MHz, double maxFreq_MHz, string staClass)
         {
-            return DbSqLite.LoadBroadcastingService_ZC(adm, freq);
+            return DbSqLite.LoadBroadcastingService_ZC(adm, minFreq_MHz, maxFreq_MHz, staClass);
         }
 
 
@@ -126,37 +124,37 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
         ///	Системы радионавигационной и воздушной радионавигационной служб
         ///	XG
-        public static FmtvTerra[] LoadNavigationServices_XG(string adm, double freq)
+        public static FmtvTerra[] LoadNavigationServices_XG(string adm, double minFreq_MHz, double maxFreq_MHz, string staClass)
         {
-            return DbSqLite.LoadNavigationServices_XG(adm, freq);
+            return DbSqLite.LoadNavigationServices_XG(adm, minFreq_MHz, maxFreq_MHz, staClass);
         }
 
         ///	Системы радионавигационной и воздушной радионавигационной служб
         ///	AB
-        public static FmtvTerra[] LoadNavigationServices_AB(string adm, double freq)
+        public static FmtvTerra[] LoadNavigationServices_AB(string adm, double minFreq_MHz, double maxFreq_MHz, string staClass)
         {
-            return DbSqLite.LoadNavigationServices_AB(adm, freq);
+            return DbSqLite.LoadNavigationServices_AB(adm, minFreq_MHz, maxFreq_MHz, staClass);
         }
 
         ///	Системы радионавигационной и воздушной радионавигационной служб
         ///	AA8
-        public static FmtvTerra[] LoadNavigationServices_AA8(string adm, double freq)
+        public static FmtvTerra[] LoadNavigationServices_AA8(string adm, double minFreq_MHz, double maxFreq_MHz, string staClass)
         {
-            return DbSqLite.LoadNavigationServices_AA8(adm, freq);
+            return DbSqLite.LoadNavigationServices_AA8(adm, minFreq_MHz, maxFreq_MHz, staClass);
         }
 
         ///	Системы радионавигационной и воздушной радионавигационной служб
         ///	BD
-        public static FmtvTerra[] LoadNavigationServices_BD(string adm, double freq)
+        public static FmtvTerra[] LoadNavigationServices_BD(string adm, double minFreq_MHz, double maxFreq_MHz, string staClass)
         {
-            return DbSqLite.LoadNavigationServices_BD(adm, freq);
+            return DbSqLite.LoadNavigationServices_BD(adm, minFreq_MHz, maxFreq_MHz, staClass);
         }
 
         ///	Системы радионавигационной и воздушной радионавигационной служб
         ///	BA
-        public static FmtvTerra[] LoadNavigationServices_BA(string adm, double freq)
+        public static FmtvTerra[] LoadNavigationServices_BA(string adm, double minFreq_MHz, double maxFreq_MHz, string staClass)
         {
-            return DbSqLite.LoadNavigationServices_BA(adm, freq);
+            return DbSqLite.LoadNavigationServices_BA(adm, minFreq_MHz, maxFreq_MHz, staClass);
         }
 
 
@@ -167,24 +165,24 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
         ///	Системы фиксированной службы
         ///	FF
-        public static FmtvTerra[] LoadFixedServices_FF(string adm, double freq)
+        public static FmtvTerra[] LoadFixedServices_FF(string adm, double minFreq_MHz, double maxFreq_MHz, string staClass)
         {
-            return DbSqLite.LoadFixedServices_FF(adm, freq);
+            return DbSqLite.LoadFixedServices_FF(adm, minFreq_MHz, maxFreq_MHz, staClass);
         }
 
 
         ///	Системы фиксированной службы
         ///	FN
-        public static FmtvTerra[] LoadFixedServices_FN(string adm, double freq)
+        public static FmtvTerra[] LoadFixedServices_FN(string adm, double minFreq_MHz, double maxFreq_MHz, string staClass)
         {
-            return DbSqLite.LoadFixedServices_FN(adm, freq);
+            return DbSqLite.LoadFixedServices_FN(adm, minFreq_MHz, maxFreq_MHz, staClass);
         }
 
         ///	Системы фиксированной службы
         ///	FK
-        public static FmtvTerra[] LoadFixedServices_FK(string adm, double freq)
+        public static FmtvTerra[] LoadFixedServices_FK(string adm, double minFreq_MHz, double maxFreq_MHz, string staClass)
         {
-            return DbSqLite.LoadFixedServices_FK(adm, freq);
+            return DbSqLite.LoadFixedServices_FK(adm, minFreq_MHz, maxFreq_MHz, staClass);
         }
 
 
@@ -198,18 +196,27 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         /// Системы подвижной службы
         /// MU
         /// 
-        public static FmtvTerra[] LoadMobileServices_MU(string adm, double freq)
+        public static FmtvTerra[] LoadMobileServices_MU(string adm, double minFreq_MHz, double maxFreq_MHz, string staClass)
         {
-            return DbSqLite.LoadMobileServices_MU(adm, freq);
+            return DbSqLite.LoadMobileServices_MU(adm, minFreq_MHz, maxFreq_MHz, staClass);
         }
 
         //
         /// Системы подвижной службы
-        /// M1 и RA
+        /// M1 
         /// 
-        public static FmtvTerra[] LoadMobileServices_M1_RA(string adm, double freq)
+        public static FmtvTerra[] LoadMobileServices_M1(string adm, double minFreq_MHz, double maxFreq_MHz, string staClass)
         {
-            return DbSqLite.LoadMobileServices_M1_RA(adm, freq);
+            return DbSqLite.LoadMobileServices_M1(adm, minFreq_MHz, maxFreq_MHz, staClass);
+        }
+
+        //
+        /// Системы подвижной службы
+        /// RA
+        /// 
+        public static FmtvTerra[] LoadMobileServices_RA(string adm, double minFreq_MHz, double maxFreq_MHz, string staClass)
+        {
+            return DbSqLite.LoadMobileServices_RA(adm, minFreq_MHz, maxFreq_MHz, staClass);
         }
 
 
@@ -217,45 +224,45 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         /// Системы подвижной службы
         /// M2
         /// 
-        public static FmtvTerra[] LoadMobileServices_M2(string adm, double freq)
+        public static FmtvTerra[] LoadMobileServices_M2(string adm, double minFreq_MHz, double maxFreq_MHz, string staClass)
         {
-            return DbSqLite.LoadMobileServices_M2(adm, freq);
+            return DbSqLite.LoadMobileServices_M2(adm, minFreq_MHz, maxFreq_MHz, staClass);
         }
 
         //
         /// Системы подвижной службы
         /// XA
         /// 
-        public static FmtvTerra[] LoadMobileServices_XA(string adm, double freq)
+        public static FmtvTerra[] LoadMobileServices_XA(string adm, double minFreq_MHz, double maxFreq_MHz, string staClass)
         {
-            return DbSqLite.LoadMobileServices_XA(adm, freq);
+            return DbSqLite.LoadMobileServices_XA(adm, minFreq_MHz, maxFreq_MHz, staClass);
         }
 
         //
         /// Системы подвижной службы
         /// XM
         /// 
-        public static FmtvTerra[] LoadMobileServices_XM(string adm, double freq)
+        public static FmtvTerra[] LoadMobileServices_XM(string adm, double minFreq_MHz, double maxFreq_MHz, string staClass)
         {
-            return DbSqLite.LoadMobileServices_XM(adm, freq);
+            return DbSqLite.LoadMobileServices_XM(adm, minFreq_MHz, maxFreq_MHz, staClass);
         }
 
         //
         /// Системы подвижной службы
         /// MA
         /// 
-        public static FmtvTerra[] LoadMobileServices_MA(string adm, double freq)
+        public static FmtvTerra[] LoadMobileServices_MA(string adm, double minFreq_MHz, double maxFreq_MHz, string staClass)
         {
-            return DbSqLite.LoadMobileServices_MA(adm, freq);
+            return DbSqLite.LoadMobileServices_MA(adm, minFreq_MHz, maxFreq_MHz, staClass);
         }
 
         //
         /// Системы подвижной службы
         /// MT
         /// 
-        public static FmtvTerra[] LoadMobileServices_MT(string adm, double freq)
+        public static FmtvTerra[] LoadMobileServices_MT(string adm, double minFreq_MHz, double maxFreq_MHz, string staClass)
         {
-            return DbSqLite.LoadMobileServices_MT(adm, freq);
+            return DbSqLite.LoadMobileServices_MT(adm, minFreq_MHz, maxFreq_MHz, staClass);
         }
 
     }
