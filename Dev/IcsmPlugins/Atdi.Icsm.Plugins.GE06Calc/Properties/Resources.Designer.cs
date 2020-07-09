@@ -286,6 +286,15 @@ namespace Atdi.Icsm.Plugins.GE06Calc.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Export to HTZ.
+        /// </summary>
+        public static string ExportToHTZ {
+            get {
+                return ResourceManager.GetString("ExportToHTZ", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Find affected ADM Ann. 4 Sec. I.
         /// </summary>
         public static string FindAffected {
