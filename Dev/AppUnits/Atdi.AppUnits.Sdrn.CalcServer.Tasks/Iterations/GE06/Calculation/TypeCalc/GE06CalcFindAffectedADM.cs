@@ -10,6 +10,8 @@ using Atdi.Contracts.Sdrn.DeepServices.EarthGeometry;
 using Atdi.Contracts.Sdrn.DeepServices.GN06;
 using Idwm = Atdi.Contracts.Sdrn.DeepServices.IDWM;
 using IdwmDataModel = Atdi.DataModels.Sdrn.DeepServices.IDWM;
+using Atdi.DataModels.Sdrn.CalcServer;
+using Atdi.DataModels.Sdrn.CalcServer.Entities;
 
 
 namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
@@ -40,6 +42,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
             if (ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM == null)
             {
+                taskContext.SendEvent(new CalcResultEvent
+                {
+                    Level = CalcResultEventLevel.Error,
+                    Context = "Ge06CalcIteration",
+                    Message = "Input parameters BroadcastingContextICSM is null!"
+                });
                 throw new Exception("Input parameters BroadcastingContextICSM is null!");
             }
 
@@ -56,6 +64,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 {
                     message += $"The following Alotment are not validated: {notValidBroadcastingAllotment}";
                 }
+                taskContext.SendEvent(new CalcResultEvent
+                {
+                    Level = CalcResultEventLevel.Error,
+                    Context = "Ge06CalcIteration",
+                    Message = message
+                });
                 throw new Exception(message);
             }
 

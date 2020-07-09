@@ -73,15 +73,27 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                     }
                                                 }
 
-                                                var allPoints = listContourPoints.ToArray();
+                                                var arrCountoursPoint = new CountoursPoint[listContourPoints.Count];
+                                                for (int x = 0; x < listContourPoints.Count; x++)
+                                                {
+                                                    arrCountoursPoint[x] = new CountoursPoint()
+                                                    {
+                                                        Distance = listContourPoints[x].Distance,
+                                                        FS = listContourPoints[x].FS,
+                                                        Height = listContourPoints[x].Height,
+                                                        Lat_DEC = listContourPoints[x].Lat_DEC,
+                                                        Lon_DEC = listContourPoints[x].Lon_DEC,
+                                                        PointType = listContourPoints[x].PointType
+                                                    };
+                                                }
 
                                                 contoursResults[index] = new ContoursResult()
                                                 {
                                                     AffectedADM = arrDistinctAdmByFieldStrength[k],
                                                     ContourType = contourType,
-                                                    CountoursPoints = allPoints,
+                                                    CountoursPoints = arrCountoursPoint,
                                                     FS = fieldStrength[i],
-                                                    PointsCount = allPoints.Length
+                                                    PointsCount = arrCountoursPoint.Length
                                                 };
 
                                                 index++;

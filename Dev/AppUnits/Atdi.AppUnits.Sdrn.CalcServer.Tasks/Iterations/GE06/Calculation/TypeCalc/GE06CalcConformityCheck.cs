@@ -11,6 +11,8 @@ using Atdi.Contracts.Sdrn.DeepServices.EarthGeometry;
 using Atdi.Contracts.Sdrn.DeepServices.GN06;
 using Idwm = Atdi.Contracts.Sdrn.DeepServices.IDWM;
 using IdwmDataModel = Atdi.DataModels.Sdrn.DeepServices.IDWM;
+using Atdi.DataModels.Sdrn.CalcServer;
+using Atdi.DataModels.Sdrn.CalcServer.Entities;
 
 namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 {
@@ -43,22 +45,22 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
             var pointEarthGeometricsResult = default(PointEarthGeometric[]);
             var countoursPointExtendedBuffer = default(CountoursPointExtended[]);
-            var contoursResultBufferBRIFIC = default(ContoursResult[]);
-            var contoursResultBufferICSM = default(ContoursResult[]);
+            //var contoursResultBufferBRIFIC = default(ContoursResult[]);
+            //var contoursResultBufferICSM = default(ContoursResult[]);
 
-            var contoursResultBufferFSBRIFIC = default(ContoursResult[]);
-            var contoursResultBufferFSICSM = default(ContoursResult[]);
+            //var contoursResultBufferFSBRIFIC = default(ContoursResult[]);
+            //var contoursResultBufferFSICSM = default(ContoursResult[]);
 
 
-            var dicCountoursPointsByBRIFIC = new Dictionary<CountoursPoint, string>();
-            var dicCountoursPointsByICSM = new Dictionary<CountoursPoint, string>();
-
-            var lstContoursResultsByICSM = new List<ContoursResult>();
-            var lstContoursResultsByBRIFIC = new List<ContoursResult>();
-            var lstContoursResults = new List<ContoursResult>();
 
             if (((ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM != null) && (ge06CalcData.Ge06TaskParameters.BroadcastingContext.broadcastingContextBRIFIC != null)) == false)
             {
+                taskContext.SendEvent(new CalcResultEvent
+                {
+                    Level = CalcResultEventLevel.Error,
+                    Context = "Ge06CalcIteration",
+                    Message = "Incomplete ICSM data or BRIFIC"
+                });
                 throw new Exception("Incomplete ICSM data or BRIFIC");
             }
 
@@ -93,6 +95,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
             if (!string.IsNullOrEmpty(message))
             {
+                taskContext.SendEvent(new CalcResultEvent
+                {
+                    Level = CalcResultEventLevel.Error,
+                    Context = "Ge06CalcIteration",
+                    Message = message
+                });
                 throw new Exception(message);
             }
 
@@ -260,6 +268,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 float ProsentTime = 1;
                 float ProsentTerr = 50;
                 int Height = 10;
+                int indexResult = 0;
 
                 try
                 {
@@ -267,10 +276,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
                     pointEarthGeometricsResult = pointEarthGeometricPool.Take();
                     countoursPointExtendedBuffer = countoursPointExtendedPool.Take();
-                    contoursResultBufferBRIFIC = contoursResultPool.Take();
-                    contoursResultBufferICSM = contoursResultPool.Take();
-                    contoursResultBufferFSBRIFIC = contoursResultPool.Take();
-                    contoursResultBufferFSICSM = contoursResultPool.Take();
+                    //contoursResultBufferBRIFIC = contoursResultPool.Take();
+                    //contoursResultBufferICSM = contoursResultPool.Take();
+                    //contoursResultBufferFSBRIFIC = contoursResultPool.Take();
+                    //contoursResultBufferFSICSM = contoursResultPool.Take();
 
                     //установка модели распространения
                     var propModel = ge06CalcData.PropagationModel;
@@ -342,7 +351,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].administration = adm;
                             countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].broadcastingTypeContext = BroadcastingTypeContext.Brific;
                             countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].broadcastingTypeCalculation = BroadcastingTypeCalculation.Distance;
-
+                            countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].Id = indexResult;
                             indexForCountoursPointExtendedBuffer++;
 
 
@@ -359,14 +368,15 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].Lat_DEC = pointForCalcFS.Latitude;
                             countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].Height = Height;
                             countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].FS = (int)ICSMFS;
-                            if (BRIFICFS >= ICSMFS) { countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].PointType = PointType.Correct; }
+                            if (BRIFICFS >= ICSMFS-0.1) { countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].PointType = PointType.Correct; }
                             else { countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].PointType = PointType.Affected; }
                             countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].administration = adm;
                             countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].broadcastingTypeContext = BroadcastingTypeContext.Icsm;
                             countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].broadcastingTypeCalculation = BroadcastingTypeCalculation.Distance;
-
+                            countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].Id = indexResult;
                             indexForCountoursPointExtendedBuffer++;
                         }
+                        indexResult++;
                     }
 
                     //построение контуров напряженности поля (п 5, 6,7)
@@ -420,7 +430,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                     countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].administration = adm;
                                     countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].broadcastingTypeContext = BroadcastingTypeContext.Brific;
                                     countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].broadcastingTypeCalculation = BroadcastingTypeCalculation.FieldStrength;
-
+                                    countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].Id = indexResult;
                                     indexForCountoursPointExtendedBuffer++;
 
                                     // предварительное заполнение результатов ICSM
@@ -429,105 +439,19 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                     countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].Lat_DEC = pointForCalcFsBRIFIC.Latitude;
                                     countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].Height = Height;
                                     countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].FS = (int)ICSMFS;
-                                    if (triggerFS >= ICSMFS) { countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].PointType = PointType.Correct; }
+                                    if (triggerFS >= ICSMFS-0.1) { countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].PointType = PointType.Correct; }
                                     else { countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].PointType = PointType.Affected; }
                                     countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].administration = adm;
                                     countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].broadcastingTypeContext = BroadcastingTypeContext.Icsm;
                                     countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].broadcastingTypeCalculation = BroadcastingTypeCalculation.FieldStrength;
-
+                                    countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].Id = indexResult;
                                     indexForCountoursPointExtendedBuffer++;
                                 }
+                                indexResult++;
                             }
                         }
                     }
-
-                    // формирование результата по ContoursResult для BRIFIC (по дистанциям)
-                    var lstCountoursPointExtendedsBRIFIC = new List<CountoursPointExtended>();
-                    for (int f = 0; f < indexForCountoursPointExtendedBuffer; f++)
-                    {
-                        if ((countoursPointExtendedBuffer[f].broadcastingTypeContext == BroadcastingTypeContext.Brific) && (countoursPointExtendedBuffer[f].broadcastingTypeCalculation == BroadcastingTypeCalculation.Distance))
-                        {
-                            lstCountoursPointExtendedsBRIFIC.Add(countoursPointExtendedBuffer[f]);
-                        }
-                    }
-                    FillContoursResultOnDistance.Fill(distances, lstCountoursPointExtendedsBRIFIC.ToArray(), BroadcastingTypeContext.Brific, ref contoursResultBufferBRIFIC, out int sizeBufferContoursResultBRIFIC);
-
-                    // формирование результата по ContoursResult для ICSM (по дистанциям)
-                    var lstCountoursPointExtendedsICSM = new List<CountoursPointExtended>();
-                    for (int f = 0; f < indexForCountoursPointExtendedBuffer; f++)
-                    {
-                        if ((countoursPointExtendedBuffer[f].broadcastingTypeContext == BroadcastingTypeContext.Icsm) && (countoursPointExtendedBuffer[f].broadcastingTypeCalculation == BroadcastingTypeCalculation.Distance))
-                        {
-                            lstCountoursPointExtendedsICSM.Add(countoursPointExtendedBuffer[f]);
-                        }
-                    }
-                    FillContoursResultOnDistance.Fill(distances, lstCountoursPointExtendedsICSM.ToArray(), BroadcastingTypeContext.Icsm, ref contoursResultBufferICSM, out int sizeBufferContoursResultICSM);
-
-
-
-                    // формирование результата по ContoursResult для BRIFIC (по FieldStrength)
-                    var lstCountoursPointExtendedsFieldStrengthBRIFIC = new List<CountoursPointExtended>();
-                    for (int f = 0; f < indexForCountoursPointExtendedBuffer; f++)
-                    {
-                        if ((countoursPointExtendedBuffer[f].broadcastingTypeContext == BroadcastingTypeContext.Brific) && (countoursPointExtendedBuffer[f].broadcastingTypeCalculation == BroadcastingTypeCalculation.FieldStrength))
-                        {
-                            lstCountoursPointExtendedsFieldStrengthBRIFIC.Add(countoursPointExtendedBuffer[f]);
-                        }
-                    }
-                    FillContoursResultOnFS.Fill(arrFieldStrength, lstCountoursPointExtendedsFieldStrengthBRIFIC.ToArray(), BroadcastingTypeContext.Brific, ref contoursResultBufferFSBRIFIC, out int sizeBufferContoursResultFS_BRIFIC);
-
-
-                    // формирование результата по ContoursResult для ICSM (по FieldStrength)
-                    var lstCountoursPointExtendedsFieldStrengthICSM = new List<CountoursPointExtended>();
-                    for (int f = 0; f < indexForCountoursPointExtendedBuffer; f++)
-                    {
-                        if ((countoursPointExtendedBuffer[f].broadcastingTypeContext == BroadcastingTypeContext.Icsm) && (countoursPointExtendedBuffer[f].broadcastingTypeCalculation == BroadcastingTypeCalculation.FieldStrength))
-                        {
-                            lstCountoursPointExtendedsFieldStrengthICSM.Add(countoursPointExtendedBuffer[f]);
-                        }
-                    }
-                    FillContoursResultOnFS.Fill(arrFieldStrength, lstCountoursPointExtendedsFieldStrengthICSM.ToArray(), BroadcastingTypeContext.Icsm, ref contoursResultBufferFSICSM, out int sizeBufferContoursResultFS_ICSM);
-
-                    var sizeAllContours = sizeBufferContoursResultBRIFIC + sizeBufferContoursResultICSM + sizeBufferContoursResultFS_BRIFIC + sizeBufferContoursResultFS_ICSM;
-
-                    if ((sizeAllContours) > 0)
-                    {
-                        int idxRes = 0;
-                        ge06CalcResult.ContoursResult = new ContoursResult[sizeAllContours];
-                        if (sizeBufferContoursResultBRIFIC > 0)
-                        {
-                            for (int f = 0; f < sizeBufferContoursResultBRIFIC; f++)
-                            {
-                                ge06CalcResult.ContoursResult[idxRes] = contoursResultBufferBRIFIC[f];
-                                idxRes++;
-                            }
-                        }
-                        if (sizeBufferContoursResultICSM > 0)
-                        {
-                            for (int f = 0; f < sizeBufferContoursResultICSM; f++)
-                            {
-                                ge06CalcResult.ContoursResult[idxRes] = contoursResultBufferICSM[f];
-                                idxRes++;
-                            }
-                        }
-                        if (sizeBufferContoursResultFS_BRIFIC > 0)
-                        {
-                            for (int f = 0; f < sizeBufferContoursResultFS_BRIFIC; f++)
-                            {
-                                ge06CalcResult.ContoursResult[idxRes] = contoursResultBufferFSBRIFIC[f];
-                                idxRes++;
-                            }
-                        }
-                        if (sizeBufferContoursResultFS_ICSM > 0)
-                        {
-                            for (int f = 0; f < sizeBufferContoursResultFS_ICSM; f++)
-                            {
-                                ge06CalcResult.ContoursResult[idxRes] = contoursResultBufferFSICSM[f];
-                                idxRes++;
-                            }
-                        }
-                    }
-
+                    GetResult(in countoursPointExtendedBuffer, indexForCountoursPointExtendedBuffer, out ge06CalcResult.ContoursResult);
                     ge06CalcResult.AffectedADMResult = FillAffectedADMResult.Fill(ge06CalcResult.ContoursResult, string.Join(",", affectedServices));
                 }
                 finally
@@ -536,26 +460,28 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     {
                         pointEarthGeometricPool.Put(pointEarthGeometricsResult);
                     }
-                    if (contoursResultBufferBRIFIC != null)
+                    if (countoursPointExtendedBuffer!=null)
                     {
-                        contoursResultPool.Put(contoursResultBufferBRIFIC);
+                        countoursPointExtendedPool.Put(countoursPointExtendedBuffer);
                     }
-                    if (contoursResultBufferICSM != null)
-                    {
-                        contoursResultPool.Put(contoursResultBufferICSM);
-                    }
-                    if (contoursResultBufferFSBRIFIC != null)
-                    {
-                        contoursResultPool.Put(contoursResultBufferFSBRIFIC);
-                    }
-                    if (contoursResultBufferFSICSM != null)
-                    {
-                        contoursResultPool.Put(contoursResultBufferFSICSM);
-                    }
-                    if (pointEarthGeometricsResult != null)
-                    {
-                        pointEarthGeometricPool.Put(pointEarthGeometricsResult);
-                    }
+
+                    //if (contoursResultBufferBRIFIC != null)
+                    //{
+                    //    contoursResultPool.Put(contoursResultBufferBRIFIC);
+                    //}
+                    //if (contoursResultBufferICSM != null)
+                    //{
+                    //    contoursResultPool.Put(contoursResultBufferICSM);
+                    //}
+                    //if (contoursResultBufferFSBRIFIC != null)
+                    //{
+                    //    contoursResultPool.Put(contoursResultBufferFSBRIFIC);
+                    //}
+                    //if (contoursResultBufferFSICSM != null)
+                    //{
+                    //    contoursResultPool.Put(contoursResultBufferFSICSM);
+                    //}
+                    
                 }
 
                 var allotmentOrAssignmentResult = new List<AllotmentOrAssignmentResult>();
@@ -568,6 +494,91 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
                 ge06CalcResult.AllotmentOrAssignmentResult = allotmentOrAssignmentResult.ToArray();
             }
+        }
+        private static void GetResult(in CountoursPointExtended[] countoursPointExtendedBuffer, int indexForCountoursPointExtendedBuffer, out ContoursResult[] contoursResult)
+        {
+
+            List<ContoursResult> contoursResultList = new List<ContoursResult>();
+            List<string> admList = new List<string>(); // обычно до до 6 елементов
+            List<int> IdList = new List<int>();// обычно до до 10 елементов
+            List<CountoursPoint> countoursPointsICSMLocal = new List<CountoursPoint>(); // можно через пул после отладки
+            List<CountoursPoint> countoursPointsBRIFICLocal = new List<CountoursPoint>(); // можно через пул после отладки
+
+            // расчет количества елементов в массиве результатов 
+            for (int i = 0; indexForCountoursPointExtendedBuffer > i; i++)
+            {
+                var Id  = countoursPointExtendedBuffer[i].Id;
+                if (!(IdList.Exists(x => x == Id))) { IdList.Add(Id);}
+                var adm = countoursPointExtendedBuffer[i].administration;
+                if (!(admList.Exists(x => x == adm))){admList.Add(adm);}
+            }
+            foreach (int Id in IdList)
+            {
+                foreach (string adm in admList)
+                {
+                    countoursPointsICSMLocal = new List<CountoursPoint>();
+                    countoursPointsBRIFICLocal = new List<CountoursPoint>();
+                    BroadcastingTypeCalculation broadcastingTypeCalculation = BroadcastingTypeCalculation.Distance;
+                    for (int i = 0; indexForCountoursPointExtendedBuffer > i; i++)
+                    {
+                        if ((countoursPointExtendedBuffer[i].Id == Id) && (countoursPointExtendedBuffer[i].administration == adm))
+                        {
+                            if (countoursPointExtendedBuffer[i].broadcastingTypeContext == BroadcastingTypeContext.Brific)
+                            { countoursPointsBRIFICLocal.Add(countoursPointExtendedBuffer[i]);
+                                broadcastingTypeCalculation = countoursPointExtendedBuffer[i].broadcastingTypeCalculation;}
+                            else
+                            { countoursPointsICSMLocal.Add(countoursPointExtendedBuffer[i]);
+                                broadcastingTypeCalculation = countoursPointExtendedBuffer[i].broadcastingTypeCalculation;}
+                        }
+                    }
+                    // заполнение последующих параметров
+                    if (countoursPointsBRIFICLocal.Count != 0)
+                    {
+                        ContoursResult contourBRIFIC = new ContoursResult
+                        {
+                            AffectedADM = adm,
+                            CountoursPoints = countoursPointsBRIFICLocal.ToArray(),
+                            ContourType = ContourType.Etalon,
+                            PointsCount = countoursPointsBRIFICLocal.Count,
+                        };
+                        if (broadcastingTypeCalculation == BroadcastingTypeCalculation.Distance)
+                        { contourBRIFIC.Distance = countoursPointsBRIFICLocal[0].Distance; }
+                        else { contourBRIFIC.FS = countoursPointsBRIFICLocal[0].FS; }
+                        contoursResultList.Add(contourBRIFIC);
+                    }
+                    if (countoursPointsICSMLocal.Count != 0)
+                    {
+
+                        var arrCountoursPoint = new CountoursPoint[countoursPointsICSMLocal.Count];
+                        for (int x = 0; x < countoursPointsICSMLocal.Count; x++)
+                        {
+                            arrCountoursPoint[x] = new CountoursPoint()
+                            {
+                                Distance = countoursPointsICSMLocal[x].Distance,
+                                FS = countoursPointsICSMLocal[x].FS,
+                                Height = countoursPointsICSMLocal[x].Height,
+                                Lat_DEC = countoursPointsICSMLocal[x].Lat_DEC,
+                                Lon_DEC = countoursPointsICSMLocal[x].Lon_DEC,
+                                PointType = countoursPointsICSMLocal[x].PointType
+                            };
+                        }
+
+                        ContoursResult contourICSM = new ContoursResult
+                        {
+                            AffectedADM = adm,
+                            CountoursPoints = arrCountoursPoint,
+                            PointsCount = arrCountoursPoint.Length
+                        };
+                        if (broadcastingTypeCalculation == BroadcastingTypeCalculation.Distance)
+                        { contourICSM.Distance = countoursPointsICSMLocal[0].Distance;}
+                        if (countoursPointsICSMLocal.Exists(x => x.PointType == PointType.Affected))
+                        {contourICSM.ContourType = ContourType.Affected;}
+                        else {contourICSM.ContourType = ContourType.Correct;}
+                        contoursResultList.Add(contourICSM);
+                    }
+                }
+            }
+            contoursResult = contoursResultList.ToArray(); 
         }
     }
 }

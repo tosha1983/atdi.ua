@@ -29,7 +29,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         {
             info = SetDefault();
         }
-        static int i = 0, k = 0, p = 0, j = 0, s = 0;
+        static int i = 0, k = 0, j = 0, s = 0;
         static int t01 = -1, t11 = -1, t21 = -1, t31 = -1; // прочитанный из бд
         static int t02 = -1, t12 = -1, t22 = -1, t32 = -1; // прочитанный из параметров для бд
         static int t03 = -1, t13 = -1, t23 = -1, t33 = -1; // прочитанный из ралио
