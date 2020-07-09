@@ -72,6 +72,24 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             var broadcastingContextICSM = ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM;
 
 
+            if (broadcastingContextICSM.Allotments != null)
+            {
+                if ((broadcastingContextICSM.Allotments.EmissionCharacteristics.RefNetworkConfig == DataModels.Sdrn.DeepServices.GN06.RefNetworkConfigType.RPC1)
+                       || (broadcastingContextICSM.Allotments.EmissionCharacteristics.RefNetworkConfig == DataModels.Sdrn.DeepServices.GN06.RefNetworkConfigType.RPC2)
+                           || (broadcastingContextICSM.Allotments.EmissionCharacteristics.RefNetworkConfig == DataModels.Sdrn.DeepServices.GN06.RefNetworkConfigType.RPC3))
+                {
+                    broadcastingContextICSM.Allotments.AdminData.StnClass = "BT";
+                    broadcastingContextICSM.Allotments.AdminData.IsDigital = true;
+                }
+                else if ((broadcastingContextICSM.Allotments.EmissionCharacteristics.RefNetworkConfig == DataModels.Sdrn.DeepServices.GN06.RefNetworkConfigType.RPC4)
+                    || (broadcastingContextICSM.Allotments.EmissionCharacteristics.RefNetworkConfig == DataModels.Sdrn.DeepServices.GN06.RefNetworkConfigType.RPC5)
+                        )
+                {
+                    broadcastingContextICSM.Allotments.AdminData.StnClass = "BC";
+                    broadcastingContextICSM.Allotments.AdminData.IsDigital = false;
+                }
+            }
+
             // Определение пороговых напряженностей для защиты систем радиовещательной службы
             // входными данными являются Allotments + Assignments[]
             var thresholdFieldStrengthsPrimaryServices = new List<ThresholdFieldStrength>();

@@ -36,9 +36,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         private readonly IIterationsPool _iterationsPool;
         private readonly IDataLayer<EntityDataOrm<CalcServerEntityOrmContext>> _calcServerDataLayer;
         private readonly IObjectPool<PointEarthGeometric[]> _pointEarthGeometricPool;
-        //private readonly IObjectPool<Dictionary<CountoursPoint, string>> _countoursPointByAdministrationPool;
-        //private readonly IObjectPool<ContoursResult[]> _countoursResultPool;
-        //private readonly IObjectPool<CountoursPoint[]> _countoursPointPool;
+        private readonly IObjectPool<CountoursPointExtended[]> _countoursPointExtendedPool;
+        private readonly IObjectPool<ContoursResult[]> _countoursResultPool;
         private readonly IObjectPoolSite _poolSite;
         private readonly ITransformation _transformation;
         private readonly Idwm.IIdwmService _idwmService;
@@ -72,6 +71,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             _idwmService = idwmService;
             _logger = logger;
             _pointEarthGeometricPool = _poolSite.GetPool<PointEarthGeometric[]>(ObjectPools.GE06PointEarthGeometricObjectPool);
+            _countoursPointExtendedPool = _poolSite.GetPool<CountoursPointExtended[]>(ObjectPools.GE06CountoursPointExtendedPool);
+            _countoursResultPool = _poolSite.GetPool<ContoursResult[]>(ObjectPools.GE06CountoursResultPool);
         }
 
 
@@ -130,6 +131,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 GE06CalcContoursByDistance.Calculation(in data, BroadcastingTypeContext.Icsm,
                                                         ref ge06CalcResultsForICSM,
                                                         _pointEarthGeometricPool,
+                                                        _countoursPointExtendedPool,
+                                                        _countoursResultPool,
                                                         iterationHandlerBroadcastingFieldStrengthCalcData,
                                                         iterationHandlerFieldStrengthCalcData,
                                                         _poolSite,
@@ -155,6 +158,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 GE06CalcContoursByDistance.Calculation(in data, BroadcastingTypeContext.Brific,
                                                         ref ge06CalcResultsForBRIFIC,
                                                         _pointEarthGeometricPool,
+                                                        _countoursPointExtendedPool,
+                                                        _countoursResultPool,
                                                         iterationHandlerBroadcastingFieldStrengthCalcData,
                                                         iterationHandlerFieldStrengthCalcData,
                                                         _poolSite,
@@ -181,6 +186,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 GE06CalcContoursByFS.Calculation(data, BroadcastingTypeContext.Icsm,
                                                 ref ge06CalcResultsForICSM,
                                                 _pointEarthGeometricPool,
+                                                _countoursPointExtendedPool,
+                                                _countoursResultPool,
                                                 iterationHandlerBroadcastingFieldStrengthCalcData,
                                                 iterationHandlerFieldStrengthCalcData,
                                                 _poolSite,
@@ -206,6 +213,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                  BroadcastingTypeContext.Brific,
                                                  ref ge06CalcResultsForBRIFIC,
                                                  _pointEarthGeometricPool,
+                                                 _countoursPointExtendedPool,
+                                                 _countoursResultPool,
                                                  iterationHandlerBroadcastingFieldStrengthCalcData,
                                                  iterationHandlerFieldStrengthCalcData,
                                                  _poolSite,
@@ -233,6 +242,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 GE06CalcConformityCheck.Calculation(data,
                                                     ref ge06CalcResults,
                                                     _pointEarthGeometricPool,
+                                                    _countoursPointExtendedPool,
+                                                    _countoursResultPool,
                                                     iterationHandlerBroadcastingFieldStrengthCalcData,
                                                     iterationHandlerFieldStrengthCalcData,
                                                     _poolSite,
