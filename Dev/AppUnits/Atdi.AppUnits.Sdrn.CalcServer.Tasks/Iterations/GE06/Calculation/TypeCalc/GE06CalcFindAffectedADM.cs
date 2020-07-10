@@ -314,6 +314,13 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         public static AffectedADMResult[] GenerateAdministration(CountoursPointExtended[] countoursPointExtendeds, int sizeCountoursPointExtendedBuffer, FmtvTerra[] arrFmtvTerra, List<string>adm1000, IEarthGeometricService earthGeometricService)
         {
             if ((countoursPointExtendeds is null)||(countoursPointExtendeds.Length==0)){ return null;}
+            AffectedADMResult[] AffectedADMResult = new AffectedADMResult[adm1000.Count];
+            // Первичное заполнение результатов 
+            for (int i = 0; adm1000.Count > i; i++)
+            {
+                AffectedADMResult[i] = new AffectedADMResult()
+                {ADM = adm1000[i],TypeAffected = "1000"};
+            }
             List<int> IdList = new List<int>();// обычно до до 10 елементов
             // расчет количества елементов в массиве результатов 
             List<CountoursPointExtended> ContursServices = new List<CountoursPointExtended>();
@@ -341,18 +348,26 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                 {
                                     // администрация данной службы не задета. надо проверить не попала ли точка
                                     // тут нужно определить пересечение 
-
+                                    // заполняем данные для определения пересечения
                                     CheckHittingArgs checkHittingArgs = new CheckHittingArgs();
-                                    checkHittingArgs.Poligon = new PointEarthGeometric[1];
-                                    checkHittingArgs.Point = new PointEarthGeometric();
+                                    checkHittingArgs.Poligon = new PointEarthGeometric[ContursServices.Count];
+                                    for (int k = 0; ContursServices.Count > k; k++)
+                                    {
+                                        checkHittingArgs.Poligon[k].Longitude = ContursServices[k].Lon_DEC;
+                                        checkHittingArgs.Poligon[k].Latitude = ContursServices[k].Lat_DEC;
+                                        checkHittingArgs.Poligon[k].CoordinateUnits = CoordinateUnits.deg;
+                                    }
+                                    checkHittingArgs.Point = new PointEarthGeometric()
+                                    {
+                                        CoordinateUnits = CoordinateUnits.deg,
+                                        Latitude = arrFmtvTerra[j].Latitude_dec,
+                                        Longitude = arrFmtvTerra[j].Longitude_dec,
+                                    };
+                                    // определяем пересечение
                                     if (earthGeometricService.CheckHitting(in checkHittingArgs))
                                     {
-
-                                    }
-
-                                    if (true)
-                                    {
                                         serviseAdm.Add(adm);
+                                        AddServiceToResult(AffectedADMResult, adm, services);
                                     }
                                 }
                             }
@@ -363,10 +378,13 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 }
                 ContursServices.Add(countoursPointExtendeds[i]);
             }
-            return null;
-            
+            return AffectedADMResult;
         }
+        private static void AddServiceToResult(in AffectedADMResult[] affectedADMResults, string adm, string servis)
+        {
 
+
+        }
 
         /// <summary>
         /// Расчет  для  CalculationType == FindAffectedADM
