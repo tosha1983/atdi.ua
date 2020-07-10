@@ -55,7 +55,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06TaskResult.Adapters
                 ErpV_dbW = reader.GetValue(c => c.ErpV_dbW),
                 AntennaDirectional = reader.GetValue(c => c.AntennaDirectional),
                 AdmRefId = reader.GetValue(c => c.AdmRefId),
-                CountoursPoints = reader.GetValueAs<CountoursPoint[]>(c => c.CountoursPoints)
+                CountoursPoints = string.IsNullOrEmpty(reader.GetValue(c => c.CountoursPoints)) ? null : reader.GetValueAs<CountoursPoint[]>(c => c.CountoursPoints)
             };
         }
     }
