@@ -348,7 +348,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 double aboveLand_px = 0;
                 double aboveSea_px = 0;
                 int hMedDist_px = 0;
-                byte waterClutter = 7; // clutter code for sea/inland water should be in config
+                byte waterClutter = 6; // clutter code for sea/inland water should be in config
                                        //
                 
                 // effective height estimation
