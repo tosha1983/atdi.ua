@@ -311,7 +311,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         /// <param name="sizeCountoursPointExtendedBuffer"></param>
         /// <param name="arrFmtvTerra"></param>
         /// <returns></returns>
-        public static AffectedADMResult[] GenerateAdministration(CountoursPointExtended[] countoursPointExtendeds, int sizeCountoursPointExtendedBuffer, FmtvTerra[] arrFmtvTerra, List<string>adm1000)
+        public static AffectedADMResult[] GenerateAdministration(CountoursPointExtended[] countoursPointExtendeds, int sizeCountoursPointExtendedBuffer, FmtvTerra[] arrFmtvTerra, List<string>adm1000, IEarthGeometricService earthGeometricService)
         {
             if ((countoursPointExtendeds is null)||(countoursPointExtendeds.Length==0)){ return null;}
             List<int> IdList = new List<int>();// обычно до до 10 елементов
@@ -341,6 +341,15 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                 {
                                     // администрация данной службы не задета. надо проверить не попала ли точка
                                     // тут нужно определить пересечение 
+
+                                    CheckHittingArgs checkHittingArgs = new CheckHittingArgs();
+                                    checkHittingArgs.Poligon = new PointEarthGeometric[1];
+                                    checkHittingArgs.Point = new PointEarthGeometric();
+                                    if (earthGeometricService.CheckHitting(in checkHittingArgs))
+                                    {
+
+                                    }
+
                                     if (true)
                                     {
                                         serviseAdm.Add(adm);
@@ -631,7 +640,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     ge06CalcResult.ContoursResult = GenerateAdministrationContour(countoursPointExtendedBuffer, indexForCountoursPointExtendedBuffer, countoursPoint1000, adm1000);
 
                     // функция по формированию администраций
-                    ge06CalcResult.AffectedADMResult = GenerateAdministration(countoursPointExtendedBuffer, indexForCountoursPointExtendedBuffer, outArrFmtvTerra);
+                    ge06CalcResult.AffectedADMResult = GenerateAdministration(countoursPointExtendedBuffer, indexForCountoursPointExtendedBuffer, outArrFmtvTerra, earthGeometricService);
 
                 }
             }
