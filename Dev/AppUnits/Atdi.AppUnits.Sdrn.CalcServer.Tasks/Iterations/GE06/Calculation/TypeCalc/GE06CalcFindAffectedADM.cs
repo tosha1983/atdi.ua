@@ -427,11 +427,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     {
                         if ((affectedServices != null) && (affectedServices.Length > 0))
                         {
-                            if (!affectedServices.EndsWith(";"))
+                            if (!affectedServices.EndsWith(","))
                             {
-                                affectedServices += $"{affectedServices};{servis}";
+                                affectedServices += $"{affectedServices},{servis}";
                             }
-                            if (affectedServices.EndsWith(";"))
+                            if (affectedServices.EndsWith(","))
                             {
                                 affectedServices += $"{affectedServices}{servis}";
                             }
@@ -446,11 +446,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     {
                         if ((typeAffected != null) && (typeAffected.Length > 0))
                         {
-                            if (!typeAffected.EndsWith(";"))
+                            if (!typeAffected.EndsWith(","))
                             {
-                                typeAffected += $"{typeAffected};{typeAffect}";
+                                typeAffected += $"{typeAffected},{typeAffect}";
                             }
-                            if (typeAffected.EndsWith(";"))
+                            if (typeAffected.EndsWith(","))
                             {
                                 typeAffected += $"{typeAffected}{typeAffect}";
                             }
