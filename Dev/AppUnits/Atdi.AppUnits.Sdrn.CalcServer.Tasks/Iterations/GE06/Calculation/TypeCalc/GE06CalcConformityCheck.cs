@@ -272,6 +272,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
                 try
                 {
+                    int currPercentComplete = 0;
+
                     int indexForCountoursPointExtendedBuffer = 0;
 
                     pointEarthGeometricsResult = pointEarthGeometricPool.Take();
@@ -375,6 +377,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].broadcastingTypeCalculation = BroadcastingTypeCalculation.Distance;
                             countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].Id = indexResult;
                             indexForCountoursPointExtendedBuffer++;
+
+                            UpdateProgress.UpdatePercentComplete50(distances.Length, sizeResultBuffer, i, k, 0, ref currPercentComplete, "ConformityCheck", taskContext);
                         }
                         indexResult++;
                     }
@@ -446,6 +450,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                     countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].broadcastingTypeCalculation = BroadcastingTypeCalculation.FieldStrength;
                                     countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].Id = indexResult;
                                     indexForCountoursPointExtendedBuffer++;
+
+                                    UpdateProgress.UpdatePercentComplete50(arrTriggersFS.Length, sizeResultBufferBRIFIC, d, t, 50, ref currPercentComplete, "ConformityCheck", taskContext);
                                 }
                                 indexResult++;
                             }
@@ -453,6 +459,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     }
                     GetResult(in countoursPointExtendedBuffer, indexForCountoursPointExtendedBuffer, out ge06CalcResult.ContoursResult);
                     ge06CalcResult.AffectedADMResult = FillAffectedADMResult.Fill(ge06CalcResult.ContoursResult, string.Join(",", affectedServices));
+                    UpdateProgress.UpdatePercentComplete100(ref currPercentComplete, "ConformityCheck", taskContext);
                 }
                 finally
                 {
