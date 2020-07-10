@@ -402,7 +402,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                     if (earthGeometricService.CheckHitting(in checkHittingArgs))
                                     {
                                         serviseAdm.Add(adm);
-                                        AddServiceToResult(AffectedADMResult, adm, services);
+                                        string typeAff;
+                                        if (services == "Broadcasting")
+                                        { typeAff = "Broadcasting"; }
+                                        else
+                                        { typeAff = "PrimaryServices"; }
+                                        AddServiceToResult(AffectedADMResult, adm, services, typeAff);
                                     }
                                 }
                             }
@@ -721,8 +726,15 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                     PointType = PointType.Affected,
                                     broadcastingTypeCalculation = BroadcastingTypeCalculation.FieldStrength,
                                     Id = indexResult,
-                                    Service = arrTriggersFS[d].StaClass
                                 };
+                                if ((arrTriggersFS[d].StaClass == "BT") || (arrTriggersFS[d].StaClass == "BC"))
+                                {
+                                    countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].Service = "Broadcasting";
+                                }
+                                else
+                                {
+                                    countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].Service = arrTriggersFS[d].System_type;
+                                }
                                 var adm = idwmService.GetADMByPoint(new IdwmDataModel.Point() { Longitude_dec = pointEarthGeometricsResult[t].Longitude, Latitude_dec = pointEarthGeometricsResult[t].Latitude });
                                 countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].administration = adm;
                                 indexForCountoursPointExtendedBuffer++;

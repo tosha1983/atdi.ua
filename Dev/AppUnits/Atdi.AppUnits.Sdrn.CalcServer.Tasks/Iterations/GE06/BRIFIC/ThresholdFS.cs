@@ -300,78 +300,143 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
             {
                 Standard = "T-DAB",
-                StaClass = "MU",
+                StaClass = "ML",
                 IsDigital = true,
                 MinFreq_MHz = 174,
                 MaxFreq_MHz = 230,
                 ThresholdFS = 16,
-                Height_m = 10
+                Height_m = 10,
+                Time_pc = 10,
+                System_type = "MU"
             });
 
             ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
             {
                 Standard = "T-DAB",
-                StaClass = "M1",
+                StaClass = "FB",
                 IsDigital = true,
                 MinFreq_MHz = 174,
                 MaxFreq_MHz = 230,
                 ThresholdFS = 19,
-                Height_m = 20
+                Height_m = 20,
+                System_type = "M1",
+                Time_pc = 10
             });
 
             ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
             {
                 Standard = "T-DAB",
-                StaClass = "M1",
+                StaClass = "ML",
                 IsDigital = true,
                 MinFreq_MHz = 174,
                 MaxFreq_MHz = 230,
                 ThresholdFS = 27,
-                Height_m = 1.5f
+                Height_m = 1.5f,
+                System_type = "M1",
+                Time_pc = 10
             });
-
             ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
             {
                 Standard = "T-DAB",
-                StaClass = "RA",
+                StaClass = "FB",
                 IsDigital = true,
                 MinFreq_MHz = 174,
                 MaxFreq_MHz = 230,
                 ThresholdFS = 19,
-                Height_m = 20
+                Height_m = 20,
+                System_type = "RA",
+                Time_pc = 10
             });
 
             ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
             {
                 Standard = "T-DAB",
-                StaClass = "RA",
+                StaClass = "ML",
                 IsDigital = true,
                 MinFreq_MHz = 174,
                 MaxFreq_MHz = 230,
                 ThresholdFS = 27,
-                Height_m = 1.5f
+                Height_m = 1.5f,
+                System_type = "RA",
+                Time_pc = 10
+            });
+            ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
+            {
+                Standard = "T-DAB",
+                StaClass = "FB",
+                IsDigital = true,
+                MinFreq_MHz = 174,
+                MaxFreq_MHz = 230,
+                ThresholdFS = 19,
+                Height_m = 20,
+                System_type = "RA1",
+                Time_pc = 10
             });
 
             ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
             {
                 Standard = "T-DAB",
-                StaClass = "M2",
+                StaClass = "ML",
+                IsDigital = true,
+                MinFreq_MHz = 174,
+                MaxFreq_MHz = 230,
+                ThresholdFS = 27,
+                Height_m = 1.5f,
+                System_type = "RA1",
+                Time_pc = 10
+            });
+            ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
+            {
+                Standard = "T-DAB",
+                StaClass = "FB",
+                IsDigital = true,
+                MinFreq_MHz = 174,
+                MaxFreq_MHz = 230,
+                ThresholdFS = 19,
+                Height_m = 20,
+                System_type = "RA2",
+                Time_pc = 10
+            });
+
+            ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
+            {
+                Standard = "T-DAB",
+                StaClass = "ML",
+                IsDigital = true,
+                MinFreq_MHz = 174,
+                MaxFreq_MHz = 230,
+                ThresholdFS = 27,
+                Height_m = 1.5f,
+                System_type = "RA2",
+                Time_pc = 10
+            });
+
+
+ 
+            ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
+            {
+                Standard = "T-DAB",
+                StaClass = "ML",
                 IsDigital = true,
                 MinFreq_MHz = 174,
                 MaxFreq_MHz = 230,
                 ThresholdFS = 48,
-                Height_m = 10.0f
+                Height_m = 10.0f,
+                Time_pc = 10,
+                System_type = "M2"
             });
 
             ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
             {
                 Standard = "T-DAB",
-                StaClass = "XA",
+                StaClass = "ML",
                 IsDigital = true,
                 MinFreq_MHz = 174,
                 MaxFreq_MHz = 230,
                 ThresholdFS = 27,
-                Height_m = 10.0f
+                Height_m = 10.0f, 
+                Time_pc = 10,
+                System_type = "XA"
             });
 
             ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
@@ -382,29 +447,35 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 MinFreq_MHz = 174,
                 MaxFreq_MHz = 230,
                 ThresholdFS = 30,
-                Height_m = 10.0f
+                Height_m = 10.0f,
+                System_type = "XM",
+                Time_pc = 10
             });
 
             ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
             {
                 Standard = "T-DAB",
-                StaClass = "MA",
+                StaClass = "FB",
                 IsDigital = true,
                 MinFreq_MHz = 174,
                 MaxFreq_MHz = 230,
                 ThresholdFS = 21,
-                Height_m = 10.0f
+                Height_m = 10.0f,
+                Time_pc = 10,
+                System_type = "MA"
             });
 
             ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
             {
                 Standard = "T-DAB",
-                StaClass = "MT",
+                StaClass = "FX",
                 IsDigital = true,
                 MinFreq_MHz = 174,
                 MaxFreq_MHz = 230,
                 ThresholdFS = 5,
-                Height_m = 10.0f
+                Height_m = 10.0f,
+                Time_pc = 10,
+                System_type = "MT"
             });
         }
 
@@ -418,164 +489,208 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
             {
                 Standard = "DVB-T",
-                StaClass = "NV",
+                StaClass = "FB",
                 MinFreq_MHz = 174,
                 MaxFreq_MHz = 230,
                 ThresholdFS = 30,
                 IsBaseStation = true,
-                Height_m = 20
+                Height_m = 20, 
+                Time_pc = 10,
+                System_type = "NV"
             });
             ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
             {
                 Standard = "DVB-T",
-                StaClass = "NV",
+                StaClass = "ML",
                 MinFreq_MHz = 174,
                 MaxFreq_MHz = 230,
                 ThresholdFS = 38,
                 IsBaseStation = false,
-                Height_m = 1.5f
+                Height_m = 1.5f,
+                Time_pc = 10,
+                System_type = "NV"
+
             });
 
             ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
             {
                 Standard = "DVB-T",
-                StaClass = "NR",
+                StaClass = "ML",
                 MinFreq_MHz = 790,
                 MaxFreq_MHz = 862,
                 ThresholdFS = 58,
                 IsBaseStation = true,
-                Height_m = 1.5f
+                Height_m = 1.5f,
+                System_type = "NR",
+                Time_pc = 10
             });
             ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
             {
                 Standard = "DVB-T",
-                StaClass = "NR",
+                StaClass = "ML",
                 MinFreq_MHz = 174,
                 MaxFreq_MHz = 230,
                 ThresholdFS = 50,
                 IsBaseStation = false,
-                Height_m = 1.5f
+                Height_m = 1.5f,
+                System_type = "NR",
+                Time_pc = 10
             });
 
             ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
             {
                 Standard = "DVB-T",
-                StaClass = "NS",
+                StaClass = "ML",
                 MinFreq_MHz = 790,
                 MaxFreq_MHz = 862,
                 ThresholdFS = 45,
                 IsBaseStation = true,
-                Height_m = 10.0f
+                Height_m = 10.0f,
+                Time_pc = 10,
+                System_type = "NS"
             });
             ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
             {
                 Standard = "DVB-T",
-                StaClass = "NS",
+                StaClass = "ML",
                 MinFreq_MHz = 174,
                 MaxFreq_MHz = 230,
                 ThresholdFS = 37,
                 IsBaseStation = false,
-                Height_m = 10.0f
+                Height_m = 10.0f,
+                Time_pc = 10,
+                System_type = "NS"
             });
 
             ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
             {
                 Standard = "DVB-T",
-                StaClass = "NT",
+                StaClass = "ML",
                 MinFreq_MHz = 790,
                 MaxFreq_MHz = 862,
                 ThresholdFS = 47,
                 IsBaseStation = true,
-                Height_m = 1.5f
+                Height_m = 1.5f,
+                Time_pc = 10,
+                System_type = "NT"
             });
             ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
             {
                 Standard = "DVB-T",
-                StaClass = "NT",
+                StaClass = "ML",
                 MinFreq_MHz = 174,
                 MaxFreq_MHz = 230,
                 ThresholdFS = 39,
                 IsBaseStation = false,
-                Height_m = 1.5f
+                Height_m = 1.5f,
+                Time_pc = 10,
+                System_type = "NT"
             });
-
-
-            //ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
-            //{
-            //    Standard = "DVB-T",
-            //    StaClass = "NA",
-            //    MinFreq_MHz = 470,
-            //    MaxFreq_MHz = 862,
-            //    ThresholdFS = 18,
-            //    IsBaseStation = true,
-            //    Height_m = 20.0f
-            //});
-
-            //ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
-            //{
-            //    Standard = "DVB-T",
-            //    StaClass = "NA",
-            //    MinFreq_MHz = 790,
-            //    MaxFreq_MHz = 862,
-            //    ThresholdFS = 18,
-            //    IsBaseStation = true,
-            //    Height_m = 20.0f
-            //});
-
-            //ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
-            //{
-            //    Standard = "DVB-T",
-            //    StaClass = "NB",
-            //    MinFreq_MHz = 174,
-            //    MaxFreq_MHz = 230,
-            //    ThresholdFS = -9999, ///??????????????? расчет по формуле
-            //    IsBaseStation = true,
-            //    Height_m = 20.0f
-            //});
-
-            //ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
-            //{
-            //    Standard = "DVB-T",
-            //    StaClass = "NB",
-            //    MinFreq_MHz = 470,
-            //    MaxFreq_MHz = 862,
-            //    ThresholdFS = -9999, ///??????????????? расчет по формуле
-            //    IsBaseStation = true,
-            //    Height_m = 20.0f
-            //});
 
 
             ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
             {
                 Standard = "DVB-T",
-                StaClass = "XN",
+                StaClass = "FB",
+                MinFreq_MHz = 790,
+                MaxFreq_MHz = 862,
+                ThresholdFS = 18,
+                IsBaseStation = true,
+                Height_m = 20.0f,
+                System_type = "NA",
+                Time_pc = 10
+            });
+
+            
+            ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
+            {
+                Standard = "DVB-T",
+                StaClass = "FB",
+                MinFreq_MHz = 174,
+                MaxFreq_MHz = 230,
+                ThresholdFS = 16, ///??????????????? расчет по формуле
+                IsBaseStation = true,
+                Height_m = 20,
+                Time_pc = 10,
+                System_type = "NB"
+            });
+
+            ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
+            {
+                Standard = "DVB-T",
+                StaClass = "FB",
+                MinFreq_MHz = 470,
+                MaxFreq_MHz = 862,
+                ThresholdFS = 14, ///??????????????? расчет по формуле
+                IsBaseStation = true,
+                Height_m = 20,
+                Time_pc = 10,
+                System_type = "NB"
+            });
+
+            ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
+            {
+                Standard = "DVB-T",
+                StaClass = "ML",
+                MinFreq_MHz = 174,
+                MaxFreq_MHz = 230,
+                ThresholdFS = 24, ///??????????????? расчет по формуле
+                IsBaseStation = true,
+                Height_m = 1.5f,
+                Time_pc = 10,
+                System_type = "NB"
+            });
+
+            ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
+            {
+                Standard = "DVB-T",
+                StaClass = "ML",
+                MinFreq_MHz = 470,
+                MaxFreq_MHz = 862,
+                ThresholdFS = 30, ///??????????????? расчет по формуле
+                IsBaseStation = true,
+                Height_m = 1.5f,
+                Time_pc = 10,
+                System_type = "NB"
+            });
+
+            ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
+            {
+                Standard = "DVB-T",
+                StaClass = "ML",
                 MinFreq_MHz = 174,
                 MaxFreq_MHz = 230,
                 ThresholdFS = 38,
                 IsBaseStation = true,
-                Height_m = 1.5f
+                Height_m = 1.5f,
+                System_type = "XN",
+                Time_pc = 10
             });
 
             ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
             {
                 Standard = "DVB-T",
-                StaClass = "YN",
+                StaClass = "ML",
                 MinFreq_MHz = 480,
                 MaxFreq_MHz = 480,
                 ThresholdFS = 41,
                 IsBaseStation = true,
-                Height_m = 1.5f
+                Height_m = 1.5f,
+                System_type = "YN",
+                Time_pc = 10
             });
 
             ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
             {
                 Standard = "DVB-T",
-                StaClass = "ZC",
+                StaClass = "ML",
                 MinFreq_MHz = 620,
                 MaxFreq_MHz = 620,
                 ThresholdFS = 43,
                 IsBaseStation = true,
-                Height_m = 1.5f
+                Height_m = 1.5f,
+                System_type = "ZC",
+                Time_pc = 10
             });
 
 
@@ -591,72 +706,111 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
             {
                 Standard = "DVB-T",
-                StaClass = "XG",
+                StaClass = "AL",
                 MinFreq_MHz = 590,
                 MaxFreq_MHz = 598,
                 ThresholdFS = -12,
                 IsBaseStation = true,
-                Height_m = 7
+                Height_m = 7,
+                Time_pc = 10,
+                System_type = "XG"
             });
             ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
             {
                 Standard = "DVB-T",
-                StaClass = "AB",
+                StaClass = "AL",
                 MinFreq_MHz = 585,
                 MaxFreq_MHz = 610,
                 ThresholdFS = 13,
                 IsBaseStation = true,
-                Height_m = 10
+                Height_m = 10,
+                Time_pc = 10,
+                System_type = "AB"
             });
             ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
             {
                 Standard = "DVB-T",
-                StaClass = "AA8",
-                MinFreq_MHz = 645,
-                MaxFreq_MHz = 862,
-                ThresholdFS = 36,
-                IsBaseStation = true,
-                Height_m = 10
-            });
-            ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
-            {
-                Standard = "DVB-T",
-                StaClass = "AA8",
-                MinFreq_MHz = 645,
-                MaxFreq_MHz = 862,
-                ThresholdFS = 42,
-                IsBaseStation = true,
-                Height_m = 10000
-            });
-            ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
-            {
-                Standard = "DVB-T",
-                StaClass = "AB",
+                StaClass = "AL",
                 MinFreq_MHz = 645,
                 MaxFreq_MHz = 862,
                 ThresholdFS = 13,
                 IsBaseStation = true,
-                Height_m = 10
+                Height_m = 10,
+                Time_pc = 10,
+                System_type = "AB"
             });
             ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
             {
                 Standard = "DVB-T",
-                StaClass = "BD",
+                StaClass = "AM",
+                MinFreq_MHz = 645,
+                MaxFreq_MHz = 862,
+                ThresholdFS = 36,
+                IsBaseStation = true,
+                Height_m = 10,
+                Time_pc = 10,
+                System_type = "AA8"
+            });
+            ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
+            {
+                Standard = "DVB-T",
+                StaClass = "AL",
+                MinFreq_MHz = 645,
+                MaxFreq_MHz = 862,
+                ThresholdFS = 42,
+                IsBaseStation = true,
+                Height_m = 10000,
+                Time_pc = 10,
+                System_type = "AA8"
+            });
+         
+            ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
+            {
+                Standard = "DVB-T",
+                StaClass = "AL",
                 MinFreq_MHz = 645,
                 MaxFreq_MHz = 862,
                 ThresholdFS = 49,
                 IsBaseStation = true,
-                Height_m = 10000
+                Height_m = 10000,
+                Time_pc = 10,
+                System_type = "BD"
             });
             ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
             {
                 Standard = "DVB-T",
-                StaClass = "BA",
+                StaClass = "AM",
                 MinFreq_MHz = 645,
                 MaxFreq_MHz = 862,
                 ThresholdFS = 29,
                 IsBaseStation = true,
-                Height_m = 10
+                Height_m = 10,
+                Time_pc = 10,
+                System_type = "BA"
+            });
+            ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
+            {
+                Standard = "DVB-T",
+                StaClass = "AL",
+                MinFreq_MHz = 645,
+                MaxFreq_MHz = 862,
+                ThresholdFS = 71,
+                IsBaseStation = true,
+                Height_m = 10000,
+                Time_pc = 10,
+                System_type = "BC"
+            });
+            ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
+            {
+                Standard = "DVB-T",
+                StaClass = "AM",
+                MinFreq_MHz = 645,
+                MaxFreq_MHz = 862,
+                ThresholdFS = 21,
+                IsBaseStation = true,
+                Height_m = 10,
+                Time_pc = 10,
+                System_type = "AA2"
             });
         }
 
@@ -669,43 +823,51 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         {
             ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
             {
-                StaClass = "FF",
+                StaClass = "FB",
                 MinFreq_MHz = 790,
                 MaxFreq_MHz = 862,
                 ThresholdFS = 24,
                 IsBaseStation = true,
-                Height_m = 37.5f
+                Height_m = 37.5f,
+                Time_pc = 10,
+                System_type = "FF"
+            });
+
+            ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
+            {
+                StaClass = "FX",
+                MinFreq_MHz = 790,
+                MaxFreq_MHz = 862,
+                ThresholdFS = 13,
+                IsBaseStation = true,
+                Height_m = 37.5f,
+                Time_pc = 10,
+                System_type = "FH"
+            });
+
+            ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
+            {
+                StaClass = "FX",
+                MinFreq_MHz = 174,
+                MaxFreq_MHz = 230,
+                ThresholdFS = 13, // необходимость применения формулы
+                IsBaseStation = true,
+                Height_m = 37.5f,
+                Time_pc = 10,
+                System_type = "FK"
             });
 
             ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
             {
                 StaClass = "FH",
-                MinFreq_MHz = 790,
+                MinFreq_MHz = 470,
                 MaxFreq_MHz = 862,
-                ThresholdFS = 13,
+                ThresholdFS = 16, // необходимость применения формулы
                 IsBaseStation = true,
-                Height_m = 37.5f
+                Height_m = 37.5f,
+                Time_pc = 10,
+                System_type = "FK"
             });
-
-            //ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
-            //{
-            //    StaClass = "FK",
-            //    MinFreq_MHz = 174,
-            //    MaxFreq_MHz = 230,
-            //    ThresholdFS = -9999, // необходимость применения формулы
-            //    IsBaseStation = true,
-            //    Height_m = 37.5f
-            //});
-
-            //ThresholdFieldStrengthParameters.Add(new ThresholdFieldStrengthParameters()
-            //{
-            //    StaClass = "FK",
-            //    MinFreq_MHz = 470,
-            //    MaxFreq_MHz = 862,
-            //    ThresholdFS = -9999, // необходимость применения формулы
-            //    IsBaseStation = true,
-            //    Height_m = 37.5f
-            //});
         }
     }
 }
