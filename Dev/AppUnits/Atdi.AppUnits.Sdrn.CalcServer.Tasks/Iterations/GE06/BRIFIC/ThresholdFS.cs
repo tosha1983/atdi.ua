@@ -72,7 +72,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             StaClass = fndThresholdFS[n].StaClass,
                             System_type = fndThresholdFS[n].System_type,
                             ThresholdFS = thresholdFS,
-                            IsDigital = broadcastingAllotment.AdminData.IsDigital,
+                            IsDigital = fndThresholdFS[n].IsDigital,
                             Height_m = fndThresholdFS[n].Height_m,
                             Time_pc = fndThresholdFS[n].Time_pc,
                             MinFreq_MHz = fndThresholdFS[n].MinFreq_MHz,
@@ -127,7 +127,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                 StaClass = fndThresholdFS[n].StaClass,
                                 System_type = fndThresholdFS[n].System_type,
                                 ThresholdFS = thresholdFS,
-                                IsDigital = broadcastingAssignment[i].AdmData.IsDigital,
+                                IsDigital = fndThresholdFS[n].IsDigital,
                                 Height_m = fndThresholdFS[n].Height_m,
                                 Time_pc = fndThresholdFS[n].Time_pc,
                                 MinFreq_MHz = fndThresholdFS[n].MinFreq_MHz,
@@ -177,10 +177,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             var thresholdFieldStrength = new ThresholdFieldStrength()
                             {
                                 Freq_MHz = fmtvTerra[i].FreqAssgn_MHz,
-                                System_type = fmtvTerra[i].System_type,
-                                StaClass = fmtvTerra[i].StnClass,
+                                System_type = fndThresholdFS[n].System_type,
+                                StaClass = fndThresholdFS[n].StaClass,
                                 ThresholdFS = thresholdFS,
-                                IsDigital = fmtvTerra[i].IsDigital == "TRUE" ? true : false,
+                                IsDigital = fndThresholdFS[n].IsDigital,
                                 Height_m = fndThresholdFS[n].Height_m,
                                 Time_pc = fndThresholdFS[n].Time_pc,
                                 MinFreq_MHz = fndThresholdFS[n].MinFreq_MHz,
@@ -189,14 +189,14 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
                             if (typeThresholdFS == TypeThresholdFS.OnlyBroadcastingService)
                             {
-                                if (arrThresholdFieldStrength.Find(x => x.Freq_MHz == fmtvTerra[i].FreqAssgn_MHz && x.StaClass == fmtvTerra[i].StnClass && x.System_type == fmtvTerra[i].System_type) == null)
+                                if (arrThresholdFieldStrength.Find(x => x.MinFreq_MHz == fndThresholdFS[n].MinFreq_MHz && x.MaxFreq_MHz == fndThresholdFS[n].MaxFreq_MHz && x.StaClass == fndThresholdFS[n].StaClass && x.System_type == fndThresholdFS[n].System_type && x.IsDigital == fndThresholdFS[n].IsDigital) == null)
                                 {
                                     arrThresholdFieldStrength.Add(thresholdFieldStrength);
                                 }
                             }
                             else if (typeThresholdFS == TypeThresholdFS.All)
                             {
-                                if (arrThresholdFieldStrength.Find(x => x.Freq_MHz == fmtvTerra[i].FreqAssgn_MHz && x.StaClass == fmtvTerra[i].StnClass && x.System_type == fndThresholdFS[n].System_type) == null)
+                                if (arrThresholdFieldStrength.Find(x => x.MinFreq_MHz == fndThresholdFS[n].MinFreq_MHz && x.MaxFreq_MHz == fndThresholdFS[n].MaxFreq_MHz && x.StaClass == fndThresholdFS[n].StaClass && x.System_type == fndThresholdFS[n].System_type) == null)
                                 {
                                     arrThresholdFieldStrength.Add(thresholdFieldStrength);
                                 }
