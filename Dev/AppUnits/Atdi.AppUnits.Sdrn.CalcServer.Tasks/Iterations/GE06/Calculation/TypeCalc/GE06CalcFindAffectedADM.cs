@@ -402,7 +402,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                     if (earthGeometricService.CheckHitting(in checkHittingArgs))
                                     {
                                         serviseAdm.Add(adm);
-                                        AddServiceToResult(AffectedADMResult, adm, services);
+                                        //AddServiceToResult(AffectedADMResult, adm, services);
                                     }
                                 }
                             }

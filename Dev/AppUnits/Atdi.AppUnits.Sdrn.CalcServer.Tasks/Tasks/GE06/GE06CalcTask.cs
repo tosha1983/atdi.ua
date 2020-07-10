@@ -221,7 +221,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                         .SetValue(c => c.Name, allotmentOrAssignmentResult.Name)
                         .SetValue(c => c.Polar, allotmentOrAssignmentResult.Polar)
                         .SetValue(c => c.TypeTable, allotmentOrAssignmentResult.TypeTable)
-                        .SetValue(c => c.Gn06ResultId, gn06ResultId);
+                        .SetValue(c => c.Gn06ResultId, gn06ResultId)
+                        .SetValueAsJson<CountoursPoint[]>(c => c.CountoursPoints, allotmentOrAssignmentResult.CountoursPoints);
                     var keyinsertQueryGn06AllotmentOrAssignmentResult = _calcDbScope.Executor.Execute<CALC.IGn06AllotmentOrAssignmentResult_PK>(insertQueryGn06AllotmentOrAssignmentResult);
                 }
             }

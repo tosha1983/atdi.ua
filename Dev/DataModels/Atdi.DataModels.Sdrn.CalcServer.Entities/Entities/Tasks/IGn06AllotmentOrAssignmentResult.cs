@@ -29,5 +29,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks
         float? ErpV_dbW { get; set; }
         string AntennaDirectional { get; set; }
         string AdmRefId { get; set; }
+        // string == CountoursPoint[]
+        string CountoursPoints { get; set; }
     }
 }
