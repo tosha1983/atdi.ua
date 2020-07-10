@@ -21,6 +21,15 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
     public static class GE06CalcFindAffectedADM
     {
 
+
+        private static void FillFieldStrength(FmtvTerra[] arrFmtvTerra, int thresholdFieldStrength)
+        {
+            for (int j = 0; j < arrFmtvTerra.Length; j++)
+            {
+                arrFmtvTerra[j].FS = thresholdFieldStrength;
+            }
+        }
+
         /// <summary>
         /// Поиск для администраций, которые попали в контер 1000 км всех затронутых служб и соотвествующих им пороговых значений напряженности поля
         /// </summary>
@@ -54,6 +63,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 var maxFreq_MHz = triggerInformationTemp.MaxFreq_MHz;
                 var staClass = triggerInformationTemp.StaClass;
                 var systemType = triggerInformationTemp.System_type;
+                var fs = (int)triggerInformationTemp.ThresholdFS;
 
                 for (int n = 0; n < SizeBufferFindAdministrations; n++)
                 {
@@ -65,6 +75,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             FmtvTerra[] brificNV = LoadDataBrific.LoadBroadcastingService_NV(admTemp, minFreq_MHz, maxFreq_MHz, staClass);
                             if ((brificNV != null) && (brificNV.Length > 0))
                             {
+                                FillFieldStrength(brificNV, fs);
                                 selectedDataFromBrific.AddRange(brificNV);
                             }
                             break;
@@ -72,6 +83,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             var brificNR = LoadDataBrific.LoadBroadcastingService_NR(admTemp, minFreq_MHz, maxFreq_MHz, staClass);
                             if ((brificNR != null) && (brificNR.Length > 0))
                             {
+                                FillFieldStrength(brificNR, fs);
                                 selectedDataFromBrific.AddRange(brificNR);
                             }
                             break;
@@ -79,6 +91,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             var brificNS = LoadDataBrific.LoadBroadcastingService_NS(admTemp, minFreq_MHz, maxFreq_MHz, staClass);
                             if ((brificNS != null) && (brificNS.Length > 0))
                             {
+                                FillFieldStrength(brificNS, fs);
                                 selectedDataFromBrific.AddRange(brificNS);
                             }
                             break;
@@ -86,6 +99,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             var brificNT = LoadDataBrific.LoadBroadcastingService_NT(admTemp, minFreq_MHz, maxFreq_MHz, staClass);
                             if ((brificNT != null) && (brificNT.Length > 0))
                             {
+                                FillFieldStrength(brificNT, fs);
                                 selectedDataFromBrific.AddRange(brificNT);
                             }
                             break;
@@ -93,6 +107,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             var brificNA = LoadDataBrific.LoadBroadcastingService_NA(admTemp, minFreq_MHz, maxFreq_MHz, staClass);
                             if ((brificNA != null) && (brificNA.Length > 0))
                             {
+                                FillFieldStrength(brificNA, fs);
                                 selectedDataFromBrific.AddRange(brificNA);
                             }
                             break;
@@ -100,6 +115,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             var brificNB = LoadDataBrific.LoadBroadcastingService_NB(admTemp, minFreq_MHz, maxFreq_MHz, staClass);
                             if ((brificNB != null) && (brificNB.Length > 0))
                             {
+                                FillFieldStrength(brificNB, fs);
                                 selectedDataFromBrific.AddRange(brificNB);
                             }
                             break;
@@ -107,6 +123,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             var brificXN = LoadDataBrific.LoadBroadcastingService_XN(admTemp, minFreq_MHz, maxFreq_MHz, staClass);
                             if ((brificXN != null) && (brificXN.Length > 0))
                             {
+                                FillFieldStrength(brificXN, fs);
                                 selectedDataFromBrific.AddRange(brificXN);
                             }
                             break;
@@ -114,6 +131,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             var brificYN = LoadDataBrific.LoadBroadcastingService_XN(admTemp, minFreq_MHz, maxFreq_MHz, staClass);
                             if ((brificYN != null) && (brificYN.Length > 0))
                             {
+                                FillFieldStrength(brificYN, fs);
                                 selectedDataFromBrific.AddRange(brificYN);
                             }
                             break;
@@ -121,6 +139,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             var brificZC = LoadDataBrific.LoadBroadcastingService_ZC(admTemp, minFreq_MHz, maxFreq_MHz, staClass);
                             if ((brificZC != null) && (brificZC.Length > 0))
                             {
+                                FillFieldStrength(brificZC, fs);
                                 selectedDataFromBrific.AddRange(brificZC);
                             }
                             break;
@@ -128,6 +147,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             var brificXG = LoadDataBrific.LoadBroadcastingService_ZC(admTemp, minFreq_MHz, maxFreq_MHz, staClass);
                             if ((brificXG != null) && (brificXG.Length > 0))
                             {
+                                FillFieldStrength(brificXG, fs);
                                 selectedDataFromBrific.AddRange(brificXG);
                             }
                             break;
@@ -135,6 +155,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             var brificAB = LoadDataBrific.LoadNavigationServices_AB(admTemp, minFreq_MHz, maxFreq_MHz, staClass);
                             if ((brificAB != null) && (brificAB.Length > 0))
                             {
+                                FillFieldStrength(brificAB, fs);
                                 selectedDataFromBrific.AddRange(brificAB);
                             }
                             break;
@@ -142,6 +163,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             var brificAA8 = LoadDataBrific.LoadNavigationServices_AA8(admTemp, minFreq_MHz, maxFreq_MHz, staClass);
                             if ((brificAA8 != null) && (brificAA8.Length > 0))
                             {
+                                FillFieldStrength(brificAA8, fs);
                                 selectedDataFromBrific.AddRange(brificAA8);
                             }
                             break;
@@ -149,6 +171,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             var brificBD = LoadDataBrific.LoadNavigationServices_BD(admTemp, minFreq_MHz, maxFreq_MHz, staClass);
                             if ((brificBD != null) && (brificBD.Length > 0))
                             {
+                                FillFieldStrength(brificBD, fs);
                                 selectedDataFromBrific.AddRange(brificBD);
                             }
                             break;
@@ -156,6 +179,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             var brificBA = LoadDataBrific.LoadNavigationServices_BA(admTemp, minFreq_MHz, maxFreq_MHz, staClass);
                             if ((brificBA != null) && (brificBA.Length > 0))
                             {
+                                FillFieldStrength(brificBA, fs);
                                 selectedDataFromBrific.AddRange(brificBA);
                             }
                             break;
@@ -163,6 +187,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             var brificFF = LoadDataBrific.LoadFixedServices_FF(admTemp, minFreq_MHz, maxFreq_MHz, staClass);
                             if ((brificFF != null) && (brificFF.Length > 0))
                             {
+                                FillFieldStrength(brificFF, fs);
                                 selectedDataFromBrific.AddRange(brificFF);
                             }
                             break;
@@ -170,6 +195,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             var brificFN = LoadDataBrific.LoadFixedServices_FN(admTemp, minFreq_MHz, maxFreq_MHz, staClass);
                             if ((brificFN != null) && (brificFN.Length > 0))
                             {
+                                FillFieldStrength(brificFN, fs);
                                 selectedDataFromBrific.AddRange(brificFN);
                             }
                             break;
@@ -177,6 +203,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             var brificFK = LoadDataBrific.LoadFixedServices_FK(admTemp, minFreq_MHz, maxFreq_MHz, staClass);
                             if ((brificFK != null) && (brificFK.Length > 0))
                             {
+                                FillFieldStrength(brificFK, fs);
                                 selectedDataFromBrific.AddRange(brificFK);
                             }
                             break;
@@ -184,6 +211,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             var brificMU = LoadDataBrific.LoadMobileServices_MU(admTemp, minFreq_MHz, maxFreq_MHz, staClass);
                             if ((brificMU != null) && (brificMU.Length > 0))
                             {
+                                FillFieldStrength(brificMU, fs);
                                 selectedDataFromBrific.AddRange(brificMU);
                             }
                             break;
@@ -191,6 +219,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             var brificM1 = LoadDataBrific.LoadMobileServices_M1(admTemp, minFreq_MHz, maxFreq_MHz, staClass);
                             if ((brificM1 != null) && (brificM1.Length > 0))
                             {
+                                FillFieldStrength(brificM1, fs);
                                 selectedDataFromBrific.AddRange(brificM1);
                             }
                             break;
@@ -198,6 +227,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             var brific_RA = LoadDataBrific.LoadMobileServices_RA(admTemp, minFreq_MHz, maxFreq_MHz, staClass);
                             if ((brific_RA != null) && (brific_RA.Length > 0))
                             {
+                                FillFieldStrength(brific_RA, fs);
                                 selectedDataFromBrific.AddRange(brific_RA);
                             }
                             break;
@@ -205,6 +235,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             var brificM2 = LoadDataBrific.LoadMobileServices_M2(admTemp, minFreq_MHz, maxFreq_MHz, staClass);
                             if ((brificM2 != null) && (brificM2.Length > 0))
                             {
+                                FillFieldStrength(brificM2, fs);
                                 selectedDataFromBrific.AddRange(brificM2);
                             }
                             break;
@@ -212,6 +243,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             var brificXA = LoadDataBrific.LoadMobileServices_XA(admTemp, minFreq_MHz, maxFreq_MHz, staClass);
                             if ((brificXA != null) && (brificXA.Length > 0))
                             {
+                                FillFieldStrength(brificXA, fs);
                                 selectedDataFromBrific.AddRange(brificXA);
                             }
                             break;
@@ -219,6 +251,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             var brificXM = LoadDataBrific.LoadMobileServices_XM(admTemp, minFreq_MHz, maxFreq_MHz, staClass);
                             if ((brificXM != null) && (brificXM.Length > 0))
                             {
+                                FillFieldStrength(brificXM, fs);
                                 selectedDataFromBrific.AddRange(brificXM);
                             }
                             break;
@@ -226,6 +259,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             var brificMA = LoadDataBrific.LoadMobileServices_MA(admTemp, minFreq_MHz, maxFreq_MHz, staClass);
                             if ((brificMA != null) && (brificMA.Length > 0))
                             {
+                                FillFieldStrength(brificMA, fs);
                                 selectedDataFromBrific.AddRange(brificMA);
                             }
                             break;
@@ -233,6 +267,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             var brificMT = LoadDataBrific.LoadMobileServices_MT(admTemp, minFreq_MHz, maxFreq_MHz, staClass);
                             if ((brificMT != null) && (brificMT.Length > 0))
                             {
+                                FillFieldStrength(brificMT, fs);
                                 selectedDataFromBrific.AddRange(brificMT);
                             }
                             break;
@@ -535,7 +570,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             gn06Service.CalcBarycenterGE06(in broadcastingCalcBarycenterGE06, ref pointEarthGeometricBarycenter);
 
 
-            var thresholdFieldStrengths = ClarifyAffectedServicesFromBrific(thresholdFieldStrengthsPrimaryServices, thresholdFieldStrengthsAnotherServices, out FmtvTerra[] outArrFmtvTerra, pointEarthGeometricBarycenter, idwmService, out List<string> adm1000);
+            //var thresholdFieldStrengths = ClarifyAffectedServicesFromBrific(thresholdFieldStrengthsPrimaryServices, thresholdFieldStrengthsAnotherServices, out FmtvTerra[] outArrFmtvTerra, pointEarthGeometricBarycenter, idwmService, out List<string> adm1000);
 
             try
             {
@@ -591,7 +626,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
                 // 3. Определение затронутых других первичных служб 
 
-                //var thresholdFieldStrengths = ClarifyAffectedServicesFromBrific(thresholdFieldStrengthsAnotherServices, out FmtvTerra[] outArrFmtvTerra, pointEarthGeometricBarycenter, idwmService);
+                var thresholdFieldStrengths = ClarifyAffectedServicesFromBrific(thresholdFieldStrengthsPrimaryServices, thresholdFieldStrengthsAnotherServices, out FmtvTerra[] outArrFmtvTerra, pointEarthGeometricBarycenter, idwmService, out List<string> admList1000);
                 //var thresholdFieldStrengths = thresholdFieldStrengthsAnotherServices; //на самом деле тут найдем все затронутые сервисы
 
 
@@ -655,10 +690,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     //earthGeometricService.CheckHitting(in CheckHittingArgs);
 
                     // функция по формированию контуров
-                    ge06CalcResult.ContoursResult = GenerateAdministrationContour(countoursPointExtendedBuffer, indexForCountoursPointExtendedBuffer, countoursPoint1000, adm1000);
+                    ge06CalcResult.ContoursResult = GenerateAdministrationContour(countoursPointExtendedBuffer, indexForCountoursPointExtendedBuffer, countoursPoint1000, admList1000);
 
                     // функция по формированию администраций
-                    ge06CalcResult.AffectedADMResult = GenerateAdministration(countoursPointExtendedBuffer, indexForCountoursPointExtendedBuffer, outArrFmtvTerra, earthGeometricService);
+                    ge06CalcResult.AffectedADMResult = GenerateAdministration(countoursPointExtendedBuffer, indexForCountoursPointExtendedBuffer, outArrFmtvTerra, admList1000, earthGeometricService);
 
                 }
             }
