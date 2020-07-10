@@ -53,7 +53,17 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             admList1000 = new List<string>();
             // создаем массив для хранения сведений о всех администрациях, которые попадают в радиус 1000 км от точки pointEarthGeometricBarycenter
             var allFindAdministrations = new IdwmDataModel.AdministrationsResult[1000];
+
+            var admBaryCenter = idwmService.GetADMByPoint(new IdwmDataModel.Point()
+            {
+                 Longitude_dec = pointEarthGeometricBarycenter.Longitude,
+                  Latitude_dec = pointEarthGeometricBarycenter.Latitude
+            });
+
             idwmService.GetADMByPointAndDistance(in pointCalc, ref allFindAdministrations, out int SizeBufferFindAdministrations);
+            allFindAdministrations[SizeBufferFindAdministrations] = new IdwmDataModel.AdministrationsResult();
+            allFindAdministrations[SizeBufferFindAdministrations].Administration = admBaryCenter;
+
             var selectedDataFromBrific = new List<FmtvTerra>();
             var allThresholdFieldStrength = new List<ThresholdFieldStrength>();
             for (int j = 0; j < thresholdFieldStrengthsAnotherServices.Count; j++)
@@ -65,10 +75,13 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 var systemType = triggerInformationTemp.System_type;
                 var fs = (int)triggerInformationTemp.ThresholdFS;
 
-                for (int n = 0; n < SizeBufferFindAdministrations; n++)
+                for (int n = 0; n < SizeBufferFindAdministrations+1; n++)
                 {
                     var admTemp = allFindAdministrations[n].Administration;
-                    admList1000.Add(admTemp);
+                    if (!admList1000.Contains(admTemp))
+                    {
+                        admList1000.Add(admTemp);
+                    }
                     switch (systemType)
                     {
                         case "NV":
@@ -591,14 +604,14 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
             for (int v = 0; v < thresholdFieldStrengthsICSMAllotmentsAll.Length; v++)
             {
-                if (thresholdFieldStrengthsAnotherServices.Find(x => x.Freq_MHz == thresholdFieldStrengthsICSMAllotmentsAll[v].Freq_MHz && x.StaClass == thresholdFieldStrengthsICSMAllotmentsAll[v].StaClass && x.IsDigital == thresholdFieldStrengthsICSMAllotmentsAll[v].IsDigital) == null)
+                if (thresholdFieldStrengthsAnotherServices.Find(x => x.Freq_MHz == thresholdFieldStrengthsICSMAllotmentsAll[v].Freq_MHz && x.StaClass == thresholdFieldStrengthsICSMAllotmentsAll[v].StaClass && x.System_type == thresholdFieldStrengthsICSMAllotmentsAll[v].System_type) == null)
                 {
                     thresholdFieldStrengthsAnotherServices.Add(thresholdFieldStrengthsICSMAllotmentsAll[v]);
                 }
             }
             for (int v = 0; v < thresholdFieldStrengthsICSMAssignmentsAll.Length; v++)
             {
-                if (thresholdFieldStrengthsAnotherServices.Find(x => x.Freq_MHz == thresholdFieldStrengthsICSMAssignmentsAll[v].Freq_MHz && x.StaClass == thresholdFieldStrengthsICSMAssignmentsAll[v].StaClass && x.IsDigital == thresholdFieldStrengthsICSMAssignmentsAll[v].IsDigital) == null)
+                if (thresholdFieldStrengthsAnotherServices.Find(x => x.Freq_MHz == thresholdFieldStrengthsICSMAssignmentsAll[v].Freq_MHz && x.StaClass == thresholdFieldStrengthsICSMAssignmentsAll[v].StaClass && x.System_type == thresholdFieldStrengthsICSMAllotmentsAll[v].System_type) == null)
                 {
                     thresholdFieldStrengthsAnotherServices.Add(thresholdFieldStrengthsICSMAssignmentsAll[v]);
                 }

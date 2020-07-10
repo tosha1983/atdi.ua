@@ -59,26 +59,40 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             ///список затронутых служб для Allotments
             if (broadcastingAllotment != null)
             {
-                var fndThresholdFS = CalcThresholdFieldStrength(broadcastingAllotment.Target.Freq_MHz, broadcastingAllotment.AdminData.StnClass, typeThresholdFS, broadcastingAllotment.AdminData.IsDigital);
+                var fndThresholdFS = CalcThresholdFieldStrength(broadcastingAllotment.EmissionCharacteristics.Freq_MHz, broadcastingAllotment.AdminData.StnClass, typeThresholdFS, broadcastingAllotment.AdminData.IsDigital);
                 if (fndThresholdFS != null)
                 {
-                    thresholdFS = fndThresholdFS.ThresholdFS;
+                    for (int n = 0; n < fndThresholdFS.Count(); n++)
+                    {
+                        thresholdFS = fndThresholdFS[n].ThresholdFS;
 
-                    var thresholdFieldStrength = new ThresholdFieldStrength()
-                    {
-                        Freq_MHz = broadcastingAllotment.Target.Freq_MHz,
-                        StaClass = broadcastingAllotment.AdminData.StnClass,
-                        System_type = fndThresholdFS.System_type,
-                        ThresholdFS = thresholdFS,
-                        IsDigital = broadcastingAllotment.AdminData.IsDigital,
-                        Height_m = fndThresholdFS.Height_m,
-                        Time_pc = fndThresholdFS.Time_pc,
-                        MinFreq_MHz = fndThresholdFS.MinFreq_MHz,
-                        MaxFreq_MHz = fndThresholdFS.MaxFreq_MHz
-                    };
-                    if (arrThresholdFieldStrength.Find(x => x.Freq_MHz == broadcastingAllotment.Target.Freq_MHz && x.StaClass == broadcastingAllotment.AdminData.StnClass && x.IsDigital == broadcastingAllotment.AdminData.IsDigital) == null)
-                    {
-                        arrThresholdFieldStrength.Add(thresholdFieldStrength);
+                        var thresholdFieldStrength = new ThresholdFieldStrength()
+                        {
+                            Freq_MHz = broadcastingAllotment.EmissionCharacteristics.Freq_MHz,
+                            StaClass = fndThresholdFS[n].StaClass,
+                            System_type = fndThresholdFS[n].System_type,
+                            ThresholdFS = thresholdFS,
+                            IsDigital = broadcastingAllotment.AdminData.IsDigital,
+                            Height_m = fndThresholdFS[n].Height_m,
+                            Time_pc = fndThresholdFS[n].Time_pc,
+                            MinFreq_MHz = fndThresholdFS[n].MinFreq_MHz,
+                            MaxFreq_MHz = fndThresholdFS[n].MaxFreq_MHz
+                        };
+
+                        if (typeThresholdFS == TypeThresholdFS.OnlyBroadcastingService)
+                        {
+                            if (arrThresholdFieldStrength.Find(x => x.Freq_MHz == broadcastingAllotment.EmissionCharacteristics.Freq_MHz && x.StaClass == broadcastingAllotment.AdminData.StnClass && x.IsDigital == broadcastingAllotment.AdminData.IsDigital) == null)
+                            {
+                                arrThresholdFieldStrength.Add(thresholdFieldStrength);
+                            }
+                        }
+                        else if (typeThresholdFS == TypeThresholdFS.All)
+                        {
+                            if (arrThresholdFieldStrength.Find(x => x.Freq_MHz == broadcastingAllotment.EmissionCharacteristics.Freq_MHz && x.StaClass == broadcastingAllotment.AdminData.StnClass && x.System_type== fndThresholdFS[n].System_type) == null)
+                            {
+                                arrThresholdFieldStrength.Add(thresholdFieldStrength);
+                            }
+                        }
                     }
                 }
             }
@@ -100,26 +114,41 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             {
                 for (int i = 0; i < broadcastingAssignment.Length; i++)
                 {
-                    var fndThresholdFS = CalcThresholdFieldStrength(broadcastingAssignment[i].Target.Freq_MHz, broadcastingAssignment[i].AdmData.StnClass, typeThresholdFS, broadcastingAssignment[i].AdmData.IsDigital);
+                    var fndThresholdFS = CalcThresholdFieldStrength(broadcastingAssignment[i].EmissionCharacteristics.Freq_MHz, broadcastingAssignment[i].AdmData.StnClass, typeThresholdFS, broadcastingAssignment[i].AdmData.IsDigital);
                     if (fndThresholdFS != null)
                     {
-                        thresholdFS = fndThresholdFS.ThresholdFS;
+                        for (int n = 0; n < fndThresholdFS.Count(); n++)
+                        {
+                            thresholdFS = fndThresholdFS[n].ThresholdFS;
 
-                        var thresholdFieldStrength = new ThresholdFieldStrength()
-                        {
-                            Freq_MHz = broadcastingAssignment[i].Target.Freq_MHz,
-                            StaClass = broadcastingAssignment[i].AdmData.StnClass,
-                            System_type = fndThresholdFS.System_type,
-                            ThresholdFS = thresholdFS,
-                            IsDigital = broadcastingAssignment[i].AdmData.IsDigital,
-                            Height_m = fndThresholdFS.Height_m,
-                            Time_pc = fndThresholdFS.Time_pc,
-                            MinFreq_MHz = fndThresholdFS.MinFreq_MHz,
-                            MaxFreq_MHz = fndThresholdFS.MaxFreq_MHz
-                        };
-                        if (arrThresholdFieldStrength.Find(x => x.Freq_MHz == broadcastingAssignment[i].Target.Freq_MHz && x.StaClass == broadcastingAssignment[i].AdmData.StnClass && x.IsDigital == broadcastingAssignment[i].AdmData.IsDigital) == null)
-                        {
-                            arrThresholdFieldStrength.Add(thresholdFieldStrength);
+                            var thresholdFieldStrength = new ThresholdFieldStrength()
+                            {
+                                Freq_MHz = broadcastingAssignment[i].EmissionCharacteristics.Freq_MHz,
+                                StaClass = fndThresholdFS[n].StaClass,
+                                System_type = fndThresholdFS[n].System_type,
+                                ThresholdFS = thresholdFS,
+                                IsDigital = broadcastingAssignment[i].AdmData.IsDigital,
+                                Height_m = fndThresholdFS[n].Height_m,
+                                Time_pc = fndThresholdFS[n].Time_pc,
+                                MinFreq_MHz = fndThresholdFS[n].MinFreq_MHz,
+                                MaxFreq_MHz = fndThresholdFS[n].MaxFreq_MHz
+                            };
+
+
+                            if (typeThresholdFS == TypeThresholdFS.OnlyBroadcastingService)
+                            {
+                                if (arrThresholdFieldStrength.Find(x => x.Freq_MHz == broadcastingAssignment[i].EmissionCharacteristics.Freq_MHz && x.StaClass == broadcastingAssignment[i].AdmData.StnClass && x.IsDigital == broadcastingAssignment[i].AdmData.IsDigital) == null)
+                                {
+                                    arrThresholdFieldStrength.Add(thresholdFieldStrength);
+                                }
+                            }
+                            else if (typeThresholdFS == TypeThresholdFS.All)
+                            {
+                                if (arrThresholdFieldStrength.Find(x => x.Freq_MHz == broadcastingAssignment[i].EmissionCharacteristics.Freq_MHz && x.StaClass == broadcastingAssignment[i].AdmData.StnClass && x.System_type == fndThresholdFS[n].System_type) == null)
+                                {
+                                    arrThresholdFieldStrength.Add(thresholdFieldStrength);
+                                }
+                            }
                         }
                     }
                 }
@@ -141,24 +170,37 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     var fndThresholdFS = CalcThresholdFieldStrength(fmtvTerra[i].FreqAssgn_MHz, fmtvTerra[i].StnClass, typeThresholdFS, fmtvTerra[i].IsDigital=="TRUE" ? true : false);
                     if (fndThresholdFS != null)
                     {
-                        thresholdFS = fndThresholdFS.ThresholdFS;
-
-                        var thresholdFieldStrength = new ThresholdFieldStrength()
+                        for (int n = 0; n < fndThresholdFS.Count(); n++)
                         {
-                            Freq_MHz = fmtvTerra[i].FreqAssgn_MHz,
-                            System_type = fmtvTerra[i].System_type,
-                            StaClass = fmtvTerra[i].StnClass,
-                            ThresholdFS = thresholdFS,
-                            IsDigital = fmtvTerra[i].IsDigital == "TRUE" ? true : false,
-                            Height_m = fndThresholdFS.Height_m,
-                            Time_pc = fndThresholdFS.Time_pc,
-                            MinFreq_MHz = fndThresholdFS.MinFreq_MHz,
-                            MaxFreq_MHz = fndThresholdFS.MaxFreq_MHz
-                        };
+                            thresholdFS = fndThresholdFS[n].ThresholdFS;
 
-                        if (arrThresholdFieldStrength.Find(x => x.Freq_MHz == fmtvTerra[i].FreqAssgn_MHz && x.StaClass == fmtvTerra[i].StnClass && x.System_type == fmtvTerra[i].System_type) == null)
-                        {
-                            arrThresholdFieldStrength.Add(thresholdFieldStrength);
+                            var thresholdFieldStrength = new ThresholdFieldStrength()
+                            {
+                                Freq_MHz = fmtvTerra[i].FreqAssgn_MHz,
+                                System_type = fmtvTerra[i].System_type,
+                                StaClass = fmtvTerra[i].StnClass,
+                                ThresholdFS = thresholdFS,
+                                IsDigital = fmtvTerra[i].IsDigital == "TRUE" ? true : false,
+                                Height_m = fndThresholdFS[n].Height_m,
+                                Time_pc = fndThresholdFS[n].Time_pc,
+                                MinFreq_MHz = fndThresholdFS[n].MinFreq_MHz,
+                                MaxFreq_MHz = fndThresholdFS[n].MaxFreq_MHz
+                            };
+
+                            if (typeThresholdFS == TypeThresholdFS.OnlyBroadcastingService)
+                            {
+                                if (arrThresholdFieldStrength.Find(x => x.Freq_MHz == fmtvTerra[i].FreqAssgn_MHz && x.StaClass == fmtvTerra[i].StnClass && x.System_type == fmtvTerra[i].System_type) == null)
+                                {
+                                    arrThresholdFieldStrength.Add(thresholdFieldStrength);
+                                }
+                            }
+                            else if (typeThresholdFS == TypeThresholdFS.All)
+                            {
+                                if (arrThresholdFieldStrength.Find(x => x.Freq_MHz == fmtvTerra[i].FreqAssgn_MHz && x.StaClass == fmtvTerra[i].StnClass && x.System_type == fndThresholdFS[n].System_type) == null)
+                                {
+                                    arrThresholdFieldStrength.Add(thresholdFieldStrength);
+                                }
+                            }
                         }
                     }
                 }
@@ -167,19 +209,19 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         }
 
 
-        public static ThresholdFieldStrengthParameters CalcThresholdFieldStrength(double freq_MHz, string staClass, TypeThresholdFS typeThresholdFS, bool? isDigitalTemp = true)
+        public static ThresholdFieldStrengthParameters[] CalcThresholdFieldStrength(double freq_MHz, string staClass, TypeThresholdFS typeThresholdFS, bool? isDigitalTemp = true)
         {
-            ThresholdFieldStrengthParameters thresholdFieldStrengthParameters = null;
+            List<ThresholdFieldStrengthParameters> thresholdFieldStrengthParameters = new List<ThresholdFieldStrengthParameters>();
             bool isDigital = isDigitalTemp.GetValueOrDefault();
             if (typeThresholdFS== TypeThresholdFS.All)
             {
-                thresholdFieldStrengthParameters = ThresholdFieldStrengthParameters.Find(x => x.MinFreq_MHz <= freq_MHz && x.MaxFreq_MHz >= freq_MHz && x.IsDigital == isDigital && x.StaClass == staClass);
+                thresholdFieldStrengthParameters = ThresholdFieldStrengthParameters.FindAll(x => x.MinFreq_MHz <= freq_MHz && x.MaxFreq_MHz >= freq_MHz);
             }
             else if (typeThresholdFS == TypeThresholdFS.OnlyBroadcastingService)
             {
-                thresholdFieldStrengthParameters = ThresholdFieldStrengthParameters.Find(x => x.MinFreq_MHz <= freq_MHz && x.MaxFreq_MHz >= freq_MHz && x.IsDigital == isDigital && x.StaClass == staClass && (x.StaClass == "BT" || x.StaClass == "BC"));
+                thresholdFieldStrengthParameters = ThresholdFieldStrengthParameters.FindAll(x => x.MinFreq_MHz <= freq_MHz && x.MaxFreq_MHz >= freq_MHz && x.IsDigital == isDigital && x.StaClass == staClass && (x.StaClass == "BT" || x.StaClass == "BC"));
             }
-            return thresholdFieldStrengthParameters;
+            return thresholdFieldStrengthParameters.ToArray();
         }
 
         /// <summary>

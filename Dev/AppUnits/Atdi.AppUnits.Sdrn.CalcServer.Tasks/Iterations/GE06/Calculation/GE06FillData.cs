@@ -77,8 +77,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     AdmRefId = broadcastingContextBase.Allotments.AdminData.AdmRefId,
                     Polar = broadcastingContextBase.Allotments.EmissionCharacteristics.Polar.ToString(),
                     Name = broadcastingContextBase.Allotments.AllotmentParameters.Name,
-                    Longitude_DEC = broadcastingContextBase.Allotments.Target.Lon_Dec,
-                    Latitude_DEC = broadcastingContextBase.Allotments.Target.Lat_Dec,
+                    //Longitude_DEC = broadcastingContextBase.Allotments.Target.Lon_Dec,
+                    //Latitude_DEC = broadcastingContextBase.Allotments.Target.Lat_Dec,
                     Freq_MHz = broadcastingContextBase.Allotments.EmissionCharacteristics.Freq_MHz,
                     TypeTable = "Allotment",
                     CountoursPoints = ConvertAreaPointToCountoursPoint(broadcastingContextBase.Allotments.AllotmentParameters.Contur)
@@ -120,8 +120,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     AdmRefId = broadcastingContextBase.Allotments.AdminData.AdmRefId,
                     Polar = broadcastingContextBase.Allotments.EmissionCharacteristics.Polar.ToString(),
                     Name = broadcastingContextBase.Allotments.AllotmentParameters.Name,
-                    Longitude_DEC = broadcastingContextBase.Allotments.Target.Lon_Dec,
-                    Latitude_DEC = broadcastingContextBase.Allotments.Target.Lat_Dec,
+                    //Longitude_DEC = broadcastingContextBase.Allotments.Target.Lon_Dec,
+                    //Latitude_DEC = broadcastingContextBase.Allotments.Target.Lat_Dec,
                     Freq_MHz = broadcastingContextBase.Allotments.EmissionCharacteristics.Freq_MHz,
                     TypeTable = "Allotment",
                     CountoursPoints = ConvertAreaPointToCountoursPoint(broadcastingContextBase.Allotments.AllotmentParameters.Contur)
