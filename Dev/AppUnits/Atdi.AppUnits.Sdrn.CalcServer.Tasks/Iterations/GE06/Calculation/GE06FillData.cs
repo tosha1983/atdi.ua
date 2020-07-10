@@ -67,7 +67,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         ErpH_dbW = assignment.EmissionCharacteristics.ErpH_dBW,
                         ErpV_dbW = assignment.EmissionCharacteristics.ErpV_dBW,
                         MaxEffHeight_m = assignment.AntennaCharacteristics.MaxEffHeight_m,
-                         
+                        CountoursPoints = new CountoursPoint[0]
                     };
                 }
 
@@ -107,7 +107,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         AntennaDirectional = assignment.AntennaCharacteristics.Direction.ToString(),
                         ErpH_dbW = assignment.EmissionCharacteristics.ErpH_dBW,
                         ErpV_dbW = assignment.EmissionCharacteristics.ErpV_dBW,
-                        MaxEffHeight_m = assignment.AntennaCharacteristics.MaxEffHeight_m
+                        MaxEffHeight_m = assignment.AntennaCharacteristics.MaxEffHeight_m,
+                        CountoursPoints = new CountoursPoint[0]
                     };
                 }
             }
