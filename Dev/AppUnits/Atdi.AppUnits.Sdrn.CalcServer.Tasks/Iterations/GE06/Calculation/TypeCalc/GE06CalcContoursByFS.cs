@@ -124,6 +124,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
                 try
                 {
+                    int currPercentComplete = 0;
                     int indexForCountoursPointExtendedBuffer = 0;
 
                     pointEarthGeometricsResult = pointEarthGeometricPool.Take();
@@ -228,6 +229,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                 countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].broadcastingTypeCalculation = BroadcastingTypeCalculation.FieldStrength;
 
                                 indexForCountoursPointExtendedBuffer++;
+
+                                UpdateProgress.UpdatePercentComplete100(ge06CalcData.Ge06TaskParameters.FieldStrength.Length, sizeResultBuffer, i, k, ref currPercentComplete, "ContoursByFS", taskContext);
                             }
                         }
                     }
@@ -247,6 +250,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         }
                         ge06CalcResult.AffectedADMResult = FillAffectedADMResult.Fill(ge06CalcResult.ContoursResult, string.Join(",", affectedServices));
                     }
+                    UpdateProgress.UpdatePercentComplete100(ref currPercentComplete, "ContoursByFS", taskContext);
                 }
                 finally
                 {

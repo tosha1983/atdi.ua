@@ -131,6 +131,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
             try
             {
+                int currPercentComplete = 0;
                 pointEarthGeometricsResult = pointEarthGeometricPool.Take();
                 countoursPointExtendedBuffer = countoursPointExtendedPool.Take();
                 contoursResultBuffer = contoursResultPool.Take();
@@ -200,6 +201,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].broadcastingTypeCalculation = BroadcastingTypeCalculation.Distance;
 
                             indexForCountoursPointExtendedBuffer++;
+
+                            UpdateProgress.UpdatePercentComplete100(ge06CalcData.Ge06TaskParameters.Distances.Length, sizeResultBuffer, i, k, ref currPercentComplete, "ContoursByDistance", taskContext);
                         }
                     }
                     //или на функции CreateContourFromContureByDistance если у нас есть BroadcastingAllotment 
@@ -280,6 +283,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                         countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].broadcastingTypeCalculation = BroadcastingTypeCalculation.Distance;
 
                                         indexForCountoursPointExtendedBuffer++;
+
+                                        UpdateProgress.UpdatePercentComplete100(ge06CalcData.Ge06TaskParameters.Distances.Length, sizeResultBuffer, i, k, ref currPercentComplete, "ContoursByDistance", taskContext);
                                     }
                                 }
                             }
@@ -301,6 +306,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     }
                     ge06CalcResult.AffectedADMResult = FillAffectedADMResult.Fill(ge06CalcResult.ContoursResult, string.Join(",", affectedServices));
                 }
+                UpdateProgress.UpdatePercentComplete100(ref currPercentComplete, "ContoursByDistance", taskContext);
             }
             finally
             {
@@ -318,6 +324,9 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 }
             }
             GE06FillData.FillAllotmentOrAssignmentResult(broadcastingContextBase, ref ge06CalcResult);
+
         }
+
     }
 }
+

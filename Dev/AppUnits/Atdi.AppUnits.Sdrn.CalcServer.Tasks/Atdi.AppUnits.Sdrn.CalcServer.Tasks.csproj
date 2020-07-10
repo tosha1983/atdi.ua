@@ -55,6 +55,7 @@
     <Compile Include="Iterations\GE06\Calculation\FieldStrength\CalcFieldStrengthInPointGE06.cs" />
     <Compile Include="Iterations\GE06\Calculation\FieldStrength\CalcFieldStrengthInPointFromAllotmentGE06.cs" />
     <Compile Include="Iterations\GE06\Calculation\FieldStrength\CalcFieldStrengthInPointFromAssignmentGE06.cs" />
+    <Compile Include="Iterations\GE06\Calculation\Progress\UpdateProgress.cs" />
     <Compile Include="Iterations\GE06\Calculation\PropagationModel\GE06PropagationModel.cs" />
     <Compile Include="Iterations\GE06\Calculation\GE06FillData.cs" />
     <Compile Include="Iterations\GE06\Calculation\Report\FillContoursResultOnFS.cs" />
