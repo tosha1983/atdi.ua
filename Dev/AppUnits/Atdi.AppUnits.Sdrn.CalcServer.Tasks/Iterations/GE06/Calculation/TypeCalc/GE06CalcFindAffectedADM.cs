@@ -415,10 +415,55 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             }
             return AffectedADMResult;
         }
-        private static void AddServiceToResult(in AffectedADMResult[] affectedADMResults, string adm, string servis)
+        private static void AddServiceToResult(AffectedADMResult[] affectedADMResults, string adm, string servis, string typeAffect)
         {
-
-
+            for (int i = 0; i < affectedADMResults.Length; i++)
+            {
+                var currAdm = affectedADMResults[i].ADM;
+                if (currAdm == adm)
+                {
+                    var affectedServices = affectedADMResults[i].AffectedServices;
+                    if (!affectedServices.Contains(servis))
+                    {
+                        if ((affectedServices != null) && (affectedServices.Length > 0))
+                        {
+                            if (!affectedServices.EndsWith(";"))
+                            {
+                                affectedServices += $"{affectedServices};{servis}";
+                            }
+                            if (affectedServices.EndsWith(";"))
+                            {
+                                affectedServices += $"{affectedServices}{servis}";
+                            }
+                        }
+                        else
+                        {
+                            affectedServices = servis;
+                        }
+                    }
+                    var typeAffected = affectedADMResults[i].TypeAffected;
+                    if (!typeAffected.Contains(typeAffect))
+                    {
+                        if ((typeAffected != null) && (typeAffected.Length > 0))
+                        {
+                            if (!typeAffected.EndsWith(";"))
+                            {
+                                typeAffected += $"{typeAffected};{typeAffect}";
+                            }
+                            if (typeAffected.EndsWith(";"))
+                            {
+                                typeAffected += $"{typeAffected}{typeAffect}";
+                            }
+                        }
+                        else
+                        {
+                            typeAffected = typeAffect;
+                        }
+                    }
+                    affectedADMResults[i].AffectedServices = affectedServices;
+                    affectedADMResults[i].TypeAffected = typeAffected;
+                }
+            }
         }
 
         /// <summary>
