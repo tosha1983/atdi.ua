@@ -66,7 +66,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         AntennaDirectional = assignment.AntennaCharacteristics.Direction.ToString(),
                         ErpH_dbW = assignment.EmissionCharacteristics.ErpH_dBW,
                         ErpV_dbW = assignment.EmissionCharacteristics.ErpV_dBW,
-                        MaxEffHeight_m = assignment.AntennaCharacteristics.MaxEffHeight_m
+                        MaxEffHeight_m = assignment.AntennaCharacteristics.MaxEffHeight_m,
+                        CountoursPoints = new CountoursPoint[0]
                     };
                 }
 
@@ -80,6 +81,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     Latitude_DEC = broadcastingContextBase.Allotments.Target.Lat_Dec,
                     Freq_MHz = broadcastingContextBase.Allotments.EmissionCharacteristics.Freq_MHz,
                     TypeTable = "Allotment",
+                    CountoursPoints = ConvertAreaPointToCountoursPoint(broadcastingContextBase.Allotments.AllotmentParameters.Contur)
                     //MaxEffHeight_m =  ?????????????????????????
                     //ErpV_dbW =  ?????????????????????????
                     //ErpH_dbW=  ?????????????????????????
@@ -105,7 +107,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         AntennaDirectional = assignment.AntennaCharacteristics.Direction.ToString(),
                         ErpH_dbW = assignment.EmissionCharacteristics.ErpH_dBW,
                         ErpV_dbW = assignment.EmissionCharacteristics.ErpV_dBW,
-                        MaxEffHeight_m = assignment.AntennaCharacteristics.MaxEffHeight_m
+                        MaxEffHeight_m = assignment.AntennaCharacteristics.MaxEffHeight_m,
+                        CountoursPoints = new CountoursPoint[0]
                     };
                 }
             }
@@ -121,6 +124,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     Latitude_DEC = broadcastingContextBase.Allotments.Target.Lat_Dec,
                     Freq_MHz = broadcastingContextBase.Allotments.EmissionCharacteristics.Freq_MHz,
                     TypeTable = "Allotment",
+                    CountoursPoints = ConvertAreaPointToCountoursPoint(broadcastingContextBase.Allotments.AllotmentParameters.Contur)
                     //MaxEffHeight_m =  ?????????????????????????
                     //ErpV_dbW =  ?????????????????????????
                     //ErpH_dbW=  ?????????????????????????
@@ -129,6 +133,21 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             }
 
             ge06CalcResult.AllotmentOrAssignmentResult = allotmentOrAssignmentResults;
+        }
+
+
+        private static CountoursPoint[] ConvertAreaPointToCountoursPoint(AreaPoint[] areaPoints)
+        {
+            var countoursPoints = new List<CountoursPoint>();
+            for (int i = 0; i < areaPoints.Length; i++)
+            {
+                countoursPoints.Add(new CountoursPoint()
+                {
+                    Lon_DEC = areaPoints[i].Lon_DEC,
+                    Lat_DEC = areaPoints[i].Lat_DEC
+                });
+            }
+            return countoursPoints.ToArray();
         }
     }
 }

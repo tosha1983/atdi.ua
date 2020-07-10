@@ -19,6 +19,7 @@ using Atdi.DataModels.Sdrn.DeepServices.GN06;
 using Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks;
 using Atdi.WpfControls.EntityOrm.Controls;
 using Atdi.Icsm.Plugins.GE06Calc.Environment;
+using ST = Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings;
 
 namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
 {
@@ -50,6 +51,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
         private MapDrawingData _currentMapData;
 
         private IEventHandlerToken<Events.OnCreatedCalcTask> _onCreatedCalcTaskToken;
+        private IEventHandlerToken<Events.OnRunedCalcTask> _onRunedCalcTaskToken;
         public View(
             IObjectReader objectReader,
             ICommandDispatcher commandDispatcher,
@@ -83,6 +85,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
             };
 
             _onCreatedCalcTaskToken = _eventBus.Subscribe<Events.OnCreatedCalcTask>(this.OnCreatedCalcTaskHandle);
+            _onRunedCalcTaskToken = _eventBus.Subscribe<Events.OnRunedCalcTask>(this.OnRunedCalcTaskHandle);
         }
         public CalcTaskModel CurrentCalcTaskCard
         {
@@ -475,6 +478,118 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
             };
             _commandDispatcher.Send(modifier);
         }
+        private void OnRunedCalcTaskHandle(Events.OnRunedCalcTask data)
+        {
+
+
+
+            //_objectReader.Read<byte?>().By(new GetResultStatusById { ResultId = data.Id });
+
+
+            //var resultId = _objectReader.Read<long?>().By(new ST.Queries.GetResultIdByTaskId { TaskId = data.Id });
+            //if (resultId.HasValue)
+            //    _starter.Start<VM.GE06TaskResult.View>(isModal: true, c => c.ResultId = resultId.Value);
+            //else
+            //{
+            //    this._logger.Exception(Exceptions.GE06Client, new Exception($"For selected task not found information in ICalcResults!"));
+            //}
+        }
+
+
+        //private static IPointFieldStrengthResult WaitForCalcResult(long calcTaskId, long calcResultId)
+        //{
+        //    var cancel = false;
+        //    var resultObject = dataLayer.ProxyInstanceFactory.Create<IPointFieldStrengthResult>();
+        //    resultObject.RESULT = dataLayer.ProxyInstanceFactory.Create<ICalcResult>();
+
+        //    while (!cancel)
+        //    {
+        //        System.Threading.Thread.Sleep(5 * 1000);
+
+        //        var checkQuery = dataLayer.GetBuilder<ICalcResult>()
+        //            .Read()
+        //            .Select(c => c.Id)
+        //            .Select(c => c.CreatedDate)
+        //            .Select(c => c.StatusCode)
+        //            .Select(c => c.StatusName)
+        //            .Select(c => c.StatusNote)
+        //            .Select(c => c.StartTime)
+        //            .Select(c => c.FinishTime)
+        //            .Filter(c => c.Id, calcResultId);
+
+        //        cancel = executor.ExecuteAndFetch(checkQuery, reader =>
+        //        {
+        //            if (reader.Count == 0 || !reader.Read())
+        //            {
+        //                throw new InvalidOperationException($"A calc result not found by ID #{calcResultId}");
+        //            }
+
+        //            var status = (CalcResultStatusCode)reader.GetValue(c => c.StatusCode);
+        //            var statusNote = reader.GetValue(c => c.StatusNote);
+
+        //            Console.WriteLine($"  {DateTime.Now.ToLongTimeString()} - checked the calc result status with ID #{calcResultId} and task ID #{calcTaskId}: {status}, '{statusNote}'");
+
+        //            if (status != CalcResultStatusCode.Pending
+        //            && status != CalcResultStatusCode.Processing)
+        //            {
+        //                resultObject.RESULT.Id = reader.GetValue(c => c.Id);
+        //                resultObject.ResultId = reader.GetValue(c => c.Id);
+        //                resultObject.RESULT.StatusCode = reader.GetValue(c => c.StatusCode);
+        //                resultObject.RESULT.StatusName = reader.GetValue(c => c.StatusName);
+        //                resultObject.RESULT.StatusNote = reader.GetValue(c => c.StatusNote);
+        //                resultObject.RESULT.CreatedDate = reader.GetValue(c => c.CreatedDate);
+        //                resultObject.RESULT.StartTime = reader.GetValue(c => c.StartTime);
+        //                resultObject.RESULT.FinishTime = reader.GetValue(c => c.FinishTime);
+
+        //                var resultQuery = dataLayer.GetBuilder<IPointFieldStrengthResult>()
+        //                    .Read()
+        //                    .Select(c => c.FS_dBuVm)
+        //                    .Select(c => c.Level_dBm)
+        //                    .Filter(c => c.ResultId, calcResultId);
+
+        //                var rs = executor.ExecuteAndRead(resultQuery, r =>
+        //                {
+        //                    resultObject.FS_dBuVm = r.GetValue(c => c.FS_dBuVm);
+        //                    resultObject.Level_dBm = r.GetValue(c => c.Level_dBm);
+        //                    return resultObject;
+        //                });
+
+        //            }
+
+        //            if (status == CalcResultStatusCode.Failed)
+        //            {
+        //                Console.WriteLine($"The calc task ID #{calcTaskId}(result ID #{calcResultId}) is Failed: {statusNote}");
+        //                return true;
+        //                //throw new InvalidOperationException($"Error calculation task with ID #{calcTaskId}(result ID #{calcResultId}): {statusNote}");
+        //            }
+
+        //            if (status == CalcResultStatusCode.Completed)
+        //            {
+
+
+        //                Console.WriteLine($"The calc task ID #{calcTaskId}(result ID #{calcResultId}) is Completed: {statusNote}");
+        //                return true;
+        //            }
+
+        //            if (status == CalcResultStatusCode.Aborted)
+        //            {
+        //                Console.WriteLine($"The calc task ID #{calcTaskId}(result ID #{calcResultId}) is Aborted: {statusNote}");
+        //                return true;
+        //            }
+
+        //            if (status == CalcResultStatusCode.Canceled)
+        //            {
+        //                Console.WriteLine($"The calc task ID #{calcTaskId}(result ID #{calcResultId}) is Canceled: {statusNote}");
+        //                return true;
+        //            }
+
+        //            return false;
+        //        });
+        //    }
+
+        //    return resultObject;
+        //}
+
         private BroadcastingContext GetBroadcastingContext()
         {
             var allotmentBrific = new BroadcastingAllotment();
@@ -659,6 +774,8 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
         {
             _onCreatedCalcTaskToken?.Dispose();
             _onCreatedCalcTaskToken = null;
+            _onRunedCalcTaskToken?.Dispose();
+            _onRunedCalcTaskToken = null;
         }
     }
 }

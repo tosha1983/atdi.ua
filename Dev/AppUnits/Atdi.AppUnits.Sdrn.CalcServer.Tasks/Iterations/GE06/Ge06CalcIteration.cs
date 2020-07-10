@@ -143,7 +143,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                         _idwmService);
                 if (ge06CalcResultsForICSM.AffectedADMResult != null)
                 {
-                    affectedADMResult.AddRange(ge06CalcResultsForICSM.AffectedADMResult);
+                    DistinctListAdmAffected(affectedADMResult, ge06CalcResultsForICSM.AffectedADMResult);
+                    //affectedADMResult.AddRange(ge06CalcResultsForICSM.AffectedADMResult);
                 }
                 if (ge06CalcResultsForICSM.ContoursResult != null)
                 {
@@ -170,7 +171,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                         _idwmService);
                 if (ge06CalcResultsForBRIFIC.AffectedADMResult != null)
                 {
-                    affectedADMResult.AddRange(ge06CalcResultsForBRIFIC.AffectedADMResult);
+                    DistinctListAdmAffected(affectedADMResult, ge06CalcResultsForBRIFIC.AffectedADMResult);
+                    //affectedADMResult.AddRange(ge06CalcResultsForBRIFIC.AffectedADMResult);
                 }
                 if (ge06CalcResultsForBRIFIC.ContoursResult != null)
                 {
@@ -198,7 +200,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                 _idwmService);
                 if (ge06CalcResultsForICSM.AffectedADMResult != null)
                 {
-                    affectedADMResult.AddRange(ge06CalcResultsForICSM.AffectedADMResult);
+                    DistinctListAdmAffected(affectedADMResult, ge06CalcResultsForICSM.AffectedADMResult);
+                    //affectedADMResult.AddRange(ge06CalcResultsForICSM.AffectedADMResult);
                 }
                 if (ge06CalcResultsForICSM.ContoursResult != null)
                 {
@@ -225,7 +228,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                  _idwmService);
                 if (ge06CalcResultsForBRIFIC.AffectedADMResult != null)
                 {
-                    affectedADMResult.AddRange(ge06CalcResultsForBRIFIC.AffectedADMResult);
+                    DistinctListAdmAffected(affectedADMResult, ge06CalcResultsForBRIFIC.AffectedADMResult);
+                    //affectedADMResult.AddRange(ge06CalcResultsForBRIFIC.AffectedADMResult);
                 }
                 if (ge06CalcResultsForBRIFIC.ContoursResult != null)
                 {
@@ -254,7 +258,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                     _idwmService);
                 if (ge06CalcResultsForICSM.AffectedADMResult != null)
                 {
-                    affectedADMResult.AddRange(ge06CalcResultsForICSM.AffectedADMResult);
+                    DistinctListAdmAffected(affectedADMResult, ge06CalcResultsForICSM.AffectedADMResult);
+                    //affectedADMResult.AddRange(ge06CalcResultsForICSM.AffectedADMResult);
                 }
                 if (ge06CalcResultsForICSM.ContoursResult != null)
                 {
@@ -283,7 +288,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 
                 if (ge06CalcResultsForBRIFIC.AffectedADMResult != null)
                 {
-                    affectedADMResult.AddRange(ge06CalcResultsForBRIFIC.AffectedADMResult);
+                    DistinctListAdmAffected(affectedADMResult, ge06CalcResultsForBRIFIC.AffectedADMResult);
+                    //affectedADMResult.AddRange(ge06CalcResultsForBRIFIC.AffectedADMResult);
                 }
                 if (ge06CalcResultsForBRIFIC.ContoursResult != null)
                 {
@@ -302,5 +308,20 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             return ge06CalcResults;
         }
 
+        /// <summary>
+        /// Проверка affectedADMResults на дубликаты
+        /// </summary>
+        /// <param name="AllAffectedADMResults"></param>
+        /// <param name="affectedADMResults"></param>
+        private void DistinctListAdmAffected(List<AffectedADMResult> AllAffectedADMResults, AffectedADMResult[] affectedADMResults)
+        {
+            for (int i = 0; i < affectedADMResults.Length; i++)
+            {
+                if (AllAffectedADMResults.Find(c=>c.ADM== affectedADMResults[i].ADM && c.AffectedServices == affectedADMResults[i].AffectedServices && c.TypeAffected == affectedADMResults[i].TypeAffected)==null)
+                {
+                    AllAffectedADMResults.Add(affectedADMResults[i]);
+                }
+            }
+        }
     }
 }

@@ -178,6 +178,15 @@ namespace Atdi.Icsm.Plugins.GE06Calc.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Contoures.
+        /// </summary>
+        public static string Contoures {
+            get {
+                return ResourceManager.GetString("Contoures", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Contour type.
         /// </summary>
         public static string ContourType {
@@ -439,7 +448,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Prepare  context.
+        ///   Looks up a localized string similar to Prepare context.
         /// </summary>
         public static string PrepareContext {
             get {
@@ -516,6 +525,15 @@ namespace Atdi.Icsm.Plugins.GE06Calc.Properties {
         public static string Source {
             get {
                 return ResourceManager.GetString("Source", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stations and allotments.
+        /// </summary>
+        public static string StationsAndAllotments {
+            get {
+                return ResourceManager.GetString("StationsAndAllotments", resourceCulture);
             }
         }
         
