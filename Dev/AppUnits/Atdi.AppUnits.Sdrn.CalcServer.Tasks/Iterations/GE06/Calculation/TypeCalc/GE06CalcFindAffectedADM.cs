@@ -28,8 +28,9 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         /// <param name="outArrFmtvTerra">Выходной массив сведений о затронутых службах из БД BRIFIC</param>
         /// <param name="pointEarthGeometricBarycenter">Точка барицентра</param>
         /// <param name="idwmService">сервис idwm</param>
+        /// 
         /// <returns></returns>
-        public static ThresholdFieldStrength[] ClarifyAffectedServicesFromBrific(List<ThresholdFieldStrength> thresholdFieldStrengthsPrimaryServices, List<ThresholdFieldStrength> thresholdFieldStrengthsAnotherServices, out FmtvTerra[] outArrFmtvTerra, PointEarthGeometric pointEarthGeometricBarycenter, Idwm.IIdwmService idwmService)
+        public static ThresholdFieldStrength[] ClarifyAffectedServicesFromBrific(List<ThresholdFieldStrength> thresholdFieldStrengthsPrimaryServices, List<ThresholdFieldStrength> thresholdFieldStrengthsAnotherServices, out FmtvTerra[] outArrFmtvTerra, PointEarthGeometric pointEarthGeometricBarycenter, Idwm.IIdwmService idwmService, out List<string> admList1000)
         {
             var pointCalc = new IdwmDataModel.PointAndDistance()
             {
@@ -40,7 +41,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     Latitude_dec = pointEarthGeometricBarycenter.Latitude,
                 }
             };
-
+            admList1000 = new List<string>();
             // создаем массив для хранения сведений о всех администрациях, которые попадают в радиус 1000 км от точки pointEarthGeometricBarycenter
             var allFindAdministrations = new IdwmDataModel.AdministrationsResult[1000];
             idwmService.GetADMByPointAndDistance(in pointCalc, ref allFindAdministrations, out int SizeBufferFindAdministrations);
@@ -57,6 +58,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 for (int n = 0; n < SizeBufferFindAdministrations; n++)
                 {
                     var admTemp = allFindAdministrations[n].Administration;
+                    admList1000.Add(admTemp);
                     switch (systemType)
                     {
                         case "NV":
@@ -248,9 +250,59 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         /// <param name="countoursPointExtendeds"></param>
         /// <param name="sizeCountoursPointExtendedBuffer"></param>
         /// <returns></returns>
-        public static ContoursResult[] GenerateAdministrationContour(CountoursPointExtended[] countoursPointExtendeds, int sizeCountoursPointExtendedBuffer)
+        public static ContoursResult[] GenerateAdministrationContour(CountoursPointExtended[] countoursPointExtendeds, int sizeCountoursPointExtendedBuffer, CountoursPoint[] countoursPoints1000, List<string> admList)
         {
-            return null;
+            List<ContoursResult> contoursResultList = new List<ContoursResult>();
+             List<int> IdList = new List<int>();// обычно до до 10 елементов
+            List<CountoursPoint> countoursPointsICSMLocal = new List<CountoursPoint>(); // можно через пул после отладки
+            // расчет количества елементов в массиве результатов 
+            for (int i = 0; sizeCountoursPointExtendedBuffer > i; i++)
+            {
+                var Id = countoursPointExtendeds[i].Id;
+                if (!(IdList.Exists(x => x == Id))) { IdList.Add(Id); }
+            }
+            foreach (int Id in IdList)
+            {
+                // ID соответсвует контуру, т.е. сервису первичной технологии
+                foreach (string adm in admList)
+                {
+                    countoursPointsICSMLocal = new List<CountoursPoint>();
+                    for (int i = 0; sizeCountoursPointExtendedBuffer > i; i++)
+                    {
+                        if ((countoursPointExtendeds[i].Id == Id) && (countoursPointExtendeds[i].administration == adm))
+                        {
+                            countoursPointsICSMLocal.Add(countoursPointExtendeds[i]);
+                        }
+                    }
+                    // заполнение последующих параметров
+                    if (countoursPointsICSMLocal.Count != 0)
+                    {
+                        var arrCountoursPoint = new CountoursPoint[countoursPointsICSMLocal.Count];
+                        for (int x = 0; x < countoursPointsICSMLocal.Count; x++)
+                        {
+                            arrCountoursPoint[x] = new CountoursPoint()
+                            {
+                                Distance = countoursPointsICSMLocal[x].Distance,
+                                FS = countoursPointsICSMLocal[x].FS,
+                                Height = countoursPointsICSMLocal[x].Height,
+                                Lat_DEC = countoursPointsICSMLocal[x].Lat_DEC,
+                                Lon_DEC = countoursPointsICSMLocal[x].Lon_DEC,
+                                PointType = countoursPointsICSMLocal[x].PointType
+                            };
+                        }
+                        ContoursResult contourICSM = new ContoursResult
+                        {
+                            AffectedADM = adm,
+                            CountoursPoints = arrCountoursPoint,
+                            PointsCount = arrCountoursPoint.Length,
+                            ContourType = ContourType.Affected,
+                            FS = arrCountoursPoint[0].FS
+                        };
+                        contoursResultList.Add(contourICSM);
+                    }
+                }
+            }
+            return contoursResultList.ToArray();
         }
         /// <summary>
         /// Результат по администрациям
@@ -259,9 +311,51 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         /// <param name="sizeCountoursPointExtendedBuffer"></param>
         /// <param name="arrFmtvTerra"></param>
         /// <returns></returns>
-        public static AffectedADMResult[] GenerateAdministration(CountoursPointExtended[] countoursPointExtendeds, int sizeCountoursPointExtendedBuffer, FmtvTerra[] arrFmtvTerra)
+        public static AffectedADMResult[] GenerateAdministration(CountoursPointExtended[] countoursPointExtendeds, int sizeCountoursPointExtendedBuffer, FmtvTerra[] arrFmtvTerra, List<string>adm1000)
         {
+            if ((countoursPointExtendeds is null)||(countoursPointExtendeds.Length==0)){ return null;}
+            List<int> IdList = new List<int>();// обычно до до 10 елементов
+            // расчет количества елементов в массиве результатов 
+            List<CountoursPointExtended> ContursServices = new List<CountoursPointExtended>();
+            int currentId = countoursPointExtendeds[0].Id;
+            // учитываем что в массиве все идет последовательно.!!!
+            List<List<string>> allAdmtoServices = new List<List<string>>();
+            for (int i = 0; sizeCountoursPointExtendedBuffer > i; i++)
+            {
+                var Id = countoursPointExtendeds[i].Id;
+                if (currentId != Id)
+                { 
+                    if (ContursServices.Count >= 3)
+                    { // тут у нас есть контур в ContursServices
+                        // надо проверить есть ли в данном контуре что 
+                        List<string> serviseAdm = new List<string>();
+                        var services = ContursServices[0].Service;
+                        var H = ContursServices[0].Height;
+                        var FS = ContursServices[0].FS;
+                        for (int j = 0; j < arrFmtvTerra.Length; j++)
+                        {
+                            if ((arrFmtvTerra[j].System_type == services)&&(arrFmtvTerra[j].FS == FS))
+                            { // только при совпадении
+                                var adm = arrFmtvTerra[j].Administration;
+                                if (!(serviseAdm.Exists(x => x == adm)))
+                                {
+                                    // администрация данной службы не задета. надо проверить не попала ли точка
+                                    // тут нужно определить пересечение 
+                                    if (true)
+                                    {
+                                        serviseAdm.Add(adm);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    ContursServices = new List<CountoursPointExtended>();
+                    currentId = Id;
+                }
+                ContursServices.Add(countoursPointExtendeds[i]);
+            }
             return null;
+            
         }
 
 
@@ -414,7 +508,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             gn06Service.CalcBarycenterGE06(in broadcastingCalcBarycenterGE06, ref pointEarthGeometricBarycenter);
 
 
-            var thresholdFieldStrengths = ClarifyAffectedServicesFromBrific(thresholdFieldStrengthsPrimaryServices, thresholdFieldStrengthsAnotherServices, out FmtvTerra[] outArrFmtvTerra, pointEarthGeometricBarycenter, idwmService);
+            var thresholdFieldStrengths = ClarifyAffectedServicesFromBrific(thresholdFieldStrengthsPrimaryServices, thresholdFieldStrengthsAnotherServices, out FmtvTerra[] outArrFmtvTerra, pointEarthGeometricBarycenter, idwmService, out List<string> adm1000);
 
             try
             {
@@ -462,12 +556,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         Longitude_dec = pointEarthGeometricsResult[k].Longitude,
                         Latitude_dec = pointEarthGeometricsResult[k].Latitude
                     };
-                    var adm = idwmService.GetADMByPoint(pointForCalc);
                     countoursPoint1000[k] = new CountoursPoint();
                     countoursPoint1000[k].Lon_DEC = pointForCalc.Longitude_dec.Value;
                     countoursPoint1000[k].Lat_DEC = pointForCalc.Latitude_dec.Value;
                     countoursPoint1000[k].PointType = PointType.Affected;
-                    if (!admPotentiallyAffected_1000.Contains(adm)){admPotentiallyAffected_1000.Add(adm);}
                 }
 
                 // 3. Определение затронутых других первичных служб 
@@ -513,29 +605,30 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             for (int t = 0; t < sizeResultBufferICSM; t++)
                             {
                                 // предварительное сохранение результатов
-                                countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer] = new CountoursPointExtended();
-                                countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].Lon_DEC = pointEarthGeometricsResult[t].Longitude;
-                                countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].Lat_DEC = pointEarthGeometricsResult[t].Latitude;
-                                countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].Height = (int)arrTriggersFS[d].Height_m;
-                                countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].FS = (int)arrTriggersFS[d].ThresholdFS;
-                                countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].PointType = PointType.Affected;
+                                countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer] = new CountoursPointExtended
+                                {
+                                    Lon_DEC = pointEarthGeometricsResult[t].Longitude,
+                                    Lat_DEC = pointEarthGeometricsResult[t].Latitude,
+                                    Height = (int)arrTriggersFS[d].Height_m,
+                                    FS = (int)arrTriggersFS[d].ThresholdFS,
+                                    PointType = PointType.Affected,
+                                    broadcastingTypeCalculation = BroadcastingTypeCalculation.FieldStrength,
+                                    Id = indexResult,
+                                    Service = arrTriggersFS[d].StaClass
+                                };
                                 var adm = idwmService.GetADMByPoint(new IdwmDataModel.Point() { Longitude_dec = pointEarthGeometricsResult[t].Longitude, Latitude_dec = pointEarthGeometricsResult[t].Latitude });
                                 countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].administration = adm;
-                                countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].broadcastingTypeCalculation = BroadcastingTypeCalculation.FieldStrength;
-                                countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].Id = indexResult;
-                                countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].Service = arrTriggersFS[d].StaClass;
                                 indexForCountoursPointExtendedBuffer++;
                             }
                             indexResult++;
                         }
                     }
 
-
                     // пример вызова метода проаерки попадания точки в контур (входными данными являются переменная типа CheckHittingArgs)
                     //earthGeometricService.CheckHitting(in CheckHittingArgs);
 
                     // функция по формированию контуров
-                    ge06CalcResult.ContoursResult = GenerateAdministrationContour(countoursPointExtendedBuffer, indexForCountoursPointExtendedBuffer);
+                    ge06CalcResult.ContoursResult = GenerateAdministrationContour(countoursPointExtendedBuffer, indexForCountoursPointExtendedBuffer, countoursPoint1000, adm1000);
 
                     // функция по формированию администраций
                     ge06CalcResult.AffectedADMResult = GenerateAdministration(countoursPointExtendedBuffer, indexForCountoursPointExtendedBuffer, outArrFmtvTerra);
