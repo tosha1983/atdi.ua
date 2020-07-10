@@ -109,10 +109,12 @@
     <Compile Include="ViewModels\GE06TaskResult\Models\AffectedADMModel.cs" />
     <Compile Include="ViewModels\GE06TaskResult\Models\AllotmentOrAssignmentModel.cs" />
     <Compile Include="ViewModels\GE06TaskResult\Models\ContourModel.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\GetResultStatusById.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\GetResultStatusByIdExecutor.cs" />
     <Compile Include="ViewModels\GE06TaskResult\View.cs" />
     <Compile Include="ViewModels\GE06Task\Events\OnCreatedCalcTask.cs" />
     <Compile Include="ViewModels\GE06Task\Events\OnDeletedCalcTask.cs" />
-    <Compile Include="ViewModels\GE06Task\Events\OnRunCalcTask.cs" />
+    <Compile Include="ViewModels\GE06Task\Events\OnRunedCalcTask.cs" />
     <Compile Include="ViewModels\GE06Task\Models\AssignmentsAllotmentsModel.cs" />
     <Compile Include="ViewModels\GE06Task\Models\CalcTaskModel.cs" />
     <Compile Include="ViewModels\GE06Task\Models\ProjectMapsModel.cs" />

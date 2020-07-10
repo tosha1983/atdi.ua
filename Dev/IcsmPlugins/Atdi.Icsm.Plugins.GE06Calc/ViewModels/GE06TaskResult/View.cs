@@ -120,7 +120,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06TaskResult
                             }
                             catch (IOException ex)
                             {
-                                //MessageBox.Show("It wasn't possible to write the data to the disk." + ex.Message);
+                                _starter.ShowException(Exceptions.GE06Client, new Exception("It wasn't possible to write the data to the disk." + ex.Message));
                             }
                         }
                         var output = new List<string>();
@@ -156,6 +156,18 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06TaskResult
                     {
                         points.Add(MapsDrawingHelper.MakeDrawingPointForSensor(item.Longitude_DEC.Value, item.Latitude_DEC.Value, item.Name));
                     }
+
+                    if (item.CountoursPoints != null && item.CountoursPoints.Length > 0)
+                    {
+                        var polygonPoints = new List<Location>();
+
+                        item.CountoursPoints.ToList().ForEach(countourPoint =>
+                        {
+                            polygonPoints.Add(new Location() { Lat = countourPoint.Lat_DEC, Lon = countourPoint.Lon_DEC });
+                        });
+
+                        polygons.Add(new MapDrawingDataPolygon() { Points = polygonPoints.ToArray(), Color = System.Windows.Media.Colors.Red, Fill = System.Windows.Media.Colors.Red });
+                    }
                 }
             }
 
@@ -163,20 +175,23 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06TaskResult
             {
                 foreach (ContourModel item in this._currentContours)
                 {
-                    var polygonPoints = new List<Location>();
-
-                    item.CountoursPoints.ToList().ForEach(countourPoint =>
+                    if (item.CountoursPoints != null && item.CountoursPoints.Length > 0)
                     {
-                        string tooltip = $"Longitude = {countourPoint.Lon_DEC.ToString()}\nLatitude = {countourPoint.Lat_DEC.ToString()}\nFS = {countourPoint.FS}\nDistance = {countourPoint.Distance}\nHeight = {countourPoint.Height}\nStatus = {countourPoint.PointType.ToString()}";
+                        //var polygonPoints = new List<Location>();
 
-                        polygonPoints.Add(new Location() { Lat = countourPoint.Lat_DEC, Lon = countourPoint.Lon_DEC });
-                        if (countourPoint.PointType == DataModels.Sdrn.CalcServer.Internal.Iterations.PointType.Affected)
-                            points.Add(MapsDrawingHelper.MakeDrawingPointForCountourAffected(countourPoint.Lon_DEC, countourPoint.Lat_DEC, tooltip));
-                        else
-                            points.Add(MapsDrawingHelper.MakeDrawingPointForCountour(countourPoint.Lon_DEC, countourPoint.Lat_DEC, tooltip));
-                    });
+                        item.CountoursPoints.ToList().ForEach(countourPoint =>
+                        {
+                            string tooltip = $"Longitude = {countourPoint.Lon_DEC.ToString()}\nLatitude = {countourPoint.Lat_DEC.ToString()}\nFS = {countourPoint.FS}\nDistance = {countourPoint.Distance}\nHeight = {countourPoint.Height}\nStatus = {countourPoint.PointType.ToString()}";
 
-                    polygons.Add(new MapDrawingDataPolygon() { Points = polygonPoints.ToArray(), Color = System.Windows.Media.Colors.Red, Fill = System.Windows.Media.Colors.Red });
+                            //polygonPoints.Add(new Location() { Lat = countourPoint.Lat_DEC, Lon = countourPoint.Lon_DEC });
+                            if (countourPoint.PointType == DataModels.Sdrn.CalcServer.Internal.Iterations.PointType.Affected)
+                                points.Add(MapsDrawingHelper.MakeDrawingPointForCountourAffected(countourPoint.Lon_DEC, countourPoint.Lat_DEC, tooltip));
+                            else
+                                points.Add(MapsDrawingHelper.MakeDrawingPointForCountour(countourPoint.Lon_DEC, countourPoint.Lat_DEC, tooltip));
+                        });
+
+                        //polygons.Add(new MapDrawingDataPolygon() { Points = polygonPoints.ToArray(), Color = System.Windows.Media.Colors.Red, Fill = System.Windows.Media.Colors.Red });
+                    }
                 }
             }
 
