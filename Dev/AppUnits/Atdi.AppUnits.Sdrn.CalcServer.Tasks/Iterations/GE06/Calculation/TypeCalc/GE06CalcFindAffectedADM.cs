@@ -29,7 +29,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         /// <param name="pointEarthGeometricBarycenter">Точка барицентра</param>
         /// <param name="idwmService">сервис idwm</param>
         /// <returns></returns>
-        public static ThresholdFieldStrength[] ClarifyAffectedServicesFromBrific(List<ThresholdFieldStrength> thresholdFieldStrengthsAnotherServices, out FmtvTerra[] outArrFmtvTerra, PointEarthGeometric pointEarthGeometricBarycenter, Idwm.IIdwmService idwmService)
+        public static ThresholdFieldStrength[] ClarifyAffectedServicesFromBrific(List<ThresholdFieldStrength> thresholdFieldStrengthsPrimaryServices, List<ThresholdFieldStrength> thresholdFieldStrengthsAnotherServices, out FmtvTerra[] outArrFmtvTerra, PointEarthGeometric pointEarthGeometricBarycenter, Idwm.IIdwmService idwmService)
         {
             var pointCalc = new IdwmDataModel.PointAndDistance()
             {
@@ -45,6 +45,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             var allFindAdministrations = new IdwmDataModel.AdministrationsResult[1000];
             idwmService.GetADMByPointAndDistance(in pointCalc, ref allFindAdministrations, out int SizeBufferFindAdministrations);
             var selectedDataFromBrific = new List<FmtvTerra>();
+            var allThresholdFieldStrength = new List<ThresholdFieldStrength>();
             for (int j = 0; j < thresholdFieldStrengthsAnotherServices.Count; j++)
             {
                 var triggerInformationTemp = thresholdFieldStrengthsAnotherServices[j];
@@ -237,7 +238,9 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 }
             }
             outArrFmtvTerra = selectedDataFromBrific.ToArray();
-            return ThresholdFS.GetThresholdFieldStrengthByFmtvTerra(outArrFmtvTerra, TypeThresholdFS.All);
+            allThresholdFieldStrength.AddRange(ThresholdFS.GetThresholdFieldStrengthByFmtvTerra(outArrFmtvTerra, TypeThresholdFS.All));
+            allThresholdFieldStrength.AddRange(thresholdFieldStrengthsPrimaryServices);
+            return allThresholdFieldStrength.ToArray();
         }
         /// <summary>
         /// Результат по контурам
@@ -356,6 +359,26 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
             // Определение пороговых напряженностей для защиты всех служб в том числе радиовещательной службы
             // входными данными являются Allotments + Assignments[]
+
+            var thresholdFieldStrengthsPrimaryServices = new List<ThresholdFieldStrength>();
+            var thresholdFieldStrengthsICSMAllotmentPrimary = ThresholdFS.GetThresholdFieldStrengthByAllotments(broadcastingContextICSM.Allotments, TypeThresholdFS.OnlyBroadcastingService);
+            var thresholdFieldStrengthsICSMAssignmentsPrimary = ThresholdFS.GetThresholdFieldStrengthByAssignments(broadcastingContextICSM.Assignments, TypeThresholdFS.OnlyBroadcastingService);
+
+            for (int v = 0; v < thresholdFieldStrengthsICSMAllotmentPrimary.Length; v++)
+            {
+                if (thresholdFieldStrengthsPrimaryServices.Find(x => x.Freq_MHz == thresholdFieldStrengthsICSMAllotmentPrimary[v].Freq_MHz && x.StaClass == thresholdFieldStrengthsICSMAllotmentPrimary[v].StaClass && x.IsDigital == thresholdFieldStrengthsICSMAllotmentPrimary[v].IsDigital) == null)
+                {
+                    thresholdFieldStrengthsPrimaryServices.Add(thresholdFieldStrengthsICSMAllotmentPrimary[v]);
+                }
+            }
+            for (int v = 0; v < thresholdFieldStrengthsICSMAssignmentsPrimary.Length; v++)
+            {
+                if (thresholdFieldStrengthsPrimaryServices.Find(x => x.Freq_MHz == thresholdFieldStrengthsICSMAssignmentsPrimary[v].Freq_MHz && x.StaClass == thresholdFieldStrengthsICSMAssignmentsPrimary[v].StaClass && x.IsDigital == thresholdFieldStrengthsICSMAssignmentsPrimary[v].IsDigital) == null)
+                {
+                    thresholdFieldStrengthsPrimaryServices.Add(thresholdFieldStrengthsICSMAssignmentsPrimary[v]);
+                }
+            }
+
             var thresholdFieldStrengthsAnotherServices = new List<ThresholdFieldStrength>();
             var thresholdFieldStrengthsICSMAllotmentsAll = ThresholdFS.GetThresholdFieldStrengthByAllotments(broadcastingContextICSM.Allotments, TypeThresholdFS.All);
             var thresholdFieldStrengthsICSMAssignmentsAll = ThresholdFS.GetThresholdFieldStrengthByAssignments(broadcastingContextICSM.Assignments, TypeThresholdFS.All);
@@ -391,7 +414,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             gn06Service.CalcBarycenterGE06(in broadcastingCalcBarycenterGE06, ref pointEarthGeometricBarycenter);
 
 
-            var thresholdFieldStrengths = ClarifyAffectedServicesFromBrific(thresholdFieldStrengthsAnotherServices, out FmtvTerra[] outArrFmtvTerra, pointEarthGeometricBarycenter, idwmService);
+            var thresholdFieldStrengths = ClarifyAffectedServicesFromBrific(thresholdFieldStrengthsPrimaryServices, thresholdFieldStrengthsAnotherServices, out FmtvTerra[] outArrFmtvTerra, pointEarthGeometricBarycenter, idwmService);
 
             try
             {
