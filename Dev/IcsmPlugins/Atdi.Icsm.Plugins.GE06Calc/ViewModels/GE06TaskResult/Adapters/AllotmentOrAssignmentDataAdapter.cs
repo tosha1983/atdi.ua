@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Atdi.Contracts.Api.EntityOrm.WebClient;
 using CS_ES = Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks;
+using Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations;
 
 namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06TaskResult.Adapters
 {
@@ -32,7 +33,8 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06TaskResult.Adapters
                 c => c.ErpH_dbW,
                 c => c.ErpV_dbW,
                 c => c.AntennaDirectional,
-                c => c.AdmRefId)
+                c => c.AdmRefId,
+                c => c.CountoursPoints)
             .Filter(f => f.Gn06ResultId, ResultId);
         }
         protected override AllotmentOrAssignmentModel ReadData(IDataReader<CS_ES.IGn06AllotmentOrAssignmentResult> reader, int index)
@@ -52,7 +54,8 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06TaskResult.Adapters
                 ErpH_dbW = reader.GetValue(c => c.ErpH_dbW),
                 ErpV_dbW = reader.GetValue(c => c.ErpV_dbW),
                 AntennaDirectional = reader.GetValue(c => c.AntennaDirectional),
-                AdmRefId = reader.GetValue(c => c.AdmRefId)
+                AdmRefId = reader.GetValue(c => c.AdmRefId),
+                CountoursPoints = string.IsNullOrEmpty(reader.GetValue(c => c.CountoursPoints)) ? null : reader.GetValueAs<CountoursPoint[]>(c => c.CountoursPoints)
             };
         }
     }

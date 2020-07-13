@@ -19,6 +19,9 @@ using Atdi.DataModels.Sdrn.DeepServices.GN06;
 using Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks;
 using Atdi.WpfControls.EntityOrm.Controls;
 using Atdi.Icsm.Plugins.GE06Calc.Environment;
+using ST = Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings;
+using Atdi.DataModels.Sdrn.CalcServer.Entities;
+using Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Models;
 
 namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
 {
@@ -50,6 +53,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
         private MapDrawingData _currentMapData;
 
         private IEventHandlerToken<Events.OnCreatedCalcTask> _onCreatedCalcTaskToken;
+        private IEventHandlerToken<Events.OnRunedCalcTask> _onRunedCalcTaskToken;
         public View(
             IObjectReader objectReader,
             ICommandDispatcher commandDispatcher,
@@ -83,6 +87,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
             };
 
             _onCreatedCalcTaskToken = _eventBus.Subscribe<Events.OnCreatedCalcTask>(this.OnCreatedCalcTaskHandle);
+            _onRunedCalcTaskToken = _eventBus.Subscribe<Events.OnRunedCalcTask>(this.OnRunedCalcTaskHandle);
         }
         public CalcTaskModel CurrentCalcTaskCard
         {
@@ -220,7 +225,10 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                                         }
                                     }
                                 }
+                            }
 
+                            if (!string.IsNullOrEmpty(allotAssign.AdmRefId))
+                            {
                                 var allotsIcsm = _objectReader.Read<List<AssignmentsAllotmentsModel>>().By(new GetIcsmAllotmentsByAdmRefId { Adm_Ref_Id = allotAssign.AdmRefId });
                                 if (allotsIcsm != null)
                                 {
@@ -472,6 +480,70 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
             };
             _commandDispatcher.Send(modifier);
         }
+        private void OnRunedCalcTaskHandle(Events.OnRunedCalcTask data)
+        {
+            //_objectReader.Read<byte?>().By(new GetResultStatusById { ResultId = data.Id });
+
+
+            //var resultId = _objectReader.Read<long?>().By(new ST.Queries.GetResultIdByTaskId { TaskId = data.Id });
+            //if (resultId.HasValue)
+            //    WaitForCalcResult(data.Id, resultId.Value);
+            //else
+            //{
+            //    this._logger.Exception(Exceptions.GE06Client, new Exception($"For selected task not found information in ICalcResults!"));
+            //}
+        }
+        private void WaitForCalcResult(long calcTaskId, long calcResultId)
+        {
+            var cancel = false;
+            long eventId = 0;
+
+            while (!cancel)
+            {
+                System.Threading.Thread.Sleep(5 * 1000);
+
+                var status = _objectReader.Read<byte?>().By(new GetResultStatusById { ResultId = calcResultId });
+
+                if (status.HasValue)
+                {
+                    if (status == (byte)CalcResultStatusCode.Completed)
+                    {
+                        cancel = true;
+                        _starter.Start<VM.GE06TaskResult.View>(isModal: true, c => c.ResultId = calcResultId);
+                    }
+
+                    if (status == (byte)CalcResultStatusCode.Failed)
+                    {
+                        cancel = true;
+                    }
+                    if (status == (byte)CalcResultStatusCode.Aborted)
+                    {
+                        cancel = true;
+                    }
+
+                    if (status == (byte)CalcResultStatusCode.Canceled)
+                    {
+                        cancel = true;
+                    }
+                }
+                //Created = 0, // Фаза создания и подготовки окружения к запуску процесса расчета
+                //Pending = 1, // Фаза ожидания запуска процесса расчета
+                //Accepted = 2, // Фаза ожидания запуска процесса расчета
+                //Processing = 3, // Расчет выполняется
+                //Completed = 4, // Расчет завершен
+                //Canceled = 5, // Расчет был отменен по внешней причине
+                //Aborted = 6, // Расчет был прерван по внутреней причине
+                //Failed = 7  // Попытка запуска завершилась не удачей
+            }
+
+            var events = _objectReader.Read<CalcResultEventsModel[]>().By(new GetResultEventsByEventIdAndResultId { ResultId = calcResultId, EventId = eventId });
+            foreach (var item in events)
+            {
+                eventId = item.Id;
+            }
+
+        }
+
         private BroadcastingContext GetBroadcastingContext()
         {
             var allotmentBrific = new BroadcastingAllotment();
@@ -656,6 +728,8 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
         {
             _onCreatedCalcTaskToken?.Dispose();
             _onCreatedCalcTaskToken = null;
+            _onRunedCalcTaskToken?.Dispose();
+            _onRunedCalcTaskToken = null;
         }
     }
 }

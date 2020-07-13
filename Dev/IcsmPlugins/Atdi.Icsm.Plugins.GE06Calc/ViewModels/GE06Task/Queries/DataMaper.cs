@@ -58,9 +58,10 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
             assign.PlanEntry = StringConverter.ConvertToPlanEntryType(rs.GetI("PLAN_ENTRY"));
             assign.AssignmentCode = StringConverter.ConvertToAssignmentCodeType(rs.GetS("ASSGN_CODE"));
             assign.AdmAllotAssociatedId = rs.GetS("PLAN_TRG_ADM_REF_ID");
-            assign.SfnAllotAssociatedId = rs.GetS("SFN_IDENT");
-            assign.SfnId = rs.GetS("ALLOTM_SFN_IDENT");
+            assign.SfnAllotAssociatedId = rs.GetS("ALLOTM_SFN_IDENT");
+            assign.SfnId = rs.GetS("SFN_IDENT");
             assign.Freq_MHz = rs.GetD("FREQ");
+            assign.Polar = StringConverter.ConvertToPolarType(rs.GetS("POLARIZATION"));
             assign.ErpH_dBW = (float)rs.GetD("ERP_H");
             assign.ErpV_dBW = (float)rs.GetD("ERP_V");
             assign.RefNetworkConfig = StringConverter.ConvertToRefNetworkConfigType(rs.GetS("REF_PLAN_CFG"));

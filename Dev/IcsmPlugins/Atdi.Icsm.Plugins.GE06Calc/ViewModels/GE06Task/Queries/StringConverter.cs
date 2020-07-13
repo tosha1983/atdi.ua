@@ -22,15 +22,15 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
         }
         public static PlanEntryType ConvertToPlanEntryType(string value)
         {
-            if (value.Equals("SingleAssignment", StringComparison.OrdinalIgnoreCase))
+            if (value.Equals("SingleAssignment", StringComparison.OrdinalIgnoreCase) || value == "1")
                 return PlanEntryType.SingleAssignment;
-            else if (value.Equals("SinglSFNeAssignment", StringComparison.OrdinalIgnoreCase))
+            else if (value.Equals("SinglSFNeAssignment", StringComparison.OrdinalIgnoreCase) || value == "2")
                 return PlanEntryType.SFN;
-            else if (value.Equals("Allotment", StringComparison.OrdinalIgnoreCase))
+            else if (value.Equals("Allotment", StringComparison.OrdinalIgnoreCase) || value == "3")
                 return PlanEntryType.Allotment;
-            else if (value.Equals("AllotmentWithLinkedAssignmentAndSfn", StringComparison.OrdinalIgnoreCase))
+            else if (value.Equals("AllotmentWithLinkedAssignmentAndSfn", StringComparison.OrdinalIgnoreCase) || value == "4")
                 return PlanEntryType.AllotmentWithLinkedAssignmentAndSfn;
-            else if (value.Equals("AllotmentWithSingleLinkedAssignmentAndNoSfn", StringComparison.OrdinalIgnoreCase))
+            else if (value.Equals("AllotmentWithSingleLinkedAssignmentAndNoSfn", StringComparison.OrdinalIgnoreCase) || value == "5")
                 return PlanEntryType.AllotmentWithSingleLinkedAssignmentAndNoSfn;
             else
                 return PlanEntryType.Unknown;

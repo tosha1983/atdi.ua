@@ -17,12 +17,12 @@ namespace Atdi.Test.CalcServer
             //# высота антенны в последней точке профиля (b)f, м
             double hb_m = 30;//50;
             //# частотаf, МГц
-            double freq0_MHz = 800;//3200;
+            //double freq0_MHz = 800;//3200;
             double freq_MHz = 3500;//3200;
             double freq4_MHz = 350;//3200;
             //# длинна профиляf, км
             double dt_km;
-            double dt0_km = 18.36;
+            //double dt0_km = 18.36;
             double dt1_km = 34.73;
             double dt2_km = 33.01;
             double dt3_km = 31.96;

@@ -58,7 +58,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Modifiers
                     var count = _dataLayer.Executor.Execute(updCalcResultQuery);
                 }
 
-                _eventBus.Send(new OnRunCalcTask { Id = command.Id });
+                _eventBus.Send(new OnRunedCalcTask { Id = command.Id });
             }
         }
     }

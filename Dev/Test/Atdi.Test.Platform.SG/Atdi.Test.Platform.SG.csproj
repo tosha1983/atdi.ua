@@ -58,10 +58,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry\Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry.csproj">
-      <Project>{11c6a879-bb5b-4b89-a254-597301eae311}</Project>
-      <Name>Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeepServices.Gis\Atdi.AppUnits.Sdrn.DeepServices.Gis.csproj">
       <Project>{f1f30ab9-7598-424d-9cde-95412583eccf}</Project>
       <Name>Atdi.AppUnits.Sdrn.DeepServices.Gis</Name>

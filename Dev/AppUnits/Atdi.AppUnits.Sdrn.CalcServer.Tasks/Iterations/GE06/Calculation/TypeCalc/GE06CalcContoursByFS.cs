@@ -11,6 +11,8 @@ using Atdi.Contracts.Sdrn.DeepServices.EarthGeometry;
 using Atdi.Contracts.Sdrn.DeepServices.GN06;
 using Idwm = Atdi.Contracts.Sdrn.DeepServices.IDWM;
 using IdwmDataModel = Atdi.DataModels.Sdrn.DeepServices.IDWM;
+using Atdi.DataModels.Sdrn.CalcServer;
+using Atdi.DataModels.Sdrn.CalcServer.Entities;
 
 namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 {
@@ -28,6 +30,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                             BroadcastingTypeContext broadcastingTypeContext,
                                             ref Ge06CalcResult ge06CalcResult,
                                             IObjectPool<PointEarthGeometric[]> pointEarthGeometricPool,
+                                            IObjectPool<CountoursPointExtended[]> countoursPointExtendedPool,
+                                            IObjectPool<ContoursResult[]> contoursResultPool,
                                             IIterationHandler<BroadcastingFieldStrengthCalcData, BroadcastingFieldStrengthCalcResult> iterationHandlerBroadcastingFieldStrengthCalcData,
                                             IIterationHandler<FieldStrengthCalcData, FieldStrengthCalcResult> iterationHandlerFieldStrengthCalcData,
                                             IObjectPoolSite poolSite,
@@ -39,6 +43,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                            )
         {
             var pointEarthGeometricsResult = default(PointEarthGeometric[]);
+            var countoursPointExtendedBuffer = default(CountoursPointExtended[]);
+            var contoursResultBuffer = default(ContoursResult[]);
 
             var affectedServices = new List<string>();
 
@@ -66,6 +72,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 {
                     message += $"The following Allotment are not validated: {notValidBroadcastingAllotment}";
                 }
+                taskContext.SendEvent(new CalcResultEvent
+                {
+                    Level = CalcResultEventLevel.Error,
+                    Context = "Ge06CalcIteration",
+                    Message = message
+                });
                 throw new Exception(message);
             }
 
@@ -76,13 +88,19 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                            || (broadcastingContextBase.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC2)
                                || (broadcastingContextBase.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC3))
                 {
-                    affectedServices.Add("BT");
+                    if (!affectedServices.Contains("BT"))
+                    {
+                        affectedServices.Add("BT");
+                    }
                 }
                 else if ((broadcastingContextBase.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC4)
                     || (broadcastingContextBase.Allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.RPC5)
                         )
                 {
-                    affectedServices.Add("BC");
+                    if (!affectedServices.Contains("BC"))
+                    {
+                        affectedServices.Add("BC");
+                    }
                 }
             }
             if (broadcastingContextBase.Assignments != null)
@@ -104,33 +122,42 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             if ((broadcastingContextBase.Allotments != null) || ((broadcastingContextBase.Assignments != null) && (broadcastingContextBase.Assignments.Length > 0)))
             {
 
-                var broadcastingCalcBarycenterGE06 = new BroadcastingCalcBarycenterGE06()
+                try
                 {
-                    BroadcastingAllotment = broadcastingContextBase.Allotments,
-                    BroadcastingAssignments = broadcastingContextBase.Assignments
-                };
+                    int currPercentComplete = 0;
+                    int indexForCountoursPointExtendedBuffer = 0;
 
-                //1.Определение центра гравитации(2.1)
-                var pointEarthGeometricBarycenter = new PointEarthGeometric();
-                gn06Service.CalcBarycenterGE06(in broadcastingCalcBarycenterGE06, ref pointEarthGeometricBarycenter);
+                    pointEarthGeometricsResult = pointEarthGeometricPool.Take();
+                    countoursPointExtendedBuffer = countoursPointExtendedPool.Take();
+                    contoursResultBuffer = contoursResultPool.Take();
 
-                for (int i = 0; i < ge06CalcData.Ge06TaskParameters.FieldStrength.Length; i++)
-                {
-
-                    // 2. Построение контуров фиксированной дистанции относительно центра гравитации.
-                    // Базируемся на функции CreateContourFromPointByDistance если у нас только BroadcastingAssignment []
-
-                    var contourForStationByTriggerFieldStrengthsArgs = new ContourForStationByTriggerFieldStrengthsArgs()
+                    var broadcastingCalcBarycenterGE06 = new BroadcastingCalcBarycenterGE06()
                     {
-                        Step_deg = ge06CalcData.Ge06TaskParameters.AzimuthStep_deg.Value,
-                        TriggerFieldStrength = ge06CalcData.Ge06TaskParameters.FieldStrength[i],
-                        BaryCenter = pointEarthGeometricBarycenter
+                        BroadcastingAllotment = broadcastingContextBase.Allotments,
+                        BroadcastingAssignments = broadcastingContextBase.Assignments
                     };
 
 
-                    try
+                   
+                    //1.Определение центра гравитации(2.1)
+                    var pointEarthGeometricBarycenter = new PointEarthGeometric();
+                    gn06Service.CalcBarycenterGE06(in broadcastingCalcBarycenterGE06, ref pointEarthGeometricBarycenter);
+
+                    for (int i = 0; i < ge06CalcData.Ge06TaskParameters.FieldStrength.Length; i++)
                     {
-                        pointEarthGeometricsResult = pointEarthGeometricPool.Take();
+
+                        // 2. Построение контуров фиксированной дистанции относительно центра гравитации.
+                        // Базируемся на функции CreateContourFromPointByDistance если у нас только BroadcastingAssignment []
+
+                        var contourForStationByTriggerFieldStrengthsArgs = new ContourForStationByTriggerFieldStrengthsArgs()
+                        {
+                            Step_deg = ge06CalcData.Ge06TaskParameters.AzimuthStep_deg.Value,
+                            TriggerFieldStrength = ge06CalcData.Ge06TaskParameters.FieldStrength[i],
+                            BaryCenter = pointEarthGeometricBarycenter
+                        };
+
+
+
                         int sizeResultBuffer = 0;
 
                         // модель из контекста, высота абонента из формы, процент времени из формы
@@ -165,7 +192,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         }
                         if (sizeResultBuffer > 0)
                         {
-                            var countoursPoints = new CountoursPoint[sizeResultBuffer];
+                          
                             for (int k = 0; k < sizeResultBuffer; k++)
                             {
                                 var pointFS = new Point()
@@ -174,21 +201,21 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                     Latitude = pointEarthGeometricsResult[k].Latitude
                                 };
 
-                                countoursPoints[k] = new CountoursPoint();
-                                countoursPoints[k].Lon_DEC = pointEarthGeometricsResult[k].Longitude;
-                                countoursPoints[k].Lat_DEC = pointEarthGeometricsResult[k].Latitude;
+                                countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer] = new CountoursPointExtended();
+                                countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].Lon_DEC = pointEarthGeometricsResult[k].Longitude;
+                                countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].Lat_DEC = pointEarthGeometricsResult[k].Latitude;
                                 if (broadcastingTypeContext == BroadcastingTypeContext.Brific)
                                 {
-                                    countoursPoints[k].PointType = PointType.Etalon;
+                                    countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].PointType = PointType.Etalon;
                                 }
                                 if (broadcastingTypeContext == BroadcastingTypeContext.Icsm)
                                 {
-                                    countoursPoints[k].PointType = PointType.Unknown;
+                                    countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].PointType = PointType.Unknown;
                                 }
-                                countoursPoints[k].FS = ge06CalcData.Ge06TaskParameters.FieldStrength[i]; //(int)CalcFieldStrengthInPointGE06(ge06CalcData, in pointFS, broadcastingTypeContext);
+                                countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].FS = ge06CalcData.Ge06TaskParameters.FieldStrength[i]; 
                                 if (ge06CalcData.Ge06TaskParameters.SubscribersHeight.HasValue)
                                 {
-                                    countoursPoints[k].Height = ge06CalcData.Ge06TaskParameters.SubscribersHeight.Value;
+                                    countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].Height = ge06CalcData.Ge06TaskParameters.SubscribersHeight.Value;
                                 }
 
                                 var adm = idwmService.GetADMByPoint(new IdwmDataModel.Point()
@@ -197,97 +224,51 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                     Latitude_dec = pointFS.Latitude
                                 });
 
-                                dicCountoursPoints.Add(countoursPoints[k], adm);
+                                countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].administration = adm;
+                                countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].broadcastingTypeContext = broadcastingTypeContext;
+                                countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].broadcastingTypeCalculation = BroadcastingTypeCalculation.FieldStrength;
+
+                                indexForCountoursPointExtendedBuffer++;
+
+                                UpdateProgress.UpdatePercentComplete100(ge06CalcData.Ge06TaskParameters.FieldStrength.Length, sizeResultBuffer, i, k, ref currPercentComplete, "ContoursByFS", taskContext);
                             }
                         }
                     }
-
-                    finally
+                    var lstCountoursPointExtendeds = new List<CountoursPointExtended>();
+                    for (int f = 0; f < indexForCountoursPointExtendedBuffer; f++)
                     {
-                        if (pointEarthGeometricsResult != null)
-                        {
-                            pointEarthGeometricPool.Put(pointEarthGeometricsResult);
-                        }
+                        lstCountoursPointExtendeds.Add(countoursPointExtendedBuffer[f]);
                     }
+
+                    FillContoursResultOnFS.Fill(ge06CalcData.Ge06TaskParameters.FieldStrength, lstCountoursPointExtendeds.ToArray(), broadcastingTypeContext, ref contoursResultBuffer, out int sizeBufferContoursResult);
+                    if (sizeBufferContoursResult > 0)
+                    {
+                        ge06CalcResult.ContoursResult = new ContoursResult[sizeBufferContoursResult];
+                        for (int f = 0; f < sizeBufferContoursResult; f++)
+                        {
+                            ge06CalcResult.ContoursResult[f] = contoursResultBuffer[f];
+                        }
+                        ge06CalcResult.AffectedADMResult = FillAffectedADMResult.Fill(ge06CalcResult.ContoursResult, string.Join(",", affectedServices));
+                    }
+                    UpdateProgress.UpdatePercentComplete100(ref currPercentComplete, "ContoursByFS", taskContext);
                 }
-            }
-            if ((dicCountoursPoints != null) && (dicCountoursPoints.Count > 0))
-            {
-                var fieldStrength = ge06CalcData.Ge06TaskParameters.FieldStrength;
-                var lstCountoursPoints = dicCountoursPoints.ToList();
-                var arrPointType = new PointType[4] { PointType.Etalon, PointType.Unknown, PointType.Affected, PointType.Correct };
-                if (lstCountoursPoints != null)
+                finally
                 {
-                    for (int n = 0; n < arrPointType.Length; n++)
+                    if (countoursPointExtendedBuffer != null)
                     {
-                        var distinctByPointType = lstCountoursPoints.FindAll(c => c.Key.PointType == arrPointType[n]);
-                        if (distinctByPointType != null)
-                        {
-                            for (int i = 0; i < fieldStrength.Length; i++)
-                            {
-                                var distinctByFieldStrength = distinctByPointType.FindAll(c => c.Key.FS == fieldStrength[i]);
-                                if (distinctByFieldStrength != null)
-                                {
-                                    var distinctAdmByAdm = distinctByFieldStrength.Select(c => c.Value).Distinct();
-                                    if (distinctAdmByAdm != null)
-                                    {
-                                        var arrDistinctAdmByFieldStrength = distinctAdmByAdm.ToArray();
-                                        for (int k = 0; k < arrDistinctAdmByFieldStrength.Length; k++)
-                                        {
-                                            var listContourPoints = lstCountoursPoints.FindAll(c => c.Key.FS == fieldStrength[i] && c.Key.PointType == arrPointType[n] && c.Value == arrDistinctAdmByFieldStrength[k]);
-                                            if (listContourPoints != null)
-                                            {
-
-                                                var contourType = ContourType.Unknown;
-                                                if (broadcastingTypeContext == BroadcastingTypeContext.Brific)
-                                                {
-                                                    contourType = ContourType.Etalon;
-                                                }
-                                                if (broadcastingTypeContext == BroadcastingTypeContext.Icsm)
-                                                {
-                                                    contourType = ContourType.New;
-                                                }
-
-                                                var allPoints = listContourPoints.Select(c => c.Key).ToArray();
-                                                lstContoursResults.Add(new ContoursResult()
-                                                {
-                                                    AffectedADM = arrDistinctAdmByFieldStrength[k],
-                                                    ContourType = contourType,
-                                                    CountoursPoints = allPoints,
-                                                    FS = fieldStrength[i],
-                                                    PointsCount = allPoints.Length
-                                                });
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        countoursPointExtendedPool.Put(countoursPointExtendedBuffer);
+                    }
+                    if (contoursResultBuffer != null)
+                    {
+                        contoursResultPool.Put(contoursResultBuffer);
+                    }
+                    if (pointEarthGeometricsResult != null)
+                    {
+                        pointEarthGeometricPool.Put(pointEarthGeometricsResult);
                     }
                 }
-                ge06CalcResult.ContoursResult = lstContoursResults.ToArray();
-
-
-                var distinctAdm = lstContoursResults.Select(c => c.AffectedADM).Distinct();
-                if (distinctAdm != null)
-                {
-                    var arrDistinctAdmByAdm = distinctAdm.ToArray();
-                    if (arrDistinctAdmByAdm.Length > 0)
-                    {
-                        var affectedADMRes = new AffectedADMResult[arrDistinctAdmByAdm.Length];
-                        for (int k = 0; k < arrDistinctAdmByAdm.Length; k++)
-                        {
-                            affectedADMRes[k] = new AffectedADMResult();
-                            affectedADMRes[k].ADM = arrDistinctAdmByAdm[k];
-                            affectedADMRes[k].AffectedServices = string.Join(",", affectedServices);
-                        }
-                        ge06CalcResult.AffectedADMResult = affectedADMRes;
-                    }
-                }
+                GE06FillData.FillAllotmentOrAssignmentResult(broadcastingContextBase, ref ge06CalcResult);
             }
-
-            ge06CalcResult.ContoursResult = lstContoursResults.ToArray();
-            GE06FillData.FillAllotmentOrAssignmentResult(broadcastingContextBase, ref ge06CalcResult);
         }
 
         /// <summary>

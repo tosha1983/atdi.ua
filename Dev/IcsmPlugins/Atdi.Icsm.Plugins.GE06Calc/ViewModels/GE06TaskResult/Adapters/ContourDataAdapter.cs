@@ -36,12 +36,22 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06TaskResult.Adapters
             {
                 Id = reader.GetValue(c => c.Id),
                 Gn06ResultId = reader.GetValue(c => c.Gn06ResultId),
+                ContourType = reader.GetValue(c => c.ContourType),
+                ContourTypeName = GetContourName(reader.GetValue(c => c.ContourType)),
                 Distance = reader.GetValue(c => c.Distance),
                 FS = reader.GetValue(c => c.FS),
                 AffectedADM = reader.GetValue(c => c.AffectedADM),
                 PointsCount = reader.GetValue(c => c.PointsCount),
                 CountoursPoints = reader.GetValueAs<CountoursPoint[]>(c => c.CountoursPoints)
             };
+        }
+        private string GetContourName(byte id)
+        {
+            if (id == 1) return "Etalon";
+            if (id == 2) return "New";
+            if (id == 3) return "Affected";
+            if (id == 4) return "Correct";
+            return "Unknown";
         }
     }
 }

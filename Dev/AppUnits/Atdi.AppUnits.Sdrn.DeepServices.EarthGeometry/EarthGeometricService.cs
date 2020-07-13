@@ -244,13 +244,14 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
         public void CreateContourForStationByTriggerFieldStrengths(Func<PointEarthGeometric, double> calcFieldStrengths, in ContourForStationByTriggerFieldStrengthsArgs contourForStationByTriggerFieldStrengthsArgs, ref PointEarthGeometric[] pointResult, out int sizeResultBuffer)
         {
             double epsilon = 0.1;
-            double Step = 500.0;
+            double Step_ = 500.0;
             double MinStep_m = 0.05;
             int index = 0;
             for (double azimuth = 0; azimuth < 360; azimuth = index * contourForStationByTriggerFieldStrengthsArgs.Step_deg)
             {
                 int cntIteration = 0;
                 double calcFieldStrength;
+                double Step = Step_;
                 var d_km = Step;
                 var coordRecalc = CalculationCoordinateByLengthAndAzimuth(in contourForStationByTriggerFieldStrengthsArgs.BaryCenter, d_km, azimuth);
                 calcFieldStrength = calcFieldStrengths(coordRecalc);
@@ -265,7 +266,6 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry
                     calcFieldStrength = calcFieldStrengths(coordRecalc);
                     cntIteration++;
                 }
-                pointResult[index] = new PointEarthGeometric();
                 pointResult[index].Longitude = coordRecalc.Longitude;
                 pointResult[index].Latitude = coordRecalc.Latitude;
                 pointResult[index].CoordinateUnits = CoordinateUnits.deg;
