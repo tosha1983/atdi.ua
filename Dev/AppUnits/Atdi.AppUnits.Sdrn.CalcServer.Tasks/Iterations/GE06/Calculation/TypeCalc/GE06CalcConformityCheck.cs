@@ -295,7 +295,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         int sizeResultBuffer = 0;
                         // строим контура и считаем напряженность поля для assigments
 
-                        if ((broadcastingContextBRIFIC.Allotments == null) || (broadcastingContextBRIFIC.Allotments.AllotmentParameters != null) || (broadcastingContextBRIFIC.Allotments.AllotmentParameters.Contur is null)
+                        if ((broadcastingContextBRIFIC.Allotments == null) || (broadcastingContextBRIFIC.Allotments.AllotmentParameters == null) || (broadcastingContextBRIFIC.Allotments.AllotmentParameters.Contur == null)
                             || (broadcastingContextBRIFIC.Allotments.AllotmentParameters.Contur.Length < 3))
                         {
                             var contourFromPointByDistanceArgs = new ContourFromPointByDistanceArgs()
