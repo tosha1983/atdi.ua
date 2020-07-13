@@ -100,6 +100,8 @@
     <Compile Include="ViewModels\GE06Settings\Modifiers\PrepareClientContextHandler.cs" />
     <Compile Include="ViewModels\GE06Settings\Queries\GetClientContextById.cs" />
     <Compile Include="ViewModels\GE06Settings\Queries\GetClientContextByIdExecutor.cs" />
+    <Compile Include="ViewModels\GE06Settings\Queries\GetGe06ResultIdByResultId.cs" />
+    <Compile Include="ViewModels\GE06Settings\Queries\GetGe06ResultIdByResultIdExecutor.cs" />
     <Compile Include="ViewModels\GE06Settings\Queries\GetResultIdByTaskId.cs" />
     <Compile Include="ViewModels\GE06Settings\Queries\GetResultIdByTaskIdExecutor.cs" />
     <Compile Include="ViewModels\GE06Settings\View.cs" />

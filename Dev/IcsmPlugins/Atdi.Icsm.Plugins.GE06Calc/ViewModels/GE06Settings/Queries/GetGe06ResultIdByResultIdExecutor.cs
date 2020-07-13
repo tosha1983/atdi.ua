@@ -9,30 +9,30 @@ using CS_ES = Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks;
 
 namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings.Queries
 {
-    public class GetResultIdByTaskIdExecutor : IReadQueryExecutor<GetResultIdByTaskId, long?>
+    public class GetGe06ResultIdByResultIdExecutor : IReadQueryExecutor<GetGe06ResultIdByResultId, long?>
     {
         private readonly AppComponentConfig _config;
         private readonly CalcServerDataLayer _dataLayer;
 
-        public GetResultIdByTaskIdExecutor(AppComponentConfig config, CalcServerDataLayer dataLayer)
+        public GetGe06ResultIdByResultIdExecutor(AppComponentConfig config, CalcServerDataLayer dataLayer)
         {
             _config = config;
             _dataLayer = dataLayer;
         }
-        public long? Read(GetResultIdByTaskId criterion)
+        public long? Read(GetGe06ResultIdByResultId criterion)
         {
-            var query = _dataLayer.GetBuilder<ICalcResult>()
+            var queryGN = _dataLayer.GetBuilder<CS_ES.IGn06Result>()
                 .Read()
                 .Select(c => c.Id)
-                .Filter(c => c.TASK.Id, criterion.TaskId);
+                .Filter(c => c.RESULT.Id, criterion.ResultId);
 
-            var reader = _dataLayer.Executor.ExecuteReader(query);
-            if (!reader.Read())
+            var readerGN = _dataLayer.Executor.ExecuteReader(queryGN);
+            if (!readerGN.Read())
             {
                 return null;
             }
 
-            return reader.GetValue(c => c.Id);
+            return readerGN.GetValue(c => c.Id);
         }
     }
 }
