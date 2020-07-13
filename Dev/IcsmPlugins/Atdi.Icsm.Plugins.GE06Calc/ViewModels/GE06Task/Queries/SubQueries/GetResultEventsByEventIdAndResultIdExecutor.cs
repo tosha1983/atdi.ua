@@ -30,6 +30,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
                 .Select(c => c.CreatedDate)
                 .Select(c => c.LevelName)
                 .Select(c => c.Message)
+                .Select(c => c.DataJson)
                 .Filter(c => c.RESULT.Id, criterion.ResultId)
                 .Filter(c => c.Id, FilterOperator.GreaterThan, criterion.EventId)
                 .OrderByAsc(c => c.Id);
@@ -42,7 +43,8 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
                     Id = reader.GetValue(c => c.Id),
                     CreatedDate = reader.GetValue(c => c.CreatedDate),
                     LevelName = reader.GetValue(c => c.LevelName),
-                    Message = reader.GetValue(c => c.Message)
+                    Message = reader.GetValue(c => c.Message),
+                    State = string.IsNullOrEmpty(reader.GetValue(c => c.DataJson)) ? null : reader.GetValueAs<CurrentProgress>(c => c.DataJson)
                 });
             }
             return listEnents.ToArray();
