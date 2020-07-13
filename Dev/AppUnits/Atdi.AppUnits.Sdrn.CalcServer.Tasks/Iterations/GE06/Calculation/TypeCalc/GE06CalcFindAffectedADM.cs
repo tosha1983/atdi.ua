@@ -695,6 +695,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
 
                 // 2. Определение администраций с затронутой радиовещательной службой 4. и прочими службами
+                var dicThresholdFieldStrength = new Dictionary<PointEarthGeometric[], ThresholdFieldStrength>();
                 if (thresholdFieldStrengths != null)
                 {
                     int[] arrFieldStrength = null;
@@ -720,9 +721,31 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             TriggerFieldStrength = arrTriggersFS[d].ThresholdFS,
                             BaryCenter = pointEarthGeometricBarycenter
                         };
-                        earthGeometricService.CreateContourForStationByTriggerFieldStrengths((destinationPoint) => GE06CalcContoursByFS.CalcFieldStrengthICSM(destinationPoint,
+
+                        int sizeResultBufferICSM = 0;
+                        var lstThresholdFieldStrength = dicThresholdFieldStrength.ToList();
+                        var fndVal = lstThresholdFieldStrength.Find(x => x.Value.Time_pc == arrTriggersFS[d].Time_pc && x.Value.ThresholdFS == arrTriggersFS[d].ThresholdFS);
+                        if (fndVal.Value == null)
+                        {
+                            earthGeometricService.CreateContourForStationByTriggerFieldStrengths((destinationPoint) => GE06CalcContoursByFS.CalcFieldStrengthICSM(destinationPoint,
                             ge06CalcData, pointEarthGeometricPool, iterationHandlerBroadcastingFieldStrengthCalcData, iterationHandlerFieldStrengthCalcData, poolSite, transformation, taskContext, gn06Service),
-                            in contourForStationByTriggerFieldStrengthsArgs, ref pointEarthGeometricsResult, out int sizeResultBufferICSM);
+                            in contourForStationByTriggerFieldStrengthsArgs, ref pointEarthGeometricsResult, out sizeResultBufferICSM);
+
+                            dicThresholdFieldStrength.Add(pointEarthGeometricsResult, arrTriggersFS[d]);
+                        }
+                        else
+                        {
+                            for (int n=0; n< fndVal.Key.Length; n++)
+                            {
+                                pointEarthGeometricsResult[n] = fndVal.Key[n];
+                            }
+                            sizeResultBufferICSM = fndVal.Key.Length;
+                        }
+
+                        
+
+                        
+
                         // Конец построения контура для напряженности поля относительно центра гравитации для ICSM. 
                         // запись результатов по контуру
                         if (sizeResultBufferICSM > 0)
