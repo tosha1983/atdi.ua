@@ -404,7 +404,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         if (i > 0 && clutterBuffer[i - 1] != clutterBuffer[i] &&
                             (clutterBuffer[i - 1] == waterClutter || clutterBuffer[i] == waterClutter) &&
                             (aboveSea_px != 0 && aboveLand_px != 0) ||
-                            i == clutterBuffer.Length - 1)
+                            i == profileLenght - 1)
                         {
                             landSeaList.Add(new LandSea { land = aboveLand_px * px2km, sea = aboveSea_px * px2km });
                             aboveSea_px = 0;
@@ -414,16 +414,15 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         if (clutterBuffer[i] == waterClutter)
                         {
                             aboveSea_px++;
-                            if (i == clutterBuffer.Length - 1)
+                            if (i == profileLenght - 1)
                             {
                                 h2aboveSea = true;
                             }
-                            else
-                            {
-                                aboveLand_px++;
-                            }
                         }
-
+                        else
+                        {
+                            aboveLand_px++;
+                        }
                     }
                 }
                 else
