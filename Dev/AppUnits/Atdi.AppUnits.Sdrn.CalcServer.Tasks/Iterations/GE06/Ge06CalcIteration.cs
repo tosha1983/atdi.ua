@@ -244,7 +244,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             else if ((CalculationType)data.Ge06TaskParameters.CalculationTypeCode == CalculationType.ConformityCheck)
             {
                 GE06CalcConformityCheck.Calculation(data,
-                                                    ref ge06CalcResults,
+                                                    ref ge06CalcResultsForICSM,
                                                     _pointEarthGeometricPool,
                                                     _countoursPointExtendedPool,
                                                     _countoursResultPool,
