@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "fmtv_fdg"
+  Title       = "fmtv_fdg"
+  Desc        = "The fmtv_fdg"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>fmtv_fdg</Name>
+    <Schema></Schema>
+  </DataSource>
+  <Fields>
+    <Field Name="terrakey" DataType="Integer.32" SourceName="terrakey" SourceType="Column" Desc="The terrakey" Title="terrakey"/>
+    
+    <Field Name="fdg_type" DataType="Text.MAX" SourceName="fdg_type" SourceType="Column" Desc="The fdg_type" Title="fdg_type" />
+    <Field Name="fdg_status" DataType="Text.MAX" SourceName="fdg_status" SourceType="Column" Desc="The fdg_status" Title="fdg_status" />
+    <Field Name="is_favorbl" DataType="Text.MAX" SourceName="is_favorbl" SourceType="Column" Desc="The is_favorbl" Title="is_favorbl" />
+
+    <Field Name="d_updated" DataType="DateTime" SourceName="d_updated" SourceType="Column" Desc="The d_updated" Title="d_updated" />
+
+    <Field Name="src_fdg" DataType="Text.MAX" SourceName="src_fdg" SourceType="Column" Desc="The src_fdg" Title="src_fdg" />
+    
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="terrakey"/>
+  </PrimaryKey>
+</Entity>
