@@ -24,6 +24,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
             var query = _dataLayer.GetBuilder<ICalcResult>()
                 .Read()
                 .Select(c => c.Id)
+                .Select(c => c.StatusCode)
                 .Filter(c => c.Id, criterion.ResultId);
 
             var reader = _dataLayer.Executor.ExecuteReader(query);

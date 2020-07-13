@@ -10,6 +10,7 @@ namespace Atdi.Contracts.CoreServices.DataLayer
     {
         SqlServer,
         Oracle,
-        Assemblies
+        Assemblies,
+        Sqlite
     }
 }

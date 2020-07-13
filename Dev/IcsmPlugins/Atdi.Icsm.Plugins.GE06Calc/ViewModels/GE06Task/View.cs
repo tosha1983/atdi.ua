@@ -432,7 +432,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                 return;
             }
 
-            var projectMap  = _objectReader.Read<ProjectMapsModel>().By(new GetProjectMapByClientContextId { ContextId = Properties.Settings.Default.ActiveContext });
+            var projectMap = _objectReader.Read<ProjectMapsModel>().By(new GetProjectMapByClientContextId { ContextId = Properties.Settings.Default.ActiveContext });
 
             var splitVariants = new char[] { ',', ';', ' ' };
             var distances = new List<int>();
@@ -455,7 +455,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
 
             var modifier = new Modifiers.CreateCalcTask
             {
-                MapName = projectMap.MapName,
+                MapName = projectMap != null ? projectMap.MapName : "",
                 AzimuthStep_deg = CurrentCalcTaskCard.AzimuthStep_deg,
                 AdditionalContoursByDistances = CurrentCalcTaskCard.AdditionalContoursByDistances,
                 Distances = CurrentCalcTaskCard.Distances,
@@ -482,66 +482,102 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
         }
         private void OnRunedCalcTaskHandle(Events.OnRunedCalcTask data)
         {
-            //_objectReader.Read<byte?>().By(new GetResultStatusById { ResultId = data.Id });
+            _objectReader.Read<byte?>().By(new GetResultStatusById { ResultId = data.Id });
 
-
-            //var resultId = _objectReader.Read<long?>().By(new ST.Queries.GetResultIdByTaskId { TaskId = data.Id });
-            //if (resultId.HasValue)
-            //    WaitForCalcResult(data.Id, resultId.Value);
-            //else
-            //{
-            //    this._logger.Exception(Exceptions.GE06Client, new Exception($"For selected task not found information in ICalcResults!"));
-            //}
+            var resultId = _objectReader.Read<long?>().By(new ST.Queries.GetResultIdByTaskId { TaskId = data.Id });
+            if (resultId.HasValue)
+            {
+                WaitForCalcResult(data.Id, resultId.Value);
+                var ge06resultId = _objectReader.Read<long?>().By(new ST.Queries.GetGe06ResultIdByResultId { ResultId = resultId.Value });
+                if (ge06resultId.HasValue)
+                {
+                    _starter.Start<VM.GE06TaskResult.View>(isModal: true, c => c.ResultId = ge06resultId.Value);
+                }
+            }
+            else
+            {
+                this._logger.Exception(Exceptions.GE06Client, new Exception($"For selected task not found information in ICalcResults!"));
+            }
         }
         private void WaitForCalcResult(long calcTaskId, long calcResultId)
         {
-            var cancel = false;
-            long eventId = 0;
-
-            while (!cancel)
-            {
-                System.Threading.Thread.Sleep(5 * 1000);
-
-                var status = _objectReader.Read<byte?>().By(new GetResultStatusById { ResultId = calcResultId });
-
-                if (status.HasValue)
+            _starter.StartLongProcess(
+                new LongProcessOptions()
                 {
-                    if (status == (byte)CalcResultStatusCode.Completed)
+                    CanStop = false,
+                    CanAbort = true,
+                    UseProgressBar = true,
+                    UseLog = true,
+                    IsModal = true,
+                    MinValue = 0,
+                    MaxValue = 1000,
+                    ValueKind = LongProcessValueKind.Infinity,
+                    Title = "Calculating task ...",
+                    Note = "Please control the log processes below."
+                },
+                token =>
+                {
+
+                    var cancel = false;
+                    long eventId = 0;
+
+                    while (!cancel)
                     {
-                        cancel = true;
-                        _starter.Start<VM.GE06TaskResult.View>(isModal: true, c => c.ResultId = calcResultId);
+                        var status = _objectReader.Read<byte?>().By(new GetResultStatusById { ResultId = calcResultId });
+
+                        if (status.HasValue)
+                        {
+                            if (status == (byte)CalcResultStatusCode.Completed)
+                            {
+                                _eventBus.Send(new LongProcessFinishEvent { ProcessToken = token });
+                                cancel = true;
+                            }
+
+                            if (status == (byte)CalcResultStatusCode.Failed)
+                            {
+                                _eventBus.Send(new LongProcessFinishEvent { ProcessToken = token });
+                                cancel = true;
+                            }
+                            if (status == (byte)CalcResultStatusCode.Aborted)
+                            {
+                                _eventBus.Send(new LongProcessFinishEvent { ProcessToken = token });
+                                cancel = true;
+                            }
+
+                            if (status == (byte)CalcResultStatusCode.Canceled)
+                            {
+                                _eventBus.Send(new LongProcessFinishEvent { ProcessToken = token });
+                                cancel = true;
+                            }
+                        }
+
+                        var events = _objectReader.Read<CalcResultEventsModel[]>().By(new GetResultEventsByEventIdAndResultId { ResultId = calcResultId, EventId = eventId });
+                        foreach (var item in events)
+                        {
+                            eventId = item.Id;
+                            _eventBus.Send(new LongProcessLogEvent
+                            {
+                                ProcessToken = token,
+                                Message = item.Message
+                            });
+                        }
+                        System.Threading.Thread.Sleep(5 * 1000);
+
+                        token.AbortToken.ThrowIfCancellationRequested();
                     }
 
-                    if (status == (byte)CalcResultStatusCode.Failed)
-                    {
-                        cancel = true;
-                    }
-                    if (status == (byte)CalcResultStatusCode.Aborted)
-                    {
-                        cancel = true;
-                    }
 
-                    if (status == (byte)CalcResultStatusCode.Canceled)
-                    {
-                        cancel = true;
-                    }
-                }
-                //Created = 0, // Фаза создания и подготовки окружения к запуску процесса расчета
-                //Pending = 1, // Фаза ожидания запуска процесса расчета
-                //Accepted = 2, // Фаза ожидания запуска процесса расчета
-                //Processing = 3, // Расчет выполняется
-                //Completed = 4, // Расчет завершен
-                //Canceled = 5, // Расчет был отменен по внешней причине
-                //Aborted = 6, // Расчет был прерван по внутреней причине
-                //Failed = 7  // Попытка запуска завершилась не удачей
-            }
 
-            var events = _objectReader.Read<CalcResultEventsModel[]>().By(new GetResultEventsByEventIdAndResultId { ResultId = calcResultId, EventId = eventId });
-            foreach (var item in events)
-            {
-                eventId = item.Id;
-            }
 
+                    //Created = 0, // Фаза создания и подготовки окружения к запуску процесса расчета
+                    //Pending = 1, // Фаза ожидания запуска процесса расчета
+                    //Accepted = 2, // Фаза ожидания запуска процесса расчета
+                    //Processing = 3, // Расчет выполняется
+                    //Completed = 4, // Расчет завершен
+                    //Canceled = 5, // Расчет был отменен по внешней причине
+                    //Aborted = 6, // Расчет был прерван по внутреней причине
+                    //Failed = 7  // Попытка запуска завершилась не удачей
+                });
         }
 
         private BroadcastingContext GetBroadcastingContext()
