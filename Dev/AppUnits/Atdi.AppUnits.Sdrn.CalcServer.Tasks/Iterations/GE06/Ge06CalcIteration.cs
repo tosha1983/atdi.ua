@@ -286,18 +286,17 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                     _earthGeometricService,
                                                     _idwmService);
                 
-                if (ge06CalcResultsForBRIFIC.AffectedADMResult != null)
+                if (ge06CalcResultsForICSM.AffectedADMResult != null)
                 {
-                    DistinctListAdmAffected(affectedADMResult, ge06CalcResultsForBRIFIC.AffectedADMResult);
-                    //affectedADMResult.AddRange(ge06CalcResultsForBRIFIC.AffectedADMResult);
+                    DistinctListAdmAffected(affectedADMResult, ge06CalcResultsForICSM.AffectedADMResult);
                 }
-                if (ge06CalcResultsForBRIFIC.ContoursResult != null)
+                if (ge06CalcResultsForICSM.ContoursResult != null)
                 {
-                    contoursResult.AddRange(ge06CalcResultsForBRIFIC.ContoursResult);
+                    contoursResult.AddRange(ge06CalcResultsForICSM.ContoursResult);
                 }
-                if (ge06CalcResultsForBRIFIC.AllotmentOrAssignmentResult != null)
+                if (ge06CalcResultsForICSM.AllotmentOrAssignmentResult != null)
                 {
-                    allotmentOrAssignmentResult.AddRange(ge06CalcResultsForBRIFIC.AllotmentOrAssignmentResult);
+                    allotmentOrAssignmentResult.AddRange(ge06CalcResultsForICSM.AllotmentOrAssignmentResult);
                 }
             }
 

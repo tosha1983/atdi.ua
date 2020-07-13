@@ -367,7 +367,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             for (int i = 0; adm1000.Count > i; i++)
             {
                 AffectedADMResult[i] = new AffectedADMResult()
-                {ADM = adm1000[i],TypeAffected = "1000"};
+                {
+                    ADM = adm1000[i],
+                    TypeAffected = "1000"
+                };
             }
             List<int> IdList = new List<int>();// обычно до до 10 елементов
             // расчет количества елементов в массиве результатов 
@@ -397,22 +400,31 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                     // администрация данной службы не задета. надо проверить не попала ли точка
                                     // тут нужно определить пересечение 
                                     // заполняем данные для определения пересечения
-                                    CheckHittingArgs checkHittingArgs = new CheckHittingArgs();
-                                    checkHittingArgs.Poligon = new PointEarthGeometric[ContursServices.Count];
-                                    for (int k = 0; ContursServices.Count > k; k++)
+                                    bool interseption = false;
+                                    if ((arrFmtvTerra[j].Latitude_dec == 0)&& (arrFmtvTerra[j].Longitude_dec == 0 ))
                                     {
-                                        checkHittingArgs.Poligon[k].Longitude = ContursServices[k].Lon_DEC;
-                                        checkHittingArgs.Poligon[k].Latitude = ContursServices[k].Lat_DEC;
-                                        checkHittingArgs.Poligon[k].CoordinateUnits = CoordinateUnits.deg;
+                                        interseption = true;
                                     }
-                                    checkHittingArgs.Point = new PointEarthGeometric()
+                                    else
                                     {
-                                        CoordinateUnits = CoordinateUnits.deg,
-                                        Latitude = arrFmtvTerra[j].Latitude_dec,
-                                        Longitude = arrFmtvTerra[j].Longitude_dec,
-                                    };
+                                        CheckHittingArgs checkHittingArgs = new CheckHittingArgs();
+                                        checkHittingArgs.Poligon = new PointEarthGeometric[ContursServices.Count];
+                                        for (int k = 0; ContursServices.Count > k; k++)
+                                        {
+                                            checkHittingArgs.Poligon[k].Longitude = ContursServices[k].Lon_DEC;
+                                            checkHittingArgs.Poligon[k].Latitude = ContursServices[k].Lat_DEC;
+                                            checkHittingArgs.Poligon[k].CoordinateUnits = CoordinateUnits.deg;
+                                        }
+                                        checkHittingArgs.Point = new PointEarthGeometric()
+                                        {
+                                            CoordinateUnits = CoordinateUnits.deg,
+                                            Latitude = arrFmtvTerra[j].Latitude_dec,
+                                            Longitude = arrFmtvTerra[j].Longitude_dec,
+                                        };
+                                        interseption = earthGeometricService.CheckHitting(in checkHittingArgs);
+                                    }
                                     // определяем пересечение
-                                    if (earthGeometricService.CheckHitting(in checkHittingArgs))
+                                    if (interseption)
                                     {
                                         serviseAdm.Add(adm);
                                         string typeAff;
@@ -420,8 +432,9 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                         { typeAff = "Broadcasting"; }
                                         else
                                         { typeAff = "PrimaryServices"; }
-                                        AddServiceToResult(AffectedADMResult, adm, services, typeAff);
+                                        AddServiceToResult(ref AffectedADMResult, adm, services, typeAff);
                                     }
+                                    
                                 }
                             }
                         }
@@ -433,7 +446,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             }
             return AffectedADMResult;
         }
-        private static void AddServiceToResult(AffectedADMResult[] affectedADMResults, string adm, string servis, string typeAffect)
+        private static void AddServiceToResult(ref AffectedADMResult[] affectedADMResults, string adm, string servis, string typeAffect)
         {
             for (int i = 0; i < affectedADMResults.Length; i++)
             {
@@ -441,17 +454,21 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 if (currAdm == adm)
                 {
                     var affectedServices = affectedADMResults[i].AffectedServices;
+                    if (affectedServices==null)
+                    {
+                        affectedServices = "";
+                    }
                     if (!affectedServices.Contains(servis))
                     {
                         if ((affectedServices != null) && (affectedServices.Length > 0))
                         {
                             if (!affectedServices.EndsWith(","))
                             {
-                                affectedServices += $"{affectedServices},{servis}";
+                                affectedServices = $"{affectedServices},{servis}";
                             }
                             if (affectedServices.EndsWith(","))
                             {
-                                affectedServices += $"{affectedServices}{servis}";
+                                affectedServices = $"{affectedServices}{servis}";
                             }
                         }
                         else
@@ -460,17 +477,21 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         }
                     }
                     var typeAffected = affectedADMResults[i].TypeAffected;
+                    if (typeAffected == null)
+                    {
+                        typeAffected = "";
+                    }
                     if (!typeAffected.Contains(typeAffect))
                     {
                         if ((typeAffected != null) && (typeAffected.Length > 0))
                         {
                             if (!typeAffected.EndsWith(","))
                             {
-                                typeAffected += $"{typeAffected},{typeAffect}";
+                                typeAffected = $"{typeAffected},{typeAffect}";
                             }
                             if (typeAffected.EndsWith(","))
                             {
-                                typeAffected += $"{typeAffected}{typeAffect}";
+                                typeAffected = $"{typeAffected}{typeAffect}";
                             }
                         }
                         else
@@ -724,14 +745,19 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
                         int sizeResultBufferICSM = 0;
                         var lstThresholdFieldStrength = dicThresholdFieldStrength.ToList();
-                        var fndVal = lstThresholdFieldStrength.Find(x => x.Value.Time_pc == arrTriggersFS[d].Time_pc && x.Value.ThresholdFS == arrTriggersFS[d].ThresholdFS);
+                        var fndVal = lstThresholdFieldStrength.Find(x => x.Value.Time_pc == arrTriggersFS[d].Time_pc && x.Value.ThresholdFS == arrTriggersFS[d].ThresholdFS && x.Value.Height_m == arrTriggersFS[d].Height_m);
                         if (fndVal.Value == null)
                         {
                             earthGeometricService.CreateContourForStationByTriggerFieldStrengths((destinationPoint) => GE06CalcContoursByFS.CalcFieldStrengthICSM(destinationPoint,
                             ge06CalcData, pointEarthGeometricPool, iterationHandlerBroadcastingFieldStrengthCalcData, iterationHandlerFieldStrengthCalcData, poolSite, transformation, taskContext, gn06Service),
                             in contourForStationByTriggerFieldStrengthsArgs, ref pointEarthGeometricsResult, out sizeResultBufferICSM);
 
-                            dicThresholdFieldStrength.Add(pointEarthGeometricsResult, arrTriggersFS[d]);
+                            var pointEarthGeometricsNew = new PointEarthGeometric[sizeResultBufferICSM];
+                            for (int n = 0; n < sizeResultBufferICSM; n++)
+                            {
+                                pointEarthGeometricsNew[n] = pointEarthGeometricsResult[n];
+                            }
+                            dicThresholdFieldStrength.Add(pointEarthGeometricsNew, arrTriggersFS[d]);
                         }
                         else
                         {
