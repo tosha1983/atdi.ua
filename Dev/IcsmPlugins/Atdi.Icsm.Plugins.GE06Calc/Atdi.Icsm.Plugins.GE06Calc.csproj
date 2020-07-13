@@ -109,8 +109,9 @@
     <Compile Include="ViewModels\GE06TaskResult\Models\AffectedADMModel.cs" />
     <Compile Include="ViewModels\GE06TaskResult\Models\AllotmentOrAssignmentModel.cs" />
     <Compile Include="ViewModels\GE06TaskResult\Models\ContourModel.cs" />
-    <Compile Include="ViewModels\GE06Task\Queries\GetResultStatusById.cs" />
-    <Compile Include="ViewModels\GE06Task\Queries\GetResultStatusByIdExecutor.cs" />
+    <Compile Include="ViewModels\GE06Task\Models\CalcResultEventsModel.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\SubQueries\GetResultStatusById.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\SubQueries\GetResultStatusByIdExecutor.cs" />
     <Compile Include="ViewModels\GE06TaskResult\View.cs" />
     <Compile Include="ViewModels\GE06Task\Events\OnCreatedCalcTask.cs" />
     <Compile Include="ViewModels\GE06Task\Events\OnDeletedCalcTask.cs" />
@@ -164,6 +165,8 @@
     <Compile Include="ViewModels\GE06Task\Queries\SubQueries\GetBrificSubAreaKeyByTerrakeyExecutor.cs" />
     <Compile Include="ViewModels\GE06Task\Queries\SubQueries\GetIcsmAreaPointByContourId.cs" />
     <Compile Include="ViewModels\GE06Task\Queries\SubQueries\GetIcsmAreaPointByContourIdExecutor.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\SubQueries\GetResultEventsByEventIdAndResultId.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\SubQueries\GetResultEventsByEventIdAndResultIdExecutor.cs" />
     <Compile Include="ViewModels\GE06Task\View.cs" />
   </ItemGroup>
   <ItemGroup>

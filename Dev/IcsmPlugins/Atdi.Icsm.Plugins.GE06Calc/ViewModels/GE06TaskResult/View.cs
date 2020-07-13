@@ -152,11 +152,13 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06TaskResult
             {
                 foreach (AllotmentOrAssignmentModel item in this._currentAllotmentOrAssignments)
                 {
-                    if (item.Longitude_DEC.HasValue && item.Latitude_DEC.HasValue)
+                    if (item.TypeTable == "Assignment")
                     {
-                        points.Add(MapsDrawingHelper.MakeDrawingPointForSensor(item.Longitude_DEC.Value, item.Latitude_DEC.Value, item.Name));
+                        if (item.Longitude_DEC.HasValue && item.Latitude_DEC.HasValue)
+                        {
+                            points.Add(MapsDrawingHelper.MakeDrawingPointForSensor(item.Longitude_DEC.Value, item.Latitude_DEC.Value, item.Name));
+                        }
                     }
-
                     if (item.CountoursPoints != null && item.CountoursPoints.Length > 0)
                     {
                         var polygonPoints = new List<Location>();
@@ -168,6 +170,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06TaskResult
 
                         polygons.Add(new MapDrawingDataPolygon() { Points = polygonPoints.ToArray(), Color = System.Windows.Media.Colors.Red, Fill = System.Windows.Media.Colors.Red });
                     }
+
                 }
             }
 

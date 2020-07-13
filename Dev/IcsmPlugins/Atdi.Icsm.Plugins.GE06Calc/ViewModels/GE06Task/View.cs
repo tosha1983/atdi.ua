@@ -20,6 +20,8 @@ using Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks;
 using Atdi.WpfControls.EntityOrm.Controls;
 using Atdi.Icsm.Plugins.GE06Calc.Environment;
 using ST = Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings;
+using Atdi.DataModels.Sdrn.CalcServer.Entities;
+using Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Models;
 
 namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
 {
@@ -480,115 +482,67 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
         }
         private void OnRunedCalcTaskHandle(Events.OnRunedCalcTask data)
         {
-
-
-
             //_objectReader.Read<byte?>().By(new GetResultStatusById { ResultId = data.Id });
 
 
             //var resultId = _objectReader.Read<long?>().By(new ST.Queries.GetResultIdByTaskId { TaskId = data.Id });
             //if (resultId.HasValue)
-            //    _starter.Start<VM.GE06TaskResult.View>(isModal: true, c => c.ResultId = resultId.Value);
+            //    WaitForCalcResult(data.Id, resultId.Value);
             //else
             //{
             //    this._logger.Exception(Exceptions.GE06Client, new Exception($"For selected task not found information in ICalcResults!"));
             //}
         }
+        private void WaitForCalcResult(long calcTaskId, long calcResultId)
+        {
+            var cancel = false;
+            long eventId = 0;
 
+            while (!cancel)
+            {
+                System.Threading.Thread.Sleep(5 * 1000);
 
-        //private static IPointFieldStrengthResult WaitForCalcResult(long calcTaskId, long calcResultId)
-        //{
-        //    var cancel = false;
-        //    var resultObject = dataLayer.ProxyInstanceFactory.Create<IPointFieldStrengthResult>();
-        //    resultObject.RESULT = dataLayer.ProxyInstanceFactory.Create<ICalcResult>();
+                var status = _objectReader.Read<byte?>().By(new GetResultStatusById { ResultId = calcResultId });
 
-        //    while (!cancel)
-        //    {
-        //        System.Threading.Thread.Sleep(5 * 1000);
+                if (status.HasValue)
+                {
+                    if (status == (byte)CalcResultStatusCode.Completed)
+                    {
+                        cancel = true;
+                        _starter.Start<VM.GE06TaskResult.View>(isModal: true, c => c.ResultId = calcResultId);
+                    }
 
-        //        var checkQuery = dataLayer.GetBuilder<ICalcResult>()
-        //            .Read()
-        //            .Select(c => c.Id)
-        //            .Select(c => c.CreatedDate)
-        //            .Select(c => c.StatusCode)
-        //            .Select(c => c.StatusName)
-        //            .Select(c => c.StatusNote)
-        //            .Select(c => c.StartTime)
-        //            .Select(c => c.FinishTime)
-        //            .Filter(c => c.Id, calcResultId);
+                    if (status == (byte)CalcResultStatusCode.Failed)
+                    {
+                        cancel = true;
+                    }
+                    if (status == (byte)CalcResultStatusCode.Aborted)
+                    {
+                        cancel = true;
+                    }
 
-        //        cancel = executor.ExecuteAndFetch(checkQuery, reader =>
-        //        {
-        //            if (reader.Count == 0 || !reader.Read())
-        //            {
-        //                throw new InvalidOperationException($"A calc result not found by ID #{calcResultId}");
-        //            }
+                    if (status == (byte)CalcResultStatusCode.Canceled)
+                    {
+                        cancel = true;
+                    }
+                }
+                //Created = 0, // Фаза создания и подготовки окружения к запуску процесса расчета
+                //Pending = 1, // Фаза ожидания запуска процесса расчета
+                //Accepted = 2, // Фаза ожидания запуска процесса расчета
+                //Processing = 3, // Расчет выполняется
+                //Completed = 4, // Расчет завершен
+                //Canceled = 5, // Расчет был отменен по внешней причине
+                //Aborted = 6, // Расчет был прерван по внутреней причине
+                //Failed = 7  // Попытка запуска завершилась не удачей
+            }
 
-        //            var status = (CalcResultStatusCode)reader.GetValue(c => c.StatusCode);
-        //            var statusNote = reader.GetValue(c => c.StatusNote);
+            var events = _objectReader.Read<CalcResultEventsModel[]>().By(new GetResultEventsByEventIdAndResultId { ResultId = calcResultId, EventId = eventId });
+            foreach (var item in events)
+            {
+                eventId = item.Id;
+            }
 
-        //            Console.WriteLine($"  {DateTime.Now.ToLongTimeString()} - checked the calc result status with ID #{calcResultId} and task ID #{calcTaskId}: {status}, '{statusNote}'");
-
-        //            if (status != CalcResultStatusCode.Pending
-        //            && status != CalcResultStatusCode.Processing)
-        //            {
-        //                resultObject.RESULT.Id = reader.GetValue(c => c.Id);
-        //                resultObject.ResultId = reader.GetValue(c => c.Id);
-        //                resultObject.RESULT.StatusCode = reader.GetValue(c => c.StatusCode);
-        //                resultObject.RESULT.StatusName = reader.GetValue(c => c.StatusName);
-        //                resultObject.RESULT.StatusNote = reader.GetValue(c => c.StatusNote);
-        //                resultObject.RESULT.CreatedDate = reader.GetValue(c => c.CreatedDate);
-        //                resultObject.RESULT.StartTime = reader.GetValue(c => c.StartTime);
-        //                resultObject.RESULT.FinishTime = reader.GetValue(c => c.FinishTime);
-
-        //                var resultQuery = dataLayer.GetBuilder<IPointFieldStrengthResult>()
-        //                    .Read()
-        //                    .Select(c => c.FS_dBuVm)
-        //                    .Select(c => c.Level_dBm)
-        //                    .Filter(c => c.ResultId, calcResultId);
-
-        //                var rs = executor.ExecuteAndRead(resultQuery, r =>
-        //                {
-        //                    resultObject.FS_dBuVm = r.GetValue(c => c.FS_dBuVm);
-        //                    resultObject.Level_dBm = r.GetValue(c => c.Level_dBm);
-        //                    return resultObject;
-        //                });
-
-        //            }
-
-        //            if (status == CalcResultStatusCode.Failed)
-        //            {
-        //                Console.WriteLine($"The calc task ID #{calcTaskId}(result ID #{calcResultId}) is Failed: {statusNote}");
-        //                return true;
-        //                //throw new InvalidOperationException($"Error calculation task with ID #{calcTaskId}(result ID #{calcResultId}): {statusNote}");
-        //            }
-
-        //            if (status == CalcResultStatusCode.Completed)
-        //            {
-
-
-        //                Console.WriteLine($"The calc task ID #{calcTaskId}(result ID #{calcResultId}) is Completed: {statusNote}");
-        //                return true;
-        //            }
-
-        //            if (status == CalcResultStatusCode.Aborted)
-        //            {
-        //                Console.WriteLine($"The calc task ID #{calcTaskId}(result ID #{calcResultId}) is Aborted: {statusNote}");
-        //                return true;
-        //            }
-
-        //            if (status == CalcResultStatusCode.Canceled)
-        //            {
-        //                Console.WriteLine($"The calc task ID #{calcTaskId}(result ID #{calcResultId}) is Canceled: {statusNote}");
-        //                return true;
-        //            }
-
-        //            return false;
-        //        });
-        //    }
-
-        //    return resultObject;
-        //}
+        }
 
         private BroadcastingContext GetBroadcastingContext()
         {
