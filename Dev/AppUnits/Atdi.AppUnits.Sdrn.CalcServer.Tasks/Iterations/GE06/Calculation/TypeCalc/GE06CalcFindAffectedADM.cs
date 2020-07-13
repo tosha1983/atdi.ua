@@ -611,7 +611,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             }
             for (int v = 0; v < thresholdFieldStrengthsICSMAssignmentsAll.Length; v++)
             {
-                if (thresholdFieldStrengthsAnotherServices.Find(x => x.Freq_MHz == thresholdFieldStrengthsICSMAssignmentsAll[v].Freq_MHz && x.StaClass == thresholdFieldStrengthsICSMAssignmentsAll[v].StaClass && x.System_type == thresholdFieldStrengthsICSMAllotmentsAll[v].System_type) == null)
+                if (thresholdFieldStrengthsAnotherServices.Find(x => x.Freq_MHz == thresholdFieldStrengthsICSMAssignmentsAll[v].Freq_MHz && x.StaClass == thresholdFieldStrengthsICSMAssignmentsAll[v].StaClass && x.System_type == thresholdFieldStrengthsICSMAssignmentsAll[v].System_type) == null)
                 {
                     thresholdFieldStrengthsAnotherServices.Add(thresholdFieldStrengthsICSMAssignmentsAll[v]);
                 }
