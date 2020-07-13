@@ -40,6 +40,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
         private IMQueryMenuNode.Context _context;
         private bool _conformityCheckEnabled = false;
         private bool _findAffectedEnabled = false;
+        private CalculationType _calcType;
 
         List<AssignmentsAllotmentsModel> _assignmentsAllotmentsList;
         AssignmentsAllotmentsModel[] _assignmentsAllotmentsArray;
@@ -419,6 +420,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
 
         private void CreateCalcTask(CalculationType calcType)
         {
+            this._calcType = calcType;
             if (Properties.Settings.Default.ActiveContext == 0)
             {
                 _starter.ShowException("Warning!", new Exception($"Undefined Active context"));
@@ -555,10 +557,15 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                         foreach (var item in events)
                         {
                             eventId = item.Id;
+                            var message = item.Message;
+
+                            if (item.State != null)
+                                message = $"Percent complete for calculation '{this._calcType.ToString()}': {item.State.State.ToString()}%";
+
                             _eventBus.Send(new LongProcessLogEvent
                             {
                                 ProcessToken = token,
-                                Message = item.Message
+                                Message = message
                             });
                         }
                         System.Threading.Thread.Sleep(5 * 1000);

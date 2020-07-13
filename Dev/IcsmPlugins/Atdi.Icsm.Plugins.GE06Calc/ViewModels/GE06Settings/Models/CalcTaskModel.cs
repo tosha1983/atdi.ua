@@ -20,5 +20,6 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings
         public string MapName { get; set; }
         public long ContextId { get; set; }
         public string ContextName { get; set; }
+        public string TypeOfCalculation { get; set; }
     }
 }
