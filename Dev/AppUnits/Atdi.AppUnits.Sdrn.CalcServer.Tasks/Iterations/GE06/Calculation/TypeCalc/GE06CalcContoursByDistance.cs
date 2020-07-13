@@ -202,7 +202,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
                             indexForCountoursPointExtendedBuffer++;
 
-                            UpdateProgress.UpdatePercentComplete100(ge06CalcData.Ge06TaskParameters.Distances.Length, sizeResultBuffer, i, k, ref currPercentComplete, "ContoursByDistance", taskContext);
+                            UpdateProgress.UpdatePercentComplete100(ge06CalcData.Ge06TaskParameters.Distances.Length, sizeResultBuffer, i, k, ref currPercentComplete, $"ContoursByDistance ({broadcastingTypeContext}: Assignments)", taskContext);
                         }
                     }
                     //или на функции CreateContourFromContureByDistance если у нас есть BroadcastingAllotment 
@@ -284,7 +284,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
                                         indexForCountoursPointExtendedBuffer++;
 
-                                        UpdateProgress.UpdatePercentComplete100(ge06CalcData.Ge06TaskParameters.Distances.Length, sizeResultBuffer, i, k, ref currPercentComplete, "ContoursByDistance", taskContext);
+                                        UpdateProgress.UpdatePercentComplete100(ge06CalcData.Ge06TaskParameters.Distances.Length, sizeResultBuffer, i, k, ref currPercentComplete, $"ContoursByDistance ({broadcastingTypeContext} : Allotment) ", taskContext);
                                     }
                                 }
                             }
@@ -306,7 +306,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     }
                     ge06CalcResult.AffectedADMResult = FillAffectedADMResult.Fill(ge06CalcResult.ContoursResult, string.Join(",", affectedServices));
                 }
-                UpdateProgress.UpdatePercentComplete100(ref currPercentComplete, "ContoursByDistance", taskContext);
+                UpdateProgress.UpdatePercentComplete100(ref currPercentComplete, $"ContoursByDistance ({broadcastingTypeContext}) ", taskContext);
             }
             finally
             {
