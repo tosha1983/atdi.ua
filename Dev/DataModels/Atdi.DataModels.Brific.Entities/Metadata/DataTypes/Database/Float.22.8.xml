@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<DataType 
+  Name           = "Float.22.8"
+  DataSourceType = "Database"
+  xmlns          =  "http://schemas.atdi.com/orm/entity.xsd">
+  <CodeVarType>Float</CodeVarType>
+  <SourceVarType>FLOAT</SourceVarType>
+  <Precision>22</Precision>
+  <Scale>8</Scale>
+</DataType>

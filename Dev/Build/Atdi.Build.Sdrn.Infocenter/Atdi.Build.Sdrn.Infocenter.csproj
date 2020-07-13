@@ -66,6 +66,10 @@
       <Project>{73f74f27-6f16-4a46-81fc-f959ea6f1ad7}</Project>
       <Name>Atdi.CoreServices.DataLayer.Oracle</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\CoreServices\Atdi.CoreServices.DataLayer.Sqlite\Atdi.CoreServices.DataLayer.Sqlite.csproj">
+      <Project>{3edd317b-87db-4ca2-a75f-36b91bd2c8e4}</Project>
+      <Name>Atdi.CoreServices.DataLayer.Sqlite</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\CoreServices\Atdi.CoreServices.DataLayer.SqlServer\Atdi.CoreServices.DataLayer.SqlServer.csproj">
       <Project>{a65dc15a-e0da-4d33-adbb-b1bcc0758873}</Project>
       <Name>Atdi.CoreServices.DataLayer.SqlServer</Name>

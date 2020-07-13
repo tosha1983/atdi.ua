@@ -44,6 +44,7 @@
     <Compile Include="DataContextBase.cs" />
     <Compile Include="DataEngines\IAssembliesDataEngine.cs" />
     <Compile Include="DataEngines\IOracleDataEngine.cs" />
+    <Compile Include="DataEngines\ISqliteDataEngine.cs" />
     <Compile Include="DataEngines\ISqlServerDataEngine.cs" />
     <Compile Include="DataEngineType.cs" />
     <Compile Include="DataOrmBase.cs" />

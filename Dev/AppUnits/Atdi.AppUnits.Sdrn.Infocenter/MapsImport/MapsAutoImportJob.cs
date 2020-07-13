@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Atdi.AppUnits.Sdrn.Infocenter.DataModels;
 using Atdi.Contracts.CoreServices.DataLayer;
@@ -12,6 +13,7 @@ using Atdi.Contracts.Sdrn.Infocenter;
 using Atdi.DataModels.DataConstraint;
 using Atdi.DataModels.Sdrn.Infocenter;
 using ES = Atdi.DataModels.Sdrn.Infocenter.Entities;
+using BR = Atdi.DataModels.Brific.Entities;
 using Atdi.Platform.Logging;
 using Atdi.Platform.Workflows;
 using Newtonsoft.Json;
@@ -26,20 +28,57 @@ namespace Atdi.AppUnits.Sdrn.Infocenter
 		private const int ContentPartSize = 1024 * 64;
 
 		private readonly AppServerComponentConfig _config;
+		private readonly IDataLayer<EntityDataOrm<BR.BrificEntityOrmContext>> _brificDataLayer;
 		private readonly ILogger _logger;
 		private readonly IDataLayer<EntityDataOrm> _dataLayer;
 
 		private readonly int _contentSizeLimit = 25 * 1024 * 1024;
 
-		public MapsAutoImportJob(AppServerComponentConfig config, IDataLayer<EntityDataOrm> dataLayer, ILogger logger)
+		public MapsAutoImportJob(
+			AppServerComponentConfig config,
+			IDataLayer<EntityDataOrm<BR.BrificEntityOrmContext>> brificDataLayer,
+			IDataLayer<EntityDataOrm> dataLayer, 
+			ILogger logger)
 		{
 			_config = config;
+			_brificDataLayer = brificDataLayer;
 			_dataLayer = dataLayer;
 			_logger = logger;
 		}
 
+//		private void TestBrific()
+//		{
+//			using (var dbScope = this._brificDataLayer.CreateScope<BrificDataContext>())
+//			{
+//				var query = this._brificDataLayer.GetBuilder<BR.Ifmtv_fdg>().From()
+//					.Select(c => c.terrakey)
+//					.Select(c => c.d_updated)
+//					.Select(c => c.fdg_status)
+//					.Select(c => c.fdg_type)
+//					.Select(c => c.is_favorbl)
+//					.Select(c => c.src_fdg);
+
+//				var result = dbScope.Executor.ExecuteAndFetch(query, reader =>
+//				{
+//					var count = 0;
+//					while (reader.Read())
+//					{
+//						++count;
+//						var terrakey = reader.GetValue(c => c.terrakey);
+//;
+//					}
+
+//					return count;
+//				});
+
+
+//			}
+//		}
+
 		public JobExecutionResult Execute(JobExecutionContext context)
 		{
+			//TestBrific();
+
 			// сканируем каталог
 			var folderName = this._config.AutoImportMapsFolder;
 			if (string.IsNullOrEmpty(folderName))

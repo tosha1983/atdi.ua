@@ -1,0 +1,118 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{68B3013A-98F4-4443-8D62-78DD5A7FD071}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Atdi.DataModels.Brific.Entities</RootNamespace>
+    <AssemblyName>Atdi.DataModels.Brific.Entities</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Entities\Ifmtv_fdg.cs" />
+    <Compile Include="BrificEntityOrmContext.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Atdi.DataModels.EntityOrm\Atdi.DataModels.EntityOrm.csproj">
+      <Project>{73c8791e-3fc5-4c91-84e5-c19c98096f10}</Project>
+      <Name>Atdi.DataModels.EntityOrm</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Metadata\DataTypes\ClrObject\CT.Object.xml" />
+    <Content Include="Metadata\DataTypes\ClrObject\CT.ReadOnlyDictionary.String.String.xml" />
+    <Content Include="Metadata\DataTypes\ClrObject\DateTime.DATETIME.xml" />
+    <Content Include="Metadata\DataTypes\ClrObject\DateTimeOffset.DATETIMEOFFSET.xml" />
+    <Content Include="Metadata\DataTypes\ClrObject\Float.FLOAT.xml" />
+    <Content Include="Metadata\DataTypes\ClrObject\Guid.GUID.xml" />
+    <Content Include="Metadata\DataTypes\ClrObject\Integer.INT32.xml" />
+    <Content Include="Metadata\DataTypes\ClrObject\Long.INT64.xml" />
+    <Content Include="Metadata\DataTypes\ClrObject\String.NTEXT.xml" />
+    <Content Include="Metadata\DataTypes\ClrObject\Time.TIME.xml" />
+    <Content Include="Metadata\DataTypes\Database\Array.Double.xml" />
+    <Content Include="Metadata\DataTypes\Database\Array.Float.xml" />
+    <Content Include="Metadata\DataTypes\Database\Array.Integer.xml" />
+    <Content Include="Metadata\DataTypes\Database\Boolean.xml" />
+    <Content Include="Metadata\DataTypes\Database\Byte.xml" />
+    <Content Include="Metadata\DataTypes\Database\Bytes.MAX.xml" />
+    <Content Include="Metadata\DataTypes\Database\Char.xml" />
+    <Content Include="Metadata\DataTypes\Database\Chars.250.xml" />
+    <Content Include="Metadata\DataTypes\Database\Code.32.xml" />
+    <Content Include="Metadata\DataTypes\Database\Code.Guid.xml" />
+    <Content Include="Metadata\DataTypes\Database\Code.u08.xml" />
+    <Content Include="Metadata\DataTypes\Database\Counter.32.xml" />
+    <Content Include="Metadata\DataTypes\Database\Counter.64.xml" />
+    <Content Include="Metadata\DataTypes\Database\Counter.DateTimeOffset.xml" />
+    <Content Include="Metadata\DataTypes\Database\Counter.Guid.xml" />
+    <Content Include="Metadata\DataTypes\Database\Date.xml" />
+    <Content Include="Metadata\DataTypes\Database\DateTime.xml" />
+    <Content Include="Metadata\DataTypes\Database\DateTimeOffset.xml" />
+    <Content Include="Metadata\DataTypes\Database\Decimal.22.8.xml" />
+    <Content Include="Metadata\DataTypes\Database\Decimal.30.10.xml" />
+    <Content Include="Metadata\DataTypes\Database\Double.30.10.xml" />
+    <Content Include="Metadata\DataTypes\Database\Float.22.8.xml" />
+    <Content Include="Metadata\DataTypes\Database\Integer.16.xml" />
+    <Content Include="Metadata\DataTypes\Database\Integer.32.xml" />
+    <Content Include="Metadata\DataTypes\Database\Integer.64.xml" />
+    <Content Include="Metadata\DataTypes\Database\Text.10.xml" />
+    <Content Include="Metadata\DataTypes\Database\Text.100.xml" />
+    <Content Include="Metadata\DataTypes\Database\Text.1000.xml" />
+    <Content Include="Metadata\DataTypes\Database\Text.150.xml" />
+    <Content Include="Metadata\DataTypes\Database\Text.20.xml" />
+    <Content Include="Metadata\DataTypes\Database\Text.200.xml" />
+    <Content Include="Metadata\DataTypes\Database\Text.2000.xml" />
+    <Content Include="Metadata\DataTypes\Database\Text.25.xml" />
+    <Content Include="Metadata\DataTypes\Database\Text.250.xml" />
+    <Content Include="Metadata\DataTypes\Database\Text.4000.xml" />
+    <Content Include="Metadata\DataTypes\Database\Text.450.xml" />
+    <Content Include="Metadata\DataTypes\Database\Text.50.xml" />
+    <Content Include="Metadata\DataTypes\Database\Text.Bytes.xml" />
+    <Content Include="Metadata\DataTypes\Database\Text.MAX.xml" />
+    <Content Include="Metadata\DataTypes\Database\Time.xml" />
+    <Content Include="Metadata\Entities\fmtv_fdg.xml" />
+    <Content Include="Metadata\Environment.xml" />
+    <Content Include="Metadata\Units\Angle.Degree.xml" />
+    <Content Include="Metadata\Units\Frequency.Hz.xml" />
+    <Content Include="Metadata\Units\Frequency.kHz.xml" />
+    <Content Include="Metadata\Units\Frequency.MHz.xml" />
+    <Content Include="Metadata\Units\Latitude.DEC.xml" />
+    <Content Include="Metadata\Units\Length.M.xml" />
+    <Content Include="Metadata\Units\Level.dBm.xml" />
+    <Content Include="Metadata\Units\Longitude.DEC.xml" />
+    <Content Include="Metadata\Units\Power.dB.xml" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
