@@ -178,7 +178,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                     var contoursResult = resultGe06Calc.ContoursResult[i];
                     var insertQueryGn06ContoursResult = _calcServerDataLayer.GetBuilder<CALC.IGn06ContoursResult>()
                         .Insert()
-                        .SetValue(c => c.AffectedADM, contoursResult.AffectedADM)
+                        .SetValue(c => c.AffectedADM, string.IsNullOrEmpty(contoursResult.AffectedADM) ? "Sea" : contoursResult.AffectedADM)
                         .SetValue(c => c.ContourType, (byte)contoursResult.ContourType)
                         .SetValueAsJson<CountoursPoint[]>(c => c.CountoursPoints, contoursResult.CountoursPoints)
                         .SetValue(c => c.Distance, contoursResult.Distance)
@@ -195,7 +195,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                     var affectedADMResult = resultGe06Calc.AffectedADMResult[i];
                     var insertQueryGn06AffectedADMResult = _calcServerDataLayer.GetBuilder<CALC.IGn06AffectedADMResult>()
                         .Insert()
-                        .SetValue(c => c.Adm, affectedADMResult.ADM)
+                        .SetValue(c => c.Adm, string.IsNullOrEmpty(affectedADMResult.ADM) ? "Sea" : affectedADMResult.ADM)
                         .SetValue(c => c.AffectedServices, affectedADMResult.AffectedServices)
                         .SetValue(c => c.Gn06ResultId, gn06ResultId)
                         .SetValue(c => c.TypeAffected, affectedADMResult.TypeAffected);
