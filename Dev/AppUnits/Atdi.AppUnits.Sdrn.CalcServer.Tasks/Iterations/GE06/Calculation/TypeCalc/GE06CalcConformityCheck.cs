@@ -295,7 +295,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         int sizeResultBuffer = 0;
                         // строим контура и считаем напряженность поля для assigments
 
-                        if ((broadcastingContextBRIFIC.Allotments == null) || (broadcastingContextBRIFIC.Allotments.AllotmentParameters != null) || (broadcastingContextBRIFIC.Allotments.AllotmentParameters.Contur is null)
+                        if ((broadcastingContextBRIFIC.Allotments == null) || (broadcastingContextBRIFIC.Allotments.AllotmentParameters == null) || (broadcastingContextBRIFIC.Allotments.AllotmentParameters.Contur == null)
                             || (broadcastingContextBRIFIC.Allotments.AllotmentParameters.Contur.Length < 3))
                         {
                             var contourFromPointByDistanceArgs = new ContourFromPointByDistanceArgs()
@@ -493,10 +493,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
                 var allotmentOrAssignmentResult = new List<AllotmentOrAssignmentResult>();
 
-                GE06FillData.FillAllotmentOrAssignmentResult(broadcastingContextBRIFIC, ref ge06CalcResult);
+                GE06FillData.FillAllotmentOrAssignmentResult(broadcastingContextBRIFIC, BroadcastingTypeContext.Brific, ref ge06CalcResult);
                 allotmentOrAssignmentResult.AddRange(ge06CalcResult.AllotmentOrAssignmentResult);
 
-                GE06FillData.FillAllotmentOrAssignmentResult(broadcastingContextICSM, ref ge06CalcResult);
+                GE06FillData.FillAllotmentOrAssignmentResult(broadcastingContextICSM, BroadcastingTypeContext.Icsm, ref ge06CalcResult);
                 allotmentOrAssignmentResult.AddRange(ge06CalcResult.AllotmentOrAssignmentResult);
 
                 ge06CalcResult.AllotmentOrAssignmentResult = allotmentOrAssignmentResult.ToArray();

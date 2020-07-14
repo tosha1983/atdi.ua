@@ -169,6 +169,15 @@ namespace Atdi.Icsm.Plugins.GE06Calc.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Client contexts.
+        /// </summary>
+        public static string ClientContexts {
+            get {
+                return ResourceManager.GetString("ClientContexts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Conformity Check Ann. 4 Sec II.
         /// </summary>
         public static string ConformityCheck {
@@ -493,6 +502,15 @@ namespace Atdi.Icsm.Plugins.GE06Calc.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Results.
+        /// </summary>
+        public static string Results {
+            get {
+                return ResourceManager.GetString("Results", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Save.
         /// </summary>
         public static string Save {
@@ -588,6 +606,15 @@ namespace Atdi.Icsm.Plugins.GE06Calc.Properties {
         public static string TypeName {
             get {
                 return ResourceManager.GetString("TypeName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type of calculation.
+        /// </summary>
+        public static string TypeOfCalculation {
+            get {
+                return ResourceManager.GetString("TypeOfCalculation", resourceCulture);
             }
         }
         

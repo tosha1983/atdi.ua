@@ -112,6 +112,8 @@
     <Compile Include="ViewModels\GE06TaskResult\Models\AllotmentOrAssignmentModel.cs" />
     <Compile Include="ViewModels\GE06TaskResult\Models\ContourModel.cs" />
     <Compile Include="ViewModels\GE06Task\Models\CalcResultEventsModel.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\Icsm\GetIcsmAllotmentsBySfnId.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\Icsm\GetIcsmAllotmentsBySfnIdExecutor.cs" />
     <Compile Include="ViewModels\GE06Task\Queries\SubQueries\GetResultStatusById.cs" />
     <Compile Include="ViewModels\GE06Task\Queries\SubQueries\GetResultStatusByIdExecutor.cs" />
     <Compile Include="ViewModels\GE06TaskResult\View.cs" />

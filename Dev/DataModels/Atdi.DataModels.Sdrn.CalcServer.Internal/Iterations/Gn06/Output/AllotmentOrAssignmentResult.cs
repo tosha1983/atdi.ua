@@ -21,6 +21,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
         public float? ErpV_dbW;
         public string AntennaDirectional;
         public string AdmRefId;
+        public string Source;
         public CountoursPoint[] CountoursPoints;
     }
 }
