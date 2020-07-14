@@ -493,10 +493,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
                 var allotmentOrAssignmentResult = new List<AllotmentOrAssignmentResult>();
 
-                GE06FillData.FillAllotmentOrAssignmentResult(broadcastingContextBRIFIC, ref ge06CalcResult);
+                GE06FillData.FillAllotmentOrAssignmentResult(broadcastingContextBRIFIC, BroadcastingTypeContext.Brific, ref ge06CalcResult);
                 allotmentOrAssignmentResult.AddRange(ge06CalcResult.AllotmentOrAssignmentResult);
 
-                GE06FillData.FillAllotmentOrAssignmentResult(broadcastingContextICSM, ref ge06CalcResult);
+                GE06FillData.FillAllotmentOrAssignmentResult(broadcastingContextICSM, BroadcastingTypeContext.Icsm, ref ge06CalcResult);
                 allotmentOrAssignmentResult.AddRange(ge06CalcResult.AllotmentOrAssignmentResult);
 
                 ge06CalcResult.AllotmentOrAssignmentResult = allotmentOrAssignmentResult.ToArray();

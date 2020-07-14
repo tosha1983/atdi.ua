@@ -837,7 +837,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 
             }
             // тут конец расчетам нужна обработка результатов 
-            GE06FillData.FillAllotmentOrAssignmentResult(ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM, ref ge06CalcResult);
+            GE06FillData.FillAllotmentOrAssignmentResult(ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM, BroadcastingTypeContext.Icsm, ref ge06CalcResult);
         }
     }
 }

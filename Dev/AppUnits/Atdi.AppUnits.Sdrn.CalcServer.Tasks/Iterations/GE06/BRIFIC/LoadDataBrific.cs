@@ -21,6 +21,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             DbSqLite.SetBrificDirectory(fileName);
         }
 
+        public static bool CheckBRIFICDatabase()
+        {
+            return DbSqLite.InitDatabase();
+        }
+
         /// Системы радиовещательной службы
         /// DVB-T 
         /// 

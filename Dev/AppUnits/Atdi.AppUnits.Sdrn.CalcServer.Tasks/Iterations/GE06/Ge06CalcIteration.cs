@@ -23,6 +23,8 @@ using Atdi.DataModels.Sdrn.DeepServices.GN06;
 using Atdi.Contracts.Sdrn.DeepServices.GN06;
 using IdwmDataModel = Atdi.DataModels.Sdrn.DeepServices.IDWM;
 using Idwm = Atdi.Contracts.Sdrn.DeepServices.IDWM;
+using Atdi.DataModels.Sdrn.CalcServer;
+
 
 
 namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
@@ -80,6 +82,17 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         public Ge06CalcResult Run(ITaskContext taskContext, Ge06CalcData data)
         {
             LoadDataBrific.SetBRIFICDirectory(this._appServerComponentConfig.BrificDBSource);
+            if (LoadDataBrific.CheckBRIFICDatabase()==false)
+            {
+                taskContext.SendEvent(new CalcResultEvent
+                {
+                    Level = CalcResultEventLevel.Error,
+                    Context = "Ge06CalcIteration",
+                    Message = $"File '{this._appServerComponentConfig.BrificDBSource}' does not exist or moved!"
+                });
+                throw new Exception($"File '{this._appServerComponentConfig.BrificDBSource}' does not exist or moved!");
+            }
+
             var iterationHandlerBroadcastingFieldStrengthCalcData = _iterationsPool.GetIteration<BroadcastingFieldStrengthCalcData, BroadcastingFieldStrengthCalcResult>();
             var iterationHandlerFieldStrengthCalcData = _iterationsPool.GetIteration<FieldStrengthCalcData, FieldStrengthCalcResult>();
 

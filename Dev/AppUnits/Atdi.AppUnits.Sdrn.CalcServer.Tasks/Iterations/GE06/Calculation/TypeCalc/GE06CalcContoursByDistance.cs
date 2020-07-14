@@ -323,7 +323,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     pointEarthGeometricPool.Put(pointEarthGeometricsResult);
                 }
             }
-            GE06FillData.FillAllotmentOrAssignmentResult(broadcastingContextBase, ref ge06CalcResult);
+            GE06FillData.FillAllotmentOrAssignmentResult(broadcastingContextBase, broadcastingTypeContext, ref ge06CalcResult);
 
         }
 

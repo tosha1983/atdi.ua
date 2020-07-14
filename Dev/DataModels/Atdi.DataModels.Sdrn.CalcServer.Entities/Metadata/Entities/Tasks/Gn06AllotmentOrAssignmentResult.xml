@@ -27,6 +27,7 @@
     <Field Name="ErpV_dbW" SourceType="Column" Required="false" SourceName="ERPV_DBW" DataType="Float.22.8" Title="ErpV, dbW" Desc="The ErpV, dbW"/>
     <Field Name="AntennaDirectional" SourceType="Column" SourceName="ANTENNA_DIRECTIONAL" DataType="Text.50" Required="false" Title="AntennaDirectional" Desc="The antenna directional" />
     <Field Name="AdmRefId" SourceType="Column" SourceName="ADM_REF_ID" DataType="Text.100" Required="false" Title="AdmRefId" Desc="The AdmRefId" />
+    <Field Name="Source" SourceType="Column" SourceName="SOURCE" DataType="Text.50" Required="false" Title="Source name" Desc="The source name" />
     <Field Name="CountoursPoints" SourceType="Column" SourceName="CONTOURS_POINTS" DataType="Text.MAX" Required="false" Title="Countours points extended object" Desc="The countours points extended object" />
   </Fields>
   <PrimaryKey Clustered="true">
