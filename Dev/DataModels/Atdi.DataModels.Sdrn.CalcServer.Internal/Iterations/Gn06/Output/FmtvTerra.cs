@@ -15,7 +15,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
         public string StnClass;
         public string System_type;
         public double FreqAssgn_MHz;
-        public int FS;
+        public float FS;
     }
 }
     

@@ -22,7 +22,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
     {
 
 
-        private static void FillFieldStrength(FmtvTerra[] arrFmtvTerra, int thresholdFieldStrength)
+        private static void FillFieldStrength(FmtvTerra[] arrFmtvTerra, float thresholdFieldStrength)
         {
             for (int j = 0; j < arrFmtvTerra.Length; j++)
             {
@@ -73,7 +73,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 var maxFreq_MHz = triggerInformationTemp.MaxFreq_MHz;
                 var staClass = triggerInformationTemp.StaClass;
                 var systemType = triggerInformationTemp.System_type;
-                var fs = (int)triggerInformationTemp.ThresholdFS;
+                var fs = triggerInformationTemp.ThresholdFS;
 
                 for (int n = 0; n < SizeBufferFindAdministrations+1; n++)
                 {
@@ -569,7 +569,6 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
             
             float ProsentTerr = 50;
-            int Height = 10;
             var countoursPointExtendedBuffer = default(CountoursPointExtended[]);
             var pointEarthGeometricsResult = default(PointEarthGeometric[]);
             var pointEarthGeometricsResultICSM = default(PointEarthGeometric[]);
@@ -784,7 +783,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                     Lon_DEC = pointEarthGeometricsResult[t].Longitude,
                                     Lat_DEC = pointEarthGeometricsResult[t].Latitude,
                                     Height = (int)arrTriggersFS[d].Height_m,
-                                    FS = (int)arrTriggersFS[d].ThresholdFS,
+                                    FS = arrTriggersFS[d].ThresholdFS,
                                     PointType = PointType.Affected,
                                     broadcastingTypeCalculation = BroadcastingTypeCalculation.FieldStrength,
                                     Id = indexResult,

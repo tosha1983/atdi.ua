@@ -4,7 +4,7 @@
   CALCRESULTS_GN06_ID  NUMBER(15)               NOT NULL,
   CONTOUR_TYPE         NUMBER(3)                NOT NULL,
   DISTANCE             NUMBER(9),
-  FS                   NUMBER(9),
+  FS                   NUMBER(30,10),  
   AFFECTED_ADM         NVARCHAR2(50),
   POINTS_COUNT         NUMBER(9),
   CONTOURS_POINTS      NCLOB
