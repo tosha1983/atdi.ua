@@ -157,6 +157,5 @@ namespace Atdi.WpfControls.EntityOrm.Controls
         {
             base.Dispose();
         }
-
     }
 }
