@@ -21,6 +21,7 @@ using Atdi.WpfControls.EntityOrm.Controls;
 using Atdi.Icsm.Plugins.GE06Calc.Environment;
 using FRM = System.Windows.Forms;
 using System.IO;
+using System.Globalization;
 
 namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06TaskResult
 {
@@ -124,13 +125,15 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06TaskResult
                             }
                         }
                         var output = new List<string>();
-                        output.Add("X or longitude;Y or latitude;Coord. code;Azimuth deg;Info 1;Info 2;Envelop dbuV/m");
+                        output.Add("#,X or longitude,Y or latitude,Coord. code,Azimuth deg,Info 1,Info 2,Envelop dbuV/m");
+                        long i = 0;
+                        string sep = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
 
                         foreach (ContourModel item in this._currentContours)
                         {
                             foreach (var point in item.CountoursPoints)
                             {
-                                output.Add($"{point.Lon_DEC.ToString()};{point.Lat_DEC.ToString()};4DEC;;;;{point.FS.ToString()}");
+                                output.Add($"{++i},{point.Lon_DEC.ToString().Replace(sep, ".")},{point.Lat_DEC.ToString().Replace(sep, ".")},4DEC,,,,{point.FS.ToString()}");
                             }
                         }
                         System.IO.File.WriteAllLines(sfd.FileName, output.ToArray(), System.Text.Encoding.UTF8);

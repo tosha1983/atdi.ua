@@ -187,7 +187,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Contoures.
+        ///   Looks up a localized string similar to Contours.
         /// </summary>
         public static string Contoures {
             get {
