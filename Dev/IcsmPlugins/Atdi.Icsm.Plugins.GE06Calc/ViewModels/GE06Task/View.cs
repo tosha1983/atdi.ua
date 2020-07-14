@@ -155,6 +155,15 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                                 this._assignmentsAllotmentsList.AddRange(assignBrific);
                             }
                         }
+
+                        if (!string.IsNullOrEmpty(allot.SfnId))
+                        {
+                            var allotsIcsm = _objectReader.Read<List<AssignmentsAllotmentsModel>>().By(new GetIcsmAllotmentsBySfnId { SfnId = allot.SfnId });
+                            if (allotsIcsm != null)
+                            {
+                                this._assignmentsAllotmentsList.AddRange(allotsIcsm);
+                            }
+                        }
                     }
                 }
 
