@@ -200,6 +200,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings
                 ReloadCalcTask();
                 this.CurrentClientContextCard = _objectReader.Read<ClientContextModel>().By(new GetClientContextById { Id = CurrentClientContext.Id });
                 ClientContextEditEnabled = true;
+                ClientContextDelEnabled = true;
             }
             else
             {

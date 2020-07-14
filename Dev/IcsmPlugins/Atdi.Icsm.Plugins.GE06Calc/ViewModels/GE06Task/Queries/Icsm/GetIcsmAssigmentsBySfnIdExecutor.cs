@@ -40,6 +40,20 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
                 rs.Close();
             rs.Destroy();
 
+            IMRecordset rs2 = new IMRecordset("FMTV_ASSIGN", IMRecordset.Mode.ReadOnly);
+            rs2.Select(_mapper.SelectStatementIcsmAssignment);
+            rs2.SetWhere("SFN_IDENT", IMRecordset.Operation.Eq, criterion.SfnId);
+            rs2.SetWhere("IS_ALLOTM", IMRecordset.Operation.Eq, "N");
+            for (rs2.Open(); !rs2.IsEOF(); rs2.MoveNext())
+            {
+                var assign = new AssignmentsAllotmentsModel() { Source = AssignmentsAllotmentsSourceType.ICSM, Type = AssignmentsAllotmentsModelType.Assignment };
+                _mapper.GetIcsmAssignment(assign, rs2);
+                assigns.Add(assign);
+            }
+            if (rs2.IsOpen())
+                rs2.Close();
+            rs2.Destroy();
+
             return assigns;
         }
     }

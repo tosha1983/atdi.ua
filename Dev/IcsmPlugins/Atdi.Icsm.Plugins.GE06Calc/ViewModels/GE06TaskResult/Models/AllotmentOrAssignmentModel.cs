@@ -23,6 +23,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06TaskResult
         public float? ErpV_dbW { get; set; }
         public string AntennaDirectional { get; set; }
         public string AdmRefId { get; set; }
+        public string Source { get; set; }
         public CountoursPoint[] CountoursPoints { get; set; }
     }
 }
