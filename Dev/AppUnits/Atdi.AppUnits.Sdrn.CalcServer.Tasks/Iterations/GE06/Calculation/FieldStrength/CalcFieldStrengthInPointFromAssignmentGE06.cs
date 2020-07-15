@@ -40,7 +40,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                                        ProjectMapData projectMapData,
                                                                        CluttersDesc cluttersDesc,
                                                                        string projection,
-                                                                       float Hrx_m)
+                                                                       float hrx_m)
         {
             float resultCalcFieldStrength = 0;
 
@@ -65,7 +65,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     ReliefContent = projectMapData.ReliefContent,
                     Projection = projection,
                     TargetCoordinate = new PointEarthGeometric() { Longitude = point.Longitude, Latitude = point.Latitude, CoordinateUnits = CoordinateUnits.deg },
-                    TargetAltitude_m = Hrx_m
+                    TargetAltitude_m = hrx_m
                 };
                 var resFieldStrengthCalcResult = iterationHandlerBroadcastingFieldStrengthCalcData.Run(taskContext, broadcastingFieldStrengthCalcData);
                 resultCalcFieldStrength = (float)resFieldStrengthCalcResult.FS_dBuVm.Value;

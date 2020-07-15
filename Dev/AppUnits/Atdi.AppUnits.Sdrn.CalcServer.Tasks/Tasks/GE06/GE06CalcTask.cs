@@ -124,6 +124,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                 c => c.CalculationTypeName,
                                 c => c.ContureByFieldStrength,
                                 c => c.Distances,
+                                c => c.StepBetweenBoundaryPoints,
                                 c => c.FieldStrength,
                                 c => c.PercentageTime,
                                 c => c.SubscribersHeight,
@@ -155,6 +156,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                     Distances = reader.GetValue(c => c.Distances),
                     Projection = reader.GetValue(c => c.TASK.CONTEXT.PROJECT.Projection),
                     MapName = reader.GetValue(c => c.TASK.MapName),
+                    StepBetweenBoundaryPoints = reader.GetValue(c => c.StepBetweenBoundaryPoints)
 
                 };
             });
