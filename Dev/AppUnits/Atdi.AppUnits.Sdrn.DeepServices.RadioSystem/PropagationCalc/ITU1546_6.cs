@@ -27538,7 +27538,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             
 
             var E_land = Get_land(ha, hef, d, f, p);
-            var E_sea = E = Get_sea(h_gr, d, f, p);
+            var E_sea = Get_sea(h_gr, d, f, p);
 
             // определение Дельта, ур 26
             delta = E_sea - E_land;
@@ -27713,6 +27713,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             
 
             E5 = E5 + c10;
+            // ур(2)
             double Egran;
             Egran = E1.Emax_land(d_);
             double tt, ss;
@@ -27735,7 +27736,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             {
                 tt = 0;
             }
-            // Ese – усиление, возникающее для кривых для морских трасс и определяемое как
+            // Ese – усиление, возникающее для кривых для морских трасс и определяемое как (ур. 1b, 3) 
             Egran = Egran + tt * 2.38 * (1 - Math.Exp(-d_ / 8.94)) * Math.Log10(50 / p_);
             if (E5 > Egran)
             {
