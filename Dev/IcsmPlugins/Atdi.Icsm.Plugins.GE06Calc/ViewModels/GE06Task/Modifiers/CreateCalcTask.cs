@@ -24,6 +24,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Modifiers
         public bool UseEffectiveHeight;
         public byte CalculationTypeCode;
         public string CalculationTypeName;
+        public int? StepBetweenBoundaryPoints;
         public BroadcastingContext BroadcastingExtend;
 
         public bool Success;

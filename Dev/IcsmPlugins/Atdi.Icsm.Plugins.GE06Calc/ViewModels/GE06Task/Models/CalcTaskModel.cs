@@ -20,5 +20,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
         public int SubscribersHeight { get; set; }
         public double PercentageTime { get; set; }
         public bool UseEffectiveHeight { get; set; }
+        public int? StepBetweenBoundaryPoints { get; set; }
+        public bool StepBetweenBoundaryPointsDefault { get; set; }
     }
 }

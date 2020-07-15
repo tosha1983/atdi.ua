@@ -20,7 +20,7 @@ namespace Atdi.WpfControls.EntityOrm.Controls
     /// </summary>
     public partial class OrmCheckBox : UserControl
     {
-        double _captionWith = 100;
+        double _captionWith = 0;
         string _caption = "";
         bool _enabled = true;
         bool? _value = null;

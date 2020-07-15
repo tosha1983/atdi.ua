@@ -18,7 +18,7 @@ namespace Atdi.Icsm.Plugins.Core
 {
     public partial class ViewForm : Form
 	{
-		public readonly ElementHost _wpfElementHost;
+		public ElementHost _wpfElementHost;
 		private readonly ViewBase _viewObject;
 	    private readonly ViewStarter _starter;
 	    private readonly ILogger _logger;
@@ -67,11 +67,19 @@ namespace Atdi.Icsm.Plugins.Core
 		protected override void OnFormClosed(FormClosedEventArgs e)
 	    {
 		    _starter?.Close(this);
-            var dispos = _wpfElementHost as IDisposable;
-            dispos?.Dispose();
+
+            if (_wpfElementHost != null)
+            {
+                _wpfElementHost.Child = null;
+                _wpfElementHost.Dispose();
+                _wpfElementHost.Parent = null;
+                _wpfElementHost = null;
+            }
+            this.Controls.Clear();
             var disposable = _viewObject as IDisposable;
 		    disposable?.Dispose();
             base.Dispose();
+            GC.Collect();
 	    }
 
 		//void ThisFormClosing(object sender, FormClosingEventArgs e)
