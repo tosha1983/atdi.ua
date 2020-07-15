@@ -14,7 +14,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06TaskResult
         public byte ContourType { get; set; }
         public string ContourTypeName { get; set; }
         public int Distance { get; set; }
-        public int FS { get; set; }
+        public double FS { get; set; }
         public string AffectedADM { get; set; }
         public int PointsCount { get; set; }
         public CountoursPoint[] CountoursPoints { get; set; }

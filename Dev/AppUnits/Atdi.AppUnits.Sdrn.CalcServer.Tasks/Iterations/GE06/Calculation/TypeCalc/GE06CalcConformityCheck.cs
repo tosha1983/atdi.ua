@@ -348,7 +348,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].Lat_DEC = pointForCalcFS.Latitude;
                             countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].Height = Height;
                             countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].PointType = PointType.Etalon;
-                            countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].FS = (int)BRIFICFS;
+                            countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].FS = BRIFICFS;
                             var adm = idwmService.GetADMByPoint(new IdwmDataModel.Point() { Longitude_dec = pointForCalcFS.Longitude, Latitude_dec = pointForCalcFS.Latitude });
                             countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].administration = adm;
                             countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].broadcastingTypeContext = BroadcastingTypeContext.Brific;
@@ -369,7 +369,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].Lon_DEC = pointForCalcFS.Longitude;
                             countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].Lat_DEC = pointForCalcFS.Latitude;
                             countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].Height = Height;
-                            countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].FS = (int)ICSMFS;
+                            countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].FS = ICSMFS;
                             if (BRIFICFS >= ICSMFS-0.1) { countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].PointType = PointType.Correct; }
                             else { countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].PointType = PointType.Affected; }
                             countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].administration = adm;
@@ -429,7 +429,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                     countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].Lat_DEC = pointForCalcFsBRIFIC.Latitude;
                                     countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].Height = Height;
                                     countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].PointType = PointType.Etalon;
-                                    countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].FS = (int)triggerFS;
+                                    countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].FS = triggerFS;
                                     var adm = idwmService.GetADMByPoint(new IdwmDataModel.Point() { Longitude_dec = pointForCalcFsBRIFIC.Longitude, Latitude_dec = pointForCalcFsBRIFIC.Latitude });
                                     countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].administration = adm;
                                     countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].broadcastingTypeContext = BroadcastingTypeContext.Brific;
@@ -442,7 +442,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                     countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].Lon_DEC = pointForCalcFsBRIFIC.Longitude;
                                     countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].Lat_DEC = pointForCalcFsBRIFIC.Latitude;
                                     countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].Height = Height;
-                                    countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].FS = (int)ICSMFS;
+                                    countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].FS = ICSMFS;
                                     if (triggerFS >= ICSMFS-0.1) { countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].PointType = PointType.Correct; }
                                     else { countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].PointType = PointType.Affected; }
                                     countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].administration = adm;

@@ -67,8 +67,11 @@ namespace Atdi.Icsm.Plugins.Core
 		protected override void OnFormClosed(FormClosedEventArgs e)
 	    {
 		    _starter?.Close(this);
-		    var disposable = _viewObject as IDisposable;
+            var dispos = _wpfElementHost as IDisposable;
+            dispos?.Dispose();
+            var disposable = _viewObject as IDisposable;
 		    disposable?.Dispose();
+            base.Dispose();
 	    }
 
 		//void ThisFormClosing(object sender, FormClosingEventArgs e)

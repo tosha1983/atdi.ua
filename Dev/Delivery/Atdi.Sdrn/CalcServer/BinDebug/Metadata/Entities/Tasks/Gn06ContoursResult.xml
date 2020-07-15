@@ -17,7 +17,7 @@
     <Field Name="Gn06ResultId" SourceType="Column" SourceName="CALCRESULTS_GN06_ID" DataType="Integer.64"  Required="true" Title="Geneva 06 result ID" Desc="The geneva 06 result ID" />
     <Field Name="ContourType" SourceType="Column" SourceName="CONTOUR_TYPE" DataType="Byte" Required="false" Title="Contour type" Desc="The contour type" />
     <Field Name="Distance" SourceType="Column" SourceName="DISTANCE" DataType="Integer.32" Required="false" Title="Distance" Desc="The distance" />
-    <Field Name="FS" SourceType="Column" SourceName="FS" DataType="Integer.32" Required="false" Title="FS" Desc="The FS" />
+    <Field Name="FS" SourceType="Column" SourceName="FS" DataType="Double.30.10" Required="false" Title="FS" Desc="The FS" />
     <Field Name="AffectedADM" SourceType="Column" SourceName="AFFECTED_ADM" DataType="Text.50" Required="false" Title="Affected administration" Desc="The affected administration" />
     <Field Name="PointsCount" SourceType="Column" SourceName="POINTS_COUNT" DataType="Integer.32" Required="false" Title="Points count" Desc="The points count" />
     <Field Name="CountoursPoints" SourceType="Column" SourceName="CONTOURS_POINTS" DataType="Text.MAX" Required="false" Title="Countours points extended object" Desc="The countours points extended object" />

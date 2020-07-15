@@ -9,7 +9,7 @@ CREATE TABLE [CALC].[GN06_CONTOURS_RESULT](
 	[CALCRESULTS_GN06_ID] [bigint] NOT NULL,
 	[CONTOUR_TYPE] [tinyint] NOT NULL,
 	[DISTANCE] [int] NULL,
-	[FS] [int] NULL,
+	[FS] [real] NULL,
 	[AFFECTED_ADM] [nvarchar](50) NULL,
 	[POINTS_COUNT] [int] NULL,
 	[CONTOURS_POINTS] [nvarchar](max) NULL,

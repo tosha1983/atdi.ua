@@ -174,7 +174,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                 countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].PointType = PointType.Unknown;
                             }
                             countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].Distance = ge06CalcData.Ge06TaskParameters.Distances[i];
-                            countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].FS = (int)CalcFieldStrengthInPointGE06.Calc(ge06CalcData,
+                            countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].FS = CalcFieldStrengthInPointGE06.Calc(ge06CalcData,
                                                                                             in point,
                                                                                             broadcastingTypeContext,
                                                                                             pointEarthGeometricPool,
@@ -252,7 +252,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                             countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].PointType = PointType.Unknown;
                                         }
                                         countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].Distance = ge06CalcData.Ge06TaskParameters.Distances[i];
-                                        countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].FS = (int)CalcFieldStrengthInPointGE06.Calc(ge06CalcData,
+                                        countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].FS = CalcFieldStrengthInPointGE06.Calc(ge06CalcData,
                                                                                             in point,
                                                                                             broadcastingTypeContext,
                                                                                             pointEarthGeometricPool,
