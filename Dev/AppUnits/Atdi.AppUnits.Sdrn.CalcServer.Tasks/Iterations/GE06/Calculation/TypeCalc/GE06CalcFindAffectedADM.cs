@@ -573,6 +573,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
             string notValidBroadcastingAssignment = string.Empty;
             string notValidBroadcastingAllotment = string.Empty;
+            GE06CheckEffectiveHeight.CheckEffectiveHeightForAssignment(ref ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM.Assignments, ge06CalcData.Ge06TaskParameters.UseEffectiveHeight);
             if (((GE06Validation.ValidationAssignment(ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM.Assignments, out notValidBroadcastingAssignment)) && (GE06Validation.ValidationAllotment(ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM.Allotments, out notValidBroadcastingAllotment))) == false)
             {
                 string message = "";
