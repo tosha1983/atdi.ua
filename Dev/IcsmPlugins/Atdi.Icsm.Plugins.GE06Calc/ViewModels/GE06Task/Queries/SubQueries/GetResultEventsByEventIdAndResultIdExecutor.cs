@@ -28,6 +28,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
                 .Read()
                 .Select(c => c.Id)
                 .Select(c => c.CreatedDate)
+                .Select(c => c.LevelCode)
                 .Select(c => c.LevelName)
                 .Select(c => c.Message)
                 .Select(c => c.DataJson)
@@ -42,6 +43,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
                 {
                     Id = reader.GetValue(c => c.Id),
                     CreatedDate = reader.GetValue(c => c.CreatedDate),
+                    LevelCode = reader.GetValue(c => c.LevelCode),
                     LevelName = reader.GetValue(c => c.LevelName),
                     Message = reader.GetValue(c => c.Message),
                     State = string.IsNullOrEmpty(reader.GetValue(c => c.DataJson)) ? null : reader.GetValueAs<CurrentProgress>(c => c.DataJson)

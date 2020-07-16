@@ -650,11 +650,13 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
             var resultId = _objectReader.Read<long?>().By(new ST.Queries.GetResultIdByTaskId { TaskId = data.Id });
             if (resultId.HasValue)
             {
-                WaitForCalcResult(data.Id, resultId.Value);
-                var ge06resultId = _objectReader.Read<long?>().By(new ST.Queries.GetGe06ResultIdByResultId { ResultId = resultId.Value });
-                if (ge06resultId.HasValue)
+                if (WaitForCalcResult(data.Id, resultId.Value))
                 {
-                    _starter.Start<VM.GE06TaskResult.View>(isModal: true, c => c.ResultId = ge06resultId.Value);
+                    var ge06resultId = _objectReader.Read<long?>().By(new ST.Queries.GetGe06ResultIdByResultId { ResultId = resultId.Value });
+                    if (ge06resultId.HasValue)
+                    {
+                        _starter.Start<VM.GE06TaskResult.View>(isModal: true, c => c.ResultId = ge06resultId.Value);
+                    }
                 }
             }
             else
@@ -662,8 +664,9 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                 this._logger.Exception(Exceptions.GE06Client, new Exception($"For selected task not found information in ICalcResults!"));
             }
         }
-        private void WaitForCalcResult(long calcTaskId, long calcResultId)
+        private bool WaitForCalcResult(long calcTaskId, long calcResultId)
         {
+            bool result = false;
             _starter.StartLongProcess(
                 new LongProcessOptions()
                 {
@@ -692,23 +695,27 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                             if (status == (byte)CalcResultStatusCode.Completed)
                             {
                                 _eventBus.Send(new LongProcessFinishEvent { ProcessToken = token });
+                                result = true;
                                 cancel = true;
                             }
 
                             if (status == (byte)CalcResultStatusCode.Failed)
                             {
                                 _eventBus.Send(new LongProcessFinishEvent { ProcessToken = token });
+                                result = false;
                                 cancel = true;
                             }
                             if (status == (byte)CalcResultStatusCode.Aborted)
                             {
                                 _eventBus.Send(new LongProcessFinishEvent { ProcessToken = token });
+                                result = false;
                                 cancel = true;
                             }
 
                             if (status == (byte)CalcResultStatusCode.Canceled)
                             {
                                 _eventBus.Send(new LongProcessFinishEvent { ProcessToken = token });
+                                result = false;
                                 cancel = true;
                             }
                         }
@@ -727,6 +734,14 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                                 ProcessToken = token,
                                 Message = message
                             });
+
+                            if (item.LevelCode == 2)
+                            {
+                                _starter.ShowException("Warning!", new Exception(item.Message));
+                                result = false;
+                                cancel = true;
+                            }
+
                         }
                         System.Threading.Thread.Sleep(5 * 1000);
 
@@ -741,6 +756,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                     //Aborted = 6, // Расчет был прерван по внутреней причине
                     //Failed = 7  // Попытка запуска завершилась не удачей
                 });
+            return result;
         }
 
         private BroadcastingContext GetBroadcastingContext()
