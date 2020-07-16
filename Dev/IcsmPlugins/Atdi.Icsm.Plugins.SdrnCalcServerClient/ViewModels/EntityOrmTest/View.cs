@@ -63,10 +63,13 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.EntityOrmTest
             this.StatusTestEnum = enumData.ToArray();
 
             EnumValue = enumData[2];
+            EnumValueId = 3;
+            CheckBoxValue = true;
         }
 
         public OrmEnumBoxData EnumValue { get; set; }
-        
+        public byte EnumValueId { get; set; }
+        public bool? CheckBoxValue { get; set; }
 
         private void OnCreatedProjectHandle(Events.OnCreatedProject data)
         {

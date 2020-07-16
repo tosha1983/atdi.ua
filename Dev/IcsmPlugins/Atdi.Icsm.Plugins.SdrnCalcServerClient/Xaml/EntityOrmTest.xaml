@@ -44,7 +44,7 @@
         </DataGrid>
       </GroupBox>
       <WrapPanel Grid.Column="1" Orientation="Vertical">
-        <orm:OrmEnumBox     HorizontalAlignment="Left" CaptionWith="100" Width="300" Caption="Test EnumBox" Source="{Binding Path=StatusTestEnum}" SelectedValue="{Binding Path=EnumValue, Mode=TwoWay}"/>
+        <orm:OrmEnumBox     HorizontalAlignment="Left" CaptionWith="100" Width="300" Caption="Test EnumBox" Source="{Binding Path=StatusTestEnum}" SelectedValueId="{Binding Path=EnumValueId, Mode=TwoWay}"/>
         <orm:OrmCheckBox    HorizontalAlignment="Left" CaptionWith="100" Width="300" Caption="Test CheckBox" SelectedValue="{Binding Path=CheckBoxValue, Mode=TwoWay}"/>
         <orm:OrmCheckBox    HorizontalAlignment="Left" CaptionWith="100" Width="300" Caption="Test CheckBox" SelectedValue="{Binding Path=CheckBoxValue, Mode=TwoWay}" IsRequired="True"/>
         <orm:OrmTextBox     HorizontalAlignment="Left" CaptionWith="100" Width="300" Caption="Test TextBox" Text="{Binding Path=EnumValue, Mode=TwoWay}"/>

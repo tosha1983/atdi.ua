@@ -75,7 +75,7 @@ namespace Atdi.WpfControls.EntityOrm.Controls
             set
             {
                 SetValue(SelectedValueIdProperty, value);
-                this._value = this._source.Where(v => v.Id == value).First();
+                this.SelectedValue = this._source.Where(v => v.Id == value).First();
                 cmbMain.SelectedValue = this._value;
             }
         }
