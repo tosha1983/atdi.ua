@@ -25976,6 +25976,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
         private double Get_land_100m_50t(double h, double d)
         {
             double E = -9999;
+
             if (h < 10)
             {
                 double teta_eff = 0.063661951;
@@ -26068,6 +26069,25 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             if (h < 10)
             {
                 double Kv = 1.35;
+                double teta_eff = Math.Atan(-h / 9000) * 180.0 / Math.PI;
+                double v = Kv * teta_eff;
+                double Jv = 0;
+                if (v > -0.7806)
+                {
+                    Jv = 6.9 + 20 * Math.Log10(Math.Pow((v - 0.1) * (v - 0.1) + 1, 0.5) + v - 0.1);
+                }
+                double Ch1 = 6.03 - Jv;
+                double E10, E20, C1020, Ezero;
+                E10 = Get_land_100m_10t_10h(d);
+                E20 = Get_land_100m_10t_20h(d);
+                C1020 = E10 - E20;
+                Ezero = E10 + 0.5 * (C1020 + Ch1);
+                E = Ezero;// + Ch1;// + 0.1 * h * (E10 - Ezero);
+                return E;
+            }
+            if (h >= 0 && h < 10)
+            {
+                double Kv = 1.35;
                 double teta_eff = 0.063661951;
                 double v;
                 v = Kv * teta_eff;
@@ -26140,7 +26160,27 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
         private double Get_land_100m_1t(double h, double d)
         {
             double E = -9999;
-            if (h < 10)
+
+            if (h < 0)
+            {
+                double Kv = 1.35;
+                double teta_eff = Math.Atan(-h / 9000) * 180.0 / Math.PI;
+                double v = Kv * teta_eff;
+                double Jv = 0;
+                if (v > -0.7806)
+                {
+                    Jv = 6.9 + 20 * Math.Log10(Math.Pow((v - 0.1) * (v - 0.1) + 1, 0.5) + v - 0.1);
+                }
+                double Ch1 = 6.03 - Jv;
+                double E10, E20, C1020, Ezero;
+                E10 = Get_land_100m_1t_10h(d);
+                E20 = Get_land_100m_1t_20h(d);
+                C1020 = E10 - E20;
+                Ezero = E10 + 0.5 * (C1020 + Ch1);
+                E = Ezero;// + Ch1;// + 0.1 * h * (E10 - Ezero);
+                return E;
+            }
+            if (h >= 0 && h < 10)
             {
                 double Kv = 1.35;
                 double teta_eff = 0.063661951;
@@ -26212,9 +26252,53 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             E = Einf_ + (Esup_ - Einf_) * Math.Log10(h / 600) / Math.Log10(1200 / 600);
             return E;
         }
-        private double Get_sea_100m_50t(double h, double d)
+        private double Get_sea_100m_50t(double h, double d, double f)
         {
             double E = -9999;
+            if (h < 10)
+            {
+                //f = 100 MHz
+                double Dh1 = D06(f, h, 10);
+                double D20 = D06(f, 20, 10);
+                if (d <= Dh1)
+                {
+                    E = Emax_sea(d, 50.0);//p = 50.0
+                    return E;
+                }
+                else if (d > Dh1 && d < D20)
+                {
+                    double Edh1, E10, E20, Ed20;
+                    Edh1 = Emax_sea(Dh1, 50.0); //p = 50.0
+                    E10 = Get_land_100m_50t_10h(D20);
+                    E20 = Get_land_100m_50t_20h(D20);
+                    Ed20 = E10 + (E20 - E10) * Math.Log10(h / 10) * 3.321928094887362; // const is 1 / lg(20/10)
+                    E = Edh1 + (Ed20 - Edh1) * Math.Log10(d / Dh1) / Math.Log10(D20 / Dh1);
+                    return E;
+                }
+                else
+                {
+                    double Kv = 1.35; //f = 100 MHz => Kv = 1.35 ;; f = 600 MHz => Kv = 3.31 ;; f = 2000 MHz => Kv = 6.00 ;; 
+                    double teta_eff = 0.063661951; // arctg(h / 9000), h = 10
+                    double v;
+                    v = Kv * teta_eff;
+                    double Jv;
+                    Jv = 6.9 + 20 * Math.Log10(Math.Pow((v - 0.1) * (v - 0.1) + 1, 0.5) + v - 0.1);
+                    double Chneg;
+                    Chneg = 6.03 - Jv;
+                    double E_, E__, Fs, E10, E20, C1020, Ezero;
+                    E10 = Get_land_100m_50t_10h(d);
+                    E20 = Get_land_100m_50t_20h(d);
+                    C1020 = E10 - E20;
+                    Ezero = E10 + 0.5 * (C1020 + Chneg);
+
+                    E__ = Ezero + 0.1 * h * (E10 - Ezero);
+                    E_ = E10 + (E20 - E10) * Math.Log10(h / 10) * 3.321928094887362; // const is 1 / lg(20/10)
+                    Fs = (d - D20) / d;
+
+                    E = E_ * (1 - Fs) + E__ * Fs;
+                    return E;
+                }
+            }
             if ((h >= 10) && (h < 20))
             {
                 double Einf, Esup;
@@ -26269,9 +26353,53 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             E = Einf_ + (Esup_ - Einf_) * Math.Log10(h / 600) / Math.Log10(1200 / 600);
             return E;
         }
-        private double Get_sea_100m_10t(double h, double d)
+        private double Get_sea_100m_10t(double h, double d, double f)
         {
             double E = -9999;
+            if (h < 10)
+            {
+                //f = 100 MHz
+                double Dh1 = D06(f, h, 10);
+                double D20 = D06(f, 20, 10);
+                if (d <= Dh1)
+                {
+                    E = Emax_sea(d, 10.0);//p = 10.0
+                    return E;
+                }
+                else if (d > Dh1 && d < D20)
+                {
+                    double Edh1, E10, E20, Ed20;
+                    Edh1 = Emax_sea(Dh1, 10.0); //p = 10.0
+                    E10 = Get_land_100m_10t_10h(D20);
+                    E20 = Get_land_100m_10t_20h(D20);
+                    Ed20 = E10 + (E20 - E10) * Math.Log10(h / 10) * 3.321928094887362; // const is 1 / lg(20/10)
+                    E = Edh1 + (Ed20 - Edh1) * Math.Log10(d / Dh1) / Math.Log10(D20 / Dh1);
+                    return E;
+                }
+                else
+                {
+                    double Kv = 1.35; //f = 100 MHz => Kv = 1.35 ;; f = 600 MHz => Kv = 3.31 ;; f = 2000 MHz => Kv = 6.00 ;; 
+                    double teta_eff = 0.063661951; // arctg(h / 9000), h = 10
+                    double v;
+                    v = Kv * teta_eff;
+                    double Jv;
+                    Jv = 6.9 + 20 * Math.Log10(Math.Pow((v - 0.1) * (v - 0.1) + 1, 0.5) + v - 0.1);
+                    double Chneg;
+                    Chneg = 6.03 - Jv;
+                    double E_, E__, Fs, E10, E20, C1020, Ezero;
+                    E10 = Get_land_100m_10t_10h(d);
+                    E20 = Get_land_100m_10t_20h(d);
+                    C1020 = E10 - E20;
+                    Ezero = E10 + 0.5 * (C1020 + Chneg);
+
+                    E__ = Ezero + 0.1 * h * (E10 - Ezero);
+                    E_ = E10 + (E20 - E10) * Math.Log10(h / 10) * 3.321928094887362; // const is 1 / lg(20/10)
+                    Fs = (d - D20) / d;
+
+                    E = E_ * (1 - Fs) + E__ * Fs;
+                    return E;
+                }
+            }
             if ((h >= 10) && (h < 20))
             {
                 double Einf, Esup;
@@ -26326,9 +26454,54 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             E = Einf_ + (Esup_ - Einf_) * Math.Log10(h / 600) / Math.Log10(1200 / 600);
             return E;
         }
-        private double Get_sea_100m_1t(double h, double d)
+        private double Get_sea_100m_1t(double h, double d, double f)
         {
             double E = -9999;
+
+            if (h < 10)
+            {
+                //f = 100 MHz
+                double Dh1 = D06(f, h, 10);
+                double D20 = D06(f, 20, 10);
+                if (d <= Dh1)
+                {
+                    E = Emax_sea(d, 1.0);//p = 1.0
+                    return E;
+                }
+                else if (d > Dh1 && d < D20)
+                {
+                    double Edh1, E10, E20, Ed20;
+                    Edh1 = Emax_sea(Dh1, 1.0); //p = 1.0
+                    E10 = Get_land_100m_1t_10h(D20);
+                    E20 = Get_land_100m_1t_20h(D20);
+                    Ed20 = E10 + (E20 - E10) * Math.Log10(h / 10) * 3.321928094887362; // const is 1 / lg(20/10)
+                    E = Edh1 + (Ed20 - Edh1) * Math.Log10(d / Dh1) / Math.Log10(D20 / Dh1);
+                    return E;
+                }
+                else
+                {
+                    double Kv = 1.35; //f = 100 MHz => Kv = 1.35 ;; f = 600 MHz => Kv = 3.31 ;; f = 2000 MHz => Kv = 6.00 ;; 
+                    double teta_eff = 0.063661951; // arctg(h / 9000), h = 10
+                    double v;
+                    v = Kv * teta_eff;
+                    double Jv;
+                    Jv = 6.9 + 20 * Math.Log10(Math.Pow((v - 0.1) * (v - 0.1) + 1, 0.5) + v - 0.1);
+                    double Chneg;
+                    Chneg = 6.03 - Jv;
+                    double E_, E__, Fs, E10, E20, C1020, Ezero;
+                    E10 = Get_land_100m_1t_10h(d);
+                    E20 = Get_land_100m_1t_20h(d);
+                    C1020 = E10 - E20;
+                    Ezero = E10 + 0.5 * (C1020 + Chneg);
+
+                    E__ = Ezero + 0.1 * h * (E10 - Ezero);
+                    E_ = E10 + (E20 - E10) * Math.Log10(h / 10) * 3.321928094887362; // const is 1 / lg(20/10)
+                    Fs = (d - D20) / d;
+
+                    E = E_ * (1 - Fs) + E__ * Fs;
+                    return E;
+                }
+            }
             if ((h >= 10) && (h < 20))
             {
                 double Einf, Esup;
@@ -26386,7 +26559,27 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
         private double Get_land_600m_50t(double h, double d)
         {
             double E = -9999;
-            if (h < 10)
+            if (h < 0)
+            {
+                double Kv = 3.31;
+                double teta_eff = Math.Atan(-h / 9000) * 180.0 / Math.PI;
+                double v = Kv * teta_eff;
+                double Jv = 0;
+                if (v > -0.7806)
+                {
+                    Jv = 6.9 + 20 * Math.Log10(Math.Pow((v - 0.1) * (v - 0.1) + 1, 0.5) + v - 0.1);
+                }
+                double Ch1 = 6.03 - Jv;
+                double E10, E20, C1020, Ezero;
+                E10 = Get_land_600m_50t_10h(d);
+                E20 = Get_land_600m_50t_20h(d);
+                C1020 = E10 - E20;
+                Ezero = E10 + 0.5 * (C1020 + Ch1);
+                E = Ezero;// + Ch1;// + 0.1 * h * (E10 - Ezero);
+                return E;
+            }
+
+            if (h >= 0 && h < 10)
             {
                 double Kv = 3.31;
                 double teta_eff = 0.063661951;
@@ -26461,22 +26654,23 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
         private double Get_land_600m_10t(double h, double d)
         {
             double E = -9999;
-            if (h < 10)
+            if (h < 0)
             {
                 double Kv = 3.31;
-                double teta_eff = 0.063661951;
-                double v;
-                v = Kv * teta_eff;
-                double Jv;
-                Jv = 6.9 + 20 * Math.Log10(Math.Pow((v - 0.1) * (v - 0.1) + 1, 0.5) + v - 0.1);
-                double Chneg;
-                Chneg = 6.03 - Jv;
+                double teta_eff = Math.Atan(-h / 9000) * 180.0 / Math.PI;
+                double v = Kv * teta_eff;
+                double Jv = 0;
+                if (v > -0.7806)
+                {
+                    Jv = 6.9 + 20 * Math.Log10(Math.Pow((v - 0.1) * (v - 0.1) + 1, 0.5) + v - 0.1);
+                }
+                double Ch1 = 6.03 - Jv;
                 double E10, E20, C1020, Ezero;
                 E10 = Get_land_600m_10t_10h(d);
                 E20 = Get_land_600m_10t_20h(d);
                 C1020 = E10 - E20;
-                Ezero = E10 + 0.5 * (C1020 + Chneg);
-                E = Ezero + 0.1 * h * (E10 - Ezero);
+                Ezero = E10 + 0.5 * (C1020 + Ch1);
+                E = Ezero;// + Ch1;// + 0.1 * h * (E10 - Ezero);
                 return E;
             }
             if ((h >= 10) && (h < 20))
@@ -26536,7 +26730,28 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
         private double Get_land_600m_1t(double h, double d)
         {
             double E = -9999;
-            if (h < 10)
+
+            if (h < 0)
+            {
+                double Kv = 3.31;
+                double teta_eff = Math.Atan(-h / 9000) * 180.0 / Math.PI;
+                double v = Kv * teta_eff;
+                double Jv = 0;
+                if (v > -0.7806)
+                {
+                    Jv = 6.9 + 20 * Math.Log10(Math.Pow((v - 0.1) * (v - 0.1) + 1, 0.5) + v - 0.1);
+                }
+                double Ch1 = 6.03 - Jv;
+                double E10, E20, C1020, Ezero;
+                E10 = Get_land_600m_1t_10h(d);
+                E20 = Get_land_600m_1t_20h(d);
+                C1020 = E10 - E20;
+                Ezero = E10 + 0.5 * (C1020 + Ch1);
+                E = Ezero;// + Ch1;// + 0.1 * h * (E10 - Ezero);
+                return E;
+            }
+
+            if (h >= 0 && h < 10)
             {
                 double Kv = 3.31;
                 double teta_eff = 0.063661951;
@@ -26608,9 +26823,53 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             E = Einf_ + (Esup_ - Einf_) * Math.Log10(h / 600) / Math.Log10(1200 / 600);
             return E;
         }
-        private double Get_sea_600m_50t(double h, double d)
+        private double Get_sea_600m_50t(double h, double d, double f)
         {
             double E = -9999;
+            if (h < 10)
+            {
+                //f = 600 MHz
+                double Dh1 = D06(f, h, 10);
+                double D20 = D06(f, 20, 10);
+                if (d <= Dh1)
+                {
+                    E = Emax_sea(d, 50.0);//p = 50.0
+                    return E;
+                }
+                else if (d > Dh1 && d < D20)
+                {
+                    double Edh1, E10, E20, Ed20;
+                    Edh1 = Emax_sea(Dh1, 50.0); //p = 50.0
+                    E10 = Get_land_600m_50t_10h(D20);
+                    E20 = Get_land_600m_50t_20h(D20);
+                    Ed20 = E10 + (E20 - E10) * Math.Log10(h / 10) * 3.321928094887362; // const is 1 / lg(20/10)
+                    E = Edh1 + (Ed20 - Edh1) * Math.Log10(d / Dh1) / Math.Log10(D20 / Dh1);
+                    return E;
+                }
+                else
+                {
+                    double Kv = 3.31; //f = 100 MHz => Kv = 1.35 ;; f = 600 MHz => Kv = 3.31 ;; f = 2000 MHz => Kv = 6.00 ;; 
+                    double teta_eff = 0.063661951; // arctg(h / 9000), h = 10
+                    double v;
+                    v = Kv * teta_eff;
+                    double Jv;
+                    Jv = 6.9 + 20 * Math.Log10(Math.Pow((v - 0.1) * (v - 0.1) + 1, 0.5) + v - 0.1);
+                    double Chneg;
+                    Chneg = 6.03 - Jv;
+                    double E_, E__, Fs, E10, E20, C1020, Ezero;
+                    E10 = Get_land_600m_50t_10h(d);
+                    E20 = Get_land_600m_50t_20h(d);
+                    C1020 = E10 - E20;
+                    Ezero = E10 + 0.5 * (C1020 + Chneg);
+
+                    E__ = Ezero + 0.1 * h * (E10 - Ezero);
+                    E_ = E10 + (E20 - E10) * Math.Log10(h / 10) * 3.321928094887362; // const is 1 / lg(20/10)
+                    Fs = (d - D20) / d;
+
+                    E = E_ * (1 - Fs) + E__ * Fs;
+                    return E;
+                }
+            }
             if ((h >= 10) && (h < 20))
             {
                 double Einf, Esup;
@@ -26665,9 +26924,53 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             E = Einf_ + (Esup_ - Einf_) * Math.Log10(h / 600) / Math.Log10(1200 / 600);
             return E;
         }
-        private double Get_sea_600m_10t(double h, double d)
+        private double Get_sea_600m_10t(double h, double d, double f)
         {
             double E = -9999;
+            if (h < 10)
+            {
+                //f = 600 MHz
+                double Dh1 = D06(f, h, 10);
+                double D20 = D06(f, 20, 10);
+                if (d <= Dh1)
+                {
+                    E = Emax_sea(d, 10.0);//p = 10.0
+                    return E;
+                }
+                else if (d > Dh1 && d < D20)
+                {
+                    double Edh1, E10, E20, Ed20;
+                    Edh1 = Emax_sea(Dh1, 10.0); //p = 10.0
+                    E10 = Get_land_600m_10t_10h(D20);
+                    E20 = Get_land_600m_10t_20h(D20);
+                    Ed20 = E10 + (E20 - E10) * Math.Log10(h / 10) * 3.321928094887362; // const is 1 / lg(20/10)
+                    E = Edh1 + (Ed20 - Edh1) * Math.Log10(d / Dh1) / Math.Log10(D20 / Dh1);
+                    return E;
+                }
+                else
+                {
+                    double Kv = 3.31; //f = 100 MHz => Kv = 1.35 ;; f = 600 MHz => Kv = 3.31 ;; f = 2000 MHz => Kv = 6.00 ;; 
+                    double teta_eff = 0.063661951; // arctg(h / 9000), h = 10
+                    double v;
+                    v = Kv * teta_eff;
+                    double Jv;
+                    Jv = 6.9 + 20 * Math.Log10(Math.Pow((v - 0.1) * (v - 0.1) + 1, 0.5) + v - 0.1);
+                    double Chneg;
+                    Chneg = 6.03 - Jv;
+                    double E_, E__, Fs, E10, E20, C1020, Ezero;
+                    E10 = Get_land_600m_10t_10h(d);
+                    E20 = Get_land_600m_10t_20h(d);
+                    C1020 = E10 - E20;
+                    Ezero = E10 + 0.5 * (C1020 + Chneg);
+
+                    E__ = Ezero + 0.1 * h * (E10 - Ezero);
+                    E_ = E10 + (E20 - E10) * Math.Log10(h / 10) * 3.321928094887362; // const is 1 / lg(20/10)
+                    Fs = (d - D20) / d;
+
+                    E = E_ * (1 - Fs) + E__ * Fs;
+                    return E;
+                }
+            }
             if ((h >= 10) && (h < 20))
             {
                 double Einf, Esup;
@@ -26722,9 +27025,54 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             E = Einf_ + (Esup_ - Einf_) * Math.Log10(h / 600) / Math.Log10(1200 / 600);
             return E;
         }
-        private double Get_sea_600m_1t(double h, double d)
+        private double Get_sea_600m_1t(double h, double d, double f)
         {
             double E = -9999;
+            if (h < 10)
+            {
+                //f = 600 MHz
+                double Dh1 = D06(f, h, 10);
+                double D20 = D06(f, 20, 10);
+                if (d <= Dh1)
+                {
+                    E = Emax_sea(d, 1.0);//p = 1.0
+                    return E;
+                }
+                else if (d > Dh1 && d < D20)
+                {
+                    double Edh1, E10, E20, Ed20;
+                    Edh1 = Emax_sea(Dh1, 1.0); //p = 1.0
+                    E10 = Get_land_600m_1t_10h(D20);
+                    E20 = Get_land_600m_1t_20h(D20);
+                    Ed20 = E10 + (E20 - E10) * Math.Log10(h / 10) * 3.321928094887362; // const is 1 / lg(20/10)
+                    E = Edh1 + (Ed20 - Edh1) * Math.Log10(d / Dh1) / Math.Log10(D20 / Dh1);
+                    return E;
+                }
+                else
+                {
+                    double Kv = 3.31; //f = 100 MHz => Kv = 1.35 ;; f = 600 MHz => Kv = 3.31 ;; f = 2000 MHz => Kv = 6.00 ;; 
+                    double teta_eff = 0.063661951; // arctg(h / 9000), h = 10
+                    double v;
+                    v = Kv * teta_eff;
+                    double Jv;
+                    Jv = 6.9 + 20 * Math.Log10(Math.Pow((v - 0.1) * (v - 0.1) + 1, 0.5) + v - 0.1);
+                    double Chneg;
+                    Chneg = 6.03 - Jv;
+                    double E_, E__, Fs, E10, E20, C1020, Ezero;
+                    E10 = Get_land_600m_1t_10h(d);
+                    E20 = Get_land_600m_1t_20h(d);
+                    C1020 = E10 - E20;
+                    Ezero = E10 + 0.5 * (C1020 + Chneg);
+
+                    E__ = Ezero + 0.1 * h * (E10 - Ezero);
+                    E_ = E10 + (E20 - E10) * Math.Log10(h / 10) * 3.321928094887362; // const is 1 / lg(20/10)
+                    Fs = (d - D20) / d;
+
+                    E = E_ * (1 - Fs) + E__ * Fs;
+                    return E;
+                }
+            }
+
             if ((h >= 10) && (h < 20))
             {
                 double Einf, Esup;
@@ -26782,7 +27130,27 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
         private double Get_land_2000m_50t(double h, double d)
         {
             double E = -9999;
-            if (h < 10)
+
+            if (h < 0)
+            {
+                double Kv = 6;
+                double teta_eff = Math.Atan(-h / 9000) * 180.0 / Math.PI;
+                double v = Kv * teta_eff;
+                double Jv = 0;
+                if (v > -0.7806)
+                {
+                    Jv = 6.9 + 20 * Math.Log10(Math.Pow((v - 0.1) * (v - 0.1) + 1, 0.5) + v - 0.1);
+                }
+                double Ch1 = 6.03 - Jv;
+                double E10, E20, C1020, Ezero;
+                E10 = Get_land_2000m_50t_10h(d);
+                E20 = Get_land_2000m_50t_20h(d);
+                C1020 = E10 - E20;
+                Ezero = E10 + 0.5 * (C1020 + Ch1);
+                E = Ezero;// + Ch1;// + 0.1 * h * (E10 - Ezero);
+                return E;
+            }
+            if (h >= 0 && h < 10)
             {
                 double Kv = 6;
                 double teta_eff = 0.063661951;
@@ -26860,6 +27228,25 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             if (h < 10)
             {
                 double Kv = 6;
+                double teta_eff = Math.Atan(-h / 9000) * 180.0 / Math.PI;
+                double v = Kv * teta_eff;
+                double Jv = 0;
+                if (v > -0.7806)
+                {
+                    Jv = 6.9 + 20 * Math.Log10(Math.Pow((v - 0.1) * (v - 0.1) + 1, 0.5) + v - 0.1);
+                }
+                double Ch1 = 6.03 - Jv;
+                double E10, E20, C1020, Ezero;
+                E10 = Get_land_2000m_10t_10h(d);
+                E20 = Get_land_2000m_10t_20h(d);
+                C1020 = E10 - E20;
+                Ezero = E10 + 0.5 * (C1020 + Ch1);
+                E = Ezero + 0.1 * h * (E10 - Ezero);
+                return E;
+            }
+            if (h >= 0 && h < 10)
+            {
+                double Kv = 6;
                 double teta_eff = 0.063661951;
                 double v;
                 v = Kv * teta_eff;
@@ -26868,8 +27255,8 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
                 double Chneg;
                 Chneg = 6.03 - Jv;
                 double E10, E20, C1020, Ezero;
-                E10 = Get_land_2000m_50t_10h(d);
-                E20 = Get_land_2000m_50t_20h(d);
+                E10 = Get_land_2000m_10t_10h(d);
+                E20 = Get_land_2000m_10t_20h(d);
                 C1020 = E10 - E20;
                 Ezero = E10 + 0.5 * (C1020 + Chneg);
                 E = Ezero + 0.1 * h * (E10 - Ezero);
@@ -26932,7 +27319,26 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
         private double Get_land_2000m_1t(double h, double d)
         {
             double E = -9999;
-            if (h < 10)
+            if (h < 0)
+            {
+                double Kv = 6.0;
+                double teta_eff = Math.Atan(-h / 9000) * 180.0 / Math.PI;
+                double v = Kv * teta_eff;
+                double Jv = 0;
+                if (v > -0.7806)
+                {
+                    Jv = 6.9 + 20 * Math.Log10(Math.Pow((v - 0.1) * (v - 0.1) + 1, 0.5) + v - 0.1);
+                }
+                double Ch1 = 6.03 - Jv;
+                double E10, E20, C1020, Ezero;
+                E10 = Get_land_2000m_1t_10h(d);
+                E20 = Get_land_2000m_1t_20h(d);
+                C1020 = E10 - E20;
+                Ezero = E10 + 0.5 * (C1020 + Ch1);
+                E = Ezero;// + Ch1;// + 0.1 * h * (E10 - Ezero);
+                return E;
+            }
+            if (h >= 0 && h < 10)
             {
                 double Kv = 6;
                 double teta_eff = 0.063661951;
@@ -26943,8 +27349,8 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
                 double Chneg;
                 Chneg = 6.03 - Jv;
                 double E10, E20, C1020, Ezero;
-                E10 = Get_land_2000m_50t_10h(d);
-                E20 = Get_land_2000m_50t_20h(d);
+                E10 = Get_land_2000m_1t_10h(d);
+                E20 = Get_land_2000m_1t_20h(d);
                 C1020 = E10 - E20;
                 Ezero = E10 + 0.5 * (C1020 + Chneg);
                 E = Ezero + 0.1 * h * (E10 - Ezero);
@@ -27004,9 +27410,54 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             E = Einf_ + (Esup_ - Einf_) * Math.Log10(h / 600) / Math.Log10(1200 / 600);
             return E;
         }
-        private double Get_sea_2000m_50t(double h, double d)
+        private double Get_sea_2000m_50t(double h, double d, double f)
         {
             double E = -9999;
+            if (h < 10)
+            {
+                //f = 2000 MHz
+                double Dh1 = D06(f, h, 10);
+                double D20 = D06(f, 20, 10);
+                if (d <= Dh1)
+                {
+                    E = Emax_sea(d, 50.0);//p = 50.0
+                    return E;
+                }
+                else if (d > Dh1 && d < D20)
+                {
+                    double Edh1, E10, E20, Ed20;
+                    Edh1 = Emax_sea(Dh1, 50.0); //p = 50.0
+                    E10 = Get_land_2000m_50t_10h(D20);
+                    E20 = Get_land_2000m_50t_20h(D20);
+                    Ed20 = E10 + (E20 - E10) * Math.Log10(h / 10) * 3.321928094887362; // const is 1 / lg(20/10)
+                    E = Edh1 + (Ed20 - Edh1) * Math.Log10(d / Dh1) / Math.Log10(D20 / Dh1);
+                    return E;
+                }
+                else
+                {
+                    double Kv = 6; //f = 100 MHz => Kv = 1.35 ;; f = 600 MHz => Kv = 3.31 ;; f = 2000 MHz => Kv = 6.00 ;; 
+                    double teta_eff = 0.063661951; // arctg(h / 9000), h = 10
+                    double v;
+                    v = Kv * teta_eff;
+                    double Jv;
+                    Jv = 6.9 + 20 * Math.Log10(Math.Pow((v - 0.1) * (v - 0.1) + 1, 0.5) + v - 0.1);
+                    double Chneg;
+                    Chneg = 6.03 - Jv;
+                    double E_, E__, Fs, E10, E20, C1020, Ezero;
+                    E10 = Get_land_2000m_50t_10h(d);
+                    E20 = Get_land_2000m_50t_20h(d);
+                    C1020 = E10 - E20;
+                    Ezero = E10 + 0.5 * (C1020 + Chneg);
+
+                    E__ = Ezero + 0.1 * h * (E10 - Ezero);
+                    E_ = E10 + (E20 - E10) * Math.Log10(h / 10) * 3.321928094887362; // const is 1 / lg(20/10)
+                    Fs = (d - D20) / d;
+
+                    E = E_ * (1 - Fs) + E__ * Fs;
+                    return E;
+                }
+            }
+
             if ((h >= 10) && (h < 20))
             {
                 double Einf, Esup;
@@ -27061,9 +27512,54 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             E = Einf_ + (Esup_ - Einf_) * Math.Log10(h / 600) / Math.Log10(1200 / 600);
             return E;
         }
-        private double Get_sea_2000m_10t(double h, double d)
+        private double Get_sea_2000m_10t(double h, double d, double f)
         {
             double E = -9999;
+            if (h < 10)
+            {
+                //f = 2000 MHz
+                double Dh1 = D06(f, h, 10);
+                double D20 = D06(f, 20, 10);
+                if (d <= Dh1)
+                {
+                    E = Emax_sea(d, 10.0);//p = 10.0
+                    return E;
+                }
+                else if (d > Dh1 && d < D20)
+                {
+                    double Edh1, E10, E20, Ed20;
+                    Edh1 = Emax_sea(Dh1, 10.0); //p = 10.0
+                    E10 = Get_land_2000m_10t_10h(D20);
+                    E20 = Get_land_2000m_10t_20h(D20);
+                    Ed20 = E10 + (E20 - E10) * Math.Log10(h / 10) * 3.321928094887362; // const is 1 / lg(20/10)
+                    E = Edh1 + (Ed20 - Edh1) * Math.Log10(d / Dh1) / Math.Log10(D20 / Dh1);
+                    return E;
+                }
+                else
+                {
+                    double Kv = 6; //f = 100 MHz => Kv = 1.35 ;; f = 600 MHz => Kv = 3.31 ;; f = 2000 MHz => Kv = 6.00 ;; 
+                    double teta_eff = 0.063661951; // arctg(h / 9000), h = 10
+                    double v;
+                    v = Kv * teta_eff;
+                    double Jv;
+                    Jv = 6.9 + 20 * Math.Log10(Math.Pow((v - 0.1) * (v - 0.1) + 1, 0.5) + v - 0.1);
+                    double Chneg;
+                    Chneg = 6.03 - Jv;
+                    double E_, E__, Fs, E10, E20, C1020, Ezero;
+                    E10 = Get_land_2000m_10t_10h(d);
+                    E20 = Get_land_2000m_10t_20h(d);
+                    C1020 = E10 - E20;
+                    Ezero = E10 + 0.5 * (C1020 + Chneg);
+
+                    E__ = Ezero + 0.1 * h * (E10 - Ezero);
+                    E_ = E10 + (E20 - E10) * Math.Log10(h / 10) * 3.321928094887362; // const is 1 / lg(20/10)
+                    Fs = (d - D20) / d;
+
+                    E = E_ * (1 - Fs) + E__ * Fs;
+                    return E;
+                }
+            }
+
             if ((h >= 10) && (h < 20))
             {
                 double Einf, Esup;
@@ -27118,9 +27614,53 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             E = Einf_ + (Esup_ - Einf_) * Math.Log10(h / 600) / Math.Log10(1200 / 600);
             return E;
         }
-        private double Get_sea_2000m_1t(double h, double d)
+        private double Get_sea_2000m_1t(double h, double d, double f)
         {
             double E = -9999;
+            if (h < 10)
+            {
+                //f = 2000 MHz
+                double Dh1 = D06(f, h, 10);
+                double D20 = D06(f, 20, 10);
+                if (d <= Dh1)
+                {
+                    E = Emax_sea(d, 1.0);//p = 1.0
+                    return E;
+                }
+                else if (d > Dh1 && d < D20)
+                {
+                    double Edh1, E10, E20, Ed20;
+                    Edh1 = Emax_sea(Dh1, 1.0); //p = 1.0
+                    E10 = Get_land_2000m_1t_10h(D20);
+                    E20 = Get_land_2000m_1t_20h(D20);
+                    Ed20 = E10 + (E20 - E10) * Math.Log10(h / 10) * 3.321928094887362; // const is 1 / lg(20/10)
+                    E = Edh1 + (Ed20 - Edh1) * Math.Log10(d / Dh1) / Math.Log10(D20 / Dh1);
+                    return E;
+                }
+                else
+                {
+                    double Kv = 6; //f = 100 MHz => Kv = 1.35 ;; f = 600 MHz => Kv = 3.31 ;; f = 2000 MHz => Kv = 6.00 ;; 
+                    double teta_eff = 0.063661951; // arctg(h / 9000), h = 10
+                    double v;
+                    v = Kv * teta_eff;
+                    double Jv;
+                    Jv = 6.9 + 20 * Math.Log10(Math.Pow((v - 0.1) * (v - 0.1) + 1, 0.5) + v - 0.1);
+                    double Chneg;
+                    Chneg = 6.03 - Jv;
+                    double E_, E__, Fs, E10, E20, C1020, Ezero;
+                    E10 = Get_land_2000m_1t_10h(d);
+                    E20 = Get_land_2000m_1t_20h(d);
+                    C1020 = E10 - E20;
+                    Ezero = E10 + 0.5 * (C1020 + Chneg);
+
+                    E__ = Ezero + 0.1 * h * (E10 - Ezero);
+                    E_ = E10 + (E20 - E10) * Math.Log10(h / 10) * 3.321928094887362; // const is 1 / lg(20/10)
+                    Fs = (d - D20) / d;
+
+                    E = E_ * (1 - Fs) + E__ * Fs;
+                    return E;
+                }
+            }
             if ((h >= 10) && (h < 20))
             {
                 double Einf, Esup;
@@ -27237,14 +27777,14 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             if (f < 600)
             {
                 double Einf, Esup;
-                Einf = Get_sea_100m_50t(h, d);
-                Esup = Get_sea_600m_50t(h, d);
+                Einf = Get_sea_100m_50t(h, d, f);
+                Esup = Get_sea_600m_50t(h, d, f);
                 E = Einf + (Esup - Einf) * Math.Log10(f / 100) / Math.Log10(600 / 100);
                 return E;
             }
             double Einf_, Esup_;
-            Einf_ = Get_sea_600m_50t(h, d);
-            Esup_ = Get_sea_2000m_50t(h, d);
+            Einf_ = Get_sea_600m_50t(h, d, f);
+            Esup_ = Get_sea_2000m_50t(h, d, f);
             E = Einf_ + (Esup_ - Einf_) * Math.Log10(f / 600) / Math.Log10(2000.0 / 600);
             return E;
         }
@@ -27254,14 +27794,14 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             if (f < 600)
             {
                 double Einf, Esup;
-                Einf = Get_sea_100m_10t(h, d);
-                Esup = Get_sea_600m_10t(h, d);
+                Einf = Get_sea_100m_10t(h, d, f);
+                Esup = Get_sea_600m_10t(h, d, f);
                 E = Einf + (Esup - Einf) * Math.Log10(f / 100) / Math.Log10(600 / 100);
                 return E;
             }
             double Einf_, Esup_;
-            Einf_ = Get_sea_600m_10t(h, d);
-            Esup_ = Get_sea_2000m_10t(h, d);
+            Einf_ = Get_sea_600m_10t(h, d, f);
+            Esup_ = Get_sea_2000m_10t(h, d, f);
             E = Einf_ + (Esup_ - Einf_) * Math.Log10(f / 600) / Math.Log10(2000.0 / 600);
             return E;
         }
@@ -27271,14 +27811,14 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             if (f < 600)
             {
                 double Einf, Esup;
-                Einf = Get_sea_100m_1t(h, d);
-                Esup = Get_sea_600m_1t(h, d);
+                Einf = Get_sea_100m_1t(h, d, f);
+                Esup = Get_sea_600m_1t(h, d, f);
                 E = Einf + (Esup - Einf) * Math.Log10(f / 100) / Math.Log10(600 / 100);
                 return E;
             }
             double Einf_, Esup_;
-            Einf_ = Get_sea_600m_1t(h, d);
-            Esup_ = Get_sea_2000m_1t(h, d);
+            Einf_ = Get_sea_600m_1t(h, d, f);
+            Esup_ = Get_sea_2000m_1t(h, d, f);
             E = Einf_ + (Esup_ - Einf_) * Math.Log10(f / 600) / Math.Log10(2000.0 / 600);
             return E;
         }
@@ -27535,7 +28075,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             // если трасса по суше +  море;
             // ур 24c
             dT = dlT + dsT;
-            
+
 
             var E_land = Get_land(ha, hef, d, f, p);
             var E_sea = Get_sea(h_gr, d, f, p);
@@ -27544,7 +28084,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             delta = E_sea - E_land;
 
             double v = Math.Max(1, 1 + delta / 40);
-            
+
             // доля трасы, которая проходить над моерм, ур. 25
             double Fs;
             Fs = dsT / dT;
@@ -27591,7 +28131,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             h2_ = h2;
 
             // p 15 short distances
-            
+
 
             if (d_ < 1)
             {
@@ -27607,7 +28147,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
                     d_ = 1.0;
                 }
 
-                
+
             }
             if (d_ > 1000)
             {
@@ -27683,14 +28223,14 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
                     h2_ = 3.0;
                 }
             }
-            else  
+            else
             {
                 if (h2_ < 1)
                 {
                     h2_ = 1.0;
                 }
             }
-            
+
 
             double E5;
             ITU1546_6 E1 = new ITU1546_6();
@@ -27701,7 +28241,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             if (h2aboveSea && h2_ < 10.0 && d < d10)
             {
                 double dh2 = E1.D06(f, ha_, h2_);
-                if ( d_ <= dh2 )
+                if (d_ <= dh2)
                 {
                     c10 = 0;
                 }
@@ -27710,7 +28250,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
                     c10 *= Math.Log10(d_ / dh2) / Math.Log10(d10 / dh2);
                 }
             }
-            
+
 
             E5 = E5 + c10;
             // ур(2)
@@ -27752,7 +28292,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
                 double Einf = 106.9 - 20 * Math.Log10(dinf);
                 E5 = Einf + (E5 - Einf) * Math.Log10(dslope / dinf) / Math.Log10(dsup / dinf);
             }
-            
+
             return E5;
         }
         ////////////////////////////////////////////////////////
