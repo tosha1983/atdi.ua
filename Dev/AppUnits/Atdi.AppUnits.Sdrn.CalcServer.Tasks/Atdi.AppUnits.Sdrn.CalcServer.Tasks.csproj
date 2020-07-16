@@ -66,6 +66,7 @@
     <Compile Include="Iterations\GE06\Calculation\TypeCalc\GE06CalcContoursByFS.cs" />
     <Compile Include="Iterations\GE06\Calculation\TypeCalc\GE06CalcContoursByDistance.cs" />
     <Compile Include="Iterations\GE06\Ge06CalcIteration.cs" />
+    <Compile Include="Iterations\GE06\Validation\GE06CheckEffectiveHeight.cs" />
     <Compile Include="Iterations\GE06\Validation\GE06Validation.cs" />
     <Compile Include="Iterations\StationCalibration\CIDComparisonRDB.cs" />
     <Compile Include="Iterations\StationCalibration\GCIDComparisonRR.cs" />

@@ -70,6 +70,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             string notValidBroadcastingAssignmentBRIFIC = string.Empty;
             string notValidBroadcastingAllotmentsBRIFIC = string.Empty;
             string message = string.Empty;
+
+            GE06CheckEffectiveHeight.CheckEffectiveHeightForAssignment(ref ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM.Assignments, ge06CalcData.Ge06TaskParameters.UseEffectiveHeight);
             if (((GE06Validation.ValidationAssignment(ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM.Assignments, out notValidBroadcastingAssignmentICSM)) && (GE06Validation.ValidationAllotment(ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM.Allotments, out  notValidBroadcastingAllotmentsICSM))) == false)
             {
                 if (!string.IsNullOrEmpty(notValidBroadcastingAssignmentICSM))
@@ -81,6 +83,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     message += $"The following Allotment for ICSM are not validated: {notValidBroadcastingAllotmentsICSM}";
                 }
             }
+
+            GE06CheckEffectiveHeight.CheckEffectiveHeightForAssignment(ref ge06CalcData.Ge06TaskParameters.BroadcastingContext.broadcastingContextBRIFIC.Assignments, ge06CalcData.Ge06TaskParameters.UseEffectiveHeight);
             if (((GE06Validation.ValidationAssignment(ge06CalcData.Ge06TaskParameters.BroadcastingContext.broadcastingContextBRIFIC.Assignments, out notValidBroadcastingAssignmentBRIFIC)) && (GE06Validation.ValidationAllotment(ge06CalcData.Ge06TaskParameters.BroadcastingContext.broadcastingContextBRIFIC.Allotments, out  notValidBroadcastingAllotmentsBRIFIC))) == false)
             {
                 if (!string.IsNullOrEmpty(notValidBroadcastingAssignmentICSM))
