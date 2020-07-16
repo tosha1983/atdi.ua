@@ -197,7 +197,15 @@ namespace Atdi.Modules.LicenseGenerator
 			// ICSMPlugin_ForTesting_Calc_2020();
 
 			// УДЦР, 8+8 для плагинов , 1 сервер расчетов, 1 инфоцентер
-			ICSMPlugin_ForUDCR_CalcTasks_2020();
+			//ICSMPlugin_ForUDCR_CalcTasks_2020();
+
+			// Поставка Июль УДЦР 50 лицензий
+			//SdrnDevice_ForUDCR_2020_50p();
+
+
+			// GE06 - start 
+			SdrnGN06CalcPlugin_ForTest_2020();
+			SdrnGN06CalcPlugin_ForATDI_SA_2020_1p();
 
 			Console.WriteLine("Process was finished");
 
@@ -1458,7 +1466,7 @@ namespace Atdi.Modules.LicenseGenerator
 					stopDate, 2020, LicenseLimitationTerms.TimePeriod);
 			}
 
-			const ushort year = 2020;
+			//const ushort year = 2020;
 
 			startDate = new DateTime(2020, 6, 17);
 			stopDate = new DateTime(2021, 1, 1);
@@ -1466,7 +1474,7 @@ namespace Atdi.Modules.LicenseGenerator
 			for (int i = 0; i < 1; i++)
 			{
 				BuilProductLicense(
-					path1,
+					path3,
 					"LIC-C",
 					"SDRNSV-C",
 					"ServerLicense",
@@ -1485,7 +1493,7 @@ namespace Atdi.Modules.LicenseGenerator
 			for (int i = 0; i < 1; i++)
 			{
 				BuilProductLicense(
-					path1,
+					path4,
 					"LIC-I",
 					"SDRNSV-I",
 					"ServerLicense",
@@ -1499,6 +1507,112 @@ namespace Atdi.Modules.LicenseGenerator
 			}
 
 		}
+
+		static void SdrnDevice_ForUDCR_2020_50p()
+		{
+
+			var ownerKey = Storage.Clients.UDCR.OwnerKey; // "BD13-G65";
+			var ownerId = Storage.Clients.UDCR.OwnerId;  // "OID-BD13-G65-N00";
+			var ownerName = Storage.Clients.UDCR.OwnerName; // "Державне підприємство «Український державний центр радіочастот»";
+			var company = Storage.Companies.LIS_Uk; // "ТОВ 'Лабораторія інформаційних систем'";
+
+			var startDate = new DateTime(2020, 7, 15);
+			var stopDate = new DateTime(2025, 7, 15);
+
+			//var licPrefix = "LIC-P";
+			//var instancePrefix = "ICSMP-C";
+
+			var licPrefix = "LIC-D";
+			var instancePrefix = "SENSOR-D";
+
+			var path1 = @"C:\Projects\Licensing\UDCR\Sdrn\Licenses_2020\BD13-G65\DeviceLicense\Июль";
+			for (int i = 0; i < 50; i++)
+			{
+				BuilProductLicense(
+					path1,
+					licPrefix,
+					instancePrefix,
+					Storage.LicenseTypes.DeviceLicense, // "DeviceLicense",
+					Storage.Products.ICS_Control_Device, // "ICS Control Device",
+					ownerName,
+					ownerId,
+					ownerKey,
+					company,
+					startDate,
+					stopDate, 2020, LicenseLimitationTerms.Year);
+			}
+
+		}
+
+		static void SdrnGN06CalcPlugin_ForATDI_SA_2020_1p()
+		{
+
+			var ownerKey = Storage.Clients.ATDI_SA.OwnerKey; // "BD13-G65";
+			var ownerId = Storage.Clients.ATDI_SA.OwnerId;  // "OID-BD13-G65-N00";
+			var ownerName = Storage.Clients.ATDI_SA.OwnerName; // "Державне підприємство «Український державний центр радіочастот»";
+			var company = Storage.Companies.ATDI_Ukraine_EN; // "ТОВ 'Лабораторія інформаційних систем'";
+
+			var startDate = new DateTime(2020, 7, 16);
+			var stopDate = new DateTime(2020, 8, 20);
+
+			var licPrefix = "LIC-P";
+			var instancePrefix = "ICSMP-C";
+
+			//var licPrefix = "LIC-D";
+			//var instancePrefix = "SENSOR-D";
+
+			var path1 = @"C:\Projects\Licensing\ATDI_SA\ICSM_Plugin_GE06_Calc\20200716";
+			for (int i = 0; i < 1; i++)
+			{
+				BuilProductLicense(
+					path1,
+					licPrefix,
+					instancePrefix,
+					Storage.LicenseTypes.ClientLicense, // "DeviceLicense",
+					Storage.Products.ICSM_Plugin_GE06_Calc, // "ICS Control Device",
+					ownerName,
+					ownerId,
+					ownerKey,
+					company,
+					startDate,
+					stopDate, 2020, LicenseLimitationTerms.TimePeriod);
+			}
+
+		}
+
+		static void SdrnGN06CalcPlugin_ForTest_2020()
+		{
+
+			var ownerId = Storage.Clients.LIS_ForTest.OwnerId; // "OID-BD12-A00-N00";
+			var ownerName = Storage.Clients.LIS_ForTest.OwnerName; // "ТОВ 'Лабораторія інформаційних систем'";
+			var company = Storage.Companies.ATDI_Ukraine_EN;
+			var ownerKey = Storage.Clients.LIS_ForTest.OwnerKey; // "BD12-A00";
+			var startDate = new DateTime(2020, 7, 16);
+			var stopDate = new DateTime(2025, 7, 16);
+
+			var licPrefix = "LIC-P";
+			var instancePrefix = "ICSMP-C";
+
+			var path1 = @"C:\Projects\Licensing\Test\ICSMPlugins\SdrnGe06Calc";
+
+			for (int i = 0; i < 1; i++)
+			{
+				BuilProductLicense(
+					path1,
+					licPrefix,
+					instancePrefix,
+					Storage.LicenseTypes.ClientLicense, 
+					Storage.Products.ICSM_Plugin_GE06_Calc,
+					ownerName,
+					ownerId,
+					ownerKey,
+					company,
+					startDate,
+					stopDate, 2020, LicenseLimitationTerms.TimePeriod);
+			}
+
+		}
+
 		private static string BuildNextLicenseNumber(string licPrefix, string ownerKey, int numMaxSize = 3)
 		{
 			var number = string.Empty;
