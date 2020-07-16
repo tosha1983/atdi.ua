@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "DriveTest"
+  Title       = "Drive Test"
+  Desc        = "The drive test from SDRN Server"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>DRIVE_TESTS</Name>
+    <Schema>SDRNSVR</Schema>
+  </DataSource>
+  <Fields>
+    <Field Name="Id" DataType="Integer.64" SourceName="ID" SourceType="Column" Desc="The SDRN ID of the drive test." Title="Id record"/>
+    <Field Name="RESULT" SourceName="Atdi.DataModels.Sdrn.Infocenter.Entities.SdrnServer.StationMonitoring" SourceType="Reference" Title="Station Monitoring Meas Result" Required="true"/>
+    <Field Name="Gsid" DataType="Text.50" SourceName="GSID" SourceType="Column" Desc="The Global station ID" Title="GSID" Required="false"/>
+    <Field Name="Freq_MHz" SourceType="Column" Required="true" SourceName="FREQ_MHZ" DataType="Double.30.10" Title="Min Freq, MHz" Desc="The minimum frequency in MHz"/>
+    <Field Name="Standard" DataType="Text.50" SourceName="STANDARD" SourceType="Column" Desc="The standard of station" Title="Standard" Required="false"/>
+    <Field Name="PointsCount" SourceType="Column" SourceName="POINTS_COUNT" DataType="Integer.32" Required="true" Title="Points Count" Desc="The count of the level car points"  />
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>

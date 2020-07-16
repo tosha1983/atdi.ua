@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<DataType 
+  Name           = "Byte"
+  DataSourceType = "Database"
+  xmlns          =  "http://schemas.atdi.com/orm/entity.xsd">
+  <CodeVarType>Byte</CodeVarType>
+  <SourceVarType>BYTE</SourceVarType>  
+</DataType>

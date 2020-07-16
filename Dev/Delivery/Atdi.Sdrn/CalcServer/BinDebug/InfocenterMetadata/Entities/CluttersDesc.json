@@ -1,0 +1,633 @@
+{
+  "Name": "Имя описания клаттеров",
+  "Note": "Дополнительная расширенная информация",
+  "Clutters": [
+    {
+      "Code": 0,
+      "Name": "Open",
+      "Height_m": 0,
+      "Note": ""
+    },
+    {
+      "Code": 1,
+      "Name": "Open",
+      "Height_m": 0,
+      "Note": ""
+    },
+    {
+      "Code": 2,
+      "Name": "Inland water",
+      "Height_m": 0,
+      "Note": ""
+    },
+    {
+      "Code": 3,
+      "Name": "Forest",
+      "Height_m": 15,
+      "Note": ""
+    },
+    {
+      "Code": 4,
+      "Name": "Recreation",
+      "Height_m": 5,
+      "Note": ""
+    },
+    {
+      "Code": 5,
+      "Name": "Airport",
+      "Height_m": 0,
+      "Note": ""
+    },
+    {
+      "Code": 6,
+      "Name": "open",
+      "Height_m": 0,
+      "Note": ""
+    },
+    {
+      "Code": 7,
+      "Name": "open",
+      "Height_m": 0,
+      "Note": ""
+    },
+    {
+      "Code": 8,
+      "Name": "open",
+      "Height_m": 0,
+      "Note": ""
+    },
+    {
+      "Code": 9,
+      "Name": "open",
+      "Height_m": 0,
+      "Note": ""
+    },
+    {
+      "Code": 10,
+      "Name": "open",
+      "Height_m": 0,
+      "Note": ""
+    },
+    {
+      "Code": 11,
+      "Name": "open",
+      "Height_m": 0,
+      "Note": ""
+    },
+    {
+      "Code": 12,
+      "Name": "open",
+      "Height_m": 0,
+      "Note": ""
+    },
+    {
+      "Code": 13,
+      "Name": "build 6 st",
+      "Height_m": 6,
+      "Note": ""
+    },
+    {
+      "Code": 14,
+      "Name": "build 6 st",
+      "Height_m": 6,
+      "Note": ""
+    },
+    {
+      "Code": 15,
+      "Name": "build 18",
+      "Height_m": 18,
+      "Note": ""
+    },
+    {
+      "Code": 16,
+      "Name": "build 32",
+      "Height_m": 46,
+      "Note": ""
+    },
+    {
+      "Code": 17,
+      "Name": "build 46",
+      "Height_m": 46,
+      "Note": ""
+    },
+    {
+      "Code": 18,
+      "Name": "build 55",
+      "Height_m": 55,
+      "Note": ""
+    },
+    {
+      "Code": 19,
+      "Name": "build 55+",
+      "Height_m": 55,
+      "Note": ""
+    }
+  ],
+  "Frequencies": [
+    {
+      "Freq_MHz": 300,
+      "Note": "",
+      "Clutters": [
+        {
+          "Code": 0,
+          "LinearLoss_dBkm": 0.00,
+          "FlatLoss_dB": 0.00,
+          "Reflection": 0.250
+        },
+        {
+          "Code": 1,
+          "LinearLoss_dBkm": 0.00,
+          "FlatLoss_dB": 0.00,
+          "Reflection": 0.300
+        },
+        {
+          "Code": 2,
+          "LinearLoss_dBkm": 0.00,
+          "FlatLoss_dB": 0.00,
+          "Reflection": 0.300
+        },
+        {
+          "Code": 3,
+          "LinearLoss_dBkm": 50.00,
+          "FlatLoss_dB": 0.00,
+          "Reflection": 0.300
+        },
+        {
+          "Code": 4,
+          "LinearLoss_dBkm": 20.00,
+          "FlatLoss_dB": 0.00,
+          "Reflection": 0.300
+        },
+        {
+          "Code": 5,
+          "LinearLoss_dBkm": 0.00,
+          "FlatLoss_dB": 0.00,
+          "Reflection": 0.111
+        },
+        {
+          "Code": 6,
+          "LinearLoss_dBkm": 0.00,
+          "FlatLoss_dB": 0.00,
+          "Reflection": 0.020
+        },
+        {
+          "Code": 7,
+          "LinearLoss_dBkm": 0.00,
+          "FlatLoss_dB": 0.00,
+          "Reflection": 0.300
+        },
+        {
+          "Code": 8,
+          "LinearLoss_dBkm": 0.00,
+          "FlatLoss_dB": 0.00,
+          "Reflection": 0.080
+        },
+        {
+          "Code": 9,
+          "LinearLoss_dBkm": 0.00,
+          "FlatLoss_dB": 0.00,
+          "Reflection": 0.252
+        },
+        {
+          "Code": 10,
+          "LinearLoss_dBkm": 0.00,
+          "FlatLoss_dB": 0.00,
+          "Reflection": 0.058
+        },
+        {
+          "Code": 11,
+          "LinearLoss_dBkm": 0.00,
+          "FlatLoss_dB": 0.00,
+          "Reflection": 0.058
+        },
+        {
+          "Code": 12,
+          "LinearLoss_dBkm": 0.00,
+          "FlatLoss_dB": 0.00,
+          "Reflection": 0.300
+        },
+        {
+          "Code": 13,
+          "LinearLoss_dBkm": 100.00,
+          "FlatLoss_dB": 2.00,
+          "Reflection": 0.300
+        },
+        {
+          "Code": 14,
+          "LinearLoss_dBkm": 150.00,
+          "FlatLoss_dB": 4.00,
+          "Reflection": 0.300
+        },
+        {
+          "Code": 15,
+          "LinearLoss_dBkm": 150.00,
+          "FlatLoss_dB": 4.00,
+          "Reflection": 0.309
+        },
+        {
+          "Code": 16,
+          "LinearLoss_dBkm": 200.00,
+          "FlatLoss_dB": 4.00,
+          "Reflection": 0.444
+        },
+        {
+          "Code": 17,
+          "LinearLoss_dBkm": 250.00,
+          "FlatLoss_dB": 5.00,
+          "Reflection": 0.040
+        },
+        {
+          "Code": 18,
+          "LinearLoss_dBkm": 300.00,
+          "FlatLoss_dB": 5.00,
+          "Reflection": 0.370
+        },
+        {
+          "Code": 19,
+          "LinearLoss_dBkm": 300.00,
+          "FlatLoss_dB": 10.00,
+          "Reflection": 0.300
+        }
+      ]
+    },
+    {
+      "Freq_MHz": 1000,
+      "Note": "",
+      "Clutters": [
+        {
+          "Code": 0,
+          "LinearLoss_dBkm": 0.00,
+          "FlatLoss_dB": 0.00,
+          "Reflection": 0.250
+        },
+        {
+          "Code": 1,
+          "LinearLoss_dBkm": 0.00,
+          "FlatLoss_dB": 0.00,
+          "Reflection": 0.300
+        },
+        {
+          "Code": 2,
+          "LinearLoss_dBkm": 0.00,
+          "FlatLoss_dB": 0.00,
+          "Reflection": 0.300
+        },
+        {
+          "Code": 3,
+          "LinearLoss_dBkm": 100.00,
+          "FlatLoss_dB": 0.00,
+          "Reflection": 0.300
+        },
+        {
+          "Code": 4,
+          "LinearLoss_dBkm": 50.00,
+          "FlatLoss_dB": 0.00,
+          "Reflection": 0.300
+        },
+        {
+          "Code": 5,
+          "LinearLoss_dBkm": 0.00,
+          "FlatLoss_dB": 0.00,
+          "Reflection": 0.111
+        },
+        {
+          "Code": 6,
+          "LinearLoss_dBkm": 0.00,
+          "FlatLoss_dB": 0.00,
+          "Reflection": 0.020
+        },
+        {
+          "Code": 7,
+          "LinearLoss_dBkm": 0.00,
+          "FlatLoss_dB": 0.00,
+          "Reflection": 0.300
+        },
+        {
+          "Code": 8,
+          "LinearLoss_dBkm": 0.00,
+          "FlatLoss_dB": 0.00,
+          "Reflection": 0.080
+        },
+        {
+          "Code": 9,
+          "LinearLoss_dBkm": 0.00,
+          "FlatLoss_dB": 0.00,
+          "Reflection": 0.252
+        },
+        {
+          "Code": 10,
+          "LinearLoss_dBkm": 0.00,
+          "FlatLoss_dB": 0.00,
+          "Reflection": 0.058
+        },
+        {
+          "Code": 11,
+          "LinearLoss_dBkm": 0.00,
+          "FlatLoss_dB": 0.00,
+          "Reflection": 0.058
+        },
+        {
+          "Code": 12,
+          "LinearLoss_dBkm": 0.00,
+          "FlatLoss_dB": 0.00,
+          "Reflection": 0.300
+        },
+        {
+          "Code": 13,
+          "LinearLoss_dBkm": 150.00,
+          "FlatLoss_dB": 4.00,
+          "Reflection": 0.300
+        },
+        {
+          "Code": 14,
+          "LinearLoss_dBkm": 150.00,
+          "FlatLoss_dB": 4.00,
+          "Reflection": 0.300
+        },
+        {
+          "Code": 15,
+          "LinearLoss_dBkm": 200.00,
+          "FlatLoss_dB": 6.00,
+          "Reflection": 0.309
+        },
+        {
+          "Code": 16,
+          "LinearLoss_dBkm": 200.00,
+          "FlatLoss_dB": 10.00,
+          "Reflection": 0.444
+        },
+        {
+          "Code": 17,
+          "LinearLoss_dBkm": 200.00,
+          "FlatLoss_dB": 10.00,
+          "Reflection": 0.040
+        },
+        {
+          "Code": 18,
+          "LinearLoss_dBkm": 300.00,
+          "FlatLoss_dB": 15.00,
+          "Reflection": 0.370
+        },
+        {
+          "Code": 19,
+          "LinearLoss_dBkm": 400.00,
+          "FlatLoss_dB": 20.00,
+          "Reflection": 0.300
+        }
+      ]
+    },
+    {
+      "Freq_MHz": 2000,
+      "Note": "",
+      "Clutters": [
+        {
+          "Code": 0,
+          "LinearLoss_dBkm": 0.00,
+          "FlatLoss_dB": 0.00,
+          "Reflection": 0.250
+        },
+        {
+          "Code": 1,
+          "LinearLoss_dBkm": 0.00,
+          "FlatLoss_dB": 0.00,
+          "Reflection": 0.300
+        },
+        {
+          "Code": 2,
+          "LinearLoss_dBkm": 0.00,
+          "FlatLoss_dB": 0.00,
+          "Reflection": 0.300
+        },
+        {
+          "Code": 3,
+          "LinearLoss_dBkm": 150.00,
+          "FlatLoss_dB": 0.00,
+          "Reflection": 0.300
+        },
+        {
+          "Code": 4,
+          "LinearLoss_dBkm": 50.00,
+          "FlatLoss_dB": 0.00,
+          "Reflection": 0.300
+        },
+        {
+          "Code": 5,
+          "LinearLoss_dBkm": 0.00,
+          "FlatLoss_dB": 0.00,
+          "Reflection": 0.111
+        },
+        {
+          "Code": 6,
+          "LinearLoss_dBkm": 0.00,
+          "FlatLoss_dB": 0.00,
+          "Reflection": 0.020
+        },
+        {
+          "Code": 7,
+          "LinearLoss_dBkm": 0.00,
+          "FlatLoss_dB": 0.00,
+          "Reflection": 0.300
+        },
+        {
+          "Code": 8,
+          "LinearLoss_dBkm": 0.00,
+          "FlatLoss_dB": 0.00,
+          "Reflection": 0.080
+        },
+        {
+          "Code": 9,
+          "LinearLoss_dBkm": 0.00,
+          "FlatLoss_dB": 0.00,
+          "Reflection": 0.252
+        },
+        {
+          "Code": 10,
+          "LinearLoss_dBkm": 0.00,
+          "FlatLoss_dB": 0.00,
+          "Reflection": 0.058
+        },
+        {
+          "Code": 11,
+          "LinearLoss_dBkm": 0.00,
+          "FlatLoss_dB": 0.00,
+          "Reflection": 0.058
+        },
+        {
+          "Code": 12,
+          "LinearLoss_dBkm": 0.00,
+          "FlatLoss_dB": 0.00,
+          "Reflection": 0.300
+        },
+        {
+          "Code": 13,
+          "LinearLoss_dBkm": 200.00,
+          "FlatLoss_dB": 15.00,
+          "Reflection": 0.300
+        },
+        {
+          "Code": 14,
+          "LinearLoss_dBkm": 100.00,
+          "FlatLoss_dB": 20.00,
+          "Reflection": 0.300
+        },
+        {
+          "Code": 15,
+          "LinearLoss_dBkm": 300.00,
+          "FlatLoss_dB": 15.00,
+          "Reflection": 0.309
+        },
+        {
+          "Code": 16,
+          "LinearLoss_dBkm": 500.00,
+          "FlatLoss_dB": 20.00,
+          "Reflection": 0.444
+        },
+        {
+          "Code": 17,
+          "LinearLoss_dBkm": 500.00,
+          "FlatLoss_dB": 20.00,
+          "Reflection": 0.040
+        },
+        {
+          "Code": 18,
+          "LinearLoss_dBkm": 500.00,
+          "FlatLoss_dB": 25.00,
+          "Reflection": 0.370
+        },
+        {
+          "Code": 19,
+          "LinearLoss_dBkm": 500.00,
+          "FlatLoss_dB": 25.00,
+          "Reflection": 0.300
+        }
+      ]
+    },
+    {
+      "Freq_MHz": 4000,
+      "Note": "",
+      "Clutters": [
+        {
+          "Code": 0,
+          "LinearLoss_dBkm": 0.00,
+          "FlatLoss_dB": 0.00,
+          "Reflection": 0.250
+        },
+        {
+          "Code": 1,
+          "LinearLoss_dBkm": 0.00,
+          "FlatLoss_dB": 0.00,
+          "Reflection": 0.300
+        },
+        {
+          "Code": 2,
+          "LinearLoss_dBkm": 0.00,
+          "FlatLoss_dB": 0.00,
+          "Reflection": 0.300
+        },
+        {
+          "Code": 3,
+          "LinearLoss_dBkm": 200.00,
+          "FlatLoss_dB": 0.00,
+          "Reflection": 0.300
+        },
+        {
+          "Code": 4,
+          "LinearLoss_dBkm": 75.00,
+          "FlatLoss_dB": 0.00,
+          "Reflection": 0.300
+        },
+        {
+          "Code": 5,
+          "LinearLoss_dBkm": 0.00,
+          "FlatLoss_dB": 0.00,
+          "Reflection": 0.111
+        },
+        {
+          "Code": 6,
+          "LinearLoss_dBkm": 0.00,
+          "FlatLoss_dB": 0.00,
+          "Reflection": 0.020
+        },
+        {
+          "Code": 7,
+          "LinearLoss_dBkm": 0.00,
+          "FlatLoss_dB": 0.00,
+          "Reflection": 0.300
+        },
+        {
+          "Code": 8,
+          "LinearLoss_dBkm": 0.00,
+          "FlatLoss_dB": 0.00,
+          "Reflection": 0.080
+        },
+        {
+          "Code": 9,
+          "LinearLoss_dBkm": 0.00,
+          "FlatLoss_dB": 0.00,
+          "Reflection": 0.252
+        },
+        {
+          "Code": 10,
+          "LinearLoss_dBkm": 0.00,
+          "FlatLoss_dB": 0.00,
+          "Reflection": 0.058
+        },
+        {
+          "Code": 11,
+          "LinearLoss_dBkm": 0.00,
+          "FlatLoss_dB": 0.00,
+          "Reflection": 0.058
+        },
+        {
+          "Code": 12,
+          "LinearLoss_dBkm": 0.00,
+          "FlatLoss_dB": 0.00,
+          "Reflection": 0.300
+        },
+        {
+          "Code": 13,
+          "LinearLoss_dBkm": 300.00,
+          "FlatLoss_dB": 20.00,
+          "Reflection": 0.300
+        },
+        {
+          "Code": 14,
+          "LinearLoss_dBkm": 350.00,
+          "FlatLoss_dB": 20.00,
+          "Reflection": 0.300
+        },
+        {
+          "Code": 15,
+          "LinearLoss_dBkm": 400.00,
+          "FlatLoss_dB": 25.00,
+          "Reflection": 0.309
+        },
+        {
+          "Code": 16,
+          "LinearLoss_dBkm": 500.00,
+          "FlatLoss_dB": 30.00,
+          "Reflection": 0.444
+        },
+        {
+          "Code": 17,
+          "LinearLoss_dBkm": 600.00,
+          "FlatLoss_dB": 30.00,
+          "Reflection": 0.040
+        },
+        {
+          "Code": 18,
+          "LinearLoss_dBkm": 700.00,
+          "FlatLoss_dB": 35.00,
+          "Reflection": 0.370
+        },
+        {
+          "Code": 19,
+          "LinearLoss_dBkm": 900.00,
+          "FlatLoss_dB": 35.00,
+          "Reflection": 0.300
+        }
+      ]
+    }
+
+  ]
+}

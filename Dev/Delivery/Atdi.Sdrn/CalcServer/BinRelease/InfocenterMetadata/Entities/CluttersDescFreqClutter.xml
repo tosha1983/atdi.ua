@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "CluttersDescFreqClutter"
+  Title       = "Frequency Clutter"
+  Desc        = "The properties of the clutter by frequency"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>CLUTTERS_DESCS_FREQS_CLUTTERS</Name>
+    <Schema>INFOC</Schema>
+  </DataSource>
+  <Fields>
+    <Field Name="FreqId" DataType="Integer.64" SourceName="FREQ_ID" SourceType="Column" Desc="The id of the frequency" Title="Frequency Id"/>
+    <Field Name="FREQ" SourceName="CluttersDescFreq" SourceType="Reference" Required="true" Desc="The clutters description frequency" Title="Frequency"/>
+
+    <Field Name="Code" DataType="Byte" SourceName="CODE" SourceType="Column" Desc="The code of the clutter" Title="Code" Required="true"/>
+
+    <Field Name="LinearLoss_dBkm" DataType="Float.22.8"  SourceName="LINEAR_LOSS_DBKM" SourceType="Column" Desc="The LinearLoss in dBkm" Title="LinearLoss, dBkm" Required="false"/>
+    <Field Name="FlatLoss_dB"     DataType="Float.22.8"  SourceName="FLAT_LOSS_DB" SourceType="Column" Desc="The FlatLoss in dB in meters" Title="FlatLoss, dB" Required="false"/>
+    <Field Name="Reflection"      DataType="Float.22.8"  SourceName="REFLECTION_MHZ" SourceType="Column" Desc="The Reflection" Title="Reflection" Required="false"/>
+    
+    <Field Name="Note" DataType="Text.MAX" SourceName="NOTE" SourceType="Column" Desc="The note" Title="Note" Required="false"/>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="FreqId"/>
+    <FieldRef Name="Code"/>
+  </PrimaryKey>
+</Entity>
