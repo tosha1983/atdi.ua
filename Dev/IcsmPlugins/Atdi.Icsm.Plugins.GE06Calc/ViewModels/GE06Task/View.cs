@@ -41,6 +41,8 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
         private CalculationType _calcType;
         private OrmEnumBoxData[] _typeSource;
         private long _activeContextId;
+        private bool _stepBetweenBoundaryPointsDefault;
+        private bool _stepBetweenBoundaryPointsDefaultEnabled;
 
         private Visibility _azimuthStepVisibility = Visibility.Collapsed;
         private Visibility _additionalContoursByDistancesVisibility = Visibility.Collapsed;
@@ -91,6 +93,8 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                 StepBetweenBoundaryPoints = 5,
                 StepBetweenBoundaryPointsDefault = true
             };
+            StepBetweenBoundaryPointsDefault = true;
+            StepBetweenBoundaryPointsDefaultEnabled = false;
 
             _onCreatedCalcTaskToken = _eventBus.Subscribe<Events.OnCreatedCalcTask>(this.OnCreatedCalcTaskHandle);
             _onRunedCalcTaskToken = _eventBus.Subscribe<Events.OnRunedCalcTask>(this.OnRunedCalcTaskHandle);
@@ -179,6 +183,16 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
         {
             get => this._currentMapData;
             set => this.Set(ref this._currentMapData, value);
+        }
+        public bool StepBetweenBoundaryPointsDefault
+        {
+            get => this._stepBetweenBoundaryPointsDefault;
+            set => this.Set(ref this._stepBetweenBoundaryPointsDefault, value, () => { CurrentCalcTaskCard.StepBetweenBoundaryPointsDefault = value;  this.StepBetweenBoundaryPointsDefaultEnabled = !value; });
+        }
+        public bool StepBetweenBoundaryPointsDefaultEnabled
+        {
+            get => this._stepBetweenBoundaryPointsDefaultEnabled;
+            set => this.Set(ref this._stepBetweenBoundaryPointsDefaultEnabled, value);
         }
         private void OnChangedCalcType(CalculationType type)
         {
@@ -486,7 +500,6 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
         }
         private void OnStartCommand(object parameter)
         {
-            //this._calcType = calcType;
             if (this._activeContextId == 0)
             {
                 _starter.ShowException("Warning!", new Exception($"Undefined Active context"));
@@ -499,7 +512,6 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                 _starter.ShowException("Warning!", new Exception($"The table cannot have more than one Allotment"));
                 return;
             }
-
             var projectMap = _objectReader.Read<ProjectMapsModel>().By(new GetProjectMapByClientContextId { ContextId = this._activeContextId });
 
             var splitVariants = new char[] { ',', ';', ' ' };
@@ -540,6 +552,9 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                 CurrentCalcTaskCard.ContureByFieldStrength = false;
             }
 
+            if (!ValidateData())
+                return;
+
             var modifier = new Modifiers.CreateCalcTask
             {
                 MapName = projectMap != null ? projectMap.MapName : "",
@@ -560,6 +575,66 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
             };
             _commandDispatcher.Send(modifier);
         }
+        private bool ValidateData()
+        {
+            if (CurrentCalcTaskCard.AzimuthStep_deg < 1 || CurrentCalcTaskCard.AzimuthStep_deg > 60)
+            {
+                _starter.ShowException("Warning!", new Exception($"Incorrect value '{Properties.Resources.AzimuthStep}'"));
+                return false;
+            }
+            if (CurrentCalcTaskCard.SubscribersHeight < 1 || CurrentCalcTaskCard.SubscribersHeight > 30)
+            {
+                _starter.ShowException("Warning!", new Exception($"Incorrect value '{Properties.Resources.SubscribersHeight}'"));
+                return false;
+            }
+            if (CurrentCalcTaskCard.PercentageTime < 0.1 || CurrentCalcTaskCard.PercentageTime > 50)
+            {
+                _starter.ShowException("Warning!", new Exception($"Incorrect value '{Properties.Resources.PercentageTime}'"));
+                return false;
+            }
+            if (CurrentCalcTaskCard.StepBetweenBoundaryPoints < 1 || CurrentCalcTaskCard.StepBetweenBoundaryPoints > 100)
+            {
+                _starter.ShowException("Warning!", new Exception($"Incorrect value '{Properties.Resources.StepBetweenBoundaryPoints}'"));
+                return false;
+            }
+
+            if (this._calcType == CalculationType.CreateContoursByDistance)
+            {
+                if (CurrentCalcTaskCard.Distances == null || CurrentCalcTaskCard.Distances.Length == 0)
+                {
+                    _starter.ShowException("Warning!", new Exception($"Incorrect value '{Properties.Resources.AdditionalContoursByDistances}'"));
+                    return false;
+                }
+                foreach (var item in CurrentCalcTaskCard.Distances)
+                {
+                    if (item < 30 || item > 1000)
+                    {
+                        _starter.ShowException("Warning!", new Exception($"Incorrect value '{Properties.Resources.AdditionalContoursByDistances}'"));
+                        return false;
+                    }
+                }
+            }
+
+            if (this._calcType == CalculationType.CreateContoursByFS)
+            {
+                if (CurrentCalcTaskCard.FieldStrength == null || CurrentCalcTaskCard.FieldStrength.Length == 0)
+                {
+                    _starter.ShowException("Warning!", new Exception($"Incorrect value '{Properties.Resources.ContureByFieldStrength}'"));
+                    return false;
+                }
+                foreach (var item in CurrentCalcTaskCard.FieldStrength)
+                {
+                    if (item < -2 || item > 100)
+                    {
+                        _starter.ShowException("Warning!", new Exception($"Incorrect value '{Properties.Resources.ContureByFieldStrength}'"));
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
         private void OnCreatedCalcTaskHandle(Events.OnCreatedCalcTask data)
         {
             var modifier = new Modifiers.RunCalcTask
@@ -605,7 +680,6 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                 },
                 token =>
                 {
-
                     var cancel = false;
                     long eventId = 0;
 

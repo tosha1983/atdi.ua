@@ -73,7 +73,7 @@
             <orm:OrmTextBox CaptionWith="200" Width="500" Caption="{x:Static res:Resources.PercentageTime}" Text ="{Binding Path=CurrentCalcTaskCard.PercentageTime, Mode=TwoWay}" Visibility="{Binding Path=PercentageTimeVisibility}"/>
             <orm:OrmCheckBox CaptionWith="200" Width="500" Caption="{x:Static res:Resources.UseEffectiveHeight}" SelectedValue="{Binding Path=CurrentCalcTaskCard.UseEffectiveHeight, Mode=TwoWay}" IsRequired="True" Visibility="{Binding Path=UseEffectiveHeightVisibility}"/>
             <WrapPanel>
-              <orm:OrmTextBox CaptionWith="200" Width="400" Caption="{x:Static res:Resources.StepBetweenBoundaryPoints}" Text ="{Binding Path=CurrentCalcTaskCard.StepBetweenBoundaryPoints, Mode=TwoWay}" Visibility="{Binding Path=StepBetweenBoundaryPointsVisibility}" IsEnabled="{Binding StepBetweenBoundaryPointsEnabled}">
+              <orm:OrmTextBox CaptionWith="200" Width="400" Caption="{x:Static res:Resources.StepBetweenBoundaryPoints}" Enabled="{Binding Path=StepBetweenBoundaryPointsDefaultEnabled, Mode=TwoWay}" Text ="{Binding Path=CurrentCalcTaskCard.StepBetweenBoundaryPoints, Mode=TwoWay}" Visibility="{Binding Path=StepBetweenBoundaryPointsVisibility}" IsEnabled="{Binding StepBetweenBoundaryPointsEnabled}">
                 <!--<orm:OrmTextBox.Style>
                   <Style TargetType="orm:OrmTextBox">
                     <Style.Triggers>
@@ -87,7 +87,7 @@
                   </Style>
                 </orm:OrmTextBox.Style>-->
               </orm:OrmTextBox>
-              <orm:OrmCheckBox CaptionWith="50" Width="100" Caption="{x:Static res:Resources.Default}" SelectedValue="{Binding Path=CurrentCalcTaskCard.StepBetweenBoundaryPointsDefault, Mode=TwoWay}" IsRequired="True" Visibility="{Binding Path=StepBetweenBoundaryPointsVisibility}"/>
+              <orm:OrmCheckBox CaptionWith="50" Width="100" Caption="{x:Static res:Resources.Default}" SelectedValue="{Binding Path=StepBetweenBoundaryPointsDefault, Mode=TwoWay}" IsRequired="True" Visibility="{Binding Path=StepBetweenBoundaryPointsVisibility}"/>
             </WrapPanel>
             <orm:OrmButton Content="{x:Static res:Resources.Start}" Width="70" Height="20" Command="{Binding StartCommand}" IsEnabled="{Binding StartEnabled}"/>
           </WrapPanel>
