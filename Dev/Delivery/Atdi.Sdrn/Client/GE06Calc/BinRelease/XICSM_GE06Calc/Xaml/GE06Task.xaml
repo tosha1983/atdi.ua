@@ -44,10 +44,9 @@
         </WrapPanel>
         <orm:OrmDataGrid IsReadOnly="True" Margin="5,30,5,5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding AssignmentsAllotmentsArray}" SelectedItemsList="{Binding CurrentAssignmentsAllotments, Mode=TwoWay}">
           <DataGrid.Columns>
-            <!--<DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=Id}"></DataGridTextColumn>-->
             <DataGridTextColumn Header="{x:Static res:Resources.Source}" Binding="{Binding Path=Source}"></DataGridTextColumn>
             <DataGridTextColumn Header="{x:Static res:Resources.Type}" Binding="{Binding Path=Type}"></DataGridTextColumn>
-            <DataGridTextColumn Header="{x:Static res:Resources.ViewName}" Binding="{Binding Path=ViewName}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.Name}" Binding="{Binding Path=ViewName}"></DataGridTextColumn>
             <DataGridTextColumn Header="{x:Static res:Resources.Freq_MHz}" Binding="{Binding Path=Freq_MHz}"></DataGridTextColumn>
             <DataGridTextColumn Header="{x:Static res:Resources.SfnId}" Binding="{Binding Path=SfnId}"></DataGridTextColumn>
             <DataGridTextColumn Header="{x:Static res:Resources.Lon_Dec}" Binding="{Binding Path=Lon_Dec}"></DataGridTextColumn>
@@ -65,31 +64,33 @@
           </DataGrid.Columns>
         </orm:OrmDataGrid>
         <orm:OrmGridSplitter Grid.Row="1" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center"></orm:OrmGridSplitter>
-        <Grid Grid.Row="2">
-          <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="350"/>
-          </Grid.ColumnDefinitions>
-          <Grid.RowDefinitions>
-            <RowDefinition Height="*"></RowDefinition>
-          </Grid.RowDefinitions>
-          <WrapPanel Orientation="Vertical">
-            <orm:OrmTextBox   CaptionWith="200" Width="400" Caption="{x:Static res:Resources.AzimuthStep}" Text ="{Binding Path=CurrentCalcTaskCard.AzimuthStep_deg, Mode=TwoWay}"/>
-            <orm:OrmCheckBox  CaptionWith="200" Width="400" Caption="{x:Static res:Resources.AdditionalContoursByDistances}" SelectedValue="{Binding Path=CurrentCalcTaskCard.AdditionalContoursByDistances, Mode=TwoWay}" IsRequired="True"/>
-            <orm:OrmTextBox   CaptionWith="200" Width="400" Caption="{x:Static res:Resources.AdditionalContoursByDistances}" Text ="{Binding Path=CurrentCalcTaskCard.DistancesString, Mode=TwoWay}"/>
-            <orm:OrmCheckBox  CaptionWith="200" Width="400" Caption="{x:Static res:Resources.CoutureByFieldStrength}" SelectedValue="{Binding Path=CurrentCalcTaskCard.ContureByFieldStrength, Mode=TwoWay}" IsRequired="True"/>
-            <orm:OrmTextBox   CaptionWith="200" Width="400" Caption="{x:Static res:Resources.CoutureByFieldStrength}" Text ="{Binding Path=CurrentCalcTaskCard.FieldStrengthString, Mode=TwoWay}"/>
-            <orm:OrmTextBox   CaptionWith="200" Width="400" Caption="{x:Static res:Resources.SubscribersHeight}" Text ="{Binding Path=CurrentCalcTaskCard.SubscribersHeight, Mode=TwoWay}"/>
-            <orm:OrmTextBox   CaptionWith="200" Width="400" Caption="{x:Static res:Resources.PercentageTime}" Text ="{Binding Path=CurrentCalcTaskCard.PercentageTime, Mode=TwoWay}"/>
-            <orm:OrmCheckBox  CaptionWith="200" Width="400" Caption="{x:Static res:Resources.UseEffectiveHeight}" SelectedValue="{Binding Path=CurrentCalcTaskCard.UseEffectiveHeight, Mode=TwoWay}" IsRequired="True"/>
+          <WrapPanel Grid.Row="2" Orientation="Vertical">
+            <orm:OrmEnumBox CaptionWith="200" Width="500" Caption="{x:Static res:Resources.TypeOfCalculation}" Source="{Binding Path=CalcTypeSource, Mode=TwoWay}" SelectedValueId="{Binding Path=CalcType, Mode=TwoWay}"/>
+            <orm:OrmTextBox CaptionWith="200" Width="500" Caption="{x:Static res:Resources.AzimuthStep}" Text ="{Binding Path=CurrentCalcTaskCard.AzimuthStep_deg, Mode=TwoWay}" Visibility="{Binding Path=AzimuthStepVisibility}"/>
+            <orm:OrmTextBox CaptionWith="200" Width="500" Caption="{x:Static res:Resources.AdditionalContoursByDistances}" Text ="{Binding Path=CurrentCalcTaskCard.DistancesString, Mode=TwoWay}" Visibility="{Binding Path=AdditionalContoursByDistancesVisibility}"/>
+            <orm:OrmTextBox CaptionWith="200" Width="500" Caption="{x:Static res:Resources.ContureByFieldStrength}" Text ="{Binding Path=CurrentCalcTaskCard.FieldStrengthString, Mode=TwoWay}" Visibility="{Binding Path=ContureByFieldStrengthVisibility}"/>
+            <orm:OrmTextBox CaptionWith="200" Width="500" Caption="{x:Static res:Resources.SubscribersHeight}" Text ="{Binding Path=CurrentCalcTaskCard.SubscribersHeight, Mode=TwoWay}" Visibility="{Binding Path=SubscribersHeightVisibility}"/>
+            <orm:OrmTextBox CaptionWith="200" Width="500" Caption="{x:Static res:Resources.PercentageTime}" Text ="{Binding Path=CurrentCalcTaskCard.PercentageTime, Mode=TwoWay}" Visibility="{Binding Path=PercentageTimeVisibility}"/>
+            <orm:OrmCheckBox CaptionWith="200" Width="500" Caption="{x:Static res:Resources.UseEffectiveHeight}" SelectedValue="{Binding Path=CurrentCalcTaskCard.UseEffectiveHeight, Mode=TwoWay}" IsRequired="True" Visibility="{Binding Path=UseEffectiveHeightVisibility}"/>
+            <WrapPanel>
+              <orm:OrmTextBox CaptionWith="200" Width="400" Caption="{x:Static res:Resources.StepBetweenBoundaryPoints}" Enabled="{Binding Path=StepBetweenBoundaryPointsDefaultEnabled, Mode=TwoWay}" Text ="{Binding Path=CurrentCalcTaskCard.StepBetweenBoundaryPoints, Mode=TwoWay}" Visibility="{Binding Path=StepBetweenBoundaryPointsVisibility}" IsEnabled="{Binding StepBetweenBoundaryPointsEnabled}">
+                <!--<orm:OrmTextBox.Style>
+                  <Style TargetType="orm:OrmTextBox">
+                    <Style.Triggers>
+                      <DataTrigger Binding="{Binding Path=CurrentCalcTaskCard.StepBetweenBoundaryPointsDefault, Mode=TwoWay}" Value="False">
+                        <Setter Property="Enabled" Value="True"/>
+                      </DataTrigger>
+                      <DataTrigger Binding="{Binding Path=CurrentCalcTaskCard.StepBetweenBoundaryPointsDefault, Mode=TwoWay}" Value="True">
+                        <Setter Property="Enabled" Value="False"/>
+                      </DataTrigger>
+                    </Style.Triggers>
+                  </Style>
+                </orm:OrmTextBox.Style>-->
+              </orm:OrmTextBox>
+              <orm:OrmCheckBox CaptionWith="50" Width="100" Caption="{x:Static res:Resources.Default}" SelectedValue="{Binding Path=StepBetweenBoundaryPointsDefault, Mode=TwoWay}" IsRequired="True" Visibility="{Binding Path=StepBetweenBoundaryPointsVisibility}"/>
+            </WrapPanel>
+            <orm:OrmButton Content="{x:Static res:Resources.Start}" Width="70" Height="20" Command="{Binding StartCommand}" IsEnabled="{Binding StartEnabled}"/>
           </WrapPanel>
-          <WrapPanel Grid.Column="1" Orientation="Vertical">
-            <orm:OrmButton Content="{x:Static res:Resources.ConformityCheck}" Width="300" Height="20" Command="{Binding ConformityCheckCommand}" IsEnabled="{Binding ConformityCheckEnabled}"/>
-            <orm:OrmButton Content="{x:Static res:Resources.FindAffected}" Width="300" Height="20" Command="{Binding FindAffectedCommand}" IsEnabled="{Binding FindAffectedEnabled}"/>
-            <orm:OrmButton Content="{x:Static res:Resources.CreateContoursByDistance}" Width="300" Height="20" Command="{Binding CreateContoursByDistanceCommand}"/>
-            <orm:OrmButton Content="{x:Static res:Resources.CreateContoursByFS}" Width="300" Height="20" Command="{Binding CreateContoursByFSCommand}"/>
-          </WrapPanel>
-        </Grid>
       </Grid>
       <orm:OrmGridSplitter Grid.Column="1" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch"></orm:OrmGridSplitter>
       <orm:Map Grid.Column="2" DrawingData="{Binding CurrentMapData}"></orm:Map>

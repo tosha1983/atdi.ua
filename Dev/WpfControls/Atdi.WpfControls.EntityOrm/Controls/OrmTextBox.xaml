@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:Atdi.WpfControls.EntityOrm.Controls"
              mc:Ignorable="d" Height="28" Width="200" SizeChanged="UserControl_SizeChanged">
     <Grid>
-        <Label Name="lblCaption" Content="Label" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,0,0" Height="24" Width="55"/>
+        <Label Name="lblCaption" Content="" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,0,0" Height="24" Width="55"/>
         <TextBox Name="txtMain" HorizontalAlignment="Left" Height="24" TextWrapping="Wrap" Text="" VerticalContentAlignment="Center" Width="120" Margin="65,0,0,0" TextChanged="TxtMain_TextChanged" VerticalAlignment="Center"/>
     </Grid>
 </UserControl>

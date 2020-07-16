@@ -20,7 +20,7 @@ namespace Atdi.WpfControls.EntityOrm.Controls
     /// </summary>
     public partial class OrmTextBox : UserControl
     {
-        double _captionWith = 100;
+        double _captionWith = 0;
         string _caption = "";
         string _text = "";
         bool _enabled = true;
@@ -53,7 +53,7 @@ namespace Atdi.WpfControls.EntityOrm.Controls
             get { return _enabled; }
             set
             {
-                //SetValue(EnabledProperty, value);
+                SetValue(EnabledProperty, value);
                 this._enabled = value;
                 txtMain.IsEnabled = this._enabled;
             }

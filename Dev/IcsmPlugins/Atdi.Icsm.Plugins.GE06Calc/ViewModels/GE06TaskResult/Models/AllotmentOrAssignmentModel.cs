@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations;
 
 namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06TaskResult
 {
@@ -22,5 +23,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06TaskResult
         public float? ErpV_dbW { get; set; }
         public string AntennaDirectional { get; set; }
         public string AdmRefId { get; set; }
+        public string Source { get; set; }
+        public CountoursPoint[] CountoursPoints { get; set; }
     }
 }

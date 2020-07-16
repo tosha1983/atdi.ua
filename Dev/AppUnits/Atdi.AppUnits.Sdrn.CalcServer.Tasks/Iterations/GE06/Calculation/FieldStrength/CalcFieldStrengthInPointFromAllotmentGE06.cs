@@ -29,7 +29,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                 PropagationModel propagationModel,
                                 Point point,
                                 IObjectPool<PointEarthGeometric[]> pointEarthGeometricPool,
-                                IIterationsPool iterationsPool,
+                                IIterationHandler<BroadcastingFieldStrengthCalcData, BroadcastingFieldStrengthCalcResult> iterationHandlerBroadcastingFieldStrengthCalcData,
+                                IIterationHandler<FieldStrengthCalcData, FieldStrengthCalcResult> iterationHandlerFieldStrengthCalcData,
                                 IObjectPoolSite poolSite,
                                 ITransformation transformation,
                                 ITaskContext taskContext,
@@ -37,20 +38,23 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                 ProjectMapData projectMapData,
                                 CluttersDesc cluttersDesc,
                                 string projection,
-                                float Hrx_m 
+                                float hrx_m,
+                                int? stepBetweenBoundaryPoints
                                 )
         {
-            var pointEarthGeometricsResult = default(PointEarthGeometric[]);
+            var points = new Points();
+
             //1. Формирование эталонной BroadcastingAssignment на базе BroadcastingAllotment (1.3.1).
             var broadcastingAssignment = new BroadcastingAssignment();
             gn06Service.GetEtalonBroadcastingAssignmentFromAllotment(broadcastingAllotment, broadcastingAssignment);
             //2. Вычисляются все граничные точки выделения (1.3.3). 
             var broadcastingAllotmentWithStep = new BroadcastingAllotmentWithStep()
             {
-                BroadcastingAllotment = broadcastingAllotment
+                BroadcastingAllotment = broadcastingAllotment,
+                step_km = stepBetweenBoundaryPoints
             };
 
-            var points = new Points();
+            
             try
             {
                 points.PointEarthGeometrics = default(PointEarthGeometric[]);
@@ -60,9 +64,9 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
             finally
             {
-                if (pointEarthGeometricsResult != null)
+                if (points.PointEarthGeometrics != null)
                 {
-                    pointEarthGeometricPool.Put(pointEarthGeometricsResult);
+                    pointEarthGeometricPool.Put(points.PointEarthGeometrics);
                 }
             }
 
@@ -98,6 +102,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     var broadcastingAssignmentTemp = Atdi.Common.CopyHelper.CreateDeepCopy(broadcastingAssignment);
                     broadcastingAssignmentTemp.SiteParameters.Lon_Dec = pointWithAzimuth[k].AreaPoint.Lon_DEC;
                     broadcastingAssignmentTemp.SiteParameters.Lat_Dec = pointWithAzimuth[k].AreaPoint.Lat_DEC;
+
                     if (broadcastingAssignmentTemp.EmissionCharacteristics.Polar == PolarType.H)
                     {
                         broadcastingAssignmentTemp.EmissionCharacteristics.ErpH_dBW = (float)(broadcastingAssignmentTemp.EmissionCharacteristics.ErpH_dBW - pointWithAzimuth[k].AntDiscrimination_dB);
@@ -114,14 +119,15 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     lstBroadcastingAssignment[k] = broadcastingAssignmentTemp;
                 }
                 var lstFieldStrengthAssignments = new double[pointsWithAzimuthResult.sizeResultBuffer];
-                for (int k = 0; k < lstBroadcastingAssignment.Length; k++)
+                for (int k = 0; k < pointsWithAzimuthResult.sizeResultBuffer; k++)
                 {
                     var broadcastAssignment = lstBroadcastingAssignment[k];
                     //в) Расчет напряженности поля от каждого эталонного BroadcastingAssignment(2.2.4).Перед расчетом производиться корректировка паттерна BroadcastingAssignment в соответствии с его ориентацией(суть корректировки спросить Максима или Юру).
                     var resultFieldStrengthInPointFromAssignmentGE06 = CalcFieldStrengthInPointFromAssignmentGE06.Calc(broadcastAssignment,
                                                                                                                        propagationModel,
                                                                                                                        point,
-                                                                                                                       iterationsPool,
+                                                                                                                       iterationHandlerBroadcastingFieldStrengthCalcData,
+                                                                                                                       iterationHandlerFieldStrengthCalcData,
                                                                                                                        poolSite,
                                                                                                                        transformation,
                                                                                                                        taskContext,
@@ -129,7 +135,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                                                                                        projectMapData,
                                                                                                                        cluttersDesc,
                                                                                                                        projection,
-                                                                                                                       Hrx_m);
+                                                                                                                       hrx_m);
                     lstFieldStrengthAssignments[k] = resultFieldStrengthInPointFromAssignmentGE06;
                 }
 
@@ -140,6 +146,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             }
 
             //г) Определение суммарной напряженности поля(2.2.2) .
+
             return (float)maxFieldStrength;
         }
 

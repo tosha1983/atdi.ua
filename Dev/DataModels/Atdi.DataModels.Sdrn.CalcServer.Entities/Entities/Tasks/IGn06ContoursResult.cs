@@ -19,7 +19,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks
         long Gn06ResultId { get; set; }
         byte ContourType { get; set; }
         int Distance { get; set; }
-        int FS { get; set; }
+        double FS { get; set; }
         string AffectedADM { get; set; }
         int PointsCount { get; set; }
 		// string == CountoursPoint[]

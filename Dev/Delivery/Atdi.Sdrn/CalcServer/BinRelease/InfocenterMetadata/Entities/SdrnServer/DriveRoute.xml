@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "DriveRoute"
+  Title       = "Drive Route"
+  Desc        = "The route of the drive tests from SDRN Server"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>DRIVE_ROUTES</Name>
+    <Schema>SDRNSVR</Schema>
+  </DataSource>
+  <Fields>
+    <Field Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column" Desc="The Id record." Title="Id record"/>
+    <Field Name="RESULT" SourceName="Atdi.DataModels.Sdrn.Infocenter.Entities.SdrnServer.StationMonitoring" SourceType="Reference" Title="Station Monitoring Meas Result" Required="true"/>
+    <Field Name="Longitude" DataType="Double.30.10" SourceName="LON" SourceType="Column" Required="true" Desc="Longitude, DEC" Title="Longitude, DEC" Unit="Longitude.DEC"/>
+    <Field Name="Latitude"  DataType="Double.30.10" SourceName="LAT" SourceType="Column" Required="true" Desc="Latitude, DEC" Title="Latitude, DEC" Unit="Latitude.DEC"/>
+    <Field Name="Altitude"  DataType="Double.30.10" SourceName="ALT" SourceType="Column" Required="false" Desc="Altitude" Title="Altitude"/>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>

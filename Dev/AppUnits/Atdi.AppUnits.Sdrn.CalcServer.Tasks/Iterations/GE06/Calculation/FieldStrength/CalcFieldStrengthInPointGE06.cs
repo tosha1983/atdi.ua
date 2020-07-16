@@ -30,7 +30,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                 in Point point,
                                 BroadcastingTypeContext broadcastingTypeContext,
                                 IObjectPool<PointEarthGeometric[]> pointEarthGeometricPool,
-                                IIterationsPool iterationsPool,
+                                IIterationHandler<BroadcastingFieldStrengthCalcData, BroadcastingFieldStrengthCalcResult> iterationHandlerBroadcastingFieldStrengthCalcData,
+                                IIterationHandler<FieldStrengthCalcData, FieldStrengthCalcResult> iterationHandlerFieldStrengthCalcData,
                                 IObjectPoolSite poolSite,
                                 ITransformation transformation,
                                 ITaskContext taskContext,
@@ -58,7 +59,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                                                                         ge06CalcData.PropagationModel,
                                                                                                         point,
                                                                                                         pointEarthGeometricPool,
-                                                                                                        iterationsPool,
+                                                                                                        iterationHandlerBroadcastingFieldStrengthCalcData,
+                                                                                                        iterationHandlerFieldStrengthCalcData,
                                                                                                         poolSite,
                                                                                                         transformation,
                                                                                                         taskContext,
@@ -66,7 +68,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                                                                         ge06CalcData.MapData,
                                                                                                         ge06CalcData.CluttersDesc,
                                                                                                         ge06CalcData.Projection,
-                                                                                                        ge06CalcData.Ge06TaskParameters.SubscribersHeight.Value
+                                                                                                        ge06CalcData.Ge06TaskParameters.SubscribersHeight.Value,
+                                                                                                        ge06CalcData.Ge06TaskParameters.StepBetweenBoundaryPoints
                                                                                                         );
             }
             //3.Если есть BroadcastingAssignment, то рассчитать напряженность поля от каждой из них(2.2.4).При этом если станций несколько, то определяем суммарную напряженность поля для станций с одинаковым SFN_id методом суммирования мощностей(2.2.2).
@@ -89,7 +92,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                 sumFieldStrengthInPointFromAssignmentGE06[j] = CalcFieldStrengthInPointFromAssignmentGE06.Calc(fndAssignments[j],
                                                                                                                                 ge06CalcData.PropagationModel,
                                                                                                                                 point,
-                                                                                                                                iterationsPool,
+                                                                                                                                iterationHandlerBroadcastingFieldStrengthCalcData,
+                                                                                                                                iterationHandlerFieldStrengthCalcData,
                                                                                                                                 poolSite,
                                                                                                                                 transformation,
                                                                                                                                 taskContext,

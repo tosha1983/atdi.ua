@@ -3,7 +3,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:XICSM.SdrnStationCalibrationCalc.WpfControls"
-             xmlns:maps="clr-namespace:Atdi.WpfControls.EntityOrm.Maps;assembly=Atdi.WpfControls.EntityOrm"
+             xmlns:maps="clr-namespace:Atdi.WpfControls.EntityOrm.Controls;assembly=Atdi.WpfControls.EntityOrm"
              xmlns:res="clr-namespace:Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties;assembly=XICSM_SdrnStationCalibrationCalc"
              xmlns:cdg="clr-namespace:Atdi.WpfControls.EntityOrm.Controls;assembly=Atdi.WpfControls.EntityOrm"
              mc:Ignorable="d" 

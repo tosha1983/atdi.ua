@@ -23,6 +23,8 @@ using Atdi.DataModels.Sdrn.DeepServices.GN06;
 using Atdi.Contracts.Sdrn.DeepServices.GN06;
 using IdwmDataModel = Atdi.DataModels.Sdrn.DeepServices.IDWM;
 using Idwm = Atdi.Contracts.Sdrn.DeepServices.IDWM;
+using Atdi.DataModels.Sdrn.CalcServer;
+
 
 
 namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
@@ -36,9 +38,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         private readonly IIterationsPool _iterationsPool;
         private readonly IDataLayer<EntityDataOrm<CalcServerEntityOrmContext>> _calcServerDataLayer;
         private readonly IObjectPool<PointEarthGeometric[]> _pointEarthGeometricPool;
-        //private readonly IObjectPool<Dictionary<CountoursPoint, string>> _countoursPointByAdministrationPool;
-        //private readonly IObjectPool<ContoursResult[]> _countoursResultPool;
-        //private readonly IObjectPool<CountoursPoint[]> _countoursPointPool;
+        private readonly IObjectPool<CountoursPointExtended[]> _countoursPointExtendedPool;
+        private readonly IObjectPool<ContoursResult[]> _countoursResultPool;
         private readonly IObjectPoolSite _poolSite;
         private readonly ITransformation _transformation;
         private readonly Idwm.IIdwmService _idwmService;
@@ -72,6 +73,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             _idwmService = idwmService;
             _logger = logger;
             _pointEarthGeometricPool = _poolSite.GetPool<PointEarthGeometric[]>(ObjectPools.GE06PointEarthGeometricObjectPool);
+            _countoursPointExtendedPool = _poolSite.GetPool<CountoursPointExtended[]>(ObjectPools.GE06CountoursPointExtendedPool);
+            _countoursResultPool = _poolSite.GetPool<ContoursResult[]>(ObjectPools.GE06CountoursResultPool);
         }
 
 
@@ -79,6 +82,20 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         public Ge06CalcResult Run(ITaskContext taskContext, Ge06CalcData data)
         {
             LoadDataBrific.SetBRIFICDirectory(this._appServerComponentConfig.BrificDBSource);
+            if (LoadDataBrific.CheckBRIFICDatabase()==false)
+            {
+                taskContext.SendEvent(new CalcResultEvent
+                {
+                    Level = CalcResultEventLevel.Error,
+                    Context = "Ge06CalcIteration",
+                    Message = $"File '{this._appServerComponentConfig.BrificDBSource}' does not exist or moved!"
+                });
+                throw new Exception($"File '{this._appServerComponentConfig.BrificDBSource}' does not exist or moved!");
+            }
+
+            var iterationHandlerBroadcastingFieldStrengthCalcData = _iterationsPool.GetIteration<BroadcastingFieldStrengthCalcData, BroadcastingFieldStrengthCalcResult>();
+            var iterationHandlerFieldStrengthCalcData = _iterationsPool.GetIteration<FieldStrengthCalcData, FieldStrengthCalcResult>();
+
 
             this._taskContext = taskContext;
             this._ge06CalcData = data;
@@ -120,12 +137,17 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             }
 
 
+
+
             if ((CalculationType)data.Ge06TaskParameters.CalculationTypeCode == CalculationType.CreateContoursByDistance)
             {
                 GE06CalcContoursByDistance.Calculation(in data, BroadcastingTypeContext.Icsm,
                                                         ref ge06CalcResultsForICSM,
                                                         _pointEarthGeometricPool,
-                                                        _iterationsPool,
+                                                        _countoursPointExtendedPool,
+                                                        _countoursResultPool,
+                                                        iterationHandlerBroadcastingFieldStrengthCalcData,
+                                                        iterationHandlerFieldStrengthCalcData,
                                                         _poolSite,
                                                         _transformation,
                                                         _taskContext,
@@ -134,7 +156,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                         _idwmService);
                 if (ge06CalcResultsForICSM.AffectedADMResult != null)
                 {
-                    affectedADMResult.AddRange(ge06CalcResultsForICSM.AffectedADMResult);
+                    DistinctListAdmAffected(affectedADMResult, ge06CalcResultsForICSM.AffectedADMResult);
+                    //affectedADMResult.AddRange(ge06CalcResultsForICSM.AffectedADMResult);
                 }
                 if (ge06CalcResultsForICSM.ContoursResult != null)
                 {
@@ -149,7 +172,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 GE06CalcContoursByDistance.Calculation(in data, BroadcastingTypeContext.Brific,
                                                         ref ge06CalcResultsForBRIFIC,
                                                         _pointEarthGeometricPool,
-                                                        _iterationsPool,
+                                                        _countoursPointExtendedPool,
+                                                        _countoursResultPool,
+                                                        iterationHandlerBroadcastingFieldStrengthCalcData,
+                                                        iterationHandlerFieldStrengthCalcData,
                                                         _poolSite,
                                                         _transformation,
                                                         _taskContext,
@@ -158,7 +184,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                         _idwmService);
                 if (ge06CalcResultsForBRIFIC.AffectedADMResult != null)
                 {
-                    affectedADMResult.AddRange(ge06CalcResultsForBRIFIC.AffectedADMResult);
+                    DistinctListAdmAffected(affectedADMResult, ge06CalcResultsForBRIFIC.AffectedADMResult);
+                    //affectedADMResult.AddRange(ge06CalcResultsForBRIFIC.AffectedADMResult);
                 }
                 if (ge06CalcResultsForBRIFIC.ContoursResult != null)
                 {
@@ -174,7 +201,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 GE06CalcContoursByFS.Calculation(data, BroadcastingTypeContext.Icsm,
                                                 ref ge06CalcResultsForICSM,
                                                 _pointEarthGeometricPool,
-                                                _iterationsPool,
+                                                _countoursPointExtendedPool,
+                                                _countoursResultPool,
+                                                iterationHandlerBroadcastingFieldStrengthCalcData,
+                                                iterationHandlerFieldStrengthCalcData,
                                                 _poolSite,
                                                 _transformation,
                                                 _taskContext,
@@ -183,7 +213,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                 _idwmService);
                 if (ge06CalcResultsForICSM.AffectedADMResult != null)
                 {
-                    affectedADMResult.AddRange(ge06CalcResultsForICSM.AffectedADMResult);
+                    DistinctListAdmAffected(affectedADMResult, ge06CalcResultsForICSM.AffectedADMResult);
+                    //affectedADMResult.AddRange(ge06CalcResultsForICSM.AffectedADMResult);
                 }
                 if (ge06CalcResultsForICSM.ContoursResult != null)
                 {
@@ -198,7 +229,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                  BroadcastingTypeContext.Brific,
                                                  ref ge06CalcResultsForBRIFIC,
                                                  _pointEarthGeometricPool,
-                                                 _iterationsPool,
+                                                 _countoursPointExtendedPool,
+                                                 _countoursResultPool,
+                                                 iterationHandlerBroadcastingFieldStrengthCalcData,
+                                                 iterationHandlerFieldStrengthCalcData,
                                                  _poolSite,
                                                  _transformation,
                                                  _taskContext,
@@ -207,7 +241,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                  _idwmService);
                 if (ge06CalcResultsForBRIFIC.AffectedADMResult != null)
                 {
-                    affectedADMResult.AddRange(ge06CalcResultsForBRIFIC.AffectedADMResult);
+                    DistinctListAdmAffected(affectedADMResult, ge06CalcResultsForBRIFIC.AffectedADMResult);
+                    //affectedADMResult.AddRange(ge06CalcResultsForBRIFIC.AffectedADMResult);
                 }
                 if (ge06CalcResultsForBRIFIC.ContoursResult != null)
                 {
@@ -222,9 +257,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             else if ((CalculationType)data.Ge06TaskParameters.CalculationTypeCode == CalculationType.ConformityCheck)
             {
                 GE06CalcConformityCheck.Calculation(data,
-                                                    ref ge06CalcResults,
+                                                    ref ge06CalcResultsForICSM,
                                                     _pointEarthGeometricPool,
-                                                    _iterationsPool,
+                                                    _countoursPointExtendedPool,
+                                                    _countoursResultPool,
+                                                    iterationHandlerBroadcastingFieldStrengthCalcData,
+                                                    iterationHandlerFieldStrengthCalcData,
                                                     _poolSite,
                                                     _transformation,
                                                     _taskContext,
@@ -233,7 +271,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                     _idwmService);
                 if (ge06CalcResultsForICSM.AffectedADMResult != null)
                 {
-                    affectedADMResult.AddRange(ge06CalcResultsForICSM.AffectedADMResult);
+                    DistinctListAdmAffected(affectedADMResult, ge06CalcResultsForICSM.AffectedADMResult);
+                    //affectedADMResult.AddRange(ge06CalcResultsForICSM.AffectedADMResult);
                 }
                 if (ge06CalcResultsForICSM.ContoursResult != null)
                 {
@@ -247,19 +286,30 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             else if ((CalculationType)data.Ge06TaskParameters.CalculationTypeCode == CalculationType.FindAffectedADM)
             {
                 GE06CalcFindAffectedADM.Calculation(data,
-                                                    ref ge06CalcResultsForICSM, _pointEarthGeometricPool, _iterationsPool, _poolSite, _transformation, _taskContext, _gn06Service, _earthGeometricService, _idwmService);
+                                                    ref ge06CalcResultsForICSM,
+                                                    _pointEarthGeometricPool,
+                                                     _countoursPointExtendedPool,
+                                                    _countoursResultPool,
+                                                    iterationHandlerBroadcastingFieldStrengthCalcData,
+                                                    iterationHandlerFieldStrengthCalcData,
+                                                    _poolSite,
+                                                    _transformation,
+                                                    _taskContext,
+                                                    _gn06Service,
+                                                    _earthGeometricService,
+                                                    _idwmService);
                 
-                if (ge06CalcResultsForBRIFIC.AffectedADMResult != null)
+                if (ge06CalcResultsForICSM.AffectedADMResult != null)
                 {
-                    affectedADMResult.AddRange(ge06CalcResultsForBRIFIC.AffectedADMResult);
+                    DistinctListAdmAffected(affectedADMResult, ge06CalcResultsForICSM.AffectedADMResult);
                 }
-                if (ge06CalcResultsForBRIFIC.ContoursResult != null)
+                if (ge06CalcResultsForICSM.ContoursResult != null)
                 {
-                    contoursResult.AddRange(ge06CalcResultsForBRIFIC.ContoursResult);
+                    contoursResult.AddRange(ge06CalcResultsForICSM.ContoursResult);
                 }
-                if (ge06CalcResultsForBRIFIC.AllotmentOrAssignmentResult != null)
+                if (ge06CalcResultsForICSM.AllotmentOrAssignmentResult != null)
                 {
-                    allotmentOrAssignmentResult.AddRange(ge06CalcResultsForBRIFIC.AllotmentOrAssignmentResult);
+                    allotmentOrAssignmentResult.AddRange(ge06CalcResultsForICSM.AllotmentOrAssignmentResult);
                 }
             }
 
@@ -270,5 +320,20 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             return ge06CalcResults;
         }
 
+        /// <summary>
+        /// Проверка affectedADMResults на дубликаты
+        /// </summary>
+        /// <param name="AllAffectedADMResults"></param>
+        /// <param name="affectedADMResults"></param>
+        private void DistinctListAdmAffected(List<AffectedADMResult> AllAffectedADMResults, AffectedADMResult[] affectedADMResults)
+        {
+            for (int i = 0; i < affectedADMResults.Length; i++)
+            {
+                if (AllAffectedADMResults.Find(c=>c.ADM== affectedADMResults[i].ADM && c.AffectedServices == affectedADMResults[i].AffectedServices && c.TypeAffected == affectedADMResults[i].TypeAffected)==null)
+                {
+                    AllAffectedADMResults.Add(affectedADMResults[i]);
+                }
+            }
+        }
     }
 }

@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Environment Name="BRIFIC.ORM" Version="1.0.0.1" xmlns="http://schemas.atdi.com/orm/entity.xsd">
+  <RootPath>\</RootPath>
+  <Assembly>Atdi.DataModels.Brific.Entities, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</Assembly>
+  <Namespace>Atdi.DataModels.Brific.Entities</Namespace>
+  <EntitiesPath>Entities</EntitiesPath>
+  <DataTypesPath>DataTypes</DataTypesPath>
+  <UnitsPath>Units</UnitsPath>
+</Environment>

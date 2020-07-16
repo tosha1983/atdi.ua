@@ -55,13 +55,18 @@
     <Compile Include="Iterations\GE06\Calculation\FieldStrength\CalcFieldStrengthInPointGE06.cs" />
     <Compile Include="Iterations\GE06\Calculation\FieldStrength\CalcFieldStrengthInPointFromAllotmentGE06.cs" />
     <Compile Include="Iterations\GE06\Calculation\FieldStrength\CalcFieldStrengthInPointFromAssignmentGE06.cs" />
+    <Compile Include="Iterations\GE06\Calculation\Progress\UpdateProgress.cs" />
     <Compile Include="Iterations\GE06\Calculation\PropagationModel\GE06PropagationModel.cs" />
     <Compile Include="Iterations\GE06\Calculation\GE06FillData.cs" />
+    <Compile Include="Iterations\GE06\Calculation\Report\FillContoursResultOnFS.cs" />
+    <Compile Include="Iterations\GE06\Calculation\Report\FillContoursResultOnDistance.cs" />
+    <Compile Include="Iterations\GE06\Calculation\Report\FillAffectedADMResult.cs" />
     <Compile Include="Iterations\GE06\Calculation\TypeCalc\GE06CalcFindAffectedADM.cs" />
     <Compile Include="Iterations\GE06\Calculation\TypeCalc\GE06CalcConformityCheck.cs" />
     <Compile Include="Iterations\GE06\Calculation\TypeCalc\GE06CalcContoursByFS.cs" />
     <Compile Include="Iterations\GE06\Calculation\TypeCalc\GE06CalcContoursByDistance.cs" />
     <Compile Include="Iterations\GE06\Ge06CalcIteration.cs" />
+    <Compile Include="Iterations\GE06\Validation\GE06CheckEffectiveHeight.cs" />
     <Compile Include="Iterations\GE06\Validation\GE06Validation.cs" />
     <Compile Include="Iterations\StationCalibration\CIDComparisonRDB.cs" />
     <Compile Include="Iterations\StationCalibration\GCIDComparisonRR.cs" />
@@ -189,7 +194,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />

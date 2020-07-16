@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BroadcastingTypeCalculation.cs" />
     <Compile Include="BroadcastingTypeContext.cs" />
     <Compile Include="ActionType.cs" />
     <Compile Include="AdministrativeData.cs" />

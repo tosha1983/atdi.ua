@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Atdi.DataModels.Sdrn.CalcServer.Entities;
 using Atdi.Platform.Cqrs;
-
+using CS_ES = Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks;
 
 namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings.Queries
 {

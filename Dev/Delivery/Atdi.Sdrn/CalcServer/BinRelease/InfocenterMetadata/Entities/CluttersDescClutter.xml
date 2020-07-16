@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "CluttersDescClutter"
+  Title       = "Clutter"
+  Desc        = "The properties of the clutter"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>CLUTTERS_DESCS_CLUTTERS</Name>
+    <Schema>INFOC</Schema>
+  </DataSource>
+  <Fields>
+    <Field Name="CluttersDescId" DataType="Integer.64" SourceName="CLUTTERS_DESC_ID" SourceType="Column" Desc="The id of the clutters description" Title="Clutters description Id"/>
+    <Field Name="CLUTTERS_DESC" SourceName="CluttersDesc" SourceType="Reference" Required="true" Desc="The clutters description" Title="Clutters description"/>
+
+    <Field Name="Code" DataType="Byte" SourceName="CODE" SourceType="Column" Desc="The code of the clutter" Title="Name" Required="true"/>
+    <Field Name="Name" DataType="Text.150" SourceName="NAME" SourceType="Column" Desc="The name of the clutter" Title="Name" Required="true"/>
+    <Field Name="Note" DataType="Text.MAX" SourceName="NOTE" SourceType="Column" Desc="The note of the clutter" Title="Note" Required="false"/>
+
+    <Field Name="Height_m" DataType="Integer.32"  SourceName="HEIGHT_M" SourceType="Column" Desc="The clutter height in meters" Title="Height, m" Required="true"/>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="CluttersDescId"/>
+    <FieldRef Name="Code"/>
+  </PrimaryKey>
+</Entity>

@@ -17,7 +17,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
         {
             _objectReader = objectReader;
         }
-        public string SelectStatementIcsmAll = "ID,ADM,IS_ALLOTM,NOTICE_TYPE,FRAGMENT,LASTK_REF,ADM_KEY,PLAN_ENTRY,ASSGN_CODE,PLAN_TRG_ADM_REF_ID,SFN_IDENT,ALLOTM_SFN_IDENT,FREQ,POLARIZATION,ERP_H,ERP_V,REF_PLAN_CFG,ADM_KEY,TVSYS_CODE,RX_MODE,SPECT_MASK,LONGITUDE,LATITUDE,SITE_ALT,SITE_NAME,ANT_DIR,AGL,EFHGT_MAX,EFHGT,ATTN_H,ATTN_V,TYP_REF_NTWK,A_NAME,ALLOT_AREA,CLASS,DIGITAL,PLAN_ASSGN_NO";
+        public string SelectStatementIcsmAll = "ID,ADM,IS_ALLOTM,NOTICE_TYPE,FRAGMENT,LASTK_REF,ADM_KEY,PLAN_ENTRY,ASSGN_CODE,PLAN_TRG_ADM_REF_ID,SFN_IDENT,ALLOTM_SFN_IDENT,FREQ,POLARIZATION,ERP_H,ERP_V,REF_PLAN_CFG,ADM_KEY,TVSYS_CODE,RX_MODE,SPECT_MASK,LONGITUDE,LATITUDE,SITE_ALT,SITE_NAME,ANT_DIR,AGL,EFHGT_MAX,EFHGT,ATTN_H,ATTN_V,TYP_REF_NTWK,A_NAME,ALLOT_AREA,CLASS,DIGITAL,PLAN_ASSGN_NO,ALLOTM_ADM_KEY";
 
         public string SelectStatementIcsmAllotment = "ID,ADM,IS_ALLOTM,NOTICE_TYPE,FRAGMENT,LASTK_REF,ADM_KEY,PLAN_ENTRY,PLAN_TRG_ADM_REF_ID,SFN_IDENT,FREQ,POLARIZATION,REF_PLAN_CFG,SPECT_MASK,TYP_REF_NTWK,A_NAME,ALLOT_AREA,PLAN_ASSGN_NO";
         public void GetIcsmAllotment(AssignmentsAllotmentsModel allot, IMRecordset rs)
@@ -41,10 +41,10 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
             allot.AllotmentName = rs.GetS("A_NAME");
             if (Int32.TryParse(rs.GetS("ALLOT_AREA").Replace(",", ""), out int ContourId))
                 allot.ContourId = ContourId;
-            allot.Contur = _objectReader.Read<AreaPoint[]>().By(new GetIcsmAreaPointByContourId { ContourId = allot.ContourId });
+            allot.Contur = _objectReader.Read<AreaPoint[]>().By(new GetIcsmAreaPointByContourId { ContourId = allot.ContourId, Adm = allot.Adm });
         }
 
-        public string SelectStatementIcsmAssignment = "ID,ADM,IS_ALLOTM,NOTICE_TYPE,FRAGMENT,LASTK_REF,ADM_KEY,PLAN_ENTRY,ASSGN_CODE,PLAN_TRG_ADM_REF_ID,SFN_IDENT,ALLOTM_SFN_IDENT,FREQ,POLARIZATION,ERP_H,ERP_V,REF_PLAN_CFG,ADM_KEY,TVSYS_CODE,RX_MODE,SPECT_MASK,LONGITUDE,LATITUDE,SITE_ALT,SITE_NAME,ANT_DIR,AGL,EFHGT_MAX,EFHGT,ATTN_H,ATTN_V,CLASS,DIGITAL,PLAN_ASSGN_NO";
+        public string SelectStatementIcsmAssignment = "ID,ADM,IS_ALLOTM,NOTICE_TYPE,FRAGMENT,LASTK_REF,ADM_KEY,PLAN_ENTRY,ASSGN_CODE,PLAN_TRG_ADM_REF_ID,SFN_IDENT,ALLOTM_SFN_IDENT,FREQ,POLARIZATION,ERP_H,ERP_V,REF_PLAN_CFG,ADM_KEY,TVSYS_CODE,RX_MODE,SPECT_MASK,LONGITUDE,LATITUDE,SITE_ALT,SITE_NAME,ANT_DIR,AGL,EFHGT_MAX,EFHGT,ATTN_H,ATTN_V,CLASS,DIGITAL,PLAN_ASSGN_NO,ALLOTM_ADM_KEY";
         public void GetIcsmAssignment(AssignmentsAllotmentsModel assign, IMRecordset rs)
         {
             assign.Id = "I" + rs.GetI("ID").ToString();
@@ -54,13 +54,14 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
             assign.NoticeType = rs.GetS("NOTICE_TYPE");
             assign.Fragment = rs.GetS("FRAGMENT");
             assign.Action = StringConverter.ConvertToActionType(rs.GetS("LASTK_REF"));
-            assign.AdmRefId = rs.GetS("ADM_KEY");
+            assign.AdmRefId = rs.GetS("ALLOTM_ADM_KEY");
             assign.PlanEntry = StringConverter.ConvertToPlanEntryType(rs.GetI("PLAN_ENTRY"));
             assign.AssignmentCode = StringConverter.ConvertToAssignmentCodeType(rs.GetS("ASSGN_CODE"));
             assign.AdmAllotAssociatedId = rs.GetS("PLAN_TRG_ADM_REF_ID");
-            assign.SfnAllotAssociatedId = rs.GetS("SFN_IDENT");
-            assign.SfnId = rs.GetS("ALLOTM_SFN_IDENT");
+            assign.SfnAllotAssociatedId = rs.GetS("ALLOTM_SFN_IDENT");
+            assign.SfnId = rs.GetS("SFN_IDENT");
             assign.Freq_MHz = rs.GetD("FREQ");
+            assign.Polar = StringConverter.ConvertToPolarType(rs.GetS("POLARIZATION"));
             assign.ErpH_dBW = (float)rs.GetD("ERP_H");
             assign.ErpV_dBW = (float)rs.GetD("ERP_V");
             assign.RefNetworkConfig = StringConverter.ConvertToRefNetworkConfigType(rs.GetS("REF_PLAN_CFG"));
@@ -75,8 +76,13 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
             assign.AglHeight_m = (short)rs.GetD("AGL");
             assign.MaxEffHeight_m = rs.GetI("EFHGT_MAX");
             assign.EffHeight_m = StringConverter.ConvertToEffHeight(rs.GetS("EFHGT"));
-            assign.DiagrH = StringConverter.ConvertToDiagr(rs.GetS("ATTN_H"));
-            assign.DiagrV = StringConverter.ConvertToDiagr(rs.GetS("ATTN_V"));
+            if (assign.Direction == AntennaDirectionType.D)
+            {
+                if (rs.GetS("POLARIZATION") != "V")
+                    assign.DiagrH = StringConverter.ConvertToDiagr(rs.GetS("ATTN_H"));
+                if (rs.GetS("POLARIZATION") != "H")
+                    assign.DiagrV = StringConverter.ConvertToDiagr(rs.GetS("ATTN_V"));
+            }
             assign.TargetLon_Dec = rs.GetD("LONGITUDE");
             assign.TargetLat_Dec = rs.GetD("LATITUDE");
             assign.StnClass = rs.GetS("CLASS");

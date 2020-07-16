@@ -15,6 +15,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks
         float? AzimuthStep_deg { get; set; }
         bool AdditionalContoursByDistances { get; set; }
         int[] Distances { get; set; }
+        int? StepBetweenBoundaryPoints { get; set; }
         bool ContureByFieldStrength { get; set; }
         int[] FieldStrength { get; set; }
         int? SubscribersHeight { get; set; }

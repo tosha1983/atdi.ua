@@ -459,7 +459,8 @@
             "SDRN Calc Server",
             "SDRN Infocenter Server",
             "SDRN Calc Server Client ICSM Plugin",
-            "SDRN Station Calibration Calc ICSM Plugin"});
+            "SDRN Station Calibration Calc ICSM Plugin",
+            "SDRN GE06 Calc ICSM Plugin"});
 			this.cmbConfigType.Location = new System.Drawing.Point(77, 17);
 			this.cmbConfigType.Name = "cmbConfigType";
 			this.cmbConfigType.Size = new System.Drawing.Size(303, 21);
@@ -471,9 +472,9 @@
 			this.label17.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.label17.Location = new System.Drawing.Point(7, 20);
 			this.label17.Name = "label17";
-			this.label17.Size = new System.Drawing.Size(60, 13);
+			this.label17.Size = new System.Drawing.Size(44, 13);
 			this.label17.TabIndex = 22;
-			this.label17.Text = "Config type";
+			this.label17.Text = "Product";
 			// 
 			// txtEncryptedPassword
 			// 

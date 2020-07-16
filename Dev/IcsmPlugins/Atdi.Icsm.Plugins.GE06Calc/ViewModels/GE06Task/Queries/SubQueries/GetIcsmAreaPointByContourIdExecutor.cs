@@ -32,6 +32,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
             IMRecordset rs = new IMRecordset("ITU_CONTOUR", IMRecordset.Mode.ReadOnly);
             rs.Select("TPR_XXX");
             rs.SetWhere("NUM", IMRecordset.Operation.Eq, criterion.ContourId);
+            rs.SetWhere("ADM", IMRecordset.Operation.Eq, criterion.Adm);
             for (rs.Open(); !rs.IsEOF(); rs.MoveNext())
             {
                 contursString = rs.GetS("TPR_XXX");
@@ -56,7 +57,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
 
                     if (areaLon > -180 && areaLon < 180 && areaLat > -90 && areaLat < 90)
                     {
-                        conturs.Add(new AreaPoint() { Lon_DEC = IMPosition.Dec2Dms(areaLon), Lat_DEC = IMPosition.Dec2Dms(areaLat) });
+                        conturs.Add(new AreaPoint() { Lon_DEC = IMPosition.Dms2Dec(areaLon), Lat_DEC = IMPosition.Dms2Dec(areaLat) });
                     }
                 }
             }

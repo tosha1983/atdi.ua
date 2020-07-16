@@ -210,6 +210,7 @@ copy "$(TargetDir)GMap.NET.WindowsPresentation.dll"  "..\..\..\..\Delivery\Atdi.
 copy "$(TargetDir)Atdi.AppUnits.Sdrn.DeepServices.GN06.dll"     "..\..\..\..\Delivery\Atdi.Sdrn\Client\GE06Calc\Bin$(ConfigurationName)"
 copy "$(TargetDir)Atdi.Contracts.Sdrn.DeepServices.GN06.dll"     "..\..\..\..\Delivery\Atdi.Sdrn\Client\GE06Calc\Bin$(ConfigurationName)"
 copy "$(TargetDir)Atdi.DataModels.Sdrn.DeepServices.GN06.dll"     "..\..\..\..\Delivery\Atdi.Sdrn\Client\GE06Calc\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.DataModels.Sdrn.CalcServer.Internal.dll"     "..\..\..\..\Delivery\Atdi.Sdrn\Client\GE06Calc\Bin$(ConfigurationName)"
 </PostBuildEvent>
   </PropertyGroup>
 </Project>

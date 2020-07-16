@@ -124,6 +124,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                 c => c.CalculationTypeName,
                                 c => c.ContureByFieldStrength,
                                 c => c.Distances,
+                                c => c.StepBetweenBoundaryPoints,
                                 c => c.FieldStrength,
                                 c => c.PercentageTime,
                                 c => c.SubscribersHeight,
@@ -155,6 +156,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                     Distances = reader.GetValue(c => c.Distances),
                     Projection = reader.GetValue(c => c.TASK.CONTEXT.PROJECT.Projection),
                     MapName = reader.GetValue(c => c.TASK.MapName),
+                    StepBetweenBoundaryPoints = reader.GetValue(c => c.StepBetweenBoundaryPoints)
 
                 };
             });
@@ -178,11 +180,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                     var contoursResult = resultGe06Calc.ContoursResult[i];
                     var insertQueryGn06ContoursResult = _calcServerDataLayer.GetBuilder<CALC.IGn06ContoursResult>()
                         .Insert()
-                        .SetValue(c => c.AffectedADM, contoursResult.AffectedADM)
+                        .SetValue(c => c.AffectedADM, string.IsNullOrEmpty(contoursResult.AffectedADM) ? "Sea" : contoursResult.AffectedADM)
                         .SetValue(c => c.ContourType, (byte)contoursResult.ContourType)
                         .SetValueAsJson<CountoursPoint[]>(c => c.CountoursPoints, contoursResult.CountoursPoints)
                         .SetValue(c => c.Distance, contoursResult.Distance)
-                        .SetValue(c => c.FS, (int)contoursResult.FS)
+                        .SetValue(c => c.FS, contoursResult.FS)
                         .SetValue(c => c.PointsCount, contoursResult.PointsCount)
                         .SetValue(c => c.Gn06ResultId, gn06ResultId);
                     var keyGn06ContoursResult = _calcDbScope.Executor.Execute<CALC.IGn06ContoursResult_PK>(insertQueryGn06ContoursResult);
@@ -195,7 +197,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                     var affectedADMResult = resultGe06Calc.AffectedADMResult[i];
                     var insertQueryGn06AffectedADMResult = _calcServerDataLayer.GetBuilder<CALC.IGn06AffectedADMResult>()
                         .Insert()
-                        .SetValue(c => c.Adm, affectedADMResult.ADM)
+                        .SetValue(c => c.Adm, string.IsNullOrEmpty(affectedADMResult.ADM) ? "Sea" : affectedADMResult.ADM)
                         .SetValue(c => c.AffectedServices, affectedADMResult.AffectedServices)
                         .SetValue(c => c.Gn06ResultId, gn06ResultId)
                         .SetValue(c => c.TypeAffected, affectedADMResult.TypeAffected);
@@ -221,7 +223,9 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                         .SetValue(c => c.Name, allotmentOrAssignmentResult.Name)
                         .SetValue(c => c.Polar, allotmentOrAssignmentResult.Polar)
                         .SetValue(c => c.TypeTable, allotmentOrAssignmentResult.TypeTable)
-                        .SetValue(c => c.Gn06ResultId, gn06ResultId);
+                        .SetValue(c => c.Source, allotmentOrAssignmentResult.Source)
+                        .SetValue(c => c.Gn06ResultId, gn06ResultId)
+                        .SetValueAsJson<CountoursPoint[]>(c => c.CountoursPoints, allotmentOrAssignmentResult.CountoursPoints);
                     var keyinsertQueryGn06AllotmentOrAssignmentResult = _calcDbScope.Executor.Execute<CALC.IGn06AllotmentOrAssignmentResult_PK>(insertQueryGn06AllotmentOrAssignmentResult);
                 }
             }

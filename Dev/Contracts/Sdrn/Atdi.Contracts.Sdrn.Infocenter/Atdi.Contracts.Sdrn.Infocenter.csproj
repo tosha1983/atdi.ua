@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IIntegrationService.cs" />
+    <Compile Include="BrificDataContext.cs" />
     <Compile Include="InfocenterDataContext.cs" />
     <Compile Include="IInfocenterConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

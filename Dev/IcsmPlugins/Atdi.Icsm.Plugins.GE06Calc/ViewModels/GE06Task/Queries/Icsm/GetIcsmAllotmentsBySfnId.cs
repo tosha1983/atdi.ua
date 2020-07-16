@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Events
+namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
 {
-    public class OnRunCalcTask
+    public class GetIcsmAllotmentsBySfnId
     {
-        public long Id;
+        public string SfnId;
     }
 }

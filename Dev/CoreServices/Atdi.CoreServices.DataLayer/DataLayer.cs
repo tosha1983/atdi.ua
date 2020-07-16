@@ -51,7 +51,11 @@ namespace Atdi.CoreServices.DataLayer
                     var assembliesEngine = this._servicesResolver.Resolve<IAssembliesDataEngine>();
                     assembliesEngine.SetConfig(engineConfig);
                     return assembliesEngine;
-                default:
+                case DataEngineType.Sqlite:
+	                var sqliteEngine = this._servicesResolver.Resolve<ISqliteDataEngine>();
+	                sqliteEngine.SetConfig(engineConfig);
+	                return sqliteEngine;
+				default:
                     throw new InvalidOperationException(Exceptions.EngineTypeNotSupported.With(engineConfig.Type));
             }
         }

@@ -69,7 +69,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        public static void GetPropagationModelForConformityCheck(ref PropagationModel propagationModel, float location_pc, float percentageTime, double height_m)
+        public static void GetPropagationModelForConformityCheck(ref PropagationModel propagationModel, float location_pc, float percentageTime)
         {
             propagationModel.Parameters.Location_pc = location_pc;
             propagationModel.Parameters.Time_pc = percentageTime;
@@ -81,7 +81,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        public static void GetPropagationModelForContoursByFS(ref PropagationModel propagationModel, float location_pc, float percentageTime, double height_m)
+        public static void GetPropagationModelForContoursByFS(ref PropagationModel propagationModel, float location_pc, float percentageTime)
         {
             propagationModel.Parameters.Location_pc = location_pc;
             propagationModel.Parameters.Time_pc = percentageTime;
@@ -93,7 +93,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        public static void GetPropagationModelForFindAffectedADM(ref PropagationModel propagationModel, float location_pc, float percentageTime, double height_m)
+        public static void GetPropagationModelForFindAffectedADM(ref PropagationModel propagationModel, float location_pc, float percentageTime)
         {
             propagationModel.Parameters.Location_pc = location_pc;
             propagationModel.Parameters.Time_pc = percentageTime;

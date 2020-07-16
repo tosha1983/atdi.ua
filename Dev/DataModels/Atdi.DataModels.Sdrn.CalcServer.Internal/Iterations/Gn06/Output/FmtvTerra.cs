@@ -13,7 +13,9 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
         public string Administration;
         public string IsDigital;
         public string StnClass;
+        public string System_type;
         public double FreqAssgn_MHz;
+        public float FS;
     }
 }
     

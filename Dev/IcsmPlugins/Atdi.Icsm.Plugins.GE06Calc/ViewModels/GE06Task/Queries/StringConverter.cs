@@ -22,39 +22,32 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
         }
         public static PlanEntryType ConvertToPlanEntryType(string value)
         {
-            if (value.Equals("SingleAssignment", StringComparison.OrdinalIgnoreCase))
+            if (value.Equals("SingleAssignment", StringComparison.OrdinalIgnoreCase) || value == "1")
                 return PlanEntryType.SingleAssignment;
-            else if (value.Equals("SinglSFNeAssignment", StringComparison.OrdinalIgnoreCase))
+            else if (value.Equals("SinglSFNeAssignment", StringComparison.OrdinalIgnoreCase) || value == "2")
                 return PlanEntryType.SFN;
-            else if (value.Equals("Allotment", StringComparison.OrdinalIgnoreCase))
+            else if (value.Equals("Allotment", StringComparison.OrdinalIgnoreCase) || value == "3")
                 return PlanEntryType.Allotment;
-            else if (value.Equals("AllotmentWithLinkedAssignmentAndSfn", StringComparison.OrdinalIgnoreCase))
+            else if (value.Equals("AllotmentWithLinkedAssignmentAndSfn", StringComparison.OrdinalIgnoreCase) || value == "4")
                 return PlanEntryType.AllotmentWithLinkedAssignmentAndSfn;
-            else if (value.Equals("AllotmentWithSingleLinkedAssignmentAndNoSfn", StringComparison.OrdinalIgnoreCase))
+            else if (value.Equals("AllotmentWithSingleLinkedAssignmentAndNoSfn", StringComparison.OrdinalIgnoreCase) || value == "5")
                 return PlanEntryType.AllotmentWithSingleLinkedAssignmentAndNoSfn;
             else
                 return PlanEntryType.Unknown;
         }
         public static PlanEntryType ConvertToPlanEntryType(int value)
         {
-            if (value != IM.NullI)
-            {
-                if (value == 1)
-                    return PlanEntryType.SingleAssignment;
-                else if (value == 2)
-                    return PlanEntryType.SFN;
-                else if (value == 3)
-                    return PlanEntryType.Allotment;
-                else if (value == 4)
-                    return PlanEntryType.AllotmentWithLinkedAssignmentAndSfn;
-                else if (value == 5)
-                    return PlanEntryType.AllotmentWithSingleLinkedAssignmentAndNoSfn;
-                else if (value == 1)
-                    return PlanEntryType.SingleAssignment;
-                else
-                    return PlanEntryType.Unknown;
-            }
-            else 
+            if (value == 1)
+                return PlanEntryType.SingleAssignment;
+            else if (value == 2)
+                return PlanEntryType.SFN;
+            else if (value == 3)
+                return PlanEntryType.Allotment;
+            else if (value == 4)
+                return PlanEntryType.AllotmentWithLinkedAssignmentAndSfn;
+            else if (value == 5)
+                return PlanEntryType.AllotmentWithSingleLinkedAssignmentAndNoSfn;
+            else
                 return PlanEntryType.Unknown;
         }
         public static AssignmentCodeType ConvertToAssignmentCodeType(string value)
@@ -87,10 +80,10 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
         {
             if (value.Equals("V", StringComparison.OrdinalIgnoreCase))
                 return PolarType.V;
-            else if (value.Equals("M", StringComparison.OrdinalIgnoreCase))
-                return PolarType.M;
-            else
+            else if (value.Equals("H", StringComparison.OrdinalIgnoreCase))
                 return PolarType.H;
+            else
+                return PolarType.M;
         }
         public static SpectrumMaskType ConvertToSpectrumMaskType(string value)
         {
@@ -201,9 +194,9 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
         }
         public static short[] ConvertToEffHeight(string value)
         {
-            var splitVariants = new char[] { ',', ';', ' ' };
+            value = value.Replace("+", " +").Replace("-", " -").Replace("  ", " ");
             var values = new List<short>();
-            foreach (var item in value.Split(splitVariants))
+            foreach (var item in value.Split(' '))
             {
                 if (short.TryParse(item, out short val))
                     values.Add(val);
@@ -213,26 +206,18 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
         public static float[] ConvertToDiagr(string value)
         {
             string sep = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
-            var valueA = value.Replace("VECTOR 10 ", "").Replace(".", sep);
+
+            if (!value.Contains("VECTOR 10 "))
+                return null;
+
+            value = value.Replace("VECTOR 10 ", "").Replace(".", sep);
             var values = new List<float>();
-            foreach (var item in valueA.Split(' '))
+            foreach (var item in value.Split(' '))
             {
                 if (float.TryParse(item, out float val))
                     values.Add(val);
             }
             return values.ToArray();
         }
-        public static short[] ConvertToContourId(string value)
-        {
-            var splitVariants = new char[] { ',', ';', ' ' };
-            var values = new List<short>();
-            foreach (var item in value.Split(splitVariants))
-            {
-                if (short.TryParse(item, out short val))
-                    values.Add(val);
-            }
-            return values.ToArray();
-        }
-
     }
 }

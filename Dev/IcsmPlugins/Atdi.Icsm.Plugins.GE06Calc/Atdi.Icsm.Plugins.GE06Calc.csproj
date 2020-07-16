@@ -21,7 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <LangVersion>7.2</LangVersion>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,7 +30,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <LangVersion>7.2</LangVersion>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="NetPlugins">
@@ -62,6 +62,7 @@
     <Compile Include="DataLayers\CalcServerDataLayer.cs" />
     <Compile Include="DataLayers\InfocenterDataLayer.cs" />
     <Compile Include="Environment\MapsDrawingHelper.cs" />
+    <Compile Include="Environment\PluginHelper.cs" />
     <Compile Include="Metadata\FMTV_Assign.cs" />
     <Compile Include="Metadata\FMTV_terra.cs" />
     <Compile Include="Metadata\GE06_allot_terra.cs" />
@@ -86,6 +87,7 @@
     <Compile Include="ViewModels\GE06Settings\Events\OnCreatedClientContext.cs" />
     <Compile Include="ViewModels\GE06Settings\Events\OnDeletedClientContext.cs" />
     <Compile Include="ViewModels\GE06Settings\Events\OnEditedClientContext.cs" />
+    <Compile Include="ViewModels\GE06Settings\Events\OnPreparedClientContext.cs" />
     <Compile Include="ViewModels\GE06Settings\Models\CalcTaskModel.cs" />
     <Compile Include="ViewModels\GE06Settings\Models\ClientContextModel.cs" />
     <Compile Include="ViewModels\GE06Settings\Models\ProjectModel.cs" />
@@ -95,8 +97,12 @@
     <Compile Include="ViewModels\GE06Settings\Modifiers\DeleteClientContextHandler.cs" />
     <Compile Include="ViewModels\GE06Settings\Modifiers\EditClientContext.cs" />
     <Compile Include="ViewModels\GE06Settings\Modifiers\EditClientContextHandler.cs" />
+    <Compile Include="ViewModels\GE06Settings\Modifiers\PrepareClientContext.cs" />
+    <Compile Include="ViewModels\GE06Settings\Modifiers\PrepareClientContextHandler.cs" />
     <Compile Include="ViewModels\GE06Settings\Queries\GetClientContextById.cs" />
     <Compile Include="ViewModels\GE06Settings\Queries\GetClientContextByIdExecutor.cs" />
+    <Compile Include="ViewModels\GE06Settings\Queries\GetGe06ResultIdByResultId.cs" />
+    <Compile Include="ViewModels\GE06Settings\Queries\GetGe06ResultIdByResultIdExecutor.cs" />
     <Compile Include="ViewModels\GE06Settings\Queries\GetResultIdByTaskId.cs" />
     <Compile Include="ViewModels\GE06Settings\Queries\GetResultIdByTaskIdExecutor.cs" />
     <Compile Include="ViewModels\GE06Settings\View.cs" />
@@ -106,10 +112,15 @@
     <Compile Include="ViewModels\GE06TaskResult\Models\AffectedADMModel.cs" />
     <Compile Include="ViewModels\GE06TaskResult\Models\AllotmentOrAssignmentModel.cs" />
     <Compile Include="ViewModels\GE06TaskResult\Models\ContourModel.cs" />
+    <Compile Include="ViewModels\GE06Task\Models\CalcResultEventsModel.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\Icsm\GetIcsmAllotmentsBySfnId.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\Icsm\GetIcsmAllotmentsBySfnIdExecutor.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\SubQueries\GetResultStatusById.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\SubQueries\GetResultStatusByIdExecutor.cs" />
     <Compile Include="ViewModels\GE06TaskResult\View.cs" />
     <Compile Include="ViewModels\GE06Task\Events\OnCreatedCalcTask.cs" />
     <Compile Include="ViewModels\GE06Task\Events\OnDeletedCalcTask.cs" />
-    <Compile Include="ViewModels\GE06Task\Events\OnRunCalcTask.cs" />
+    <Compile Include="ViewModels\GE06Task\Events\OnRunedCalcTask.cs" />
     <Compile Include="ViewModels\GE06Task\Models\AssignmentsAllotmentsModel.cs" />
     <Compile Include="ViewModels\GE06Task\Models\CalcTaskModel.cs" />
     <Compile Include="ViewModels\GE06Task\Models\ProjectMapsModel.cs" />
@@ -159,6 +170,8 @@
     <Compile Include="ViewModels\GE06Task\Queries\SubQueries\GetBrificSubAreaKeyByTerrakeyExecutor.cs" />
     <Compile Include="ViewModels\GE06Task\Queries\SubQueries\GetIcsmAreaPointByContourId.cs" />
     <Compile Include="ViewModels\GE06Task\Queries\SubQueries\GetIcsmAreaPointByContourIdExecutor.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\SubQueries\GetResultEventsByEventIdAndResultId.cs" />
+    <Compile Include="ViewModels\GE06Task\Queries\SubQueries\GetResultEventsByEventIdAndResultIdExecutor.cs" />
     <Compile Include="ViewModels\GE06Task\View.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -177,6 +190,10 @@
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.CalcServer.Entities\Atdi.DataModels.Sdrn.CalcServer.Entities.csproj">
       <Project>{6a72e0c5-f8a4-412f-9395-13abe07367b1}</Project>
       <Name>Atdi.DataModels.Sdrn.CalcServer.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.CalcServer.Internal\Atdi.DataModels.Sdrn.CalcServer.Internal.csproj">
+      <Project>{04ab56c1-7a30-411d-9bb2-be4b641cf268}</Project>
+      <Name>Atdi.DataModels.Sdrn.CalcServer.Internal</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices.GN06\Atdi.DataModels.Sdrn.DeepServices.GN06.csproj">
       <Project>{ee65799e-0a0a-4599-8f5e-30eb23304d49}</Project>

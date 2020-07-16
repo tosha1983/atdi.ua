@@ -27535,41 +27535,25 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             // если трасса по суше +  море;
             // ур 24c
             dT = dlT + dsT;
+            
+
+            var E_land = Get_land(ha, hef, d, f, p);
+            var E_sea = Get_sea(h_gr, d, f, p);
+
             // определение Дельта, ур 26
-            delta = 0;
-            for (int i = 0; i < list1.Length; i++)
-            {
-                if (list1[i].land > 0.1)
-                {
-                    delta = delta - Get_land(ha, hef, list1[i].land, f, p) * list1[i].land / dlT;
-                }
-                if (list1[i].sea > 0.1)
-                {
-                    delta = delta + Get_sea(h_gr, list1[i].sea, f, p) * list1[i].sea / dsT;
-                }
-            }
+            delta = E_sea - E_land;
 
             double v = Math.Max(1, 1 + delta / 40);
-
-            //double v;
-            //v = 1;
-            //if (delta > 0)
-            //{
-            //    v = v + delta / 40;
-            //}
-            //else
-            //{
-            //    v = v - delta / 40;
-            //}
+            
             // доля трасы, которая проходить над моерм, ур. 25
             double Fs;
             Fs = dsT / dT;
 
             double A0;
-            A0 = 1 - Math.Pow(1 - Fs, 2.0 / 3);
+            A0 = 1 - Math.Pow(1 - Fs, 2.0 / 3.0);
             double A;
             A = Math.Pow(A0, v);
-            E = (1 - A) * Get_land(ha, hef, d, f, p) + A * Get_sea(h_gr, d, f, p);
+            E = (1 - A) * E_land + A * E_sea;
 
             return E;
         }
@@ -27612,8 +27596,6 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             if (d_ < 1)
             {
                 double E;
-                
-
                 if (d_ <= 0.04)
                 {
                     double dslope = Math.Sqrt(d * d + 0.000001 * Math.Pow((ha - h2), 2));
@@ -27731,6 +27713,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             
 
             E5 = E5 + c10;
+            // ур(2)
             double Egran;
             Egran = E1.Emax_land(d_);
             double tt, ss;
@@ -27753,7 +27736,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             {
                 tt = 0;
             }
-            // Ese – усиление, возникающее для кривых для морских трасс и определяемое как
+            // Ese – усиление, возникающее для кривых для морских трасс и определяемое как (ур. 1b, 3) 
             Egran = Egran + tt * 2.38 * (1 - Math.Exp(-d_ / 8.94)) * Math.Log10(50 / p_);
             if (E5 > Egran)
             {

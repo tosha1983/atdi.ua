@@ -11,7 +11,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
         public double Lon_DEC;
         public double Lat_DEC;
         public int Distance;
-        public int FS;
+        public float FS;
         public int Height;
         public PointType PointType;
     }

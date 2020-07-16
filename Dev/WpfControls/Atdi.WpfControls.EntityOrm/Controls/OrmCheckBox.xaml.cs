@@ -20,11 +20,11 @@ namespace Atdi.WpfControls.EntityOrm.Controls
     /// </summary>
     public partial class OrmCheckBox : UserControl
     {
-        double _captionWith = 100;
+        double _captionWith = 0;
         string _caption = "";
         bool _enabled = true;
-        bool? _value = null;
         bool _isRequired = false;
+        OrmCheckBoxData _value = null;
         OrmCheckBoxData[] _source;
         public OrmCheckBox()
         {
@@ -61,14 +61,14 @@ namespace Atdi.WpfControls.EntityOrm.Controls
         }
         public bool? SelectedValue
         {
-            get { return _value; }
+            get { return _value.Value; }
             set
             {
                 if (this._isRequired && value == null)
                     value = false;
                 SetValue(SelectedValueProperty, value);
-                this._value = value;
-                cmbMain.SelectedValue = this._source.Where(v => v.Value == this._value).First();
+                this._value = this._source.Where(v => v.Value == value).First();
+                cmbMain.SelectedValue = this._value;
             }
         }
         public bool IsRequired
@@ -114,8 +114,8 @@ namespace Atdi.WpfControls.EntityOrm.Controls
         }
         private void cmbMain_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (cmbMain.SelectedValue != null)
-                SelectedValue = (cmbMain.SelectedValue as OrmCheckBoxData).Value;
+            if ((sender as ComboBox).SelectedValue != null)
+                SelectedValue = (e.AddedItems[0] as OrmCheckBoxData).Value;
         }
         private void UpdateSource()
         {
@@ -126,7 +126,7 @@ namespace Atdi.WpfControls.EntityOrm.Controls
             data.Add(new OrmCheckBoxData() { Value = false, ViewName = Properties.Resources.No });
             this._source = data.ToArray();
             cmbMain.ItemsSource = this._source;
-            SelectedValue = this._isRequired ? (bool?)false : null;
+            //SelectedValue = this._isRequired ? (bool?)false : null;
         }
     }
     public class OrmCheckBoxData
