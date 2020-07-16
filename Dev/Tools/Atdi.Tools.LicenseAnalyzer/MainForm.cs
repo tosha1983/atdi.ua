@@ -108,6 +108,10 @@ namespace Atdi.Tools.LicenseAnalyzer
 			{
 	            sharedSecret = "A77839F8-5546-41C9-A6D9-3777894D3E41";
             }
+            else if (cmbConfigType.SelectedIndex == 9) // SDRN GE06 Calc ICSM Plugin
+            {
+	            sharedSecret = "30A5488D-1AC7-41CB-B078-856733113E26";
+            }
 
 			txtEncryptedOwnerId.Text = Encryptor.EncryptStringAES(txtLicenseOwnerId.Text, sharedSecret);
 			ToolTip tt = new ToolTip();
