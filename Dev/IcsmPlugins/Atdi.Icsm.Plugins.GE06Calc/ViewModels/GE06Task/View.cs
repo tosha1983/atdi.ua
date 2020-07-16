@@ -594,6 +594,22 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
             if (CurrentCalcTaskCard.StepBetweenBoundaryPointsDefault)
                 CurrentCalcTaskCard.StepBetweenBoundaryPoints = 100;
 
+            if (this._calcType == CalculationType.CreateContoursByDistance)
+            {
+                CurrentCalcTaskCard.AdditionalContoursByDistances = true;
+                CurrentCalcTaskCard.ContureByFieldStrength = false;
+            }
+            else if (this._calcType == CalculationType.CreateContoursByFS)
+            {
+                CurrentCalcTaskCard.AdditionalContoursByDistances = false;
+                CurrentCalcTaskCard.ContureByFieldStrength = true;
+            }
+            else
+            {
+                CurrentCalcTaskCard.AdditionalContoursByDistances = false;
+                CurrentCalcTaskCard.ContureByFieldStrength = false;
+            }
+
             var modifier = new Modifiers.CreateCalcTask
             {
                 MapName = projectMap != null ? projectMap.MapName : "",
