@@ -51,6 +51,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Modifiers
                 .SetValue(c => c.UseEffectiveHeight, command.UseEffectiveHeight)
                 .SetValue(c => c.CalculationTypeCode, command.CalculationTypeCode)
                 .SetValue(c => c.CalculationTypeName, command.CalculationTypeName)
+                .SetValue(c => c.StepBetweenBoundaryPoints, command.StepBetweenBoundaryPoints)
                 .SetValueAsJson(c => c.BroadcastingExtend, command.BroadcastingExtend);
             var pk_StationCalibrationArgs = _dataLayer.Executor.Execute<IGn06Args_PK>(queryArgs);
 

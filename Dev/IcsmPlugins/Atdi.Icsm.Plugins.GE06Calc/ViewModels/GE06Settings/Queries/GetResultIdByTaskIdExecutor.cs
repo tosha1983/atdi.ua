@@ -32,20 +32,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings.Queries
                 return null;
             }
 
-            var resultId = reader.GetValue(c => c.Id);
-
-            var queryGN = _dataLayer.GetBuilder<CS_ES.IGn06Result>()
-                .Read()
-                .Select(c => c.Id)
-                .Filter(c => c.RESULT.Id, resultId);
-
-            var readerGN = _dataLayer.Executor.ExecuteReader(queryGN);
-            if (!readerGN.Read())
-            {
-                return null;
-            }
-
-            return readerGN.GetValue(c => c.Id);
+            return reader.GetValue(c => c.Id);
         }
     }
 }

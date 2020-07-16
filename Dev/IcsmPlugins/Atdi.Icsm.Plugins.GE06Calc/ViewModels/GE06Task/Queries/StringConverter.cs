@@ -80,10 +80,10 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
         {
             if (value.Equals("V", StringComparison.OrdinalIgnoreCase))
                 return PolarType.V;
-            else if (value.Equals("M", StringComparison.OrdinalIgnoreCase))
-                return PolarType.M;
-            else
+            else if (value.Equals("H", StringComparison.OrdinalIgnoreCase))
                 return PolarType.H;
+            else
+                return PolarType.M;
         }
         public static SpectrumMaskType ConvertToSpectrumMaskType(string value)
         {

@@ -18,7 +18,6 @@ using ICSM;
 using Atdi.DataModels.Sdrn.DeepServices.GN06;
 using Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks;
 using Atdi.WpfControls.EntityOrm.Controls;
-using Atdi.Icsm.Plugins.GE06Calc.Environment;
 using ST = Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings;
 using Atdi.DataModels.Sdrn.CalcServer.Entities;
 using Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Models;
@@ -38,17 +37,29 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
         private CalcTaskModel _currentCalcTaskCard;
         private IList _currentAssignmentsAllotments;
         private IMQueryMenuNode.Context _context;
-        private bool _conformityCheckEnabled = false;
-        private bool _findAffectedEnabled = false;
+        //private bool _conformityCheckEnabled = false;
+        //private bool _findAffectedEnabled = false;
+        private bool _startEnabled = false;
+        private CalculationType _calcType;
+        private OrmEnumBoxData[] _typeSource;
+
+        private Visibility _azimuthStepVisibility = Visibility.Collapsed;
+        private Visibility _additionalContoursByDistancesVisibility = Visibility.Collapsed;
+        private Visibility _contureByFieldStrengthVisibility = Visibility.Collapsed;
+        private Visibility _subscribersHeightVisibility = Visibility.Collapsed;
+        private Visibility _percentageTimeVisibility = Visibility.Collapsed;
+        private Visibility _useEffectiveHeightVisibility = Visibility.Collapsed;
+        private Visibility _stepBetweenBoundaryPointsVisibility = Visibility.Collapsed;
 
         List<AssignmentsAllotmentsModel> _assignmentsAllotmentsList;
         AssignmentsAllotmentsModel[] _assignmentsAllotmentsArray;
 
         public ViewCommand AllotDeleteCommand { get; set; }
-        public ViewCommand ConformityCheckCommand { get; set; }
-        public ViewCommand FindAffectedCommand { get; set; }
-        public ViewCommand CreateContoursByDistanceCommand { get; set; }
-        public ViewCommand CreateContoursByFSCommand { get; set; }
+        //public ViewCommand ConformityCheckCommand { get; set; }
+        //public ViewCommand FindAffectedCommand { get; set; }
+        //public ViewCommand CreateContoursByDistanceCommand { get; set; }
+        //public ViewCommand CreateContoursByFSCommand { get; set; }
+        public ViewCommand StartCommand { get; set; }
 
         private MapDrawingData _currentMapData;
 
@@ -68,10 +79,11 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
             _logger = logger;
 
             this.AllotDeleteCommand = new ViewCommand(this.OnAllotDeleteCommand);
-            this.ConformityCheckCommand = new ViewCommand(this.OnConformityCheckCommand);
-            this.FindAffectedCommand = new ViewCommand(this.OnFindAffectedCommand);
-            this.CreateContoursByDistanceCommand = new ViewCommand(this.OnCreateContoursByDistanceCommand);
-            this.CreateContoursByFSCommand = new ViewCommand(this.OnCreateContoursByFSCommand);
+            //this.ConformityCheckCommand = new ViewCommand(this.OnConformityCheckCommand);
+            //this.FindAffectedCommand = new ViewCommand(this.OnFindAffectedCommand);
+            //this.CreateContoursByDistanceCommand = new ViewCommand(this.OnCreateContoursByDistanceCommand);
+            //this.CreateContoursByFSCommand = new ViewCommand(this.OnCreateContoursByFSCommand);
+            this.StartCommand = new ViewCommand(this.OnStartCommand);
             this._assignmentsAllotmentsList = new List<AssignmentsAllotmentsModel>();
 
             this.CurrentCalcTaskCard = new CalcTaskModel()
@@ -83,11 +95,68 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                 FieldStrengthString = "12,25",
                 SubscribersHeight = 10,
                 PercentageTime = 50,
-                UseEffectiveHeight = true
+                UseEffectiveHeight = false,
+                StepBetweenBoundaryPoints = 5,
+                StepBetweenBoundaryPointsDefault = false
             };
 
             _onCreatedCalcTaskToken = _eventBus.Subscribe<Events.OnCreatedCalcTask>(this.OnCreatedCalcTaskHandle);
             _onRunedCalcTaskToken = _eventBus.Subscribe<Events.OnRunedCalcTask>(this.OnRunedCalcTaskHandle);
+
+            //CalcTypeSource = Environment.PluginHelper.EnumToOrmEnumBoxData<CalculationType>();
+
+            //var enumData = new List<OrmEnumBoxData>();
+            //enumData.Add(new OrmEnumBoxData() { Id = 1, Name = "ConformityCheck", ViewName = Properties.Resources.ConformityCheck });
+            //enumData.Add(new OrmEnumBoxData() { Id = 2, Name = "FindAffectedADM", ViewName = Properties.Resources.FindAffected });
+            //enumData.Add(new OrmEnumBoxData() { Id = 3, Name = "CreateContoursByDistance", ViewName = Properties.Resources.CreateContoursByDistance });
+            //enumData.Add(new OrmEnumBoxData() { Id = 4, Name = "CreateContoursByFS", ViewName = Properties.Resources.CreateContoursByFS });
+            //CalcTypeSource = enumData.ToArray();
+        }
+        public Visibility AzimuthStepVisibility
+        {
+            get => this._azimuthStepVisibility;
+            set => this.Set(ref this._azimuthStepVisibility, value);
+        }
+        public Visibility AdditionalContoursByDistancesVisibility
+        {
+            get => this._additionalContoursByDistancesVisibility;
+            set => this.Set(ref this._additionalContoursByDistancesVisibility, value);
+        }
+        public Visibility ContureByFieldStrengthVisibility
+        {
+            get => this._contureByFieldStrengthVisibility;
+            set => this.Set(ref this._contureByFieldStrengthVisibility, value);
+        }
+        public Visibility SubscribersHeightVisibility
+        {
+            get => this._subscribersHeightVisibility;
+            set => this.Set(ref this._subscribersHeightVisibility, value);
+        }
+        public Visibility PercentageTimeVisibility
+        {
+            get => this._percentageTimeVisibility;
+            set => this.Set(ref this._percentageTimeVisibility, value);
+        }
+        public Visibility UseEffectiveHeightVisibility
+        {
+            get => this._useEffectiveHeightVisibility;
+            set => this.Set(ref this._useEffectiveHeightVisibility, value);
+        }
+        public Visibility StepBetweenBoundaryPointsVisibility
+        {
+            get => this._stepBetweenBoundaryPointsVisibility;
+            set => this.Set(ref this._stepBetweenBoundaryPointsVisibility, value);
+        }
+
+        public OrmEnumBoxData[] CalcTypeSource
+        {
+            get => this._typeSource;
+            set => this.Set(ref this._typeSource, value);
+        }
+        public CalculationType CalcType
+        {
+            get => this._calcType;
+            set => this.Set(ref this._calcType, value, () => { this.OnChangedCalcType(value); });
         }
         public CalcTaskModel CurrentCalcTaskCard
         {
@@ -103,15 +172,20 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                 RedrawMap();
             }
         }
-        public bool ConformityCheckEnabled
+        //public bool ConformityCheckEnabled
+        //{
+        //    get => this._conformityCheckEnabled;
+        //    set => this.Set(ref this._conformityCheckEnabled, value);
+        //}
+        //public bool FindAffectedEnabled
+        //{
+        //    get => this._findAffectedEnabled;
+        //    set => this.Set(ref this._findAffectedEnabled, value);
+        //}
+        public bool StartEnabled
         {
-            get => this._conformityCheckEnabled;
-            set => this.Set(ref this._conformityCheckEnabled, value);
-        }
-        public bool FindAffectedEnabled
-        {
-            get => this._findAffectedEnabled;
-            set => this.Set(ref this._findAffectedEnabled, value);
+            get => this._startEnabled;
+            set => this.Set(ref this._startEnabled, value);
         }
         public IMQueryMenuNode.Context Context
         {
@@ -127,6 +201,61 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
         {
             get => this._currentMapData;
             set => this.Set(ref this._currentMapData, value);
+        }
+        private void OnChangedCalcType(CalculationType type)
+        {
+            StartEnabled = true;
+            if (type == CalculationType.ConformityCheck)
+            {
+                this.AzimuthStepVisibility = Visibility.Visible;
+                this.AdditionalContoursByDistancesVisibility = Visibility.Collapsed;
+                this.ContureByFieldStrengthVisibility = Visibility.Collapsed;
+                this.SubscribersHeightVisibility = Visibility.Collapsed;
+                this.PercentageTimeVisibility = Visibility.Collapsed;
+                this.UseEffectiveHeightVisibility = Visibility.Visible;
+                this.StepBetweenBoundaryPointsVisibility = Visibility.Visible;
+            }
+            else if (type == CalculationType.CreateContoursByDistance)
+            {
+                this.AzimuthStepVisibility = Visibility.Visible;
+                this.AdditionalContoursByDistancesVisibility = Visibility.Visible;
+                this.ContureByFieldStrengthVisibility = Visibility.Collapsed;
+                this.SubscribersHeightVisibility = Visibility.Visible;
+                this.PercentageTimeVisibility = Visibility.Visible;
+                this.UseEffectiveHeightVisibility = Visibility.Visible;
+                this.StepBetweenBoundaryPointsVisibility = Visibility.Visible;
+            }
+            else if (type == CalculationType.CreateContoursByFS)
+            {
+                this.AzimuthStepVisibility = Visibility.Visible;
+                this.AdditionalContoursByDistancesVisibility = Visibility.Collapsed;
+                this.ContureByFieldStrengthVisibility = Visibility.Visible;
+                this.SubscribersHeightVisibility = Visibility.Collapsed;
+                this.PercentageTimeVisibility = Visibility.Visible;
+                this.UseEffectiveHeightVisibility = Visibility.Visible;
+                this.StepBetweenBoundaryPointsVisibility = Visibility.Visible;
+            }
+            else if (type == CalculationType.FindAffectedADM)
+            {
+                this.AzimuthStepVisibility = Visibility.Visible;
+                this.AdditionalContoursByDistancesVisibility = Visibility.Collapsed;
+                this.ContureByFieldStrengthVisibility = Visibility.Collapsed;
+                this.SubscribersHeightVisibility = Visibility.Collapsed;
+                this.PercentageTimeVisibility = Visibility.Collapsed;
+                this.UseEffectiveHeightVisibility = Visibility.Visible;
+                this.StepBetweenBoundaryPointsVisibility = Visibility.Visible;
+            }
+            else
+            {
+                this.AzimuthStepVisibility = Visibility.Collapsed;
+                this.AdditionalContoursByDistancesVisibility = Visibility.Collapsed;
+                this.ContureByFieldStrengthVisibility = Visibility.Collapsed;
+                this.SubscribersHeightVisibility = Visibility.Collapsed;
+                this.PercentageTimeVisibility = Visibility.Collapsed;
+                this.UseEffectiveHeightVisibility = Visibility.Collapsed;
+                this.StepBetweenBoundaryPointsVisibility = Visibility.Collapsed;
+                StartEnabled = false;
+            }
         }
         private void OnChangedContext(IMQueryMenuNode.Context context)
         {
@@ -152,6 +281,15 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                             if (assignBrific != null)
                             {
                                 this._assignmentsAllotmentsList.AddRange(assignBrific);
+                            }
+                        }
+
+                        if (!string.IsNullOrEmpty(allot.SfnId))
+                        {
+                            var allotsIcsm = _objectReader.Read<List<AssignmentsAllotmentsModel>>().By(new GetIcsmAllotmentsBySfnId { SfnId = allot.SfnId });
+                            if (allotsIcsm != null)
+                            {
+                                this._assignmentsAllotmentsList.AddRange(allotsIcsm);
                             }
                         }
                     }
@@ -368,57 +506,57 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                 this._logger.Exception(Exceptions.GE06Client, e);
             }
         }
-        private void OnConformityCheckCommand(object parameter)
+        //private void OnConformityCheckCommand(object parameter)
+        //{
+        //    try
+        //    {
+        //        CreateCalcTask(CalculationType.ConformityCheck);
+        //        _starter.Stop(this);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        this._logger.Exception(Exceptions.GE06Client, e);
+        //    }
+        //}
+        //private void OnFindAffectedCommand(object parameter)
+        //{
+        //    try
+        //    {
+        //        CreateCalcTask(CalculationType.FindAffectedADM);
+        //        _starter.Stop(this);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        this._logger.Exception(Exceptions.GE06Client, e);
+        //    }
+        //}
+        //private void OnCreateContoursByDistanceCommand(object parameter)
+        //{
+        //    try
+        //    {
+        //        CreateCalcTask(CalculationType.CreateContoursByDistance);
+        //        _starter.Stop(this);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        this._logger.Exception(Exceptions.GE06Client, e);
+        //    }
+        //}
+        //private void OnCreateContoursByFSCommand(object parameter)
+        //{
+        //    try
+        //    {
+        //        CreateCalcTask(CalculationType.CreateContoursByFS);
+        //        _starter.Stop(this);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        this._logger.Exception(Exceptions.GE06Client, e);
+        //    }
+        //}
+        private void OnStartCommand(object parameter)
         {
-            try
-            {
-                CreateCalcTask(CalculationType.ConformityCheck);
-                _starter.Stop(this);
-            }
-            catch (Exception e)
-            {
-                this._logger.Exception(Exceptions.GE06Client, e);
-            }
-        }
-        private void OnFindAffectedCommand(object parameter)
-        {
-            try
-            {
-                CreateCalcTask(CalculationType.FindAffectedADM);
-                _starter.Stop(this);
-            }
-            catch (Exception e)
-            {
-                this._logger.Exception(Exceptions.GE06Client, e);
-            }
-        }
-        private void OnCreateContoursByDistanceCommand(object parameter)
-        {
-            try
-            {
-                CreateCalcTask(CalculationType.CreateContoursByDistance);
-                _starter.Stop(this);
-            }
-            catch (Exception e)
-            {
-                this._logger.Exception(Exceptions.GE06Client, e);
-            }
-        }
-        private void OnCreateContoursByFSCommand(object parameter)
-        {
-            try
-            {
-                CreateCalcTask(CalculationType.CreateContoursByFS);
-                _starter.Stop(this);
-            }
-            catch (Exception e)
-            {
-                this._logger.Exception(Exceptions.GE06Client, e);
-            }
-        }
-
-        private void CreateCalcTask(CalculationType calcType)
-        {
+            //this._calcType = calcType;
             if (Properties.Settings.Default.ActiveContext == 0)
             {
                 _starter.ShowException("Warning!", new Exception($"Undefined Active context"));
@@ -432,7 +570,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                 return;
             }
 
-            var projectMap  = _objectReader.Read<ProjectMapsModel>().By(new GetProjectMapByClientContextId { ContextId = Properties.Settings.Default.ActiveContext });
+            var projectMap = _objectReader.Read<ProjectMapsModel>().By(new GetProjectMapByClientContextId { ContextId = Properties.Settings.Default.ActiveContext });
 
             var splitVariants = new char[] { ',', ';', ' ' };
             var distances = new List<int>();
@@ -453,9 +591,28 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
             CurrentCalcTaskCard.Distances = distances.ToArray();
             CurrentCalcTaskCard.FieldStrength = fieldStrength.ToArray();
 
+            if (CurrentCalcTaskCard.StepBetweenBoundaryPointsDefault)
+                CurrentCalcTaskCard.StepBetweenBoundaryPoints = 100;
+
+            if (this._calcType == CalculationType.CreateContoursByDistance)
+            {
+                CurrentCalcTaskCard.AdditionalContoursByDistances = true;
+                CurrentCalcTaskCard.ContureByFieldStrength = false;
+            }
+            else if (this._calcType == CalculationType.CreateContoursByFS)
+            {
+                CurrentCalcTaskCard.AdditionalContoursByDistances = false;
+                CurrentCalcTaskCard.ContureByFieldStrength = true;
+            }
+            else
+            {
+                CurrentCalcTaskCard.AdditionalContoursByDistances = false;
+                CurrentCalcTaskCard.ContureByFieldStrength = false;
+            }
+
             var modifier = new Modifiers.CreateCalcTask
             {
-                MapName = projectMap.MapName,
+                MapName = projectMap != null ? projectMap.MapName : "",
                 AzimuthStep_deg = CurrentCalcTaskCard.AzimuthStep_deg,
                 AdditionalContoursByDistances = CurrentCalcTaskCard.AdditionalContoursByDistances,
                 Distances = CurrentCalcTaskCard.Distances,
@@ -464,8 +621,9 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                 SubscribersHeight = CurrentCalcTaskCard.SubscribersHeight,
                 PercentageTime = CurrentCalcTaskCard.PercentageTime,
                 UseEffectiveHeight = CurrentCalcTaskCard.UseEffectiveHeight,
-                CalculationTypeCode = (byte)calcType,
-                CalculationTypeName = calcType.ToString(),
+                StepBetweenBoundaryPoints = CurrentCalcTaskCard.StepBetweenBoundaryPoints,
+                CalculationTypeCode = (byte)this._calcType,
+                CalculationTypeName = this._calcType.ToString(),
                 BroadcastingExtend = GetBroadcastingContext(),
                 ContextId = Properties.Settings.Default.ActiveContext,
                 OwnerId = Guid.NewGuid()
@@ -482,66 +640,107 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
         }
         private void OnRunedCalcTaskHandle(Events.OnRunedCalcTask data)
         {
-            //_objectReader.Read<byte?>().By(new GetResultStatusById { ResultId = data.Id });
+            _objectReader.Read<byte?>().By(new GetResultStatusById { ResultId = data.Id });
 
-
-            //var resultId = _objectReader.Read<long?>().By(new ST.Queries.GetResultIdByTaskId { TaskId = data.Id });
-            //if (resultId.HasValue)
-            //    WaitForCalcResult(data.Id, resultId.Value);
-            //else
-            //{
-            //    this._logger.Exception(Exceptions.GE06Client, new Exception($"For selected task not found information in ICalcResults!"));
-            //}
+            var resultId = _objectReader.Read<long?>().By(new ST.Queries.GetResultIdByTaskId { TaskId = data.Id });
+            if (resultId.HasValue)
+            {
+                WaitForCalcResult(data.Id, resultId.Value);
+                var ge06resultId = _objectReader.Read<long?>().By(new ST.Queries.GetGe06ResultIdByResultId { ResultId = resultId.Value });
+                if (ge06resultId.HasValue)
+                {
+                    _starter.Start<VM.GE06TaskResult.View>(isModal: true, c => c.ResultId = ge06resultId.Value);
+                }
+            }
+            else
+            {
+                this._logger.Exception(Exceptions.GE06Client, new Exception($"For selected task not found information in ICalcResults!"));
+            }
         }
         private void WaitForCalcResult(long calcTaskId, long calcResultId)
         {
-            var cancel = false;
-            long eventId = 0;
-
-            while (!cancel)
-            {
-                System.Threading.Thread.Sleep(5 * 1000);
-
-                var status = _objectReader.Read<byte?>().By(new GetResultStatusById { ResultId = calcResultId });
-
-                if (status.HasValue)
+            _starter.StartLongProcess(
+                new LongProcessOptions()
                 {
-                    if (status == (byte)CalcResultStatusCode.Completed)
+                    CanStop = false,
+                    CanAbort = true,
+                    UseProgressBar = true,
+                    UseLog = true,
+                    IsModal = true,
+                    MinValue = 0,
+                    MaxValue = 1000,
+                    ValueKind = LongProcessValueKind.Infinity,
+                    Title = "Calculating task ...",
+                    Note = "Please control the log processes below."
+                },
+                token =>
+                {
+
+                    var cancel = false;
+                    long eventId = 0;
+
+                    while (!cancel)
                     {
-                        cancel = true;
-                        _starter.Start<VM.GE06TaskResult.View>(isModal: true, c => c.ResultId = calcResultId);
+                        var status = _objectReader.Read<byte?>().By(new GetResultStatusById { ResultId = calcResultId });
+
+                        if (status.HasValue)
+                        {
+                            if (status == (byte)CalcResultStatusCode.Completed)
+                            {
+                                _eventBus.Send(new LongProcessFinishEvent { ProcessToken = token });
+                                cancel = true;
+                            }
+
+                            if (status == (byte)CalcResultStatusCode.Failed)
+                            {
+                                _eventBus.Send(new LongProcessFinishEvent { ProcessToken = token });
+                                cancel = true;
+                            }
+                            if (status == (byte)CalcResultStatusCode.Aborted)
+                            {
+                                _eventBus.Send(new LongProcessFinishEvent { ProcessToken = token });
+                                cancel = true;
+                            }
+
+                            if (status == (byte)CalcResultStatusCode.Canceled)
+                            {
+                                _eventBus.Send(new LongProcessFinishEvent { ProcessToken = token });
+                                cancel = true;
+                            }
+                        }
+
+                        var events = _objectReader.Read<CalcResultEventsModel[]>().By(new GetResultEventsByEventIdAndResultId { ResultId = calcResultId, EventId = eventId });
+                        foreach (var item in events)
+                        {
+                            eventId = item.Id;
+                            var message = item.Message;
+
+                            if (item.State != null)
+                                message = $"Percent complete for calculation '{this._calcType.ToString()}': {item.State.State.ToString()}%";
+
+                            _eventBus.Send(new LongProcessLogEvent
+                            {
+                                ProcessToken = token,
+                                Message = message
+                            });
+                        }
+                        System.Threading.Thread.Sleep(5 * 1000);
+
+                        token.AbortToken.ThrowIfCancellationRequested();
                     }
 
-                    if (status == (byte)CalcResultStatusCode.Failed)
-                    {
-                        cancel = true;
-                    }
-                    if (status == (byte)CalcResultStatusCode.Aborted)
-                    {
-                        cancel = true;
-                    }
 
-                    if (status == (byte)CalcResultStatusCode.Canceled)
-                    {
-                        cancel = true;
-                    }
-                }
-                //Created = 0, // Фаза создания и подготовки окружения к запуску процесса расчета
-                //Pending = 1, // Фаза ожидания запуска процесса расчета
-                //Accepted = 2, // Фаза ожидания запуска процесса расчета
-                //Processing = 3, // Расчет выполняется
-                //Completed = 4, // Расчет завершен
-                //Canceled = 5, // Расчет был отменен по внешней причине
-                //Aborted = 6, // Расчет был прерван по внутреней причине
-                //Failed = 7  // Попытка запуска завершилась не удачей
-            }
 
-            var events = _objectReader.Read<CalcResultEventsModel[]>().By(new GetResultEventsByEventIdAndResultId { ResultId = calcResultId, EventId = eventId });
-            foreach (var item in events)
-            {
-                eventId = item.Id;
-            }
 
+                    //Created = 0, // Фаза создания и подготовки окружения к запуску процесса расчета
+                    //Pending = 1, // Фаза ожидания запуска процесса расчета
+                    //Accepted = 2, // Фаза ожидания запуска процесса расчета
+                    //Processing = 3, // Расчет выполняется
+                    //Completed = 4, // Расчет завершен
+                    //Canceled = 5, // Расчет был отменен по внешней причине
+                    //Aborted = 6, // Расчет был прерван по внутреней причине
+                    //Failed = 7  // Попытка запуска завершилась не удачей
+                });
         }
 
         private BroadcastingContext GetBroadcastingContext()
@@ -687,8 +886,23 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                 if (isHaveIcsmObject && isHaveBrificObject)
                     break;
             }
-            ConformityCheckEnabled = (isHaveIcsmObject && isHaveBrificObject);
-            FindAffectedEnabled = isHaveIcsmObject;
+            //ConformityCheckEnabled = (isHaveIcsmObject && isHaveBrificObject);
+            //FindAffectedEnabled = isHaveIcsmObject;
+
+            var enumData = new List<OrmEnumBoxData>();
+            if (isHaveIcsmObject && isHaveBrificObject)
+                enumData.Add(new OrmEnumBoxData() { Id = 1, Name = "ConformityCheck", ViewName = Properties.Resources.ConformityCheck });
+            else if (this.CalcType == CalculationType.ConformityCheck)
+                OnChangedCalcType(0);
+
+            if (isHaveIcsmObject)
+                enumData.Add(new OrmEnumBoxData() { Id = 2, Name = "FindAffectedADM", ViewName = Properties.Resources.FindAffected });
+            else if (this.CalcType == CalculationType.FindAffectedADM)
+                OnChangedCalcType(0);
+
+            enumData.Add(new OrmEnumBoxData() { Id = 3, Name = "CreateContoursByDistance", ViewName = Properties.Resources.CreateContoursByDistance });
+            enumData.Add(new OrmEnumBoxData() { Id = 4, Name = "CreateContoursByFS", ViewName = Properties.Resources.CreateContoursByFS });
+            CalcTypeSource = enumData.ToArray();
         }
         private void RedrawMap()
         {
@@ -702,7 +916,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                 {
                     if (item.Type == AssignmentsAllotmentsModelType.Assignment)
                     {
-                        points.Add(MapsDrawingHelper.MakeDrawingPointForSensor(item.Lon_Dec, item.Lat_Dec));
+                        points.Add(Environment.MapsDrawingHelper.MakeDrawingPointForSensor(item.Lon_Dec, item.Lat_Dec));
                     }
                     if (item.Type == AssignmentsAllotmentsModelType.Allotment)
                     {

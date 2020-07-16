@@ -20,7 +20,7 @@ namespace Atdi.WpfControls.EntityOrm.Controls
     /// </summary>
     public partial class OrmEnumBox : UserControl
     {
-        double _captionWith = 100;
+        double _captionWith = 0;
         string _caption = "";
         OrmEnumBoxData _value = null;
         OrmEnumBoxData[] _source = null;

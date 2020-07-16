@@ -70,6 +70,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             string notValidBroadcastingAssignmentBRIFIC = string.Empty;
             string notValidBroadcastingAllotmentsBRIFIC = string.Empty;
             string message = string.Empty;
+
+            GE06CheckEffectiveHeight.CheckEffectiveHeightForAssignment(ref ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM.Assignments, ge06CalcData.Ge06TaskParameters.UseEffectiveHeight);
             if (((GE06Validation.ValidationAssignment(ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM.Assignments, out notValidBroadcastingAssignmentICSM)) && (GE06Validation.ValidationAllotment(ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM.Allotments, out  notValidBroadcastingAllotmentsICSM))) == false)
             {
                 if (!string.IsNullOrEmpty(notValidBroadcastingAssignmentICSM))
@@ -81,6 +83,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     message += $"The following Allotment for ICSM are not validated: {notValidBroadcastingAllotmentsICSM}";
                 }
             }
+
+            GE06CheckEffectiveHeight.CheckEffectiveHeightForAssignment(ref ge06CalcData.Ge06TaskParameters.BroadcastingContext.broadcastingContextBRIFIC.Assignments, ge06CalcData.Ge06TaskParameters.UseEffectiveHeight);
             if (((GE06Validation.ValidationAssignment(ge06CalcData.Ge06TaskParameters.BroadcastingContext.broadcastingContextBRIFIC.Assignments, out notValidBroadcastingAssignmentBRIFIC)) && (GE06Validation.ValidationAllotment(ge06CalcData.Ge06TaskParameters.BroadcastingContext.broadcastingContextBRIFIC.Allotments, out  notValidBroadcastingAllotmentsBRIFIC))) == false)
             {
                 if (!string.IsNullOrEmpty(notValidBroadcastingAssignmentICSM))
@@ -295,7 +299,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         int sizeResultBuffer = 0;
                         // строим контура и считаем напряженность поля для assigments
 
-                        if ((broadcastingContextBRIFIC.Allotments == null) || (broadcastingContextBRIFIC.Allotments.AllotmentParameters != null) || (broadcastingContextBRIFIC.Allotments.AllotmentParameters.Contur is null)
+                        if ((broadcastingContextBRIFIC.Allotments == null) || (broadcastingContextBRIFIC.Allotments.AllotmentParameters == null) || (broadcastingContextBRIFIC.Allotments.AllotmentParameters.Contur == null)
                             || (broadcastingContextBRIFIC.Allotments.AllotmentParameters.Contur.Length < 3))
                         {
                             var contourFromPointByDistanceArgs = new ContourFromPointByDistanceArgs()
@@ -348,7 +352,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].Lat_DEC = pointForCalcFS.Latitude;
                             countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].Height = Height;
                             countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].PointType = PointType.Etalon;
-                            countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].FS = (int)BRIFICFS;
+                            countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].FS = BRIFICFS;
                             var adm = idwmService.GetADMByPoint(new IdwmDataModel.Point() { Longitude_dec = pointForCalcFS.Longitude, Latitude_dec = pointForCalcFS.Latitude });
                             countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].administration = adm;
                             countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].broadcastingTypeContext = BroadcastingTypeContext.Brific;
@@ -369,7 +373,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].Lon_DEC = pointForCalcFS.Longitude;
                             countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].Lat_DEC = pointForCalcFS.Latitude;
                             countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].Height = Height;
-                            countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].FS = (int)ICSMFS;
+                            countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].FS = ICSMFS;
                             if (BRIFICFS >= ICSMFS-0.1) { countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].PointType = PointType.Correct; }
                             else { countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].PointType = PointType.Affected; }
                             countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].administration = adm;
@@ -429,7 +433,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                     countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].Lat_DEC = pointForCalcFsBRIFIC.Latitude;
                                     countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].Height = Height;
                                     countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].PointType = PointType.Etalon;
-                                    countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].FS = (int)triggerFS;
+                                    countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].FS = triggerFS;
                                     var adm = idwmService.GetADMByPoint(new IdwmDataModel.Point() { Longitude_dec = pointForCalcFsBRIFIC.Longitude, Latitude_dec = pointForCalcFsBRIFIC.Latitude });
                                     countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].administration = adm;
                                     countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].broadcastingTypeContext = BroadcastingTypeContext.Brific;
@@ -442,7 +446,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                     countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].Lon_DEC = pointForCalcFsBRIFIC.Longitude;
                                     countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].Lat_DEC = pointForCalcFsBRIFIC.Latitude;
                                     countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].Height = Height;
-                                    countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].FS = (int)ICSMFS;
+                                    countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].FS = ICSMFS;
                                     if (triggerFS >= ICSMFS-0.1) { countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].PointType = PointType.Correct; }
                                     else { countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].PointType = PointType.Affected; }
                                     countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].administration = adm;
@@ -493,10 +497,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
                 var allotmentOrAssignmentResult = new List<AllotmentOrAssignmentResult>();
 
-                GE06FillData.FillAllotmentOrAssignmentResult(broadcastingContextBRIFIC, ref ge06CalcResult);
+                GE06FillData.FillAllotmentOrAssignmentResult(broadcastingContextBRIFIC, BroadcastingTypeContext.Brific, ref ge06CalcResult);
                 allotmentOrAssignmentResult.AddRange(ge06CalcResult.AllotmentOrAssignmentResult);
 
-                GE06FillData.FillAllotmentOrAssignmentResult(broadcastingContextICSM, ref ge06CalcResult);
+                GE06FillData.FillAllotmentOrAssignmentResult(broadcastingContextICSM, BroadcastingTypeContext.Icsm, ref ge06CalcResult);
                 allotmentOrAssignmentResult.AddRange(ge06CalcResult.AllotmentOrAssignmentResult);
 
                 ge06CalcResult.AllotmentOrAssignmentResult = allotmentOrAssignmentResult.ToArray();

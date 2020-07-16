@@ -38,7 +38,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                 ProjectMapData projectMapData,
                                 CluttersDesc cluttersDesc,
                                 string projection,
-                                float Hrx_m 
+                                float hrx_m,
+                                int? stepBetweenBoundaryPoints
                                 )
         {
             var points = new Points();
@@ -49,7 +50,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             //2. Вычисляются все граничные точки выделения (1.3.3). 
             var broadcastingAllotmentWithStep = new BroadcastingAllotmentWithStep()
             {
-                BroadcastingAllotment = broadcastingAllotment
+                BroadcastingAllotment = broadcastingAllotment,
+                step_km = stepBetweenBoundaryPoints
             };
 
             
@@ -133,7 +135,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                                                                                        projectMapData,
                                                                                                                        cluttersDesc,
                                                                                                                        projection,
-                                                                                                                       Hrx_m);
+                                                                                                                       hrx_m);
                     lstFieldStrengthAssignments[k] = resultFieldStrengthInPointFromAssignmentGE06;
                 }
 

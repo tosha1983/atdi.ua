@@ -34,6 +34,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06TaskResult.Adapters
                 c => c.ErpV_dbW,
                 c => c.AntennaDirectional,
                 c => c.AdmRefId,
+                c => c.Source,
                 c => c.CountoursPoints)
             .Filter(f => f.Gn06ResultId, ResultId);
         }
@@ -55,6 +56,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06TaskResult.Adapters
                 ErpV_dbW = reader.GetValue(c => c.ErpV_dbW),
                 AntennaDirectional = reader.GetValue(c => c.AntennaDirectional),
                 AdmRefId = reader.GetValue(c => c.AdmRefId),
+                Source = reader.GetValue(c => c.Source),
                 CountoursPoints = string.IsNullOrEmpty(reader.GetValue(c => c.CountoursPoints)) ? null : reader.GetValueAs<CountoursPoint[]>(c => c.CountoursPoints)
             };
         }

@@ -41,7 +41,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task.Queries
             allot.AllotmentName = rs.GetS("A_NAME");
             if (Int32.TryParse(rs.GetS("ALLOT_AREA").Replace(",", ""), out int ContourId))
                 allot.ContourId = ContourId;
-            allot.Contur = _objectReader.Read<AreaPoint[]>().By(new GetIcsmAreaPointByContourId { ContourId = allot.ContourId });
+            allot.Contur = _objectReader.Read<AreaPoint[]>().By(new GetIcsmAreaPointByContourId { ContourId = allot.ContourId, Adm = allot.Adm });
         }
 
         public string SelectStatementIcsmAssignment = "ID,ADM,IS_ALLOTM,NOTICE_TYPE,FRAGMENT,LASTK_REF,ADM_KEY,PLAN_ENTRY,ASSGN_CODE,PLAN_TRG_ADM_REF_ID,SFN_IDENT,ALLOTM_SFN_IDENT,FREQ,POLARIZATION,ERP_H,ERP_V,REF_PLAN_CFG,ADM_KEY,TVSYS_CODE,RX_MODE,SPECT_MASK,LONGITUDE,LATITUDE,SITE_ALT,SITE_NAME,ANT_DIR,AGL,EFHGT_MAX,EFHGT,ATTN_H,ATTN_V,CLASS,DIGITAL,PLAN_ASSGN_NO,ALLOTM_ADM_KEY";

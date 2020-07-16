@@ -16,12 +16,11 @@ using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.SignalService;
 using Atdi.DataModels.Sdrn.DeepServices.GN06;
 using Atdi.DataModels.Sdrn.DeepServices.EarthGeometry;
 using Atdi.Contracts.Sdrn.DeepServices.EarthGeometry;
-
-
 using System.Runtime.InteropServices.WindowsRuntime;
 using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Gis;
-//using Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal;
 using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.FieldStrength;
+using Atdi.DataModels.Sdrn.CalcServer;
+using Atdi.DataModels.Sdrn.CalcServer.Entities;
 
 namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 {
@@ -220,6 +219,41 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         Point = _transformation.ConvertCoordinateToAtdi(new Wgs84Coordinate { Longitude = data.BroadcastingAssignment.SiteParameters.Lon_Dec, Latitude = data.BroadcastingAssignment.SiteParameters.Lat_Dec }, data.Projection),
                         Location = data.MapArea.LowerLeft
                     };
+
+
+                    var lowerLeftCoord_m = data.MapArea.LowerLeft;
+                    var upperRightCoord_m = data.MapArea.UpperRight;
+                    var isInsideTargetCoordinate = Utils.IsInsideMap(profileArgs.Target.X, profileArgs.Target.Y, lowerLeftCoord_m.X, lowerLeftCoord_m.Y, upperRightCoord_m.X, upperRightCoord_m.Y);
+                    var isInsidePointCoordinate = Utils.IsInsideMap(profileArgs.Point.X, profileArgs.Point.Y, lowerLeftCoord_m.X, lowerLeftCoord_m.Y, upperRightCoord_m.X, upperRightCoord_m.Y);
+
+                    if ((isInsideTargetCoordinate==false) || (isInsidePointCoordinate==false))
+                    {
+                        if (isInsideTargetCoordinate == false)
+                        {
+                            string message = $"Starting the iteration 'IIterationHandler <BroadcastingFieldStrengthCalcData, BroadcastingFieldStrengthCalcResult>' could not be started because the coordinates of the point  'Target.X={profileArgs.Target.X}','Target.Y={profileArgs.Target.Y}' not included in map range!";
+                            taskContext.SendEvent(new CalcResultEvent
+                            {
+                                Level = CalcResultEventLevel.Error,
+                                Context = "Ge06CalcIteration",
+                                Message = message
+                            });
+                            throw new Exception(message);
+                        }
+                        if (isInsidePointCoordinate == false)
+                        {
+                            string message = $"Starting the iteration 'IIterationHandler <BroadcastingFieldStrengthCalcData, BroadcastingFieldStrengthCalcResult>' could not be started because the coordinates of the point  'Point.X={profileArgs.Point.X}','Point.Y={profileArgs.Point.Y}' not included in map range!";
+                            taskContext.SendEvent(new CalcResultEvent
+                            {
+                                Level = CalcResultEventLevel.Error,
+                                Context = "Ge06CalcIteration",
+                                Message = message
+                            });
+                            throw new Exception(message);
+                        }
+                    }
+
+
+
                     var profileResult = new CalcProfileIndexersResult
                     {
                         Indexers = indexerBuffer,

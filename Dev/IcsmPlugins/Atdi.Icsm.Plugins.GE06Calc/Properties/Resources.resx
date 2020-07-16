@@ -183,8 +183,8 @@
   <data name="ConformityCheck" xml:space="preserve">
     <value>Conformity Check Ann. 4 Sec II</value>
   </data>
-  <data name="CoutureByFieldStrength" xml:space="preserve">
-    <value>Couture by field strength</value>
+  <data name="ContureByFieldStrength" xml:space="preserve">
+    <value>Conture by field strength</value>
   </data>
   <data name="CreateContoursByDistance" xml:space="preserve">
     <value>Create contours by distance (conformity file for HTZ)</value>
@@ -267,8 +267,8 @@
   <data name="ContourType" xml:space="preserve">
     <value>Contour type</value>
   </data>
-  <data name="CountoursPoints" xml:space="preserve">
-    <value>Countours points</value>
+  <data name="ContoursPoints" xml:space="preserve">
+    <value>Contours points</value>
   </data>
   <data name="Distance" xml:space="preserve">
     <value>Distance</value>
@@ -288,8 +288,14 @@
   <data name="ExportToHTZ" xml:space="preserve">
     <value>Export to HTZ</value>
   </data>
+  <data name="ClientContexts" xml:space="preserve">
+    <value>Client contexts</value>
+  </data>
   <data name="Contoures" xml:space="preserve">
-    <value>Contoures</value>
+    <value>Contours</value>
+  </data>
+  <data name="Default" xml:space="preserve">
+    <value>Default</value>
   </data>
   <data name="PrepareContext" xml:space="preserve">
     <value>Prepare context</value>
@@ -297,7 +303,19 @@
   <data name="Prepared" xml:space="preserve">
     <value>Prepared</value>
   </data>
+  <data name="Results" xml:space="preserve">
+    <value>Results</value>
+  </data>
+  <data name="Start" xml:space="preserve">
+    <value>Start</value>
+  </data>
   <data name="StationsAndAllotments" xml:space="preserve">
     <value>Stations and allotments</value>
+  </data>
+  <data name="StepBetweenBoundaryPoints" xml:space="preserve">
+    <value>Step between boundary points</value>
+  </data>
+  <data name="TypeOfCalculation" xml:space="preserve">
+    <value>Type of calculation</value>
   </data>
 </root>

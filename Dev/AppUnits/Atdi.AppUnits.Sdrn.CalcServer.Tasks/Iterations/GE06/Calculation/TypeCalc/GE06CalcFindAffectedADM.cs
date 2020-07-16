@@ -22,7 +22,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
     {
 
 
-        private static void FillFieldStrength(FmtvTerra[] arrFmtvTerra, int thresholdFieldStrength)
+        private static void FillFieldStrength(FmtvTerra[] arrFmtvTerra, float thresholdFieldStrength)
         {
             for (int j = 0; j < arrFmtvTerra.Length; j++)
             {
@@ -73,7 +73,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 var maxFreq_MHz = triggerInformationTemp.MaxFreq_MHz;
                 var staClass = triggerInformationTemp.StaClass;
                 var systemType = triggerInformationTemp.System_type;
-                var fs = (int)triggerInformationTemp.ThresholdFS;
+                var fs = triggerInformationTemp.ThresholdFS;
 
                 for (int n = 0; n < SizeBufferFindAdministrations+1; n++)
                 {
@@ -381,8 +381,9 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             for (int i = 0; sizeCountoursPointExtendedBuffer > i; i++)
             {
                 var Id = countoursPointExtendeds[i].Id;
-                if (currentId != Id)
-                { 
+                if ((currentId != Id)||(sizeCountoursPointExtendedBuffer -1 == i))
+                {
+                    if (sizeCountoursPointExtendedBuffer - 1 == i) { ContursServices.Add(countoursPointExtendeds[i]); }
                     if (ContursServices.Count >= 3)
                     { // тут у нас есть контур в ContursServices
                         // надо проверить есть ли в данном контуре что 
@@ -390,51 +391,76 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         var services = ContursServices[0].Service;
                         var H = ContursServices[0].Height;
                         var FS = ContursServices[0].FS;
-                        for (int j = 0; j < arrFmtvTerra.Length; j++)
+                        //проверка на бродкастинг должна быть вначале 
+                        if (services == "Broadcasting")
                         {
-                            if ((arrFmtvTerra[j].System_type == services)&&(arrFmtvTerra[j].FS == FS))
-                            { // только при совпадении
-                                var adm = arrFmtvTerra[j].Administration;
-                                if (!(serviseAdm.Exists(x => x == adm)))
+                            // определяем список администраций 
+                            List<string> Adms = new List<string>();
+                            for (int k = 0; ContursServices.Count > k; k++)
+                            {
+                                if (!(Adms.Exists(x => x == ContursServices[k].administration)))
                                 {
-                                    // администрация данной службы не задета. надо проверить не попала ли точка
-                                    // тут нужно определить пересечение 
-                                    // заполняем данные для определения пересечения
-                                    bool interseption = false;
-                                    if ((arrFmtvTerra[j].Latitude_dec == 0)&& (arrFmtvTerra[j].Longitude_dec == 0 ))
+                                    Adms.Add(ContursServices[k].administration);
+                                    for (int l = 0; AffectedADMResult.Length > l; l++)
                                     {
-                                        interseption = true;
-                                    }
-                                    else
-                                    {
-                                        CheckHittingArgs checkHittingArgs = new CheckHittingArgs();
-                                        checkHittingArgs.Poligon = new PointEarthGeometric[ContursServices.Count];
-                                        for (int k = 0; ContursServices.Count > k; k++)
+                                        if (AffectedADMResult[l].ADM == ContursServices[k].administration)
                                         {
-                                            checkHittingArgs.Poligon[k].Longitude = ContursServices[k].Lon_DEC;
-                                            checkHittingArgs.Poligon[k].Latitude = ContursServices[k].Lat_DEC;
-                                            checkHittingArgs.Poligon[k].CoordinateUnits = CoordinateUnits.deg;
+                                            // добавляем бродкастинг
+                                            AffectedADMResult[l].TypeAffected = AffectedADMResult[l].TypeAffected + ", Broadcasting";
+                                            break;
                                         }
-                                        checkHittingArgs.Point = new PointEarthGeometric()
-                                        {
-                                            CoordinateUnits = CoordinateUnits.deg,
-                                            Latitude = arrFmtvTerra[j].Latitude_dec,
-                                            Longitude = arrFmtvTerra[j].Longitude_dec,
-                                        };
-                                        interseption = earthGeometricService.CheckHitting(in checkHittingArgs);
                                     }
-                                    // определяем пересечение
-                                    if (interseption)
+                                }
+                            }
+                        }
+                        else
+                        {
+                            for (int j = 0; j < arrFmtvTerra.Length; j++)
+                            {
+                                if ((arrFmtvTerra[j].System_type == services) && (arrFmtvTerra[j].FS == FS))
+                                { // только при совпадении
+                                    var adm = arrFmtvTerra[j].Administration;
+                                    if (!(serviseAdm.Exists(x => x == adm)))
                                     {
-                                        serviseAdm.Add(adm);
-                                        string typeAff;
-                                        if (services == "Broadcasting")
-                                        { typeAff = "Broadcasting"; }
+                                        // администрация данной службы не задета. надо проверить не попала ли точка
+                                        // тут нужно определить пересечение 
+                                        // заполняем данные для определения пересечения
+                                        bool interseption = false;
+                                        if ((arrFmtvTerra[j].Latitude_dec == 0) && (arrFmtvTerra[j].Longitude_dec == 0))
+                                        {
+                                            interseption = true;
+                                        }
                                         else
-                                        { typeAff = "PrimaryServices"; }
-                                        AddServiceToResult(ref AffectedADMResult, adm, services, typeAff);
+                                        {
+                                            CheckHittingArgs checkHittingArgs = new CheckHittingArgs();
+                                            checkHittingArgs.Poligon = new PointEarthGeometric[ContursServices.Count];
+                                            for (int k = 0; ContursServices.Count > k; k++)
+                                            {
+                                                checkHittingArgs.Poligon[k].Longitude = ContursServices[k].Lon_DEC;
+                                                checkHittingArgs.Poligon[k].Latitude = ContursServices[k].Lat_DEC;
+                                                checkHittingArgs.Poligon[k].CoordinateUnits = CoordinateUnits.deg;
+                                            }
+                                            checkHittingArgs.Point = new PointEarthGeometric()
+                                            {
+                                                CoordinateUnits = CoordinateUnits.deg,
+                                                Latitude = arrFmtvTerra[j].Latitude_dec,
+                                                Longitude = arrFmtvTerra[j].Longitude_dec,
+                                            };
+                                            interseption = earthGeometricService.CheckHitting(in checkHittingArgs);
+                                        }
+                                        // определяем пересечение
+                                        if (interseption)
+                                        {
+                                            serviseAdm.Add(adm);
+                                            string typeAff;
+                                            if (services == "Broadcasting")
+                                            { typeAff = "Broadcasting"; }
+                                            else
+                                            { typeAff = "PrimaryServices"; }
+                                            AddServiceToResult(ref AffectedADMResult, adm, services, typeAff);
+                                        }
+
                                     }
-                                    
                                 }
                             }
                         }
@@ -547,6 +573,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
             string notValidBroadcastingAssignment = string.Empty;
             string notValidBroadcastingAllotment = string.Empty;
+            GE06CheckEffectiveHeight.CheckEffectiveHeightForAssignment(ref ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM.Assignments, ge06CalcData.Ge06TaskParameters.UseEffectiveHeight);
             if (((GE06Validation.ValidationAssignment(ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM.Assignments, out notValidBroadcastingAssignment)) && (GE06Validation.ValidationAllotment(ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM.Allotments, out notValidBroadcastingAllotment))) == false)
             {
                 string message = "";
@@ -569,7 +596,6 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
             
             float ProsentTerr = 50;
-            int Height = 10;
             var countoursPointExtendedBuffer = default(CountoursPointExtended[]);
             var pointEarthGeometricsResult = default(PointEarthGeometric[]);
             var pointEarthGeometricsResultICSM = default(PointEarthGeometric[]);
@@ -784,7 +810,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                     Lon_DEC = pointEarthGeometricsResult[t].Longitude,
                                     Lat_DEC = pointEarthGeometricsResult[t].Latitude,
                                     Height = (int)arrTriggersFS[d].Height_m,
-                                    FS = (int)arrTriggersFS[d].ThresholdFS,
+                                    FS = arrTriggersFS[d].ThresholdFS,
                                     PointType = PointType.Affected,
                                     broadcastingTypeCalculation = BroadcastingTypeCalculation.FieldStrength,
                                     Id = indexResult,
@@ -837,7 +863,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 
             }
             // тут конец расчетам нужна обработка результатов 
-            GE06FillData.FillAllotmentOrAssignmentResult(ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM, ref ge06CalcResult);
+            GE06FillData.FillAllotmentOrAssignmentResult(ge06CalcData.Ge06TaskParameters.BroadcastingContext.BroadcastingContextICSM, BroadcastingTypeContext.Icsm, ref ge06CalcResult);
         }
     }
 }

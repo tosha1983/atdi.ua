@@ -21,7 +21,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
         public string CalculationTypeName;
         public string Projection;
         public string MapName;
+        public int? StepBetweenBoundaryPoints;
         public BroadcastingContext BroadcastingContext;
-
     }
 }

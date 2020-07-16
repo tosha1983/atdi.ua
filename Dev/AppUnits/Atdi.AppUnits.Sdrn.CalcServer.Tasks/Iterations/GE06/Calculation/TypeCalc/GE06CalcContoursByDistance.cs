@@ -63,6 +63,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
            
             string notValidBroadcastingAssignment = string.Empty;
             string notValidBroadcastingAllotment = string.Empty;
+            GE06CheckEffectiveHeight.CheckEffectiveHeightForAssignment(ref broadcastingContextBase.Assignments, ge06CalcData.Ge06TaskParameters.UseEffectiveHeight);
             if (((GE06Validation.ValidationAssignment(broadcastingContextBase.Assignments, out notValidBroadcastingAssignment)) && (GE06Validation.ValidationAllotment(broadcastingContextBase.Allotments, out notValidBroadcastingAllotment))) == false)
             {
                 string message = "";
@@ -174,7 +175,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                 countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].PointType = PointType.Unknown;
                             }
                             countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].Distance = ge06CalcData.Ge06TaskParameters.Distances[i];
-                            countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].FS = (int)CalcFieldStrengthInPointGE06.Calc(ge06CalcData,
+                            countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].FS = CalcFieldStrengthInPointGE06.Calc(ge06CalcData,
                                                                                             in point,
                                                                                             broadcastingTypeContext,
                                                                                             pointEarthGeometricPool,
@@ -202,7 +203,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
                             indexForCountoursPointExtendedBuffer++;
 
-                            UpdateProgress.UpdatePercentComplete100(ge06CalcData.Ge06TaskParameters.Distances.Length, sizeResultBuffer, i, k, ref currPercentComplete, "ContoursByDistance", taskContext);
+                            UpdateProgress.UpdatePercentComplete100(ge06CalcData.Ge06TaskParameters.Distances.Length, sizeResultBuffer, i, k, ref currPercentComplete, $"ContoursByDistance ({broadcastingTypeContext}: Assignments)", taskContext);
                         }
                     }
                     //или на функции CreateContourFromContureByDistance если у нас есть BroadcastingAllotment 
@@ -252,7 +253,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                             countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].PointType = PointType.Unknown;
                                         }
                                         countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].Distance = ge06CalcData.Ge06TaskParameters.Distances[i];
-                                        countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].FS = (int)CalcFieldStrengthInPointGE06.Calc(ge06CalcData,
+                                        countoursPointExtendedBuffer[indexForCountoursPointExtendedBuffer].FS = CalcFieldStrengthInPointGE06.Calc(ge06CalcData,
                                                                                             in point,
                                                                                             broadcastingTypeContext,
                                                                                             pointEarthGeometricPool,
@@ -284,7 +285,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
                                         indexForCountoursPointExtendedBuffer++;
 
-                                        UpdateProgress.UpdatePercentComplete100(ge06CalcData.Ge06TaskParameters.Distances.Length, sizeResultBuffer, i, k, ref currPercentComplete, "ContoursByDistance", taskContext);
+                                        UpdateProgress.UpdatePercentComplete100(ge06CalcData.Ge06TaskParameters.Distances.Length, sizeResultBuffer, i, k, ref currPercentComplete, $"ContoursByDistance ({broadcastingTypeContext} : Allotment) ", taskContext);
                                     }
                                 }
                             }
@@ -306,7 +307,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     }
                     ge06CalcResult.AffectedADMResult = FillAffectedADMResult.Fill(ge06CalcResult.ContoursResult, string.Join(",", affectedServices));
                 }
-                UpdateProgress.UpdatePercentComplete100(ref currPercentComplete, "ContoursByDistance", taskContext);
+                UpdateProgress.UpdatePercentComplete100(ref currPercentComplete, $"ContoursByDistance ({broadcastingTypeContext}) ", taskContext);
             }
             finally
             {
@@ -323,7 +324,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     pointEarthGeometricPool.Put(pointEarthGeometricsResult);
                 }
             }
-            GE06FillData.FillAllotmentOrAssignmentResult(broadcastingContextBase, ref ge06CalcResult);
+            GE06FillData.FillAllotmentOrAssignmentResult(broadcastingContextBase, broadcastingTypeContext, ref ge06CalcResult);
 
         }
 

@@ -29,7 +29,7 @@ namespace Atdi.Test.CalcServer.LowFunction
 
             //TestGE06GetBoundaryPointsFromAllotments.Test();
 
-            //TestGE06EstimationAssignmentsPointsForEtalonNetwork.Test();
+            TestGE06EstimationAssignmentsPointsForEtalonNetwork.Test();
 
             //TestGE06GetEtalonBroadcastingAssignmentFromAllotment.Test();
 
@@ -67,7 +67,7 @@ namespace Atdi.Test.CalcServer.LowFunction
 
 
 
-            TestBarycenterGE06.Test();
+            //TestBarycenterGE06.Test();
 
         }
     }

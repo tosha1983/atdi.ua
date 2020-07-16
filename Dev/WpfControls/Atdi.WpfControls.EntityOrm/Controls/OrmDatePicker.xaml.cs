@@ -20,7 +20,7 @@ namespace Atdi.WpfControls.EntityOrm.Controls
     /// </summary>
     public partial class OrmDatePicker : UserControl
     {
-        double _captionWith = 100;
+        double _captionWith = 0;
         string _caption = "";
         DateTime? _value = null;
         bool _enabled = true;
