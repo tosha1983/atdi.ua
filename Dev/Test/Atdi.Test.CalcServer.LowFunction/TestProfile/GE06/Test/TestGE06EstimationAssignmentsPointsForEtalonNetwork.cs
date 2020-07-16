@@ -35,18 +35,18 @@ namespace Atdi.Test.CalcServer.LowFunction
                     host.Container.Register<IIdwmService, IdwmService>(ServiceLifetime.PerThread);
                     host.Container.Register<ITransformation, TransformationService>(ServiceLifetime.PerThread);
                     host.Container.Register<IEarthGeometricService, EarthGeometricService>(ServiceLifetime.PerThread);
-                    host.Container.Register<IGn06Service, EstimationAssignmentsService>(ServiceLifetime.PerThread);
+                    //host.Container.Register<IGn06Service, EstimationAssignmentsService>(ServiceLifetime.PerThread);
                     var resolver = host.Container.GetResolver<IServicesResolver>();
 
                     var gn06Service = resolver.Resolve<IGn06Service>();
 
                     //START DATA
                     GE.RefNetworkType RefNetwork = GE.RefNetworkType.RN1;
-                    GE.RefNetworkConfigType RefNetworkConfig = GE.RefNetworkConfigType.RPC3;
-                    double PointLon = 30;
-                    double PointLat = 51;
-                    double AllotmentPointLon = 31;
-                    double AllotmentPointLat = 50;
+                    GE.RefNetworkConfigType RefNetworkConfig = GE.RefNetworkConfigType.RPC2;
+                    double PointLon = 3.775327;
+                    double PointLat = 53.26631;
+                    double AllotmentPointLon = 0.0808333;
+                    double AllotmentPointLat = 49.35699444;
                     //
 
                     GE.BroadcastingAllotment broadcastingAllotment = new GE.BroadcastingAllotment();
