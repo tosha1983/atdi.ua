@@ -95,7 +95,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                 FieldStrengthString = "12,25",
                 SubscribersHeight = 10,
                 PercentageTime = 50,
-                UseEffectiveHeight = true,
+                UseEffectiveHeight = false,
                 StepBetweenBoundaryPoints = 5,
                 StepBetweenBoundaryPointsDefault = false
             };
