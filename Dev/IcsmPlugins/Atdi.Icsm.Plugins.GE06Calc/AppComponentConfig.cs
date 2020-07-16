@@ -43,6 +43,9 @@ namespace Atdi.Icsm.Plugins.GE06Calc
         [ComponentConfigProperty("Infocenter.EntityOrm.DataContext")]
         public string InfocenterEntityOrmDataContext { get; set; }
 
+        [ComponentConfigProperty("CalcServer.ActiveContextId")]
+        public string CalcServerActiveContextId { get; set; }
+
 
         public string Instance { get; set; }
         //public string LicenseNumber { get; set; }

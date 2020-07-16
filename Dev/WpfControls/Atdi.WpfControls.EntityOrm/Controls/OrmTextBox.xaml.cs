@@ -53,7 +53,7 @@ namespace Atdi.WpfControls.EntityOrm.Controls
             get { return _enabled; }
             set
             {
-                //SetValue(EnabledProperty, value);
+                SetValue(EnabledProperty, value);
                 this._enabled = value;
                 txtMain.IsEnabled = this._enabled;
             }

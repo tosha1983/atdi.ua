@@ -37,11 +37,10 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
         private CalcTaskModel _currentCalcTaskCard;
         private IList _currentAssignmentsAllotments;
         private IMQueryMenuNode.Context _context;
-        //private bool _conformityCheckEnabled = false;
-        //private bool _findAffectedEnabled = false;
         private bool _startEnabled = false;
         private CalculationType _calcType;
         private OrmEnumBoxData[] _typeSource;
+        private long _activeContextId;
 
         private Visibility _azimuthStepVisibility = Visibility.Collapsed;
         private Visibility _additionalContoursByDistancesVisibility = Visibility.Collapsed;
@@ -55,10 +54,6 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
         AssignmentsAllotmentsModel[] _assignmentsAllotmentsArray;
 
         public ViewCommand AllotDeleteCommand { get; set; }
-        //public ViewCommand ConformityCheckCommand { get; set; }
-        //public ViewCommand FindAffectedCommand { get; set; }
-        //public ViewCommand CreateContoursByDistanceCommand { get; set; }
-        //public ViewCommand CreateContoursByFSCommand { get; set; }
         public ViewCommand StartCommand { get; set; }
 
         private MapDrawingData _currentMapData;
@@ -70,7 +65,8 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
             ICommandDispatcher commandDispatcher,
             ViewStarter starter,
             IEventBus eventBus,
-            ILogger logger)
+            ILogger logger,
+            AppComponentConfig config)
         {
             _objectReader = objectReader;
             _commandDispatcher = commandDispatcher;
@@ -79,10 +75,6 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
             _logger = logger;
 
             this.AllotDeleteCommand = new ViewCommand(this.OnAllotDeleteCommand);
-            //this.ConformityCheckCommand = new ViewCommand(this.OnConformityCheckCommand);
-            //this.FindAffectedCommand = new ViewCommand(this.OnFindAffectedCommand);
-            //this.CreateContoursByDistanceCommand = new ViewCommand(this.OnCreateContoursByDistanceCommand);
-            //this.CreateContoursByFSCommand = new ViewCommand(this.OnCreateContoursByFSCommand);
             this.StartCommand = new ViewCommand(this.OnStartCommand);
             this._assignmentsAllotmentsList = new List<AssignmentsAllotmentsModel>();
 
@@ -95,22 +87,19 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                 FieldStrengthString = "12,25",
                 SubscribersHeight = 10,
                 PercentageTime = 50,
-                UseEffectiveHeight = false,
+                UseEffectiveHeight = true,
                 StepBetweenBoundaryPoints = 5,
-                StepBetweenBoundaryPointsDefault = false
+                StepBetweenBoundaryPointsDefault = true
             };
 
             _onCreatedCalcTaskToken = _eventBus.Subscribe<Events.OnCreatedCalcTask>(this.OnCreatedCalcTaskHandle);
             _onRunedCalcTaskToken = _eventBus.Subscribe<Events.OnRunedCalcTask>(this.OnRunedCalcTaskHandle);
 
-            //CalcTypeSource = Environment.PluginHelper.EnumToOrmEnumBoxData<CalculationType>();
+            if (long.TryParse(config.CalcServerActiveContextId, out long contextId))
+                this._activeContextId = contextId;
 
-            //var enumData = new List<OrmEnumBoxData>();
-            //enumData.Add(new OrmEnumBoxData() { Id = 1, Name = "ConformityCheck", ViewName = Properties.Resources.ConformityCheck });
-            //enumData.Add(new OrmEnumBoxData() { Id = 2, Name = "FindAffectedADM", ViewName = Properties.Resources.FindAffected });
-            //enumData.Add(new OrmEnumBoxData() { Id = 3, Name = "CreateContoursByDistance", ViewName = Properties.Resources.CreateContoursByDistance });
-            //enumData.Add(new OrmEnumBoxData() { Id = 4, Name = "CreateContoursByFS", ViewName = Properties.Resources.CreateContoursByFS });
-            //CalcTypeSource = enumData.ToArray();
+            if (Properties.Settings.Default.ActiveContext != 0)
+                this._activeContextId = Properties.Settings.Default.ActiveContext;
         }
         public Visibility AzimuthStepVisibility
         {
@@ -147,7 +136,6 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
             get => this._stepBetweenBoundaryPointsVisibility;
             set => this.Set(ref this._stepBetweenBoundaryPointsVisibility, value);
         }
-
         public OrmEnumBoxData[] CalcTypeSource
         {
             get => this._typeSource;
@@ -172,16 +160,6 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                 RedrawMap();
             }
         }
-        //public bool ConformityCheckEnabled
-        //{
-        //    get => this._conformityCheckEnabled;
-        //    set => this.Set(ref this._conformityCheckEnabled, value);
-        //}
-        //public bool FindAffectedEnabled
-        //{
-        //    get => this._findAffectedEnabled;
-        //    set => this.Set(ref this._findAffectedEnabled, value);
-        //}
         public bool StartEnabled
         {
             get => this._startEnabled;
@@ -506,58 +484,10 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                 this._logger.Exception(Exceptions.GE06Client, e);
             }
         }
-        //private void OnConformityCheckCommand(object parameter)
-        //{
-        //    try
-        //    {
-        //        CreateCalcTask(CalculationType.ConformityCheck);
-        //        _starter.Stop(this);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        this._logger.Exception(Exceptions.GE06Client, e);
-        //    }
-        //}
-        //private void OnFindAffectedCommand(object parameter)
-        //{
-        //    try
-        //    {
-        //        CreateCalcTask(CalculationType.FindAffectedADM);
-        //        _starter.Stop(this);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        this._logger.Exception(Exceptions.GE06Client, e);
-        //    }
-        //}
-        //private void OnCreateContoursByDistanceCommand(object parameter)
-        //{
-        //    try
-        //    {
-        //        CreateCalcTask(CalculationType.CreateContoursByDistance);
-        //        _starter.Stop(this);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        this._logger.Exception(Exceptions.GE06Client, e);
-        //    }
-        //}
-        //private void OnCreateContoursByFSCommand(object parameter)
-        //{
-        //    try
-        //    {
-        //        CreateCalcTask(CalculationType.CreateContoursByFS);
-        //        _starter.Stop(this);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        this._logger.Exception(Exceptions.GE06Client, e);
-        //    }
-        //}
         private void OnStartCommand(object parameter)
         {
             //this._calcType = calcType;
-            if (Properties.Settings.Default.ActiveContext == 0)
+            if (this._activeContextId == 0)
             {
                 _starter.ShowException("Warning!", new Exception($"Undefined Active context"));
                 return;
@@ -570,7 +500,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                 return;
             }
 
-            var projectMap = _objectReader.Read<ProjectMapsModel>().By(new GetProjectMapByClientContextId { ContextId = Properties.Settings.Default.ActiveContext });
+            var projectMap = _objectReader.Read<ProjectMapsModel>().By(new GetProjectMapByClientContextId { ContextId = this._activeContextId });
 
             var splitVariants = new char[] { ',', ';', ' ' };
             var distances = new List<int>();
@@ -625,7 +555,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                 CalculationTypeCode = (byte)this._calcType,
                 CalculationTypeName = this._calcType.ToString(),
                 BroadcastingExtend = GetBroadcastingContext(),
-                ContextId = Properties.Settings.Default.ActiveContext,
+                ContextId = this._activeContextId,
                 OwnerId = Guid.NewGuid()
             };
             _commandDispatcher.Send(modifier);
@@ -728,10 +658,6 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
 
                         token.AbortToken.ThrowIfCancellationRequested();
                     }
-
-
-
-
                     //Created = 0, // Фаза создания и подготовки окружения к запуску процесса расчета
                     //Pending = 1, // Фаза ожидания запуска процесса расчета
                     //Accepted = 2, // Фаза ожидания запуска процесса расчета
@@ -886,8 +812,6 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                 if (isHaveIcsmObject && isHaveBrificObject)
                     break;
             }
-            //ConformityCheckEnabled = (isHaveIcsmObject && isHaveBrificObject);
-            //FindAffectedEnabled = isHaveIcsmObject;
 
             var enumData = new List<OrmEnumBoxData>();
             if (isHaveIcsmObject && isHaveBrificObject)
