@@ -727,7 +727,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                             var message = item.Message;
 
                             if (item.State != null)
-                                message = $"Percent complete for calculation '{this._calcType.ToString()}': {item.State.State.ToString()}%";
+                                message = $"{item.Message}: {item.State.State.ToString()}%";
 
                             _eventBus.Send(new LongProcessLogEvent
                             {
