@@ -8,35 +8,40 @@ using System.Threading.Tasks;
 using Atdi.Platform.Logging;
 using Atdi.Contracts.CoreServices.DataLayer;
 using Atdi.Contracts.LegacyServices.Icsm;
+using Atdi.Contracts.AppServices.WebQuery;
 using Atdi.CoreServices.Identity.Models;
 using Atdi.DataModels.DataConstraint;
 using Atdi.CoreServices.Identity;
 using Atdi.DataModels;
+using Atdi.DataModels.WebQuery;
 
 
 namespace Atdi.CoreServices.AuthService.IcsmViisp
 {
 	public class AuthService : IAuthService
 	{
+        
+        private readonly IWebQuery _webQuery;
         private readonly IQueryExecutor _queryExecutor;
         private readonly IDataLayer<IcsmDataOrm> _dataLayer;
         private readonly AppServerComponentConfig _config;
 		private readonly ILogger _logger;
 		public static readonly string Name = "E-Government";
 
-		public AuthService(AppServerComponentConfig config, IDataLayer<IcsmDataOrm> dataLayer, IQueryExecutor queryExecutor, ILogger logger)
+		public AuthService(AppServerComponentConfig config, IDataLayer<IcsmDataOrm> dataLayer, IQueryExecutor queryExecutor, IWebQuery webQuery, ILogger logger)
 		{
 			_config = config;
 			_logger = logger;
             _dataLayer = dataLayer;
             _queryExecutor = queryExecutor;
+            _webQuery = webQuery;
         }
 
 
 
         public UserIdentity AuthenticateUser(AuthRedirectionResponse response, IUserTokenProvider tokenProvider)
 		{
-
+           
             var userIdentity = new UserIdentity();
             var userTokenData = new UserTokenData();
 
@@ -45,7 +50,71 @@ namespace Atdi.CoreServices.AuthService.IcsmViisp
             {
                 if ((dicParameters.ContainsKey("ticket")) && (dicParameters.ContainsKey("customData")))
                 {
+                    var xmlRequest = SignData.AuthenticationData(this._config.ViispSecretKey, _config.ViispPublicKey, "#uniqueNodeId", this._config.ViispPID, dicParameters["ticket"]);
+                    var responseInformationData = SignData.GetResponseAuthenticationData(this._config.ViispServiceUrl, xmlRequest, out string faultstring);
+                    if (string.IsNullOrEmpty(faultstring))
+                    {
+                        if (responseInformationData != null)
+                        {
+                            if ((responseInformationData.AuthenticationAttribute.Length > 0) && (responseInformationData.AuthenticationAttribute[0].Attribute == "lt-personal-code"))
+                            {
+                                //string Role = "Provider";
 
+
+
+                                var querySelect = this._dataLayer.Builder
+                     .From<USERS>()
+                     .Where(c => c.REGIST_NUM, ConditionOperator.Equal, responseInformationData.AuthenticationAttribute[0].Value)
+                     .Select(
+                         c => c.CODE,
+                         c => c.CUST_TXT3,
+                         c => c.EMAIL,
+                         c => c.ID,
+                         c => c.NAME,
+                         c => c.REGIST_NUM
+                         )
+                     .OrderByAsc(c => c.ID)
+                     .OnTop(1);
+
+                                var userData = this._queryExecutor
+                      .Fetch(querySelect, reader =>
+                      {
+                          if (reader.Read())
+                          {
+                              userIdentity.Id = reader.GetValue(x => x.ID);
+                              userIdentity.Name = reader.GetValue(x => x.NAME);
+                              userTokenData.AuthDate = DateTime.Now;
+                              userTokenData.Id = reader.GetValue(x => x.ID);
+                              userTokenData.UserCode = reader.GetValue(x => x.CODE);
+                              userTokenData.UserId = reader.GetValue(x => x.ID);
+                              userTokenData.UserName = reader.GetValue(x => x.NAME);
+                              userIdentity.UserToken = tokenProvider.CreatUserToken(userTokenData);
+
+                              return true;
+                          }
+                          else
+                          {
+                              return false;
+                          }
+
+                      });
+
+                                if (userData == false)
+                                {
+
+                                    //this._webQuery.SaveChanges(tokenProvider);
+
+                                    /*
+                                    var queryInsert = this._dataLayer.Builder
+                         .Insert("USERS")
+                         .SetValue(new IntegerColumnValue() { Name = "ID", Value = 1 });
+                         */
+                                };
+
+
+                            }
+                        }
+                    }
                 }
                 else
                 {
@@ -54,69 +123,7 @@ namespace Atdi.CoreServices.AuthService.IcsmViisp
             }
 
 
-            var xmlRequest = SignData.AuthenticationData(this._config.ViispSecretKey, _config.ViispPublicKey, "#uniqueNodeId", this._config.ViispPID, dicParameters["ticket"]);
-            var responseInformationData = SignData.GetResponseAuthenticationData(this._config.ViispServiceUrl, xmlRequest, out string faultstring);
-            if (string.IsNullOrEmpty(faultstring))
-            {
-                if (responseInformationData != null)
-                {
-                    if ((responseInformationData.AuthenticationAttribute.Length > 0) && (responseInformationData.AuthenticationAttribute[0].Attribute == "lt-personal-code"))
-                    {
-                        //string Role = "Provider";
-
-
-
-                        var querySelect = this._dataLayer.Builder
-             .From<USERS>()
-             .Where(c => c.REGIST_NUM, ConditionOperator.Equal, responseInformationData.AuthenticationAttribute[0].Value)
-             .Select(
-                 c => c.CODE,
-                 c => c.CUST_TXT3,
-                 c => c.EMAIL,
-                 c => c.ID,
-                 c => c.NAME,
-                 c => c.REGIST_NUM
-                 )
-             .OrderByAsc(c => c.ID)
-             .OnTop(1);
-
-                        var userData = this._queryExecutor
-              .Fetch(querySelect, reader =>
-              {
-                  if (reader.Read())
-                  {
-                      userIdentity.Id = reader.GetValue(x => x.ID);
-                      userIdentity.Name = reader.GetValue(x => x.NAME);
-                      userTokenData.AuthDate = DateTime.Now;
-                      userTokenData.Id = reader.GetValue(x => x.ID);
-                      userTokenData.UserCode = reader.GetValue(x => x.CODE);
-                      userTokenData.UserId = reader.GetValue(x => x.ID);
-                      userTokenData.UserName = reader.GetValue(x => x.NAME);
-                      userIdentity.UserToken = tokenProvider.CreatUserToken(userTokenData);
-
-                      return true;
-                  }
-                  else
-                  {
-                      return false;
-                  }
-
-              });
-
-                        if (userData == false)
-                        {
-
-                            /*
-                            var queryInsert = this._dataLayer.Builder
-                 .Insert("USERS")
-                 .SetValue(new IntegerColumnValue() { Name = "ID", Value = 1 });
-                 */
-                        };
-
-
-                    }
-                }
-            }
+         
 
 
 
