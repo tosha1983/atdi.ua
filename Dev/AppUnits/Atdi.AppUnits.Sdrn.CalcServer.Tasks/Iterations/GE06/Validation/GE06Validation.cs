@@ -208,6 +208,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                 {
                                     isSuccess = false;
                                     notValidParameters.Add("'AntennaCharacteristics.EffHeight_m' not valid");
+                                    break;
                                 }
                             }
                         }
@@ -272,6 +273,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                         {
                                             isSuccess = false;
                                             notValidParameters.Add("'AntennaCharacteristics.DiagrV' not valid");
+                                            break;
                                         }
                                     }
                                 }
@@ -298,6 +300,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                         {
                                             isSuccess = false;
                                             notValidParameters.Add("'AntennaCharacteristics.DiagrH' not valid");
+                                            break;
                                         }
                                     }
                                 }
