@@ -19,4 +19,14 @@ namespace Atdi.Contracts.CoreServices.Identity
 
         public DateTime AuthDate { get; set; }
     }
+
+    [Serializable]
+    public class ServiceTokenData
+    {
+	    public string Id { get; set; }
+
+	    public string Name { get; set; }
+
+	    public DateTime AuthDate { get; set; }
+    }
 }
