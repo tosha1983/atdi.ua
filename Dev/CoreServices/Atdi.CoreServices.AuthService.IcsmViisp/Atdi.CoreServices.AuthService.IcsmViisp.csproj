@@ -61,10 +61,6 @@
       <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
       <Name>Atdi.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Contracts\AppServices\Atdi.Contracts.AppServices.WebQuery\Atdi.Contracts.AppServices.WebQuery.csproj">
-      <Project>{012b0214-ac04-43b0-b87f-a0c1e991ca8f}</Project>
-      <Name>Atdi.Contracts.AppServices.WebQuery</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Contracts\CoreServices\Atdi.Contracts.CoreServices.DataLayer\Atdi.Contracts.CoreServices.DataLayer.csproj">
       <Project>{e5011dd5-16c5-4cd0-ada3-d783f11c7c61}</Project>
       <Name>Atdi.Contracts.CoreServices.DataLayer</Name>

@@ -12,6 +12,9 @@ namespace Atdi.CoreServices.AuthService.IcsmViisp
 		[ComponentConfigProperty("VIISP.ServiceUrl")]
 		public string ViispServiceUrl { get; set; }
 
+        [ComponentConfigProperty("VIISP.RequestUrl")]
+        public string ViispRequestUrl { get; set; }
+
         [ComponentConfigProperty("VIISP.PublicKey")]
         public string ViispPublicKey { get; set; }
 
