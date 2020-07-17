@@ -33,6 +33,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -44,6 +45,14 @@
     <Compile Include="AppServerComponent.cs" />
     <Compile Include="AppServerComponentConfig.cs" />
     <Compile Include="AuthService.cs" />
+    <Compile Include="Crypto\Crypto.cs" />
+    <Compile Include="Crypto\Helpers.cs" />
+    <Compile Include="Crypto\RSAParameterTraits.cs" />
+    <Compile Include="Crypto\SignData.cs" />
+    <Compile Include="Output\AuthenticationAttribute.cs" />
+    <Compile Include="Output\Enums.cs" />
+    <Compile Include="Output\ResponseInformationDataResponse.cs" />
+    <Compile Include="Output\UserInformation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Specification.cs" />
   </ItemGroup>
@@ -79,6 +88,10 @@
     <ProjectReference Include="..\..\Platform\Atdi.Platform\Atdi.Platform.csproj">
       <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
       <Name>Atdi.Platform</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Atdi.CoreServices.Identity\Atdi.CoreServices.Identity.csproj">
+      <Project>{3ffe283d-4233-4e63-8a27-260a8aeb353c}</Project>
+      <Name>Atdi.CoreServices.Identity</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
