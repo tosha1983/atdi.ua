@@ -42,7 +42,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AuthRedirectionQuery.cs" />
+    <Compile Include="AuthRedirectionOptions.cs" />
+    <Compile Include="AuthRedirectionResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServiceCredential.cs" />
     <Compile Include="ServicesSpecification.cs" />
     <Compile Include="UserCredential.cs" />
   </ItemGroup>

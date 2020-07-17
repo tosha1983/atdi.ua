@@ -204,8 +204,10 @@ namespace Atdi.Modules.LicenseGenerator
 
 
 			// GE06 - start 
-			SdrnGN06CalcPlugin_ForTest_2020();
-			SdrnGN06CalcPlugin_ForATDI_SA_2020_1p();
+			//SdrnGN06CalcPlugin_ForTest_2020();
+			//SdrnGN06CalcPlugin_ForATDI_SA_2020_1p();
+
+			CalcServer_ForATDI_SA_2020_1p();
 
 			Console.WriteLine("Process was finished");
 
@@ -1603,6 +1605,41 @@ namespace Atdi.Modules.LicenseGenerator
 					instancePrefix,
 					Storage.LicenseTypes.ClientLicense, 
 					Storage.Products.ICSM_Plugin_GE06_Calc,
+					ownerName,
+					ownerId,
+					ownerKey,
+					company,
+					startDate,
+					stopDate, 2020, LicenseLimitationTerms.TimePeriod);
+			}
+
+		}
+
+		static void CalcServer_ForATDI_SA_2020_1p()
+		{
+
+			var ownerKey = Storage.Clients.ATDI_SA.OwnerKey; // "BD13-G65";
+			var ownerId = Storage.Clients.ATDI_SA.OwnerId;  // "OID-BD13-G65-N00";
+			var ownerName = Storage.Clients.ATDI_SA.OwnerName; // "Державне підприємство «Український державний центр радіочастот»";
+			var company = Storage.Companies.ATDI_Ukraine_EN; // "ТОВ 'Лабораторія інформаційних систем'";
+
+			var startDate = new DateTime(2020, 7, 16);
+			var stopDate = new DateTime(2020, 8, 20);
+
+			var licPrefix = "LIC-C";
+			var instancePrefix = "SDRNSV-C";
+
+			
+
+			var path1 = @"C:\Projects\Licensing\ATDI_SA\CalcServer\20200716";
+			for (int i = 0; i < 1; i++)
+			{
+				BuilProductLicense(
+					path1,
+					licPrefix,
+					instancePrefix,
+					Storage.LicenseTypes.ServerLicense, // "DeviceLicense",
+					Storage.Products.SDRN_Calc_Server, // "ICS Control Device",
 					ownerName,
 					ownerId,
 					ownerKey,

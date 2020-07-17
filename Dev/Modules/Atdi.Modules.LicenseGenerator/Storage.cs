@@ -45,6 +45,7 @@ namespace Atdi.Modules.LicenseGenerator
 		{
 			public static readonly string DeviceLicense = "DeviceLicense";
 			public static readonly string ClientLicense = "ClientLicense";
+			public static readonly string ServerLicense = "ServerLicense";
 		}
 
 		public static class Products
@@ -52,6 +53,7 @@ namespace Atdi.Modules.LicenseGenerator
 			public static readonly string ICS_Control_Device = "ICS Control Device";
 
 			public static readonly string ICSM_Plugin_GE06_Calc = "ICSM Plugin - GE06 Calc";
+			public static readonly string SDRN_Calc_Server = "SDRN Calc Server";
 		}
 	}
 }

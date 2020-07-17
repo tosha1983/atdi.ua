@@ -40,4 +40,27 @@ namespace Atdi.DataModels.Identity
     public class UserIdentity : UserIdentity<int, UserToken>
     {
     }
+
+
+    [DataContract(Namespace = CommonSpecification.Namespace)]
+    public class ServiceIdentity<TServiceId, TServiceToken>
+    {
+	    /// <summary>
+	    /// The id of service
+	    /// </summary>
+	    [DataMember]
+	    public TServiceId Id { get; set; }
+
+	    /// <summary>
+	    /// The token of service
+	    /// </summary>
+	    [DataMember]
+	    public TServiceToken Token { get; set; }
+
+    }
+
+    [DataContract(Namespace = CommonSpecification.Namespace)]
+    public class ServiceIdentity : ServiceIdentity<string, ServiceToken>
+    {
+    }
 }
