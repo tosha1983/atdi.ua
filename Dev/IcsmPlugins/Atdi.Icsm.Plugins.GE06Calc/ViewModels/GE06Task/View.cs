@@ -657,11 +657,17 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                     {
                         _starter.Start<VM.GE06TaskResult.View>(isModal: true, c => c.ResultId = ge06resultId.Value);
                     }
+                    else
+                    {
+                        this._logger.Exception(Exceptions.GE06Client, new Exception($"For selected task not found information in IGn06Result!"));
+                        _starter.ShowException("Warning!", new Exception($"For selected task not found information in IGn06Result!"));
+                    }
                 }
             }
             else
             {
                 this._logger.Exception(Exceptions.GE06Client, new Exception($"For selected task not found information in ICalcResults!"));
+                _starter.ShowException("Warning!", new Exception($"For selected task not found information in ICalcResults!"));
             }
         }
         private bool WaitForCalcResult(long calcTaskId, long calcResultId)
@@ -694,29 +700,34 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                         {
                             if (status == (byte)CalcResultStatusCode.Completed)
                             {
-                                _eventBus.Send(new LongProcessFinishEvent { ProcessToken = token });
                                 result = true;
                                 cancel = true;
+                                _eventBus.Send(new LongProcessFinishEvent { ProcessToken = token });
                             }
 
                             if (status == (byte)CalcResultStatusCode.Failed)
                             {
-                                _eventBus.Send(new LongProcessFinishEvent { ProcessToken = token });
+                                _starter.ShowException("Warning!", new Exception($"Task calculation completed with status '{CalcResultStatusCode.Failed.ToString()}'!"));
+                                this._logger.Exception(Exceptions.GE06Client, new Exception($"Task calculation completed with status '{CalcResultStatusCode.Failed.ToString()}'!"));
                                 result = false;
                                 cancel = true;
+                                _eventBus.Send(new LongProcessFinishEvent { ProcessToken = token });
                             }
                             if (status == (byte)CalcResultStatusCode.Aborted)
                             {
-                                _eventBus.Send(new LongProcessFinishEvent { ProcessToken = token });
+                                _starter.ShowException("Warning!", new Exception($"Task calculation completed with status '{CalcResultStatusCode.Aborted.ToString()}'!"));
+                                this._logger.Exception(Exceptions.GE06Client, new Exception($"Task calculation completed with status '{CalcResultStatusCode.Aborted.ToString()}'!"));
                                 result = false;
                                 cancel = true;
+                                _eventBus.Send(new LongProcessFinishEvent { ProcessToken = token });
                             }
-
                             if (status == (byte)CalcResultStatusCode.Canceled)
                             {
-                                _eventBus.Send(new LongProcessFinishEvent { ProcessToken = token });
+                                _starter.ShowException("Warning!", new Exception($"Task calculation completed with status '{CalcResultStatusCode.Canceled.ToString()}'!"));
+                                this._logger.Exception(Exceptions.GE06Client, new Exception($"Task calculation completed with status '{CalcResultStatusCode.Canceled.ToString()}'!"));
                                 result = false;
                                 cancel = true;
+                                _eventBus.Send(new LongProcessFinishEvent { ProcessToken = token });
                             }
                         }
 
@@ -737,7 +748,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
 
                             if (item.LevelCode == 2)
                             {
-                                _starter.ShowException("Warning!", new Exception(item.Message));
+                                _starter.ShowException("Error!", new Exception(item.Message));
                                 result = false;
                                 cancel = true;
                             }
