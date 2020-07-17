@@ -33,6 +33,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -44,6 +45,14 @@
     <Compile Include="AppServerComponent.cs" />
     <Compile Include="AppServerComponentConfig.cs" />
     <Compile Include="AuthService.cs" />
+    <Compile Include="Crypto\Crypto.cs" />
+    <Compile Include="Crypto\Helpers.cs" />
+    <Compile Include="Crypto\RSAParameterTraits.cs" />
+    <Compile Include="Crypto\SignData.cs" />
+    <Compile Include="Output\AuthenticationAttribute.cs" />
+    <Compile Include="Output\Enums.cs" />
+    <Compile Include="Output\ResponseInformationDataResponse.cs" />
+    <Compile Include="Output\UserInformation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Specification.cs" />
   </ItemGroup>
@@ -51,6 +60,10 @@
     <ProjectReference Include="..\..\Common\Atdi.Common\Atdi.Common.csproj">
       <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
       <Name>Atdi.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\AppServices\Atdi.Contracts.AppServices.WebQuery\Atdi.Contracts.AppServices.WebQuery.csproj">
+      <Project>{012b0214-ac04-43b0-b87f-a0c1e991ca8f}</Project>
+      <Name>Atdi.Contracts.AppServices.WebQuery</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Contracts\CoreServices\Atdi.Contracts.CoreServices.DataLayer\Atdi.Contracts.CoreServices.DataLayer.csproj">
       <Project>{e5011dd5-16c5-4cd0-ada3-d783f11c7c61}</Project>
@@ -72,6 +85,10 @@
       <Project>{b0a9f81c-cf24-4899-a069-cbf63c4483e6}</Project>
       <Name>Atdi.DataModels.Identity</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.WebQuery\Atdi.DataModels.WebQuery.csproj">
+      <Project>{ec0f3654-091a-4e1c-a16d-b11ea75a2b02}</Project>
+      <Name>Atdi.DataModels.WebQuery</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels\Atdi.DataModels.csproj">
       <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
       <Name>Atdi.DataModels</Name>
@@ -79,6 +96,10 @@
     <ProjectReference Include="..\..\Platform\Atdi.Platform\Atdi.Platform.csproj">
       <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
       <Name>Atdi.Platform</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Atdi.CoreServices.Identity\Atdi.CoreServices.Identity.csproj">
+      <Project>{3ffe283d-4233-4e63-8a27-260a8aeb353c}</Project>
+      <Name>Atdi.CoreServices.Identity</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
