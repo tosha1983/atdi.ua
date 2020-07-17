@@ -6,13 +6,20 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Atdi.Contracts.AppServices.WebQuery;
+using Atdi.Contracts.CoreServices.Identity;
 using Atdi.Modules.Licensing;
 using Atdi.Platform.AppComponent;
+using Atdi.Platform.Logging;
+using Microsoft.Win32;
 
 namespace Atdi.AppServices.WebQuery
 {
     public sealed class WebQueryComponent : AppServicesComponent<IWebQuery>
     {
+	    private const string SharedKey = "Atdi.AppServices.WebQuery";
+
+		private VerificationResult _verificationResult;
+
         public WebQueryComponent() 
             : base("WebQueryAppServices")
         {
@@ -23,15 +30,45 @@ namespace Atdi.AppServices.WebQuery
             base.OnInstall();
 
             var licenseFileName = this.Config.GetParameterAsString("License.FileName");
-            var licenseOwnerId = this.Config.GetParameterAsDecodeString("License.OwnerId", "Atdi.AppServices.WebQuery");
-            var licenseProductKey = this.Config.GetParameterAsDecodeString("License.ProductKey", "Atdi.AppServices.WebQuery");
+            var licenseOwnerId = this.Config.GetParameterAsDecodeString("License.OwnerId", SharedKey);
+            var licenseProductKey = this.Config.GetParameterAsDecodeString("License.ProductKey", SharedKey);
 
-            var licenseData = this.VerifyLicense(licenseFileName, licenseOwnerId, licenseProductKey);
+            this._verificationResult = this.VerifyLicense(licenseFileName, licenseOwnerId, licenseProductKey);
 
             this.Container.Register<QueriesRepository>(Platform.DependencyInjection.ServiceLifetime.PerThread);
             this.Container.Register<GroupDescriptorsCache>(Platform.DependencyInjection.ServiceLifetime.PerThread);
             this.Container.Register<QueryDescriptorsCache>(Platform.DependencyInjection.ServiceLifetime.PerThread);
             this.Container.Register<UserGroupDescriptorsCache>(Platform.DependencyInjection.ServiceLifetime.PerThread);
+        }
+
+        protected override void OnActivate()
+        {
+	        base.OnActivate();
+
+	        var externalServicesProvider = this.Resolver.Resolve<IExternalServiceProvider>();
+	        if (_verificationResult.ExternalServices != null && _verificationResult.ExternalServices.Length > 0)
+	        {
+		        foreach (var externalServiceDescriptor in _verificationResult.ExternalServices)
+		        {
+			        try
+			        {
+				        var service = new ExternalService
+				        {
+					        Id = externalServiceDescriptor.Id,
+					        Name = externalServiceDescriptor.Name,
+					        SecretKey = this.Config.GetParameterAsDecodeString($"ExternalServices.{externalServiceDescriptor.Name}.SecretKey", SharedKey)
+				        };
+
+				        externalServicesProvider.Register(service);
+					}
+			        catch (Exception e)
+			        {
+				        this.Logger.Exception(Contexts.WebQueryAppServices, Categories.Init, $"External service registration error: SID='{externalServiceDescriptor.Id}', Name='{externalServiceDescriptor.Name}'", e, this);
+			        }
+			        
+		        }
+			}
+	        
         }
 
         private string AssemblyDirectory

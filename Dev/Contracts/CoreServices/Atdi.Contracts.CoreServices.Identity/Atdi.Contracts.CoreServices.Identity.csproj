@@ -44,6 +44,8 @@
     <Compile Include="IAuthenticationManager.cs" />
     <Compile Include="IAuthService.cs" />
     <Compile Include="IAuthServiceSite.cs" />
+    <Compile Include="IExternalServiceProvider.cs" />
+    <Compile Include="IServiceTokenProvider.cs" />
     <Compile Include="IUserTokenProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserTokenData.cs" />

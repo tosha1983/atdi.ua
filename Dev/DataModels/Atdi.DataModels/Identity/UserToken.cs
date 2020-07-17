@@ -27,6 +27,6 @@ namespace Atdi.DataModels.Identity
 		/// The token binary data
 		/// </summary>
 		[DataMember]
-	    public byte[] Data { get; set; }
+	    public string Data { get; set; }
     }
 }

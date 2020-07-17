@@ -47,5 +47,39 @@ namespace Atdi.Modules.LicenseGenerator
                 };
             }
         }
-    }
+
+        public LicenseCrationResult Create(LicenseData3[] licenses)
+        {
+	        IFormatter formatter = new BinaryFormatter();
+	        using (MemoryStream stream = new MemoryStream())
+	        {
+		        formatter.Serialize(stream, licenses);
+		        var raw = Convert.ToBase64String(stream.ToArray());
+		        var key = Assembly.GetAssembly(typeof(LicenseData3)).FullName;
+		        var encodeVal = Encryptor.EncryptStringAES(raw, key);
+
+		        return new LicenseCrationResult
+		        {
+			        Body = Encoding.UTF8.GetBytes(encodeVal)
+		        };
+	        }
+        }
+
+        public LicenseCrationResult Create(LicenseData4[] licenses)
+        {
+	        IFormatter formatter = new BinaryFormatter();
+	        using (MemoryStream stream = new MemoryStream())
+	        {
+		        formatter.Serialize(stream, licenses);
+		        var raw = Convert.ToBase64String(stream.ToArray());
+		        var key = Assembly.GetAssembly(typeof(LicenseData4)).FullName;
+		        var encodeVal = Encryptor.EncryptStringAES(raw, key);
+
+		        return new LicenseCrationResult
+		        {
+			        Body = Encoding.UTF8.GetBytes(encodeVal)
+		        };
+	        }
+        }
+	}
 }

@@ -111,6 +111,21 @@ namespace Atdi.Modules.Licensing
 	}
 
     [Serializable]
+    public class ExternalServiceDescriptor
+	{
+		public string Id { get; set; }
+
+		public string Name { get; set; }
+	}
+
+	[Serializable]
+	public class LicenseData4 : LicenseData3
+	{
+		public ExternalServiceDescriptor[] ExternalServices { get; set; }
+	}
+
+
+	[Serializable]
 	public class HostHardwareDescriptor
 	{
 	    public string Cpu;
