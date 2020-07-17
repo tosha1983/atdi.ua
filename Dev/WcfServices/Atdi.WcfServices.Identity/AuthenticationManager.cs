@@ -25,7 +25,12 @@ namespace Atdi.WcfServices.Identity
             this._coreAuthManager = coreAuthManager;
         }
 
-        public Result<UserIdentity> AuthenticateUser(UserCredential credential)
+		public Result<ServiceIdentity> AuthenticateService(ServiceCredential credential)
+		{
+			throw new NotImplementedException();
+		}
+
+		public Result<UserIdentity> AuthenticateUser(UserCredential credential)
         {
             using (this._logger.StartTrace(Contexts.AuthenticationManager, Categories.OperationCall, TraceScopeNames.AuthenticationUser))
             {
@@ -37,5 +42,15 @@ namespace Atdi.WcfServices.Identity
                 };
             }
         }
-    }
+
+		public Result<UserIdentity> HandleAndAuthenticateUser(ServiceToken token, AuthRedirectionResponse response)
+		{
+			throw new NotImplementedException();
+		}
+
+		public Result<AuthRedirectionQuery> PrepareAuthRedirection(ServiceToken token, AuthRedirectionOptions options)
+		{
+			throw new NotImplementedException();
+		}
+	}
 }

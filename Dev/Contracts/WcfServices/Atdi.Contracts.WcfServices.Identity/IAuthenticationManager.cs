@@ -22,5 +22,31 @@ namespace Atdi.Contracts.WcfServices.Identity
         /// <returns>The user identity</returns>
         [OperationContract]
         Result<UserIdentity> AuthenticateUser(UserCredential credential);
-    }
+
+        /// <summary>
+        /// Authentication of the external service by sid and secret key
+        /// </summary>
+        /// <param name="credential">The credential of the user</param>
+        /// <returns>The user identity</returns>
+        [OperationContract]
+        Result<ServiceIdentity> AuthenticateService(ServiceCredential credential);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        [OperationContract]
+        Result<AuthRedirectionQuery> PrepareAuthRedirection(ServiceToken token, AuthRedirectionOptions options);
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="token"></param>
+		/// <param name="response"></param>
+		/// <returns></returns>
+		[OperationContract]
+		Result<UserIdentity> HandleAndAuthenticateUser(ServiceToken token, AuthRedirectionResponse response);
+	}
 }

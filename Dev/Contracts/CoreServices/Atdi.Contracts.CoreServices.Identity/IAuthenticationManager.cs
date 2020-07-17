@@ -10,5 +10,11 @@ namespace Atdi.Contracts.CoreServices.Identity
     public interface IAuthenticationManager
     {
         UserIdentity AuthenticateUser(UserCredential credential);
-    }
+
+        ServiceIdentity AuthenticateService(ServiceCredential credential);
+
+        AuthRedirectionQuery PrepareAuthRedirection(ServiceToken token, AuthRedirectionOptions options);
+
+        UserIdentity HandleAndAuthenticateUser(ServiceToken token, AuthRedirectionResponse response);
+	}
 }

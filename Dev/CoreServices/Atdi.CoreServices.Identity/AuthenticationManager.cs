@@ -120,5 +120,20 @@ namespace Atdi.CoreServices.Identity
 
             throw new InvalidOperationException(Exceptions.InvalidUserPassword.With(credential.UserName));
         }
-    }
+
+		public ServiceIdentity AuthenticateService(ServiceCredential credential)
+		{
+			throw new NotImplementedException();
+		}
+
+		public AuthRedirectionQuery PrepareAuthRedirection(ServiceToken token, AuthRedirectionOptions options)
+		{
+			throw new NotImplementedException();
+		}
+
+		public UserIdentity HandleAndAuthenticateUser(ServiceToken token, AuthRedirectionResponse response)
+		{
+			throw new NotImplementedException();
+		}
+	}
 }

@@ -13,8 +13,8 @@ using System.Threading.Tasks;
 namespace Atdi.LegacyServices.Icsm
 {
 
-    public sealed class QuerySelectStatement : IQuerySelectStatement
-    {
+    public sealed class QuerySelectStatement : IQueryPagingStatement, IQuerySelectStatement
+	{
         public sealed class ColumnDescriptor
         {
             public string Table { get; set; }
@@ -206,7 +206,7 @@ namespace Atdi.LegacyServices.Icsm
             return this;
         }
 
-        public IQuerySelectStatement OrderByAsc(params string[] columns)
+        public IQueryPagingStatement OrderByAsc(params string[] columns)
         {
             foreach (var column in columns)
             {
@@ -221,7 +221,7 @@ namespace Atdi.LegacyServices.Icsm
             return this;
         }
 
-        public IQuerySelectStatement OrderByDesc(params string[] columns)
+        public IQueryPagingStatement OrderByDesc(params string[] columns)
         {
             foreach (var column in columns)
             {
@@ -312,9 +312,24 @@ namespace Atdi.LegacyServices.Icsm
             this._isDistinct = true;
             return this;
         }
-    }
 
-    internal sealed class QuerySelectStatement<TModel> : IQuerySelectStatement<TModel>
+		public IQuerySelectStatement OffsetRows(long count)
+		{
+			throw new NotImplementedException();
+		}
+
+		public IQuerySelectStatement Paginate(long offsetRows, long fetchRows)
+		{
+			throw new NotImplementedException();
+		}
+
+		public IQuerySelectStatement FetchRows(long count)
+		{
+			throw new NotImplementedException();
+		}
+	}
+
+    internal sealed class QuerySelectStatement<TModel> : IQueryPagingStatement<TModel>, IQuerySelectStatement<TModel>
     {
         private static readonly Type ModelType = typeof(TModel);
         private readonly QuerySelectStatement _statement;
@@ -345,7 +360,7 @@ namespace Atdi.LegacyServices.Icsm
             return this;
         }
 
-        public IQuerySelectStatement<TModel> OrderByAsc(params Expression<Func<TModel, object>>[] columnsExpressions)
+        public IQueryPagingStatement<TModel> OrderByAsc(params Expression<Func<TModel, object>>[] columnsExpressions)
         {
             if (columnsExpressions == null || columnsExpressions.Length == 0)
             {
@@ -361,7 +376,7 @@ namespace Atdi.LegacyServices.Icsm
             return this;
         }
 
-        public IQuerySelectStatement<TModel> OrderByDesc(params Expression<Func<TModel, object>>[] columnsExpressions)
+        public IQueryPagingStatement<TModel> OrderByDesc(params Expression<Func<TModel, object>>[] columnsExpressions)
         {
             if (columnsExpressions == null || columnsExpressions.Length == 0)
             {
@@ -994,8 +1009,19 @@ namespace Atdi.LegacyServices.Icsm
             return expression.Body.GetMemberName();
         }
 
-        
+		public IQuerySelectStatement<TModel> OffsetRows(long count)
+		{
+			throw new NotImplementedException();
+		}
 
-        
-    }
+		public IQuerySelectStatement<TModel> Paginate(long offsetRows, long fetchRows)
+		{
+			throw new NotImplementedException();
+		}
+
+		public IQuerySelectStatement<TModel> FetchRows(long count)
+		{
+			throw new NotImplementedException();
+		}
+	}
 }
