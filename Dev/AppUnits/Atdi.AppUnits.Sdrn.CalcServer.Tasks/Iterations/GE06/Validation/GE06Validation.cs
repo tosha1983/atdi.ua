@@ -32,6 +32,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         public static bool ValidationAllotment(BroadcastingAllotment allotments, out string notValidAdmRefIds)
         {
             string notIdentified = "Allotment with parameters that could not be identified;";
+            var notValidParameters = new List<string>();
             notValidAdmRefIds = "";
             bool isSuccess = true;
             if (allotments != null)
@@ -40,44 +41,48 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 if (allotments.AdminData == null)
                 {
                     isSuccess = false;
+                    notValidParameters.Add("'AdminData' is null");
                 }
                 else if (allotments.AdminData != null)
                 {
                     if (string.IsNullOrEmpty(allotments.AdminData.Adm))
                     {
                         isSuccess = false;
+                        notValidParameters.Add("'AdminData.Adm' is null or empty");
                     }
                     if (string.IsNullOrEmpty(allotments.AdminData.AdmRefId))
                     {
                         isSuccess = false;
+                        notValidParameters.Add("'AdminData.AdmRefId' is null or empty");
                     }
                 }
                 //AllotmentParameters
                 if (allotments.AllotmentParameters == null)
                 {
                     isSuccess = false;
+                    notValidParameters.Add("'AllotmentParameters' is null");
                 }
                 else if (allotments.AllotmentParameters != null)
                 {
                     if (allotments.AllotmentParameters.ContourId == 0)
                     {
                         isSuccess = false;
+                        notValidParameters.Add("'AllotmentParameters.ContourId' is 0");
                     }
-                    //if (string.IsNullOrEmpty(allotments.AllotmentParameters.Name))
-                    //{
-                    //    isSuccess = false;
-                    //}
                     if (allotments.AllotmentParameters.Contur == null)
                     {
                         isSuccess = false;
+                        notValidParameters.Add("'AllotmentParameters.Contur' is null");
                     }
                     else if (allotments.AllotmentParameters.Contur.Length < 3)
                     {
                         isSuccess = false;
+                        notValidParameters.Add("'AllotmentParameters.Contur.Length' < 3");
                     }
                     else if (!ValidationAllotmentsPoint(allotments.AllotmentParameters.Contur))
                     {
                         isSuccess = false;
+                        notValidParameters.Add("'AllotmentParameters.Contur' - not valid points");
                     }
 
                 }
@@ -86,6 +91,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 if (allotments.EmissionCharacteristics == null)
                 {
                     isSuccess = false;
+                    notValidParameters.Add("'EmissionCharacteristics' is null");
                 }
                 else if (allotments.EmissionCharacteristics != null)
                 {
@@ -94,38 +100,21 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         || ((allotments.EmissionCharacteristics.Freq_MHz >= 582) && (allotments.EmissionCharacteristics.Freq_MHz <= 862))) == false)
                     {
                         isSuccess = false;
+                        notValidParameters.Add("'EmissionCharacteristics.Freq_MHz' not valid");
                     }
                 }
                 else if (allotments.EmissionCharacteristics.RefNetworkConfig == RefNetworkConfigType.Unknown)
                 {
                     isSuccess = false;
+                    notValidParameters.Add("'EmissionCharacteristics.RefNetworkConfig' is Unknown");
                 }
-                // Target
-                //if (allotments.Target == null)
-                //{
-                //    isSuccess = false;
-                //}
-                //else if (allotments.Target != null)
-                //{
-                //    if (string.IsNullOrEmpty(allotments.Target.AdmRefId))
-                //    {
-                //        isSuccess = false;
-                //    }
-                //    if ((((allotments.Target.Freq_MHz >= 174) && (allotments.Target.Freq_MHz <= 230))
-                //        || ((allotments.Target.Freq_MHz >= 470) && (allotments.Target.Freq_MHz <= 582))
-                //        || ((allotments.Target.Freq_MHz >= 582) && (allotments.Target.Freq_MHz <= 862))) == false)
-                //    {
-                //        isSuccess = false;
-                //    }
-                //}
-
                 if (!isSuccess)
                 {
                     if (allotments.AdminData != null)
                     {
                         if (!string.IsNullOrEmpty(allotments.AdminData.AdmRefId))
                         {
-                            notValidAdmRefIds += $"AdmRefId = '{allotments.AdminData.AdmRefId}';";
+                            notValidAdmRefIds += $"AdmRefId = '{allotments.AdminData.AdmRefId}'";
                         }
                         else
                         {
@@ -136,6 +125,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     {
                         notValidAdmRefIds += notIdentified;
                     }
+                    notValidAdmRefIds = notValidAdmRefIds+";" +string.Join(";", notValidParameters);
                 }
             }
             return isSuccess;
@@ -161,6 +151,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         /// <returns></returns>
         public static bool ValidationAssignment(BroadcastingAssignment[] assignments, out string notValidAdmRefIds)
         {
+            var notValidParameters = new List<string>();
             notValidAdmRefIds = "";
             string notIdentified = "Assignment with parameters that could not be identified;";
             bool isSuccess = true;
@@ -173,34 +164,34 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     if (assignments[i].AdmData == null)
                     {
                         isSuccess = false;
+                        notValidParameters.Add("'AdmData' is null");
                     }
                     else if (assignments[i].AdmData != null)
                     {
                         if (string.IsNullOrEmpty(assignments[i].AdmData.Adm))
                         {
                             isSuccess = false;
+                            notValidParameters.Add("'AdmData.Adm' is null or empty");
                         }
                         if (string.IsNullOrEmpty(assignments[i].AdmData.AdmRefId))
                         {
                             isSuccess = false;
+                            notValidParameters.Add("'AdmData.AdmRefId' is null or empty");
                         }
-                        //if (string.IsNullOrEmpty(assignments[i].AdmData.Fragment))
-                        //{
-                        //    isSuccess = false;
-                        //}
                     }
                     //AntennaCharacteristics
                     if (assignments[i].AntennaCharacteristics == null)
                     {
                         isSuccess = false;
+                        notValidParameters.Add("'AntennaCharacteristics' is null");
                     }
                     else if (assignments[i].AntennaCharacteristics != null)
                     {
-
                         //MaxEffHeight_m
                         if (((assignments[i].AntennaCharacteristics.AglHeight_m >= 0) && (assignments[i].AntennaCharacteristics.AglHeight_m <= 800)) == false)
                         {
                             isSuccess = false;
+                            notValidParameters.Add("'AntennaCharacteristics.AglHeight_m' not valid");
                         }
                         //EffHeight_m
                         if ((assignments[i].AntennaCharacteristics.EffHeight_m != null) && (assignments[i].AntennaCharacteristics.EffHeight_m.Length>0))
@@ -208,6 +199,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             if (assignments[i].AntennaCharacteristics.EffHeight_m.Length != 36)
                             {
                                 isSuccess = false;
+                                notValidParameters.Add("'AntennaCharacteristics.EffHeight_m' length != 36");
                             }
                             for (int j = 0; j < assignments[i].AntennaCharacteristics.EffHeight_m.Length; j++)
                             {
@@ -215,6 +207,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                 if (((effHeight_m >= -3000) && (effHeight_m <= 3000)) == false)
                                 {
                                     isSuccess = false;
+                                    notValidParameters.Add("'AntennaCharacteristics.EffHeight_m' not valid");
                                 }
                             }
                         }
@@ -222,6 +215,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         if (assignments[i].EmissionCharacteristics == null)
                         {
                             isSuccess = false;
+                            notValidParameters.Add("'EmissionCharacteristics' is null");
                         }
                         else if (assignments[i].EmissionCharacteristics != null)
                         {
@@ -230,6 +224,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             || ((assignments[i].EmissionCharacteristics.Freq_MHz >= 582) && (assignments[i].EmissionCharacteristics.Freq_MHz <= 862))) == false)
                             {
                                 isSuccess = false;
+                                notValidParameters.Add("'EmissionCharacteristics.Freq_MHz' not valid");
                             }
 
                             if (assignments[i].AntennaCharacteristics.Direction == AntennaDirectionType.D)
@@ -239,6 +234,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                     if (assignments[i].EmissionCharacteristics.ErpH_dBW > 53)
                                     {
                                         isSuccess = false;
+                                        notValidParameters.Add("'EmissionCharacteristics.ErpH_dBW' not valid");
                                     }
                                 }
                                 if ((assignments[i].EmissionCharacteristics.Polar == PolarType.V) || (assignments[i].EmissionCharacteristics.Polar == PolarType.M))
@@ -246,13 +242,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                     if (assignments[i].EmissionCharacteristics.ErpV_dBW > 53)
                                     {
                                         isSuccess = false;
+                                        notValidParameters.Add("'EmissionCharacteristics.ErpV_dBW' not valid");
                                     }
                                 }
-
-                             
                             }
-
-                         
                         }
                         
                         if (assignments[i].AntennaCharacteristics.Direction == AntennaDirectionType.D)
@@ -263,12 +256,14 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                 if (assignments[i].AntennaCharacteristics.DiagrV == null)
                                 {
                                     isSuccess = false;
+                                    notValidParameters.Add("'AntennaCharacteristics.DiagrV' is null");
                                 }
                                 else if ((assignments[i].AntennaCharacteristics.DiagrV != null) && (assignments[i].AntennaCharacteristics.DiagrV.Length>0))
                                 {
                                     if (assignments[i].AntennaCharacteristics.DiagrV.Length != 36)
                                     {
                                         isSuccess = false;
+                                        notValidParameters.Add("'AntennaCharacteristics.DiagrV' length != 36");
                                     }
                                     for (int j = 0; j < assignments[i].AntennaCharacteristics.DiagrV.Length; j++)
                                     {
@@ -276,6 +271,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                         if (((diagrV >= 0) && (diagrV <= 40)) == false)
                                         {
                                             isSuccess = false;
+                                            notValidParameters.Add("'AntennaCharacteristics.DiagrV' not valid");
                                         }
                                     }
                                 }
@@ -286,12 +282,14 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                 if (assignments[i].AntennaCharacteristics.DiagrH == null)
                                 {
                                     isSuccess = false;
+                                    notValidParameters.Add("'AntennaCharacteristics.DiagrH' is null");
                                 }
                                 else if ((assignments[i].AntennaCharacteristics.DiagrH != null) && (assignments[i].AntennaCharacteristics.DiagrH.Length>0))
                                 {
                                     if (assignments[i].AntennaCharacteristics.DiagrH.Length != 36)
                                     {
                                         isSuccess = false;
+                                        notValidParameters.Add("'AntennaCharacteristics.DiagrH' length != 36");
                                     }
                                     for (int j = 0; j < assignments[i].AntennaCharacteristics.DiagrH.Length; j++)
                                     {
@@ -299,6 +297,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                         if (((diagrH >= 0) && (diagrH <= 40)) == false)
                                         {
                                             isSuccess = false;
+                                            notValidParameters.Add("'AntennaCharacteristics.DiagrH' not valid");
                                         }
                                     }
                                 }
@@ -310,52 +309,31 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     if (assignments[i].SiteParameters == null)
                     {
                         isSuccess = false;
+                        notValidParameters.Add("'SiteParameters' is null");
                     }
                     else if (assignments[i].SiteParameters != null)
                     {
-                        //if (((assignments[i].SiteParameters.Alt_m >= -1000) && (assignments[i].SiteParameters.Alt_m <= 8850)) == false)
-                        //{
-                        //    isSuccess = false;
-                        //}
-                        //if (string.IsNullOrEmpty(assignments[i].SiteParameters.Name))
-                        //{
-                        //    isSuccess = false;
-                        //}
                         AreaPoint[] areaPoints = new AreaPoint[1];
                         areaPoints[0] = new AreaPoint() { Lat_DEC = assignments[i].SiteParameters.Lat_Dec, Lon_DEC = assignments[i].SiteParameters.Lon_Dec };
                         if (!ValidationAllotmentsPoint(areaPoints))
                         {
                             isSuccess = false;
+                            notValidParameters.Add("'SiteParameters' coordinates not valid");
                         }
                     }
-
-                    //if (assignments[i].Target != null)
-                    //{
-                    //    if (string.IsNullOrEmpty(assignments[i].Target.AdmRefId))
-                    //    {
-                    //        isSuccess = false;
-                    //    }
-                    //    if ((((assignments[i].Target.Freq_MHz >= 174) && (assignments[i].Target.Freq_MHz <= 230))
-                    //    || ((assignments[i].Target.Freq_MHz >= 470) && (assignments[i].Target.Freq_MHz <= 582))
-                    //    || ((assignments[i].Target.Freq_MHz >= 582) && (assignments[i].Target.Freq_MHz <= 862))) == false)
-                    //    {
-                    //        isSuccess = false;
-                    //    }
-                    //}
-
                     if (!isSuccess)
                     {
                         if (assignments[i].AdmData != null)
                         {
                             if (!string.IsNullOrEmpty(assignments[i].AdmData.AdmRefId))
                             {
-                                notValidAdmRefIds += $"AdmRefId = '{assignments[i].AdmData.AdmRefId}';";
+                                notValidAdmRefIds += $"AdmRefId = '{assignments[i].AdmData.AdmRefId}'";
                             }
                             else if (assignments[i].SiteParameters != null)
                             {
                                 if (!string.IsNullOrEmpty(assignments[i].SiteParameters.Name))
                                 {
-                                    notValidAdmRefIds += $"Site.Name = '{assignments[i].SiteParameters.Name}';";
+                                    notValidAdmRefIds += $"Site.Name = '{assignments[i].SiteParameters.Name}'";
                                 }
                                 else
                                 {
@@ -371,7 +349,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         {
                             if (!string.IsNullOrEmpty(assignments[i].SiteParameters.Name))
                             {
-                                notValidAdmRefIds += $"Site.Name = '{assignments[i].SiteParameters.Name}';";
+                                notValidAdmRefIds += $"Site.Name = '{assignments[i].SiteParameters.Name}'";
                             }
                             else
                             {
@@ -382,6 +360,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         {
                             notValidAdmRefIds += notIdentified;
                         }
+
+                        notValidAdmRefIds = notValidAdmRefIds + ";" + string.Join(";", notValidParameters);
                     }
                 }
             }
