@@ -17,28 +17,25 @@ namespace Atdi.CoreServices.AuthService.IcsmViisp
     {
         public static readonly EventCategory Handling = "Handling";
     }
-
+       
     static class Events
     {
-        //public static readonly EventText UnableToCreateHost = "Unable to create the service host: {0}";
-        //public static readonly EventText UnableToOpenHost = "Unable to open the service host: {0}";
-        //public static readonly EventText UnableToCloseHost = "Unable to close the service host: {0}";
-        //public static readonly EventText UnableToDisposeHost = "Unable to dispose the service host: {0}";
-        //public static readonly EventText ServiceHostDescriptor = "{0}";
+        public static readonly EventText RedirectionQuery = "Redirection query: {0}";
+        public static readonly EventText InformationAboutAuthenticatedUser = "Information about authenticated user: RegistNum = {0}, Name = {1}, Email = {2} ";
     }
     static class TraceScopeNames
     {
-        //public static readonly TraceScopeName GetQueriesTree = "GetQueriesTree";
-        //public static readonly TraceScopeName GetQueryMetadata = "GetQueryMetadata";
-        //public static readonly TraceScopeName ExecuteQuery = "ExecuteQuery";
-        //public static readonly TraceScopeName SaveChanges = "SaveChanges";
+
     }
 
     static class Exceptions
     {
-        //public static readonly ExceptionText NotFoundUser = "Not found user with name '{0}'";
-        //public static readonly ExceptionText InvalidUserPassword = "Invalid password for user with name '{0}'";
-        //public static readonly ExceptionText InvalidKey = "The key to using the product is missing or invalid";
+        public static readonly ExceptionText ResponseInformationDataAuthenticationAttributeZero = "'ResponseInformationData.AuthenticationAttribute' length = 0";
+        public static readonly ExceptionText ResponseInformationDataIsNull = "'ResponseInformationData' is null";
+        public static readonly ExceptionText GetResponseAuthenticationDataFaultString = "Method 'GetResponseAuthenticationData' return fault string '{0}'";
+        public static readonly ExceptionText ResponseUrlNotContainsParametersTicketOrCustomData = "Response Url not contains parameters 'ticket' or 'customData'";
+        public static readonly ExceptionText UnexpectedErrorOccurredDuringMethodExecution = "Unexpected error occurred during method execution (UserTokenData is null)";
+        public static readonly ExceptionText PrepareAuthRedirectionFaultString = "Method 'PrepareAuthRedirection' return fault string '{0}'";
     }
 
 }

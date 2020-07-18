@@ -42,6 +42,34 @@ namespace Atdi.CoreServices.AuthService.IcsmViisp
         }
 
         /// <summary>
+        /// Парсер URL-строки
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns></returns>
+        public static Dictionary<string, string> ParseQueryString(String query)
+        {
+            var queryDict = new Dictionary<string, string>();
+            var idx = query.TrimStart().LastIndexOf('?');
+            if (idx > 0)
+            {
+                query = query.Remove(0, idx + 1);
+                foreach (String token in query.Split(new char[] { '&' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    string[] parts = token.Split(new char[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
+                    if (parts.Length == 2)
+                    {
+                        queryDict[parts[0].Trim()] = parts[1].Trim();
+                    }
+                    else
+                    {
+                        queryDict[parts[0].Trim()] = "";
+                    }
+                }
+            }
+            return queryDict;
+        }
+
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="pemString"></param>
