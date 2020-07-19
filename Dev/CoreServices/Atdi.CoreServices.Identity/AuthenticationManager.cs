@@ -19,14 +19,26 @@ namespace Atdi.CoreServices.Identity
 {
     public sealed class AuthenticationManager : LoggedObject, IAuthenticationManager
     {
-        private readonly IDataLayer<IcsmDataOrm> _dataLayer;
-        private readonly IUserTokenProvider _tokenProvider;
+	    private readonly IAuthServiceSite _authServiceSite;
+	    private readonly IExternalServiceProvider _externalServiceProvider;
+	    private readonly IDataLayer<IcsmDataOrm> _dataLayer;
+	    private readonly IServiceTokenProvider _serviceTokenProvider;
+	    private readonly IUserTokenProvider _userTokenProvider;
         private readonly IQueryExecutor _queryExecutor;
 
-        public AuthenticationManager(IDataLayer<IcsmDataOrm> dataLayer, IUserTokenProvider tokenProvider, ILogger logger) : base(logger)
+        public AuthenticationManager(
+			IAuthServiceSite authServiceSite,
+	        IExternalServiceProvider externalServiceProvider,
+	        IDataLayer<IcsmDataOrm> dataLayer,
+	        IServiceTokenProvider serviceTokenProvider,
+			IUserTokenProvider userTokenProvider, 
+	        ILogger logger) : base(logger)
         {
-            this._dataLayer = dataLayer;
-            this._tokenProvider = tokenProvider;
+	        _authServiceSite = authServiceSite;
+	        _externalServiceProvider = externalServiceProvider;
+	        this._dataLayer = dataLayer;
+	        _serviceTokenProvider = serviceTokenProvider;
+	        this._userTokenProvider = userTokenProvider;
             this._queryExecutor = this._dataLayer.Executor<IcsmDataContext>();
         }
 
@@ -41,7 +53,7 @@ namespace Atdi.CoreServices.Identity
                 UserId = user.UserId
             };
 
-            var userToken = this._tokenProvider.CreatUserToken(tokenData);
+            var userToken = this._userTokenProvider.CreatUserToken(tokenData);
 
             return new UserIdentity
             {
@@ -111,7 +123,7 @@ namespace Atdi.CoreServices.Identity
 
 
             if ((string.IsNullOrEmpty(userData.Password) && string.IsNullOrEmpty(credential.Password))
-                || userData.Password == _tokenProvider.GetHashPassword(credential.Password))
+                || userData.Password == _userTokenProvider.GetHashPassword(credential.Password))
             {
                 var userIdentity = this.CreateUserIdentity(userData);
                 return userIdentity;
@@ -123,17 +135,106 @@ namespace Atdi.CoreServices.Identity
 
 		public ServiceIdentity AuthenticateService(ServiceCredential credential)
 		{
-			throw new NotImplementedException();
+			if (credential == null)
+			{
+				throw new ArgumentNullException(nameof(credential));
+			}
+			if (string.IsNullOrEmpty(credential.ServiceId))
+			{
+				throw new ArgumentNullException(nameof(credential.ServiceId));
+			}
+			if (string.IsNullOrEmpty(credential.SecretKey))
+			{
+				throw new ArgumentNullException(nameof(credential.SecretKey));
+			}
+
+			var externalService = _externalServiceProvider.GetServiceById(credential.ServiceId);
+			if (externalService == null)
+			{
+				throw new InvalidOperationException(Exceptions.NotFoundService.With(credential.ServiceId));
+			}
+			if (credential.SecretKey != externalService.SecretKey)
+			{
+				throw new InvalidOperationException(Exceptions.InvalidServiceSecretKey.With(credential.ServiceId));
+			}
+
+			return new ServiceIdentity
+			{
+				Id = credential.ServiceId,
+				Token = _serviceTokenProvider.EncodeToken(new ServiceTokenData
+				{
+					Id = credential.ServiceId,
+					Name = externalService.Name,
+					AuthDate = DateTime.Now
+				})
+			};
 		}
 
 		public AuthRedirectionQuery PrepareAuthRedirection(ServiceToken token, AuthRedirectionOptions options)
 		{
-			throw new NotImplementedException();
+			if (token == null)
+			{
+				throw new ArgumentNullException(nameof(token));
+			}
+			if (options == null)
+			{
+				throw new ArgumentNullException(nameof(options));
+			}
+			if (string.IsNullOrEmpty(options.AuthService))
+			{
+				throw new ArgumentNullException(nameof(options.AuthService));
+			}
+
+			this.VerifyServiceToken(token);
+
+			var authService = DefineAuthService(options.AuthService);
+			return authService.PrepareAuthRedirection(options);
+		}
+
+		private IAuthService DefineAuthService(string name)
+		{
+			var authService = _authServiceSite.GetService(name);
+			if (authService == null)
+			{
+				throw new InvalidOperationException($"Unknown authentication service '{name}'");
+			}
+
+			return authService;
 		}
 
 		public UserIdentity HandleAndAuthenticateUser(ServiceToken token, AuthRedirectionResponse response)
 		{
-			throw new NotImplementedException();
+			if (token == null)
+			{
+				throw new ArgumentNullException(nameof(token));
+			}
+			if (response == null)
+			{
+				throw new ArgumentNullException(nameof(response));
+			}
+			if (string.IsNullOrEmpty(response.AuthService))
+			{
+				throw new ArgumentNullException(nameof(response.AuthService));
+			}
+
+			this.VerifyServiceToken(token);
+
+			var authService = DefineAuthService(response.AuthService);
+			return authService.AuthenticateUser(response, _userTokenProvider);
+		}
+
+		private void VerifyServiceToken(ServiceToken token)
+		{
+			var serviceData = _serviceTokenProvider.DecodeToken(token);
+			var externalService = _externalServiceProvider.GetServiceById(serviceData.Id);
+			if (externalService == null)
+			{
+				throw new InvalidOperationException(Exceptions.InvalidServiceToken);
+			}
+			if (externalService.Name != serviceData.Name)
+			{
+				throw new InvalidOperationException(Exceptions.InvalidServiceToken);
+			}
 		}
 	}
 }

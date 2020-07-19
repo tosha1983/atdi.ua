@@ -11,6 +11,9 @@ namespace Atdi.DataModels.Identity
 	public class AuthRedirectionResponse
 	{
 		[DataMember]
+		public string AuthService;
+
+		[DataMember]
 		public string Url { get; set; }
 	}
 }

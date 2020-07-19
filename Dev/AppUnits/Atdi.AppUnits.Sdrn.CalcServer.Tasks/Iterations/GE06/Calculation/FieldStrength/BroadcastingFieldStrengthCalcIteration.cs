@@ -488,7 +488,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     FSfor1kW_dBuVm = calcFSResult.FSResult;
                     //FSfor1kW_dBuVm = ITU1546_4.Get_E(data.BroadcastingAssignment.AntennaCharacteristics.AglHeight_m, effectiveHeight, d_km, data.BroadcastingAssignment.EmissionCharacteristics.Freq_MHz, data.PropagationModel.Parameters.Time_pc, effectiveHeight, data.TargetAltitude_m, landSeaList.ToArray());
                 }
-                else
+                else if (data.PropagationModel.MainBlock.ModelType == MainCalcBlockModelType.ITU1546)
                 {
                     //FSfor1kW_dBuVm = ITU1546_6.Get_E(data.BroadcastingAssignment.AntennaCharacteristics.AglHeight_m, effectiveHeight, d_km, data.BroadcastingAssignment.EmissionCharacteristics.Freq_MHz, data.PropagationModel.Parameters.Time_pc, effectiveHeight, data.TargetAltitude_m, h2aboveSea, landSeaList.ToArray());
                     var calcFSArgs = new CalcFSArgs()
@@ -507,6 +507,26 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     _signalService.CalcFS_ITU1546_6(in calcFSArgs, ref calcFSResult);
                     FSfor1kW_dBuVm = calcFSResult.FSResult;
                 }
+                else if (data.PropagationModel.MainBlock.ModelType == MainCalcBlockModelType.ITU1546_ge06)
+                {
+                    //FSfor1kW_dBuVm = ITU1546_6.Get_E(data.BroadcastingAssignment.AntennaCharacteristics.AglHeight_m, effectiveHeight, d_km, data.BroadcastingAssignment.EmissionCharacteristics.Freq_MHz, data.PropagationModel.Parameters.Time_pc, effectiveHeight, data.TargetAltitude_m, h2aboveSea, landSeaList.ToArray());
+                    var calcFSArgs = new CalcFSArgs()
+                    {
+                        ha = data.BroadcastingAssignment.AntennaCharacteristics.AglHeight_m,
+                        hef = effectiveHeight,
+                        d = d_km,
+                        f = data.BroadcastingAssignment.EmissionCharacteristics.Freq_MHz,
+                        p = data.PropagationModel.Parameters.Time_pc,
+                        h_gr = effectiveHeight,
+                        h2 = data.TargetAltitude_m,
+                        h2AboveSea = h2aboveSea,
+                        list1 = landSeaList.ToArray()
+                    };
+                    var calcFSResult = new CalcFSResult();
+                    _signalService.CalcFS_ITU1546_ge06(in calcFSArgs, ref calcFSResult);
+                    FSfor1kW_dBuVm = calcFSResult.FSResult;
+                }
+
 
                 //var fS_dBuVm = FSfor1kW_dBuVm + ERP_dBW - 30;
                 //var level_dBm = ERP_dBW + 30 + fS_dBuVm - 139.3 - 20 * Math.Log10(data.BroadcastingAssignment.EmissionCharacteristics.Freq_MHz);

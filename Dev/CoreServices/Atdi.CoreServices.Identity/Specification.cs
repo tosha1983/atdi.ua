@@ -37,8 +37,14 @@ namespace Atdi.CoreServices.Identity
     static class Exceptions
     {
         public static readonly ExceptionText NotFoundUser = "Not found user with name '{0}'";
-        public static readonly ExceptionText InvalidUserPassword = "Invalid password for user with name '{0}'";
+        public static readonly ExceptionText NotFoundService = "Service with SID='{0}' not found";
+
+		public static readonly ExceptionText InvalidUserPassword = "Invalid password for user with name '{0}'";
         public static readonly ExceptionText InvalidKey = "The key to using the product is missing or invalid";
-    }
+
+        public static readonly ExceptionText InvalidServiceSecretKey = "Invalid secret key for service with SID='{0}'";
+
+        public static readonly ExceptionText InvalidServiceToken = "Invalid service token";
+	}
 
 }

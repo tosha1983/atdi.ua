@@ -28,5 +28,6 @@ namespace Atdi.Contracts.Sdrn.DeepServices.RadioSystem
 
         void CalcFS_ITU1546_6(in CalcFSArgs args, ref CalcFSResult result);
 
+        void CalcFS_ITU1546_ge06(in CalcFSArgs args, ref CalcFSResult result);
     }
 }

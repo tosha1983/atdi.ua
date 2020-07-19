@@ -8,9 +8,9 @@ namespace Atdi.Contracts.CoreServices.Identity
 {
 	public interface IAuthServiceSite
 	{
-		void Registry(string providerName, Type providerType);
+		void Register(string serviceName, Type serviceType);
 
-		IAuthService GetService(string serviceName, Type providerType);
+		IAuthService GetService(string serviceName);
 
 	}
 }

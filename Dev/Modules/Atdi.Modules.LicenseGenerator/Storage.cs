@@ -32,6 +32,15 @@ namespace Atdi.Modules.LicenseGenerator
 
 			}
 
+			public static class CRA_Lithuania
+			{
+				public static readonly string OwnerKey = "BD45-L00";
+				public static readonly string OwnerId = "OID-BD45-L00-N00";
+
+				public static readonly string OwnerName =
+					"Communications Regulatory Authority of the Republic of Lithuania (RRT)";
+			}
+
 			public static class LIS_ForTest
 			{
 				public static readonly string OwnerKey = "BD12-A00";
@@ -54,6 +63,8 @@ namespace Atdi.Modules.LicenseGenerator
 
 			public static readonly string ICSM_Plugin_GE06_Calc = "ICSM Plugin - GE06 Calc";
 			public static readonly string SDRN_Calc_Server = "SDRN Calc Server";
+			public static readonly string WebQuery_Web_Portal = "WebQuery Web Portal";
+			public static readonly string WebQuery_Application_Server = "WebQuery Application Server";
 		}
 	}
 }

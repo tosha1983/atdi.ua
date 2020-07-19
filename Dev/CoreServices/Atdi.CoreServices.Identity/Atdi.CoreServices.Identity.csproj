@@ -46,7 +46,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AuthenticationManager.cs" />
+    <Compile Include="AuthServiceSite.cs" />
+    <Compile Include="Encryptor.cs" />
+    <Compile Include="ExternalServiceProvider.cs" />
     <Compile Include="IdentityComponent.cs" />
+    <Compile Include="Models\USERS.cs" />
     <Compile Include="Models\EMPLOYEE.cs" />
     <Compile Include="Models\IcsmUser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -55,6 +59,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="ServiceTokenProvider.cs" />
     <Compile Include="Specification.cs" />
     <Compile Include="UserTokenProvider.cs" />
   </ItemGroup>

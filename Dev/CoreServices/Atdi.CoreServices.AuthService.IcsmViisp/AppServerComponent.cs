@@ -31,7 +31,7 @@ namespace Atdi.CoreServices.AuthService.IcsmViisp
         protected override void OnActivate()
         {
 	        var authServiceSite = this.Resolver.Resolve<IAuthServiceSite>();
-	        authServiceSite.Registry(AuthService.Name, typeof(AuthService));
+	        authServiceSite.Register(AuthService.Name, typeof(AuthService));
         }
     }
 }

@@ -15,8 +15,9 @@ namespace Atdi.CoreServices.Identity
     
     public sealed class  UserTokenProvider : LoggedObject,  IUserTokenProvider
     {
-     
-        public UserTokenProvider(ILogger logger) : base(logger)
+	    private const string SecretKey = "A699967B-B579-4C11-9121-C0AB8BC50290";
+
+	    public UserTokenProvider(ILogger logger) : base(logger)
         {
         }
 
@@ -30,9 +31,12 @@ namespace Atdi.CoreServices.Identity
 
             try
             {
-                var token = new UserToken
+	            var rawData = tokenData.Serialize();
+	            var encryptedData = Encryptor.EncryptStringAES(Convert.ToBase64String(rawData), SecretKey);
+
+				var token = new UserToken
                 {
-                    Data = tokenData.Serialize()
+                    Data = Encoding.Unicode.GetBytes(encryptedData)
                 };
 
                 return token;
@@ -73,7 +77,10 @@ namespace Atdi.CoreServices.Identity
 
             try
             {
-                return userToken.Data.Deserialize<UserTokenData>();
+	            var encodeData = Encoding.Unicode.GetString(userToken.Data);
+	            var plainTextData = Encryptor.DecryptStringAES(encodeData, SecretKey);
+	            var rawData = Convert.FromBase64String(plainTextData);
+	            return rawData.Deserialize<UserTokenData>();
             }
             catch(Exception e)
             {

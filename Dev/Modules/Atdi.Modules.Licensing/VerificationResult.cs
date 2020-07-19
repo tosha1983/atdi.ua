@@ -19,5 +19,7 @@ namespace Atdi.Modules.Licensing
         public string Instance { get; set; }
 
         public DateTime StartDate { get; set; }
-    }
+
+        public ExternalServiceDescriptor[] ExternalServices { get; set; }
+	}
 }
