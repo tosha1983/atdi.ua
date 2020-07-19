@@ -28,7 +28,8 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings.Adapters
                 c => c.TASK.CreatedDate,
                 c => c.TASK.OwnerInstance,
                 c => c.CalculationTypeName)
-            .Filter(f => f.TASK.CONTEXT.Id, ContextId);
+            .Filter(f => f.TASK.CONTEXT.Id, ContextId)
+            .OrderByDesc(o => o.TASK.Id);
         }
         protected override CalcTaskModel ReadData(IDataReader<CS_ES.Tasks.IGn06Args> reader, int index)
         {
