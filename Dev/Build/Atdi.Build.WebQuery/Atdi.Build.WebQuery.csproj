@@ -95,6 +95,10 @@
       <Project>{773a95ce-0a1c-4629-849d-23f65d6c59e4}</Project>
       <Name>Atdi.Contracts.WcfServices.WebQuery</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\CoreServices\Atdi.CoreServices.AuthService.IcsmViisp\Atdi.CoreServices.AuthService.IcsmViisp.csproj">
+      <Project>{20644a88-91e8-4860-8cca-443751211564}</Project>
+      <Name>Atdi.CoreServices.AuthService.IcsmViisp</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\CoreServices\Atdi.CoreServices.DataLayer.Oracle\Atdi.CoreServices.DataLayer.Oracle.csproj">
       <Project>{73f74f27-6f16-4a46-81fc-f959ea6f1ad7}</Project>
       <Name>Atdi.CoreServices.DataLayer.Oracle</Name>
