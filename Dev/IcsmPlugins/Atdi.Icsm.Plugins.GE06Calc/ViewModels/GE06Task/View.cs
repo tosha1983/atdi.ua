@@ -660,14 +660,14 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                     else
                     {
                         this._logger.Exception(Exceptions.GE06Client, new Exception($"For selected task not found information in IGn06Result!"));
-                        _starter.ShowException("Warning!", new Exception($"For selected task not found information in IGn06Result!"));
+                        //_starter.ShowException("Warning!", new Exception($"For selected task not found information in IGn06Result!"));
                     }
                 }
             }
             else
             {
                 this._logger.Exception(Exceptions.GE06Client, new Exception($"For selected task not found information in ICalcResults!"));
-                _starter.ShowException("Warning!", new Exception($"For selected task not found information in ICalcResults!"));
+                //_starter.ShowException("Warning!", new Exception($"For selected task not found information in ICalcResults!"));
             }
         }
         private bool WaitForCalcResult(long calcTaskId, long calcResultId)
@@ -707,7 +707,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
 
                             if (status == (byte)CalcResultStatusCode.Failed)
                             {
-                                _starter.ShowException("Warning!", new Exception($"Task calculation completed with status '{CalcResultStatusCode.Failed.ToString()}'!"));
+                                //_starter.ShowException("Warning!", new Exception($"Task calculation completed with status '{CalcResultStatusCode.Failed.ToString()}'!"));
                                 this._logger.Exception(Exceptions.GE06Client, new Exception($"Task calculation completed with status '{CalcResultStatusCode.Failed.ToString()}'!"));
                                 result = false;
                                 cancel = true;
@@ -715,7 +715,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                             }
                             if (status == (byte)CalcResultStatusCode.Aborted)
                             {
-                                _starter.ShowException("Warning!", new Exception($"Task calculation completed with status '{CalcResultStatusCode.Aborted.ToString()}'!"));
+                               //_starter.ShowException("Warning!", new Exception($"Task calculation completed with status '{CalcResultStatusCode.Aborted.ToString()}'!"));
                                 this._logger.Exception(Exceptions.GE06Client, new Exception($"Task calculation completed with status '{CalcResultStatusCode.Aborted.ToString()}'!"));
                                 result = false;
                                 cancel = true;
@@ -723,7 +723,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
                             }
                             if (status == (byte)CalcResultStatusCode.Canceled)
                             {
-                                _starter.ShowException("Warning!", new Exception($"Task calculation completed with status '{CalcResultStatusCode.Canceled.ToString()}'!"));
+                                //_starter.ShowException("Warning!", new Exception($"Task calculation completed with status '{CalcResultStatusCode.Canceled.ToString()}'!"));
                                 this._logger.Exception(Exceptions.GE06Client, new Exception($"Task calculation completed with status '{CalcResultStatusCode.Canceled.ToString()}'!"));
                                 result = false;
                                 cancel = true;
