@@ -22,6 +22,7 @@ namespace Atdi.CoreServices.AuthService.IcsmViisp
     {
         public static readonly EventText RedirectionQuery = "Redirection query: {0}";
         public static readonly EventText InformationAboutAuthenticatedUser = "Information about authenticated user: RegistNum = {0}, Name = {1}, Email = {2} ";
+        public static readonly EventText CreatedNewUser = "Created new user: Id = {0}, RegistNum = {1}, Name = {2}, Email = {3} ";
     }
     static class TraceScopeNames
     {

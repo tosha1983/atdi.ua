@@ -124,15 +124,15 @@ namespace Atdi.CoreServices.AuthService.IcsmViisp
                                          return Id;
                                      });
 
-                                    // если нет записей в таблице USERS
+                                    // если нет записей в таблице USERS, в этом случае идентификатору присваиваем 0
                                     if (userMaxId == -1)
                                     {
                                         userMaxId = 0;
                                     }
-
+                                    // увеличиваем индекс на 1
                                     var newId = ++userMaxId;
+                                    // формируем поле CODE на основе сгенерированного ранее значения идентификатора
                                     string code = "I#" + newId.ToString().PadLeft(9, '0');
-
                                     // вставка новой записи в таблицу USERS
                                     var insertQuery = _dataLayer.Builder
                                        .Insert("USERS")
@@ -144,6 +144,7 @@ namespace Atdi.CoreServices.AuthService.IcsmViisp
                                        .SetValue("EMAIL", new StringValueOperand() { DataType = DataModels.DataType.String, Value = userInformation.email });
                                     if (this._queryExecutor.Execute(insertQuery) > 0)
                                     {
+                                        this._logger.Info(Contexts.ThisComponent, Categories.Handling, Events.CreatedNewUser.With(newId, authenticationAttribute.Value, string.Format("{0} {1}", userInformation.firstName, userInformation.lastName), userInformation.email));
                                         // формируем токен
                                         userTokenData = new UserTokenData
                                         {
