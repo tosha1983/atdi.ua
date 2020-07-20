@@ -299,8 +299,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         }
                     }
                 }
-                var pointSourceArgs = new PointEarthGeometric() { Longitude = data.PointCoordinate.X, Latitude = data.PointCoordinate.Y };
-                var pointTargetArgs = new PointEarthGeometric() { Longitude = data.TargetCoordinate.X, Latitude = data.TargetCoordinate.Y };
+                var pointSourceArgs = new PointEarthGeometric() { Longitude = data.PointCoordinate.X, Latitude = data.PointCoordinate.Y, CoordinateUnits = CoordinateUnits.m };
+                var pointTargetArgs = new PointEarthGeometric() { Longitude = data.TargetCoordinate.X, Latitude = data.TargetCoordinate.Y, CoordinateUnits = CoordinateUnits.m };
                 var d_km = this._earthGeometricService.GetDistance_km(in pointSourceArgs, in pointTargetArgs);
                 var lossArgs = new CalcLossArgs
                 {
@@ -358,7 +358,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 {
                     FS_dBuVm = FS_dBuVm,
                     Level_dBm = Level_dBm,
-                    AntennaPatternLoss_dB = antennaPatternLoss_dB
+                    AntennaPatternLoss_dB = - antennaPatternLoss_dB
                 };
             }
             catch (Exception)
