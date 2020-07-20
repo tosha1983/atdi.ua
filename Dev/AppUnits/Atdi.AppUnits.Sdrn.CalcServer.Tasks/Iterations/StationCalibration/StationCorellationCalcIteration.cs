@@ -122,7 +122,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             {
                                 var faCalculationResult = iterationFieldStrengthCalcData.Run(taskContext, data.FieldStrengthCalcData);
 
-                                if (faCalculationResult.AntennaPatternLoss_dB <= 30.0)
+                                if (faCalculationResult.AntennaPatternLoss_dB <= data.CorellationParameters.MaxAntennasPatternLoss_dB)
                                 {
                                     // выполняется для первой итерации и в случае если по координатам не было измерений
                                     calcPointArrayBuffer[counter].Count = 1;
@@ -205,6 +205,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     double diffLessThanDeltaCount = 0;
                     double diffCalcMeas = 0;
                     double sumDiffCalcMeas = 0;
+                    double sumDiffCalcMeas2 = 0;
 
                     double meanCalcFS = 0;
                     double meanMeasFS = 0;
@@ -218,7 +219,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             diffLessThanDeltaCount += 1;
                         }
                         sumDiffCalcMeas += diffCalcMeas;
-
+                        sumDiffCalcMeas2 += diffCalcMeas * diffCalcMeas;
                         //pierson
                         meanMeasFS += calcPointArrayBuffer[i].FSMeas;
                         meanCalcFS += calcPointArrayBuffer[i].FSCalc;
@@ -255,14 +256,14 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         a3 = a3 + ((calcPointArrayBuffer[i].FSCalc - meanCalcFS) * (calcPointArrayBuffer[i].FSCalc - meanCalcFS));
                     }
 
-                    //- Freq_MHz(частота передатчика станции)
-                    calcCorellationResult.Freq_MHz = data.GSIDGroupeStation.Transmitter.Freq_MHz;
+                    //- Freq_MHz(частота передатчика станции/драйв теста)
+                    calcCorellationResult.Freq_MHz = data.GSIDGroupeDriveTests.Freq_MHz;
                     //- Delta_dB(входной параметр)
                     calcCorellationResult.Delta_dB = data.CorellationParameters.Delta_dB;
                     //- Correlation_pc(процент точек где результаты измерений отличаться от расчетного менее чем на Delta_dB)
                     calcCorellationResult.Corellation_pc = diffLessThanDeltaCount / counter * 100;
                     //- StdDev_dB = sqrt(sum(y - x)) / n
-                    calcCorellationResult.StdDev_dB = (float)(Math.Sqrt(sumDiffCalcMeas) / counter);
+                    calcCorellationResult.StdDev_dB = (float)(Math.Sqrt(sumDiffCalcMeas2 / counter));
                     //- AvErr_dB = sum(y - x) / n
                     calcCorellationResult.AvErr_dB = (float)(sumDiffCalcMeas / counter);
                     //- Correl factor(логарифмическая корреляция пирсона у нас реализована)

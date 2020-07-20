@@ -737,14 +737,14 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                         {
                                             pointFS[j].Coordinate = _transformation.ConvertCoordinateToEpgs(points[j].Coordinate, _transformation.ConvertProjectionToCode(this._parameters.Projection));
                                             pointFS[j].FieldStrength_dBmkVm = points[j].FieldStrength_dBmkVm;
-                                            if (points[j].Height_m == 0)
-                                            {
-                                                points[j].Height_m = 3;
-                                            }
-                                            else
-                                            {
-                                                pointFS[j].Height_m = points[j].Height_m;
-                                            }
+                                            //if (points[j].Height_m == 0)
+                                            //{
+                                            pointFS[j].Height_m = 3;
+                                            //}
+                                            //else
+                                            //{
+                                            //    pointFS[j].Height_m = points[j].Height_m;
+                                            //}
                                             pointFS[j].Level_dBm = points[j].Level_dBm;
                                         }
                                         lstDrvPOints.AddRange(pointFS);

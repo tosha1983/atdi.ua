@@ -21,8 +21,22 @@ namespace Atdi.Test.DeepServices.Client.WPF
             this.Lat = lat;
         }
 
+        public Location(double lon, double lat, double lon_m, double lat_m, double height, double fs)
+        {
+            this.Lon = lon;
+            this.Lat = lat;
+            this.Lon_m = lon_m;
+            this.Lat_m = lat_m;
+            this.FS = fs;
+            this.Height = height;
+        }
+
         public double Lon;
         public double Lat;
+        public double Height;
+        public double FS;
+        public double Lon_m;
+        public double Lat_m;
 
         public Location Copy()
         {
