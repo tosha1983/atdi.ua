@@ -98,9 +98,6 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings
 
             ReloadProjects();
 
-            //this.BaseClientContexts.Reset();
-            //this.ClientContexts.Reset();
-            //this.CalcTasks.Reset();
             ReloadProjectContexts();
             ReloadClientContext();
             ReloadCalcTask();
