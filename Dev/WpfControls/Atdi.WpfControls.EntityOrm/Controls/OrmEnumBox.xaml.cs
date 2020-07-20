@@ -75,7 +75,7 @@ namespace Atdi.WpfControls.EntityOrm.Controls
             set
             {
                 SetValue(SelectedValueIdProperty, value);
-                this._value = this._source.Where(v => v.Id == value).First();
+                this.SelectedValue = this._source.Where(v => v.Id == value).First();
                 cmbMain.SelectedValue = this._value;
             }
         }
@@ -126,7 +126,7 @@ namespace Atdi.WpfControls.EntityOrm.Controls
         private void cmbMain_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (cmbMain.SelectedValue != null)
-                SelectedValueId = (cmbMain.SelectedValue as OrmEnumBoxData).Id;
+                SelectedValueId = (e.AddedItems[0] as OrmEnumBoxData).Id;
         }
     }
     public class OrmEnumBoxData

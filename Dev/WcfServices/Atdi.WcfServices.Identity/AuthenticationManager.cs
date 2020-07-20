@@ -25,17 +25,56 @@ namespace Atdi.WcfServices.Identity
             this._coreAuthManager = coreAuthManager;
         }
 
-        public Result<UserIdentity> AuthenticateUser(UserCredential credential)
+		public Result<ServiceIdentity> AuthenticateService(ServiceCredential credential)
+		{
+			using (this._logger.StartTrace(Contexts.AuthenticationManager, Categories.OperationCall, TraceScopeNames.AuthenticationService))
+			{
+				var identity = this._coreAuthManager.AuthenticateService(credential);
+				return new Result<ServiceIdentity>
+				{
+					State = OperationState.Success,
+					Data = identity,
+				};
+			}
+		}
+
+		public Result<UserIdentity> AuthenticateUser(UserCredential credential)
         {
             using (this._logger.StartTrace(Contexts.AuthenticationManager, Categories.OperationCall, TraceScopeNames.AuthenticationUser))
             {
-                var userToken = this._coreAuthManager.AuthenticateUser(credential);
+                var identity = this._coreAuthManager.AuthenticateUser(credential);
                 return new Result<UserIdentity>
                 {
                     State = OperationState.Success,
-                    Data = userToken,
+                    Data = identity,
                 };
             }
         }
-    }
+
+		public Result<UserIdentity> HandleAndAuthenticateUser(ServiceToken token, AuthRedirectionResponse response)
+		{
+			using (this._logger.StartTrace(Contexts.AuthenticationManager, Categories.OperationCall, TraceScopeNames.HandleAndAuthenticateUser))
+			{
+				var identity = this._coreAuthManager.HandleAndAuthenticateUser(token, response);
+				return new Result<UserIdentity>
+				{
+					State = OperationState.Success,
+					Data = identity,
+				};
+			}
+		}
+
+		public Result<AuthRedirectionQuery> PrepareAuthRedirection(ServiceToken token, AuthRedirectionOptions options)
+		{
+			using (this._logger.StartTrace(Contexts.AuthenticationManager, Categories.OperationCall, TraceScopeNames.PrepareAuthRedirection))
+			{
+				var query = this._coreAuthManager.PrepareAuthRedirection(token, options);
+				return new Result<AuthRedirectionQuery>
+				{
+					State = OperationState.Success,
+					Data = query,
+				};
+			}
+		}
+	}
 }

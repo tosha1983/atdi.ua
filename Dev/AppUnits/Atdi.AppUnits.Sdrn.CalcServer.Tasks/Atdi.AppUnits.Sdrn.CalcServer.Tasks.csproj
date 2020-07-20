@@ -51,6 +51,7 @@
     <Compile Include="AppServerComponentConfig.cs" />
     <Compile Include="Iterations\GE06\BRIFIC\LoadDataBrific.cs" />
     <Compile Include="Iterations\GE06\BRIFIC\ThresholdFS.cs" />
+    <Compile Include="Iterations\GE06\Calculation\FieldStrength\BroadcastingFieldStrengthCalcIteration_bak.cs" />
     <Compile Include="Iterations\GE06\Calculation\FieldStrength\BroadcastingFieldStrengthCalcIteration.cs" />
     <Compile Include="Iterations\GE06\Calculation\FieldStrength\CalcFieldStrengthInPointGE06.cs" />
     <Compile Include="Iterations\GE06\Calculation\FieldStrength\CalcFieldStrengthInPointFromAllotmentGE06.cs" />

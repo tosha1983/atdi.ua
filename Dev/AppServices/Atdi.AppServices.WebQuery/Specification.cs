@@ -15,8 +15,9 @@ namespace Atdi.AppServices.WebQuery
     internal static class Categories
     {
         public static readonly EventCategory Handling = "Handling";
-        //public static readonly EventCategory HasColumnn = "HasColumnn";
-    }
+        public static readonly EventCategory Init = "Init";
+		//public static readonly EventCategory HasColumnn = "HasColumnn";
+	}
 
     internal static class Events
     {

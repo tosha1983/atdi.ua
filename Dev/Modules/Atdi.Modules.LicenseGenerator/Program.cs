@@ -197,7 +197,21 @@ namespace Atdi.Modules.LicenseGenerator
 			// ICSMPlugin_ForTesting_Calc_2020();
 
 			// УДЦР, 8+8 для плагинов , 1 сервер расчетов, 1 инфоцентер
-			ICSMPlugin_ForUDCR_CalcTasks_2020();
+			//ICSMPlugin_ForUDCR_CalcTasks_2020();
+
+			// Поставка Июль УДЦР 50 лицензий
+			//SdrnDevice_ForUDCR_2020_50p();
+
+			//20200716
+			// GE06 - start 
+			//SdrnGN06CalcPlugin_ForTest_2020();
+			//SdrnGN06CalcPlugin_ForATDI_SA_2020_1p();
+
+			//20200716
+			//CalcServer_ForATDI_SA_2020_1p();
+
+			//20200717
+			WebQuery_for_CRA_Lithuania_2020_1p();
 
 			Console.WriteLine("Process was finished");
 
@@ -1285,8 +1299,9 @@ namespace Atdi.Modules.LicenseGenerator
 		private static void CreateLicenseDescriptionFile(LicenseData l, string fileName)
         {
             var l2 = l as LicenseData2;
+            var l4 = l as LicenseData4;
 
-            var verFileData = new StringBuilder();
+			var verFileData = new StringBuilder();
 
             verFileData.AppendLine();
             verFileData.AppendLine("  -- License Data -- ");
@@ -1323,6 +1338,18 @@ namespace Atdi.Modules.LicenseGenerator
             verFileData.AppendLine($"Instance : '{l.Instance}'");
             verFileData.AppendLine("  ------------------ ");
 
+            if (l4?.ExternalServices != null)
+            {
+	            verFileData.AppendLine("  ------------------ ");
+	            verFileData.AppendLine($"  External Services ({l4.ExternalServices.Length}): ");
+	            var index = 0;
+	            foreach (var serviceDescriptor in l4.ExternalServices)
+	            {
+		            ++index;
+					verFileData.AppendLine($"   - {index:D3} SID='{serviceDescriptor.Id}'; Name='{serviceDescriptor.Name}'");
+				}
+				verFileData.AppendLine("  ------------------ ");
+			}
 
             File.WriteAllText(fileName + ".txt", verFileData.ToString(), Encoding.UTF8);
         }
@@ -1458,7 +1485,7 @@ namespace Atdi.Modules.LicenseGenerator
 					stopDate, 2020, LicenseLimitationTerms.TimePeriod);
 			}
 
-			const ushort year = 2020;
+			//const ushort year = 2020;
 
 			startDate = new DateTime(2020, 6, 17);
 			stopDate = new DateTime(2021, 1, 1);
@@ -1466,7 +1493,7 @@ namespace Atdi.Modules.LicenseGenerator
 			for (int i = 0; i < 1; i++)
 			{
 				BuilProductLicense(
-					path1,
+					path3,
 					"LIC-C",
 					"SDRNSV-C",
 					"ServerLicense",
@@ -1485,7 +1512,7 @@ namespace Atdi.Modules.LicenseGenerator
 			for (int i = 0; i < 1; i++)
 			{
 				BuilProductLicense(
-					path1,
+					path4,
 					"LIC-I",
 					"SDRNSV-I",
 					"ServerLicense",
@@ -1499,6 +1526,209 @@ namespace Atdi.Modules.LicenseGenerator
 			}
 
 		}
+
+		static void SdrnDevice_ForUDCR_2020_50p()
+		{
+
+			var ownerKey = Storage.Clients.UDCR.OwnerKey; // "BD13-G65";
+			var ownerId = Storage.Clients.UDCR.OwnerId;  // "OID-BD13-G65-N00";
+			var ownerName = Storage.Clients.UDCR.OwnerName; // "Державне підприємство «Український державний центр радіочастот»";
+			var company = Storage.Companies.LIS_Uk; // "ТОВ 'Лабораторія інформаційних систем'";
+
+			var startDate = new DateTime(2020, 7, 15);
+			var stopDate = new DateTime(2025, 7, 15);
+
+			//var licPrefix = "LIC-P";
+			//var instancePrefix = "ICSMP-C";
+
+			var licPrefix = "LIC-D";
+			var instancePrefix = "SENSOR-D";
+
+			var path1 = @"C:\Projects\Licensing\UDCR\Sdrn\Licenses_2020\BD13-G65\DeviceLicense\Июль";
+			for (int i = 0; i < 50; i++)
+			{
+				BuilProductLicense(
+					path1,
+					licPrefix,
+					instancePrefix,
+					Storage.LicenseTypes.DeviceLicense, // "DeviceLicense",
+					Storage.Products.ICS_Control_Device, // "ICS Control Device",
+					ownerName,
+					ownerId,
+					ownerKey,
+					company,
+					startDate,
+					stopDate, 2020, LicenseLimitationTerms.Year);
+			}
+
+		}
+
+		static void SdrnGN06CalcPlugin_ForATDI_SA_2020_1p()
+		{
+
+			var ownerKey = Storage.Clients.ATDI_SA.OwnerKey; // "BD13-G65";
+			var ownerId = Storage.Clients.ATDI_SA.OwnerId;  // "OID-BD13-G65-N00";
+			var ownerName = Storage.Clients.ATDI_SA.OwnerName; // "Державне підприємство «Український державний центр радіочастот»";
+			var company = Storage.Companies.ATDI_Ukraine_EN; // "ТОВ 'Лабораторія інформаційних систем'";
+
+			var startDate = new DateTime(2020, 7, 16);
+			var stopDate = new DateTime(2020, 8, 20);
+
+			var licPrefix = "LIC-P";
+			var instancePrefix = "ICSMP-C";
+
+			//var licPrefix = "LIC-D";
+			//var instancePrefix = "SENSOR-D";
+
+			var path1 = @"C:\Projects\Licensing\ATDI_SA\ICSM_Plugin_GE06_Calc\20200716";
+			for (int i = 0; i < 1; i++)
+			{
+				BuilProductLicense(
+					path1,
+					licPrefix,
+					instancePrefix,
+					Storage.LicenseTypes.ClientLicense, // "DeviceLicense",
+					Storage.Products.ICSM_Plugin_GE06_Calc, // "ICS Control Device",
+					ownerName,
+					ownerId,
+					ownerKey,
+					company,
+					startDate,
+					stopDate, 2020, LicenseLimitationTerms.TimePeriod);
+			}
+
+		}
+
+		static void SdrnGN06CalcPlugin_ForTest_2020()
+		{
+
+			var ownerId = Storage.Clients.LIS_ForTest.OwnerId; // "OID-BD12-A00-N00";
+			var ownerName = Storage.Clients.LIS_ForTest.OwnerName; // "ТОВ 'Лабораторія інформаційних систем'";
+			var company = Storage.Companies.ATDI_Ukraine_EN;
+			var ownerKey = Storage.Clients.LIS_ForTest.OwnerKey; // "BD12-A00";
+			var startDate = new DateTime(2020, 7, 16);
+			var stopDate = new DateTime(2025, 7, 16);
+
+			var licPrefix = "LIC-P";
+			var instancePrefix = "ICSMP-C";
+
+			var path1 = @"C:\Projects\Licensing\Test\ICSMPlugins\SdrnGe06Calc";
+
+			for (int i = 0; i < 1; i++)
+			{
+				BuilProductLicense(
+					path1,
+					licPrefix,
+					instancePrefix,
+					Storage.LicenseTypes.ClientLicense, 
+					Storage.Products.ICSM_Plugin_GE06_Calc,
+					ownerName,
+					ownerId,
+					ownerKey,
+					company,
+					startDate,
+					stopDate, 2020, LicenseLimitationTerms.TimePeriod);
+			}
+
+		}
+
+		static void CalcServer_ForATDI_SA_2020_1p()
+		{
+
+			var ownerKey = Storage.Clients.ATDI_SA.OwnerKey; // "BD13-G65";
+			var ownerId = Storage.Clients.ATDI_SA.OwnerId;  // "OID-BD13-G65-N00";
+			var ownerName = Storage.Clients.ATDI_SA.OwnerName; // "Державне підприємство «Український державний центр радіочастот»";
+			var company = Storage.Companies.ATDI_Ukraine_EN; // "ТОВ 'Лабораторія інформаційних систем'";
+
+			var startDate = new DateTime(2020, 7, 16);
+			var stopDate = new DateTime(2020, 8, 20);
+
+			var licPrefix = "LIC-C";
+			var instancePrefix = "SDRNSV-C";
+
+			
+
+			var path1 = @"C:\Projects\Licensing\ATDI_SA\CalcServer\20200716";
+			for (int i = 0; i < 1; i++)
+			{
+				BuilProductLicense(
+					path1,
+					licPrefix,
+					instancePrefix,
+					Storage.LicenseTypes.ServerLicense, // "DeviceLicense",
+					Storage.Products.SDRN_Calc_Server, // "ICS Control Device",
+					ownerName,
+					ownerId,
+					ownerKey,
+					company,
+					startDate,
+					stopDate, 2020, LicenseLimitationTerms.TimePeriod);
+			}
+
+		}
+
+		static void WebQuery_for_CRA_Lithuania_2020_1p()
+		{
+
+			var ownerKey = Storage.Clients.CRA_Lithuania.OwnerKey; 
+			var ownerId = Storage.Clients.CRA_Lithuania.OwnerId;  
+			var ownerName = Storage.Clients.CRA_Lithuania.OwnerName; 
+			var company = Storage.Companies.ATDI_Ukraine_EN; 
+
+			var startDate = new DateTime(2020, 7, 17);
+			var stopDate = new DateTime(2021, 1, 1);
+			
+			// WebPortal 
+			var webPortalLicPrefix = "LIC-WQWP";
+			var webPortalInstancePrefix = "WBP-WQ";
+
+			var webPortalPath = @"C:\Projects\Licensing\CRA_Lithuania\WebQuery\WebPortal\20200717";
+			for (int i = 0; i < 1; i++)
+			{
+				BuildProductLicenseAsVer4(
+					webPortalPath,
+					webPortalLicPrefix,
+					webPortalInstancePrefix,
+					Storage.LicenseTypes.ServerLicense, 
+					Storage.Products.WebQuery_Web_Portal, 
+					ownerName,
+					ownerId,
+					ownerKey,
+					company,
+					startDate,
+					stopDate, 2020, LicenseLimitationTerms.TimePeriod,
+					null);
+			}
+
+			var appServerLicPrefix = "LIC-WQAS";
+			var appServerInstancePrefix = "APPSRV-WQ";
+
+			var appServerPath = @"C:\Projects\Licensing\CRA_Lithuania\WebQuery\AppServer\20200717";
+			for (int i = 0; i < 1; i++)
+			{
+				BuildProductLicenseAsVer4(
+					appServerPath,
+					appServerLicPrefix,
+					appServerInstancePrefix,
+					Storage.LicenseTypes.ServerLicense, 
+					Storage.Products.WebQuery_Application_Server,
+					ownerName,
+					ownerId,
+					ownerKey,
+					company,
+					startDate,
+					stopDate, 2020, LicenseLimitationTerms.TimePeriod,
+					new ExternalServiceDescriptor[]
+					{
+						new ExternalServiceDescriptor
+						{
+							Id = "152B48BE-4CA9-478A-B412-C7CF5D64962E",
+							Name = "Public WEB Portal"
+						}, 
+					});
+			}
+		}
+
 		private static string BuildNextLicenseNumber(string licPrefix, string ownerKey, int numMaxSize = 3)
 		{
 			var number = string.Empty;
@@ -1581,6 +1811,82 @@ namespace Atdi.Modules.LicenseGenerator
 			l.ProductKey = productKey;
 
 			var result = c.Create(new LicenseData2[] { l });
+
+			if (!Directory.Exists(path))
+			{
+				Directory.CreateDirectory(path);
+			}
+
+			var fileName = $"{path}\\{l.LicenseNumber}.{l.Instance}.lic";
+
+			File.WriteAllBytes(fileName, result.Body);
+			CreateLicenseDescriptionFile(l, fileName);
+
+			var licBody = File.ReadAllBytes(fileName);
+
+			var vd = new VerificationData2
+			{
+				OwnerId = l.OwnerId,
+				ProductName = l.ProductName,
+				ProductKey = l.ProductKey,
+				LicenseType = l.LicenseType,
+				Date = startDate,
+				YearHash = LicenseVerifier.EncodeYear(year)
+			};
+
+			var cc = LicenseVerifier.Verify(vd, licBody);
+			SaveDBs();
+
+			Console.WriteLine($"Build next license: '{productKey}' >>> {fileName}");
+			return productKey;
+		}
+
+		private static string BuildProductLicenseAsVer4(
+			string path,
+			string licPrefix,
+			string instancePrefix,
+			string licenseType,
+			string productName,
+			string ownerName,
+			string ownerId,
+			string ownerKey,
+			string company,
+			DateTime startDate,
+			DateTime stopDate,
+			ushort year, LicenseLimitationTerms limitationTerms = LicenseLimitationTerms.Year | LicenseLimitationTerms.TimePeriod,
+			ExternalServiceDescriptor[] externalServices = null)
+		{
+			if (!"DeviceLicense".Equals(licenseType)
+				&& !"ServerLicense".Equals(licenseType)
+				&& !"ClientLicense".Equals(licenseType))
+			{
+				throw new InvalidOperationException($"Invalid the license type '{licenseType}'");
+			}
+
+			var c = new LicenseCreator();
+			var l = new LicenseData4()
+			{
+				LicenseType = licenseType,
+				Company = company,
+				Copyright = "",
+				OwnerId = ownerId,
+				OwnerName = ownerName,
+				Created = DateTime.Now,
+				StartDate = startDate,
+				StopDate = stopDate,
+				ProductName = productName,
+				Count = 1,
+				LimitationTerms = limitationTerms,
+				Year = year,
+				LicenseNumber = BuildNextLicenseNumber(licPrefix, ownerKey),
+				Instance = BuildNextInstanceNumber(instancePrefix, ownerKey),
+				ExternalServices = externalServices
+			};
+
+			var productKey = GetProductKey(l.ProductName, l.LicenseType, l.Instance, l.OwnerId, l.LicenseNumber);
+			l.ProductKey = productKey;
+
+			var result = c.Create(new LicenseData4[] { l });
 
 			if (!Directory.Exists(path))
 			{

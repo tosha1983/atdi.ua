@@ -1703,7 +1703,27 @@ namespace Atdi.LegacyServices.Icsm
         {
             throw new NotImplementedException();
         }
-    }
+
+		public bool IsNull(Expression<Func<TModel, object>> columnExpression)
+		{
+			throw new NotImplementedException();
+		}
+
+		public bool IsNotNull(Expression<Func<TModel, object>> columnExpression)
+		{
+			throw new NotImplementedException();
+		}
+
+		public TData GetValueAs<TData>(Expression<Func<TModel, byte[]>> columnExpression)
+		{
+			throw new NotImplementedException();
+		}
+
+		public TData GetValueAs<TData>(Expression<Func<TModel, string>> columnExpression)
+		{
+			throw new NotImplementedException();
+		}
+	}
 
     //public static class DataReaderExtenstions
     //{

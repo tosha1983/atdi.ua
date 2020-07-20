@@ -117,6 +117,7 @@ namespace Atdi.Modules.Licensing
                             && lic.ProductKey.Equals(data.ProductKey, StringComparison.OrdinalIgnoreCase)
                         )
                         {
+	                        ExternalServiceDescriptor[] externalServices = null;
 
                             // Is it the second protocol?
                             if (lic is LicenseData2 license2)
@@ -175,6 +176,11 @@ namespace Atdi.Modules.Licensing
                                 {
 	                                VerifeHardwareBinding(license2 as LicenseData3);
                                 }
+
+                                if (lic is LicenseData4 license4)
+                                {
+	                                externalServices = license4.ExternalServices;
+                                }
 							}
                             else
                             {
@@ -198,7 +204,8 @@ namespace Atdi.Modules.Licensing
                                 Instance = lic.Instance,
                                 OwnerName = lic.OwnerName,
                                 StopDate = lic.StopDate,
-                                StartDate = lic.StartDate
+                                StartDate = lic.StartDate,
+								ExternalServices = externalServices
                             };
                         }
                     }

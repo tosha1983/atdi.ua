@@ -54,6 +54,11 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem
         {
             result.FSResult = ITU1546_6.Get_E(args.ha, args.hef, args.d, args.f, args.p, args.h_gr, args.h2, args.h2AboveSea, args.list1);
         }
+
+        public void CalcFS_ITU1546_ge06(in CalcFSArgs args, ref CalcFSResult result)
+        {
+            result.FSResult = ITU1546_ge06.Get_E(args.ha, args.hef, args.d, args.f, args.p, args.h_gr, args.h2, args.h2AboveSea, args.list1);
+        }
               
     }
 }

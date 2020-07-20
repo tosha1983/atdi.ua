@@ -14,9 +14,19 @@ namespace Atdi.DataModels.Identity
     public class UserToken
     {
         /// <summary>
-        /// The Id of the user
+        /// The token binary data
         /// </summary>
         [DataMember]
         public byte[] Data { get; set; }
+    }
+
+    [DataContract(Namespace = CommonSpecification.Namespace)]
+    public class ServiceToken
+	{
+		/// <summary>
+		/// The token binary data
+		/// </summary>
+		[DataMember]
+	    public string Data { get; set; }
     }
 }

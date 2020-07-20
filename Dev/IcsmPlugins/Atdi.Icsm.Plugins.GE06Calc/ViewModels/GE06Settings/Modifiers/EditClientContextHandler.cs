@@ -37,6 +37,14 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings.Modifiers
                 Properties.Settings.Default.ActiveContext = command.Id;
                 Properties.Settings.Default.Save();
             }
+            else
+            {
+                if (Properties.Settings.Default.ActiveContext == command.Id)
+                {
+                    Properties.Settings.Default.ActiveContext = 0;
+                    Properties.Settings.Default.Save();
+                }
+            }
 
             _eventBus.Send(new OnEditedClientContext { ClientContextId = command.Id });
         }

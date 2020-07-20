@@ -26,6 +26,8 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.EntityOrmTest
         private readonly IEventBus _eventBus;
         private readonly ILogger _logger;
 
+        private ProjectModel _currentProject;
+
         private IEventHandlerToken<Events.OnCreatedProject> _onCreatedProjectToken;
 
         private OrmEnumBoxData[] _statusTestEnum;
@@ -63,17 +65,32 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.EntityOrmTest
             this.StatusTestEnum = enumData.ToArray();
 
             EnumValue = enumData[2];
+            EnumValue = enumData[3];
+            EnumValueId = 3;
+            CheckBoxValue = false;
+            //CheckBoxValue = true;
         }
 
         public OrmEnumBoxData EnumValue { get; set; }
-        
+        public byte EnumValueId { get; set; }
+
+        private bool? _checkBoxValue = false;
+        public bool? CheckBoxValue
+        {
+            get => this._checkBoxValue;
+            set => this.Set(ref this._checkBoxValue, value);
+        }
 
         private void OnCreatedProjectHandle(Events.OnCreatedProject data)
         {
             this.Projects.Refresh();
 
         }
-
+        public ProjectModel CurrentProject
+        {
+            get => this._currentProject;
+            set => this.Set(ref this._currentProject, value, () => { this.OnChangedCurrentProject(value); });
+        }
         public ProjectDataAdapter Projects { get; set; }
 
         public override void Dispose()
@@ -82,7 +99,11 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.EntityOrmTest
             _onCreatedProjectToken = null;
 
         }
-
+        private void OnChangedCurrentProject(ProjectModel project)
+        {
+            CheckBoxValue = true;
+            CheckBoxValue = false;
+        }
         public void CreateProject(Guid ownerId)
         {
             var projectModifier = new Modifiers.CreateProject
