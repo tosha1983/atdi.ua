@@ -318,4 +318,7 @@
   <data name="TypeOfCalculation" xml:space="preserve">
     <value>Type of calculation</value>
   </data>
+  <data name="Refresh" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
 </root>
