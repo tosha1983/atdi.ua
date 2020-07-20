@@ -97,6 +97,13 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings
             _onDeletedCalcTaskToken = _eventBus.Subscribe<CT.Events.OnDeletedCalcTask>(this.OnDeletedCalcTaskHandle);
 
             ReloadProjects();
+
+            //this.BaseClientContexts.Reset();
+            //this.ClientContexts.Reset();
+            //this.CalcTasks.Reset();
+            ReloadProjectContexts();
+            ReloadClientContext();
+            ReloadCalcTask();
         }
         private void ReloadProjects()
         {
@@ -176,6 +183,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings
         private void OnChangedCurrentProject(ProjectModel project)
         {
             ReloadProjectContexts();
+            ReloadClientContext();
             CurrentClientContextCard = new ClientContextModel();
             ClientContextSaveEnabled = false;
             CalcTaskDelEnabled = false;
@@ -229,22 +237,42 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings
             {
                 this.BaseClientContexts.ProjectId = this.CurrentProject.Id;
                 this.BaseClientContexts.Refresh();
-                ReloadClientContext();
+            }
+            else
+            {
+                this.BaseClientContexts.ProjectId = 0;
+                this.BaseClientContexts.Refresh();
             }
         }
         private void ReloadCalcTask()
         {
-            this.CalcTasks.ContextId = this.CurrentClientContext.Id;
-            this.CalcTasks.Refresh();
-            CalcTaskDelEnabled = false;
-            CalcTaskShowResultEnabled = false;
+            if (this.CurrentClientContext !=  null)
+            {
+                this.CalcTasks.ContextId = this.CurrentClientContext.Id;
+                this.CalcTasks.Refresh();
+                CalcTaskDelEnabled = false;
+                CalcTaskShowResultEnabled = false;
+            }
+            else
+            {
+                this.CalcTasks.ContextId = 0;
+                this.CalcTasks.Refresh();
+            }
         }
         private void ReloadClientContext()
         {
-            this.ClientContexts.ProjectId = this.CurrentProject.Id;
-            this.ClientContexts.Refresh();
-            ClientContextEditEnabled = false;
-            ClientContextDelEnabled = false;
+            if (this.CurrentProject != null)
+            {
+                this.ClientContexts.ProjectId = this.CurrentProject.Id;
+                this.ClientContexts.Refresh();
+                ClientContextEditEnabled = false;
+                ClientContextDelEnabled = false;
+            }
+            else
+            {
+                this.ClientContexts.ProjectId = 0;
+                this.ClientContexts.Refresh();
+            }
         }
         private void OnContextAddCommand(object parameter)
         {
