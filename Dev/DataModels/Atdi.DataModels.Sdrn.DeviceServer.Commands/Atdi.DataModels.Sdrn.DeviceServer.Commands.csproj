@@ -47,6 +47,7 @@
     <Compile Include="Commands\MesureSystemInfoCommand.cs" />
     <Compile Include="Commands\MesureTraceCommand.cs" />
     <Compile Include="Commands\SetRotatorPositionCommand.cs" />
+    <Compile Include="Commands\SetRFSwitchCommand.cs" />
     <Compile Include="Parameters\GpsParameter.cs" />
     <Compile Include="Parameters\Gps\Enums\GpsMode.cs" />
     <Compile Include="Parameters\MesureSystemInfoParameter.cs" />
@@ -55,12 +56,14 @@
     <Compile Include="Parameters\EstimateRefLevelParameter.cs" />
     <Compile Include="Parameters\RotatorPositionParameter.cs" />
     <Compile Include="Parameters\RotatorPosition\Enums\RotatorPositionMode.cs" />
+    <Compile Include="Parameters\RFSwitchParameter.cs" />
     <Compile Include="Results\Enums\DeviceStatus.cs" />
     <Compile Include="Results\GpsResult.cs" />
     <Compile Include="Results\MesureSystemInfoResult.cs" />
     <Compile Include="Results\MesureSystemInfo\StationSystemInfo.cs" />
     <Compile Include="Results\MesureSystemInfo\SystemInformationBlock.cs" />
     <Compile Include="Results\EstimateRefLevelResult.cs" />
+    <Compile Include="Results\RFSwitchResult.cs" />
     <Compile Include="Results\RotatorPositionResult.cs" />
     <Compile Include="Test\GpsLocation\MesureGpsLocationExampleCommand.cs" />
     <Compile Include="Parameters\MesureIQStreamParameter.cs" />
