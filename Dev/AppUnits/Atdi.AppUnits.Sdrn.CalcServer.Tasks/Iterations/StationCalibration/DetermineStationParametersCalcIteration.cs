@@ -19,6 +19,7 @@ using Atdi.DataModels.Sdrn.CalcServer.Entities;
 using Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks;
 using Atdi.DataModels.DataConstraint;
 
+
 namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 {
     /// <summary>
@@ -130,8 +131,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 try
                 {
                     listDriveTestsResultBuffer = _calcListDriveTestsResultPool.Take();
-                    Utils.CompareDriveTestsWithoutStandards(in data.GSIDGroupeDriveTests, listDriveTestsResultBuffer, out countRecordsListDriveTestsResultBuffer);
-                    data.GSIDGroupeDriveTests = Utils.PrepareData(ref data, ref listDriveTestsResultBuffer, countRecordsListDriveTestsResultBuffer, this._calcPointArrayPool);
+                    Utils.CompareDriveTestsWithoutStandards(data.GSIDGroupeDriveTests, listDriveTestsResultBuffer, out countRecordsListDriveTestsResultBuffer);
+                    data.GSIDGroupeDriveTests = Utils.PrepareData(data, ref listDriveTestsResultBuffer, countRecordsListDriveTestsResultBuffer, this._calcPointArrayPool);
                 }
                 finally
                 {
