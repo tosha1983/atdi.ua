@@ -33,7 +33,7 @@
           <RowDefinition Height="*"></RowDefinition>
       </Grid.RowDefinitions>
       <GroupBox Grid.Row="0" Header="{x:Static res:Resources.Projects}" Margin="5, 5, 5, 5" Grid.Column="0">
-        <DataGrid Grid.Column="0" Grid.Row="0" IsReadOnly="True" Margin="5, 5, 5, 35" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding Projects}" >
+        <DataGrid Grid.Column="0" Grid.Row="0" IsReadOnly="True" Margin="5, 5, 5, 35" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding Projects}" SelectedItem="{Binding CurrentProject}">
           <DataGrid.Columns>
             <DataGridTextColumn Header="{x:Static res:Resources.Name}" Binding="{Binding Path=Name}"></DataGridTextColumn>
             <DataGridTextColumn Header="{x:Static res:Resources.Note}" Binding="{Binding Path=Note}"></DataGridTextColumn>
@@ -44,7 +44,7 @@
         </DataGrid>
       </GroupBox>
       <WrapPanel Grid.Column="1" Orientation="Vertical">
-        <orm:OrmEnumBox     HorizontalAlignment="Left" CaptionWith="100" Width="300" Caption="Test EnumBox" Source="{Binding Path=StatusTestEnum}" SelectedValue="{Binding Path=EnumValue, Mode=TwoWay}"/>
+        <orm:OrmEnumBox     HorizontalAlignment="Left" CaptionWith="100" Width="300" Caption="Test EnumBox" Source="{Binding Path=StatusTestEnum}" SelectedValueId="{Binding Path=EnumValueId, Mode=TwoWay}"/>
         <orm:OrmCheckBox    HorizontalAlignment="Left" CaptionWith="100" Width="300" Caption="Test CheckBox" SelectedValue="{Binding Path=CheckBoxValue, Mode=TwoWay}"/>
         <orm:OrmCheckBox    HorizontalAlignment="Left" CaptionWith="100" Width="300" Caption="Test CheckBox" SelectedValue="{Binding Path=CheckBoxValue, Mode=TwoWay}" IsRequired="True"/>
         <orm:OrmTextBox     HorizontalAlignment="Left" CaptionWith="100" Width="300" Caption="Test TextBox" Text="{Binding Path=EnumValue, Mode=TwoWay}"/>
