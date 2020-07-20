@@ -14,6 +14,7 @@ using Atdi.Platform.Cqrs;
 using Atdi.Platform.Events;
 using System.Data;
 using System.Windows;
+using CT = Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task;
 
 namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings
 {
@@ -35,14 +36,14 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings
         private CalcTaskModel _currentCalcTask;
 
         private CardEditMode _clientContextEditedMode = CardEditMode.None;
-        private CardEditMode _calcTaskEditedMode = CardEditMode.None;
 
         public ViewCommand ContextAddCommand { get; set; }
         public ViewCommand ContextModifyCommand { get; set; }
         public ViewCommand ContextDeleteCommand { get; set; }
         public ViewCommand ContextSaveCommand { get; set; }
-        public ViewCommand TaskStartCalcCommand { get; set; }
+        public ViewCommand TaskDeleteCommand { get; set; }
         public ViewCommand TaskShowResultCommand { get; set; }
+        public ViewCommand PrepareContextCommand { get; set; }
 
         public ProjectDataAdapter Projects { get; set; }
         public BaseClientContextDataAdapter BaseClientContexts { get; set; }
@@ -52,6 +53,8 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings
         private IEventHandlerToken<Events.OnCreatedClientContext> _onCreatedClientContextToken;
         private IEventHandlerToken<Events.OnEditedClientContext> _onEditedClientContextToken;
         private IEventHandlerToken<Events.OnDeletedClientContext> _onDeletedClientContextToken;
+        private IEventHandlerToken<Events.OnPreparedClientContext> _onPreparedClientContextToken;
+        private IEventHandlerToken<CT.Events.OnDeletedCalcTask> _onDeletedCalcTaskToken;
 
         public View(
             ProjectDataAdapter projectDataAdapter,
@@ -75,8 +78,10 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings
             this.ContextDeleteCommand = new ViewCommand(this.OnContextDeleteCommand);
             this.ContextSaveCommand = new ViewCommand(this.OnContextSaveCommand);
 
-            //this.TaskStartCalcCommand = new ViewCommand(this.OnTaskStartCalcCommand);
-            //this.TaskShowResultCommand = new ViewCommand(this.OnTaskShowResultCommand);
+            this.TaskDeleteCommand = new ViewCommand(this.OnTaskDeleteCommand);
+            this.TaskShowResultCommand = new ViewCommand(this.OnTaskShowResultCommand);
+
+            this.PrepareContextCommand = new ViewCommand(this.OnPrepareContextCommand);
 
             this.CurrentClientContextCard = new ClientContextModel();
 
@@ -84,6 +89,12 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings
             this.BaseClientContexts = baseContextDataAdapter;
             this.ClientContexts = contextDataAdapter;
             this.CalcTasks = calcTaskDataAdapter;
+
+            _onCreatedClientContextToken = _eventBus.Subscribe<Events.OnCreatedClientContext>(this.OnCreatedClientContextHandle);
+            _onEditedClientContextToken = _eventBus.Subscribe<Events.OnEditedClientContext>(this.OnEditedClientContextHandle);
+            _onDeletedClientContextToken = _eventBus.Subscribe<Events.OnDeletedClientContext>(this.OnDeletedClientContextHandle);
+            _onPreparedClientContextToken = _eventBus.Subscribe<Events.OnPreparedClientContext>(this.OnOnPreparedClientContexttHandle);
+            _onDeletedCalcTaskToken = _eventBus.Subscribe<CT.Events.OnDeletedCalcTask>(this.OnDeletedCalcTaskHandle);
 
             ReloadProjects();
         }
@@ -147,11 +158,11 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings
             set => this.Set(ref this._clientContextSaveEnabled, value);
         }
 
-        private bool _calcTaskStartCalcEnabled = false;
-        public bool CalcTaskStartCalcEnabled
+        private bool _calcTaskDelEnabled = false;
+        public bool CalcTaskDelEnabled
         {
-            get => this._calcTaskStartCalcEnabled;
-            set => this.Set(ref this._calcTaskStartCalcEnabled, value);
+            get => this._calcTaskDelEnabled;
+            set => this.Set(ref this._calcTaskDelEnabled, value);
         }
 
         private bool _calcTaskShowResultEnabled = false;
@@ -167,7 +178,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings
             ReloadProjectContexts();
             CurrentClientContextCard = new ClientContextModel();
             ClientContextSaveEnabled = false;
-            CalcTaskStartCalcEnabled = false;
+            CalcTaskDelEnabled = false;
             CalcTaskShowResultEnabled = false;
         }
         private void OnChangedCurrentBaseClientContext(ClientContextModel context)
@@ -189,6 +200,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings
                 ReloadCalcTask();
                 this.CurrentClientContextCard = _objectReader.Read<ClientContextModel>().By(new GetClientContextById { Id = CurrentClientContext.Id });
                 ClientContextEditEnabled = true;
+                ClientContextDelEnabled = true;
             }
             else
             {
@@ -202,12 +214,12 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings
         {
             if (CurrentCalcTask != null)
             {
-                CalcTaskStartCalcEnabled = true;
+                CalcTaskDelEnabled = true;
                 CalcTaskShowResultEnabled = true;
             }
             else
             {
-                CalcTaskStartCalcEnabled = false;
+                CalcTaskDelEnabled = false;
                 CalcTaskShowResultEnabled = false;
             }
         }
@@ -224,7 +236,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings
         {
             this.CalcTasks.ContextId = this.CurrentClientContext.Id;
             this.CalcTasks.Refresh();
-            CalcTaskStartCalcEnabled = false;
+            CalcTaskDelEnabled = false;
             CalcTaskShowResultEnabled = false;
         }
         private void ReloadClientContext()
@@ -258,7 +270,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.ToString());
+                this._logger.Exception(Exceptions.GE06Client, e);
             }
         }
         private void OnContextModifyCommand(object parameter)
@@ -276,7 +288,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.ToString());
+                this._logger.Exception(Exceptions.GE06Client, e);
             }
         }
         private void OnContextDeleteCommand(object parameter)
@@ -285,8 +297,6 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings
             {
                 if (CurrentClientContext == null)
                     return;
-
-                _onDeletedClientContextToken = _eventBus.Subscribe<Events.OnDeletedClientContext>(this.OnDeletedClientContextHandle);
 
                 var projectModifier = new Modifiers.DeleteClientContext
                 {
@@ -297,21 +307,20 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.ToString());
+                this._logger.Exception(Exceptions.GE06Client, e); 
             }
         }
         private void OnContextSaveCommand(object parameter)
         {
             if (_clientContextEditedMode == CardEditMode.Add)
             {
-                _onCreatedClientContextToken = _eventBus.Subscribe<Events.OnCreatedClientContext>(this.OnCreatedClientContextHandle);
-
                 var projectModifier = new Modifiers.CreateClientContext
                 {
                     ProjectId = CurrentClientContextCard.ProjectId,
                     BaseContextId = CurrentClientContextCard.BaseContextId,
                     Name = CurrentClientContextCard.Name,
                     Note = CurrentClientContextCard.Note,
+                    ActiveContext = CurrentClientContextCard.ActiveContext,
                     OwnerId = Guid.NewGuid()
                 };
 
@@ -320,13 +329,12 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings
 
             if (_clientContextEditedMode == CardEditMode.Edit)
             {
-                _onEditedClientContextToken = _eventBus.Subscribe<Events.OnEditedClientContext>(this.OnEditedClientContextHandle);
-
                 var projectModifier = new Modifiers.EditClientContext
                 {
                     Id = CurrentClientContext.Id,
                     Name = CurrentClientContextCard.Name,
-                    Note = CurrentClientContextCard.Note
+                    Note = CurrentClientContextCard.Note,
+                    ActiveContext = CurrentClientContextCard.ActiveContext
                 };
 
                 _commandDispatcher.Send(projectModifier);
@@ -337,50 +345,63 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings
             if (CurrentBaseClientContext != null)
                 ClientContextAddEnabled = true;
         }
-        //private void OnTaskStartCalcCommand(object parameter)
-        //{
-        //    try
-        //    {
-        //        if (TaskStartCalcCommand == null)
-        //            return;
+        private void OnTaskDeleteCommand(object parameter)
+        {
+            try
+            {
+                if (CurrentCalcTask == null)
+                    return;
 
-        //        _onOnRunCalcTaskToken = _eventBus.Subscribe<Events.OnRunCalcTask>(this.OnRunCalcTaskHandle);
+                var projectModifier = new CT.Modifiers.DeleteCalcTask
+                {
+                    Id = CurrentCalcTask.Id
+                };
 
-        //        var modifier = new Modifiers.RunCalcTask
-        //        {
-        //            Id = CurrentCalcTask.Id
-        //        };
+                _commandDispatcher.Send(projectModifier);
+            }
+            catch (Exception e)
+            {
+                this._logger.Exception(Exceptions.GE06Client, e);
+            }
+        }
 
-        //        _commandDispatcher.Send(modifier);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        MessageBox.Show(e.ToString());
-        //    }
-        //}
+        private void OnTaskShowResultCommand(object parameter)
+        {
+            try
+            {
+                var resultId = _objectReader.Read<long?>().By(new GetResultIdByTaskId { TaskId = CurrentCalcTask.Id });
+                if (resultId.HasValue)
+                {
+                    var ge06resultId = _objectReader.Read<long?>().By(new GetGe06ResultIdByResultId { ResultId = resultId.Value });
+                    if (ge06resultId.HasValue)
+                        _starter.Start<VM.GE06TaskResult.View>(isModal: true, c => c.ResultId = ge06resultId.Value);
+                }
+                else
+                {
+                    this._logger.Exception(Exceptions.GE06Client, new Exception($"For selected task not found information in ICalcResults!"));
+                }
+            }
+            catch (Exception e)
+            {
+                this._logger.Exception(Exceptions.GE06Client, e);
+            }
+        }
 
-        //private void OnTaskShowResultCommand(object parameter)
-        //{
-        //    try
-        //    {
-        //        if (TaskShowResultCommand == null)
-        //            return;
-
-        //        var resultModel = _objectReader.Read<CalcResultModel>().By(new GetCalcResultById { Id = CurrentCalcTask.Id });
-        //        if (resultModel != null)
-        //        {
-        //            _starter.Start<VM.StationCalibrationResult.View>(isModal: true, f => { f.ResultId = resultModel.Id; });
-        //        }
-        //        else
-        //        {
-        //            MessageBox.Show("For selected task not found information in ICalcResults!");
-        //        }
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        MessageBox.Show(e.ToString());
-        //    }
-        //}
+        private void OnPrepareContextCommand(object parameter)
+        {
+            try
+            {
+                var projectModifier = new Modifiers.PrepareClientContext
+                {
+                    ContextId = CurrentClientContext.Id
+                };
+                _commandDispatcher.Send(projectModifier);
+            }
+            catch (Exception e)
+            {
+                this._logger.Exception(Exceptions.GE06Client, e);
+            }
+        }
 
         private void OnCreatedClientContextHandle(Events.OnCreatedClientContext data)
         {
@@ -394,10 +415,14 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings
         {
             ReloadClientContext();
         }
-        //private void OnRunCalcTaskHandle(Events.OnRunCalcTask data)
-        //{
-        //    ReloadCalcTask();
-        //}
+        private void OnOnPreparedClientContexttHandle(Events.OnPreparedClientContext data)
+        {
+            ReloadClientContext();
+        }
+        private void OnDeletedCalcTaskHandle(CT.Events.OnDeletedCalcTask data)
+        {
+            ReloadCalcTask();
+        }
         public override void Dispose()
         {
             _onCreatedClientContextToken?.Dispose();
@@ -406,6 +431,10 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings
             _onEditedClientContextToken = null;
             _onDeletedClientContextToken?.Dispose();
             _onDeletedClientContextToken = null;
+            _onPreparedClientContextToken?.Dispose();
+            _onPreparedClientContextToken = null;
+            _onDeletedCalcTaskToken?.Dispose();
+            _onDeletedCalcTaskToken = null;
         }
     }
     enum CardEditMode

@@ -1,4 +1,5 @@
-﻿using Atdi.DataModels.Sdrn.CalcServer.Internal.Maps;
+﻿using Atdi.DataModels.Sdrn.CalcServer.Entities;
+using Atdi.DataModels.Sdrn.CalcServer.Internal.Maps;
 using Atdi.DataModels.Sdrn.DeepServices.Gis;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.DataModel
 	internal class ProjectMapData
 	{
 		public long ProjectMapId;
+
+		public string MapName;
+
+		public ProjectMapSourceTypeCode? SourceType;
 
 		public string Projection;
 
@@ -46,7 +51,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.DataModel
 
 		public int OwnerStepsNumber => this.OwnerAxisXNumber * this.OwnerAxisYNumber;
 
-		public long RectArea => (this.LowerRightX - this.UpperLeftX) * (this.UpperLeftY - this.LowerRightY);
+		public ulong RectArea => ((ulong)this.LowerRightX - (ulong)this.UpperLeftX) * ((ulong)this.UpperLeftY - (ulong)this.LowerRightY);
 
 		public bool Has(int x, int y)
 		{

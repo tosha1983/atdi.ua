@@ -224,10 +224,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetDir)Localization\XICSM_Atdi.Icsm.Plugins.WebQuery_CST.txt" "..\..\..\..\Delivery\Atdi.WebQuery\ICSM Plugin"
-copy "$(TargetDir)Resources\Atdi.Icsm.Plugins.WebQuery.Schema" "..\..\..\..\Delivery\Atdi.WebQuery\ICSM Plugin"
-copy "$(TargetDir)XICSM_Atdi.Icsm.Plugins.WebQuery.dll" "..\..\..\..\Delivery\Atdi.WebQuery\ICSM Plugin"
-copy "$(TargetDir)Atdi.DataModels.dll" "..\..\..\..\Delivery\Atdi.WebQuery\ICSM Plugin"</PostBuildEvent>
+    <PostBuildEvent>copy "$(TargetDir)Localization\XICSM_Atdi.Icsm.Plugins.WebQuery_CST.txt" "..\..\..\..\Delivery\Atdi.WebQuery\ICSM Plugin\Bin$(ConfigurationName)"
+copy "$(TargetDir)Resources\Atdi.Icsm.Plugins.WebQuery.Schema" "..\..\..\..\Delivery\Atdi.WebQuery\ICSM Plugin\Bin$(ConfigurationName)"
+copy "$(TargetDir)XICSM_Atdi.Icsm.Plugins.WebQuery.dll" "..\..\..\..\Delivery\Atdi.WebQuery\ICSM Plugin\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.DataModels.dll" "..\..\..\..\Delivery\Atdi.WebQuery\ICSM Plugin\Bin$(ConfigurationName)"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

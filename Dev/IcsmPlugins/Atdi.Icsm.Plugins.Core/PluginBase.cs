@@ -57,9 +57,11 @@ namespace Atdi.Icsm.Plugins.Core
 
 		public void RegisterBoard(IMBoard b)
 		{
+            this.AddBoard(b);
 		}
+        protected abstract void AddBoard(IMBoard b);
 
-		public void RegisterSchema(IMSchema s)
+        public void RegisterSchema(IMSchema s)
 		{
 		}
 

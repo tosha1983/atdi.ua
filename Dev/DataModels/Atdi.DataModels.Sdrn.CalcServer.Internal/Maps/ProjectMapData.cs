@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Atdi.DataModels.Sdrn.CalcServer.Entities;
 using Atdi.DataModels.Sdrn.DeepServices.Gis;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Maps
@@ -10,6 +11,10 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Maps
 	public class ProjectMapData
 	{
 		public long Id { get; set; }
+
+		public string MapName { get; set; }
+
+		public ProjectMapSourceTypeCode SourceType { get; set; }
 
 		public AtdiAxis AxisX { get; set; }
 

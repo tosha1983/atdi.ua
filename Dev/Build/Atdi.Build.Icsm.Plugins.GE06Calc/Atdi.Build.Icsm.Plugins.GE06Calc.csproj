@@ -52,6 +52,10 @@
       <Project>{f1f30ab9-7598-424d-9cde-95412583eccf}</Project>
       <Name>Atdi.AppUnits.Sdrn.DeepServices.Gis</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeepServices.GN06\Atdi.AppUnits.Sdrn.DeepServices.GN06.csproj">
+      <Project>{910e2fdf-8557-4162-ab5c-d62e3a9df394}</Project>
+      <Name>Atdi.AppUnits.Sdrn.DeepServices.GN06</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeepServices.RadioSystem\Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.csproj">
       <Project>{b8d91488-2850-46a9-9e32-9d1dd7d02683}</Project>
       <Name>Atdi.AppUnits.Sdrn.DeepServices.RadioSystem</Name>
@@ -67,6 +71,10 @@
     <ProjectReference Include="..\..\Contracts\Api\Atdi.Contracts.Api.EntityOrm.WebClient\Atdi.Contracts.Api.EntityOrm.WebClient.csproj">
       <Project>{a252d199-1162-484d-b50a-8c44a4edd670}</Project>
       <Name>Atdi.Contracts.Api.EntityOrm.WebClient</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeepServices.GN06\Atdi.Contracts.Sdrn.DeepServices.GN06.csproj">
+      <Project>{a3b45d65-031a-455d-984c-309ccc856994}</Project>
+      <Name>Atdi.Contracts.Sdrn.DeepServices.GN06</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeepServices.RadioSystem\Atdi.Contracts.Sdrn.DeepServices.RadioSystem.csproj">
       <Project>{d576643b-fcdb-4873-9f08-abcfbb5e9e8f}</Project>
@@ -87,6 +95,10 @@
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.CalcServer.Entities\Atdi.DataModels.Sdrn.CalcServer.Entities.csproj">
       <Project>{6a72e0c5-f8a4-412f-9395-13abe07367b1}</Project>
       <Name>Atdi.DataModels.Sdrn.CalcServer.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices.GN06\Atdi.DataModels.Sdrn.DeepServices.GN06.csproj">
+      <Project>{ee65799e-0a0a-4599-8f5e-30eb23304d49}</Project>
+      <Name>Atdi.DataModels.Sdrn.DeepServices.GN06</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices.RadioSystem\Atdi.DataModels.Sdrn.DeepServices.RadioSystem.csproj">
       <Project>{c67fbe11-fef0-48ad-9912-61bf4c61db03}</Project>
@@ -192,6 +204,13 @@ copy "$(TargetDir)Castle.Windsor.dll"  "..\..\..\..\Delivery\Atdi.Sdrn\Client\GE
 copy "$(TargetDir)Castle.Core.dll"  "..\..\..\..\Delivery\Atdi.Sdrn\Client\GE06Calc\Bin$(ConfigurationName)"
 copy "$(TargetDir)GMap.NET.Core.dll"  "..\..\..\..\Delivery\Atdi.Sdrn\Client\GE06Calc\Bin$(ConfigurationName)"
 copy "$(TargetDir)GMap.NET.WindowsPresentation.dll"  "..\..\..\..\Delivery\Atdi.Sdrn\Client\GE06Calc\Bin$(ConfigurationName)"
+
+
+
+copy "$(TargetDir)Atdi.AppUnits.Sdrn.DeepServices.GN06.dll"     "..\..\..\..\Delivery\Atdi.Sdrn\Client\GE06Calc\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.Contracts.Sdrn.DeepServices.GN06.dll"     "..\..\..\..\Delivery\Atdi.Sdrn\Client\GE06Calc\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.DataModels.Sdrn.DeepServices.GN06.dll"     "..\..\..\..\Delivery\Atdi.Sdrn\Client\GE06Calc\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.DataModels.Sdrn.CalcServer.Internal.dll"     "..\..\..\..\Delivery\Atdi.Sdrn\Client\GE06Calc\Bin$(ConfigurationName)"
 </PostBuildEvent>
   </PropertyGroup>
 </Project>

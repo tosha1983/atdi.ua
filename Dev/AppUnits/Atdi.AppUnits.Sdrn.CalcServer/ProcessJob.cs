@@ -1,4 +1,5 @@
-﻿using Atdi.Contracts.CoreServices.DataLayer;
+﻿using System;
+using Atdi.Contracts.CoreServices.DataLayer;
 using Atdi.Contracts.CoreServices.EntityOrm;
 using Atdi.Contracts.Sdrn.CalcServer;
 using Atdi.DataModels.DataConstraint;
@@ -7,6 +8,7 @@ using Atdi.Platform.Logging;
 using Atdi.Platform.Workflows;
 using System.Collections.Generic;
 using Atdi.Contracts.Sdrn.CalcServer.Internal;
+using Atdi.DataModels.Sdrn.CalcServer;
 
 namespace Atdi.AppUnits.Sdrn.CalcServer
 {
@@ -145,9 +147,62 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 			//throw new System.NotImplementedException();
 		}
 
-		public void OnEvent(ICalcContextHandle context, ICalcEvent @event)
+		public void OnEvent(ICalcContextHandle context, CalcResultEvent @event)
 		{
-			//throw new System.NotImplementedException();
+			try
+			{
+				var insQuery = _calcServerDataLayer.GetBuilder<ICalcResultEvent>()
+						.Insert()
+						.SetValue(c => c.RESULT.Id, context.ResultId)
+						.SetValue(c => c.CreatedDate, DateTimeOffset.Now)
+						.SetValue(c => c.LevelCode, (byte)@event.Level)
+						.SetValue(c => c.LevelName, @event.Level.ToString())
+						.SetValue(c => c.Context, @event.Context)
+						.SetValue(c => c.Message, @event.Message)
+					;
+
+				using (var dbScope = this._calcServerDataLayer.CreateScope<CalcServerDataContext>())
+				{
+					dbScope.Executor.Execute(insQuery);
+				}
+			}
+			catch (Exception e)
+			{
+				_logger.Exception(Contexts.ThisComponent, Categories.Subscribing, e, this);
+			}
 		}
+
+		public void OnEvent<TData>(ICalcContextHandle context, CalcResultEvent<TData> @event)
+		{
+			try
+			{
+				var type = typeof(TData);
+				var insQuery = _calcServerDataLayer.GetBuilder<ICalcResultEvent>()
+						.Insert()
+						.SetValue(c => c.RESULT.Id, context.ResultId)
+						.SetValue(c => c.CreatedDate, DateTimeOffset.Now)
+						.SetValue(c => c.LevelCode, (byte) @event.Level)
+						.SetValue(c => c.LevelName, @event.Level.ToString())
+						.SetValue(c => c.Context, @event.Context)
+						.SetValue(c => c.Message, @event.Message)
+						.SetValue(c => c.DataType, type.Name)
+						.SetValueAsJson(c => c.DataJson, @event.Data)
+					;
+
+				using (var dbScope = this._calcServerDataLayer.CreateScope<CalcServerDataContext>())
+				{
+					dbScope.Executor.Execute(insQuery);
+				}
+			}
+			catch (Exception e)
+			{
+				_logger.Exception(Contexts.ThisComponent, Categories.Subscribing, e, this);
+			}
+		}
+
+		//public void OnEvent(ICalcContextHandle context, ICalcEvent @event)
+		//{
+		//	//throw new System.NotImplementedException();
+		//}
 	}
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,6 +19,8 @@ using Atdi.Platform.Logging;
 using DM = Atdi.AppUnits.Sdrn.CalcServer.DataModel;
 using Atdi.Common.Extensions;
 using Atdi.DataModels.Sdrn.DeepServices.Gis;
+using Atdi.Contracts.Sdrn.DeepServices.Gis;
+using Atdi.Contracts.Sdrn.CalcServer.Internal;
 
 namespace Atdi.AppUnits.Sdrn.CalcServer
 {
@@ -114,6 +117,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 			/// </summary>
 			public MapReference<T>[] Maps;
 
+			/// <summary>
+			/// Оптимизация: ссылка на ячейку карыт основания которая покрывает полностью данную - избегает лишних алокаций массовов там где их ненужн иметь
+			/// </summary>
+			public MapReference<T> SingleMap;
+
 			public override string ToString()
 			{
 				return $"{YIndex}:{XIndex} - {Area}; Coverage {CoverageAmount}({CoveragePercent}%); Source {Maps?.Length}";
@@ -137,7 +145,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 			public MapReference<T> SourceMap;
 		}
 
-		private class MapReference<T>
+		private struct MapReference<T>
 			where T : struct
 		{
 			/// <summary>
@@ -166,21 +174,56 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 			public long CoverageAmount;
 		}
 
+		//private struct SingleMapReference<T>
+		//	where T : struct
+		//{
+		//	/// <summary>
+		//	/// Индекс достeпа к значению карты источника по X
+		//	/// </summary>
+		//	public int XIndex;
+
+		//	/// <summary>
+		//	/// Индекс достeпа к значению карты источника по Y
+		//	/// </summary>
+		//	public int YIndex;
+
+		//	/// <summary>
+		//	/// Идентифкатор карты источника
+		//	/// </summary>
+		//	public DM.SourceMapData InfocenterMap;
+
+		//	/// <summary>
+		//	/// Значение из карты источника
+		//	/// </summary>
+		//	public T Value;
+
+		//	/// <summary>
+		//	/// Площадь покрытия картой источника 
+		//	/// </summary>
+		//	public long CoverageAmount;
+		//}
+
 		private static readonly object DefaultForRelief = (short) -9999;
 		private static readonly object DefaultForClutter = (byte)0;
 		private static readonly object DefaultForBuilding = (byte)0;
 
+		private readonly IMapRepository _mapRepository;
+		private readonly IMapStorage _gisMapStorage;
 		private readonly AppServerComponentConfig _config;
 		private readonly IDataLayer<EntityDataOrm<IC.InfocenterEntityOrmContext>> _infocenterDataLayer;
 		private readonly IDataLayer<EntityDataOrm<CalcServerEntityOrmContext>> _calcServerDataLayer;
 		private readonly ILogger _logger;
 
 		public MapBuilder(
+			IMapRepository mapRepository,
+			IMapStorage gisMapStorage,
 			AppServerComponentConfig config,
 			IDataLayer<EntityDataOrm<IC.InfocenterEntityOrmContext>> infocenterDataLayer,
 			IDataLayer<EntityDataOrm<CalcServerEntityOrmContext>> calcServerDataLayer,
 			ILogger logger)
 		{
+			_mapRepository = mapRepository;
+			_gisMapStorage = gisMapStorage;
 			_config = config;
 			_infocenterDataLayer = infocenterDataLayer;
 			_calcServerDataLayer = calcServerDataLayer;
@@ -213,42 +256,22 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 						// читаем свойства карты проекта
 						var projectMapData = this.LoadProjectMapData(calcDbScope, projectMapId);
 
-						// проверим свойства шага: шаговый бокс и ко-во
-						CheckAxis(projectMapData);
+						// на первом этапе ищим карту в локальном хранилище
+						// имя файла равно ИмяКарты.geo - файл рнльефа определяющий
+						// если  карыт нет работаем по старому, через построение карты на базе карт инфонцентра
+						var localStorageFolder = _config.MapsLocalStorageFolder;
+						var mapFilePath = Path.Combine(localStorageFolder, $"{projectMapData.MapName}.geo");
 
-						// расчитываем область карты и проверяем ее с трешхолодом (не более 15 000 х 15 000 шагов), при нарушении падаем
-						CheckThresholdMaxSteps(projectMapData.OwnerStepsNumber);
-
-						// проверка проекции
-						CheckProjection(projectMapData.Projection);
-
-						// проверка единици измерения карты
-						CheckStepUnit(projectMapData.StepUnit);
-
-						// расчитываем конечные координаты относительно указаных шагов
-						projectMapData.AxisXNumber = projectMapData.OwnerAxisXNumber;
-						projectMapData.AxisXStep = projectMapData.OwnerAxisXStep;
-						projectMapData.AxisYNumber = projectMapData.OwnerAxisYNumber;
-						projectMapData.AxisYStep = projectMapData.OwnerAxisYStep;
-						projectMapData.UpperLeftX = projectMapData.OwnerUpperLeftX;
-						projectMapData.UpperLeftY = projectMapData.OwnerUpperLeftY;
-
-						projectMapData.LowerRightX =
-							projectMapData.UpperLeftX + projectMapData.AxisXNumber * projectMapData.AxisXStep;
-						projectMapData.LowerRightY =
-							projectMapData.UpperLeftY - projectMapData.AxisYNumber * projectMapData.AxisYStep;
-
-						// сохраним расчеті
-						SaveProjectMapData(calcDbScope, projectMapData);
-
-						// с этого момент можем приступить к построеннию карт
-						using (var infoDbScope = this._infocenterDataLayer.CreateScope<InfocenterDataContext>())
+						if (File.Exists(mapFilePath))
 						{
-							this.BuildMap<short>(calcDbScope, infoDbScope, projectMapData, ProjectMapType.Relief);
-							this.BuildMap<byte>(calcDbScope, infoDbScope, projectMapData, ProjectMapType.Building);
-							this.BuildMap<byte>(calcDbScope, infoDbScope, projectMapData, ProjectMapType.Clutter);
+							this.UseLocalStorage(calcDbScope, projectMapData, mapFilePath);
+						}
+						else
+						{
+							this.BuildMap(calcDbScope, projectMapData);
 						}
 						
+
 						// поределяемся с описанием клатеров
 						// фиксируем состояние
 						this.ChangeProjectMapStatus(calcDbScope, projectMapId, ProjectMapStatusCode.Prepared);
@@ -270,6 +293,78 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 			
 		}
 
+		private void UseLocalStorage(IDataLayerScope calcDbScope, DM.ProjectMapData projectMapData, string mapFilePath)
+		{
+			var metadata = _gisMapStorage.GetMetadata(mapFilePath);
+
+			if (!metadata.Projection.Equals(projectMapData.Projection, StringComparison.OrdinalIgnoreCase))
+			{
+				throw new InvalidOperationException($"The projection of the map '{metadata.Projection}' differs from the projection of the project '{projectMapData.Projection}'.");
+			}
+
+			// расчитываем конечные координаты относительно указаных шагов
+			projectMapData.SourceType = ProjectMapSourceTypeCode.LocalStorage;
+
+			projectMapData.StepUnit = metadata.StepUnit;
+			projectMapData.AxisXNumber = metadata.AxisXNumber;
+			projectMapData.AxisXStep = metadata.AxisXStep;
+			projectMapData.AxisYNumber = metadata.AxisYNumber;
+			projectMapData.AxisYStep = metadata.AxisYStep;
+			projectMapData.UpperLeftX = metadata.UpperLeftX;
+			projectMapData.UpperLeftY = metadata.UpperLeftY;
+
+			projectMapData.LowerRightX =
+				projectMapData.UpperLeftX + projectMapData.AxisXNumber * projectMapData.AxisXStep;
+			projectMapData.LowerRightY =
+				projectMapData.UpperLeftY - projectMapData.AxisYNumber * projectMapData.AxisYStep;
+
+			// сохраним расчеті
+			SaveProjectMapData(calcDbScope, projectMapData);
+
+			//var test = _mapRepository.GetMapByName(calcDbScope, 1, projectMapData.MapName);
+			//var test2 = _mapRepository.GetCluttersDesc(calcDbScope, 1);
+		}
+
+		private void BuildMap(IDataLayerScope calcDbScope, DM.ProjectMapData projectMapData)
+		{
+			// проверим свойства шага: шаговый бокс и ко-во
+			CheckAxis(projectMapData);
+
+			// расчитываем область карты и проверяем ее с трешхолодом (не более 15 000 х 15 000 шагов), при нарушении падаем
+			CheckThresholdMaxSteps(projectMapData.OwnerStepsNumber);
+
+			// проверка проекции
+			CheckProjection(projectMapData.Projection);
+
+			// проверка единици измерения карты
+			CheckStepUnit(projectMapData.StepUnit);
+
+			// расчитываем конечные координаты относительно указаных шагов
+			projectMapData.SourceType = ProjectMapSourceTypeCode.Infocenter;
+			projectMapData.AxisXNumber = projectMapData.OwnerAxisXNumber;
+			projectMapData.AxisXStep = projectMapData.OwnerAxisXStep;
+			projectMapData.AxisYNumber = projectMapData.OwnerAxisYNumber;
+			projectMapData.AxisYStep = projectMapData.OwnerAxisYStep;
+			projectMapData.UpperLeftX = projectMapData.OwnerUpperLeftX;
+			projectMapData.UpperLeftY = projectMapData.OwnerUpperLeftY;
+
+			projectMapData.LowerRightX =
+				projectMapData.UpperLeftX + projectMapData.AxisXNumber * projectMapData.AxisXStep;
+			projectMapData.LowerRightY =
+				projectMapData.UpperLeftY - projectMapData.AxisYNumber * projectMapData.AxisYStep;
+
+			// сохраним расчеті
+			SaveProjectMapData(calcDbScope, projectMapData);
+
+			// с этого момент можем приступить к построеннию карт
+			using (var infoDbScope = this._infocenterDataLayer.CreateScope<InfocenterDataContext>())
+			{
+				this.BuildMap<short>(calcDbScope, infoDbScope, projectMapData, ProjectMapType.Relief);
+				this.BuildMap<byte>(calcDbScope, infoDbScope, projectMapData, ProjectMapType.Building);
+				this.BuildMap<byte>(calcDbScope, infoDbScope, projectMapData, ProjectMapType.Clutter);
+			}
+		}
+
 		private void BuildMap<T>(IDataLayerScope calcDbScope, IDataLayerScope infoDbScope, DM.ProjectMapData projectMap, ProjectMapType mapType)
 			where T : struct
 		{
@@ -279,7 +374,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 			var sourceMaps = this.FindSourceMaps(infoDbScope, projectMap, mapType);
 			if (sourceMaps.Length == 0)
 			{
-				throw new InvalidOperationException($"Could not find any matching maps of type '{mapType}' in the Infocenter DB");
+                //throw new InvalidOperationException($"Could not find any matching maps of type '{mapType}' in the Infocenter DB");
+                return;
 			}
 
 			// для рельефа если есть мастер карта, то выравниваемся  к ней по ее координатной сетке
@@ -329,6 +425,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 
 			// выделяем буффер
 			var cellDescriptors = new MapCellDescriptor<T>[projectMap.AxisXNumber * projectMap.AxisYNumber];
+			var cellDescriptors2 = new MapCellDescriptor<T>[projectMap.AxisXNumber * projectMap.AxisYNumber];
+			var cellDescriptors3 = new MapCellDescriptor<T>[projectMap.AxisXNumber * projectMap.AxisYNumber];
 
 			// Работаем в три прохода
 			// строим матрицу обхода, в начале идем по целеdой матрице, определяем на кажудю точк уоткуда с какой карты берем значение
@@ -341,14 +439,19 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 				for (var xIndex = 0; xIndex < projectMap.AxisXNumber; xIndex++)
 				{
 					var area = projectMap.IndexToArea(xIndex, yIndex);
-					var descriptor = new MapCellDescriptor<T>()
-					{
-						XIndex = xIndex,
-						YIndex = yIndex,
-						Area = area,
-						Maps = this.DefineSourceMaps<T>(area, sourceMaps)
-					};
-					descriptor.CoverageAmount = descriptor.Maps.Sum(m => m.CoverageAmount);
+					//var descriptor = new MapCellDescriptor<T>()
+					//{
+					//	XIndex = xIndex,
+					//	YIndex = yIndex,
+					//	Area = area,
+					//	Maps = this.DefineSourceMaps<T>(area, sourceMaps)
+					//};
+
+					var descriptor = this.DefineSourceMaps<T>(area, sourceMaps);
+					descriptor.XIndex = xIndex;
+					descriptor.YIndex = yIndex;
+
+					//descriptor.CoverageAmount = descriptor.Maps.Sum(m => m.CoverageAmount);
 					descriptor.CoveragePercent = 100 * (descriptor.CoverageAmount / projectMapCellArea);
 					cellDescriptors[yyIndex + xIndex] = descriptor;
 
@@ -365,7 +468,21 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 			}
 
 			// групируем и грузим карты
-			cellDescriptors.SelectMany( c => c.Maps.Select(m => new MapRocessingRecord<T> { SourceMap = m, XIndex = c.XIndex, YIndex = c.YIndex }))
+
+			// вторая схема
+			cellDescriptors.SelectMany( c =>
+				{
+					if (c.SingleMap.InfocenterMap != null)
+					{
+						return new MapRocessingRecord<T>[]
+						{
+							new MapRocessingRecord<T>
+								{SourceMap = c.SingleMap, XIndex = c.XIndex, YIndex = c.YIndex}
+						};
+					}
+					return c.Maps.Select(m => new MapRocessingRecord<T>
+							{SourceMap = m, XIndex = c.XIndex, YIndex = c.YIndex});
+				})
 				.GroupBy(g => g.SourceMap.InfocenterMap)
 				.Select(g => new { InfocenterMap = g.Key, Count = g.Count(), Use = g.Select(p => p).ToArray()})
 				.ToList()
@@ -376,7 +493,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 
 			// площадь ячейки, нужна для рельефа
 			var reliefCellArea = (double)projectMap.AxisXStep * projectMap.AxisYStep;
-			var coverageAmount = (long) 0;
+			var coverageAmount = (ulong)0;
 			for (var yIndex = 0; yIndex < projectMap.AxisYNumber; yIndex++)
 			{
 				for (var xIndex = 0; xIndex < projectMap.AxisXNumber; xIndex++)
@@ -387,7 +504,15 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 
 					
 					var cell = cellDescriptors[yIndex * projectMap.AxisXNumber + xIndex];
-					if (cell.Maps == null || cell.Maps.Length == 0)
+
+					if (cell.SingleMap.InfocenterMap != null)
+					{
+						var cellMap = cell.SingleMap;
+						mapContent.Content[contentIndex] = cellMap.Value;
+						cellMap.InfocenterMap.Used = true;
+						coverageAmount += (ulong)cellMap.CoverageAmount;
+					}
+					else if (cell.Maps == null || cell.Maps.Length == 0)
 					{
 						// нет карты, заполяняем дефолтным значением
 						if (mapType == ProjectMapType.Relief)
@@ -413,7 +538,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 						var cellMap = cell.Maps[0];
 						mapContent.Content[contentIndex] = cellMap.Value;
 						cellMap.InfocenterMap.Used = true;
-						coverageAmount += cellMap.CoverageAmount;
+						coverageAmount += (ulong)cellMap.CoverageAmount;
 					}
 					else
 					{
@@ -428,13 +553,13 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 									return result;
 								});
 							mapContent.Content[contentIndex] = (T) (object) Convert.ToInt16(contentValue);
-							coverageAmount += cell.Maps.Sum(m => m.CoverageAmount);
+							coverageAmount += (ulong)cell.Maps.Sum(m => m.CoverageAmount);
 						}
 						else if (mapType == ProjectMapType.Building|| mapType == ProjectMapType.Clutter)
 						{
 							var max = cell.Maps.Max(c => c.CoverageAmount);
 							mapContent.Content[contentIndex] = cell.Maps.Where(c => c.CoverageAmount == max).Max(c => c.Value);
-							coverageAmount += cell.Maps.Sum(m => m.CoverageAmount);
+							coverageAmount += (ulong)cell.Maps.Sum(m => m.CoverageAmount);
 						}
 						else
 						{
@@ -827,7 +952,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 			}
 			throw new InvalidOperationException($"Unsupported encoding '{encoding}'");
 		}
-		private MapReference<T>[] DefineSourceMaps<T>(AreaCoordinates projectMapCellArea, DM.SourceMapData[] sourceMaps)
+		private MapCellDescriptor<T> DefineSourceMaps<T>(AreaCoordinates projectMapCellArea, DM.SourceMapData[] sourceMaps)
 			where T : struct
 		{
 
@@ -846,7 +971,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 			 *     Для каждой чейки строим метрову матрицу для фикисрования разницы 
 			 */
 			var coveredSourceMapsCount = 0; // индекс самой низкой карты
-			var coveredSourceMaps = new CoverageSourceMapArea[sourceMaps.Length];
+			var coveredSourceMaps = default(CoverageSourceMapArea[]); // new CoverageSourceMapArea[sourceMaps.Length];
 			for (int i = 0; i < sourceMaps.Length; i++)
 			{
 				var sourceMap = sourceMaps[i];
@@ -862,13 +987,40 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 					throw new InvalidOperationException($"Something went wrong while map coverage calculation: [Source Coverage Area] > [Project Map Cell Area]");
 				}
 
+				var once = i == 0 && projectMapCellArea.Area == coverageArea.Area;
+				var sourceCells = this.DecomposeIntoCells(sourceMap, coverageArea, new SourceMapCellsDescriptor(sourceMap, coverageArea), once);
+
+				// реулизуем собоый случай, когда у нас область шага полностью покрыта одной областю(ячейкой) с карты источника
+				if (once && sourceCells.Length == 1)
+				{
+					var singleCell = sourceCells[0];
+					return new MapCellDescriptor<T>()
+					{
+						Area = projectMapCellArea,
+						Maps = null,
+						SingleMap = new MapReference<T>()
+						{
+							InfocenterMap = sourceMap,
+							XIndex = singleCell.XIndex,
+							YIndex = singleCell.YIndex,
+							CoverageAmount = singleCell.Amount
+						},
+						CoverageAmount = singleCell.Amount
+					};
+				}
+
+				// алокация по требованию
+				if (coveredSourceMaps == null)
+				{
+					coveredSourceMaps = new CoverageSourceMapArea[sourceMaps.Length];
+				}
 				// есть покрытие. фикисруем карту - возможно это последня карта по ряду причин (их две)
 				// раскладаем площать на молекулы - ячейки карты источника
 				coveredSourceMaps[coveredSourceMapsCount++] = new CoverageSourceMapArea
 				{
 					SourceMap = sourceMap,
 					CoverageArea = coverageArea,
-					Cells = this.DecomposeIntoCells(sourceMap, coverageArea)
+					Cells = sourceCells
 				};
 				
 				if (projectMapCellArea.Area == coverageArea.Area)
@@ -912,27 +1064,75 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 					).ToArray();
 
 			// помечаем карту как используемую
+			var coverageAmount = (long) 0;
 			foreach (var item in result)
 			{
 				item.InfocenterMap.Used = true;
+				coverageAmount += item.CoverageAmount;
 			}
-			return result;
+
+			//descriptor.CoverageAmount = result.Sum(m => m.CoverageAmount);
+			var descriptor = new MapCellDescriptor<T>()
+			{
+				Area = projectMapCellArea,
+				Maps = result,
+				CoverageAmount = coverageAmount
+			};
+
+			return descriptor;
 		}
 
-		private CoverageSourceMapCell[] DecomposeIntoCells(DM.SourceMapData sourceMap, AreaCoordinates coverageArea)
+		private struct SourceMapCellsDescriptor
+		{
+			public SourceMapCellsDescriptor(DM.SourceMapData sourceMap, AreaCoordinates coverageArea)
+			{
+				this.UpperLeftIndexer =
+					sourceMap.CoordinateToIndexes(coverageArea.UpperLeft.X, coverageArea.UpperLeft.Y - 1);
+				this.LowerRightIndexer =
+					sourceMap.CoordinateToIndexes(coverageArea.LowerRight.X - 1, coverageArea.LowerRight.Y);
+
+				this.XCount = this.LowerRightIndexer.YIndex - this.UpperLeftIndexer.YIndex + 1;
+				this.YCount = this.LowerRightIndexer.XIndex - this.UpperLeftIndexer.XIndex + 1;
+				this.Total = this.XCount * this.YCount;
+			}
+
+			public readonly ProfileIndexer UpperLeftIndexer;
+			public readonly ProfileIndexer LowerRightIndexer;
+
+			public readonly int XCount;
+			public readonly int YCount;
+
+			public readonly int Total;
+		}
+		
+		private CoverageSourceMapCell[] DecomposeIntoCells(DM.SourceMapData sourceMap, AreaCoordinates coverageArea, in SourceMapCellsDescriptor descriptor, bool isFirst)
 		{
 			// верхний индекс - при определни смещаемся на один метр
-			var upperLeftIndexer = sourceMap.CoordinateToIndexes(coverageArea.UpperLeft.X, coverageArea.UpperLeft.Y - 1);
-			var lowerRightIndexer = sourceMap.CoordinateToIndexes(coverageArea.LowerRight.X - 1, coverageArea.LowerRight.Y);
-			var yCount = lowerRightIndexer.YIndex - upperLeftIndexer.YIndex + 1;
-			var xCount = lowerRightIndexer.XIndex - upperLeftIndexer.XIndex + 1;
+			//var upperLeftIndexer = sourceMap.CoordinateToIndexes(coverageArea.UpperLeft.X, coverageArea.UpperLeft.Y - 1);
+			//var lowerRightIndexer = sourceMap.CoordinateToIndexes(coverageArea.LowerRight.X - 1, coverageArea.LowerRight.Y);
+			//var yCount = lowerRightIndexer.YIndex - upperLeftIndexer.YIndex + 1;
+			//var xCount = lowerRightIndexer.XIndex - upperLeftIndexer.XIndex + 1;
 
-			var cells = new CoverageSourceMapCell[yCount * xCount];
+			if (descriptor.Total == 1 && isFirst)
+			{
+				return new CoverageSourceMapCell[]
+				{
+					new CoverageSourceMapCell
+					{
+						XIndex = descriptor.UpperLeftIndexer.XIndex,
+						YIndex = descriptor.UpperLeftIndexer.YIndex,
+						UpperLeft = sourceMap.IndexToUpperLeftCoordinate(descriptor.UpperLeftIndexer.XIndex, descriptor.UpperLeftIndexer.YIndex),
+						Amount = sourceMap.AxisYStep * sourceMap.AxisXStep
+					}
+				};
+			}
+
+			var cells = new CoverageSourceMapCell[descriptor.Total];
 			var position = 0;
 			var cellAreaSize = sourceMap.AxisYStep * sourceMap.AxisXStep;
-			for (var yIndex = upperLeftIndexer.YIndex; yIndex <= lowerRightIndexer.YIndex; yIndex++)
+			for (var yIndex = descriptor.UpperLeftIndexer.YIndex; yIndex <= descriptor.LowerRightIndexer.YIndex; yIndex++)
 			{
-				for (var xIndex = upperLeftIndexer.XIndex; xIndex <= lowerRightIndexer.XIndex; xIndex++)
+				for (var xIndex = descriptor.UpperLeftIndexer.XIndex; xIndex <= descriptor.LowerRightIndexer.XIndex; xIndex++)
 				{
 					var cell = new CoverageSourceMapCell()
 					{
@@ -1122,6 +1322,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 				{
 					return;
 				}
+				if ("EPSG".Equals(projectionName.SubString(4)))
+				{
+					return;
+				}
 			}
 
 			throw new InvalidOperationException($"Unsupported the projection '{projectionName}'");
@@ -1187,6 +1391,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 			var query = _calcServerDataLayer.GetBuilder<IProjectMap>()
 				.From()
 				.Select(
+					c => c.MapName,
 					c => c.OwnerAxisXNumber,
 					c => c.OwnerAxisXStep,
 					c => c.OwnerAxisYNumber,
@@ -1205,6 +1410,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 					map = new DM.ProjectMapData()
 					{
 						ProjectMapId = projectMapId,
+						MapName = reader.GetValue(c => c.MapName),
 						OwnerAxisXNumber = reader.GetValue(c => c.OwnerAxisXNumber),
 						OwnerAxisXStep = reader.GetValue(c => c.OwnerAxisXStep),
 						OwnerAxisYNumber = reader.GetValue(c => c.OwnerAxisYNumber),
@@ -1232,6 +1438,9 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 				.SetValue(c => c.UpperLeftY, projectMap.UpperLeftY)
 				.SetValue(c => c.LowerRightX, projectMap.LowerRightX)
 				.SetValue(c => c.LowerRightY, projectMap.LowerRightY)
+				.SetValue(c => c.SourceTypeCode, projectMap.SourceType.HasValue ? (byte)projectMap.SourceType.Value : (byte?)null)
+				.SetValue(c => c.SourceTypeName, projectMap.SourceType.HasValue ? projectMap.SourceType.ToString() : null)
+				.SetValue(c => c.StepUnit, projectMap.StepUnit)
 				.Where(c => c.Id, ConditionOperator.Equal, projectMap.ProjectMapId)
 				.Where(c => c.StatusCode, ConditionOperator.Equal, (byte)ProjectMapStatusCode.Processing);
 

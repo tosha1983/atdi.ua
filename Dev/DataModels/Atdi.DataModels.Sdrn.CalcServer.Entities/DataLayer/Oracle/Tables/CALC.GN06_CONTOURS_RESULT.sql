@@ -1,0 +1,48 @@
+﻿CREATE TABLE CALC.GN06_CONTOURS_RESULT
+(
+  ID                   NUMBER(15)               NOT NULL,
+  CALCRESULTS_GN06_ID  NUMBER(15)               NOT NULL,
+  CONTOUR_TYPE         NUMBER(3)                NOT NULL,
+  DISTANCE             NUMBER(9),
+  FS                   NUMBER(30,10),  
+  AFFECTED_ADM         NVARCHAR2(50),
+  POINTS_COUNT         NUMBER(9),
+  CONTOURS_POINTS      NCLOB
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE UNIQUE INDEX CALC.PK_GN06_CONTOURS_RESULT ON CALC.GN06_CONTOURS_RESULT
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+

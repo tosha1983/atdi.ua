@@ -29,7 +29,10 @@ namespace Atdi.WcfServices.Identity
     static class TraceScopeNames
     {
         public static readonly TraceScopeName AuthenticationUser = "Authentication user";
-    }
+        public static readonly TraceScopeName AuthenticationService= "Authentication service";
+        public static readonly TraceScopeName HandleAndAuthenticateUser = "Handle and authenticate user";
+        public static readonly TraceScopeName PrepareAuthRedirection = "Prepare auth redirection";
+	}
 
     static class Exceptions
     {

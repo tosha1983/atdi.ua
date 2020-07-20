@@ -13,6 +13,7 @@ using Atdi.Platform.Data;
 using Atdi.Platform.DependencyInjection;
 using Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations;
 using Atdi.DataModels.Sdrn.CalcServer.Internal.Clients;
+using Atdi.DataModels.Sdrn.DeepServices.EarthGeometry;
 
 namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 {
@@ -108,8 +109,31 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                 Factory = () => new CalibrationResult[appConfig.ThresholdsStationCalibrationArrayLength.GetValueOrDefault(1_0000)]
             });
 
+            var pointEarthGeometricResultlPool = poolSite.Register(new ObjectPoolDescriptor<PointEarthGeometric[]>()
+            {
+                Key = ObjectPools.GE06PointEarthGeometricObjectPool,
+                MinSize = appConfig.ThresholdsGE06PointEarthGeometricObjectPoolMinSize.GetValueOrDefault(0),
+                MaxSize = appConfig.ThresholdsGE06PointEarthGeometricObjectPoolMaxSize.GetValueOrDefault(10),
+                Factory = () => new PointEarthGeometric[appConfig.ThresholdsGE06PointEarthGeometricArrayLength.GetValueOrDefault(1_00000)]
+            });
 
-            
+
+            var countoursCountoursPointExtendedPool = poolSite.Register(new ObjectPoolDescriptor<CountoursPointExtended[]>()
+            {
+                Key = ObjectPools.GE06CountoursPointExtendedPool,
+                MinSize = appConfig.ThresholdsCountoursPointExtendedPoolMinSize.GetValueOrDefault(0),
+                MaxSize = appConfig.ThresholdsCountoursPointExtendedPoolMaxSize.GetValueOrDefault(10),
+                Factory = () => new CountoursPointExtended[appConfig.ThresholdsCountoursPointExtendedPoolArrayLength.GetValueOrDefault(1_0000)]
+            });
+
+            var countoursResultPool = poolSite.Register(new ObjectPoolDescriptor<ContoursResult[]>()
+            {
+                Key = ObjectPools.GE06CountoursResultPool,
+                MinSize = appConfig.ThresholdsCountoursResultPoolMinSize.GetValueOrDefault(0),
+                MaxSize = appConfig.ThresholdsCountoursResultPoolMaxSize.GetValueOrDefault(10),
+                Factory = () => new ContoursResult[appConfig.ThresholdsCountoursResultPoolArrayLength.GetValueOrDefault(1_0000)]
+            });
+
 
             base.OnActivateUnit();
 		}

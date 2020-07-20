@@ -51,8 +51,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
         public static readonly string StationCalibrationPointFSArrayObjectPool = "CalcServer.StationCalibration.PointFS";
         public static readonly string StationCalibrationResultObjectPool = "CalcServer.StationCalibration.StationCalibrationResultObjectPool";
         public static readonly string StationCalibrationListDriveTestsResultObjectPool = "CalcServer.StationCalibration.ListDriveTestsResultObjectPool";
+        public static readonly string GE06PointEarthGeometricObjectPool = "CalcServer.GE06.PointEarthGeometricObjectPool";
+        public static readonly string GE06CountoursPointExtendedPool = "CalcServer.GE06.CountoursPointExtendedPool";
+        public static readonly string GE06CountoursResultPool = "CalcServer.GE06.CountoursResultPool";
+        public static readonly string GE06CountoursPointPool = "CalcServer.GE06.CountoursPointPool";
+
         
-
-
     }
 }

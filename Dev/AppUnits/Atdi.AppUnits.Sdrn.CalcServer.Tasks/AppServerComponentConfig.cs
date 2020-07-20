@@ -51,6 +51,39 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
         [ComponentConfigProperty("Threshold.DriveTestAndStation.CDMA.MinDistance")]
         public int? MinDistanceBetweenDriveTestAndStation_CDMA { get; set; }
 
+        [ComponentConfigProperty("Thresholds.GE06PointEarthGeometric.ObjectPool.MinSize")]
+        public int? ThresholdsGE06PointEarthGeometricObjectPoolMinSize { get; set; }
+
+        [ComponentConfigProperty("Thresholds.GE06PointEarthGeometric.ObjectPool.MaxSize")]
+        public int? ThresholdsGE06PointEarthGeometricObjectPoolMaxSize { get; set; }
+
+        [ComponentConfigProperty("Thresholds.GE06PointEarthGeometric.ArrayLength")]
+        public int? ThresholdsGE06PointEarthGeometricArrayLength { get; set; }
+
+
+        [ComponentConfigProperty("Thresholds.CountoursPointExtendedPool.ObjectPool.MinSize")]
+        public int? ThresholdsCountoursPointExtendedPoolMinSize { get; set; }
+
+        [ComponentConfigProperty("Thresholds.CountoursPointExtendedPool.ObjectPool.MaxSize")]
+        public int? ThresholdsCountoursPointExtendedPoolMaxSize { get; set; }
+
+        [ComponentConfigProperty("Thresholds.CountoursPointExtendedPool.ArrayLength")]
+        public int? ThresholdsCountoursPointExtendedPoolArrayLength { get; set; }
+
+
+        [ComponentConfigProperty("Thresholds.CountoursResultPool.ObjectPool.MinSize")]
+        public int? ThresholdsCountoursResultPoolMinSize { get; set; }
+
+        [ComponentConfigProperty("Thresholds.CountoursResultPool.ObjectPool.MaxSize")]
+        public int? ThresholdsCountoursResultPoolMaxSize { get; set; }
+
+        [ComponentConfigProperty("Thresholds.CountoursResultPool.ArrayLength")]
+        public int? ThresholdsCountoursResultPoolArrayLength { get; set; }
+
+
+
+        [ComponentConfigProperty("Brific.DBSource")]
+        public string BrificDBSource { get; set; }
 
     }
 }

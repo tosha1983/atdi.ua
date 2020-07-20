@@ -21,7 +21,9 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
+    <Prefer32Bit>true</Prefer32Bit>
+    <LangVersion>7.2</LangVersion>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -36,13 +38,17 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
@@ -56,21 +62,85 @@
       <Project>{f1f30ab9-7598-424d-9cde-95412583eccf}</Project>
       <Name>Atdi.AppUnits.Sdrn.DeepServices.Gis</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeepServices.GN06\Atdi.AppUnits.Sdrn.DeepServices.GN06.csproj">
+      <Project>{910e2fdf-8557-4162-ab5c-d62e3a9df394}</Project>
+      <Name>Atdi.AppUnits.Sdrn.DeepServices.GN06</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeepServices.IDWM\Atdi.AppUnits.Sdrn.DeepServices.IDWM.csproj">
+      <Project>{b2bd17be-581f-477d-b0e1-5407d59591be}</Project>
+      <Name>Atdi.AppUnits.Sdrn.DeepServices.IDWM</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeepServices.RadioSystem\Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.csproj">
+      <Project>{b8d91488-2850-46a9-9e32-9d1dd7d02683}</Project>
+      <Name>Atdi.AppUnits.Sdrn.DeepServices.RadioSystem</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Common\Atdi.Common\Atdi.Common.csproj">
+      <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
+      <Name>Atdi.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\CoreServices\Atdi.Contracts.CoreServices.DataLayer\Atdi.Contracts.CoreServices.DataLayer.csproj">
+      <Project>{e5011dd5-16c5-4cd0-ada3-d783f11c7c61}</Project>
+      <Name>Atdi.Contracts.CoreServices.DataLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\CoreServices\Atdi.Contracts.CoreServices.EntityOrm\Atdi.Contracts.CoreServices.EntityOrm.csproj">
+      <Project>{4247b867-4fab-40de-a539-7026d30cc245}</Project>
+      <Name>Atdi.Contracts.CoreServices.EntityOrm</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeepServices.EarthGeometry\Atdi.Contracts.Sdrn.DeepServices.EarthGeometry.csproj">
+      <Project>{2ecedd22-d39d-4d65-a811-5db274afc374}</Project>
+      <Name>Atdi.Contracts.Sdrn.DeepServices.EarthGeometry</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeepServices.Gis\Atdi.Contracts.Sdrn.DeepServices.Gis.csproj">
       <Project>{567b4c34-9ff5-4c05-9e7b-d1ed94eadaaf}</Project>
       <Name>Atdi.Contracts.Sdrn.DeepServices.Gis</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeepServices.GN06\Atdi.Contracts.Sdrn.DeepServices.GN06.csproj">
+      <Project>{a3b45d65-031a-455d-984c-309ccc856994}</Project>
+      <Name>Atdi.Contracts.Sdrn.DeepServices.GN06</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeepServices.IDWM\Atdi.Contracts.Sdrn.DeepServices.IDWM.csproj">
+      <Project>{4e1a00f8-68cf-4c16-bdef-2d5ee849c1ec}</Project>
+      <Name>Atdi.Contracts.Sdrn.DeepServices.IDWM</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeepServices\Atdi.Contracts.Sdrn.DeepServices.csproj">
       <Project>{dbbcbdeb-202d-4068-94f6-bb78bd47d51a}</Project>
       <Name>Atdi.Contracts.Sdrn.DeepServices</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\WcfServices\Atdi.Contracts.WcfServices.Sdrn.DeepServices.IDWM\Atdi.Contracts.WcfServices.Sdrn.DeepServices.IDWM.csproj">
+      <Project>{5952d983-fffd-4dcd-bdb7-b0f02571b5dd}</Project>
+      <Name>Atdi.Contracts.WcfServices.Sdrn.DeepServices.IDWM</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.EntityOrm\Atdi.DataModels.EntityOrm.csproj">
+      <Project>{73C8791E-3FC5-4C91-84E5-C19C98096F10}</Project>
+      <Name>Atdi.DataModels.EntityOrm</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.CalcServer.Entities\Atdi.DataModels.Sdrn.CalcServer.Entities.csproj">
+      <Project>{6a72e0c5-f8a4-412f-9395-13abe07367b1}</Project>
+      <Name>Atdi.DataModels.Sdrn.CalcServer.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices.EarthGeometry\Atdi.DataModels.Sdrn.DeepServices.EarthGeometry.csproj">
+      <Project>{32da0c04-3a89-428f-8997-3018aa1375c3}</Project>
+      <Name>Atdi.DataModels.Sdrn.DeepServices.EarthGeometry</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices.Gis\Atdi.DataModels.Sdrn.DeepServices.Gis.csproj">
       <Project>{d83887b2-4444-4207-a703-c99b94a4c170}</Project>
       <Name>Atdi.DataModels.Sdrn.DeepServices.Gis</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices.GN06\Atdi.DataModels.Sdrn.DeepServices.GN06.csproj">
+      <Project>{ee65799e-0a0a-4599-8f5e-30eb23304d49}</Project>
+      <Name>Atdi.DataModels.Sdrn.DeepServices.GN06</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices.IDWM\Atdi.DataModels.Sdrn.DeepServices.IDWM.csproj">
+      <Project>{a0cb1ec6-1189-454d-a3a7-919a97e7b790}</Project>
+      <Name>Atdi.DataModels.Sdrn.DeepServices.IDWM</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices\Atdi.DataModels.Sdrn.DeepServices.csproj">
       <Project>{b26b6bd9-699d-46b8-ba43-0d0ba803087e}</Project>
       <Name>Atdi.DataModels.Sdrn.DeepServices</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Platform\Atdi.Platform.AppServer\Atdi.Platform.AppServer.csproj">
+      <Project>{20d45626-3779-4fc8-a55a-1c919d95649e}</Project>
+      <Name>Atdi.Platform.AppServer</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Platform\Atdi.Platform.Configurator\Atdi.Platform.Configurator.csproj">
       <Project>{98e79b80-3176-4cad-b7ba-b5caa6752fab}</Project>
@@ -80,9 +150,17 @@
       <Project>{1389b99f-ff39-4671-9789-d2e1aa91527c}</Project>
       <Name>Atdi.Platform.Logging</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Platform\Atdi.Platform.ServicesContainer\Atdi.Platform.ServicesContainer.csproj">
+      <Project>{153006da-1f99-4d33-b490-d3a87e7dfd03}</Project>
+      <Name>Atdi.Platform.ServicesContainer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Platform\Atdi.Platform\Atdi.Platform.csproj">
       <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
       <Name>Atdi.Platform</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Atdi.Test.DeepServices.Client.WPF\Atdi.Test.DeepServices.Client.WPF.csproj">
+      <Project>{21c68ffe-b517-482a-8214-85a51eb4bbe6}</Project>
+      <Name>Atdi.Test.DeepServices.Client.WPF</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

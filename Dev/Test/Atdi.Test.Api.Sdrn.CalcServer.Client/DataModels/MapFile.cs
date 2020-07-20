@@ -78,7 +78,7 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client.DataModels
 		public string ContentEncoding;
 		public byte[] Content;
 
-		public byte[] DecodeContent()
+		public byte[] DecodeContent(bool isSector)
 		{
 
 			var raw = this.Content; 
@@ -92,6 +92,11 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client.DataModels
 				{
 					throw new InvalidOperationException($"Unsupported encoding '{ContentEncoding}'");
 				}
+			}
+
+			if (isSector)
+			{
+				return raw;
 			}
 
 			if (typeof(byte[]).AssemblyQualifiedName == ContentType)

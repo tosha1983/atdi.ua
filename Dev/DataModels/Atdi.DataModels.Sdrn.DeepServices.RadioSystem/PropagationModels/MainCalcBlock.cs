@@ -28,10 +28,21 @@ namespace Atdi.DataModels.Sdrn.DeepServices.RadioSystem.PropagationModels
 		/// ITU 1546 Model
 		/// </summary>
 		ITU1546 = 2,
+        
 
-		/// <summary>
-		/// ITU 2001 Model
-		/// </summary>
-		ITU2001 = 3
-	}
+        /// <summary>
+        /// ITU 2001 Model
+        /// </summary>
+        ITU2001 = 3,
+
+        /// <summary>
+        /// ITU 1546 Model
+        /// </summary>
+        ITU1546_4 = 4,
+
+        /// <summary>
+        /// ITU 1546 Model for Geneva 06
+        /// </summary>
+        ITU1546_ge06 = 5,
+    }
 }

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "Gn06ContoursResult"
+  Title       = "Geneva 06 contours result"
+  Desc        = "The geneva 06 contours result"
+  Type        = "Normal"
+  BaseEntity  = ""
+  
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>GN06_CONTOURS_RESULT</Name>
+    <Schema>CALC</Schema>
+  </DataSource>
+  <Fields>
+
+    <Field Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column" Desc="The Id record." Title="Id record"/>
+    <Field Name="Gn06ResultId" SourceType="Column" SourceName="CALCRESULTS_GN06_ID" DataType="Integer.64"  Required="true" Title="Geneva 06 result ID" Desc="The geneva 06 result ID" />
+    <Field Name="ContourType" SourceType="Column" SourceName="CONTOUR_TYPE" DataType="Byte" Required="false" Title="Contour type" Desc="The contour type" />
+    <Field Name="Distance" SourceType="Column" SourceName="DISTANCE" DataType="Integer.32" Required="false" Title="Distance" Desc="The distance" />
+    <Field Name="FS" SourceType="Column" SourceName="FS" DataType="Double.30.10" Required="false" Title="FS" Desc="The FS" />
+    <Field Name="AffectedADM" SourceType="Column" SourceName="AFFECTED_ADM" DataType="Text.50" Required="false" Title="Affected administration" Desc="The affected administration" />
+    <Field Name="PointsCount" SourceType="Column" SourceName="POINTS_COUNT" DataType="Integer.32" Required="false" Title="Points count" Desc="The points count" />
+    <Field Name="CountoursPoints" SourceType="Column" SourceName="CONTOURS_POINTS" DataType="Text.MAX" Required="false" Title="Countours points extended object" Desc="The countours points extended object" />
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>

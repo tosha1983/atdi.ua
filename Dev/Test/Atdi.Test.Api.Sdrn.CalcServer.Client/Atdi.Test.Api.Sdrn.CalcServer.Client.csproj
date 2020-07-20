@@ -58,6 +58,7 @@
     <Compile Include="Helpers\Compressor.cs" />
     <Compile Include="Helpers\SerializationExtension.cs" />
     <Compile Include="MapMaker.cs" />
+    <Compile Include="MapService.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tasks\PointFieldStrengthCalcTask.cs" />

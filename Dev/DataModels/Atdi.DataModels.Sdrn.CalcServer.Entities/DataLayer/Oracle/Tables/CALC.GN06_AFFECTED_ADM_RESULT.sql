@@ -1,0 +1,45 @@
+﻿CREATE TABLE CALC.GN06_AFFECTED_ADM_RESULT
+(
+  ID                   NUMBER(15)               NOT NULL,
+  CALCRESULTS_GN06_ID  NUMBER(15)               NOT NULL,
+  ADM                  NVARCHAR2(50),
+  TYPE_AFFECTED        NVARCHAR2(50),
+  AFFECTED_SERVICES    NVARCHAR2(50)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE UNIQUE INDEX CALC.PK_GN06_AFFECTED_ADM_RESULT ON CALC.GN06_AFFECTED_ADM_RESULT
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+

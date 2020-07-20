@@ -25,15 +25,15 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client
 		const uint CoordinatesSize = 15;
 
 
-		public static void Make(MapFile mapFile, string folderPath)
+		public static void Make(MapFile mapFile, string folderPath, bool isSector)
 		{
 			var bufferSize = AtdiMapHeaderSize + (mapFile.AxisX.Number * mapFile.AxisY.Number) * mapFile.StepDataSize;
 			var buffer = new byte[bufferSize];
-			Fill(mapFile, buffer);
+			Fill(mapFile, buffer, isSector);
 			File.WriteAllBytes(Path.Combine(folderPath, mapFile.FileName), buffer);
 		}
 
-		private static void Fill(MapFile mapFile, byte[] buffer)
+		private static void Fill(MapFile mapFile, byte[] buffer, bool isSector)
 		{
 			var data = EncodeInt(mapFile.Coordinates.UpperLeft.X, CoordinatesSize);
 			Array.Copy(data, 0, buffer, CoordinatesUpperLeftXOffset, data.Length);
@@ -85,7 +85,7 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client
 			data = Encode(mapFile.MapNote);
 			Array.Copy(data, 0, buffer, 0, data.Length);
 
-			data = mapFile.DecodeContent();
+			data = mapFile.DecodeContent(isSector);
 			Array.Copy(data, 0, buffer, AtdiMapHeaderSize, data.Length);
 
 			buffer[1009] = (byte) 26;

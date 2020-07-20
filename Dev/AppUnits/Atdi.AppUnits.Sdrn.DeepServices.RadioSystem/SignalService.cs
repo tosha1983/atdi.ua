@@ -9,6 +9,10 @@ using System.Threading.Tasks;
 using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.PropagationModels;
 using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.AntennaPattern;
 using Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.AntennaPattern;
+using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.FieldStrength;
+using Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal;
+
+
 
 namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem
 {
@@ -25,10 +29,6 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem
             result = Signal.PropagationLoss.Calc(args);
 		}
 
-        public DiagrammPoint[] CalcAntennaPattern(string points,  AntennaPatternType antennaPatternType, double gain)
-        {
-            return CalculationAntennaPattern.Calc(points, antennaPatternType, gain);
-        }
 
         private void CalcMainBlock(in MainCalcBlock block)
 		{
@@ -40,6 +40,25 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem
 			
 		}
 
+        public void CalcAntennaPattern(in DiagrammArgs args, ref DiagrammPoint[] diagrammPointsResult)
+        {
+            CalculationAntennaPattern.Calc(in args, ref diagrammPointsResult);
+        }
 
+        public void CalcFS_ITU1546_4(in CalcFSArgs args, ref CalcFSResult result)
+        {
+            result.FSResult = ITU1546_4.Get_E(args.ha, args.hef, args.d, args.f, args.p, args.h_gr, args.h2, args.list1);
+        }
+
+        public void CalcFS_ITU1546_6(in CalcFSArgs args, ref CalcFSResult result)
+        {
+            result.FSResult = ITU1546_6.Get_E(args.ha, args.hef, args.d, args.f, args.p, args.h_gr, args.h2, args.h2AboveSea, args.list1);
+        }
+
+        public void CalcFS_ITU1546_ge06(in CalcFSArgs args, ref CalcFSResult result)
+        {
+            result.FSResult = ITU1546_ge06.Get_E(args.ha, args.hef, args.d, args.f, args.p, args.h_gr, args.h2, args.h2AboveSea, args.list1);
+        }
+              
     }
 }

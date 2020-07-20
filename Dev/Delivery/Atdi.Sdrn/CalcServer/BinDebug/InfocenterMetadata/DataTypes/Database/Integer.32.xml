@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<DataType 
+  Name           = "Integer.32"
+  DataSourceType = "Database"
+  xmlns          =  "http://schemas.atdi.com/orm/entity.xsd">
+ 
+  <CodeVarType>Integer</CodeVarType>
+  <SourceVarType>INT32</SourceVarType>  
+</DataType>

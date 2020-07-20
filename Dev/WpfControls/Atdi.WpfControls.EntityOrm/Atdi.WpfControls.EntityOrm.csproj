@@ -71,15 +71,16 @@
       <DependentUpon>LineChart.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\OrmButton.cs" />
-    <Compile Include="Controls\OrmCheckBox.cs" />
-    <Compile Include="Controls\OrmEnumBox\OrmEnumBox.xaml.cs">
+    <Compile Include="Controls\OrmCheckBox.xaml.cs">
+      <DependentUpon>OrmCheckBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\OrmEnumBox.xaml.cs">
       <DependentUpon>OrmEnumBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\OrmDataGrid.cs" />
     <Compile Include="Controls\OrmDatePicker.xaml.cs">
       <DependentUpon>OrmDatePicker.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\OrmEnumBox\OrmEnumBoxData.cs" />
     <Compile Include="Controls\OrmGridSplitter.cs" />
     <Compile Include="Controls\OrmTextBox.xaml.cs">
       <DependentUpon>OrmTextBox.xaml</DependentUpon>
@@ -88,15 +89,18 @@
     <Compile Include="Maps\Map.cs" />
     <Compile Include="Maps\MapData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Properties\Resources.ru-RU.resx" />
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="Properties\Resources.uk-UA.resx" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -116,7 +120,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Controls\OrmEnumBox\OrmEnumBox.xaml">
+    <Page Include="Controls\OrmCheckBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\OrmEnumBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

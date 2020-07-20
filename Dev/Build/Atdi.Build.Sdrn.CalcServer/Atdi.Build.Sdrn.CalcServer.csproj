@@ -35,6 +35,10 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.SQLite, Version=1.0.113.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\System.Data.SQLite.Core.1.0.113.1\lib\net45\System.Data.SQLite.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -58,9 +62,21 @@
       <Project>{f405e6c8-7dc6-4a7d-812a-a935472a2c5f}</Project>
       <Name>Atdi.AppUnits.Sdrn.CalcServer</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry\Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry.csproj">
+      <Project>{11c6a879-bb5b-4b89-a254-597301eae311}</Project>
+      <Name>Atdi.AppUnits.Sdrn.DeepServices.EarthGeometry</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeepServices.Gis\Atdi.AppUnits.Sdrn.DeepServices.Gis.csproj">
       <Project>{f1f30ab9-7598-424d-9cde-95412583eccf}</Project>
       <Name>Atdi.AppUnits.Sdrn.DeepServices.Gis</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeepServices.GN06\Atdi.AppUnits.Sdrn.DeepServices.GN06.csproj">
+      <Project>{910e2fdf-8557-4162-ab5c-d62e3a9df394}</Project>
+      <Name>Atdi.AppUnits.Sdrn.DeepServices.GN06</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeepServices.IDWM\Atdi.AppUnits.Sdrn.DeepServices.IDWM.csproj">
+      <Project>{b2bd17be-581f-477d-b0e1-5407d59591be}</Project>
+      <Name>Atdi.AppUnits.Sdrn.DeepServices.IDWM</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeepServices.RadioSystem\Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.csproj">
       <Project>{b8d91488-2850-46a9-9e32-9d1dd7d02683}</Project>
@@ -130,7 +146,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy "$(TargetDir)Atdi.*.dll" "..\..\..\..\Delivery\Atdi.Sdrn\CalcServer\Bin$(ConfigurationName)"
-
+Rebuild Ca
 copy "$(TargetDir)Atdi.AppUnits.*.config" "..\..\..\..\Delivery\Atdi.Sdrn\CalcServer\Bin$(ConfigurationName)"
 copy "$(TargetDir)Atdi.CoreServices.*.config" "..\..\..\..\Delivery\Atdi.Sdrn\CalcServer\Bin$(ConfigurationName)"
 copy "$(TargetDir)Atdi.WebApiServices.*.config" "..\..\..\..\Delivery\Atdi.Sdrn\CalcServer\Bin$(ConfigurationName)"
@@ -142,6 +158,11 @@ copy "$(TargetDir)\Newtonsoft.Json.dll" "..\..\..\..\Delivery\Atdi.Sdrn\CalcServ
 copy "$(TargetDir)\RabbitMQ.Client.dll" "..\..\..\..\Delivery\Atdi.Sdrn\CalcServer\Bin$(ConfigurationName)"
 copy "$(TargetDir)\Microsoft.Diagnostics.Tracing.EventSource.dll" "..\..\..\..\Delivery\Atdi.Sdrn\CalcServer\Bin$(ConfigurationName)"
 copy "$(TargetDir)\Oracle.ManagedDataAccess.dll" "..\..\..\..\Delivery\Atdi.Sdrn\CalcServer\Bin$(ConfigurationName)"
+
+copy "$(TargetDir)\System.Data.SQLite.dll" "..\..\..\..\Delivery\Atdi.Sdrn\CalcServer\Bin$(ConfigurationName)"
+
+xcopy /Y /I /E "..\..\..\..\packages\System.Data.SQLite.Core.1.0.113.1\build\net46\x64\*.*" "..\..\..\..\Delivery\Atdi.Sdrn\CalcServer\Bin$(ConfigurationName)\x64"
+xcopy /Y /I /E "..\..\..\..\packages\System.Data.SQLite.Core.1.0.113.1\build\net46\x86\*.*" "..\..\..\..\Delivery\Atdi.Sdrn\CalcServer\Bin$(ConfigurationName)\x86"
 
 
 copy "..\..\..\..\packages\Microsoft.Diagnostics.Tracing.EventSource.Redist.1.1.28\lib\net40\Microsoft.Diagnostics.Tracing.EventSource.dll" "..\..\..\..\Delivery\Atdi.Sdrn\CalcServer\Bin$(ConfigurationName)"</PostBuildEvent>

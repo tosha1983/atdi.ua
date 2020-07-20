@@ -41,10 +41,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CluttersDesc.cs" />
-    <Compile Include="CluttersDescClutter.cs" />
-    <Compile Include="CluttersDescFreq.cs" />
-    <Compile Include="CluttersDescFreqClutter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

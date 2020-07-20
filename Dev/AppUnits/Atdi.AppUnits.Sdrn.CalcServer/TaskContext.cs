@@ -45,7 +45,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 
 		public long ClientContextId { get; }
 
-		public void SendEvent(ICalcEvent @event)
+		public void SendEvent(CalcResultEvent @event)
+		{
+			_observer.OnEvent(this, @event);
+		}
+
+		public void SendEvent<TData>(CalcResultEvent<TData> @event)
 		{
 			_observer.OnEvent(this, @event);
 		}

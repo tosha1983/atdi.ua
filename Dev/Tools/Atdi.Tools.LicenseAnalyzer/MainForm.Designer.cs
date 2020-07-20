@@ -83,11 +83,18 @@
 			this.button5 = new System.Windows.Forms.Button();
 			this.button4 = new System.Windows.Forms.Button();
 			this.txtHostKey = new System.Windows.Forms.TextBox();
+			this.tabControl2 = new System.Windows.Forms.TabControl();
+			this.tabPage3 = new System.Windows.Forms.TabPage();
+			this.tabPage4 = new System.Windows.Forms.TabPage();
+			this.txtExteranServices = new System.Windows.Forms.TextBox();
 			this.groupBox1.SuspendLayout();
 			this.groupBox3.SuspendLayout();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.tabPage2.SuspendLayout();
+			this.tabControl2.SuspendLayout();
+			this.tabPage3.SuspendLayout();
+			this.tabPage4.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// groupBox1
@@ -103,7 +110,7 @@
 			this.groupBox1.Controls.Add(this.label1);
 			this.groupBox1.Location = new System.Drawing.Point(12, 12);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(482, 110);
+			this.groupBox1.Size = new System.Drawing.Size(491, 110);
 			this.groupBox1.TabIndex = 1;
 			this.groupBox1.TabStop = false;
 			// 
@@ -190,14 +197,7 @@
 			// 
 			// groupBox3
 			// 
-			this.groupBox3.Controls.Add(this.txtAssembly);
-			this.groupBox3.Controls.Add(this.label21);
-			this.groupBox3.Controls.Add(this.txtVersion);
-			this.groupBox3.Controls.Add(this.label19);
-			this.groupBox3.Controls.Add(this.txtYear);
-			this.groupBox3.Controls.Add(this.label20);
-			this.groupBox3.Controls.Add(this.txtTerms);
-			this.groupBox3.Controls.Add(this.label18);
+			this.groupBox3.Controls.Add(this.tabControl2);
 			this.groupBox3.Controls.Add(this.txtOwner);
 			this.groupBox3.Controls.Add(this.label12);
 			this.groupBox3.Controls.Add(this.txtCompany);
@@ -206,10 +206,6 @@
 			this.groupBox3.Controls.Add(this.label6);
 			this.groupBox3.Controls.Add(this.txtInstance);
 			this.groupBox3.Controls.Add(this.label5);
-			this.groupBox3.Controls.Add(this.txtStopDate);
-			this.groupBox3.Controls.Add(this.label4);
-			this.groupBox3.Controls.Add(this.txtStartDate);
-			this.groupBox3.Controls.Add(this.label10);
 			this.groupBox3.Controls.Add(this.txtProduct);
 			this.groupBox3.Controls.Add(this.label7);
 			this.groupBox3.Controls.Add(this.txtType);
@@ -218,14 +214,14 @@
 			this.groupBox3.Controls.Add(this.label9);
 			this.groupBox3.Location = new System.Drawing.Point(12, 129);
 			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(479, 258);
+			this.groupBox3.Size = new System.Drawing.Size(491, 308);
 			this.groupBox3.TabIndex = 3;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "  License data ";
 			// 
 			// txtAssembly
 			// 
-			this.txtAssembly.Location = new System.Drawing.Point(67, 228);
+			this.txtAssembly.Location = new System.Drawing.Point(71, 90);
 			this.txtAssembly.Name = "txtAssembly";
 			this.txtAssembly.ReadOnly = true;
 			this.txtAssembly.Size = new System.Drawing.Size(391, 20);
@@ -234,7 +230,7 @@
 			// label21
 			// 
 			this.label21.AutoSize = true;
-			this.label21.Location = new System.Drawing.Point(6, 231);
+			this.label21.Location = new System.Drawing.Point(10, 93);
 			this.label21.Name = "label21";
 			this.label21.Size = new System.Drawing.Size(51, 13);
 			this.label21.TabIndex = 30;
@@ -242,7 +238,7 @@
 			// 
 			// txtVersion
 			// 
-			this.txtVersion.Location = new System.Drawing.Point(296, 176);
+			this.txtVersion.Location = new System.Drawing.Point(300, 38);
 			this.txtVersion.Name = "txtVersion";
 			this.txtVersion.ReadOnly = true;
 			this.txtVersion.Size = new System.Drawing.Size(162, 20);
@@ -251,7 +247,7 @@
 			// label19
 			// 
 			this.label19.AutoSize = true;
-			this.label19.Location = new System.Drawing.Point(235, 179);
+			this.label19.Location = new System.Drawing.Point(239, 41);
 			this.label19.Name = "label19";
 			this.label19.Size = new System.Drawing.Size(42, 13);
 			this.label19.TabIndex = 28;
@@ -259,7 +255,7 @@
 			// 
 			// txtYear
 			// 
-			this.txtYear.Location = new System.Drawing.Point(67, 176);
+			this.txtYear.Location = new System.Drawing.Point(71, 38);
 			this.txtYear.Name = "txtYear";
 			this.txtYear.ReadOnly = true;
 			this.txtYear.Size = new System.Drawing.Size(162, 20);
@@ -268,7 +264,7 @@
 			// label20
 			// 
 			this.label20.AutoSize = true;
-			this.label20.Location = new System.Drawing.Point(6, 179);
+			this.label20.Location = new System.Drawing.Point(10, 41);
 			this.label20.Name = "label20";
 			this.label20.Size = new System.Drawing.Size(29, 13);
 			this.label20.TabIndex = 26;
@@ -276,7 +272,7 @@
 			// 
 			// txtTerms
 			// 
-			this.txtTerms.Location = new System.Drawing.Point(67, 150);
+			this.txtTerms.Location = new System.Drawing.Point(71, 12);
 			this.txtTerms.Name = "txtTerms";
 			this.txtTerms.ReadOnly = true;
 			this.txtTerms.Size = new System.Drawing.Size(391, 20);
@@ -285,7 +281,7 @@
 			// label18
 			// 
 			this.label18.AutoSize = true;
-			this.label18.Location = new System.Drawing.Point(6, 153);
+			this.label18.Location = new System.Drawing.Point(10, 15);
 			this.label18.Name = "label18";
 			this.label18.Size = new System.Drawing.Size(36, 13);
 			this.label18.TabIndex = 24;
@@ -293,7 +289,7 @@
 			// 
 			// txtOwner
 			// 
-			this.txtOwner.Location = new System.Drawing.Point(67, 97);
+			this.txtOwner.Location = new System.Drawing.Point(81, 97);
 			this.txtOwner.Name = "txtOwner";
 			this.txtOwner.ReadOnly = true;
 			this.txtOwner.Size = new System.Drawing.Size(391, 20);
@@ -302,7 +298,7 @@
 			// label12
 			// 
 			this.label12.AutoSize = true;
-			this.label12.Location = new System.Drawing.Point(6, 100);
+			this.label12.Location = new System.Drawing.Point(20, 100);
 			this.label12.Name = "label12";
 			this.label12.Size = new System.Drawing.Size(38, 13);
 			this.label12.TabIndex = 22;
@@ -310,7 +306,7 @@
 			// 
 			// txtCompany
 			// 
-			this.txtCompany.Location = new System.Drawing.Point(67, 71);
+			this.txtCompany.Location = new System.Drawing.Point(81, 71);
 			this.txtCompany.Name = "txtCompany";
 			this.txtCompany.ReadOnly = true;
 			this.txtCompany.Size = new System.Drawing.Size(391, 20);
@@ -319,7 +315,7 @@
 			// label11
 			// 
 			this.label11.AutoSize = true;
-			this.label11.Location = new System.Drawing.Point(6, 74);
+			this.label11.Location = new System.Drawing.Point(20, 74);
 			this.label11.Name = "label11";
 			this.label11.Size = new System.Drawing.Size(51, 13);
 			this.label11.TabIndex = 20;
@@ -328,7 +324,7 @@
 			// 
 			// txtCreated
 			// 
-			this.txtCreated.Location = new System.Drawing.Point(67, 124);
+			this.txtCreated.Location = new System.Drawing.Point(81, 124);
 			this.txtCreated.Name = "txtCreated";
 			this.txtCreated.ReadOnly = true;
 			this.txtCreated.Size = new System.Drawing.Size(162, 20);
@@ -337,7 +333,7 @@
 			// label6
 			// 
 			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(6, 127);
+			this.label6.Location = new System.Drawing.Point(20, 127);
 			this.label6.Name = "label6";
 			this.label6.Size = new System.Drawing.Size(44, 13);
 			this.label6.TabIndex = 18;
@@ -345,7 +341,7 @@
 			// 
 			// txtInstance
 			// 
-			this.txtInstance.Location = new System.Drawing.Point(296, 124);
+			this.txtInstance.Location = new System.Drawing.Point(310, 124);
 			this.txtInstance.Name = "txtInstance";
 			this.txtInstance.ReadOnly = true;
 			this.txtInstance.Size = new System.Drawing.Size(162, 20);
@@ -354,7 +350,7 @@
 			// label5
 			// 
 			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(235, 127);
+			this.label5.Location = new System.Drawing.Point(249, 127);
 			this.label5.Name = "label5";
 			this.label5.Size = new System.Drawing.Size(48, 13);
 			this.label5.TabIndex = 16;
@@ -362,7 +358,7 @@
 			// 
 			// txtStopDate
 			// 
-			this.txtStopDate.Location = new System.Drawing.Point(296, 202);
+			this.txtStopDate.Location = new System.Drawing.Point(300, 64);
 			this.txtStopDate.Name = "txtStopDate";
 			this.txtStopDate.ReadOnly = true;
 			this.txtStopDate.Size = new System.Drawing.Size(162, 20);
@@ -371,7 +367,7 @@
 			// label4
 			// 
 			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(235, 205);
+			this.label4.Location = new System.Drawing.Point(239, 67);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(55, 13);
 			this.label4.TabIndex = 14;
@@ -379,7 +375,7 @@
 			// 
 			// txtStartDate
 			// 
-			this.txtStartDate.Location = new System.Drawing.Point(67, 202);
+			this.txtStartDate.Location = new System.Drawing.Point(71, 64);
 			this.txtStartDate.Name = "txtStartDate";
 			this.txtStartDate.ReadOnly = true;
 			this.txtStartDate.Size = new System.Drawing.Size(162, 20);
@@ -388,7 +384,7 @@
 			// label10
 			// 
 			this.label10.AutoSize = true;
-			this.label10.Location = new System.Drawing.Point(6, 205);
+			this.label10.Location = new System.Drawing.Point(10, 67);
 			this.label10.Name = "label10";
 			this.label10.Size = new System.Drawing.Size(55, 13);
 			this.label10.TabIndex = 12;
@@ -396,7 +392,7 @@
 			// 
 			// txtProduct
 			// 
-			this.txtProduct.Location = new System.Drawing.Point(67, 45);
+			this.txtProduct.Location = new System.Drawing.Point(81, 45);
 			this.txtProduct.Name = "txtProduct";
 			this.txtProduct.ReadOnly = true;
 			this.txtProduct.Size = new System.Drawing.Size(391, 20);
@@ -405,7 +401,7 @@
 			// label7
 			// 
 			this.label7.AutoSize = true;
-			this.label7.Location = new System.Drawing.Point(6, 48);
+			this.label7.Location = new System.Drawing.Point(20, 48);
 			this.label7.Name = "label7";
 			this.label7.Size = new System.Drawing.Size(44, 13);
 			this.label7.TabIndex = 10;
@@ -413,7 +409,7 @@
 			// 
 			// txtType
 			// 
-			this.txtType.Location = new System.Drawing.Point(296, 19);
+			this.txtType.Location = new System.Drawing.Point(310, 19);
 			this.txtType.Name = "txtType";
 			this.txtType.ReadOnly = true;
 			this.txtType.Size = new System.Drawing.Size(162, 20);
@@ -422,7 +418,7 @@
 			// label8
 			// 
 			this.label8.AutoSize = true;
-			this.label8.Location = new System.Drawing.Point(235, 22);
+			this.label8.Location = new System.Drawing.Point(249, 22);
 			this.label8.Name = "label8";
 			this.label8.Size = new System.Drawing.Size(31, 13);
 			this.label8.TabIndex = 8;
@@ -430,7 +426,7 @@
 			// 
 			// txtNumber
 			// 
-			this.txtNumber.Location = new System.Drawing.Point(67, 19);
+			this.txtNumber.Location = new System.Drawing.Point(81, 19);
 			this.txtNumber.Name = "txtNumber";
 			this.txtNumber.ReadOnly = true;
 			this.txtNumber.Size = new System.Drawing.Size(162, 20);
@@ -439,7 +435,7 @@
 			// label9
 			// 
 			this.label9.AutoSize = true;
-			this.label9.Location = new System.Drawing.Point(6, 22);
+			this.label9.Location = new System.Drawing.Point(20, 22);
 			this.label9.Name = "label9";
 			this.label9.Size = new System.Drawing.Size(44, 13);
 			this.label9.TabIndex = 6;
@@ -459,7 +455,8 @@
             "SDRN Calc Server",
             "SDRN Infocenter Server",
             "SDRN Calc Server Client ICSM Plugin",
-            "SDRN Station Calibration Calc ICSM Plugin"});
+            "SDRN Station Calibration Calc ICSM Plugin",
+            "SDRN GE06 Calc ICSM Plugin"});
 			this.cmbConfigType.Location = new System.Drawing.Point(77, 17);
 			this.cmbConfigType.Name = "cmbConfigType";
 			this.cmbConfigType.Size = new System.Drawing.Size(303, 21);
@@ -471,9 +468,9 @@
 			this.label17.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.label17.Location = new System.Drawing.Point(7, 20);
 			this.label17.Name = "label17";
-			this.label17.Size = new System.Drawing.Size(60, 13);
+			this.label17.Size = new System.Drawing.Size(44, 13);
 			this.label17.TabIndex = 22;
-			this.label17.Text = "Config type";
+			this.label17.Text = "Product";
 			// 
 			// txtEncryptedPassword
 			// 
@@ -555,10 +552,10 @@
 			// 
 			this.tabControl1.Controls.Add(this.tabPage1);
 			this.tabControl1.Controls.Add(this.tabPage2);
-			this.tabControl1.Location = new System.Drawing.Point(12, 393);
+			this.tabControl1.Location = new System.Drawing.Point(12, 445);
 			this.tabControl1.Name = "tabControl1";
 			this.tabControl1.SelectedIndex = 0;
-			this.tabControl1.Size = new System.Drawing.Size(479, 188);
+			this.tabControl1.Size = new System.Drawing.Size(491, 188);
 			this.tabControl1.TabIndex = 5;
 			// 
 			// tabPage1
@@ -576,7 +573,7 @@
 			this.tabPage1.Location = new System.Drawing.Point(4, 22);
 			this.tabPage1.Name = "tabPage1";
 			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage1.Size = new System.Drawing.Size(471, 162);
+			this.tabPage1.Size = new System.Drawing.Size(483, 162);
 			this.tabPage1.TabIndex = 0;
 			this.tabPage1.Text = "Encrypted";
 			this.tabPage1.UseVisualStyleBackColor = true;
@@ -590,7 +587,7 @@
 			this.tabPage2.Location = new System.Drawing.Point(4, 22);
 			this.tabPage2.Name = "tabPage2";
 			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage2.Size = new System.Drawing.Size(471, 162);
+			this.tabPage2.Size = new System.Drawing.Size(483, 162);
 			this.tabPage2.TabIndex = 1;
 			this.tabPage2.Text = "Host Key";
 			this.tabPage2.UseVisualStyleBackColor = true;
@@ -637,11 +634,65 @@
 			this.txtHostKey.Size = new System.Drawing.Size(370, 150);
 			this.txtHostKey.TabIndex = 0;
 			// 
+			// tabControl2
+			// 
+			this.tabControl2.Controls.Add(this.tabPage3);
+			this.tabControl2.Controls.Add(this.tabPage4);
+			this.tabControl2.Location = new System.Drawing.Point(7, 154);
+			this.tabControl2.Name = "tabControl2";
+			this.tabControl2.SelectedIndex = 0;
+			this.tabControl2.Size = new System.Drawing.Size(480, 148);
+			this.tabControl2.TabIndex = 32;
+			// 
+			// tabPage3
+			// 
+			this.tabPage3.Controls.Add(this.txtAssembly);
+			this.tabPage3.Controls.Add(this.label10);
+			this.tabPage3.Controls.Add(this.label21);
+			this.tabPage3.Controls.Add(this.txtStartDate);
+			this.tabPage3.Controls.Add(this.txtVersion);
+			this.tabPage3.Controls.Add(this.label4);
+			this.tabPage3.Controls.Add(this.label19);
+			this.tabPage3.Controls.Add(this.txtStopDate);
+			this.tabPage3.Controls.Add(this.txtYear);
+			this.tabPage3.Controls.Add(this.label18);
+			this.tabPage3.Controls.Add(this.label20);
+			this.tabPage3.Controls.Add(this.txtTerms);
+			this.tabPage3.Location = new System.Drawing.Point(4, 22);
+			this.tabPage3.Name = "tabPage3";
+			this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage3.Size = new System.Drawing.Size(472, 122);
+			this.tabPage3.TabIndex = 0;
+			this.tabPage3.Text = "Terms";
+			this.tabPage3.UseVisualStyleBackColor = true;
+			// 
+			// tabPage4
+			// 
+			this.tabPage4.Controls.Add(this.txtExteranServices);
+			this.tabPage4.Location = new System.Drawing.Point(4, 22);
+			this.tabPage4.Name = "tabPage4";
+			this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage4.Size = new System.Drawing.Size(472, 122);
+			this.tabPage4.TabIndex = 1;
+			this.tabPage4.Text = "Extrenal Services";
+			this.tabPage4.UseVisualStyleBackColor = true;
+			// 
+			// txtExteranServices
+			// 
+			this.txtExteranServices.Location = new System.Drawing.Point(6, 6);
+			this.txtExteranServices.Multiline = true;
+			this.txtExteranServices.Name = "txtExteranServices";
+			this.txtExteranServices.ReadOnly = true;
+			this.txtExteranServices.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+			this.txtExteranServices.Size = new System.Drawing.Size(460, 110);
+			this.txtExteranServices.TabIndex = 0;
+			this.txtExteranServices.WordWrap = false;
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(503, 593);
+			this.ClientSize = new System.Drawing.Size(514, 639);
 			this.Controls.Add(this.tabControl1);
 			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.groupBox1);
@@ -660,6 +711,11 @@
 			this.tabPage1.PerformLayout();
 			this.tabPage2.ResumeLayout(false);
 			this.tabPage2.PerformLayout();
+			this.tabControl2.ResumeLayout(false);
+			this.tabPage3.ResumeLayout(false);
+			this.tabPage3.PerformLayout();
+			this.tabPage4.ResumeLayout(false);
+			this.tabPage4.PerformLayout();
 			this.ResumeLayout(false);
 
         }
@@ -721,6 +777,10 @@
 		private System.Windows.Forms.Button button4;
 		private System.Windows.Forms.TextBox txtHostKey;
 		private System.Windows.Forms.Button button6;
+		private System.Windows.Forms.TabControl tabControl2;
+		private System.Windows.Forms.TabPage tabPage3;
+		private System.Windows.Forms.TabPage tabPage4;
+		private System.Windows.Forms.TextBox txtExteranServices;
 	}
 }
 

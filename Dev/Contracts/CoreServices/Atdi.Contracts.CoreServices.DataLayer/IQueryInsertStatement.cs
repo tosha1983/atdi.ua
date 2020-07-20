@@ -22,7 +22,9 @@ namespace Atdi.Contracts.CoreServices.DataLayer
     {
         IQueryInsertStatement<TModel> SetValue<TValue>(Expression<Func<TModel, TValue>> columnsExpression, TValue value);
 
-        IQueryInsertStatement<TModel> Select(params Expression<Func<TModel, object>>[] columnsExpressions);
+        IQueryInsertStatement<TModel> SetValueAsJson<TValue>(Expression<Func<TModel, string>> columnsExpression, TValue value);
+
+		IQueryInsertStatement<TModel> Select(params Expression<Func<TModel, object>>[] columnsExpressions);
     }
 
     public static class QueryInsertStatementExtensitons

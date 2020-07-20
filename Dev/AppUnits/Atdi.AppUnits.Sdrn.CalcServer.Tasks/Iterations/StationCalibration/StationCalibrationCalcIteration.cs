@@ -10,6 +10,8 @@ using Atdi.DataModels.Sdrn.CalcServer.Internal.Maps;
 using Atdi.DataModels.Sdrn.DeepServices.Gis;
 using Atdi.Contracts.Sdrn.DeepServices.Gis;
 using Atdi.Platform.Logging;
+using Atdi.DataModels.Sdrn.DeepServices.EarthGeometry;
+using Atdi.Contracts.Sdrn.DeepServices.EarthGeometry;
 
 namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 {
@@ -21,6 +23,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 		private readonly ILogger _logger;
         private readonly IIterationsPool _iterationsPool;
         private readonly ITransformation _transformation;
+        private readonly IEarthGeometricService _earthGeometricService;
 
         //
         private readonly Platform.Data.IObjectPoolSite _poolSite;
@@ -31,12 +34,14 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         public StationCalibrationCalcIteration(
             IIterationsPool iterationsPool,
             ITransformation transformation,
+            IEarthGeometricService earthGeometricService,
             Platform.Data.IObjectPoolSite poolSite,
             ILogger logger)
 		{
             _transformation = transformation;
             _iterationsPool = iterationsPool;
             _poolSite = poolSite;
+            _earthGeometricService = earthGeometricService;
             _logger = logger;
 		}
 
@@ -613,7 +618,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             var correlationData = new StationCorellationCalcData();
 
             //var corellationResult = new ResultCorrelationGSIDGroupeStationsWithoutParameters();
-            StationCorellationCalcIteration correlationCalcIteration = new StationCorellationCalcIteration(_iterationsPool, _transformation, _poolSite, _logger);
+            StationCorellationCalcIteration correlationCalcIteration = new StationCorellationCalcIteration(_iterationsPool, _transformation, _poolSite, _earthGeometricService, _logger);
 
 
 

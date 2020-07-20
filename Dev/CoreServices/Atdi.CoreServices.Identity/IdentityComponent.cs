@@ -21,8 +21,11 @@ namespace Atdi.CoreServices.Identity
 
         protected override void OnInstall()
         {
-            this.Container.Register<IUserTokenProvider, UserTokenProvider>(ServiceLifetime.PerThread);
-            this.Container.Register<IAuthenticationManager, AuthenticationManager>(ServiceLifetime.PerThread);
+	        this.Container.Register<IExternalServiceProvider, ExternalServiceProvider>(ServiceLifetime.Singleton);
+	        this.Container.Register<IServiceTokenProvider, ServiceTokenProvider>(ServiceLifetime.PerThread);
+			this.Container.Register<IUserTokenProvider, UserTokenProvider>(ServiceLifetime.PerThread);
+			this.Container.Register<IAuthServiceSite, AuthServiceSite>(ServiceLifetime.Singleton);
+			this.Container.Register<IAuthenticationManager, AuthenticationManager>(ServiceLifetime.PerThread);
         }
     }
 }

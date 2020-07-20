@@ -13,7 +13,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc
 {
     public class AppComponentConfig
     {
-        private const string LicenseSharedSecret = "A77839F8-5546-41C9-A6D9-3777894D3E41";
+        private const string LicenseSharedSecret = "30A5488D-1AC7-41CB-B078-856733113E26";
 
         [ComponentConfigProperty("License.FileName")]
         public string LicenseFileName { get; set; }
@@ -42,6 +42,9 @@ namespace Atdi.Icsm.Plugins.GE06Calc
 
         [ComponentConfigProperty("Infocenter.EntityOrm.DataContext")]
         public string InfocenterEntityOrmDataContext { get; set; }
+
+        [ComponentConfigProperty("CalcServer.ActiveContextId")]
+        public string CalcServerActiveContextId { get; set; }
 
 
         public string Instance { get; set; }
@@ -96,7 +99,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc
                 var verificationData = new VerificationData2
                 {
                     OwnerId = ownerId,
-                    ProductName = "ICSM Plugin - SDRN Station Calibration Calc",
+                    ProductName = "ICSM Plugin - GE06 Calc",
                     ProductKey = productKey,
                     LicenseType = "ClientLicense",
                     Date = DateTime.Now,

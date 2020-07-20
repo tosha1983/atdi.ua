@@ -52,14 +52,34 @@ namespace Atdi.Tools.LicenseAnalyzer
                 txtStopDate.Text = license.StopDate.ToLongDateString();
                 txtInstance.Text = license.Instance;
 
-                if (license is LicenseData2 license2)
+                txtTerms.Text = string.Empty;
+                txtAssembly.Text = string.Empty;
+                txtYear.Text = string.Empty;
+                txtVersion.Text = string.Empty;
+				txtExteranServices.Text = string.Empty;
+				if (license is LicenseData2 license2)
                 {
                     txtTerms.Text = license2.LimitationTerms.ToString();
                     txtAssembly.Text = license2.AssemblyFullName;
                     txtYear.Text = license2.Year.ToString();
                     txtVersion.Text = license2.Version;
                 }
-            }
+				if (license is LicenseData4 license4)
+				{
+					if (license4.ExternalServices != null && license4.ExternalServices.Length > 0)
+					{
+						var builder = new StringBuilder();
+						var index = 0;
+						foreach (var serviceDescriptor in license4.ExternalServices)
+						{
+							++index;
+							builder.AppendLine($" {index:D3} SID='{serviceDescriptor.Id}'; Name='{serviceDescriptor.Name}'");
+						}
+
+						txtExteranServices.Text = builder.ToString();
+					}
+				}
+			}
             catch(Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -107,6 +127,10 @@ namespace Atdi.Tools.LicenseAnalyzer
             else if (cmbConfigType.SelectedIndex == 8) // SDRN Station Calibration Calc ICSM Plugin
 			{
 	            sharedSecret = "A77839F8-5546-41C9-A6D9-3777894D3E41";
+            }
+            else if (cmbConfigType.SelectedIndex == 9) // SDRN GE06 Calc ICSM Plugin
+            {
+	            sharedSecret = "30A5488D-1AC7-41CB-B078-856733113E26";
             }
 
 			txtEncryptedOwnerId.Text = Encryptor.EncryptStringAES(txtLicenseOwnerId.Text, sharedSecret);

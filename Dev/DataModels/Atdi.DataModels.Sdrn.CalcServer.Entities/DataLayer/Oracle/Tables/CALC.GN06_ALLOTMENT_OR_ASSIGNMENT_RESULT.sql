@@ -1,0 +1,57 @@
+﻿CREATE TABLE CALC.GN06_ALLOTMENT_OR_ASSIGNMENT_RESULT
+(
+  ID                   NUMBER(15)               NOT NULL,
+  CALCRESULTS_GN06_ID  NUMBER(15)               NOT NULL,
+  ADM                  NVARCHAR2(50),
+  TYPE_TABLE           NVARCHAR2(50),
+  NAME                 NVARCHAR2(100),
+  FREQ_MHZ             NUMBER(30,10),
+  LON_DEC              NUMBER(30,10),         
+  LAT_DEC              NUMBER(30,10),    
+  MAX_EFFECTIVE_HEIGHT_M  NUMBER(9,0),     
+  POLAR                NVARCHAR2(100),
+  ERPH_DBW             NUMBER(22,8),
+  ERPV_DBW             NUMBER(22,8),
+  ANTENNA_DIRECTIONAL  NVARCHAR2(50),
+  ADM_REF_ID           NVARCHAR2(100),
+  CONTOURS_POINTS      NCLOB,
+  SOURCE               NVARCHAR2(50)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE UNIQUE INDEX CALC.PK_GN06_ALLOTMENT_OR_ASSIGNMENT_RESULT ON CALC.GN06_ALLOTMENT_OR_ASSIGNMENT_RESULT
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+

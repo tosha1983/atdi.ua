@@ -1,0 +1,12 @@
+﻿<UserControl x:Class="Atdi.WpfControls.EntityOrm.Controls.OrmCheckBox"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Atdi.WpfControls.EntityOrm.Controls"
+             mc:Ignorable="d" Height="28" Width="200" SizeChanged="UserControl_SizeChanged">
+    <Grid>
+        <Label Name="lblCaption" Content="" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,0,0" Height="24" Width="55"/>
+        <ComboBox Name="cmbMain" HorizontalAlignment="Left" VerticalAlignment="Center" Height="24" Width="120" Margin="65,0,0,0" VerticalContentAlignment="Center" SelectionChanged="cmbMain_SelectionChanged"/>
+    </Grid>
+</UserControl>

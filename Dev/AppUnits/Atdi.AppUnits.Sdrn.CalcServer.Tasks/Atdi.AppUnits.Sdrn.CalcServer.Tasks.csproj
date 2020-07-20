@@ -49,6 +49,26 @@
   <ItemGroup>
     <Compile Include="AppServerComponent.cs" />
     <Compile Include="AppServerComponentConfig.cs" />
+    <Compile Include="Iterations\GE06\BRIFIC\LoadDataBrific.cs" />
+    <Compile Include="Iterations\GE06\BRIFIC\ThresholdFS.cs" />
+    <Compile Include="Iterations\GE06\Calculation\FieldStrength\BroadcastingFieldStrengthCalcIteration_bak.cs" />
+    <Compile Include="Iterations\GE06\Calculation\FieldStrength\BroadcastingFieldStrengthCalcIteration.cs" />
+    <Compile Include="Iterations\GE06\Calculation\FieldStrength\CalcFieldStrengthInPointGE06.cs" />
+    <Compile Include="Iterations\GE06\Calculation\FieldStrength\CalcFieldStrengthInPointFromAllotmentGE06.cs" />
+    <Compile Include="Iterations\GE06\Calculation\FieldStrength\CalcFieldStrengthInPointFromAssignmentGE06.cs" />
+    <Compile Include="Iterations\GE06\Calculation\Progress\UpdateProgress.cs" />
+    <Compile Include="Iterations\GE06\Calculation\PropagationModel\GE06PropagationModel.cs" />
+    <Compile Include="Iterations\GE06\Calculation\GE06FillData.cs" />
+    <Compile Include="Iterations\GE06\Calculation\Report\FillContoursResultOnFS.cs" />
+    <Compile Include="Iterations\GE06\Calculation\Report\FillContoursResultOnDistance.cs" />
+    <Compile Include="Iterations\GE06\Calculation\Report\FillAffectedADMResult.cs" />
+    <Compile Include="Iterations\GE06\Calculation\TypeCalc\GE06CalcFindAffectedADM.cs" />
+    <Compile Include="Iterations\GE06\Calculation\TypeCalc\GE06CalcConformityCheck.cs" />
+    <Compile Include="Iterations\GE06\Calculation\TypeCalc\GE06CalcContoursByFS.cs" />
+    <Compile Include="Iterations\GE06\Calculation\TypeCalc\GE06CalcContoursByDistance.cs" />
+    <Compile Include="Iterations\GE06\Ge06CalcIteration.cs" />
+    <Compile Include="Iterations\GE06\Validation\GE06CheckEffectiveHeight.cs" />
+    <Compile Include="Iterations\GE06\Validation\GE06Validation.cs" />
     <Compile Include="Iterations\StationCalibration\CIDComparisonRDB.cs" />
     <Compile Include="Iterations\StationCalibration\GCIDComparisonRR.cs" />
     <Compile Include="Iterations\StationCalibration\DetermineStationParametersCalcIteration.cs" />
@@ -56,9 +76,9 @@
     <Compile Include="Iterations\StationCalibration\StationCorellationCalcIteration.cs" />
     <Compile Include="Iterations\StationCalibration\StationCalibrationCalcIteration.cs" />
     <Compile Include="Tasks\CoverageProfilesCalcTask.cs" />
-    <Compile Include="Iterations\GeometricСalculations.cs" />
     <Compile Include="Iterations\FieldStrengthCalcIteration.cs" />
     <Compile Include="Iterations\ProfileIndexersCalcIteration.cs" />
+    <Compile Include="Tasks\GE06\GE06CalcTask.cs" />
     <Compile Include="Tasks\StationCalibrationCalcTask.cs" />
     <Compile Include="Tasks\PointFieldStrengthCalcTask.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -85,9 +105,21 @@
       <Project>{7fba1c75-c990-4ff4-9989-397599ee9c00}</Project>
       <Name>Atdi.Contracts.Sdrn.CalcServer</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeepServices.EarthGeometry\Atdi.Contracts.Sdrn.DeepServices.EarthGeometry.csproj">
+      <Project>{2ecedd22-d39d-4d65-a811-5db274afc374}</Project>
+      <Name>Atdi.Contracts.Sdrn.DeepServices.EarthGeometry</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeepServices.Gis\Atdi.Contracts.Sdrn.DeepServices.Gis.csproj">
       <Project>{567b4c34-9ff5-4c05-9e7b-d1ed94eadaaf}</Project>
       <Name>Atdi.Contracts.Sdrn.DeepServices.Gis</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeepServices.GN06\Atdi.Contracts.Sdrn.DeepServices.GN06.csproj">
+      <Project>{a3b45d65-031a-455d-984c-309ccc856994}</Project>
+      <Name>Atdi.Contracts.Sdrn.DeepServices.GN06</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeepServices.IDWM\Atdi.Contracts.Sdrn.DeepServices.IDWM.csproj">
+      <Project>{4e1a00f8-68cf-4c16-bdef-2d5ee849c1ec}</Project>
+      <Name>Atdi.Contracts.Sdrn.DeepServices.IDWM</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeepServices.RadioSystem\Atdi.Contracts.Sdrn.DeepServices.RadioSystem.csproj">
       <Project>{d576643b-fcdb-4873-9f08-abcfbb5e9e8f}</Project>
@@ -117,9 +149,21 @@
       <Project>{ba1bb2b6-ec14-4224-8d5d-20d6a6f7041c}</Project>
       <Name>Atdi.DataModels.Sdrn.CalcServer</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices.EarthGeometry\Atdi.DataModels.Sdrn.DeepServices.EarthGeometry.csproj">
+      <Project>{32da0c04-3a89-428f-8997-3018aa1375c3}</Project>
+      <Name>Atdi.DataModels.Sdrn.DeepServices.EarthGeometry</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices.Gis\Atdi.DataModels.Sdrn.DeepServices.Gis.csproj">
       <Project>{d83887b2-4444-4207-a703-c99b94a4c170}</Project>
       <Name>Atdi.DataModels.Sdrn.DeepServices.Gis</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices.GN06\Atdi.DataModels.Sdrn.DeepServices.GN06.csproj">
+      <Project>{ee65799e-0a0a-4599-8f5e-30eb23304d49}</Project>
+      <Name>Atdi.DataModels.Sdrn.DeepServices.GN06</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices.IDWM\Atdi.DataModels.Sdrn.DeepServices.IDWM.csproj">
+      <Project>{a0cb1ec6-1189-454d-a3a7-919a97e7b790}</Project>
+      <Name>Atdi.DataModels.Sdrn.DeepServices.IDWM</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices.RadioSystem\Atdi.DataModels.Sdrn.DeepServices.RadioSystem.csproj">
       <Project>{c67fbe11-fef0-48ad-9912-61bf4c61db03}</Project>
@@ -137,6 +181,10 @@
       <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
       <Name>Atdi.DataModels</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Modules\Atdi.Modules.CalcServer.BrificDataLayer\Atdi.Modules.CalcServer.BrificDataLayer.csproj">
+      <Project>{3cab6d93-2ab7-4a45-b309-4f6a5a4c6d91}</Project>
+      <Name>Atdi.Modules.CalcServer.BrificDataLayer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Platform\Atdi.Platform\Atdi.Platform.csproj">
       <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
       <Name>Atdi.Platform</Name>
@@ -147,8 +195,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

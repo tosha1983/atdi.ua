@@ -30,10 +30,10 @@ namespace Atdi.LegacyServices.Icsm
 
         public IQueryBuilder Builder => _queryBuilder;
 
-        public IDataLayerScope<TContext> BeginScope<TContext>() where TContext : IDataContext, new()
-        {
-            throw new NotImplementedException();
-        }
+        //public IDataLayerScope<TContext> BeginScope<TContext>() where TContext : IDataContext, new()
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         public IDataLayerScope CreateScope<TContext>() where TContext : IDataContext, new()
         {

@@ -49,6 +49,8 @@
     <Compile Include="AntennaPatternCalc\Position.cs" />
     <Compile Include="AntennaPatternCalc\CalculationAntennaPattern.cs" />
     <Compile Include="AppServerComponent.cs" />
+    <Compile Include="PropagationCalc\ITU1546_ge06.cs" />
+    <Compile Include="PropagationCalc\ITU1546_6.cs" />
     <Compile Include="PropagationCalc\ITU1546_4.cs" />
     <Compile Include="PropagationCalc\Absorption.cs" />
     <Compile Include="PropagationCalc\ProfilesCalculation.cs" />

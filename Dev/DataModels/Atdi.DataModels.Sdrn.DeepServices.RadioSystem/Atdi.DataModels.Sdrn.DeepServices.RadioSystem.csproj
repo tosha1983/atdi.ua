@@ -42,12 +42,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AntennaPattern\DiagrammArgs.cs" />
     <Compile Include="AntennaPattern\DiagrammPoint.cs" />
     <Compile Include="AntennaPattern\AntennaDiagrammPointsArgs.cs" />
     <Compile Include="AntennaPattern\AntennaDiagrammTranformArgs.cs" />
     <Compile Include="AntennaPattern\AntennaPatternType.cs" />
     <Compile Include="AntennaPattern\TypePattern.cs" />
     <Compile Include="AntennaPattern\AntennaDiagrammArgs.cs" />
+    <Compile Include="FieldStrength\CalcFSResult.cs" />
+    <Compile Include="FieldStrength\LandSea.cs" />
+    <Compile Include="FieldStrength\CalcFSArgs.cs" />
     <Compile Include="Gis\CluttersDesc.cs" />
     <Compile Include="Gis\CluttersDescFreq.cs" />
     <Compile Include="Gis\CluttersDescFreqClutter.cs" />

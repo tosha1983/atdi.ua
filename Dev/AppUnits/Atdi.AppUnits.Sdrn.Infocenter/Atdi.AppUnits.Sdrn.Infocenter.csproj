@@ -103,9 +103,17 @@
       <Project>{61e920b8-8945-420c-a8c8-bc9a7cbf6f70}</Project>
       <Name>Atdi.DataModels.Api.EventSystem</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Brific.Entities\Atdi.DataModels.Brific.Entities.csproj">
+      <Project>{68b3013a-98f4-4443-8d62-78dd5a7fd071}</Project>
+      <Name>Atdi.DataModels.Brific.Entities</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.EntityOrm\Atdi.DataModels.EntityOrm.csproj">
       <Project>{73c8791e-3fc5-4c91-84e5-c19c98096f10}</Project>
       <Name>Atdi.DataModels.EntityOrm</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices.Gis\Atdi.DataModels.Sdrn.DeepServices.Gis.csproj">
+      <Project>{D83887B2-4444-4207-A703-C99B94A4C170}</Project>
+      <Name>Atdi.DataModels.Sdrn.DeepServices.Gis</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.Infocenter.Entities\Atdi.DataModels.Sdrn.Infocenter.Entities.csproj">
       <Project>{b793c198-41c4-4e9e-9e18-479a8a51b0b0}</Project>

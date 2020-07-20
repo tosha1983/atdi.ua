@@ -40,7 +40,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.DataModel
 
 		public int CoverageLowerRightY;
 
-		public long CoverageArea;
+		public ulong CoverageArea;
 
 		public decimal CoveragePercent;
 
@@ -78,7 +78,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.DataModel
 				throw new InvalidOperationException($"Something went wrong during the recount of coverage maps. Suddenly, the map coverage disappeared. Map ID #{MapId}; {MapName}; Project map ID #{data.ProjectMapId}");
 			}
 
-			this.CoverageArea = (CoverageLowerRightX - CoverageUpperLeftX) * (CoverageUpperLeftY - CoverageLowerRightY);
+			this.CoverageArea = ((ulong)CoverageLowerRightX - (ulong)CoverageUpperLeftX) * ((ulong)CoverageUpperLeftY - (ulong)CoverageLowerRightY);
 			this.CoveragePercent = (this.CoverageArea / data.RectArea) * 100;
 		}
 
@@ -98,7 +98,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.DataModel
 				return false;
 			}
 
-			this.CoverageArea = (CoverageLowerRightX - CoverageUpperLeftX) * (CoverageUpperLeftY - CoverageLowerRightY);
+			this.CoverageArea = ((ulong)CoverageLowerRightX - (ulong)CoverageUpperLeftX) * ((ulong)CoverageUpperLeftY - (ulong)CoverageLowerRightY);
 			this.CoveragePercent = (this.CoverageArea / data.RectArea) * 100;
 
 			this.Priority = 4;
@@ -156,7 +156,13 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.DataModel
 				Y = Math.Max(area.LowerRight.Y, this.LowerRightY)
 			};
 
-			return coverageArea.Area > 0;
+            if ((coverageArea.LowerRight.X - coverageArea.UpperLeft.X) <= 0
+            || (coverageArea.UpperLeft.Y - coverageArea.LowerRight.Y) <= 0)
+            {
+                return false;
+            }
+
+            return coverageArea.Area > 0;
 		}
 
 		public AtdiCoordinate IndexToUpperLeftCoordinate(int xIndex, int yIndex)
