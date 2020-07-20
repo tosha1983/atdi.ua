@@ -44,6 +44,8 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings
         public ViewCommand TaskDeleteCommand { get; set; }
         public ViewCommand TaskShowResultCommand { get; set; }
         public ViewCommand PrepareContextCommand { get; set; }
+        public ViewCommand TaskRefreshCommand { get; set; }
+        public ViewCommand ContextRefreshCommand  { get; set; }
 
         public ProjectDataAdapter Projects { get; set; }
         public BaseClientContextDataAdapter BaseClientContexts { get; set; }
@@ -80,8 +82,10 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings
 
             this.TaskDeleteCommand = new ViewCommand(this.OnTaskDeleteCommand);
             this.TaskShowResultCommand = new ViewCommand(this.OnTaskShowResultCommand);
+            this.TaskRefreshCommand = new ViewCommand(this.OnTaskRefreshCommand);
 
             this.PrepareContextCommand = new ViewCommand(this.OnPrepareContextCommand);
+            this.ContextRefreshCommand = new ViewCommand(this.OnContextRefreshCommand);
 
             this.CurrentClientContextCard = new ClientContextModel();
 
@@ -97,7 +101,6 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings
             _onDeletedCalcTaskToken = _eventBus.Subscribe<CT.Events.OnDeletedCalcTask>(this.OnDeletedCalcTaskHandle);
 
             ReloadProjects();
-
             ReloadProjectContexts();
             ReloadClientContext();
             ReloadCalcTask();
@@ -410,6 +413,14 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings
             {
                 this._logger.Exception(Exceptions.GE06Client, e);
             }
+        }
+        private void OnTaskRefreshCommand(object parameter)
+        {
+            ReloadCalcTask();
+        }
+        private void OnContextRefreshCommand(object parameter)
+        {
+            ReloadClientContext();
         }
 
         private void OnPrepareContextCommand(object parameter)

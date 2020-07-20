@@ -119,6 +119,7 @@
               <DataGrid.ContextMenu>
                 <ContextMenu>
                   <MenuItem Header="{x:Static res:Resources.PrepareContext}" Command="{Binding PrepareContextCommand}"/>
+                  <MenuItem Header="{x:Static res:Resources.Refresh}" Command="{Binding ContextRefreshCommand}"/>
                 </ContextMenu>
               </DataGrid.ContextMenu>
             </orm:OrmDataGrid>
@@ -158,6 +159,11 @@
                 <DataGridTextColumn Header="{x:Static res:Resources.OwnerInstance}" Binding="{Binding Path=OwnerInstance}"></DataGridTextColumn>
                 <DataGridTextColumn Header="{x:Static res:Resources.TypeOfCalculation}" Binding="{Binding Path=TypeOfCalculation}"></DataGridTextColumn>
               </DataGrid.Columns>
+              <DataGrid.ContextMenu>
+                <ContextMenu>
+                  <MenuItem Header="{x:Static res:Resources.Refresh}" Command="{Binding TaskRefreshCommand}"/>
+                </ContextMenu>
+              </DataGrid.ContextMenu>
             </orm:OrmDataGrid>
             <WrapPanel Grid.Column="1" Orientation="Vertical">
               <WrapPanel>
