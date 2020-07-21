@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Atdi.Api.EntityOrm.WebClient;
 using Atdi.Contracts.Api.EntityOrm.WebClient;
+using Atdi.DataModels.Api.EntityOrm.WebClient;
 using Atdi.Platform.Logging;
 
 namespace Atdi.Icsm.Plugins.Core
@@ -98,6 +99,13 @@ namespace Atdi.Icsm.Plugins.Core
 				this._currentIndex = -1;
 				CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
 			}
+            catch (EntityOrmWebApiException e)
+            {
+                if (e.ServerException != null)
+                {
+                    _logger.Exception((EventContext)"EntityDataAdapter", (EventCategory)"Refresh", new Exception($"ExceptionMessage: {e.ServerException.ExceptionMessage}; ExceptionType: {e.ServerException.ExceptionType}; InnerException: {e.ServerException.InnerException}; Message: {e.ServerException.Message}!"));
+                }
+            }
 			catch (Exception e)
 			{
 				_logger.Exception((EventContext)"EntityDataAdapter", (EventCategory)"Refresh", e);

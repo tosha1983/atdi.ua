@@ -180,8 +180,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         /// Метод для предварительной подготовки данных
         /// </summary>
         /// <param name="driveTestsResults"></param>
-        public static DriveTestsResult[] PrepareData(ref AllStationCorellationCalcData data, ref DriveTestsResult[][] arrDiveTestsResults, long countRecordsListDriveTestsResultBuffer,  IObjectPool<PointFS[]> calcPointArrayPool)
-        {
+        public static DriveTestsResult[] PrepareData(AllStationCorellationCalcData data, ref DriveTestsResult[][] arrDiveTestsResults, long countRecordsListDriveTestsResultBuffer,  IObjectPool<PointFS[]> calcPointArrayPool)
+        { // Тестировался не глубоко ошибок не выявленно МАКСИМ 
             var alldriveTestsResults = new List<DriveTestsResult>();
             var lowerLeftCoord_m = data.FieldStrengthCalcData.MapArea.LowerLeft;
             var upperRightCoord_m = data.FieldStrengthCalcData.MapArea.UpperRight;
@@ -785,7 +785,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         }
 
 
-        public static void CompareDriveTestsWithoutStandards(in DriveTestsResult[] GSIDGroupeDriveTests, DriveTestsResult[][] outListDriveTestsResult, out long countRecords)
+        public static void CompareDriveTestsWithoutStandards(DriveTestsResult[] GSIDGroupeDriveTests, DriveTestsResult[][] outListDriveTestsResult, out long countRecords)
         {
             var arrUniqueGSID = Utils.GetUniqueArrayGSIDfromDriveTests(GSIDGroupeDriveTests);
             if (arrUniqueGSID != null)
@@ -793,7 +793,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 for (int i = 0; i < arrUniqueGSID.Length; i++)
                 {
                     var groupDriveTest = Utils.GroupingDriveTestsByGSID(GSIDGroupeDriveTests, arrUniqueGSID[i]);
-                    outListDriveTestsResult[i] = groupDriveTest;
+                    outListDriveTestsResult[i] = Atdi.Common.CopyHelper.CreateDeepCopy(groupDriveTest);
                 }
             }
             countRecords = arrUniqueGSID.Length;

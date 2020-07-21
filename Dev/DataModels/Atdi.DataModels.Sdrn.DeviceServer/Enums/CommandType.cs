@@ -19,6 +19,7 @@ namespace Atdi.DataModels.Sdrn.DeviceServer
         MesureZeroSpan,
         Gps,
         MesureEstimateRefLevel,
-        SetRotatorPosition
+        SetRotatorPosition,
+        SetRFSwitch
     }
 }

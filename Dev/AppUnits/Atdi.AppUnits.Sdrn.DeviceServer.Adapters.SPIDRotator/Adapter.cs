@@ -1251,8 +1251,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SPIDRotator
                     PolarizationMin_dg = config.ElevationMin_dg,//елевацию используем как поляризацию
                     PolarizationMax_dg = config.ElevationMax_dg,//елевацию используем как поляризацию
                     AzimuthStep_dg = stepAz,
-                    ElevationStep_dg = stepEl,
-                    PolarizationStep_dg = stepPl,
+                    ElevationStep_dg = 0,
+                    PolarizationStep_dg = stepEl,
                     AzimuthSpeedAvailable = new int[] { 1 },//доступна одна скорость
                     ElevationSpeedAvailable = null,//нету, всего две оси вращения
                     PolarizationSpeedAvailable = new int[] { 1 }//доступна одна скорость
@@ -1276,7 +1276,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SPIDRotator
                     PolarizationMax_dg = 0, //нету, всего две оси вращения
                     AzimuthStep_dg = stepAz,
                     ElevationStep_dg = stepEl,
-                    PolarizationStep_dg = stepPl,
+                    PolarizationStep_dg = 0,
                     AzimuthSpeedAvailable = new int[] { 1 },//доступна одна скорость
                     ElevationSpeedAvailable = new int[] { 1 },//доступна одна скорость
                     PolarizationSpeedAvailable = null//нету, всего две оси вращения

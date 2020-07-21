@@ -44,7 +44,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         {
             [MainCalcBlockModelType.Unknown] = ProfileOptions.Empty,
             [MainCalcBlockModelType.ITU2001] = ProfileOptions.OnlyHeight,
-            [MainCalcBlockModelType.ITU1546] = ProfileOptions.ReliefAndClutter,
+            [MainCalcBlockModelType.ITU1546_ge06] = ProfileOptions.ReliefAndClutter,
             [MainCalcBlockModelType.ITU525] = ProfileOptions.Empty
         };
 

@@ -44,6 +44,8 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings
         public ViewCommand TaskDeleteCommand { get; set; }
         public ViewCommand TaskShowResultCommand { get; set; }
         public ViewCommand PrepareContextCommand { get; set; }
+        public ViewCommand TaskRefreshCommand { get; set; }
+        public ViewCommand ContextRefreshCommand  { get; set; }
 
         public ProjectDataAdapter Projects { get; set; }
         public BaseClientContextDataAdapter BaseClientContexts { get; set; }
@@ -80,8 +82,10 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings
 
             this.TaskDeleteCommand = new ViewCommand(this.OnTaskDeleteCommand);
             this.TaskShowResultCommand = new ViewCommand(this.OnTaskShowResultCommand);
+            this.TaskRefreshCommand = new ViewCommand(this.OnTaskRefreshCommand);
 
             this.PrepareContextCommand = new ViewCommand(this.OnPrepareContextCommand);
+            this.ContextRefreshCommand = new ViewCommand(this.OnContextRefreshCommand);
 
             this.CurrentClientContextCard = new ClientContextModel();
 
@@ -97,6 +101,9 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings
             _onDeletedCalcTaskToken = _eventBus.Subscribe<CT.Events.OnDeletedCalcTask>(this.OnDeletedCalcTaskHandle);
 
             ReloadProjects();
+            ReloadProjectContexts();
+            ReloadClientContext();
+            ReloadCalcTask();
         }
         private void ReloadProjects()
         {
@@ -176,6 +183,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings
         private void OnChangedCurrentProject(ProjectModel project)
         {
             ReloadProjectContexts();
+            ReloadClientContext();
             CurrentClientContextCard = new ClientContextModel();
             ClientContextSaveEnabled = false;
             CalcTaskDelEnabled = false;
@@ -229,22 +237,42 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings
             {
                 this.BaseClientContexts.ProjectId = this.CurrentProject.Id;
                 this.BaseClientContexts.Refresh();
-                ReloadClientContext();
+            }
+            else
+            {
+                this.BaseClientContexts.ProjectId = 0;
+                this.BaseClientContexts.Refresh();
             }
         }
         private void ReloadCalcTask()
         {
-            this.CalcTasks.ContextId = this.CurrentClientContext.Id;
-            this.CalcTasks.Refresh();
-            CalcTaskDelEnabled = false;
-            CalcTaskShowResultEnabled = false;
+            if (this.CurrentClientContext !=  null)
+            {
+                this.CalcTasks.ContextId = this.CurrentClientContext.Id;
+                this.CalcTasks.Refresh();
+                CalcTaskDelEnabled = false;
+                CalcTaskShowResultEnabled = false;
+            }
+            else
+            {
+                this.CalcTasks.ContextId = 0;
+                this.CalcTasks.Refresh();
+            }
         }
         private void ReloadClientContext()
         {
-            this.ClientContexts.ProjectId = this.CurrentProject.Id;
-            this.ClientContexts.Refresh();
-            ClientContextEditEnabled = false;
-            ClientContextDelEnabled = false;
+            if (this.CurrentProject != null)
+            {
+                this.ClientContexts.ProjectId = this.CurrentProject.Id;
+                this.ClientContexts.Refresh();
+                ClientContextEditEnabled = false;
+                ClientContextDelEnabled = false;
+            }
+            else
+            {
+                this.ClientContexts.ProjectId = 0;
+                this.ClientContexts.Refresh();
+            }
         }
         private void OnContextAddCommand(object parameter)
         {
@@ -385,6 +413,14 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Settings
             {
                 this._logger.Exception(Exceptions.GE06Client, e);
             }
+        }
+        private void OnTaskRefreshCommand(object parameter)
+        {
+            ReloadCalcTask();
+        }
+        private void OnContextRefreshCommand(object parameter)
+        {
+            ReloadClientContext();
         }
 
         private void OnPrepareContextCommand(object parameter)

@@ -218,7 +218,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 {
                     if (broadcastingContextBRIFIC.Allotments.AdminData != null)
                     {
-                        affectedServices.Add(broadcastingContextBRIFIC.Allotments.AdminData.StnClass);
+                        if (!affectedServices.Contains(broadcastingContextBRIFIC.Allotments.AdminData.StnClass))
+                        {
+                            affectedServices.Add(broadcastingContextBRIFIC.Allotments.AdminData.StnClass);
+                        }
                     }
                 }
                 if (broadcastingContextBRIFIC.Assignments != null)
@@ -237,7 +240,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 {
                     if (broadcastingContextICSM.Allotments.AdminData != null)
                     {
-                        affectedServices.Add(broadcastingContextICSM.Allotments.AdminData.StnClass);
+                        if (!affectedServices.Contains(broadcastingContextICSM.Allotments.AdminData.StnClass))
+                        {
+                            affectedServices.Add(broadcastingContextICSM.Allotments.AdminData.StnClass);
+                        }
                     }
                 }
                 if (broadcastingContextICSM.Assignments != null)
