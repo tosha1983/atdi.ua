@@ -58,6 +58,10 @@
       <Project>{4d714049-70ae-43bb-870d-4b2315dc29e5}</Project>
       <Name>Atdi.AppUnits.Sdrn.Infocenter</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.Infocenter\Atdi.Contracts.Sdrn.Infocenter.csproj">
+      <Project>{b1074928-0e74-4230-a326-2a387d4d1a12}</Project>
+      <Name>Atdi.Contracts.Sdrn.Infocenter</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\CoreServices\Atdi.CoreServices.DataLayer.Assemblies\Atdi.CoreServices.DataLayer.Assemblies.csproj">
       <Project>{2c09f776-b3b4-48ad-b221-d8b899a679b2}</Project>
       <Name>Atdi.CoreServices.DataLayer.Assemblies</Name>
@@ -85,6 +89,14 @@
     <ProjectReference Include="..\..\CoreServices\Atdi.CoreServices.Monitoring\Atdi.CoreServices.Monitoring.csproj">
       <Project>{29acbf42-27bb-49f0-aa01-6f013bef6e8c}</Project>
       <Name>Atdi.CoreServices.Monitoring</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.Infocenter.Entities\Atdi.DataModels.Sdrn.Infocenter.Entities.csproj">
+      <Project>{b793c198-41c4-4e9e-9e18-479a8a51b0b0}</Project>
+      <Name>Atdi.DataModels.Sdrn.Infocenter.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.Infocenter\Atdi.DataModels.Sdrn.Infocenter.csproj">
+      <Project>{9872dc9a-13ab-4d3f-90b9-c16096a12418}</Project>
+      <Name>Atdi.DataModels.Sdrn.Infocenter</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Platform\Atdi.Platform.AppServer\Atdi.Platform.AppServer.csproj">
       <Project>{20d45626-3779-4fc8-a55a-1c919d95649e}</Project>
