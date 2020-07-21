@@ -18,6 +18,7 @@
     <Field Name="ContureByFieldStrength" SourceType="Column" Required="false" SourceName="CONTURE_BY_FIELD_STRENGTH" DataType="Boolean" Title="Conture by FieldStrength" Desc="Conture by FieldStrength"/>
     <Field Name="FieldStrength" SourceType="Column" Required="false" SourceName="FIELD_STRENGTH" DataType="Array.Integer" Title="FieldStrength" Desc="The FieldStrength"/>
     <Field Name="SubscribersHeight" SourceType="Column" Required="false" SourceName="SUBSCRIBERS_HEIGHT" DataType="Integer.32" Title="Subscribers height" Desc="The Subscribers height"/>
+    <Field Name="StepBetweenBoundaryPoints" SourceType="Column" Required="false" SourceName="STEP_BETWEEN_BUNDARY_POINTS" DataType="Integer.32" Title="Step between boundary points" Desc="The step between boundary points"/>
     <Field Name="PercentageTime" SourceType="Column" Required="false" SourceName="PERCENTAGE_TIME" DataType="Double.30.10" Title="Percentage time" Desc="The percentage time"/>
     <Field Name="UseEffectiveHeight" SourceType="Column" Required="false" SourceName="USE_EFFECTIVE_HEIGHT" DataType="Boolean" Title="Use effective height" Desc="Use effective height"/>
     <Field Name="CalculationTypeCode" SourceType="Column" SourceName="CALCULATION_TYPE_CODE" DataType="Code.u08" Required="true" Title="Calculation type code" Desc="The calculation type code"  />
