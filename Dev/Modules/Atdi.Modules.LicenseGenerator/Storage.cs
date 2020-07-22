@@ -24,6 +24,14 @@ namespace Atdi.Modules.LicenseGenerator
 				
 			}
 
+			public static class UDCR_UNIKOM
+			{
+				public static readonly string OwnerKey = "BD13-G65";
+				public static readonly string OwnerId = "OID-BD13-G65-N01";
+				public static readonly string OwnerName = "Державне підприємство «Український державний центр радіочастот»";
+
+			}
+
 			public static class ATDI_SA
 			{
 				public static readonly string OwnerKey = "BD10-A00";
@@ -65,6 +73,8 @@ namespace Atdi.Modules.LicenseGenerator
 			public static readonly string SDRN_Calc_Server = "SDRN Calc Server";
 			public static readonly string WebQuery_Web_Portal = "WebQuery Web Portal";
 			public static readonly string WebQuery_Application_Server = "WebQuery Application Server";
+
+			public static readonly string ICS_Control_Server = "ICS Control Server";
 		}
 	}
 }

@@ -27,12 +27,24 @@ namespace Atdi.WebPortal.WebQuery.Licensing
                 {
                     return typeof(LicenseData2);
                 }
+                if (typeName == "Atdi.Modules.Licensing.LicenseData3")
+                {
+	                return typeof(LicenseData3);
+                }
+                if (typeName == "Atdi.Modules.Licensing.LicenseData4")
+                {
+	                return typeof(LicenseData4);
+                }
 
-                if (typeName == "Atdi.Modules.Licensing.LicenseLimitationTerms")
+				if (typeName == "Atdi.Modules.Licensing.LicenseLimitationTerms")
                 {
 	                return typeof(LicenseLimitationTerms);
 				}
-                var type = Type.GetType(String.Format("{0}, {1}", typeName, assemblyName));
+				if (typeName == "Atdi.Modules.Licensing.LicenseHardwareBinding")
+				{
+					return typeof(LicenseHardwareBinding);
+				}
+				var type = Type.GetType(String.Format("{0}, {1}", typeName, assemblyName));
                 return type;
             }
         }
