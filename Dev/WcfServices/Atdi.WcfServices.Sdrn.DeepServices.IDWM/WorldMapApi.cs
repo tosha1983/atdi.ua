@@ -57,7 +57,7 @@ namespace Atdi.WcfServices.Sdrn.DeepServices.IDWM
             {
                 lock (_idwmVal)
                 {
-                    var nearestCountries = _idwmVal.GetNearestCountries(IdwmNET.Idwm.DecToRadian((float)pointByADM.Point.Longitude), IdwmNET.Idwm.DecToRadian((float)pointByADM.Point.Latitude), 100000, new string[] { }, 1000);
+                    var nearestCountries = _idwmVal.GetNearestCountries(IdwmNET.Idwm.DecToRadian((float)pointByADM.Point.Longitude), IdwmNET.Idwm.DecToRadian((float)pointByADM.Point.Latitude), 3000, new string[] { }, 1000);
                     if ((nearestCountries != null) && (nearestCountries.Length > 0))
                     {
                         var findNearestCountries = nearestCountries.ToList().Find(x => x.country == administration);
@@ -93,33 +93,6 @@ namespace Atdi.WcfServices.Sdrn.DeepServices.IDWM
             }
         }
 
-        /// <summary>
-        /// Функция по определению ближайшей точки искомой администрации от заданной точки
-        /// </summary>
-        /// <param name="pointByADM"></param>
-        /// <returns></returns>
-        private Point GetCoordByMinDistance(PointByADM pointByADM)
-        {
-            var resultPoint = new Point();
-            string administration = pointByADM.Administration.PadRight(3,' ');
-            if (_isIdwmInit)
-            {
-                lock (_idwmVal)
-                {
-                    var nearestCountries = _idwmVal.GetNearestCountries(IdwmNET.Idwm.DecToRadian((float)pointByADM.Point.Longitude), IdwmNET.Idwm.DecToRadian((float)pointByADM.Point.Latitude), 100000, new string[] { }, 1000);
-                    if ((nearestCountries != null) && (nearestCountries.Length > 0))
-                    {
-                        var findNearestCountries = nearestCountries.ToList().Find(x => x.country == administration);
-                        if (findNearestCountries != null)
-                        {
-                            resultPoint.Longitude = ((float)((findNearestCountries.rLongitude * 180) / Math.PI));
-                            resultPoint.Latitude = ((float)((findNearestCountries.rLatitude * 180) / Math.PI));
-                        }
-                    }
-                }
-            }
-            return resultPoint;
-        }
 
         /// <summary>
         /// Определяем все администрации, которые попали в соответствующий радиус от точки. 
