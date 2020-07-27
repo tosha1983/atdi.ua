@@ -19,7 +19,7 @@
     <Field Name="PARAMETERS" SourceType="Reference" SourceName="Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks.StationCalibrationArgs"  Required="true" Title="Station calibration parameters" Desc="The station calibration parameters" />
     <Field Name="TimeStart" DataType="DateTimeOffset" SourceName="TIME_START" SourceType="Column" Desc="The time start" Title="Time start" Required="false"/>
     <Field Name="Standard" SourceType="Column" SourceName="STANDARD" DataType="Text.50" Required="false" Title="Standard" Desc="The standard" />
-    <Field Name="AreaName" SourceType="Column" SourceName="AREA_NAME" DataType="Text.50" Required="false" Title="Area name" Desc="The area name" />
+    <Field Name="AreaName" SourceType="Column" SourceName="AREA_NAME" DataType="Text.1000" Required="false" Title="Area name" Desc="The area name" />
     <Field Name="NumberStation" SourceType="Column" Required="false" SourceName="NUMBER_STATION" DataType="Integer.32" Title="Number station" Desc="The number station"/>
     <Field Name="NumberStationInContour" SourceType="Column" Required="false" SourceName="NUMBER_STATION_IN_CONTOUR" DataType="Integer.32" Title="Number station in contour" Desc="The Number station in contour"/>
     <Field Name="CountStation_CS" SourceType="Column" Required="false" SourceName="COUNT_STATION_CS" DataType="Integer.32" Title="Count station with status CS" Desc="The count station with status CS"/>
