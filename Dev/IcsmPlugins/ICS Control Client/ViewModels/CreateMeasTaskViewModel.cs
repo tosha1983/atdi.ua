@@ -29,6 +29,9 @@ using System.Net.Http;
 using System.Configuration;
 using System.Net;
 using Newtonsoft.Json;
+using Atdi.DataModels.Api.EntityOrm.WebClient;
+using Atdi.Api.EntityOrm.WebClient;
+using Atdi.DataModels.Sdrns.Server.Entities;
 
 namespace XICSM.ICSControlClient.ViewModels
 {
@@ -806,6 +809,10 @@ namespace XICSM.ICSControlClient.ViewModels
             if (string.IsNullOrEmpty(endpointUrls))
                 return false;
 
+            var sensorsIds = new List<long>();
+            foreach (ShortSensorViewModel shortSensor in this._currentShortSensor)
+                sensorsIds.Add(shortSensor.Id);
+
             var dateBg = this._currentMeasTask.MeasTimeParamListPerStart;
             var dateEd = this._currentMeasTask.MeasTimeParamListPerStop;
             if (this._currentMeasTask.MeasTimeParamListTimeStart.HasValue)
@@ -813,63 +820,87 @@ namespace XICSM.ICSControlClient.ViewModels
             if (this._currentMeasTask.MeasTimeParamListTimeStop.HasValue)
                 dateEd = dateEd.AddHours(this._currentMeasTask.MeasTimeParamListTimeStop.Value.Hour).AddMinutes(this._currentMeasTask.MeasTimeParamListTimeStop.Value.Minute);
 
-            using (var wc = new HttpClient())
+            var endpoint = new WebApiEndpoint(new Uri(PluginHelper.GetWebAPIBaseAddress()), PluginHelper.GetWebAPIUrl());
+            var dataContext = new WebApiDataContext(PluginHelper.GetDataContext());
+            var dataLayer = new WebApiDataLayer(endpoint, dataContext);
+
+            var webQuery = dataLayer.GetBuilder<ISubTaskSensor>()
+                .Read()
+                .Select(c => c.SUBTASK.MEAS_TASK.Id,
+                        c => c.SUBTASK.MEAS_TASK.Type,
+                        c => c.SUBTASK.MEAS_TASK.Name,
+                        c => c.SUBTASK.MEAS_TASK.PerStart,
+                        c => c.SUBTASK.MEAS_TASK.TimeStart,
+                        c => c.SUBTASK.MEAS_TASK.PerStop,
+                        c => c.SUBTASK.MEAS_TASK.TimeStop,
+                        c => c.SUBTASK.MEAS_TASK.DateCreated,
+                        c => c.SUBTASK.MEAS_TASK.CreatedBy,
+                        c => c.SUBTASK.MEAS_TASK.Status,
+                        c => c.SENSOR.Id)
+                .OrderByAsc(c => c.SUBTASK.MEAS_TASK.Id)
+                .BeginFilter()
+                    .Condition(c => c.SENSOR.Id, FilterOperator.In, sensorsIds.ToArray())
+                    .And()
+                    .Condition(c => c.SUBTASK.MEAS_TASK.Type, FilterOperator.Equal, this._measType.ToString())
+                    .And()
+                    .Condition(c => c.SUBTASK.MEAS_TASK.PerStop, FilterOperator.GreaterEqual, this._currentMeasTask.MeasTimeParamListPerStart.Date)
+                    .And()
+                    .Begin()
+                        .Condition(c => c.SUBTASK.MEAS_TASK.Status, FilterOperator.Equal, "N")
+                        .Or()
+                        .Condition(c => c.SUBTASK.MEAS_TASK.Status, FilterOperator.Equal, "A")
+                    .End()
+                .EndFilter();
+
+            var executor = dataLayer.GetExecutor(endpoint, dataContext);
+            var records = executor.ExecuteAndFetch(webQuery, reader =>
             {
-                var sensorsIds = new List<long>();
-                foreach (ShortSensorViewModel shortSensor in this._currentShortSensor)
-                    sensorsIds.Add(shortSensor.Id);
-
-                string fields = "SUBTASK.MEAS_TASK.Id,SUBTASK.MEAS_TASK.Type,SUBTASK.MEAS_TASK.Name,SUBTASK.MEAS_TASK.PerStart,SUBTASK.MEAS_TASK.TimeStart,SUBTASK.MEAS_TASK.PerStop,SUBTASK.MEAS_TASK.TimeStop,SUBTASK.MEAS_TASK.DateCreated,SUBTASK.MEAS_TASK.CreatedBy,SUBTASK.MEAS_TASK.Status,SENSOR.Id";
-                string filter = $"((SENSOR.Id in ({string.Join(",", sensorsIds)}))and(SUBTASK.MEAS_TASK.Type eq '{this._measType.ToString()}')and(SUBTASK.MEAS_TASK.PerStop Ge {this._currentMeasTask.MeasTimeParamListPerStart.Date.ToString("yyyy-MM-ddTHH\\:mm\\:ss.fffffff")}))";
-
-                var response = wc.GetAsync(endpointUrls + $"api/orm/data/SDRN_Server_DB/Atdi.DataModels.Sdrns.Server.Entities/SubTaskSensor?select={fields}&filter={filter}&orderBy=SUBTASK.MEAS_TASK.Id").Result;
-                if (response.StatusCode == HttpStatusCode.OK)
+                if (reader.Count > 0)
                 {
-                    var dicFields = new Dictionary<string, int>();
-                    var data = JsonConvert.DeserializeObject<DataSetResult>(response.Content.ReadAsStringAsync().Result);
+                    long lastMeasTaskId = 0;
 
-                    foreach (var field in data.Fields)
-                        dicFields[field.Path] = field.Index;
-
-                    long lastMeasTaskId = 0; 
-
-                    foreach (object[] record in data.Records)
+                    while (reader.Read())
                     {
-                        long measTaskId = Convert.ToInt64(record[dicFields["SUBTASK.MEAS_TASK.Id"]]);
+                        long measTaskId = reader.GetValue(c => c.SUBTASK.MEAS_TASK.Id);
+
                         var measTask = new MeasTask();
-                        var sensors = new List<long>();
+                        var sensorsList = new List<long>();
+
+                        var sensorId = reader.GetValue(c => c.SENSOR.Id);
 
                         if (lastMeasTaskId != measTaskId)
                         {
                             lastMeasTaskId = measTaskId;
-                            sensors = new List<long>();
+                            sensorsList = new List<long>();
 
                             measTask = new MeasTask();
                             measTask.MeasTaskId = measTaskId;
-                            measTask.TaskType = (string)record[dicFields["SUBTASK.MEAS_TASK.Type"]];
-                            measTask.TaskName = (string)record[dicFields["SUBTASK.MEAS_TASK.Name"]];
-                            measTask.Status = (string)record[dicFields["SUBTASK.MEAS_TASK.Status"]];
+                            measTask.TaskType = reader.GetValue(c => c.SUBTASK.MEAS_TASK.Type);
+                            measTask.TaskName = reader.GetValue(c => c.SUBTASK.MEAS_TASK.Name);
+                            measTask.Status = reader.GetValue(c => c.SUBTASK.MEAS_TASK.Status);
 
-                            measTask.DateStart = (DateTime)record[dicFields["SUBTASK.MEAS_TASK.PerStart"]];
-                            var timeStart = (DateTime?)record[dicFields["SUBTASK.MEAS_TASK.TimeStart"]];
+                            measTask.DateStart = reader.GetValue(c => c.SUBTASK.MEAS_TASK.PerStart).GetValueOrDefault();
+                            var timeStart = reader.GetValue(c => c.SUBTASK.MEAS_TASK.TimeStart);
                             if (timeStart.HasValue)
                                 measTask.DateStart.AddHours(timeStart.Value.Hour).AddMinutes(timeStart.Value.Minute);
 
-                            measTask.DateStop = (DateTime)record[dicFields["SUBTASK.MEAS_TASK.PerStop"]];
-                            var timeStop = (DateTime?)record[dicFields["SUBTASK.MEAS_TASK.TimeStop"]];
+                            measTask.DateStop = reader.GetValue(c => c.SUBTASK.MEAS_TASK.PerStop).GetValueOrDefault();
+                            var timeStop = reader.GetValue(c => c.SUBTASK.MEAS_TASK.TimeStop);
                             if (timeStop.HasValue)
                                 measTask.DateStop.AddHours(timeStop.Value.Hour).AddMinutes(timeStop.Value.Minute);
 
-                            measTask.DateCreated = (DateTime?)record[dicFields["SUBTASK.MEAS_TASK.DateCreated"]];
-                            measTask.CreatedBy = (string)record[dicFields["SUBTASK.MEAS_TASK.CreatedBy"]];
+                            measTask.DateCreated = reader.GetValue(c => c.SUBTASK.MEAS_TASK.DateCreated);
+                            measTask.CreatedBy = reader.GetValue(c => c.SUBTASK.MEAS_TASK.CreatedBy);
 
                             prevTaskData.Add(measTask);
                         }
-                        sensors.Add(Convert.ToInt64(record[dicFields["SENSOR.Id"]]));
-                        measTask.SensorIds = string.Join(",", sensors);
+                        sensorsList.Add(sensorId);
+                        measTask.SensorIds = string.Join(",", sensorsList);
                     }
                 }
-            }
+
+                return true;
+            });
 
             foreach (var task in prevTaskData)
             {
@@ -877,27 +908,23 @@ namespace XICSM.ICSControlClient.ViewModels
                 {
                     if (this._currentMeasTask.MeasFreqParamRgL.HasValue && this._currentMeasTask.MeasFreqParamRgU.HasValue)
                     {
-                        using (var wc = new HttpClient())
+                        var webQueryFrq = dataLayer.GetBuilder<IMeasFreqParam>()
+                            .Read()
+                            .Select(c => c.Rgl,
+                                    c => c.Rgu)
+                            .Filter(c => c.MEAS_TASK.Id, task.MeasTaskId);
+                        var executorFrq = dataLayer.GetExecutor(endpoint, dataContext);
+                        var recordsFrq = executor.ExecuteAndFetch(webQueryFrq, reader =>
                         {
-                            string fields = "Rgl,Rgu";
-                            string filter = $"(MEAS_TASK.Id Eq {task.MeasTaskId})";
-
-                            double? freqMin = null;
-                            double? freqMax = null;
-
-                            var response = wc.GetAsync(endpointUrls + $"api/orm/data/SDRN_Server_DB/Atdi.DataModels.Sdrns.Server.Entities/MeasFreqParam?select={fields}&filter={filter}").Result;
-                            if (response.StatusCode == HttpStatusCode.OK)
+                            if (reader.Count > 0)
                             {
-                                var dicFields = new Dictionary<string, int>();
-                                var data = JsonConvert.DeserializeObject<DataSetResult>(response.Content.ReadAsStringAsync().Result);
+                                double? freqMin = null;
+                                double? freqMax = null;
 
-                                foreach (var field in data.Fields)
-                                    dicFields[field.Path] = field.Index;
-
-                                foreach (object[] record in data.Records)
+                                while (reader.Read())
                                 {
-                                    var fqMin = (double?)record[dicFields["Rgl"]];
-                                    var fqMax = (double?)record[dicFields["Rgu"]];
+                                    var fqMin = reader.GetValue(c => c.Rgl);
+                                    var fqMax = reader.GetValue(c => c.Rgu);
 
                                     if (fqMin.HasValue && (!freqMin.HasValue || freqMin.Value > fqMin))
                                         freqMin = fqMin;
@@ -905,24 +932,26 @@ namespace XICSM.ICSControlClient.ViewModels
                                     if (fqMax.HasValue && (!freqMax.HasValue || freqMax.Value < fqMax))
                                         freqMax = fqMax;
                                 }
-                            }
-                            if (freqMin.HasValue && freqMax.HasValue)
-                            {
-                                var df_min = Math.Min((this._currentMeasTask.MeasFreqParamRgU.Value - this._currentMeasTask.MeasFreqParamRgL.Value), (freqMax.Value - freqMin.Value));
-                                var intrseption = Math.Min(this._currentMeasTask.MeasFreqParamRgU.Value, freqMax.Value) - Math.Max(this._currentMeasTask.MeasFreqParamRgL.Value, freqMin.Value);
 
-                                if (intrseption > 0)
+                                if (freqMin.HasValue && freqMax.HasValue)
                                 {
-                                    var p_calc = 100 * intrseption / df_min;
-                                    if (p_calc >= 10)
+                                    var df_min = Math.Min((this._currentMeasTask.MeasFreqParamRgU.Value - this._currentMeasTask.MeasFreqParamRgL.Value), (freqMax.Value - freqMin.Value));
+                                    var intrseption = Math.Min(this._currentMeasTask.MeasFreqParamRgU.Value, freqMax.Value) - Math.Max(this._currentMeasTask.MeasFreqParamRgL.Value, freqMin.Value);
+
+                                    if (intrseption > 0)
                                     {
-                                        task.FqMin = freqMin;
-                                        task.FqMax = freqMax;
-                                        taskData.Add(task);
+                                        var p_calc = 100 * intrseption / df_min;
+                                        if (p_calc >= 10)
+                                        {
+                                            task.FqMin = freqMin;
+                                            task.FqMax = freqMax;
+                                            taskData.Add(task);
+                                        }
                                     }
                                 }
                             }
-                        }
+                            return true;
+                        });
                     }
                 }
             }
