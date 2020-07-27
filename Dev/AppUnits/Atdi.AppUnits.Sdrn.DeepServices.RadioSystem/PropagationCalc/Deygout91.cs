@@ -87,9 +87,21 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
 
             if (nuP > -0.78)
             {
-                NuMaxOut nuT = FindMaxNu(ha_m, profile_m[nu.nMax], wavelength, dAP, in profile_m, profileStartIndex, nu.nMax - profileStartIndex, rE);
+                int delta_m = (int)(50 / dN);
+                NuMaxOut nuR = new NuMaxOut { nuMax = -.8f, nMax = nu.nMax };
+                NuMaxOut nuT = new NuMaxOut { nuMax = -.8f, nMax = nu.nMax };
+                if (nu.nMax - delta_m > 1)
+                {
+                    nuT = FindMaxNu(ha_m, profile_m[nu.nMax - delta_m], wavelength, dAP, in profile_m, profileStartIndex, nu.nMax - profileStartIndex, rE);
+                }
 
-                NuMaxOut nuR = FindMaxNu(profile_m[nu.nMax], hb_m, wavelength, dPB, in profile_m, nu.nMax, profileEndIndex - nu.nMax, rE);
+                if (profileEndIndex - nu.nMax - delta_m > 1)
+                {
+                    nuR = FindMaxNu(profile_m[nu.nMax + delta_m], hb_m, wavelength, dPB, in profile_m, nu.nMax, profileEndIndex - nu.nMax, rE);
+                }
+                
+
+                
                 double C = 10.0f + 0.04 * d_km;
                 diffractionLoss_dB = J(nuP) + (1.0 - Math.Exp(-J(nuP) / 6.0f)) * (J(nuT.nuMax) + J(nuR.nuMax) + C + SubDiffractionLoss);
             }
