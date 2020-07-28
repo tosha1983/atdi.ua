@@ -327,7 +327,7 @@ namespace XICSM.ICSControlClient.ViewModels
         private void ReloadEmittingWorkTime()
         {
             this._emittingWorkTimes.Source = _currentEmitting.WorkTimes;
-            this._form.ApplyAllDataGridsFilters();
+            //this._form.ApplyAllDataGridsFilters();
         }
         private void OnZoomUndoCommand(object parameter)
         {
