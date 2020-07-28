@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Collections;
+using System.Windows.Media;
 
 namespace Atdi.WpfControls.EntityOrm.Controls
 {
@@ -19,6 +20,13 @@ namespace Atdi.WpfControls.EntityOrm.Controls
         public OrmDataGrid()
         {
             this.SelectionChanged += OrmDataGrid_SelectionChanged;
+
+            this.VerticalGridLinesBrush = new SolidColorBrush(Colors.LightGray);  //"DarkGray" 
+            this.HorizontalGridLinesBrush = new SolidColorBrush(Colors.LightGray);
+            this.FontFamily = new FontFamily("Segoe UI");
+            this.FontSize = 12;
+            this.HeadersVisibility = DataGridHeadersVisibility.Column;
+
         }
         void OrmDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {

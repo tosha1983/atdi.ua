@@ -317,8 +317,8 @@ namespace XICSM.ICSControlClient.ViewModels
             else
                 this._emittings.ClearFilter();
 
-            this._form.ApplyAllDataGridsFilters();
             this.EmittingCaption = this.GetCurrentEmittingCaption();
+            this._form.ApplyAllDataGridsFilters();
         }
         private void UpdateVisibility()
         {
@@ -327,6 +327,7 @@ namespace XICSM.ICSControlClient.ViewModels
         private void ReloadEmittingWorkTime()
         {
             this._emittingWorkTimes.Source = _currentEmitting.WorkTimes;
+            this._form.ApplyAllDataGridsFilters();
         }
         private void OnZoomUndoCommand(object parameter)
         {
