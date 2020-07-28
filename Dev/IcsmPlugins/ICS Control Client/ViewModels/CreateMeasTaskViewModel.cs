@@ -65,6 +65,7 @@ namespace XICSM.ICSControlClient.ViewModels
         public CreateMeasTaskViewModel(long templateMeasTaskId)
         {
             this._templateMeasTask = SVC.SdrnsControllerWcfClient.GetMeasTaskHeaderById(templateMeasTaskId);
+            this._measType = this._templateMeasTask.MeasDtParam.TypeMeasurements;
             this.PrepareMeasTask();
             this.SetPredefinedVaues();
         }
@@ -630,7 +631,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 }
                 if (this._currentMeasTask.CollectEmissionInstrumentalEstimation.HasValue && this._currentMeasTask.CollectEmissionInstrumentalEstimation.Value)
                 {
-                    switch ((this.CurrentMeasTask.CollectEmissionInstrumentalEstimation.Value && !this.CurrentMeasTask.AnalyzeByChannel.Value) ? this._currentMeasTask.StandardInstEstim : this._currentMeasTask.Standard)
+                    switch ((this.CurrentMeasTask.CollectEmissionInstrumentalEstimation.HasValue && this.CurrentMeasTask.CollectEmissionInstrumentalEstimation.Value && this.CurrentMeasTask.AnalyzeByChannel.HasValue && !this.CurrentMeasTask.AnalyzeByChannel.Value) ? this._currentMeasTask.StandardInstEstim : this._currentMeasTask.Standard)
                     {
                         case "GSM":
                             this._currentMeasTask.windowBW = 1.4;
@@ -782,7 +783,7 @@ namespace XICSM.ICSControlClient.ViewModels
                     CorrelationAnalize = this._currentMeasTask.CorrelationAnalize,
                     CorrelationFactor = this._currentMeasTask.CorrelationFactor,
                     DetailedMeasurementsBWEmission = this._currentMeasTask.DetailedMeasurementsBWEmission,
-                    Standard = (this.CurrentMeasTask.CollectEmissionInstrumentalEstimation.Value && !this.CurrentMeasTask.AnalyzeByChannel.Value) ? this._currentMeasTask.StandardInstEstim : this._currentMeasTask.Standard,
+                    Standard = (this.CurrentMeasTask.CollectEmissionInstrumentalEstimation.HasValue && this.CurrentMeasTask.CollectEmissionInstrumentalEstimation.Value && this.CurrentMeasTask.AnalyzeByChannel.HasValue && !this.CurrentMeasTask.AnalyzeByChannel.Value) ? this._currentMeasTask.StandardInstEstim : this._currentMeasTask.Standard,
                     triggerLevel_dBm_Hz = this.CurrentMeasTask.IsAutoTriggerLevel_dBm_Hz == true ? -999 : this._currentMeasTask.triggerLevel_dBm_Hz,
                     CollectEmissionInstrumentalEstimation = this.CurrentMeasTask.CollectEmissionInstrumentalEstimation,
                     IsUseRefSpectrum = this.CurrentMeasTask.IsUseRefSpectrum
