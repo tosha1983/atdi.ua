@@ -42,7 +42,7 @@ namespace XICSM.ICSControlClient.Forms
             using (var fileStream = new FileStream(fileName, FileMode.Open))
             {
                 this._wpfElementHost.Child = (UIElement)XamlReader.Load(fileStream);
-                this._model = new MeasResultSignalizationViewModel(_resultId, _startType, _emittings, _timeMeas);
+                this._model = new MeasResultSignalizationViewModel(_resultId, _startType, _emittings, _timeMeas, this);
                 ((UserControl)this._wpfElementHost.Child).DataContext = _model;
             }
         }

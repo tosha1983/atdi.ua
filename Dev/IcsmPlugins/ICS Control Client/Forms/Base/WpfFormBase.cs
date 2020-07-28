@@ -203,6 +203,13 @@ namespace XICSM.ICSControlClient.Forms
                 System.Windows.MessageBox.Show("Your file was generated and its ready for use.");
             }
         }
+        public void ApplyAllDataGridsFilters()
+        {
+            foreach (var item in _dataGridFilters.Keys)
+            {
+                DataGridApplyFilters(item);
+            }
+        }
         void DataGridApplyFilters(CTR.DataGrid grid)
         {
             DataGridApplyFiltersTemp(grid);
@@ -223,11 +230,6 @@ namespace XICSM.ICSControlClient.Forms
                 grd.ContextMenu.Items.Add(itemCSV);
 
                 InitializeDataGridsTemp(grd);
-
-                //(grd as CustomDataGrid).
-
-
-
             }
         }
         void InitializeSplitters()
