@@ -27,8 +27,9 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager.Adapt
                 c => c.TypeName,
                 c => c.StatusName,
                 c => c.StatusNote,
-                c => c.OwnerInstance
-            ).Filter(f => f.PROJECT.Id, ProjectId);
+                c => c.OwnerInstance)
+            .Filter(f => f.PROJECT.Id, ProjectId)
+            .OrderByDesc(o => o.Id);
         }
         protected override ClientContextModel ReadData(IDataReader<CS_ES.IClientContext> reader, int index)
         {

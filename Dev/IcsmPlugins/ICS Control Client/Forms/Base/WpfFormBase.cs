@@ -21,6 +21,7 @@ using FM = XICSM.ICSControlClient.Forms;
 using System.Windows.Controls;
 using ADP = XICSM.ICSControlClient.Models.WcfDataApadters;
 using System.Windows.Data;
+using XICSM.ICSControlClient.WpfControls;
 
 namespace XICSM.ICSControlClient.Forms
 {
@@ -222,6 +223,11 @@ namespace XICSM.ICSControlClient.Forms
                 grd.ContextMenu.Items.Add(itemCSV);
 
                 InitializeDataGridsTemp(grd);
+
+                //(grd as CustomDataGrid).
+
+
+
             }
         }
         void InitializeSplitters()

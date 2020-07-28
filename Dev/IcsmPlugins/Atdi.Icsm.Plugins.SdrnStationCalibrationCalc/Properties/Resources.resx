@@ -130,7 +130,7 @@
     <value>Azimuth Station</value>
   </data>
   <data name="BaseContexts" xml:space="preserve">
-    <value>Base Contexts</value>
+    <value>Base contexts</value>
   </data>
   <data name="CalcCorrelation" xml:space="preserve">
     <value>Calc Correlation</value>
@@ -451,7 +451,7 @@
     <value>Real GCID</value>
   </data>
   <data name="BaseContext" xml:space="preserve">
-    <value>Base Context</value>
+    <value>Base context</value>
   </data>
   <data name="Save" xml:space="preserve">
     <value>Save</value>
@@ -477,5 +477,11 @@
   <data name="PercentComplete" xml:space="preserve">
     <value>Percent complete of the task, %</value>
     <comment>,</comment>
+  </data>
+  <data name="ClientContexts" xml:space="preserve">
+    <value>Client contexts</value>
+  </data>
+  <data name="Results" xml:space="preserve">
+    <value>Results</value>
   </data>
 </root>
