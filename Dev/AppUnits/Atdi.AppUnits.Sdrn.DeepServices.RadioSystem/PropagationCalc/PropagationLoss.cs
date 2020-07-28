@@ -46,7 +46,9 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             {
                 TiltaD_Deg = tilta,
                 TiltbD_Deg = tiltb,
-                LossD_dB = Lbf_dB + Ld_dB + Lclutter_dB
+                LossD_dB = Lbf_dB + Ld_dB + Lclutter_dB,
+                DiffractionLoss_dB = Ld_dB
+                
             };
             if (args.Model.AbsorptionBlock.Available)
             {

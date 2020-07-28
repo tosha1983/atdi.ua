@@ -11,5 +11,6 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 		public double? FS_dBuVm;
 		public double? Level_dBm;
         public double? AntennaPatternLoss_dB;
+        public double? diffractionLoss_dB;
     }
 }

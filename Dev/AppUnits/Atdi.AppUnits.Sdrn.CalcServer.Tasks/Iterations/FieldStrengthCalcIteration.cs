@@ -358,7 +358,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 {
                     FS_dBuVm = FS_dBuVm,
                     Level_dBm = Level_dBm,
-                    AntennaPatternLoss_dB = - antennaPatternLoss_dB
+                    AntennaPatternLoss_dB = -antennaPatternLoss_dB,
+                    diffractionLoss_dB = lossResult.DiffractionLoss_dB 
                 };
             }
             catch (Exception)
