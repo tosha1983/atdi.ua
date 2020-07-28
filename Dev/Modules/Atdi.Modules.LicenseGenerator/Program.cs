@@ -211,7 +211,10 @@ namespace Atdi.Modules.LicenseGenerator
 			//CalcServer_ForATDI_SA_2020_1p();
 
 			//20200717
-			WebQuery_for_CRA_Lithuania_2020_1p();
+			//WebQuery_for_CRA_Lithuania_2020_1p();
+
+			//20200721
+			ICSControl_ForUDCR_UNICOM_2020_Aggregation();
 
 			Console.WriteLine("Process was finished");
 
@@ -1727,6 +1730,42 @@ namespace Atdi.Modules.LicenseGenerator
 						}, 
 					});
 			}
+		}
+
+		static void ICSControl_ForUDCR_UNICOM_2020_Aggregation()
+		{
+			//var ownerId = "OID-BD13-G65-N00"; //  Сам УДЦР
+			var ownerId = Storage.Clients.UDCR_UNIKOM.OwnerId; // "OID-BD13-G65-N01"; //  лицензии для УДЦР выданы УНИКОМ
+
+			var ownerName = Storage.Clients.UDCR_UNIKOM.OwnerName;// "Державне підприємство «Український державний центр радіочастот»";
+			var company = Storage.Companies.LIS_Uk; // "ТОВ 'Лабораторія інформаційних систем'";
+			var ownerKey = Storage.Clients.UDCR_UNIKOM.OwnerKey; // "BD13-G65";
+			var startDate = new DateTime(2020, 1, 1);
+			var stopDate = new DateTime(2030, 12, 31);
+
+			var path = @"C:\Projects\Licensing\UDCR\Sdrn\Licenses_2020\УНИКОМ\BD13-G65\SdrnAggrServer";
+
+			var licPrefix = "LIC-S";
+			var instancePrefix = "SDRNSV-S";
+
+			for (int i = 0; i < 1; i++)
+			{
+
+				BuilProductLicense(
+					path,
+					licPrefix,
+					instancePrefix,
+					Storage.LicenseTypes.ServerLicense,
+					Storage.Products.ICS_Control_Server,
+					ownerName,
+					ownerId,
+					ownerKey,
+					company,
+					startDate,
+					stopDate, 2020, LicenseLimitationTerms.Year);
+			}
+
+
 		}
 
 		private static string BuildNextLicenseNumber(string licPrefix, string ownerKey, int numMaxSize = 3)

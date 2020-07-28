@@ -35,9 +35,9 @@
             <DataGridTextColumn Header="{x:Static res:Resources.TaskName}" Binding="{Binding Path=TaskName}"></DataGridTextColumn>
             <DataGridTextColumn Header="{x:Static res:Resources.FqMin}" Binding="{Binding Path=FqMin}"></DataGridTextColumn>
             <DataGridTextColumn Header="{x:Static res:Resources.FqMax}" Binding="{Binding Path=FqMax}"></DataGridTextColumn>
-            <DataGridTextColumn Header="{x:Static res:Resources.DateStart}" Binding="{Binding Path=DateStart}"></DataGridTextColumn>
-            <DataGridTextColumn Header="{x:Static res:Resources.DateStop}" Binding="{Binding Path=DateStop}"></DataGridTextColumn>
-            <DataGridTextColumn Header="{x:Static res:Resources.DateCreated}" Binding="{Binding Path=DateCreated}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.DateStart}" Binding="{Binding Path=DateStart, StringFormat='{}{0:dd.MM.yyyy HH:mm}'}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.DateStop}" Binding="{Binding Path=DateStop, StringFormat='{}{0:dd.MM.yyyy HH:mm}'}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.DateCreated}" Binding="{Binding Path=DateCreated, StringFormat='{}{0:dd.MM.yyyy HH:mm}'}"></DataGridTextColumn>
             <DataGridTextColumn Header="{x:Static res:Resources.CreatedBy}" Binding="{Binding Path=CreatedBy}"></DataGridTextColumn>
             <DataGridTextColumn Header="{x:Static res:Resources.SensorId}" Binding="{Binding Path=SensorIds}"></DataGridTextColumn>
           </DataGrid.Columns>

@@ -13,7 +13,7 @@ using Atdi.Contracts.Sdrn.Infocenter;
 using Atdi.DataModels.DataConstraint;
 using Atdi.DataModels.Sdrn.Infocenter;
 using ES = Atdi.DataModels.Sdrn.Infocenter.Entities;
-using BR = Atdi.DataModels.Brific.Entities;
+//using BR = Atdi.DataModels.Brific.Entities;
 using Atdi.Platform.Logging;
 using Atdi.Platform.Workflows;
 using Newtonsoft.Json;
@@ -28,7 +28,7 @@ namespace Atdi.AppUnits.Sdrn.Infocenter
 		private const int ContentPartSize = 1024 * 64;
 
 		private readonly AppServerComponentConfig _config;
-		private readonly IDataLayer<EntityDataOrm<BR.BrificEntityOrmContext>> _brificDataLayer;
+		//private readonly IDataLayer<EntityDataOrm<BR.BrificEntityOrmContext>> _brificDataLayer;
 		private readonly ILogger _logger;
 		private readonly IDataLayer<EntityDataOrm> _dataLayer;
 
@@ -36,12 +36,12 @@ namespace Atdi.AppUnits.Sdrn.Infocenter
 
 		public MapsAutoImportJob(
 			AppServerComponentConfig config,
-			IDataLayer<EntityDataOrm<BR.BrificEntityOrmContext>> brificDataLayer,
+			//IDataLayer<EntityDataOrm<BR.BrificEntityOrmContext>> brificDataLayer,
 			IDataLayer<EntityDataOrm> dataLayer, 
 			ILogger logger)
 		{
 			_config = config;
-			_brificDataLayer = brificDataLayer;
+			//_brificDataLayer = brificDataLayer;
 			_dataLayer = dataLayer;
 			_logger = logger;
 		}

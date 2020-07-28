@@ -43,8 +43,9 @@ namespace Atdi.WebPortal.WebQuery.Licensing
         Version = 2,
         Assembly = 4,
         Year = 8,
-        Host = 16
-    }
+        Host = 16,
+        HardwareBinding = 32
+	}
 
     [Serializable]
     public class LicenseData2 : LicenseData
@@ -59,4 +60,78 @@ namespace Atdi.WebPortal.WebQuery.Licensing
 
         public string HostData { get; set; }
     }
+
+	[Flags]
+	public enum LicenseHardwareBinding
+	{
+		Cpu = 1,
+		Motherboard = 2,
+		SysDrive = 4,
+		HostName = 8,
+		HostUUID = 16,
+		OperatingSystem = 32,
+		NetworkInterfaces = 64
+	}
+
+	[Serializable]
+	public class LicenseData3 : LicenseData2
+	{
+		public LicenseHardwareBinding HardwareBinding { get; set; }
+
+		public HostHardwareDescriptor HardwareDescriptor { get; set; }
+	}
+
+	[Serializable]
+	public class ExternalServiceDescriptor
+	{
+		public string Id { get; set; }
+
+		public string Name { get; set; }
+	}
+
+	[Serializable]
+	public class LicenseData4 : LicenseData3
+	{
+		public ExternalServiceDescriptor[] ExternalServices { get; set; }
+	}
+
+
+	[Serializable]
+	public class HostHardwareDescriptor
+	{
+		public string Cpu;
+		public string Motherboard;
+		public string SysDrive;
+		public string HostName;
+		public string HostUuid;
+		public string OperatingSystem;
+		public HostNetworkInterface[] NetworkInterfaces;
+
+		public override string ToString()
+		{
+			var info = new StringBuilder();
+			info.AppendLine($"Host Name: {this.HostName}");
+			info.AppendLine($"Host UUID: {this.HostUuid}");
+			info.AppendLine($"OS SerialNumber: {this.OperatingSystem}");
+			info.AppendLine($"CPU SerialNumber: {this.Cpu}");
+			info.AppendLine($"MB SerialNumber: {this.Motherboard}");
+			info.AppendLine($"SysDrive SerialNumber: {this.SysDrive}");
+			info.AppendLine($"Network Interfaces: ");
+			foreach (var ni in NetworkInterfaces)
+			{
+				info.AppendLine($" - {ni.Id}: {ni.Name}, MAC='{ni.Address}', Type='{ni.InterfaceType}'");
+			}
+			return info.ToString();
+		}
+	}
+
+	[Serializable]
+	public struct HostNetworkInterface
+	{
+		public string Id;
+		public string Name;
+		public string Address;
+		public string InterfaceType;
+
+	}
 }

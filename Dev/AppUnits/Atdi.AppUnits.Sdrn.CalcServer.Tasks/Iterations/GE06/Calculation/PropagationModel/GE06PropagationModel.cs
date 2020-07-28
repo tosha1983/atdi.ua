@@ -40,7 +40,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 case CalculationType.ConformityCheck:
                 case CalculationType.FindAffectedADM:
                 default:
-                    propagationModel.MainBlock.ModelType = MainCalcBlockModelType.ITU1546;
+                    propagationModel.MainBlock.ModelType = MainCalcBlockModelType.ITU1546_ge06;
                     propagationModel.AbsorptionBlock.Available = false;
                     propagationModel.AdditionalBlock.Available = false;
                     propagationModel.AtmosphericBlock.Available = false;

@@ -33,6 +33,21 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="gdalconst_csharp">
+      <HintPath>..\..\packages\GDAL.2.4.4\lib\net40\gdalconst_csharp.dll</HintPath>
+    </Reference>
+    <Reference Include="gdal_csharp, Version=1.0.7127.27225, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\GDAL.2.4.4\lib\net40\gdal_csharp.dll</HintPath>
+    </Reference>
+    <Reference Include="ogr_csharp, Version=1.0.7127.27224, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\GDAL.2.4.4\lib\net40\ogr_csharp.dll</HintPath>
+    </Reference>
+    <Reference Include="osr_csharp, Version=1.0.7127.27224, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\GDAL.2.4.4\lib\net40\osr_csharp.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -94,6 +109,10 @@
     <ProjectReference Include="..\..\Contracts\WcfServices\Atdi.Contracts.WcfServices.WebQuery\Atdi.Contracts.WcfServices.WebQuery.csproj">
       <Project>{773a95ce-0a1c-4629-849d-23f65d6c59e4}</Project>
       <Name>Atdi.Contracts.WcfServices.WebQuery</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\CoreServices\Atdi.CoreServices.AuthService.IcsmViisp\Atdi.CoreServices.AuthService.IcsmViisp.csproj">
+      <Project>{20644a88-91e8-4860-8cca-443751211564}</Project>
+      <Name>Atdi.CoreServices.AuthService.IcsmViisp</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\CoreServices\Atdi.CoreServices.DataLayer.Oracle\Atdi.CoreServices.DataLayer.Oracle.csproj">
       <Project>{73f74f27-6f16-4a46-81fc-f959ea6f1ad7}</Project>
@@ -199,6 +218,11 @@
   <ItemGroup>
     <None Include="app.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="HookDll.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy "$(TargetDir)Atdi.*.dll" "..\..\..\..\Delivery\Atdi.WebQuery\AppServer\Bin$(ConfigurationName)"
@@ -214,12 +238,20 @@ copy "$(TargetDir)\System.Net.Http.Formatting.dll" "..\..\..\..\Delivery\Atdi.We
 copy "$(TargetDir)\System.Web.Http.dll" "..\..\..\..\Delivery\Atdi.WebQuery\AppServer\Bin$(ConfigurationName)"
 copy "$(TargetDir)\System.Web.Http.SelfHost.dll" "..\..\..\..\Delivery\Atdi.WebQuery\AppServer\Bin$(ConfigurationName)"
 copy "$(TargetDir)\CalcCoverage\Handlers\XML\CalcCovConfig.xml" "..\..\..\..\Delivery\Atdi.WebQuery\AppServer\Bin$(ConfigurationName)"
+copy "$(TargetDir)\HookDll.dll" "..\..\..\..\Delivery\Atdi.WebQuery\AppServer\Bin$(ConfigurationName)"
+copy "$(TargetDir)gdal_csharp.dll" "..\..\..\..\Delivery\Atdi.WebQuery\AppServer\Bin$(ConfigurationName)"
+copy "$(TargetDir)gdalconst_csharp.dll" "..\..\..\..\Delivery\Atdi.WebQuery\AppServer\Bin$(ConfigurationName)"
+copy "$(TargetDir)ogr_csharp.dll" "..\..\..\..\Delivery\Atdi.WebQuery\AppServer\Bin$(ConfigurationName)"
+copy "$(TargetDir)osr_csharp.dll" "..\..\..\..\Delivery\Atdi.WebQuery\AppServer\Bin$(ConfigurationName)"
+
 
 copy "$(TargetDir)Atdi.DataModels.dll" "..\..\..\..\Delivery\Atdi.WebQuery\WcfClient\Bin$(ConfigurationName)"
 copy "$(TargetDir)Atdi.DataModels.Identity.dll" "..\..\..\..\Delivery\Atdi.WebQuery\WcfClient\Bin$(ConfigurationName)"
 copy "$(TargetDir)Atdi.DataModels.WebQuery.dll" "..\..\..\..\Delivery\Atdi.WebQuery\WcfClient\Bin$(ConfigurationName)"
 copy "$(TargetDir)Atdi.Contracts.WcfServices.Identity.dll" "..\..\..\..\Delivery\Atdi.WebQuery\WcfClient\Bin$(ConfigurationName)"
 copy "$(TargetDir)Atdi.Contracts.WcfServices.WebQuery.dll" "..\..\..\..\Delivery\Atdi.WebQuery\WcfClient\Bin$(ConfigurationName)"
+
+xcopy /Y /I /E "..\..\..\..\packages\GDAL.Native.2.4.4\build\gdal\*.*" "..\..\..\..\Delivery\Atdi.WebQuery\AppServer\Bin$(ConfigurationName)\gdal"
 </PostBuildEvent>
   </PropertyGroup>
 </Project>

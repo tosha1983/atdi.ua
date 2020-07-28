@@ -124,14 +124,20 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.PropagationCalc
             
             if (nuP > -0.78)
             {
-                //float[] profileAP = new float[p];
-                //Array.Copy(profile_m, profileAP, p);
-                NuMaxOut nuT = FindMaxNu(HA_m, Profile_m[nu.nMax], wavelength, dAP, in Profile_m, ProfileStart, nu.nMax, rE);
+                
+                int delta_m = (int)(50 / dN);
+                NuMaxOut nuR = new NuMaxOut { nuMax = -.8f, nMax = nu.nMax };
+                NuMaxOut nuT = new NuMaxOut { nuMax = -.8f, nMax = nu.nMax };
+                if (nu.nMax - delta_m > 1)
+                {
+                    nuT = FindMaxNu(HA_m, Profile_m[nu.nMax - delta_m], wavelength, dAP, in Profile_m, ProfileStart, nu.nMax, rE);
+                }
 
-                //float[] profilePB = new float[profile_m.Length - p];
-                //Array.Copy(profile_m, p, profilePB, profile_m.Length - p - 1, profile_m.Length - p - 2);
-                NuMaxOut nuR = FindMaxNu(Profile_m[nu.nMax], HB_m, wavelength, dPB, in Profile_m, nu.nMax, ProfileEnd, rE);
-                //D = math.sqrt(2 * r_e) * (math.sqrt(h_a) + math.sqrt(h_b));
+                if (ProfileEnd - nu.nMax - delta_m > 1)
+                {
+                    nuR = FindMaxNu(Profile_m[nu.nMax + delta_m], HB_m, wavelength, dPB, in Profile_m, nu.nMax, ProfileEnd, rE);
+                }
+
                 //C = 10.0 + 0.04 * D;
                 float C = 10.0f + 0.04f * D_km;
                 diffractionLoss.loss_dB = (float)(J(nuP) + (1.0 - Math.Exp(- J(nuP) / 6.0f)) * (J(nuT.nuMax) + J(nuR.nuMax) + C));
