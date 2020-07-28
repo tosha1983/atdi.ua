@@ -109,6 +109,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
 
             if (nuP > -0.78)
             {
+                mainHill = false;
                 NuMaxOut nuR = FindMaxNu(profile_m[nu.nMax], hb_m, wavelength, dPB, in profile_m, nu.nMax, profileEndIndex - nu.nMax, rE, mainHill);
                 NuMaxOut nuT = FindMaxNu(ha_m, profile_m[nu.nMax], wavelength, dAP, in profile_m, profileStartIndex, nu.nMax - profileStartIndex, rE, mainHill);
                 
