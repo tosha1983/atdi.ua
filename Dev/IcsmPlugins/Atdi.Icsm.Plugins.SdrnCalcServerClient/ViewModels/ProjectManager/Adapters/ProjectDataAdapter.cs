@@ -25,8 +25,8 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager.Adapt
                 c => c.CreatedDate,
                 c => c.Projection,
                 c => c.StatusName,
-                c => c.OwnerInstance
-            );
+                c => c.OwnerInstance)
+            .OrderByDesc(o => o.Id);
         }
         protected override ProjectModel ReadData(IDataReader<CS_ES.IProject> reader, int index)
         {

@@ -108,6 +108,9 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
             _onOnRunCalcTaskToken = _eventBus.Subscribe<Events.OnRunCalcTask>(this.OnRunCalcTaskHandle);
 
             ReloadProjects();
+            ReloadProjectContext();
+            ReloadClientContext();
+            ReloadCalcTask();
         }
         private void ReloadProjects()
         {
@@ -219,7 +222,8 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
 
         private void OnChangedCurrentProject(ProjectModel project)
         {
-            ReloadProjectContexts();
+            ReloadProjectContext();
+            ReloadClientContext();
             CurrentClientContextCard = new ClientContextModel();
             CurrentCalcTaskCard = new CalcTaskModel();
             ClientContextSaveEnabled = false;
@@ -280,19 +284,31 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
                 CalcTaskShowResultEnabled = false;
             }
         }
-        private void ReloadProjectContexts()
+        private void ReloadProjectContext()
         {
             if (this.CurrentProject != null)
             {
                 this.BaseClientContexts.ProjectId = this.CurrentProject.Id;
                 this.BaseClientContexts.Refresh();
-                ReloadClientContext();
+            }
+            else
+            {
+                this.BaseClientContexts.ProjectId = 0;
+                this.BaseClientContexts.Refresh();
             }
         }
         private void ReloadCalcTask()
         {
-            this.CalcTasks.ContextId = this.CurrentClientContext.Id;
-            this.CalcTasks.Refresh();
+            if (this.CurrentClientContext != null)
+            {
+                this.CalcTasks.ContextId = this.CurrentClientContext.Id;
+                this.CalcTasks.Refresh();
+            }
+            else
+            {
+                this.CalcTasks.ContextId = 0;
+                this.CalcTasks.Refresh();
+            }
             CalcTaskEditEnabled = false;
             CalcTaskDelEnabled = false;
             CalcTaskStartCalcEnabled = false;
@@ -300,8 +316,16 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
         }
         private void ReloadClientContext()
         {
-            this.ClientContexts.ProjectId = this.CurrentProject.Id;
-            this.ClientContexts.Refresh();
+            if (this.CurrentProject != null)
+            {
+                this.ClientContexts.ProjectId = this.CurrentProject.Id;
+                this.ClientContexts.Refresh();
+            }
+            else
+            {
+                this.ClientContexts.ProjectId = 0;
+                this.ClientContexts.Refresh();
+            }
             ClientContextEditEnabled = false;
             ClientContextDelEnabled = false;
         }

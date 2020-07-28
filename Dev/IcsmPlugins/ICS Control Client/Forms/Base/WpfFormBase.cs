@@ -21,6 +21,7 @@ using FM = XICSM.ICSControlClient.Forms;
 using System.Windows.Controls;
 using ADP = XICSM.ICSControlClient.Models.WcfDataApadters;
 using System.Windows.Data;
+using XICSM.ICSControlClient.WpfControls;
 
 namespace XICSM.ICSControlClient.Forms
 {
@@ -200,6 +201,13 @@ namespace XICSM.ICSControlClient.Forms
 
                 System.IO.File.WriteAllLines(sfd.FileName, output, System.Text.Encoding.UTF8);
                 System.Windows.MessageBox.Show("Your file was generated and its ready for use.");
+            }
+        }
+        public void ApplyAllDataGridsFilters()
+        {
+            foreach (var item in _dataGridFilters.Keys)
+            {
+                DataGridApplyFilters(item);
             }
         }
         void DataGridApplyFilters(CTR.DataGrid grid)

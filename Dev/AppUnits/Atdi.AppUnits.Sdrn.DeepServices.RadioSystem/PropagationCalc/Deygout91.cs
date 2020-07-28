@@ -14,30 +14,49 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             public int nMax;
         }
 
-        private static NuMaxOut FindMaxNu(double hA, double hB, double wavelength, double dAB, in short[] profile, int profileStart, int profileLength, double RE)
+        private static NuMaxOut FindMaxNu(double hA, double hB, double wavelength, double dAB, in short[] profile, int profileStart, int profilePointsNumber, double RE, bool mainHillCalc)
         {
             //int __profileArrayLength = (__profileCount - profileStart);
-            double dN = dAB / profileLength;
+            double dN = dAB / profilePointsNumber;
             double dAN = dN;
-            double dNB = dN * (profileLength - 1);
+            double dNB = dN * (profilePointsNumber - 1);
             double inv2rE = 1 / (2 * RE);
             double invDaB = 1 / dAB;
 
-            double hNMax = profile[profileStart] + dAN * dNB * inv2rE - (hA * dNB + hB * dAN) * invDaB;
+            double hNMax = 0;
+            NuMaxOut nuMaxOut;
 
-            
-            NuMaxOut nuMaxOut = new NuMaxOut
+            int secondaryHillCorrection = 1;
+
+            if ( mainHillCalc )
             {
-                nuMax = hNMax * Math.Sqrt(2 * dAB / (wavelength * dAN * dNB)),
-                nMax = profileStart
-            };
-            
-            if (profileLength > 1)
+                hNMax = profile[profileStart] + dAN * dNB * inv2rE - (hA * dNB + hB * dAN) * invDaB;
+
+                nuMaxOut = new NuMaxOut
+                {
+                    nuMax = hNMax * Math.Sqrt(2 * dAB / (wavelength * dAN * dNB)),
+                    nMax = profileStart
+                };
+            }
+            else
             {
-                for (int n = profileStart + 1; n < profileStart + profileLength - 1; n++)
+                secondaryHillCorrection = (int)Math.Ceiling(50 / dN);
+                profileStart += secondaryHillCorrection;
+                
+                nuMaxOut = new NuMaxOut
+                {
+                    nuMax = -0.8,
+                    nMax = profileStart
+                };
+            }
+            
+            
+            if (profilePointsNumber - secondaryHillCorrection - profileStart > 1)
+            {
+                for (int n = profileStart + 1; n < profileStart + profilePointsNumber - secondaryHillCorrection; n++)
                 {
                     dAN = dN * (n - profileStart);
-                    dNB = dN * (profileStart + profileLength - n);
+                    dNB = dN * (profileStart + profilePointsNumber - n);
                     double h = profile[n] + dAN * dNB * inv2rE - (hA * dNB + hB * dAN) * invDaB;
 
                     double nuN = h * Math.Sqrt(2 * dAB / (wavelength * dAN * dNB));
@@ -68,13 +87,16 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
         public static double Calc(double ha_m, double hb_m, double Freq_MHz, double d_km, in short[] profile_m, int profileStartIndex, int profilePointsNumber, double rE_km, double SubDiffractionLoss)
         {
             int profileEndIndex = profileStartIndex + profilePointsNumber - 1;
+            bool mainHill = true;
             double dAB = d_km * 1000;
             double rE = rE_km * 1000;
             double wavelength = 300 / Freq_MHz;
             ha_m += profile_m[profileStartIndex];
             hb_m += profile_m[profileEndIndex];
             NuMaxOut nu;
-            nu = FindMaxNu(ha_m, hb_m, wavelength, dAB, profile_m, profileStartIndex, profilePointsNumber, rE);
+            nu = FindMaxNu(ha_m, hb_m, wavelength, dAB, profile_m, profileStartIndex, profilePointsNumber, rE, mainHill);
+
+            
 
             double nuP = nu.nuMax;
 
@@ -87,20 +109,8 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
 
             if (nuP > -0.78)
             {
-                int delta_m = (int)(50 / dN);
-                NuMaxOut nuR = new NuMaxOut { nuMax = -.8f, nMax = nu.nMax };
-                NuMaxOut nuT = new NuMaxOut { nuMax = -.8f, nMax = nu.nMax };
-                if (nu.nMax - delta_m > 1)
-                {
-                    nuT = FindMaxNu(ha_m, profile_m[nu.nMax - delta_m], wavelength, dAP, in profile_m, profileStartIndex, nu.nMax - profileStartIndex, rE);
-                }
-
-                if (profileEndIndex - nu.nMax - delta_m > 1)
-                {
-                    nuR = FindMaxNu(profile_m[nu.nMax + delta_m], hb_m, wavelength, dPB, in profile_m, nu.nMax, profileEndIndex - nu.nMax, rE);
-                }
-                
-
+                NuMaxOut nuR = FindMaxNu(profile_m[nu.nMax], hb_m, wavelength, dPB, in profile_m, nu.nMax, profileEndIndex - nu.nMax, rE, mainHill);
+                NuMaxOut nuT = FindMaxNu(ha_m, profile_m[nu.nMax], wavelength, dAP, in profile_m, profileStartIndex, nu.nMax - profileStartIndex, rE, mainHill);
                 
                 double C = 10.0f + 0.04 * d_km;
                 diffractionLoss_dB = J(nuP) + (1.0 - Math.Exp(-J(nuP) / 6.0f)) * (J(nuT.nuMax) + J(nuR.nuMax) + C + SubDiffractionLoss);

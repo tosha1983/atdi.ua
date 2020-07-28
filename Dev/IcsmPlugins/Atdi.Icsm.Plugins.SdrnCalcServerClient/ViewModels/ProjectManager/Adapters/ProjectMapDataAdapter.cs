@@ -33,8 +33,9 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager.Adapt
                 c => c.OwnerAxisYStep,
                 c => c.OwnerUpperLeftX,
                 c => c.OwnerUpperLeftY,
-                c => c.CreatedDate
-            ).Filter(f => f.PROJECT.Id, ProjectId);
+                c => c.CreatedDate)
+            .Filter(f => f.PROJECT.Id, ProjectId)
+            .OrderByDesc(o => o.Id);
         }
         protected override ProjectMapModel ReadData(IDataReader<CS_ES.IProjectMap> reader, int index)
         {
