@@ -11,13 +11,11 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 	public struct CalcPoint
     {
         public double X;
-
         public double Y;
-
         public int Count;
-
         public double FSMeas;
-
         public double FSCalc;
+        public double DiffractionLoss_dB;
+        public double Dist_km;
     }
 }
