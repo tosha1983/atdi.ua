@@ -17,6 +17,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
         public float StdDev_dB;
         public float AvErr_dB;
         public string StatusResult;
+        public int CountPoints;
         public ContextStation ClientContextStation;
         public DriveTestsResult DriveTestsResult;
         public CalibrationStatusParameters CalibrationStatusParameters;
