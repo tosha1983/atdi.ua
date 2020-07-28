@@ -1,0 +1,44 @@
+﻿<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Atdi.Test.WpfContols.WinForm"
+             xmlns:atdi="clr-namespace:Atdi.WpfControls.EntityOrm.Controls;assembly=Atdi.Test.WpfContols.DataGrid"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+  <UserControl.Resources>    
+  <!--
+    <Style TargetType="DataGridCell">
+      <Style.Setters>
+          <Setter Property="TextBlock.VerticalAlignment" Value="Center" />
+      </Style.Setters>
+    </Style>
+    -->
+  </UserControl.Resources>
+
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="*"/>
+    </Grid.ColumnDefinitions>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="*"></RowDefinition>
+    </Grid.RowDefinitions>
+
+      <atdi:OrmDataGrid 
+        IsReadOnly="True" 
+        Margin="5" 
+        SelectionUnit="FullRow" 
+        SelectionMode="Extended" 
+        AutoGenerateColumns="True" 
+        IsSynchronizedWithCurrentItem="True" 
+        ItemsSource="{Binding LocalDataAdapter}" SelectedItemsList="{Binding CurrentRow, Mode=TwoWay}" 
+       >
+      
+      </atdi:OrmDataGrid>
+           
+  </Grid>
+
+  
+</UserControl>
+
+

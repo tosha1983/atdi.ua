@@ -5,6 +5,10 @@ VisualStudioVersion = 15.0.28010.2046
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.Test.WpfContols", "Atdi.Test.WpfContols.csproj", "{F39B3B62-B788-4707-B2A4-239862668E7F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.Test.WpfContols.WinForm", "..\Atdi.Test.WpfContols.WinForm\Atdi.Test.WpfContols.WinForm.csproj", "{3548A358-3DD2-42B4-818E-65799814AA09}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.Test.WpfContols.DataGrid", "..\Atdi.Test.WpfContols.DataGrid\Atdi.Test.WpfContols.DataGrid.csproj", "{43F6176C-738C-42E8-83F5-3EA52CA1A2BB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{F39B3B62-B788-4707-B2A4-239862668E7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F39B3B62-B788-4707-B2A4-239862668E7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F39B3B62-B788-4707-B2A4-239862668E7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3548A358-3DD2-42B4-818E-65799814AA09}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3548A358-3DD2-42B4-818E-65799814AA09}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3548A358-3DD2-42B4-818E-65799814AA09}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3548A358-3DD2-42B4-818E-65799814AA09}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43F6176C-738C-42E8-83F5-3EA52CA1A2BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43F6176C-738C-42E8-83F5-3EA52CA1A2BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43F6176C-738C-42E8-83F5-3EA52CA1A2BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43F6176C-738C-42E8-83F5-3EA52CA1A2BB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

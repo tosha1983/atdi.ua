@@ -6,9 +6,18 @@
         xmlns:local="clr-namespace:Atdi.Test.WpfContols"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
+
+    <Window.Resources>
+        <Style TargetType="DataGridRowsPresenter">
+            <Style.Setters>
+                <Setter Property="TextBlock.VerticalAlignment" Value="Center" />
+            </Style.Setters>
+        </Style>
+    </Window.Resources>
+
     <Grid>
 
-        <local:OrmDataGrid x:Name="gridMain" AutoGenerateColumns="True" VerticalGridLinesBrush="DarkGray" HorizontalGridLinesBrush="DarkGray" RowHeight="30" HeadersVisibility="Column" Margin="10,10,10,10">
+        <local:OrmDataGrid x:Name="gridMain" RowHeight="80" AutoGenerateColumns="True" VerticalGridLinesBrush="LightGray" HorizontalGridLinesBrush="LightGray"  Margin="10,10,10,10">
             <DataGrid.RowDetailsTemplate>
                 <DataTemplate>
                     <Border Margin="10" Padding="10" BorderBrush="SteelBlue"
@@ -19,6 +28,7 @@
                     </Border>
                 </DataTemplate>
             </DataGrid.RowDetailsTemplate>
+            
         </local:OrmDataGrid>
     </Grid>
 </Window>
