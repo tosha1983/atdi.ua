@@ -19,7 +19,7 @@ using Atdi.Contracts.Sdrn.DeepServices.EarthGeometry;
 
 namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 {
-    public class FieldStrengthCalcIteration : IIterationHandler<FieldStrengthCalcData, FieldStrengthCalcResult>
+    public class FieldStrengthCalcIterationRxPattern : IIterationHandler<FieldStrengthCalcData, FieldStrengthCalcResult>
     {
         private readonly ISignalService _signalService;
         private readonly IMapService _mapService;
@@ -162,7 +162,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
         #endregion
 
-        public FieldStrengthCalcIteration(
+        public FieldStrengthCalcIterationRxPattern(
             ISignalService signalService,
             IEarthGeometricService earthGeometricService,
             IMapService mapService,
@@ -323,23 +323,38 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
                 var lossResult = new CalcLossResult();
                 _signalService.CalcLoss(in lossArgs, ref lossResult);
-                var AzimutToTarget = this._earthGeometricService.GetAzimut(in pointSourceArgs, in pointTargetArgs);
-                var antennaGainArgs = new CalcAntennaGainArgs
+                var azimutToTargetRx = this._earthGeometricService.GetAzimut(in pointSourceArgs, in pointTargetArgs);
+                var txAntennaGainArgs = new CalcAntennaGainArgs
                 {
                     Antenna = data.Antenna,
-                    AzimutToTarget_deg = AzimutToTarget,
+                    AzimutToTarget_deg = azimutToTargetRx,
                     TiltToTarget_deg = lossResult.TiltaD_Deg,
                     PolarizationEquipment = data.Transmitter.Polarization,
                     PolarizationWave = data.Transmitter.Polarization
                 };
-                var antennaGainD = _signalService.CalcAntennaGain(in antennaGainArgs);
-                double Level_dBm = data.Transmitter.MaxPower_dBm - data.Transmitter.Loss_dB + antennaGainD - lossResult.LossD_dB;
-                double antennaPatternLoss_dB = antennaGainD - antennaGainArgs.Antenna.Gain_dB;
+                var txAntennaGainD = _signalService.CalcAntennaGain(in txAntennaGainArgs);
+                //double Level_dBm = data.Transmitter.MaxPower_dBm - data.Transmitter.Loss_dB + txAntennaGainD - lossResult.LossD_dB;
+                double txAntennaPatternLoss_dB = txAntennaGainD - txAntennaGainArgs.Antenna.Gain_dB;
+
+                //// Rx ant gain
+                var azimutToTargetTx = this._earthGeometricService.GetAzimut(in pointTargetArgs, in pointSourceArgs);
+                var rxAntennaGainArgs = new CalcAntennaGainArgs
+                {
+                    Antenna = data.Antenna,
+                    AzimutToTarget_deg = azimutToTargetTx,
+                    TiltToTarget_deg = lossResult.TiltaD_Deg,
+                    PolarizationEquipment = data.Transmitter.Polarization,
+                    PolarizationWave = data.Transmitter.Polarization
+                };
+                var rxAntennaGainD = _signalService.CalcAntennaGain(in rxAntennaGainArgs);
+                double Level_dBm = data.Transmitter.MaxPower_dBm - data.Transmitter.Loss_dB + txAntennaGainD - lossResult.LossD_dB + rxAntennaGainD;
+                double rxAntennaPatternLoss_dB = txAntennaGainD - rxAntennaGainArgs.Antenna.Gain_dB;
+                //// 
                 if (data.PropagationModel.AbsorptionBlock.Available)
                 {// нужен учет дополнительного пути распространения
-                    double Loss1 = lossResult.LossD_dB - antennaGainD;
-                    antennaGainArgs.TiltToTarget_deg = lossResult.TiltaA_Deg;
-                    var antennaGainA = _signalService.CalcAntennaGain(in antennaGainArgs);
+                    double Loss1 = lossResult.LossD_dB - txAntennaGainD;
+                    txAntennaGainArgs.TiltToTarget_deg = lossResult.TiltaA_Deg;
+                    var antennaGainA = _signalService.CalcAntennaGain(in txAntennaGainArgs);
 
                     double Loss2 = lossResult.LossA_dB - antennaGainA;
                     double LossSum = Loss1;
@@ -347,7 +362,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     if (Loss1 > Loss2)
                     {
                         LossSum = Loss2;
-                        antennaPatternLoss_dB = antennaGainA - antennaGainArgs.Antenna.Gain_dB;
+                        txAntennaPatternLoss_dB = antennaGainA - txAntennaGainArgs.Antenna.Gain_dB;
                     }
                     //double LossSum = Math.Min(Loss1, Loss2);
                     //LossSum = LossSum - 10 * Math.Log10(Math.Pow(10, -0.1 * (Loss1 - LossSum)) + Math.Pow(10, -0.1 * (Loss2 - LossSum)));
@@ -358,8 +373,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 {
                     FS_dBuVm = FS_dBuVm,
                     Level_dBm = Level_dBm,
-                    AntennaPatternLoss_dB = -antennaPatternLoss_dB,
-                    diffractionLoss_dB = lossResult.DiffractionLoss_dB 
+                    AntennaPatternLoss_dB = - txAntennaPatternLoss_dB
                 };
             }
             catch (Exception)
