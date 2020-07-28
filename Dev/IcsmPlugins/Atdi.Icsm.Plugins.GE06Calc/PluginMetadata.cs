@@ -23,7 +23,7 @@ namespace Atdi.Icsm.Plugins.GE06Calc
     {
         public static readonly string Title = "ICS GE06Calc";
         public static readonly string Ident = "GE06Calc";
-        public static readonly double SchemaVersion = 20200721.1600;
+        public static readonly double SchemaVersion = 20200728.1630;
 
         public class Processes
         {

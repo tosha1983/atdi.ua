@@ -95,82 +95,86 @@
           <RowDefinition Height="Auto"></RowDefinition>
           <RowDefinition Height="*" MinHeight="100"></RowDefinition>
         </Grid.RowDefinitions>
-        <Grid>
-          <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="350"/>
-          </Grid.ColumnDefinitions>
-          <Grid.RowDefinitions>
-            <RowDefinition Height="*"></RowDefinition>
-          </Grid.RowDefinitions>
-          <orm:OrmDataGrid IsReadOnly="True" Margin="5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding ClientContexts}" SelectedItem="{Binding CurrentClientContext}">
-            <DataGrid.Columns>
-              <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=Id}"></DataGridTextColumn>
-              <DataGridTextColumn Header="{x:Static res:Resources.Name}" Binding="{Binding Path=Name}"></DataGridTextColumn>
-              <DataGridTextColumn Header="{x:Static res:Resources.Note}" Binding="{Binding Path=Note}"></DataGridTextColumn>
-              <DataGridTextColumn Header="{x:Static res:Resources.OwnerInstance}" Binding="{Binding Path=OwnerInstance}"></DataGridTextColumn>
-              <DataGridTextColumn Header="{x:Static res:Resources.CreatedDate}" Binding="{Binding Path=CreatedDate, StringFormat='{}{0:dd.MM.yyyy HH:mm}'}"></DataGridTextColumn>
-              <DataGridTextColumn Header="{x:Static res:Resources.TypeName}" Binding="{Binding Path=TypeName}"></DataGridTextColumn>
-              <DataGridTextColumn Header="{x:Static res:Resources.StatusName}" Binding="{Binding Path=StatusName}"></DataGridTextColumn>
-              <DataGridTextColumn Header="{x:Static res:Resources.StatusNote}" Binding="{Binding Path=StatusNote}"></DataGridTextColumn>
-            </DataGrid.Columns>
-            <DataGrid.CellStyle>
-              <Style TargetType="{x:Type DataGridCell}">
-                <Style.Triggers>
-                  <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="Background" Value="#FF0078D7" />
-                  </Trigger>
-                </Style.Triggers>
-              </Style>
-            </DataGrid.CellStyle>
-          </orm:OrmDataGrid>
-          <WrapPanel Grid.Column="1" Orientation="Vertical">
-            <WrapPanel>
-              <orm:OrmButton Content="{x:Static res:Resources.CreateNew}" Width="70" Height="20" Command="{Binding ContextAddCommand}" IsEnabled="{Binding Path=ClientContextAddEnabled, Mode=TwoWay}"/>
-              <orm:OrmButton Content="{x:Static res:Resources.Modify}" Width="70" Height="20" Command="{Binding ContextModifyCommand}" IsEnabled="{Binding Path=ClientContextEditEnabled, Mode=TwoWay}"/>
-              <orm:OrmButton Content="{x:Static res:Resources.Delete}" Width="70" Height="20" Command="{Binding ContextDeleteCommand}" IsEnabled="{Binding Path=ClientContextDelEnabled, Mode=TwoWay}"/>
-              <orm:OrmButton Content="{x:Static res:Resources.Save}" Width="70" Height="20" Command="{Binding ContextSaveCommand}" IsEnabled="{Binding Path=ClientContextSaveEnabled, Mode=TwoWay}"/>
+        <GroupBox Header="{x:Static res:Resources.Results}" Margin="5">
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*"/>
+              <ColumnDefinition Width="350"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <orm:OrmDataGrid IsReadOnly="True" Margin="5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding ClientContexts}" SelectedItem="{Binding CurrentClientContext}">
+              <DataGrid.Columns>
+                <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=Id}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.Name}" Binding="{Binding Path=Name}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.Note}" Binding="{Binding Path=Note}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.OwnerInstance}" Binding="{Binding Path=OwnerInstance}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.CreatedDate}" Binding="{Binding Path=CreatedDate, StringFormat='{}{0:dd.MM.yyyy HH:mm}'}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.TypeName}" Binding="{Binding Path=TypeName}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.StatusName}" Binding="{Binding Path=StatusName}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.StatusNote}" Binding="{Binding Path=StatusNote}"></DataGridTextColumn>
+              </DataGrid.Columns>
+              <DataGrid.CellStyle>
+                <Style TargetType="{x:Type DataGridCell}">
+                  <Style.Triggers>
+                    <Trigger Property="IsSelected" Value="True">
+                      <Setter Property="Background" Value="#FF0078D7" />
+                    </Trigger>
+                  </Style.Triggers>
+                </Style>
+              </DataGrid.CellStyle>
+            </orm:OrmDataGrid>
+            <WrapPanel Grid.Column="1" Orientation="Vertical">
+              <WrapPanel>
+                <orm:OrmButton Content="{x:Static res:Resources.CreateNew}" Width="70" Height="20" Command="{Binding ContextAddCommand}" IsEnabled="{Binding Path=ClientContextAddEnabled, Mode=TwoWay}"/>
+                <orm:OrmButton Content="{x:Static res:Resources.Modify}" Width="70" Height="20" Command="{Binding ContextModifyCommand}" IsEnabled="{Binding Path=ClientContextEditEnabled, Mode=TwoWay}"/>
+                <orm:OrmButton Content="{x:Static res:Resources.Delete}" Width="70" Height="20" Command="{Binding ContextDeleteCommand}" IsEnabled="{Binding Path=ClientContextDelEnabled, Mode=TwoWay}"/>
+                <orm:OrmButton Content="{x:Static res:Resources.Save}" Width="70" Height="20" Command="{Binding ContextSaveCommand}" IsEnabled="{Binding Path=ClientContextSaveEnabled, Mode=TwoWay}"/>
+              </WrapPanel>
+              <orm:OrmTextBox CaptionWith="100" Width="300" Caption="{x:Static res:Resources.BaseContext}" Text ="{Binding Path=CurrentClientContextCard.BaseContextName, Mode=TwoWay}" Enabled="False"/>
+              <orm:OrmTextBox CaptionWith="100" Width="300" Caption="{x:Static res:Resources.Name}" Text ="{Binding Path=CurrentClientContextCard.Name, Mode=TwoWay}" Enabled="{Binding Path=ClientContextSaveEnabled, Mode=TwoWay}"/>
+              <orm:OrmTextBox CaptionWith="100" Width="300" Caption="{x:Static res:Resources.Note}" Text ="{Binding Path=CurrentClientContextCard.Note, Mode=TwoWay}" Enabled="{Binding Path=ClientContextSaveEnabled, Mode=TwoWay}"/>
             </WrapPanel>
-            <orm:OrmTextBox CaptionWith="100" Width="300" Caption="{x:Static res:Resources.BaseContext}" Text ="{Binding Path=CurrentClientContextCard.BaseContextName, Mode=TwoWay}" Enabled="False"/>
-            <orm:OrmTextBox CaptionWith="100" Width="300" Caption="{x:Static res:Resources.Name}" Text ="{Binding Path=CurrentClientContextCard.Name, Mode=TwoWay}" Enabled="{Binding Path=ClientContextSaveEnabled, Mode=TwoWay}"/>
-            <orm:OrmTextBox CaptionWith="100" Width="300" Caption="{x:Static res:Resources.Note}" Text ="{Binding Path=CurrentClientContextCard.Note, Mode=TwoWay}" Enabled="{Binding Path=ClientContextSaveEnabled, Mode=TwoWay}"/>
-          </WrapPanel>
-        </Grid>
+          </Grid>     
+        </GroupBox>
         <orm:OrmGridSplitter Grid.Row="1" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center"></orm:OrmGridSplitter>
-        <Grid Grid.Row="2">
-          <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="350"/>
-          </Grid.ColumnDefinitions>
-          <Grid.RowDefinitions>
-            <RowDefinition Height="*"></RowDefinition>
-          </Grid.RowDefinitions>
-          <orm:OrmDataGrid IsReadOnly="True" Margin="5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding CalcTasks}" SelectedItem="{Binding CurrentCalcTask}">
-            <DataGrid.Columns>
-              <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=Id}"></DataGridTextColumn>
-              <DataGridTextColumn Header="{x:Static res:Resources.TypeName}" Binding="{Binding Path=TypeName}"></DataGridTextColumn>
-              <DataGridTextColumn Header="{x:Static res:Resources.StatusName}" Binding="{Binding Path=StatusName}"></DataGridTextColumn>
-              <DataGridTextColumn Header="{x:Static res:Resources.StatusNote}" Binding="{Binding Path=StatusNote}"></DataGridTextColumn>
-              <DataGridTextColumn Header="{x:Static res:Resources.CreatedDate}" Binding="{Binding Path=CreatedDate, StringFormat='{}{0:dd.MM.yyyy HH:mm}'}"></DataGridTextColumn>
-              <DataGridTextColumn Header="{x:Static res:Resources.MapName}" Binding="{Binding Path=MapName}"></DataGridTextColumn>
-              <DataGridTextColumn Header="{x:Static res:Resources.OwnerInstance}" Binding="{Binding Path=OwnerInstance}"></DataGridTextColumn>
-            </DataGrid.Columns>
-          </orm:OrmDataGrid>
-          <WrapPanel Grid.Column="1" Orientation="Vertical">
-            <WrapPanel>
-              <orm:OrmButton Content="{x:Static res:Resources.CreateNew}" Width="70" Height="20" Command="{Binding TaskAddCommand}" IsEnabled="{Binding Path=CalcTaskAddEnabled, Mode=TwoWay}"/>
-              <orm:OrmButton Content="{x:Static res:Resources.Modify}" Width="70" Height="20" Command="{Binding TaskModifyCommand}" IsEnabled="{Binding Path=CalcTaskEditEnabled, Mode=TwoWay}"/>
-              <orm:OrmButton Content="{x:Static res:Resources.Delete}" Width="70" Height="20" Command="{Binding TaskDeleteCommand}" IsEnabled="{Binding Path=CalcTaskDelEnabled, Mode=TwoWay}"/>
-              <orm:OrmButton Content="{x:Static res:Resources.Save}" Width="70" Height="20" Command="{Binding TaskSaveCommand}" IsEnabled="{Binding Path=CalcTaskSaveEnabled, Mode=TwoWay}"/>
+        <GroupBox Grid.Row="2" Header="{x:Static res:Resources.ClientContexts}" Margin="5">
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*"/>
+              <ColumnDefinition Width="350"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <orm:OrmDataGrid IsReadOnly="True" Margin="5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding CalcTasks}" SelectedItem="{Binding CurrentCalcTask}">
+              <DataGrid.Columns>
+                <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=Id}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.TypeName}" Binding="{Binding Path=TypeName}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.StatusName}" Binding="{Binding Path=StatusName}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.StatusNote}" Binding="{Binding Path=StatusNote}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.CreatedDate}" Binding="{Binding Path=CreatedDate, StringFormat='{}{0:dd.MM.yyyy HH:mm}'}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.MapName}" Binding="{Binding Path=MapName}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.OwnerInstance}" Binding="{Binding Path=OwnerInstance}"></DataGridTextColumn>
+              </DataGrid.Columns>
+            </orm:OrmDataGrid>
+            <WrapPanel Grid.Column="1" Orientation="Vertical">
+              <WrapPanel>
+                <orm:OrmButton Content="{x:Static res:Resources.CreateNew}" Width="70" Height="20" Command="{Binding TaskAddCommand}" IsEnabled="{Binding Path=CalcTaskAddEnabled, Mode=TwoWay}"/>
+                <orm:OrmButton Content="{x:Static res:Resources.Modify}" Width="70" Height="20" Command="{Binding TaskModifyCommand}" IsEnabled="{Binding Path=CalcTaskEditEnabled, Mode=TwoWay}"/>
+                <orm:OrmButton Content="{x:Static res:Resources.Delete}" Width="70" Height="20" Command="{Binding TaskDeleteCommand}" IsEnabled="{Binding Path=CalcTaskDelEnabled, Mode=TwoWay}"/>
+                <orm:OrmButton Content="{x:Static res:Resources.Save}" Width="70" Height="20" Command="{Binding TaskSaveCommand}" IsEnabled="{Binding Path=CalcTaskSaveEnabled, Mode=TwoWay}"/>
+              </WrapPanel>
+              <orm:OrmTextBox CaptionWith="100" Width="300" Caption="{x:Static res:Resources.Context}" Text ="{Binding Path=CurrentCalcTaskCard.ContextName, Mode=TwoWay}" Enabled="False"/>
+              <orm:OrmTextBox CaptionWith="100" Width="300" Caption="{x:Static res:Resources.MapName}" Text ="{Binding Path=CurrentCalcTaskCard.MapName, Mode=TwoWay}" Enabled="{Binding Path=CalcTaskSaveEnabled, Mode=TwoWay}"/>
+              <WrapPanel>
+                <orm:OrmButton Content="{x:Static res:Resources.StartCalc}" Width="70" Height="20" Command="{Binding TaskStartCalcCommand}" IsEnabled="{Binding Path=CalcTaskStartCalcEnabled, Mode=TwoWay}"/>
+                <orm:OrmButton Content="{x:Static res:Resources.ShowResult}" Width="70" Height="20" Command="{Binding TaskShowResultCommand}" IsEnabled="{Binding Path=CalcTaskShowResultEnabled, Mode=TwoWay}"/>
+              </WrapPanel>
             </WrapPanel>
-            <orm:OrmTextBox CaptionWith="100" Width="300" Caption="{x:Static res:Resources.Context}" Text ="{Binding Path=CurrentCalcTaskCard.ContextName, Mode=TwoWay}" Enabled="False"/>
-            <orm:OrmTextBox CaptionWith="100" Width="300" Caption="{x:Static res:Resources.MapName}" Text ="{Binding Path=CurrentCalcTaskCard.MapName, Mode=TwoWay}" Enabled="{Binding Path=CalcTaskSaveEnabled, Mode=TwoWay}"/>
-            <WrapPanel>
-              <orm:OrmButton Content="{x:Static res:Resources.StartCalc}" Width="70" Height="20" Command="{Binding TaskStartCalcCommand}" IsEnabled="{Binding Path=CalcTaskStartCalcEnabled, Mode=TwoWay}"/>
-              <orm:OrmButton Content="{x:Static res:Resources.ShowResult}" Width="70" Height="20" Command="{Binding TaskShowResultCommand}" IsEnabled="{Binding Path=CalcTaskShowResultEnabled, Mode=TwoWay}"/>
-            </WrapPanel>
-          </WrapPanel>         
-        </Grid>   
+          </Grid>
+        </GroupBox>
       </Grid>
     </Grid>
   </DockPanel>

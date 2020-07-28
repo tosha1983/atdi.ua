@@ -75,7 +75,6 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 double lonStep_dec = data.FieldStrengthCalcData.MapArea.AxisX.Step;//_transformation.ConvertCoordinateToWgs84(data.FieldStrengthCalcData.MapArea.LowerLeft.X, data.CodeProjection);
                 double latStep_dec = data.FieldStrengthCalcData.MapArea.AxisY.Step;
 
-
                 // 
 
                 // 0 - приведение координат к центру условного "пикселя" карты, 
@@ -121,17 +120,16 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                 && (Utils.IsInsideMap(data.FieldStrengthCalcData.PointCoordinate.X, data.FieldStrengthCalcData.PointCoordinate.Y, lowerLeftCoord_m.X, lowerLeftCoord_m.Y, upperRightCoord_m.X, upperRightCoord_m.Y)))
                             {
                                 var faCalculationResult = iterationFieldStrengthCalcData.Run(taskContext, data.FieldStrengthCalcData);
-
+                                // исключаем точки с плохими патернами патерн уже и так виден без окрестности
                                 if (faCalculationResult.AntennaPatternLoss_dB <= data.CorellationParameters.MaxAntennasPatternLoss_dB)
                                 {
                                     // выполняется для первой итерации и в случае если по координатам не было измерений
                                     calcPointArrayBuffer[counter].Count = 1;
                                     calcPointArrayBuffer[counter].X = newTargertCoordX;
                                     calcPointArrayBuffer[counter].Y = newTargertCoordY;
-
                                     calcPointArrayBuffer[counter].FSCalc = faCalculationResult.FS_dBuVm.Value;// iterationFieldStrengthCalcData.Run(taskContext, data.FieldStrengthCalcData).FS_dBuVm.Value;
+                                    calcPointArrayBuffer[counter].DiffractionLoss_dB = faCalculationResult.diffractionLoss_dB.Value;
                                     calcPointArrayBuffer[counter].FSMeas = data.GSIDGroupeDriveTests.Points[i].FieldStrength_dBmkVm;
-
                                     counter++;
                                 }
                                 else
@@ -147,11 +145,9 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         }
                     }
                 }
-
-
-                
                 if (counter > 0)
                 {
+                   
                     // 2 - расчёт напряжённости в окрестности точки
                     for (int i = 0; i < counter; i++)
                     {
@@ -164,6 +160,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
                             double measCalcFSdifference = (calcPointArrayBuffer[i].FSMeas - calcPointArrayBuffer[i].FSCalc);
                             double minMeasCalcFSdifference = measCalcFSdifference;
+                            double CurrentDiff = calcPointArrayBuffer[i].DiffractionLoss_dB;
 
                             for (int lonPointAround = lonAroundStart; lonPointAround < lonAroundStop; lonPointAround += data.FieldStrengthCalcData.MapArea.AxisX.Step)
                             {
@@ -174,11 +171,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                     {
                                         data.FieldStrengthCalcData.TargetCoordinate.X = lonPointAround;
                                         data.FieldStrengthCalcData.TargetCoordinate.Y = latPointAround;
-                                        double FSaroundDif = (calcPointArrayBuffer[i].FSMeas - iterationFieldStrengthCalcData.Run(taskContext, data.FieldStrengthCalcData).FS_dBuVm.Value);
-
+                                        var ResultCalcFS = iterationFieldStrengthCalcData.Run(taskContext, data.FieldStrengthCalcData);
+                                        double FSaroundDif = (calcPointArrayBuffer[i].FSMeas - ResultCalcFS.FS_dBuVm.Value);
                                         if (Math.Abs(FSaroundDif) < Math.Abs(minMeasCalcFSdifference))
                                         {
                                             minMeasCalcFSdifference = FSaroundDif;
+                                            CurrentDiff = ResultCalcFS.diffractionLoss_dB.Value;
                                         }
                                     }
                                     else
@@ -190,8 +188,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             }
                             // если находится точка с расчётной напряжённостью ближе к измеренной - запоминается это значение
                             calcPointArrayBuffer[i].FSCalc = calcPointArrayBuffer[i].FSMeas - minMeasCalcFSdifference;
-
-
+                            calcPointArrayBuffer[i].DiffractionLoss_dB = CurrentDiff;
                         }
                     }
 
@@ -206,68 +203,110 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     double diffCalcMeas = 0;
                     double sumDiffCalcMeas = 0;
                     double sumDiffCalcMeas2 = 0;
-
                     double meanCalcFS = 0;
                     double meanMeasFS = 0;
+                    int pointCount = 0;
 
+                    // настраиваемые константы при рефакторинге прошу вынести в конфиг
+                    double LimithDistance_km = 7;
+                    double LimithLossDifraction_dB = 75;
+                    double DeltaLossUnrderLimith_dB = 12;
+                    int MinPointForThecnikCorrelation = 3;
+                    double PercentPointIntoDistance = 50;
+                    if (data.GSIDGroupeDriveTests.Freq_MHz > 1000) { LimithDistance_km = 4;}
+                    if (data.GSIDGroupeDriveTests.Freq_MHz > 2000) { LimithDistance_km = 2;}
+                    if (data.GSIDGroupeDriveTests.Freq_MHz > 2500) { LimithDistance_km = 1;}
+                    int countPointDistOut = 0;
 
                     for (int i = 0; i < counter; i++)
                     {
+                        // условие при котором мы обязаны учесть данную точку
+                        var pointSourceArgs = new PointEarthGeometric() { Longitude = calcPointArrayBuffer[i].X, Latitude = calcPointArrayBuffer[i].Y, CoordinateUnits = CoordinateUnits.m };
+                        var pointTargetArgs = new PointEarthGeometric() { Longitude = data.GSIDGroupeStation.Coordinate.X, Latitude = data.GSIDGroupeStation.Coordinate.Y, CoordinateUnits = CoordinateUnits.m };
+                        var Dist_km = this._earthGeometricService.GetDistance_km(in pointSourceArgs, in pointTargetArgs);
+                        calcPointArrayBuffer[i].Dist_km = Dist_km;
                         diffCalcMeas = Math.Abs(calcPointArrayBuffer[i].FSMeas - calcPointArrayBuffer[i].FSCalc);
-                        if (diffCalcMeas <= data.CorellationParameters.Delta_dB)
+
+                        bool hit = (diffCalcMeas < DeltaLossUnrderLimith_dB) || ((Dist_km <= LimithDistance_km) && (calcPointArrayBuffer[i].DiffractionLoss_dB < LimithLossDifraction_dB));
+                        if (hit)
                         {
-                            diffLessThanDeltaCount += 1;
+                            pointCount++;
+                            if (diffCalcMeas <= data.CorellationParameters.Delta_dB)
+                            {
+                                diffLessThanDeltaCount += 1;
+                            }
+                            sumDiffCalcMeas += diffCalcMeas;
+                            sumDiffCalcMeas2 += diffCalcMeas * diffCalcMeas;
+                            //pierson
+                            meanMeasFS += calcPointArrayBuffer[i].FSMeas;
+                            meanCalcFS += calcPointArrayBuffer[i].FSCalc;
+
+                            //- CorreIPoints[](Lon_DEC, Lat_DEC, FSMeas_dBmkVm, FSCalc_dBmkVm, Dist_km) выдаётся только если Detail = true(нам для отладки не плохо было бы это хоть как визуализировать на карте)
+                            if (data.CorellationParameters.Detail)
+                            {
+
+                                calcCorellationResult.CorrellationPoints[i].Dist_km = Dist_km;
+                                calcCorellationResult.CorrellationPoints[i].FSCalc_dBmkVm = calcPointArrayBuffer[i].FSCalc;
+                                calcCorellationResult.CorrellationPoints[i].FSMeas_dBmkVm = calcPointArrayBuffer[i].FSMeas;
+
+                                var coordinateTransform = _transformation.ConvertCoordinateToWgs84(new EpsgCoordinate() { X = calcPointArrayBuffer[i].X, Y = calcPointArrayBuffer[i].Y }, _transformation.ConvertProjectionToCode(data.CodeProjection));
+                                calcCorellationResult.CorrellationPoints[i].Lon_DEC = coordinateTransform.Longitude;
+                                calcCorellationResult.CorrellationPoints[i].Lat_DEC = coordinateTransform.Latitude;
+                                //var coord = _transformation.ConvertCoordinateToWgs84(data.FieldStrengthCalcData.MapArea.LowerLeft.X, data.CodeProjection)
+                            }
                         }
-                        sumDiffCalcMeas += diffCalcMeas;
-                        sumDiffCalcMeas2 += diffCalcMeas * diffCalcMeas;
-                        //pierson
-                        meanMeasFS += calcPointArrayBuffer[i].FSMeas;
-                        meanCalcFS += calcPointArrayBuffer[i].FSCalc;
-
-                        //- CorreIPoints[](Lon_DEC, Lat_DEC, FSMeas_dBmkVm, FSCalc_dBmkVm, Dist_km) выдаётся только если Detail = true(нам для отладки не плохо было бы это хоть как визуализировать на карте)
-                        if (data.CorellationParameters.Detail)
+                        else
                         {
-                            var pointSourceArgs = new PointEarthGeometric() { Longitude = calcPointArrayBuffer[i].X, Latitude = calcPointArrayBuffer[i].Y };
-                            var pointTargetArgs = new PointEarthGeometric() { Longitude = data.GSIDGroupeStation.Site.Longitude, Latitude = data.GSIDGroupeStation.Site.Latitude };
-
-                            calcCorellationResult.CorrellationPoints[i].Dist_km = this._earthGeometricService.GetDistance_km(in pointSourceArgs, in pointTargetArgs); 
-                            calcCorellationResult.CorrellationPoints[i].FSCalc_dBmkVm = calcPointArrayBuffer[i].FSCalc;
-                            calcCorellationResult.CorrellationPoints[i].FSMeas_dBmkVm = calcPointArrayBuffer[i].FSMeas;
-
-                            var coordinateTransform = _transformation.ConvertCoordinateToWgs84(new EpsgCoordinate() { X = calcPointArrayBuffer[i].X, Y = calcPointArrayBuffer[i].Y }, _transformation.ConvertProjectionToCode(data.CodeProjection));
-                            calcCorellationResult.CorrellationPoints[i].Lon_DEC = coordinateTransform.Longitude;
-                            calcCorellationResult.CorrellationPoints[i].Lat_DEC = coordinateTransform.Latitude;
-                            //var coord = _transformation.ConvertCoordinateToWgs84(data.FieldStrengthCalcData.MapArea.LowerLeft.X, data.CodeProjection)
+                            if (Dist_km >= LimithDistance_km) { countPointDistOut++;}
                         }
                     }
 
-
-
-                    meanMeasFS /= counter;
-                    meanCalcFS /= counter;
-                    double a1 = 0; double a2 = 0; double a3 = 0;
-                    for (int i = 0; i < counter; i++)
+                    if ((pointCount >= MinPointForThecnikCorrelation)&&(countPointDistOut/counter< PercentPointIntoDistance/100.0))
                     {
-                        //a1 = a1 + ((ConvertdBuVmTouV(calcPointArrayBuffer[i].FSMeas) - meanMeasFS) * (ConvertdBuVmTouV(calcPointArrayBuffer[i].FSCalc) - meanCalcFS));
-                        //a2 = a2 + ((ConvertdBuVmTouV(calcPointArrayBuffer[i].FSMeas) - meanMeasFS) * (ConvertdBuVmTouV(calcPointArrayBuffer[i].FSMeas) - meanMeasFS));
-                        //a3 = a3 + ((ConvertdBuVmTouV(calcPointArrayBuffer[i].FSCalc) - meanCalcFS) * (ConvertdBuVmTouV(calcPointArrayBuffer[i].FSCalc) - meanCalcFS));
-                        a1 = a1 + ((calcPointArrayBuffer[i].FSMeas - meanMeasFS) * (calcPointArrayBuffer[i].FSCalc - meanCalcFS));
-                        a2 = a2 + ((calcPointArrayBuffer[i].FSMeas - meanMeasFS) * (calcPointArrayBuffer[i].FSMeas - meanMeasFS));
-                        a3 = a3 + ((calcPointArrayBuffer[i].FSCalc - meanCalcFS) * (calcPointArrayBuffer[i].FSCalc - meanCalcFS));
+                        meanMeasFS /= pointCount;
+                        meanCalcFS /= pointCount;
+                        double a1 = 0; double a2 = 0; double a3 = 0;
+                        for (int i = 0; i < counter; i++)
+                        {
+                            var Dist_km = calcPointArrayBuffer[i].Dist_km;
+                            diffCalcMeas = Math.Abs(calcPointArrayBuffer[i].FSMeas - calcPointArrayBuffer[i].FSCalc);
+                            bool hit = (diffCalcMeas < DeltaLossUnrderLimith_dB) || ((Dist_km <= LimithDistance_km) && (calcPointArrayBuffer[i].DiffractionLoss_dB < LimithLossDifraction_dB));
+                            if (hit)
+                            {
+                                a1 = a1 + ((calcPointArrayBuffer[i].FSMeas - meanMeasFS) * (calcPointArrayBuffer[i].FSCalc - meanCalcFS));
+                                a2 = a2 + ((calcPointArrayBuffer[i].FSMeas - meanMeasFS) * (calcPointArrayBuffer[i].FSMeas - meanMeasFS));
+                                a3 = a3 + ((calcPointArrayBuffer[i].FSCalc - meanCalcFS) * (calcPointArrayBuffer[i].FSCalc - meanCalcFS));
+                            }
+                        }
+                        //- Freq_MHz(частота передатчика станции/драйв теста)
+                        calcCorellationResult.Freq_MHz = data.GSIDGroupeDriveTests.Freq_MHz;
+                        //- Delta_dB(входной параметр)
+                        calcCorellationResult.Delta_dB = data.CorellationParameters.Delta_dB;
+                        //- Correlation_pc(процент точек где результаты измерений отличаться от расчетного менее чем на Delta_dB)
+                        calcCorellationResult.Corellation_pc = diffLessThanDeltaCount / pointCount * 100.0;
+                        //- StdDev_dB = sqrt(sum(y - x)) / n
+                        calcCorellationResult.StdDev_dB = (float)(Math.Sqrt(sumDiffCalcMeas2 / pointCount));
+                        //- AvErr_dB = sum(y - x) / n
+                        calcCorellationResult.AvErr_dB = (float)(sumDiffCalcMeas / pointCount);
+                        //- Correl factor(логарифмическая корреляция пирсона у нас реализована)
+                        calcCorellationResult.Corellation_factor = a1 / Math.Sqrt(a2 * a3);
+                        calcCorellationResult.CountPoints = pointCount;
                     }
-
-                    //- Freq_MHz(частота передатчика станции/драйв теста)
-                    calcCorellationResult.Freq_MHz = data.GSIDGroupeDriveTests.Freq_MHz;
-                    //- Delta_dB(входной параметр)
-                    calcCorellationResult.Delta_dB = data.CorellationParameters.Delta_dB;
-                    //- Correlation_pc(процент точек где результаты измерений отличаться от расчетного менее чем на Delta_dB)
-                    calcCorellationResult.Corellation_pc = diffLessThanDeltaCount / counter * 100;
-                    //- StdDev_dB = sqrt(sum(y - x)) / n
-                    calcCorellationResult.StdDev_dB = (float)(Math.Sqrt(sumDiffCalcMeas2 / counter));
-                    //- AvErr_dB = sum(y - x) / n
-                    calcCorellationResult.AvErr_dB = (float)(sumDiffCalcMeas / counter);
-                    //- Correl factor(логарифмическая корреляция пирсона у нас реализована)
-                    calcCorellationResult.Corellation_factor = a1 / Math.Sqrt(a2 * a3);
+                    else
+                    {//точек не достаточно
+                        calcCorellationResult.Freq_MHz = 0;
+                        //- Delta_dB(входной параметр)
+                        calcCorellationResult.Delta_dB = 0;
+                        //- Correlation_pc(процент точек где результаты измерений отличаться от расчетного менее чем на Delta_dB)
+                        calcCorellationResult.Corellation_pc = 0;
+                        //- StdDev_dB = sqrt(sum(y - x)) / n
+                        calcCorellationResult.StdDev_dB = 0;
+                        //- AvErr_dB = sum(y - x) / n
+                        calcCorellationResult.AvErr_dB = 0;
+                        //- Correl factor(логарифмическая корреляция пирсона у нас реализована)
+                        calcCorellationResult.Corellation_factor = 0;
+                        calcCorellationResult.CountPoints = pointCount;
+                    }
                 }
                 else
                 {
@@ -282,6 +321,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     calcCorellationResult.AvErr_dB = 0;
                     //- Correl factor(логарифмическая корреляция пирсона у нас реализована)
                     calcCorellationResult.Corellation_factor = 0;
+                    calcCorellationResult.CountPoints = 0;
                 }
             }
             catch (Exception)

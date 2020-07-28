@@ -60,6 +60,7 @@ namespace XICSM.ICSControlClient.ViewModels
         private string _endpointUrls;
         private Timer _timer = null;
         private WaitForm _waitForm = null;
+        private MeasResultSignalizationForm _form = null;
 
         #region Commands
         public WpfCommand ZoomUndoCommand { get; set; }
@@ -70,7 +71,7 @@ namespace XICSM.ICSControlClient.ViewModels
         public WpfCommand CompareWithEmissionOnOtherSensorsCommand { get; set; }
         #endregion
 
-        public MeasResultSignalizationViewModel(long resultId, int startType, SDR.Emitting[] emittings, DateTime? timeMeas)
+        public MeasResultSignalizationViewModel(long resultId, int startType, SDR.Emitting[] emittings, DateTime? timeMeas, MeasResultSignalizationForm form)
         {
             this._dataStore = DataStore.GetStore();
             this._dataStore.OnBeginInvoke += _dataStore_OnBeginInvoke;
@@ -78,6 +79,7 @@ namespace XICSM.ICSControlClient.ViewModels
 
             this._resultId = resultId;
             this._startType = startType;
+            this._form = form;
             if (timeMeas.HasValue) _timeMeas = timeMeas;
             this._emittings = new EmittingDataAdapter();
             this._inputEmittings = emittings;
@@ -316,6 +318,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 this._emittings.ClearFilter();
 
             this.EmittingCaption = this.GetCurrentEmittingCaption();
+            this._form.ApplyAllDataGridsFilters();
         }
         private void UpdateVisibility()
         {
@@ -324,6 +327,7 @@ namespace XICSM.ICSControlClient.ViewModels
         private void ReloadEmittingWorkTime()
         {
             this._emittingWorkTimes.Source = _currentEmitting.WorkTimes;
+            this._form.ApplyAllDataGridsFilters();
         }
         private void OnZoomUndoCommand(object parameter)
         {

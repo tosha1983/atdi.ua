@@ -4,7 +4,7 @@
   RESULT_ID                  NUMBER(15)         NOT NULL,
   TIME_START                 TIMESTAMP(7) WITH TIME ZONE,
   STANDARD                   NVARCHAR2(50),
-  AREA_NAME                  NVARCHAR2(50),
+  AREA_NAME                  NVARCHAR2(1000),
   NUMBER_STATION             NUMBER(9),
   NUMBER_STATION_IN_CONTOUR  NUMBER(9),
   COUNT_STATION_CS           NUMBER(9),

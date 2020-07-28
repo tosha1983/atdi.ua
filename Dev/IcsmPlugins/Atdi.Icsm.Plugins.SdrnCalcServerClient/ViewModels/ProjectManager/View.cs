@@ -104,6 +104,8 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
             _onDeletedClientContextToken = _eventBus.Subscribe<CT.Events.OnDeletedClientContext>(this.OnDeletedClientContextHandle);
 
             ReloadProjects();
+            ReloadProjectContexts();
+            ReloadProjectMaps();
         }
         public ProjectModel CurrentProject
         {
@@ -118,12 +120,12 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
         public ProjectMapModel CurrentProjectMap
         {
             get => this._currentProjectMap;
-            set => this.Set(ref this._currentProjectMap, value, () => { /*this.OnChangedCurrentProjectMap(value);*/ });
+            set => this.Set(ref this._currentProjectMap, value);
         }
         public ClientContextModel CurrentProjectContext
         {
             get => this._currentProjectContext;
-            set => this.Set(ref this._currentProjectContext, value, () => { /*this.OnChangedCurrentProjectContext(value);*/ });
+            set => this.Set(ref this._currentProjectContext, value);
         }
 
         private void OnChangedCurrentProject(ProjectModel project)
@@ -134,13 +136,6 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
             this.CurrentProjectMap = null;
             this.CurrentProjectContext = null;
         }
-        //private void OnChangedCurrentProjectMap(ProjectMapModel project)
-        //{
-        //}
-        //private void OnChangedCurrentProjectContext(ClientContextModel project)
-        //{
-        //}
-
         private void ReloadProjects()
         {
             this.Projects.Refresh();
@@ -154,12 +149,22 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
                 this.ProjectMaps.ProjectId = this.CurrentProject.Id;
                 this.ProjectMaps.Refresh();
             }
+            else
+            {
+                this.ProjectMaps.ProjectId = 0;
+                this.ProjectMaps.Refresh();
+            }
         }
         private void ReloadProjectContexts()
         {
             if (this.CurrentProject != null)
             {
                 this.ProjectContexts.ProjectId = this.CurrentProject.Id;
+                this.ProjectContexts.Refresh();
+            }
+            else
+            {
+                this.ProjectContexts.ProjectId = 0;
                 this.ProjectContexts.Refresh();
             }
         }
