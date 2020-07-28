@@ -209,7 +209,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
                     // настраиваемые константы при рефакторинге прошу вынести в конфиг
                     double LimithDistance_km = 7;
-                    double LimithLossDifraction_dB = 60;
+                    double LimithLossDifraction_dB = 75;
                     double DeltaLossUnrderLimith_dB = 12;
                     int MinPointForThecnikCorrelation = 3;
                     double PercentPointIntoDistance = 50;
