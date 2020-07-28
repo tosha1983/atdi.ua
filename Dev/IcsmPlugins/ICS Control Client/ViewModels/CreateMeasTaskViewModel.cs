@@ -634,7 +634,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 }
                 if (this._currentMeasTask.CollectEmissionInstrumentalEstimation.HasValue && this._currentMeasTask.CollectEmissionInstrumentalEstimation.Value)
                 {
-                    switch ((this.CurrentMeasTask.CollectEmissionInstrumentalEstimation.Value && !this.CurrentMeasTask.AnalyzeByChannel.Value) ? this._currentMeasTask.StandardInstEstim : this._currentMeasTask.Standard)
+                    switch ((this.CurrentMeasTask.CollectEmissionInstrumentalEstimation.HasValue && this.CurrentMeasTask.CollectEmissionInstrumentalEstimation.Value && this.CurrentMeasTask.AnalyzeByChannel.HasValue && !this.CurrentMeasTask.AnalyzeByChannel.Value) ? this._currentMeasTask.StandardInstEstim : this._currentMeasTask.Standard)
                     {
                         case "GSM":
                             this._currentMeasTask.windowBW = 1.4;
