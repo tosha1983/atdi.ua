@@ -396,6 +396,7 @@ namespace XICSM.ICSControlClient.ViewModels
             measTask.MeasSubTasks = null;
             measTask.Id = null;
             var newTaskId = SVC.SdrnsControllerWcfClient.CreateMeasTask(measTask);
+            MessageBox.Show(Properties.Resources.DataSavedSuccesfully);
         }
         private bool PrepareMeasTaskObject(out SDR.MeasTask measTask, bool IsOnlySave = false)
         {
