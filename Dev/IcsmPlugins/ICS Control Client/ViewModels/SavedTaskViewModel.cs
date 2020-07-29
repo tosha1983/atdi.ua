@@ -46,11 +46,13 @@ namespace XICSM.ICSControlClient.ViewModels
         private ShortMeasTaskViewModel[] _shortMeasTasks;
         public WpfCommand DeleteMeasTaskCommand { get; set; }
         public WpfCommand ActivateMeasTaskCommand { get; set; }
+        public WpfCommand RefreshMeasTaskCommand { get; set; }
 
         public SavedTaskViewModel()
         {
             this.ActivateMeasTaskCommand = new WpfCommand(this.OnActivateMeasTaskCommand);
             this.DeleteMeasTaskCommand = new WpfCommand(this.OnDeleteMeasTaskCommand);
+            this.RefreshMeasTaskCommand = new WpfCommand(this.OnRefreshMeasTaskCommand);
             ReloadShortMeasTasks();
         }
         public ShortMeasTaskViewModel CurrentShortMeasTask
@@ -185,6 +187,10 @@ namespace XICSM.ICSControlClient.ViewModels
                 measTaskForm.ShowDialog();
                 measTaskForm.Dispose();
             }
+        }
+        private void OnRefreshMeasTaskCommand(object parameter)
+        {
+            this.ReloadShortMeasTasks();
         }
     }
 }
