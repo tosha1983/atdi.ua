@@ -739,6 +739,7 @@ namespace Atdi.WpfControls.EntityOrm.Charts
                 if (this._option.UseZoom)
                 {
                     startPoint = e.GetPosition(chartCanvas);
+                    stopPoint = startPoint;
 
                     Canvas.SetLeft(rect, startPoint.X);
                     Canvas.SetTop(rect, 0);
