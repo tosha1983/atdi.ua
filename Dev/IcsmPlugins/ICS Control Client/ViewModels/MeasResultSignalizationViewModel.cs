@@ -318,7 +318,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 this._emittings.ClearFilter();
 
             this.EmittingCaption = this.GetCurrentEmittingCaption();
-            this._form.ApplyAllDataGridsFilters();
+            //this._form.ApplyAllDataGridsFilters();
         }
         private void UpdateVisibility()
         {
