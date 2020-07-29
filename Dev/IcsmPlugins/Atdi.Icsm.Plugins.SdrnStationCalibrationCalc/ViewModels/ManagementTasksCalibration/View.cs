@@ -494,6 +494,15 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
         }
         private void OnTaskSaveCommand(object parameter)
         {
+            if (CurrentCalcTaskCard == null)
+                return;
+
+            if (string.IsNullOrEmpty(CurrentCalcTaskCard.MapName))
+            {
+                _starter.ShowException("Warning!", new Exception($"Undefined value '{Properties.Resources.MapName}'!"));
+                return;
+            }
+            
             if (_calcTaskEditedMode == CardEditMode.Add)
             {
                 var modifier = new Modifiers.CreateCalcTask
@@ -529,6 +538,15 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
                 if (TaskStartCalcCommand == null)
                     return;
 
+                if (CurrentCalcTask == null)
+                    return;
+
+                if (string.IsNullOrEmpty(CurrentCalcTask.MapName))
+                {
+                    _starter.ShowException("Warning!", new Exception($"Undefined value '{Properties.Resources.MapName}'!"));
+                    return;
+                }
+
                 var modifier = new Modifiers.RunCalcTask
                 {
                     Id = CurrentCalcTask.Id
@@ -556,7 +574,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
                 }
                 else
                 {
-                    MessageBox.Show("For selected task not found information in ICalcResults!");
+                    _starter.ShowException("Warning!", new Exception($"For selected task not found information in ICalcResults!"));
                 }
             }
             catch (Exception e)
