@@ -2508,7 +2508,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                 RunSynchroProcess.IsAlreadyRunProcess = true;
                 var utils = new Utils(this._dataLayer, this._logger);
 
-                bool isSuccessCheckRunSynchroProcess = utils.CheckRunSynchroProcess(dataSynchronization.DateStart, dataSynchronization.DateEnd);
+                bool isSuccessCheckRunSynchroProcess = utils.CheckRunSynchroProcess(dataSynchronization.DateStart, headRefSpectrumIdsBySDRN, dataSynchronization.DateEnd);
                 if (isSuccessCheckRunSynchroProcess == false)
                 {
                     return false;
