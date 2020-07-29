@@ -639,6 +639,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
         public IcsmMobStation[] ReadStations(out string standard)
         {
             var selectedAreaModels = new List<AreaModel>();
+
             foreach (AreaModel areaModel in CurrentAreas)
             {
                 if ((areaModel.Location != null) && (areaModel.Location.Length > 0))
@@ -646,6 +647,8 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                     selectedAreaModels.Add(areaModel);
                 }
             }
+
+
             var resStations = _objectReader
            .Read<IcsmMobStation[]>()
            .By(new MobStationsLoadModelByParams()
@@ -958,11 +961,26 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                     isSuccess = false;
                     _viewStarter.ShowException("Error!", new Exception($"CalibrationParameters  parameter '{Resources.DetailOfCascade}' incorrect"));
                 }
-                if (((CurrentAreas != null) && (CurrentAreas.Count == 0)) && (CurrentAreas == null))
+                if (((CurrentAreas != null) && (CurrentAreas.Count == 0)) || (CurrentAreas == null))
                 {
                     isSuccess = false;
-                    _viewStarter.ShowException("Error!", new Exception("Please fill parameter 'area!"));
+                    _viewStarter.ShowException("Error!", new Exception("Please fill parameter 'area!'"));
+
                 }
+                if ((CurrentAreas != null) && (CurrentAreas.Count > 0))
+                {
+                    foreach (AreaModel areaModel in CurrentAreas)
+                    {
+                        if (((areaModel.Location != null) && (areaModel.Location.Length == 0)) || (areaModel.Location == null))
+                        {
+                            isSuccess = false;
+                            _viewStarter.ShowException("Error!", new Exception("Please fill parameter 'area!'"));
+                            break;
+                        }
+                    }
+                }
+
+
                 if ((CurrentParamsCalculation.DistanceAroundContour_km == null) && ((CurrentParamsCalculation.DistanceAroundContour_km != null) && (CurrentParamsCalculation.DistanceAroundContour_km == 0)))
                 {
                     isSuccess = false;
@@ -1000,6 +1018,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
 
         private void StartStationCalibrationCommandAction()
         {
+            bool isSuccess = false;
             if (ValidateTaskParameters())
             {
                 var listStationMonitoringModel = new List<long>();
@@ -1043,9 +1062,12 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                     },
                     token =>
                     {
-                        OnLoadStationsHandle(listStationMonitoringModel);
+                        isSuccess = OnLoadStationsHandle(listStationMonitoringModel);
                     });
-                _viewStarter.Stop(this);
+                if (isSuccess)
+                {
+                    _viewStarter.Stop(this);
+                }
             }
         }
         private void OnEditParamsCalculationsHandle(Events.OnEditParamsCalculation data)
@@ -1070,8 +1092,9 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             }
         }
 
-        private void OnLoadStationsHandle(List<long> listStationMonitoringModel)
+        private bool OnLoadStationsHandle(List<long> listStationMonitoringModel)
         {
+            bool isSuccess = true;
             try
             {
                 var stations = ReadStations(out string standard);
@@ -1102,20 +1125,22 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                     }
                     else
                     {
+                        isSuccess = false;
                         _viewStarter.ShowException("Error!", new Exception($"Client context Id is 0!"));
-                        throw new Exception($"Client context Id is 0!");
                     }
                 }
                 else
                 {
+                    isSuccess = false;
                     _viewStarter.ShowException("Error!", new Exception($"No stations with suitable parameters!"));
-                    throw new Exception($"No stations with suitable parameters!");
                 }
             }
             catch (Exception e)
             {
+                isSuccess = false;
                 this._logger.Exception(Exceptions.StationCalibrationCalculation, e);
             }
+            return isSuccess;
         }
     }
     public enum TypeCoord
