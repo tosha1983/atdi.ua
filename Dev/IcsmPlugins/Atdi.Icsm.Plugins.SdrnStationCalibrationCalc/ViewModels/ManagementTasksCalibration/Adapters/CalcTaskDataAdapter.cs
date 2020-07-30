@@ -27,7 +27,8 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
                 c => c.MapName,
                 c => c.CreatedDate,
                 c => c.OwnerInstance)
-            .Filter(f => f.CONTEXT.Id, ContextId);
+            .Filter(f => f.CONTEXT.Id, ContextId)
+            .OrderByDesc(o => o.Id);
         }
         protected override CalcTaskModel ReadData(IDataReader<CS_ES.ICalcTask> reader, int index)
         {
