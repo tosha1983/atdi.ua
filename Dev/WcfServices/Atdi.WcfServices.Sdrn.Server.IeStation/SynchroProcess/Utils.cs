@@ -399,19 +399,17 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
         /// </summary>
         /// <param name="processId"></param>
         /// <returns></returns>
-        public bool CheckRunSynchroProcess(DateTime start, DateTime stop)
+        public bool CheckRunSynchroProcess(DateTime start, long[] inHeadRefSpectrumIdsBySDRN, DateTime stop)
         {
             var isSuccess = true;
+            int cntDuplicate = 0;
             try
             {
                 var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
                 // набор идентификаторов headRefSpectrumIdsBySDRN
-                var headRefSpectrumIdsBySDRN = GetAllHeadRefSpectrumIdsBySDRN();
-
+                var dataSynchronizationBase = new DataSynchronizationBase();
                 // набор идентификаторов sensorIdsBySDRN
                 var sensorIdsBySDRN = GetAllSensorIdsBySDRN();
-
-
                 var builderSynchroProcess = this._dataLayer.GetBuilder<MD.ISynchroProcess>().From();
                 builderSynchroProcess.Select(c => c.Id, c => c.DateStart, c => c.DateEnd);
                 builderSynchroProcess.Where(c => c.Id, ConditionOperator.GreaterEqual, 0);
@@ -419,46 +417,54 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                 {
                     while (readerSynchroProcess.Read())
                     {
+                        dataSynchronizationBase.Id = readerSynchroProcess.GetValue(c => c.Id);
                         var dateStartActualSynchroProcess = readerSynchroProcess.GetValue(c => c.DateStart);
                         var dateEndActualSynchroProcess = readerSynchroProcess.GetValue(c => c.DateEnd);
+                        dataSynchronizationBase.DateStart = dateStartActualSynchroProcess;
+                        dataSynchronizationBase.DateEnd = dateEndActualSynchroProcess;
+
+                        var headRefSpectrumIdsBySDRN = GetHeadRefSpectrumIdsBySDRN(dataSynchronizationBase);
+
                         if ((((dateStartActualSynchroProcess >= start) && (dateEndActualSynchroProcess <= stop))
                             || ((dateStartActualSynchroProcess >= start) && (dateStartActualSynchroProcess <= stop))
                             || ((dateEndActualSynchroProcess >= start) && (dateEndActualSynchroProcess <= stop))) == true)
                         {
-                            var builderLinkHeadRefSpectrum = this._dataLayer.GetBuilder<MD.ILinkHeadRefSpectrum>().From();
-                            builderLinkHeadRefSpectrum.Select(c => c.Id, c => c.HEAD_REF_SPECTRUM.Id);
-                            builderLinkHeadRefSpectrum.Where(c => c.HEAD_REF_SPECTRUM.Id, ConditionOperator.In, headRefSpectrumIdsBySDRN);
-                            builderLinkHeadRefSpectrum.Where(c => c.SYNCHRO_PROCESS.Id, ConditionOperator.Equal, readerSynchroProcess.GetValue(c => c.Id));
-                            queryExecuter.Fetch(builderLinkHeadRefSpectrum, readerLinkHeadRefSpectrum =>
+                            bool isFindRefSpectrum = true;
+                            if (headRefSpectrumIdsBySDRN.Length == inHeadRefSpectrumIdsBySDRN.Length)
                             {
-                                while (readerLinkHeadRefSpectrum.Read())
+                                for (int x = 0; x < headRefSpectrumIdsBySDRN.Length; x++)
                                 {
-                                    isSuccess = false;
-                                    break;
+                                    if (!inHeadRefSpectrumIdsBySDRN.Contains(headRefSpectrumIdsBySDRN[x]))
+                                    {
+                                        isFindRefSpectrum = false;
+                                        break;
+                                    }
+
                                 }
-                                return true;
-                            });
-
-
-                            var builderLinkSensorsWithSynchroProcess = this._dataLayer.GetBuilder<MD.ILinkSensorsWithSynchroProcess>().From();
-                            builderLinkSensorsWithSynchroProcess.Select(c => c.Id, c => c.SensorId);
-                            builderLinkSensorsWithSynchroProcess.Where(c => c.SensorId, ConditionOperator.In, sensorIdsBySDRN);
-                            builderLinkSensorsWithSynchroProcess.Where(c => c.SYNCHRO_PROCESS.Id, ConditionOperator.Equal, readerSynchroProcess.GetValue(c => c.Id));
-                            queryExecuter.Fetch(builderLinkSensorsWithSynchroProcess, readerLinkSensorsWithSynchroProcess =>
+                            }
+                            else
                             {
-                                while (readerLinkSensorsWithSynchroProcess.Read())
-                                {
-                                    isSuccess = false;
-                                    break;
-                                }
-                                return true;
-                            });
+                                isFindRefSpectrum = false;
+                            }
+                            if (isFindRefSpectrum)
+                            {
+                                ++cntDuplicate;
+                            }
+
 
                         }
                     }
                     return true;
                 });
 
+                if (cntDuplicate > 0)
+                {
+                    isSuccess = false;
+                }
+                else
+                {
+                    isSuccess = true;
+                }
             }
             catch (Exception e)
             {
