@@ -35,10 +35,12 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
 
             var clientContextStations = commandParameters.IcsmMobStation;
             var stations = new long[clientContextStations.Length];
+            var ExternalSorce = ""; 
             try
             {
                 for (int i = 0; i < clientContextStations.Length; i++)
                 {
+
                     var command = clientContextStations[i];
                     var contextStationId = _objectReader.Read<long?>().By(new ClientContextStationModelByParams() { ClientContextId = commandParameters.ClientContextId, ExternalCode = command.ExternalCode, ExternalSource = command.ExternalSource, Standard = command.Standard });
                     if (contextStationId != null)
@@ -46,6 +48,9 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                         stations[i] = contextStationId.Value;
                         continue;
                     }
+
+                    ExternalSorce = command.ExternalSource + " " + command.ExternalCode;
+
                     var enumStateCode = Enum.GetValues(typeof(StationStateCode)).Cast<StationStateCode>().ToList();
                     var insQuery = _dataLayer.GetBuilder<IContextStation>()
                         .Create()
@@ -190,7 +195,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             }
             catch (Exception e)
             {
-                _logger.Exception((EventContext)"CreateClientContextStationsHandler", e);
+                _logger.Exception((EventContext)"CreateClientContextStationsHandler", (EventText)ExternalSorce, e);
             }
         }
     }
