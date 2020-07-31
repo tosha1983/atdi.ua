@@ -119,7 +119,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
                 NuMaxOut htrT = FindMaxHtoR(ha_m, profile_m[htrP.nMax], wavelength, dAP, in profile_m, profileStartIndex, htrP.nMax - profileStartIndex, rE, mainHill);
 
                 double Ltc = 0;
-                double alphaToPi = 0;
+                double alpha = 0;
                 double htrS = -0.8;
 
                 double dAT = 1;
@@ -134,20 +134,20 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
                     dPR = htrR.nMax * dN;
                 }
 
-                if (htrT.nuMax > htrR.nuMax && htrT.nuMax > 0.5)
+                if (htrT.nuMax > htrR.nuMax && htrT.nuMax > -0.5)
                 {
                     double q = 1.41421356 * htrT.nuMax;
                     htrS = htrT.nuMax;
-                    alphaToPi = Math.Atan(Math.Sqrt(dTP * (dAT + dTP + dPR) / (dAT * dPR)));
-                    Ltc = (12 - 20 * Math.Log10(2 / (1 - alphaToPi))) * Math.Pow(Math.Abs(q / p), 2 * p);
+                    alpha = Math.Atan(Math.Sqrt(dTP * (dAT + dTP + dPR) / (dAT * dPR)));
+                    Ltc = (12 - 20 * Math.Log10(2 / (1 - alpha / Math.PI))) * Math.Pow(Math.Abs(q / p), 2 * p);
                 }
-                else if (htrT.nuMax < htrR.nuMax && htrR.nuMax > 0.5)
+                else if (htrT.nuMax < htrR.nuMax && htrR.nuMax > -0.5)
                 {
                     double dRB = dPB - dPR;
                     double q = 1.41421356 * htrR.nuMax;
                     htrS = htrR.nuMax;
-                    alphaToPi = Math.Atan(Math.Sqrt(dPR * (dTP + dPR + dRB) / (dTP * dRB)));
-                    Ltc = (12 - 20 * Math.Log10(2 / (1 - alphaToPi))) * Math.Pow(Math.Abs(q / p), 2 * p);
+                    alpha = Math.Atan(Math.Sqrt(dPR * (dTP + dPR + dRB) / (dTP * dRB)));
+                    Ltc = (12 - 20 * Math.Log10(2 / (1 - alpha / Math.PI))) * Math.Pow(Math.Abs(q / p), 2 * p);
                 }
                 
                 diffractionLoss_dB = J(htrP.nuMax) + J(htrS) + SubDiffractionLoss - Ltc;
