@@ -1,4 +1,4 @@
-﻿/*using Atdi.Contracts.Sdrn.CalcServer;
+﻿using Atdi.Contracts.Sdrn.CalcServer;
 using Atdi.Contracts.Sdrn.DeepServices.RadioSystem;
 using Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations;
 using Atdi.DataModels.Sdrn.DeepServices.Gis;
@@ -19,7 +19,7 @@ using Atdi.Contracts.Sdrn.DeepServices.EarthGeometry;
 
 namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 {
-    public class FieldStrengthCalcIterationRxPattern : IIterationHandler<FieldStrengthCalcData, FieldStrengthCalcResult>
+    public class ReceivedPowerCalcIteration : IIterationHandler<ReceivedPowerCalcData, FieldStrengthCalcResult>
     {
         private readonly ISignalService _signalService;
         private readonly IMapService _mapService;
@@ -162,7 +162,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
         #endregion
 
-        public FieldStrengthCalcIterationRxPattern(
+        public ReceivedPowerCalcIteration(
             ISignalService signalService,
             IEarthGeometricService earthGeometricService,
             IMapService mapService,
@@ -180,7 +180,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             _heightArrayPool = _poolSite.GetPool<short[]>(ObjectPools.GisProfileHeightArrayObjectPool);
         }
 
-        public FieldStrengthCalcResult Run(ITaskContext taskContext, FieldStrengthCalcData data)
+        public FieldStrengthCalcResult Run(ITaskContext taskContext, ReceivedPowerCalcData data)
         {
             var profileOptions = DefineProfileOptions(data.PropagationModel);
 
@@ -204,8 +204,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         AxisXStep = data.MapArea.AxisX.Step,
                         AxisYStep = data.MapArea.AxisY.Step,
                         AxisYNumber = data.MapArea.AxisY.Number,
-                        Target = data.TargetCoordinate,
-                        Point = data.PointCoordinate,
+                        Point = data.RxCoordinate,
+                        Target = data.TxCoordinate,
                         Location = data.MapArea.LowerLeft
                     };
                     var profileResult = new CalcProfileIndexersResult
@@ -299,8 +299,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         }
                     }
                 }
-                var pointSourceArgs = new PointEarthGeometric() { Longitude = data.PointCoordinate.X, Latitude = data.PointCoordinate.Y, CoordinateUnits = CoordinateUnits.m };
-                var pointTargetArgs = new PointEarthGeometric() { Longitude = data.TargetCoordinate.X, Latitude = data.TargetCoordinate.Y, CoordinateUnits = CoordinateUnits.m };
+                var pointSourceArgs = new PointEarthGeometric() { Longitude = data.TxCoordinate.X, Latitude = data.TxCoordinate.Y, CoordinateUnits = CoordinateUnits.m };
+                var pointTargetArgs = new PointEarthGeometric() { Longitude = data.RxCoordinate.X, Latitude = data.RxCoordinate.Y, CoordinateUnits = CoordinateUnits.m };
                 var d_km = this._earthGeometricService.GetDistance_km(in pointSourceArgs, in pointTargetArgs);
                 var lossArgs = new CalcLossArgs
                 {
@@ -316,18 +316,18 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     ProfileLength = profileLenght,
                     Freq_Mhz = data.Transmitter.Freq_MHz,
                     D_km = d_km,
-                    Ha_m = data.PointAltitude_m,
-                    Hb_m = data.TargetAltitude_m,
+                    Ha_m = data.TxAltitude_m,
+                    Hb_m = data.RxAltitude_m,
                     CluttersDesc = data.CluttersDesc
                 };
 
                 var lossResult = new CalcLossResult();
                 _signalService.CalcLoss(in lossArgs, ref lossResult);
-                var azimutToTargetRx = this._earthGeometricService.GetAzimut(in pointSourceArgs, in pointTargetArgs);
+                var azimutToRx = this._earthGeometricService.GetAzimut(in pointSourceArgs, in pointTargetArgs);
                 var txAntennaGainArgs = new CalcAntennaGainArgs
                 {
-                    Antenna = data.Antenna,
-                    AzimutToTarget_deg = azimutToTargetRx,
+                    Antenna = data.TxAntenna,
+                    AzimutToTarget_deg = azimutToRx,
                     TiltToTarget_deg = lossResult.TiltaD_Deg,
                     PolarizationEquipment = data.Transmitter.Polarization,
                     PolarizationWave = data.Transmitter.Polarization
@@ -337,18 +337,18 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 double txAntennaPatternLoss_dB = txAntennaGainD - txAntennaGainArgs.Antenna.Gain_dB;
 
                 //// Rx ant gain
-                var azimutToTargetTx = this._earthGeometricService.GetAzimut(in pointTargetArgs, in pointSourceArgs);
+                var azimutToTx = this._earthGeometricService.GetAzimut(in pointTargetArgs, in pointSourceArgs);
                 var rxAntennaGainArgs = new CalcAntennaGainArgs
                 {
-                    Antenna = data.Antenna,
-                    AzimutToTarget_deg = azimutToTargetTx,
+                    Antenna = data.RxAntenna,
+                    AzimutToTarget_deg = azimutToTx,
                     TiltToTarget_deg = lossResult.TiltaD_Deg,
                     PolarizationEquipment = data.Transmitter.Polarization,
                     PolarizationWave = data.Transmitter.Polarization
                 };
                 var rxAntennaGainD = _signalService.CalcAntennaGain(in rxAntennaGainArgs);
-                double Level_dBm = data.Transmitter.MaxPower_dBm - data.Transmitter.Loss_dB + txAntennaGainD - lossResult.LossD_dB + rxAntennaGainD;
-                double rxAntennaPatternLoss_dB = txAntennaGainD - rxAntennaGainArgs.Antenna.Gain_dB;
+                double Level_dBm = data.Transmitter.MaxPower_dBm - data.Transmitter.Loss_dB + txAntennaGainD - lossResult.LossD_dB + rxAntennaGainD - data.RxFeederLoss_dB;
+                //double rxAntennaPatternLoss_dB = rxAntennaGainD - rxAntennaGainArgs.Antenna.Gain_dB;
                 //// 
                 if (data.PropagationModel.AbsorptionBlock.Available)
                 {// нужен учет дополнительного пути распространения
@@ -453,4 +453,3 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
     }
 }
-*/
