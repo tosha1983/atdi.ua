@@ -66,6 +66,8 @@
     <Compile Include="CalcCoverage\Handlers\Manage\CalcFinalCoverageForMobStation.cs" />
     <Compile Include="CalcCoverage\Handlers\Transliteration\Transliteration.cs" />
     <Compile Include="CalcCoverage\Handlers\Utils\Utils.cs" />
+    <Compile Include="CalcCoverage\Localization\CLocalization.cs" />
+    <Compile Include="CalcCoverage\Localization\Localization.cs" />
     <Compile Include="CalcCoverage\Models\ConcatBlankWithStation\DataForThread.cs" />
     <Compile Include="CalcCoverage\Models\Config\ArgumentConfig.cs" />
     <Compile Include="CalcCoverage\Models\Config\ArgumentsConfig.cs" />
@@ -148,6 +150,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="CalcCoverage\Handlers\XML\CalcCovConfig.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="WebQueryTranslate.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="GdalConfiguration.vb" />

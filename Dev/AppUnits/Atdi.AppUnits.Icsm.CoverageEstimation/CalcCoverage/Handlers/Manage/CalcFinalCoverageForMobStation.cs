@@ -14,7 +14,7 @@ using Atdi.Contracts.LegacyServices.Icsm;
 using Atdi.AppUnits.Icsm.CoverageEstimation.Models;
 using Atdi.AppUnits.Icsm.Hooks;
 using Atdi.AppUnits.Icsm.CoverageEstimation.Utilities;
-
+using Atdi.AppUnits.Icsm.CoverageEstimation.Localization;
 
 namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
 {
@@ -44,14 +44,15 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
             {
                 if (dataConfig==null)
                 {
-                    throw new InvalidOperationException("Config file is null");
+                    throw new InvalidOperationException(CLocaliz.TxT("Config file is null"));
                 }
 
 
                 //Загрузка конфигурационного файла
                 var loadConfig = dataConfig;
 
-                Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"Розпочато процедуру розрахунку покриття для секції 'GroupsMobStationConfig'");
+
+                Utils.LogInfo(loadConfig, Contexts.CalcCoverages, CLocaliz.TxT($"The start procedure for opening the page for the section 'GroupsMobStationConfig'"));
 
                 var gdalCalc = new GdalCalc(this._logger);
                 
@@ -59,15 +60,15 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                 // Проверка/создание списка поддиректорий, соответствующих перечню значений Province
                 gdalCalc.CheckOutTIFFFilesDirectorysForMobStation(loadConfig);
 
-                this._logger.Info(Contexts.CalcCoverages, string.Format(Events.StartIterationNumber.ToString(), iterationNumber));
+                this._logger.Info(Contexts.CalcCoverages, string.Format(CLocaliz.TxT(Events.StartIterationNumber.ToString()), iterationNumber));
 
                 if (loadConfig.BlockStationsConfig.MobStationConfig == null)
                 {
-                    throw new InvalidOperationException(Exceptions.CodeOperatorAndStatusConfigBlockIsEmpty);
+                    throw new InvalidOperationException(CLocaliz.TxT(Exceptions.CodeOperatorAndStatusConfigBlockIsEmpty));
                 }
                 if (loadConfig.BlockStationsConfig.MobStationConfig.Length == 0)
                 {
-                    throw new InvalidOperationException(Exceptions.CountCodeOperatorAndStatusConfigBlocksLengthZero);
+                    throw new InvalidOperationException(CLocaliz.TxT(Exceptions.CountCodeOperatorAndStatusConfigBlocksLengthZero));
                 }
 
                 // цикл по перечню стандартов, провинций, операторов 
@@ -78,17 +79,17 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
 
                     if (codeOperatorAndStatusesConfig == null)
                     {
-                        throw new InvalidOperationException(Exceptions.BlockCodeOperatorAndStatusConfigIsNull);
+                        throw new InvalidOperationException(CLocaliz.TxT(Exceptions.BlockCodeOperatorAndStatusConfigIsNull));
                     }
 
                     if (codeOperatorAndStatusesConfig.StandardConfig.provincesConfig == null)
                     {
-                        throw new InvalidOperationException(Exceptions.Block_CodeOperatorAndStatusConfig_StandardConfig_provincesConfigIsNull);
+                        throw new InvalidOperationException(CLocaliz.TxT(Exceptions.Block_CodeOperatorAndStatusConfig_StandardConfig_provincesConfigIsNull));
                     }
 
                     if (codeOperatorAndStatusesConfig.StandardConfig.provincesConfig.Length == 0)
                     {
-                        throw new InvalidOperationException(Exceptions.CountBlock_CodeOperatorAndStatusConfig_StandardConfig_provincesConfigEqualZero);
+                        throw new InvalidOperationException(CLocaliz.TxT(Exceptions.CountBlock_CodeOperatorAndStatusConfig_StandardConfig_provincesConfigEqualZero));
                     }
 
                     for (int l = 0; l < codeOperatorAndStatusesConfig.StandardConfig.provincesConfig.Length; l++)
@@ -97,9 +98,9 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                         if (!string.IsNullOrEmpty(provincesConfig.ICSTelecomProjectFile))
                         {
                             // Очистка бланка
-                            Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"Розпочато процедуру очистки файлу бланка {provincesConfig.BlankTIFFFile}");
+                            Utils.LogInfo(loadConfig, Contexts.CalcCoverages, CLocaliz.TxT($"Started the cleaning procedure for the form file ") + provincesConfig.BlankTIFFFile);
                             gdalCalc.ClearBlank(loadConfig, provincesConfig.BlankTIFFFile);
-                            Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"Процедуру очистки файлу бланка {provincesConfig.BlankTIFFFile} успішно завершено");
+                            Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("Blank file cleanup procedure")} {provincesConfig.BlankTIFFFile} {CLocaliz.TxT("successfully completed")}");
 
                             //получить директорию текущего проекта ICS Telecom
                             var ICSTelecomProjectDir = Path.GetDirectoryName(provincesConfig.ICSTelecomProjectFile);
@@ -107,15 +108,15 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                             //gdalCalc.ClearTempFiles(loadConfig);
                             //удаление файлов TIF, TFW с директории проекта ICS Telecom (ICSTelecomProjectDir)
                             var ICSTelecomEwxFileDir = Path.GetDirectoryName(provincesConfig.NameEwxFile);
-                            Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"Розпочато процедуру очистки директорії розміщення проекту ICS Telecom '{ICSTelecomEwxFileDir}'");
+                            Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("The started procedure for clearing the directory of the ICS Telecom project")} '{ICSTelecomEwxFileDir}'");
                             gdalCalc.ClearResultFilesICSTelecomProject(loadConfig, ICSTelecomEwxFileDir, provincesConfig.BlankTIFFFile);
-                            Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"Процедуру очистки директорії розміщення проекту ICS Telecom '{ICSTelecomEwxFileDir}'  успішно завершено");
+                            Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("The procedure for clearing the directory of the ICS Telecom project")} '{ICSTelecomEwxFileDir}' {CLocaliz.TxT("successfully completed")}");
 
 
                             // формирование объекта Condition для отправки запроса в WebQuery
-                            Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"Розпочато процедуру формування об'єкту Condition для подальшої генерації SQL - запиту");
+                            Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"{ CLocaliz.TxT("The procedure of forming the Condition object for further generation of SQL - query is started")}");
                             var condition = new CreateConditionForMobStation(codeOperatorAndStatusesConfig, provincesConfig.Name, this._logger);
-                            Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"Процедуру формування об'єкту Condition для  подальшої генерації SQL - запиту успішно виконано");
+                            Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("The procedure of forming the Condition object for further generation of SQL - query was successfully completed")}");
 
                             var operationCreateEwx = new CurrentOperation()
                             {
@@ -129,15 +130,15 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                             {
                                 if (this._checkOperation.isFindOperation(operationCreateEwx) == false)
                                 {
-                                    this._logger.Info(Contexts.CalcCoverages, $"Пропуск операції 'CreateEWX' для Standard = '{codeOperatorAndStatusesConfig.StandardConfig.Name}' та CurrICSTelecomEwxFileDir = '{ICSTelecomEwxFileDir}'");
-                                    Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"Пропуск операції 'CreateEWX' для Standard='{codeOperatorAndStatusesConfig.StandardConfig.Name}' та CurrICSTelecomEwxFileDir = '{ICSTelecomEwxFileDir}'");
+                                    this._logger.Info(Contexts.CalcCoverages, $"{CLocaliz.TxT("Skip the 'CreateEWX' operation for Standard =")} '{codeOperatorAndStatusesConfig.StandardConfig.Name}'  CurrICSTelecomEwxFileDir = '{ICSTelecomEwxFileDir}'");
+                                    Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("Skip the 'CreateEWX' operation for Standard =")} '{codeOperatorAndStatusesConfig.StandardConfig.Name}'  CurrICSTelecomEwxFileDir = '{ICSTelecomEwxFileDir}'");
                                     continue;
                                 }
                             }
 
                             // запись параметров текущей операции в отдельный файл
                             this._checkOperation.Save(operationCreateEwx);
-                            Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"До файлу протоколу додано нову операцію {Operation.CreateEWX}");
+                            Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("A new operation has been added to the log file")} {Operation.CreateEWX}");
 
                             // копирование перечня станций в EWX- файл, который расположен в текущей директории проекта ICS Telecom (ICSTelecomEwxFileDir)
 
@@ -145,45 +146,45 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                             if (File.Exists(nameEwxFile))
                             {
                                 File.Delete(nameEwxFile);
-                                this._logger.Info(Contexts.CalcCoverages, $"Очистку файла '{nameEwxFile}' успішно виконано");
-                                Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"Очистку файла '{nameEwxFile}' успішно виконано");
+                                this._logger.Info(Contexts.CalcCoverages, $"{CLocaliz.TxT("Clear file")} '{nameEwxFile}' {CLocaliz.TxT("successfully completed")}");
+                                Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("Clear file")} '{nameEwxFile}' {CLocaliz.TxT("successfully completed")}");
                             }
                             
 
-                            this._logger.Info(Contexts.CalcCoverages, $"Розпочато процедуру формування переліку станцій, на основі яких буде створено набір ewx - файлів");
-                            Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"Розпочато процедуру формування переліку станцій, на основі яких буде створено набір ewx - файлів");
+                            this._logger.Info(Contexts.CalcCoverages, CLocaliz.TxT("The procedure of forming the list of stations on the basis of which the set of ewx - files will be created is begun"));
+                            Utils.LogInfo(loadConfig, Contexts.CalcCoverages, CLocaliz.TxT("The procedure of forming the list of stations on the basis of which the set of ewx - files will be created is begun"));
                             var copyStationsToEwxFile = new CopyMobStationToEwxFile(condition.GetCondition(), TableNameStations, this._dataLayer, this._logger);
                             var ewx = copyStationsToEwxFile.Copy(loadConfig, nameEwxFile, this._logger);
-                            this._logger.Info(Contexts.CalcCoverages, $"Процедуру формування переліку станцій для генерації ewx - файлів завершено успішно");
-                            Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"Процедуру формування переліку станцій для генерації ewx - файлів завершено успішно");
+                            this._logger.Info(Contexts.CalcCoverages, CLocaliz.TxT("The procedure of forming the list of stations for generating ewx - files was completed successfully"));
+                            Utils.LogInfo(loadConfig, Contexts.CalcCoverages, CLocaliz.TxT("The procedure of forming the list of stations for generating ewx - files was completed successfully"));
                             if (ewx.Length == 0)
                             {
 
                                 //очистка временных файлов с директории dataConfig.DirectoryConfig.TempTIFFFilesDirectory
-                                this._logger.Info(Contexts.CalcCoverages, $"Розпочато процедуру очищення директорії {dataConfig.DirectoryConfig.TempTIFFFilesDirectory}");
-                                Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"Розпочато процедуру очищення директорії {dataConfig.DirectoryConfig.TempTIFFFilesDirectory}");
+                                this._logger.Info(Contexts.CalcCoverages, $"{CLocaliz.TxT("The directory cleaning procedure has started")} {dataConfig.DirectoryConfig.TempTIFFFilesDirectory}");
+                                Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("The directory cleaning procedure has started")} {dataConfig.DirectoryConfig.TempTIFFFilesDirectory}");
                                 gdalCalc.ClearTempFiles(loadConfig);
-                                this._logger.Info(Contexts.CalcCoverages, $"Процедуру очищення директорії {dataConfig.DirectoryConfig.TempTIFFFilesDirectory} успішно завершено");
-                                Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"Процедуру очищення директорії {dataConfig.DirectoryConfig.TempTIFFFilesDirectory}  успішно завершено");
+                                this._logger.Info(Contexts.CalcCoverages, $"{CLocaliz.TxT("Directory cleaning procedure")} {dataConfig.DirectoryConfig.TempTIFFFilesDirectory} {CLocaliz.TxT("successfully completed")}");
+                                Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("Directory cleaning procedure")} {dataConfig.DirectoryConfig.TempTIFFFilesDirectory}  {CLocaliz.TxT("successfully completed")}");
 
 
 
                                 //удаление файлов TIF, TFW с директории проекта ICS Telecom ()
-                                this._logger.Info(Contexts.CalcCoverages, $"Розпочато процедуру очищення директорії {ICSTelecomEwxFileDir}");
-                                Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"Розпочато процедуру очищення директорії {ICSTelecomEwxFileDir}");
+                                this._logger.Info(Contexts.CalcCoverages, $"{CLocaliz.TxT("Directory cleaning procedure")} {ICSTelecomEwxFileDir}");
+                                Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("Directory cleaning procedure")} {ICSTelecomEwxFileDir}");
                                 gdalCalc.ClearResultFilesICSTelecomProject(loadConfig, ICSTelecomEwxFileDir, provincesConfig.BlankTIFFFile);
-                                this._logger.Info(Contexts.CalcCoverages, $"Процедуру очищення директорії {ICSTelecomEwxFileDir} успішно завершено");
-                                Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"Процедуру очищення директорії {ICSTelecomEwxFileDir}  успішно завершено");
+                                this._logger.Info(Contexts.CalcCoverages, $"{CLocaliz.TxT("Directory cleaning procedure")} {ICSTelecomEwxFileDir} {CLocaliz.TxT("successfully completed")}");
+                                Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("Directory cleaning procedure")} {ICSTelecomEwxFileDir}  {CLocaliz.TxT("successfully completed")}");
 
 
-                                this._logger.Info(Contexts.CalcCoverages, $"Розпочато процедуру видалення файлу протоколу останньої операції '{this._appServerComponentConfig.ProtocolOperationFileNameForMobStation}'");
-                                Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"Розпочато процедуру видалення файлу протоколу останньої операції '{this._appServerComponentConfig.ProtocolOperationFileNameForMobStation}'");
+                                this._logger.Info(Contexts.CalcCoverages, $"{CLocaliz.TxT("The procedure for deleting the log file of the last operation has started")} '{this._appServerComponentConfig.ProtocolOperationFileNameForMobStation}'");
+                                Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("The procedure for deleting the log file of the last operation has started")} '{this._appServerComponentConfig.ProtocolOperationFileNameForMobStation}'");
                                 this._checkOperation.DeleteProtocolFile();
-                                this._logger.Info(Contexts.CalcCoverages, $"Процедуру видалення файлу протоколу останньої операції '{this._appServerComponentConfig.ProtocolOperationFileNameForMobStation}' успішно завершено");
-                                Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"Процедуру видалення файлу протоколу останньої операції '{this._appServerComponentConfig.ProtocolOperationFileNameForMobStation}' успішно завершено");
+                                this._logger.Info(Contexts.CalcCoverages, $"{CLocaliz.TxT("The procedure for deleting the log file of the last operation")} '{this._appServerComponentConfig.ProtocolOperationFileNameForMobStation}' {CLocaliz.TxT("successfully completed")}");
+                                Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("The procedure for deleting the log file of the last operation")} '{this._appServerComponentConfig.ProtocolOperationFileNameForMobStation}' {CLocaliz.TxT("successfully completed")}");
 
 
-                                throw new Exception(string.Format(Exceptions.ErrorCopyStationsIntoEwxFile, codeOperatorAndStatusesConfig.StandardConfig.Name, provincesConfig.Name));
+                                throw new Exception(string.Format(CLocaliz.TxT(Exceptions.ErrorCopyStationsIntoEwxFile), codeOperatorAndStatusesConfig.StandardConfig.Name, provincesConfig.Name));
 
                             }
                             else
@@ -195,12 +196,12 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                                     for (int h = 0; h < ewx.Length; h++)
                                     {
                                         var createfileEwx = tempEwxFilesDirectory + $"\\Ewx_{h}.ewx";
-                                        this._logger.Info(Contexts.CalcCoverages, $"Розпочато процедуру створення ewx - файлу '{createfileEwx}'");
-                                        Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"Розпочато процедуру створення ewx - файлу '{createfileEwx}'");
+                                        this._logger.Info(Contexts.CalcCoverages, $"{CLocaliz.TxT("The procedure for creating an ewx file has started")} '{createfileEwx}'");
+                                        Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("The procedure for creating an ewx file has started")} '{createfileEwx}'");
                                         var createFileEwx = new CreateFileEwx(this._logger);
                                         createFileEwx.CreateFile(createfileEwx, ewx[h]);
-                                        this._logger.Info(Contexts.CalcCoverages, $"Процедура створення ewx - файлу '{createfileEwx}'  успішно завершена");
-                                        Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"Процедура створення ewx - файлу '{createfileEwx}'  успішно завершена");
+                                        this._logger.Info(Contexts.CalcCoverages, $"{CLocaliz.TxT("Procedure for creating an ewx file")} '{createfileEwx}'  {CLocaliz.TxT("successfully completed")}");
+                                        Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("Procedure for creating an ewx file")} '{createfileEwx}'  {CLocaliz.TxT("successfully completed")}");
                                     }
                                 }
 
@@ -246,8 +247,8 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                                             processStartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
                                             // Запуск процесса со списком сформированных раннее аргументов комманды
 
-                                            this._logger.Info(Contexts.CalcCoverages, $"Запуск процесу ICS Telecom для розрахунку покриття (файл '{nameEwxFile}')");
-                                            Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"Запуск процесу ICS Telecom для розрахунку покриття (файл '{nameEwxFile}')");
+                                            this._logger.Info(Contexts.CalcCoverages, $"{CLocaliz.TxT("Running the ICS Telecom process to calculate coverage (file")} '{nameEwxFile}')");
+                                            Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("Running the ICS Telecom process to calculate coverage (file")} '{nameEwxFile}')");
                                             var value = System.Diagnostics.Process.Start(processStartInfo);
                                             // запуск процедуры подмены функции WinAPI BitBlt на "пустышку" 
                                             var processName = System.IO.Path.GetFileNameWithoutExtension(processStartInfo.FileName);
@@ -261,8 +262,8 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                                             }
                                             // ожидаем завершения работы процесса ICS Telecom
                                             value.WaitForExit();
-                                            this._logger.Info(Contexts.CalcCoverages, $"ICS Telecom успішно завершив розрахунок покриття для файлу '{nameEwxFile}'");
-                                            Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"ICS Telecom успішно завершив розрахунок покриття для файлу '{nameEwxFile}'");
+                                            this._logger.Info(Contexts.CalcCoverages, $"{CLocaliz.TxT("ICS Telecom has successfully completed the calculation of the coverage for the file")}  '{nameEwxFile}'");
+                                            Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("ICS Telecom has successfully completed the calculation of the coverage for the file")} '{nameEwxFile}'");
                                         }
 
 
@@ -278,21 +279,21 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                                         };
                                         // запись параметров текущей операции в отдельный файл
                                         this._checkOperation.Save(operationCreateTempTifFiles);
-                                        Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"До файлу протоколу додано нову операцію {Operation.CreateTempTifFiles}");
+                                        Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("A new operation has been added to the log file")} {Operation.CreateTempTifFiles}");
 
                                         //Подготовка временных графических файлов (TIF), которые представляют собой результат операции объединения содержимого файла бланка и отдельно взятого файла покрытия,
                                         // который был получен на этапе обработки ICS Telecom
                                         // Полученные графические файлы записываются во временную директорию dataConfig.DirectoryConfig.TempTIFFFilesDirectory
-                                        this._logger.Info(Contexts.CalcCoverages, $"Розпочато процедуру підготовки тимчасових графічних файлів");
-                                        Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"Розпочато процедуру підготовки тимчасових графічних файлів");
+                                        this._logger.Info(Contexts.CalcCoverages, CLocaliz.TxT("The procedure of preparation of temporary graphic files has begun"));
+                                        Utils.LogInfo(loadConfig, Contexts.CalcCoverages, CLocaliz.TxT("The procedure of preparation of temporary graphic files has begun"));
                                         var isSuccessCreateTempFiles = gdalCalc.StartProcessConcatBlankWithStation(loadConfig, ICSTelecomEwxFileDir, provincesConfig.BlankTIFFFile, filesOuttempEwxFilesDirectory[h]);
                                         //var isSuccessCreateTempFiles = gdalCalc.SaveRecalcTIFFFile(loadConfig, ICSTelecomEwxFileDir, provincesConfig.BlankTIFFFile);
                                         if (isSuccessCreateTempFiles == false)
                                         {
-                                            throw new InvalidOperationException(string.Format(Exceptions.OccurredWhilePreparingTemporaryImageTIF, codeOperatorAndStatusesConfig.StandardConfig.Name));
+                                            throw new InvalidOperationException(string.Format(CLocaliz.TxT(Exceptions.OccurredWhilePreparingTemporaryImageTIF), codeOperatorAndStatusesConfig.StandardConfig.Name));
                                         }
-                                        this._logger.Info(Contexts.CalcCoverages, $"Процедуру підготовки тимчасових графічних файлів успішно завершено");
-                                        Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"Процедуру підготовки тимчасових графічних файлів успішно завершено");
+                                        this._logger.Info(Contexts.CalcCoverages, CLocaliz.TxT("The procedure for preparing temporary image files has been successfully completed"));
+                                        Utils.LogInfo(loadConfig, Contexts.CalcCoverages, CLocaliz.TxT("The procedure for preparing temporary image files has been successfully completed"));
 
                                         //удаление файлов TIF, TFW с директории проекта ICS Telecom ()
                                         gdalCalc.ClearResultFilesICSTelecomProject(loadConfig, ICSTelecomEwxFileDir, provincesConfig.BlankTIFFFile);
@@ -316,7 +317,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                                 };
                                 // запись параметров текущей операции в отдельный файл
                                 this._checkOperation.Save(operationCreateFinalCoverage);
-                                Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"До файлу протоколу додано нову операцію {Operation.CreateFinalCoverage}");
+                                Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("A new operation has been added to the log file")} {Operation.CreateFinalCoverage}");
 
                                 // На основании сформрованных на предыдщум шаге граческих файлах, формируем один итоговый файл, представляющий собой результат расчета суммарного покрытия 
                                 // Результирующее покрытие записывается в директорию provincesConfig.OutTIFFFilesDirectory 
@@ -327,12 +328,12 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
 
                                 var finalCoverageTIFFile = provincesConfig.OutTIFFFilesDirectory + fileName;
                                 var tempPathfinalCoverageTIFFile = System.IO.Path.GetTempPath() + fileName;
-                                this._logger.Info(Contexts.CalcCoverages, $"Розпочато процедуру генерації вихідного файлу '{finalCoverageTIFFile}' покриття");
-                                Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"Розпочато процедуру генерації вихідного файлу '{finalCoverageTIFFile}' покриття");
+                                this._logger.Info(Contexts.CalcCoverages, $"{CLocaliz.TxT("The procedure for generating the output coverage file has started")}  '{finalCoverageTIFFile}' ");
+                                Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("The procedure for generating the output coverage file has started")}  '{finalCoverageTIFFile}' ");
                                 var isSuccessCreateOutCoverageFile = gdalCalc.Run(loadConfig, System.IO.Path.GetTempPath(), fileName, provincesConfig.BlankTIFFFile);
                                 if (isSuccessCreateOutCoverageFile == false)
                                 {
-                                    throw new InvalidOperationException(string.Format(Exceptions.FinalCoverageFileTifNotWritenIntoPath, finalCoverageTIFFile, codeOperatorAndStatusesConfig.StandardConfig.Name));
+                                    throw new InvalidOperationException(string.Format(CLocaliz.TxT(Exceptions.FinalCoverageFileTifNotWritenIntoPath), finalCoverageTIFFile, codeOperatorAndStatusesConfig.StandardConfig.Name));
                                 }
                                 else
                                 {
@@ -347,8 +348,8 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                                         System.IO.File.Delete(tempPathfinalCoverageTIFFile);
                                     }
                                 }
-                                this._logger.Info(Contexts.CalcCoverages, $"Процедуру генерації вихідного файлу '{finalCoverageTIFFile}' покриття успішно завершено");
-                                Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"Процедуру генерації вихідного файлу '{finalCoverageTIFFile}' покриття успішно завершено");
+                                this._logger.Info(Contexts.CalcCoverages, $"{CLocaliz.TxT("The procedure for generating the output coverage file")} '{finalCoverageTIFFile}'  {CLocaliz.TxT("successfully completed")}");
+                                Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("The procedure for generating the output coverage file")} '{finalCoverageTIFFile}' {CLocaliz.TxT("successfully completed")}");
 
                                 /*
                                 if (this._appServerComponentConfig.IsSaveFinalCoverageToDB)
@@ -377,40 +378,40 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
 
 
                                 //очистка временных файлов с директории dataConfig.DirectoryConfig.TempTIFFFilesDirectory
-                                this._logger.Info(Contexts.CalcCoverages, $"Розпочато процедуру очищення директорії {dataConfig.DirectoryConfig.TempTIFFFilesDirectory}");
-                                Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"Розпочато процедуру очищення директорії {dataConfig.DirectoryConfig.TempTIFFFilesDirectory}");
+                                this._logger.Info(Contexts.CalcCoverages, $"{CLocaliz.TxT("Directory cleaning procedure")} {dataConfig.DirectoryConfig.TempTIFFFilesDirectory}");
+                                Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("Directory cleaning procedure")} {dataConfig.DirectoryConfig.TempTIFFFilesDirectory}");
                                 gdalCalc.ClearTempFiles(loadConfig);
-                                this._logger.Info(Contexts.CalcCoverages, $"Процедуру очищення директорії {dataConfig.DirectoryConfig.TempTIFFFilesDirectory} успішно завершено");
-                                Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"Процедуру очищення директорії {dataConfig.DirectoryConfig.TempTIFFFilesDirectory}  успішно завершено");
+                                this._logger.Info(Contexts.CalcCoverages, $"{CLocaliz.TxT("Directory cleaning procedure")} {dataConfig.DirectoryConfig.TempTIFFFilesDirectory} {CLocaliz.TxT("successfully completed")}");
+                                Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("Directory cleaning procedure")} {dataConfig.DirectoryConfig.TempTIFFFilesDirectory}  {CLocaliz.TxT("successfully completed")}");
 
 
                                 //удаление файлов TIF, TFW с директории проекта ICS Telecom ()
-                                this._logger.Info(Contexts.CalcCoverages, $"Розпочато процедуру очищення директорії {ICSTelecomEwxFileDir}");
-                                Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"Розпочато процедуру очищення директорії {ICSTelecomEwxFileDir}");
+                                this._logger.Info(Contexts.CalcCoverages, $"{CLocaliz.TxT("Directory cleaning procedure")} {ICSTelecomEwxFileDir}");
+                                Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("Directory cleaning procedure")} {ICSTelecomEwxFileDir}");
                                 gdalCalc.ClearResultFilesICSTelecomProject(loadConfig, ICSTelecomEwxFileDir, provincesConfig.BlankTIFFFile);
-                                this._logger.Info(Contexts.CalcCoverages, $"Процедуру очищення директорії {ICSTelecomEwxFileDir} успішно завершено");
-                                Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"Процедуру очищення директорії {ICSTelecomEwxFileDir}  успішно завершено");
+                                this._logger.Info(Contexts.CalcCoverages, $"{CLocaliz.TxT("Directory cleaning procedure")} {ICSTelecomEwxFileDir} {CLocaliz.TxT("successfully completed")}");
+                                Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("Directory cleaning procedure")} {ICSTelecomEwxFileDir}  {CLocaliz.TxT("successfully completed")}");
 
 
-                                this._logger.Info(Contexts.CalcCoverages, $"Розпочато процедуру видалення файлу протоколу останньої операції '{this._appServerComponentConfig.ProtocolOperationFileNameForMobStation}'");
-                                Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"Розпочато процедуру видалення файлу протоколу останньої операції '{this._appServerComponentConfig.ProtocolOperationFileNameForMobStation}'");
+                                this._logger.Info(Contexts.CalcCoverages, $"{CLocaliz.TxT("The procedure for deleting the log file of the last operation has started")} '{this._appServerComponentConfig.ProtocolOperationFileNameForMobStation}'");
+                                Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("The procedure for deleting the log file of the last operation has started")} '{this._appServerComponentConfig.ProtocolOperationFileNameForMobStation}'");
                                 this._checkOperation.DeleteProtocolFile();
-                                this._logger.Info(Contexts.CalcCoverages, $"Процедуру видалення файлу протоколу останньої операції '{this._appServerComponentConfig.ProtocolOperationFileNameForMobStation}' успішно завершено");
-                                Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"Процедуру видалення файлу протоколу останньої операції '{this._appServerComponentConfig.ProtocolOperationFileNameForMobStation}' успішно завершено");
+                                this._logger.Info(Contexts.CalcCoverages, $"{CLocaliz.TxT("The procedure for deleting the log file of the last operation has started")} '{this._appServerComponentConfig.ProtocolOperationFileNameForMobStation}' {CLocaliz.TxT("successfully completed")}");
+                                Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("The procedure for deleting the log file of the last operation has started")} '{this._appServerComponentConfig.ProtocolOperationFileNameForMobStation}' {CLocaliz.TxT("successfully completed")}");
                             }
                         }
                         else
                         {
-                            throw new InvalidOperationException(Exceptions.ICSTelecomProjectFileIsNullOrEmpty);
+                            throw new InvalidOperationException(CLocaliz.TxT(Exceptions.ICSTelecomProjectFileIsNullOrEmpty));
                         }
                     }
                 }
                 //после очередной итерации
                 // очистка итоговых  списка поддиректорий, соответствующих перечню значений Province
                 //gdalCalc.ClearOutTIFFFilesDirectory(loadConfig);
-                this._logger.Info(Contexts.CalcCoverages, string.Format(Events.EndIterationNumber.ToString(), iterationNumber));
+                this._logger.Info(Contexts.CalcCoverages, string.Format(CLocaliz.TxT(Events.EndIterationNumber.ToString()), iterationNumber));
 
-                Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"Процедуру розрахунку покриття для секції 'GroupsMobStationConfig'успішно завершено");
+                Utils.LogInfo(loadConfig, Contexts.CalcCoverages, CLocaliz.TxT("Coverage calculation procedure for 'GroupsMobStationConfig' section completed successfully"));
             }
             catch (Exception e)
             {
