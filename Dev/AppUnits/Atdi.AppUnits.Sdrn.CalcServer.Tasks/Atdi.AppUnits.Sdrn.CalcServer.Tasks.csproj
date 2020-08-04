@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="AppServerComponent.cs" />
     <Compile Include="AppServerComponentConfig.cs" />
+    <Compile Include="Iterations\PercentTimeForGainCalcIteration.cs" />
     <Compile Include="Iterations\ReceivedPowerCalcIteration.cs" />
     <Compile Include="Iterations\GE06\BRIFIC\LoadDataBrific.cs" />
     <Compile Include="Iterations\GE06\BRIFIC\ThresholdFS.cs" />

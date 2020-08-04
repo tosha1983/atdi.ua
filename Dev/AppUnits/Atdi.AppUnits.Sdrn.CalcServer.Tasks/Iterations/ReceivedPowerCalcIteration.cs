@@ -19,7 +19,7 @@ using Atdi.Contracts.Sdrn.DeepServices.EarthGeometry;
 
 namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 {
-    public class ReceivedPowerCalcIteration : IIterationHandler<ReceivedPowerCalcData, FieldStrengthCalcResult>
+    public class ReceivedPowerCalcIteration : IIterationHandler<ReceivedPowerCalcData, ReceivedPowerCalcResult>
     {
         private readonly ISignalService _signalService;
         private readonly IMapService _mapService;
@@ -180,7 +180,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             _heightArrayPool = _poolSite.GetPool<short[]>(ObjectPools.GisProfileHeightArrayObjectPool);
         }
 
-        public FieldStrengthCalcResult Run(ITaskContext taskContext, ReceivedPowerCalcData data)
+        public ReceivedPowerCalcResult Run(ITaskContext taskContext, ReceivedPowerCalcData data)
         {
             var profileOptions = DefineProfileOptions(data.PropagationModel);
 
@@ -368,13 +368,20 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     //LossSum = LossSum - 10 * Math.Log10(Math.Pow(10, -0.1 * (Loss1 - LossSum)) + Math.Pow(10, -0.1 * (Loss2 - LossSum)));
                     Level_dBm = data.Transmitter.MaxPower_dBm - data.Transmitter.Loss_dB - LossSum;
                 }
-                double FS_dBuVm = Level_dBm + 77.2 + 20 * Math.Log10(data.Transmitter.Freq_MHz);
-                return new FieldStrengthCalcResult
+                //double FS_dBuVm = Level_dBm + 77.2 + 20 * Math.Log10(data.Transmitter.Freq_MHz);
+                //return new FieldStrengthCalcResult
+                //{
+                //    FS_dBuVm = FS_dBuVm,
+                //    Level_dBm = Level_dBm,
+                //    AntennaPatternLoss_dB = -txAntennaPatternLoss_dB,
+                //    diffractionLoss_dB = lossResult.DiffractionLoss_dB
+                //};
+                return new ReceivedPowerCalcResult
                 {
-                    FS_dBuVm = FS_dBuVm,
                     Level_dBm = Level_dBm,
-                    AntennaPatternLoss_dB = -txAntennaPatternLoss_dB,
-                    diffractionLoss_dB = lossResult.DiffractionLoss_dB
+                    Frequency_Mhz = data.Transmitter.Freq_MHz,
+                    Distance_km = d_km,
+                    AntennaHeight_m = data.TxAltitude_m
                 };
             }
             catch (Exception)
