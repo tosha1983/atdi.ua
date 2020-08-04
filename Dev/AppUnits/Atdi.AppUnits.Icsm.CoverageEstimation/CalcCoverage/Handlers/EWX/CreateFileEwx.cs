@@ -107,7 +107,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                 writer.WriteEndElement();
                 writer.Close();
                 isSuccessCreateEwxFile = true;
-                this._logger.Info(Contexts.CalcCoverages, string.Format(Events.OperationSaveEWXFileCompleted.ToString(), Path));
+                this._logger.Info(Contexts.CalcCoverages, string.Format(CLocaliz.TxT(Events.OperationSaveEWXFileCompleted.ToString()), Path));
             }
             catch (Exception e)
             {

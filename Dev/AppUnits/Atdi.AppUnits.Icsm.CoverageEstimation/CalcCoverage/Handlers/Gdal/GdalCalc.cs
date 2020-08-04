@@ -214,7 +214,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                     for (int i = 0; i < listThreads.Length; i++)
                     {
                         listThreads[i].Join();
-                        this._logger.Info(Contexts.CalcCoverages, string.Format(Events.OperationSaveTempCovarageFileCompleted.ToString(), filesSource[i]));
+                        this._logger.Info(Contexts.CalcCoverages, string.Format(CLocaliz.TxT(Events.OperationSaveTempCovarageFileCompleted.ToString()), filesSource[i]));
                     }
                 }
                 image.Dispose();
@@ -300,7 +300,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                             }
                             outImage.FlushCache();
                             isSuccessCreateFiles = true;
-                            this._logger.Info(Contexts.CalcCoverages, string.Format(Events.OperationSaveTempCovarageFileCompleted.ToString(), tempCoverageFile));
+                            this._logger.Info(Contexts.CalcCoverages, string.Format(CLocaliz.TxT(Events.OperationSaveTempCovarageFileCompleted.ToString()), tempCoverageFile));
                         }
                         GC.Collect();
                     }
@@ -456,7 +456,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                         }
                         outImage.FlushCache();
                         isSuccessCreateFile = true;
-                        this._logger.Info(Contexts.CalcCoverages, string.Format(Events.OperationSaveFinalCovarageFileCompleted.ToString(), outPutFileName));
+                        this._logger.Info(Contexts.CalcCoverages, string.Format(CLocaliz.TxT(Events.OperationSaveFinalCovarageFileCompleted.ToString()), outPutFileName));
                     }
                 }
             }
@@ -531,7 +531,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                 for (int i = 0; i < listThreads.Length; i++)
                 {
                     listThreads[i].Join();
-                    this._logger.Info(Contexts.CalcCoverages, string.Format(Events.OperationSaveTempCovarageFileCompleted.ToString(), filesSource[i])+$" count = {cnt}");
+                    this._logger.Info(Contexts.CalcCoverages, string.Format(CLocaliz.TxT(Events.OperationSaveTempCovarageFileCompleted.ToString()), filesSource[i])+$" count = {cnt}");
                     cnt++;
                 }
             }
@@ -746,7 +746,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                     }
                 }
             }
-            this._logger.Info(Contexts.CalcCoverages, Events.ClearFilesFromTempTIFFFilesDirectory);
+            this._logger.Info(Contexts.CalcCoverages, CLocaliz.TxT(Events.ClearFilesFromTempTIFFFilesDirectory.ToString()));
         }
 
 
@@ -770,7 +770,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                     }
                 }
             }
-            this._logger.Info(Contexts.CalcCoverages, Events.ClearFilesFromICSTelecomProjectDir);
+            this._logger.Info(Contexts.CalcCoverages,CLocaliz.TxT(Events.ClearFilesFromICSTelecomProjectDir.ToString()));
         }
 
         /*
