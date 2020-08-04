@@ -11,6 +11,7 @@ using System.IO;
 using Atdi.Platform.Logging;
 using Atdi.AppUnits.Icsm.CoverageEstimation.Models;
 using Atdi.Common;
+using Atdi.AppUnits.Icsm.CoverageEstimation.Localization;
 
 
 namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
@@ -55,13 +56,13 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                     {
                         if ((CheckDiagH(ref diagH, out diagHNameTag) == false) || (CheckDiagV(ref diagV, out diagVNameTag) == false))
                         {
-                            this._logger.Info(Contexts.CalcCoverages, (EventText)$"Reject station Id = '{id}'");
+                            this._logger.Info(Contexts.CalcCoverages, (EventText)$"{CLocaliz.TxT("Reject station Id")} = '{id}'");
                             continue;
                         }
                     }
                     catch (Exception ex)
                     {
-                        this._logger.Exception(Contexts.CalcCoverages, (EventCategory)$"Reject station Id = '{id}'", ex);
+                        this._logger.Exception(Contexts.CalcCoverages, (EventCategory)$"{CLocaliz.TxT("Reject station Id")} = '{id}'", ex);
                         continue;
                     }
 
@@ -210,7 +211,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                 //diagV = diagV.Replace("VECTOR 5", "").Replace(",", ".");
                 //var array = ParseStringToArray(diagV);
                 NameTag = "DIAG_V";
-                throw new InvalidOperationException($"DiagV value = '{diagV}' not support");
+                throw new InvalidOperationException($"{CLocaliz.TxT("DiagV value =")} '{diagV}' {CLocaliz.TxT("not support")}");
                 //var arrayPolarV = InterpolationForICSTelecomVertical(array);
                 //diagV = GetFormatArray(arrayPolarV);
                 //return true;
@@ -282,15 +283,13 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                         var pointObject = new PointObject();
                         pointObject.Azimuth = inArr[i].ConvertStringToDouble().Value;
                         pointObject.Value = inArr[j].ConvertStringToDouble().Value;
-                        //pointObject.Azimuth = Convert.ToDouble(inArr[i]);
-                        //pointObject.Value = Convert.ToDouble(inArr[j]);
                         pointObjects[idx] = pointObject;
                         idx++;
                     }
                 }
                 else
                 {
-                    throw new InvalidOperationException($"Dimension array must be an even number");
+                    throw new InvalidOperationException(CLocaliz.TxT("Dimension array must be an even number"));
                 }
             }
             return pointObjects;
@@ -299,7 +298,6 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
         private bool isNotZeroValuesOnPointObjects(string diag)
         {
             var isChecked = false;
-
             var inArr = diag.Split(new char[] { '\t', '\n', '\r', ' ' }, StringSplitOptions.RemoveEmptyEntries);
             if ((inArr != null) && (inArr.Length > 1))
             {
@@ -311,8 +309,6 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                         var pointObject = new PointObject();
                         pointObject.Azimuth = inArr[i].ConvertStringToDouble().Value;
                         pointObject.Value = inArr[j].ConvertStringToDouble().Value;
-                        //pointObject.Azimuth = Convert.ToDouble(inArr[i]);
-                        //pointObject.Value = Convert.ToDouble(inArr[j]);
                         if (pointObject.Value > 0)
                         {
                             isChecked = true;
@@ -322,7 +318,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                 }
                 else
                 {
-                    throw new InvalidOperationException($"Dimension array must be an even number");
+                    throw new InvalidOperationException(CLocaliz.TxT("Dimension array must be an even number"));
                 }
             }
             return isChecked;
@@ -338,7 +334,6 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                 inArrDouble = new double[inArr.Length];
                 for (int i = 0; i < inArr.Length; i++)
                 {
-                    //inArrDouble[i] = Convert.ToDouble(inArr[i]);
                     inArrDouble[i] = inArr[i].ConvertStringToDouble().Value;
                 }
             }
@@ -354,7 +349,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
             {
                 if (inArray.Length < MinCount)
                 {
-                    throw new InvalidOperationException($"Incorrect count element in inArray ({inArray.Length} < {MinCount})  in the InterpolationForICSTelecomHorizontal method");
+                    throw new InvalidOperationException($"{CLocaliz.TxT("Incorrect count element in inArray")} ({inArray.Length} < {MinCount})  {CLocaliz.TxT("in the InterpolationForICSTelecomHorizontal method")}");
                 }
                 for (int i = 0; i < 36; i++)
                 {
@@ -365,7 +360,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
             }
             else
             {
-                throw new InvalidOperationException("The 'inArray' input parameter in the InterpolationForICSTelecomHorizontal method is null!");
+                throw new InvalidOperationException(CLocaliz.TxT("The 'inArray' input parameter in the InterpolationForICSTelecomHorizontal method is null!"));
             }
             return result;
         }
@@ -404,7 +399,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
             }
             else
             {
-                throw new InvalidOperationException("The 'inArray' input parameter in the InterpolationForICSTelecomHorizontal method is null!");
+                throw new InvalidOperationException(CLocaliz.TxT("The 'inArray' input parameter in the InterpolationForICSTelecomHorizontal method is null!"));
             }
             return result;
         }
@@ -439,7 +434,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
             }
             else
             {
-                throw new InvalidOperationException("The 'inArray' input parameter in the InterpolationForICSTelecomVertical method is null!");
+                throw new InvalidOperationException(CLocaliz.TxT("The 'inArray' input parameter in the InterpolationForICSTelecomVertical method is null!"));
             }
             return result;
         }
@@ -452,7 +447,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
             {
                 if (inArray.Length < MinCount)
                 {
-                    throw new InvalidOperationException($"Incorrect count element in inArray ({inArray.Length} < {MinCount})  in the InterpolationForICSTelecomVertical method");
+                    throw new InvalidOperationException($"{CLocaliz.TxT("Incorrect count element in inArray")} ({inArray.Length} < {MinCount})  {CLocaliz.TxT("in the InterpolationForICSTelecomVertical method")}");
                 }
                 for (int i = 0; i < 9; i++)
                 {
@@ -474,7 +469,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
             }
             else
             {
-                throw new InvalidOperationException("The 'inArray' input parameter in the InterpolationForICSTelecomVertical method is null!");
+                throw new InvalidOperationException(CLocaliz.TxT("The 'inArray' input parameter in the InterpolationForICSTelecomVertical method is null!"));
             }
             return result;
         }

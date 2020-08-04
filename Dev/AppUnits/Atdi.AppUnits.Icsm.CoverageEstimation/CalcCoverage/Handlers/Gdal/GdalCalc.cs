@@ -11,7 +11,7 @@ using System.IO;
 using OSGeo.GDAL;
 using Atdi.Platform.Logging;
 using Atdi.AppUnits.Icsm.CoverageEstimation.Models;
-
+using Atdi.AppUnits.Icsm.CoverageEstimation.Localization;
 
 
 namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
@@ -23,6 +23,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
         private const int MaxCountThreadFilesForConcatBlank = 50;
         private static int[,] grayMatrixGlobal { get; set; }
         private ILogger _logger { get; set; }
+
         public GdalCalc(ILogger logger)
         {
             this._logger = logger;
@@ -38,13 +39,13 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
             var words = File.ReadAllText(fileTFWBlank).Split(new char[] { '\t', '\n', '\r', ' ' }, StringSplitOptions.RemoveEmptyEntries);
             if (words == null)
             {
-                throw new InvalidOperationException($"File '{TiffFile}' is null content");
+                throw new InvalidOperationException($"{CLocaliz.TxT("File")}  '{TiffFile}' {CLocaliz.TxT("is null content")}");
             }
             else
             {
                 if (words.Length != 6)
                 {
-                    throw new InvalidOperationException($"Incorrect TFW file '{fileTFWBlank}'");
+                    throw new InvalidOperationException($"{CLocaliz.TxT("Incorrect TFW file")} '{fileTFWBlank}'");
                 }
                 else
                 {
@@ -71,12 +72,12 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                 }
                 else
                 {
-                    throw new InvalidOperationException($"Incorrect TFWParameter's");
+                    throw new InvalidOperationException(CLocaliz.TxT("Incorrect TFWParameter's"));
                 }
             }
             else
             {
-                throw new InvalidOperationException($"Incorrect TFWParameter.Step = '{tFWParameterBlank.Step}'");
+                throw new InvalidOperationException($"{CLocaliz.TxT("Incorrect TFWParameter.Step =")} '{tFWParameterBlank.Step}'");
             }
             return coordinate;
         }
