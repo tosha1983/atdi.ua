@@ -25,8 +25,8 @@ namespace Atdi.WebApiServices.SelfHost
             base.OnInstall();
 
             this._config = new HttpSelfHostConfiguration(this.Config["Url"].ToString());
-
-            this.Container.RegisterBoth<IRoutesConfig, RoutesConfig>(ServiceLifetime.Singleton);
+            this._config.MaxReceivedMessageSize = 50 * 1024 * 1024;
+			this.Container.RegisterBoth<IRoutesConfig, RoutesConfig>(ServiceLifetime.Singleton);
             this.Container.Register<IHttpControllerActivator, WebApiControllerActivator>(ServiceLifetime.Transient);
         }
 
