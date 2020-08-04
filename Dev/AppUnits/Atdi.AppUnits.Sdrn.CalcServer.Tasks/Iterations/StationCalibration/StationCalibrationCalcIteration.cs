@@ -650,7 +650,17 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
             var correlationResult = new ResultCorrelationGSIDGroupeStationsWithoutParameters();
             var correlationData = new StationCorellationCalcData();
-            var calibrationData = Atdi.Common.CopyHelper.CreateDeepCopy(data);
+            //var calibrationData = Atdi.Common.CopyHelper.CreateDeepCopy(data);
+            var calibrationData = new StationCalibrationCalcData()
+            {
+                FieldStrengthCalcData = data.FieldStrengthCalcData,
+                CalibrationParameters = Atdi.Common.CopyHelper.CreateDeepCopy(data.CalibrationParameters),
+                CodeProjection = data.CodeProjection,
+                CorellationParameters = Atdi.Common.CopyHelper.CreateDeepCopy(data.CorellationParameters),
+                GeneralParameters = Atdi.Common.CopyHelper.CreateDeepCopy(data.GeneralParameters),
+                GSIDGroupeDriveTests = Atdi.Common.CopyHelper.CreateDeepCopy(data.GSIDGroupeDriveTests),
+                GSIDGroupeStation = Atdi.Common.CopyHelper.CreateDeepCopy(data.GSIDGroupeStation)
+            };
 
             //var corellationResult = new ResultCorrelationGSIDGroupeStationsWithoutParameters();
             StationCorellationCalcIteration correlationCalcIteration = new StationCorellationCalcIteration(_iterationsPool, _transformation, _poolSite, _earthGeometricService, _logger);
