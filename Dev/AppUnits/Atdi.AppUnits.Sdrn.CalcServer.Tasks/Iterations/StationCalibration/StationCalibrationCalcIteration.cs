@@ -655,12 +655,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             {
                 FieldStrengthCalcData = new FieldStrengthCalcData()
                 {
-                    Antenna = data.FieldStrengthCalcData.Antenna,
                     BuildingContent = data.FieldStrengthCalcData.BuildingContent,
                     ClutterContent = data.FieldStrengthCalcData.ClutterContent,
                     CluttersDesc = data.FieldStrengthCalcData.CluttersDesc,
                     MapArea = data.FieldStrengthCalcData.MapArea,
                     ReliefContent = data.FieldStrengthCalcData.ReliefContent,
+                    Antenna = Atdi.Common.CopyHelper.CreateDeepCopy(data.FieldStrengthCalcData.Antenna),
                     PointAltitude_m = Atdi.Common.CopyHelper.CreateDeepCopy(data.FieldStrengthCalcData.PointAltitude_m),
                     PointCoordinate = Atdi.Common.CopyHelper.CreateDeepCopy(data.FieldStrengthCalcData.PointCoordinate),
                     PropagationModel = Atdi.Common.CopyHelper.CreateDeepCopy(data.FieldStrengthCalcData.PropagationModel),
