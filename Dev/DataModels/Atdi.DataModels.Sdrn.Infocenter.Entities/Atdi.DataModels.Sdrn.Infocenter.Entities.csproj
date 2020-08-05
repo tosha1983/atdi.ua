@@ -91,6 +91,8 @@
     <Content Include="DataLayer\Oracle\Tables\SDRNSVR.DRIVE_TESTS_POINTS.sql" />
     <Content Include="DataLayer\Oracle\Tables\SDRNSVR.SM_MEAS_RESULTS.sql" />
     <Content Include="DataLayer\Oracle\Tables\SDRNSVR.SM_MEAS_RESULTS_STATS.sql" />
+    <Content Include="DataLayer\SqlServer\ChangeLogs\rev.000.sql" />
+    <Content Include="DataLayer\SqlServer\ChangeLogs\rev.001.sql" />
     <Content Include="DataLayer\SqlServer\Tables\[SDRNSVR].[DRIVE_ROUTES].sql" />
     <Content Include="DataLayer\SqlServer\Tables\[STATIONS].[GLOBAL_IDENTITIES].sql" />
     <Content Include="DataLayer\SqlServer\Tables\[INFOC].[INTEGRATION_LOG].sql" />
