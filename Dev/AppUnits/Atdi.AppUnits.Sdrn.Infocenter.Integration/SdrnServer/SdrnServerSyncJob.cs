@@ -90,6 +90,10 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration.SdrnServer
 			return JobExecutionResult.Completed;
 		}
 
+		private void SynchronizeSensors(IDataLayerScope infocDbScope, IDataLayerScope sdrnsDbScope)
+		{
+
+		}
 		private void SynchronizeStationMonitoring(IDataLayerScope infocDbScope, IDataLayerScope sdrnsDbScope)
 		{
 			
@@ -171,6 +175,7 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration.SdrnServer
 			var sdrnsReadResultQuery = _sdrnsDataLayer.GetBuilder<ES_SD.IResMeas>()
 					.From()
 					.Select(c => c.Id)
+
 					.Select(c => c.TimeMeas)
 					.Select(c => c.SUBTASK_SENSOR.SENSOR.Name)
 					.Select(c => c.SUBTASK_SENSOR.SENSOR.Title)
