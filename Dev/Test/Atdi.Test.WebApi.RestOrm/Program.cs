@@ -35,6 +35,18 @@ namespace Atdi.Test.WebApi.RestOrm
 			var dataContext = new WebApiDataContext("SDRN_CalcServer_DB");
 			var dataLayer = new WebApiDataLayer(endpoint, dataContext);
 
+			var data = new long[14000];
+			for (int i = 0; i < data.Length; i++)
+			{
+				data[i] = i;
+			}
+			var webQuery = dataLayer.GetBuilder<IStationCalibrationArgs>()
+				.Create()
+				.SetValue(c => c.TaskId, 2)
+				.SetValue(c => c.StationIds, data);
+
+			var count = dataLayer.Executor.Execute(webQuery);
+
 			//var webQuery = dataLayer.GetBuilder<IProject>()
 			//	.Create()
 			//	.SetValue(c => c.CreatedDate, DateTimeOffset.Now)

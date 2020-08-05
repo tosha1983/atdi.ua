@@ -206,6 +206,8 @@
     <Content Include="DataLayer\Oracle\Tables\CALC.PROJECT_MAPS.sql" />
     <Content Include="DataLayer\Oracle\Tables\CALC.PROJECT_MAP_CONTENTS.sql" />
     <Content Include="DataLayer\Oracle\Tables\CALC.PROJECT_MAP_CONTENT_SOURCES.sql" />
+    <Content Include="DataLayer\SqlServer\ChangeLogs\rev.000.sql" />
+    <Content Include="DataLayer\SqlServer\ChangeLogs\rev.001.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.CALCRESULT_EVENTS.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.CALCRESULTS_GN06.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.GN06_AFFECTED_ADM_RESULT.sql" />

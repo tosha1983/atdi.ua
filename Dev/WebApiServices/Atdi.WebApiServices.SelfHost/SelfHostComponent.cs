@@ -25,7 +25,16 @@ namespace Atdi.WebApiServices.SelfHost
             base.OnInstall();
 
             this._config = new HttpSelfHostConfiguration(this.Config["Url"].ToString());
-            this._config.MaxReceivedMessageSize = 50 * 1024 * 1024;
+
+			this._config.MaxReceivedMessageSize = this.Config.GetParameterAsLong("MaxReceivedMessageSize").GetValueOrDefault(50 * 1024 * 1024);
+
+			var maxBufferSize =this.Config.GetParameterAsInteger("MaxBufferSize");
+			if (maxBufferSize.HasValue)
+			{
+				this._config.MaxBufferSize = maxBufferSize.Value;
+			}
+			
+
 			this.Container.RegisterBoth<IRoutesConfig, RoutesConfig>(ServiceLifetime.Singleton);
             this.Container.Register<IHttpControllerActivator, WebApiControllerActivator>(ServiceLifetime.Transient);
         }
