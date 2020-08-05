@@ -10,12 +10,12 @@
 	[AGL]	[float] null,
 	[RXLOSS]	[float] null,
 	[TECHID]	[nvarchar](150) null,
-	constraint [PK_SENSOR] primary key clustered ([ID]) on [PRIMARY]  
+	constraint [PK_SENSORS] primary key clustered ([ID]) on [PRIMARY]  
 ) on [PRIMARY]
 
 GO
 
-create table [ICSC].[SENSOR_ANTENNAS] (
+create table [SDRNSVR].[SENSOR_ANTENNAS] (
 	[ID] 	[bigint] not null,
 	[SENSOR_ID]	[bigint] null,
 	[CODE]	[nvarchar](50) null,
@@ -33,5 +33,17 @@ create table [ICSC].[SENSOR_ANTENNAS] (
 	[ADDLOSS]	[float] null,
 	[XPD]	[float] null,
 	constraint [PK_SENSOR_ANTENNAS] primary key clustered ([ID]) on [PRIMARY]  
+) on [PRIMARY]
+GO
+
+create table [SDRNSVR].[SENSOR_ANTENNA_PATTERNS] (
+	[ID] 	[bigint] not null,
+	[SENSOR_ANTENNA_ID]	[bigint] null,
+	[FREQ]	[float] null,
+	[GAIN]	[float] null,
+	[DIAGA]	[varchar](1000) null,
+	[DIAGH]	[varchar](1000) null,
+	[DIAGV]	[varchar](1000) null,
+	constraint [PK_SENSOR_ANTENNA_PATTERNS] primary key clustered ([ID]) on [PRIMARY]  
 ) on [PRIMARY]
 go
