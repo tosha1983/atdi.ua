@@ -21,7 +21,6 @@
     <Field Name="Agl" Desc="Altitude above ground level, m" Title="Altitude above ground level, m" DataType="Double.30.10" SourceName="AGL" SourceType="Column" Required="false" Unit="Length.m"/>
     <Field Name="RxLoss" Desc="RxLoss, dB" Title="RxLoss, dB" DataType="Double.30.10" SourceName="RXLOSS" SourceType="Column" Required="false" Unit="Power.dB"/>
     <Field Name="TechId" Desc="TechId" Title="TechId" DataType="Text.150" SourceName="TECHID" SourceType="Column" Required="false"/>
-    
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>
