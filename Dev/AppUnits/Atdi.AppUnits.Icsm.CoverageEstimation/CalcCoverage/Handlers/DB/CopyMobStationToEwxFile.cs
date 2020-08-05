@@ -13,7 +13,7 @@ using Atdi.DataModels.DataConstraint;
 using Atdi.Platform.Logging;
 using Atdi.Contracts.CoreServices.DataLayer;
 using Atdi.Contracts.LegacyServices.Icsm;
-
+using Atdi.AppUnits.Icsm.CoverageEstimation.Localization;
 
 
 namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
@@ -62,6 +62,55 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
             return arrIntEmitting;
         }
 
+        private string GeneratePointString(PointObject[] inArray)
+        {
+            string points = "POINTS ";
+            var lstArray = new List<string>();
+            for (int i=0; i< inArray.Length; i++)
+            {
+                lstArray.Add(inArray[i].Azimuth.ToString().Replace(",", "."));
+                lstArray.Add(inArray[i].Value.ToString().Replace(",", "."));
+            }
+            return points + string.Join(" ", lstArray);
+        }
+
+        private PointObject[] GetAntennaMobMpt(int antId, string typePatt)
+        {
+            var pointObjects = new List<PointObject>();
+            var selectedColumns = new string[] {
+                    "ANT_ID",
+                    "TYPE",
+                    "NUM",
+                    "ANGLE",
+                    "ATTN"
+                };
+
+
+            var QueryFromTable = _dataLayer.Builder
+            .From("ANTENNA_MOB_MPT")
+            .Where("ANT_ID", antId)
+            .Where("TYPE", typePatt)
+            .OrderByAsc("NUM")
+            .Select(selectedColumns);
+
+            var isNotEmptyInTable = this._queryExecutor
+         .Fetch(QueryFromTable, reader =>
+         {
+             
+             while (reader.Read())
+             {
+                 var angle = reader.GetValueAsInt32(reader.GetFieldType(reader.GetOrdinal("ANGLE")), reader.GetOrdinal("ANGLE"));
+                 var value = reader.GetValueAsDouble(reader.GetFieldType(reader.GetOrdinal("ATTN")), reader.GetOrdinal("ATTN"));
+                 pointObjects.Add(new PointObject()
+                 {
+                     Azimuth = angle,
+                     Value = value
+                 });
+             }
+             return true;
+         });
+            return pointObjects.ToArray();
+        }
 
 
         public EwxData[] Copy(DataConfig dataConfig, string icsTelecomEwxFile, ILogger logger)
@@ -79,6 +128,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                     "Position.ADDRESS",
                     "Position.ASL",
                     "PWR_ANT",
+                    "POWER",
                     "TX_HIGH_FREQ",
                     "BW",
                     "AZIMUTH",
@@ -89,6 +139,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                     "Position.LONGITUDE",
                     "Position.LATITUDE",
                     "Licence.ID",
+                    "Antenna.ID",
                     "Antenna.POLARIZATION",
                     "Antenna.DIAGA",
                     "Antenna.DIAGH",
@@ -179,18 +230,22 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                          station.CoordY = CoordY.Value;
                      }
 
+                     var DiagA = reader.GetNullableValueAsString(reader.GetFieldType(reader.GetOrdinal("Antenna.DIAGA")), reader.GetOrdinal("Antenna.DIAGA"));
+                     if (DiagA != null)
+                     {
+                         station.DiagA = DiagA;
+                     }
+
                      var DiagH = reader.GetNullableValueAsString(reader.GetFieldType(reader.GetOrdinal("Antenna.DIAGH")), reader.GetOrdinal("Antenna.DIAGH"));
                      if (DiagH != null)
                      {
                          station.DiagH = DiagH;
-                         station.DiagH = station.DiagH;
                      }
 
                      var DiagV = reader.GetNullableValueAsString(reader.GetFieldType(reader.GetOrdinal("Antenna.DIAGV")), reader.GetOrdinal("Antenna.DIAGV"));
                      if (DiagV != null)
                      {
                          station.DiagV = DiagV;
-                         station.DiagV = station.DiagV;
                      }
 
                      var Frequency = reader.GetNullableValueAsDouble(reader.GetFieldType(reader.GetOrdinal("AssignedFrequencies.TX_FREQ")), reader.GetOrdinal("AssignedFrequencies.TX_FREQ"));
@@ -252,6 +307,8 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                          station.NominalPower = Math.Round(Math.Pow(10, station.NominalPower / 10), 7);
                      }
 
+                     station.AntennaId = reader.GetNullableValueAsInt32(reader.GetFieldType(reader.GetOrdinal("Antenna.ID")), reader.GetOrdinal("Antenna.ID"));
+
                      station.Polar = reader.GetNullableValueAsString(reader.GetFieldType(reader.GetOrdinal("Antenna.POLARIZATION")), reader.GetOrdinal("Antenna.POLARIZATION"));
                      station.PolarRx = reader.GetNullableValueAsString(reader.GetFieldType(reader.GetOrdinal("Antenna.POLARIZATION")), reader.GetOrdinal("Antenna.POLARIZATION"));
 
@@ -267,9 +324,62 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                          station.U_cx1 = U_cx1.Value;
                      }
 
+                     if (station.AntennaId != null)
+                     {
+                         if (DiagA == "NS")
+                         {
+                             var HH_Patt = GetAntennaMobMpt(station.AntennaId.Value, "HH");
+                             var ELHH_Patt = GetAntennaMobMpt(station.AntennaId.Value, "ELHH");
+                             var VV_Patt = GetAntennaMobMpt(station.AntennaId.Value, "VV");
+                             var ELVV_Patt = GetAntennaMobMpt(station.AntennaId.Value, "ELVV");
+                             if (((HH_Patt.Length > 0 || VV_Patt.Length > 0) && (ELHH_Patt.Length > 0 || ELVV_Patt.Length > 0)) == false)
+                             {
+                                 this._logger.Info(Contexts.CalcCoverages, (EventText)$"{CLocaliz.TxT("Reject station Id")} = '{id}'");
+                                 continue;
+                             }
+                             else
+                             {
+                                 if (station.Polar == "H")
+                                 {
+                                     station.DiagH = GeneratePointString(HH_Patt);
+                                     station.DiagV = GeneratePointString(ELHH_Patt);
+                                 }
+                                 else if (station.Polar == "V")
+                                 {
+                                     station.DiagH = GeneratePointString(VV_Patt);
+                                     station.DiagV = GeneratePointString(ELVV_Patt);
+                                 }
+                                 else
+                                 {
+                                     if ((VV_Patt.Length > 0 && ELVV_Patt.Length > 0))
+                                     {
+                                         station.DiagH = GeneratePointString(VV_Patt);
+                                         station.DiagV = GeneratePointString(ELVV_Patt);
+                                     }
+                                     else if ((HH_Patt.Length > 0 && ELHH_Patt.Length > 0))
+                                     {
+                                         station.DiagH = GeneratePointString(HH_Patt);
+                                         station.DiagV = GeneratePointString(ELHH_Patt);
+                                     }
+                                 }
+                             }
+                         }
+                     }
+
+                     var RaditedPower = reader.GetNullableValueAsDouble(reader.GetFieldType(reader.GetOrdinal("POWER")), reader.GetOrdinal("POWER"));
+                     if (RaditedPower != null)
+                     {
+                         station.RaditedPower = RaditedPower.Value;
+                         station.Gain = 0;
+                         station.GainRx = 0;
+                         station.Losses = 0;
+                         station.LossesRx = 0;
+                         station.NominalPower = Math.Round(Math.Pow(10, RaditedPower.Value / 10), 7); 
+                     }
 
                      lstStations.Add(new Station()
                      {
+                         Id = station.Id,
                          Address = station.Address,
                          Altitude = station.Altitude,
                          Azimuth = station.Azimuth,
@@ -279,6 +389,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                          Category = station.Category,
                          CoordX = station.CoordX,
                          CoordY = station.CoordY,
+                         DiagA = station.DiagA,
                          DiagH = station.DiagH,
                          DiagV = station.DiagV,
                          D_cx1 = station.D_cx1,
@@ -292,6 +403,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                          LossesRx = station.LossesRx,
                          NetId = station.NetId,
                          NominalPower = station.NominalPower,
+                         RaditedPower  = station.RaditedPower,
                          Polar = station.Polar,
                          PolarRx = station.PolarRx,
                          Tilt = station.Tilt,
