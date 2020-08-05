@@ -53,8 +53,12 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                 Utils.LogInfo(loadConfig, Contexts.CalcCoverages, CLocaliz.TxT($"The start procedure for opening the page for the section 'GroupsMobStationConfig2'"));
 
                 var gdalCalc = new GdalCalc(this._logger);
-                
 
+                if (loadConfig.BlockStationsConfig.MobStation2Config == null)
+                {
+                    this._logger.Warning(Contexts.CalcCoverages, string.Format(CLocaliz.TxT(Events.StartIterationNumber.ToString()), iterationNumber), CLocaliz.TxT(Exceptions.GroupsMobStation2ConfigBlockIsEmpty));
+                    return;
+                }
                 // Проверка/создание списка поддиректорий, соответствующих перечню значений Province
                 gdalCalc.CheckOutTIFFFilesDirectorysForMobStation2(loadConfig);
                 

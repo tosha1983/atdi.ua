@@ -47,6 +47,10 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation
         public static readonly string OccurredWhilePreparingTemporaryImageTIF2 = "An error occurred while preparing the temporary image files (TIF) as a result of the operation of combining the contents of the TIF form file and the coverage calculation files (for FreqConfig = '{0}')";
         public static readonly string ResultRequestWebQueryEmptyRecordset = "The result of the WebQuery query is an empty set";
         public static readonly string CodeOperatorAndStatusConfigBlockIsEmpty = "The 'CodeOperatorAndStatusConfig' block in the configuration file is empty";
+        public static readonly string GroupsMobStationConfigBlockIsEmpty = "The 'GroupsMobStationConfig' block in the configuration file is empty";
+        public static readonly string GroupsMobStation2ConfigBlockIsEmpty = "The 'GroupsMobStation2Config' block in the configuration file is empty";
+
+
         public static readonly string CountCodeOperatorAndStatusConfigBlocksLengthZero = "The number of blocks 'CodeOperatorAndStatusConfig' is zero";
         public static readonly string ErrorCallMethodAuthenticateUser = "Error calling method 'AuthenticateUser'";
         public static readonly string ErrorCallMethodGetQueryGroups = "Error calling method 'GetQueryGroups'";
