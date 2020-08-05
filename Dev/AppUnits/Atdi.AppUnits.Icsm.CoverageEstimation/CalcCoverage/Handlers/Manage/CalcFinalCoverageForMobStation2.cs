@@ -53,20 +53,24 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                 Utils.LogInfo(loadConfig, Contexts.CalcCoverages, CLocaliz.TxT($"The start procedure for opening the page for the section 'GroupsMobStationConfig2'"));
 
                 var gdalCalc = new GdalCalc(this._logger);
-                
-
-                // Проверка/создание списка поддиректорий, соответствующих перечню значений Province
-                gdalCalc.CheckOutTIFFFilesDirectorysForMobStation2(loadConfig);
-                
-                this._logger.Info(Contexts.CalcCoverages, string.Format(Events.StartIterationNumber.ToString(), iterationNumber));
 
                 if (loadConfig.BlockStationsConfig.MobStation2Config == null)
                 {
-                    throw new InvalidOperationException(Exceptions.CodeOperatorAndStatusConfigBlockIsEmpty);
+                    this._logger.Warning(Contexts.CalcCoverages, string.Format(CLocaliz.TxT(Events.StartIterationNumber.ToString()), iterationNumber), CLocaliz.TxT(Exceptions.GroupsMobStation2ConfigBlockIsEmpty));
+                    return;
+                }
+                // Проверка/создание списка поддиректорий, соответствующих перечню значений Province
+                gdalCalc.CheckOutTIFFFilesDirectorysForMobStation2(loadConfig);
+                
+                this._logger.Info(Contexts.CalcCoverages, string.Format(CLocaliz.TxT(Events.StartIterationNumber.ToString()), iterationNumber));
+
+                if (loadConfig.BlockStationsConfig.MobStation2Config == null)
+                {
+                    throw new InvalidOperationException(CLocaliz.TxT(Exceptions.CodeOperatorAndStatusConfigBlockIsEmpty));
                 }
                 if (loadConfig.BlockStationsConfig.MobStation2Config.Length == 0)
                 {
-                    throw new InvalidOperationException(Exceptions.CountCodeOperatorAndStatusConfigBlocksLengthZero);
+                    throw new InvalidOperationException(CLocaliz.TxT(Exceptions.CountCodeOperatorAndStatusConfigBlocksLengthZero));
                 }
 
                 // цикл по перечню стандартов, провинций, операторов 
@@ -77,17 +81,17 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
 
                     if (codeOperatorAndStatusesConfig == null)
                     {
-                        throw new InvalidOperationException(Exceptions.BlockCodeOperatorAndStatusConfigIsNull);
+                        throw new InvalidOperationException(CLocaliz.TxT(Exceptions.BlockCodeOperatorAndStatusConfigIsNull));
                     }
 
                     if (codeOperatorAndStatusesConfig.FreqConfig.provincesConfig == null)
                     {
-                        throw new InvalidOperationException(Exceptions.Block_CodeOperatorAndStatusConfig_FreqConfig_provincesConfigIsNull);
+                        throw new InvalidOperationException(CLocaliz.TxT(Exceptions.Block_CodeOperatorAndStatusConfig_FreqConfig_provincesConfigIsNull));
                     }
 
                     if (codeOperatorAndStatusesConfig.FreqConfig.provincesConfig.Length == 0)
                     {
-                        throw new InvalidOperationException(Exceptions.CountBlock_CodeOperatorAndStatusConfig_FreqConfig_provincesConfigEqualZero);
+                        throw new InvalidOperationException(CLocaliz.TxT(Exceptions.CountBlock_CodeOperatorAndStatusConfig_FreqConfig_provincesConfigEqualZero));
                     }
 
                     for (int l = 0; l < codeOperatorAndStatusesConfig.FreqConfig.provincesConfig.Length; l++)
@@ -182,7 +186,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                                 this._logger.Info(Contexts.CalcCoverages, $"{CLocaliz.TxT("The procedure for deleting the log file of the last operation")}  '{this._appServerComponentConfig.ProtocolOperationFileNameForMobStation2}' {CLocaliz.TxT("successfully completed")}");
                                 Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("The procedure for deleting the log file of the last operation")}  '{this._appServerComponentConfig.ProtocolOperationFileNameForMobStation2}' {CLocaliz.TxT("successfully completed")}");
 
-                                throw new Exception(string.Format(Exceptions.ErrorCopyStationsIntoEwxFile2, freqConfigValues, provincesConfig.Name));
+                                throw new Exception(string.Format(CLocaliz.TxT(Exceptions.ErrorCopyStationsIntoEwxFile2), freqConfigValues, provincesConfig.Name));
                             }
                             else
                             {
@@ -287,7 +291,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                                         var isSuccessCreateTempFiles = gdalCalc.StartProcessConcatBlankWithStation(loadConfig, ICSTelecomEwxFileDir, provincesConfig.BlankTIFFFile, filesOuttempEwxFilesDirectory[h]);
                                         if (isSuccessCreateTempFiles == false)
                                         {
-                                            throw new InvalidOperationException(string.Format(Exceptions.OccurredWhilePreparingTemporaryImageTIF2, freqConfigValues));
+                                            throw new InvalidOperationException(string.Format(CLocaliz.TxT(Exceptions.OccurredWhilePreparingTemporaryImageTIF2), freqConfigValues));
                                         }
                                         this._logger.Info(Contexts.CalcCoverages, CLocaliz.TxT("The procedure for preparing temporary image files has been successfully completed"));
                                         Utils.LogInfo(loadConfig, Contexts.CalcCoverages, CLocaliz.TxT("The procedure for preparing temporary image files has been successfully completed"));
@@ -329,7 +333,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                                 var isSuccessCreateOutCoverageFile = gdalCalc.Run(loadConfig, System.IO.Path.GetTempPath(), fileName, provincesConfig.BlankTIFFFile);
                                 if (isSuccessCreateOutCoverageFile == false)
                                 {
-                                    throw new InvalidOperationException(string.Format(Exceptions.FinalCoverageFileTifNotWritenIntoPath2, finalCoverageTIFFile, freqConfigValues));
+                                    throw new InvalidOperationException(string.Format(CLocaliz.TxT(Exceptions.FinalCoverageFileTifNotWritenIntoPath2), finalCoverageTIFFile, freqConfigValues));
                                 }
                                 else
                                 {
@@ -397,14 +401,14 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                         }
                         else
                         {
-                            throw new InvalidOperationException(Exceptions.ICSTelecomProjectFileIsNullOrEmpty);
+                            throw new InvalidOperationException(CLocaliz.TxT(Exceptions.ICSTelecomProjectFileIsNullOrEmpty));
                         }
                     }
                 }
                 //после очередной итерации
                 // очистка итоговых  списка поддиректорий, соответствующих перечню значений Province
                 //gdalCalc.ClearOutTIFFFilesDirectory(loadConfig);
-                this._logger.Info(Contexts.CalcCoverages, string.Format(Events.EndIterationNumber.ToString(), iterationNumber));
+                this._logger.Info(Contexts.CalcCoverages, string.Format(CLocaliz.TxT(Events.EndIterationNumber.ToString()), iterationNumber));
 
                 Utils.LogInfo(loadConfig, Contexts.CalcCoverages, CLocaliz.TxT("Coverage calculation procedure for 'GroupsMobStationConfig' section completed successfully"));
             }

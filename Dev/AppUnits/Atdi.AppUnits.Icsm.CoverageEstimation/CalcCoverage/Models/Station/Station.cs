@@ -14,6 +14,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Models
         public string Category { get; set; }
         public double Altitude { get; set; }
         public double NominalPower { get; set; }
+        public double RaditedPower { get; set; }
         public double Frequency { get; set; }
         public double Bandwidth { get; set; }
         public double BandwidthRx { get; set; }
@@ -28,8 +29,10 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Models
         public double CoordY { get; set; }
         public string Info1 { get; set; }
         public int NetId { get; set; }
+        public int? AntennaId { get; set; }
         public string Polar { get; set; }
         public string PolarRx { get; set; }
+        public string DiagA { get; set; }
         public string DiagH { get; set; }
         public string DiagV { get; set; }
         public double FKTB { get; set; }

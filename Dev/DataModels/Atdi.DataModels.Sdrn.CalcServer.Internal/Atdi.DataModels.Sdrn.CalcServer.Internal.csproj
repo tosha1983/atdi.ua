@@ -43,6 +43,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Clients\ClientContext.cs" />
+    <Compile Include="Iterations\PercentTimeForGainCalcData.cs" />
+    <Compile Include="Iterations\ReceivedPowerCalcResult.cs" />
     <Compile Include="Iterations\ReceivedPowerCalcData.cs" />
     <Compile Include="Iterations\Gn06\Input\BroadcastingFieldStrengthInPointGE06.cs" />
     <Compile Include="Iterations\Gn06\Input\BroadcastingFieldStrengthCalcData.cs" />
