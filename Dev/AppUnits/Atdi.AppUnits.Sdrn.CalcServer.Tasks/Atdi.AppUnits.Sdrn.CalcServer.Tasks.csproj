@@ -101,7 +101,7 @@
       <Name>Atdi.Contracts.CoreServices.EntityOrm</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.CalcServer.Internal\Atdi.Contracts.Sdrn.CalcServer.Internal.csproj">
-      <Project>{07126BD0-63A2-442F-9559-BE94B332B5CA}</Project>
+      <Project>{07126bd0-63a2-442f-9559-be94b332b5ca}</Project>
       <Name>Atdi.Contracts.Sdrn.CalcServer.Internal</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.CalcServer\Atdi.Contracts.Sdrn.CalcServer.csproj">
