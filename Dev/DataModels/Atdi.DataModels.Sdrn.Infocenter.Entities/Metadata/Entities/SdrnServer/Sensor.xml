@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "Sensor"
+  Title       = "Sensor"
+  Desc        = "The sensor from SDRN Server"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>SENSORS</Name>
+    <Schema>SDRNSVR</Schema>
+  </DataSource>
+  <Fields>
+    <Field Name="Id" Desc="Id" Title="Id" DataType="Integer.64" SourceName="ID" SourceType="Column" Required="true"/>
+    <Field Name="SensorIdentifierId" Desc="SensorIdentifierId" Title="SensorIdentifierId" DataType="Integer.64" SourceName="SENSORIDENTIFIER_ID" SourceType="Column" Required="false"/>
+    <Field Name="Status" Desc="Status" Title="Status" DataType="Text.25" SourceName="STATUS" SourceType="Column" Required="false"/>
+    <Field Name="Name" Desc="Name" Title="Name" DataType="Text.150" SourceName="NAME" SourceType="Column" Required="false"/>
+    <Field Name="BiuseDate"  Desc="Bring into use date" Title="Bring into use date" DataType="DateTime" SourceName="BIUSEDATE" SourceType="Column" Required="false"/>
+    <Field Name="EouseDate" Desc="End of use date" Title="End of use date" DataType="DateTime" SourceName="EOUSEDATE" SourceType="Column" Required="false"/>
+    <Field Name="Azimuth" Desc="Azimuth, Azimuth" Title="Azimuth, degree" DataType="Double.30.10" SourceName="AZIMUTH" SourceType="Column" Required="false" Unit="Angle.Degree"/>
+    <Field Name="Elevation" Desc="Elevation, degree" Title="Elevation, degree" DataType="Double.30.10" SourceName="ELEVATION" SourceType="Column" Required="false" Unit="Angle.Degree"/>
+    <Field Name="Agl" Desc="Altitude above ground level, m" Title="Altitude above ground level, m" DataType="Double.30.10" SourceName="AGL" SourceType="Column" Required="false" Unit="Length.m"/>
+    <Field Name="RxLoss" Desc="RxLoss, dB" Title="RxLoss, dB" DataType="Double.30.10" SourceName="RXLOSS" SourceType="Column" Required="false" Unit="Power.dB"/>
+    <Field Name="TechId" Desc="TechId" Title="TechId" DataType="Text.150" SourceName="TECHID" SourceType="Column" Required="false"/>
+    
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>
