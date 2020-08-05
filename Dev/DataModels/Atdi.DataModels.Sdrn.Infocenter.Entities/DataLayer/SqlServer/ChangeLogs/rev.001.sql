@@ -46,4 +46,43 @@ create table [SDRNSVR].[SENSOR_ANTENNA_PATTERNS] (
 	[DIAGV]	[varchar](1000) null,
 	constraint [PK_SENSOR_ANTENNA_PATTERNS] primary key clustered ([ID]) on [PRIMARY]  
 ) on [PRIMARY]
+GO
+
+create table [SDRNSVR].[SENSOR_EQUIP] (
+	[ID] 	[bigint] not null,
+	[SENSOR_ID]	[bigint] null,
+	[CODE]	[nvarchar](50) null,
+	[MANUFACTURER]	[nvarchar](50) null,
+	[NAME]	[nvarchar](50) null,
+	[TECHID]	[nvarchar](200) null,
+	[LOWER_FREQ]	[float] null,
+	[UPPER_FREQ]	[float] null,
+	constraint [PK_SENSOR_EQUIP] primary key clustered ([ID]) on [PRIMARY]  
+) on [PRIMARY]
+GO
+
+create table [SDRNSVR].[SENSOR_LOCATIONS] (
+	[ID] 	[bigint] not null,
+	[SENSOR_ID]	[bigint] null,
+	[DATA_FROM]	[datetime] null,
+	[DATA_TO]	[datetime] null,
+	[DATA_CREATED]	[datetime] null,
+	[STATUS]	[nvarchar](25) null,
+	[LON]	[float] null,
+	[LAT]	[float] null,
+	[ASL]	[float] null,
+	constraint [PK_SENSOR_LOCATIONS] primary key clustered ([ID]) on [PRIMARY]  
+) on [PRIMARY]
+GO
+
+create table [SDRNSVR].[SENSOR_EQUIP_SENSITIVITES] (
+	[ID] 	[bigint] not null,
+	[SENSOR_EQUIP_ID]	[bigint] null,
+	[FREQ]	[float] null,
+	[KTBF]	[float] null,
+	[NOISEF]	[float] null,
+	[FREQ_STABILITY]	[float] null,
+	[ADDLOSS]	[float] null,
+	constraint [PK_SENSOR_EQUIP_SENSITIVITES] primary key clustered ([ID]) on [PRIMARY]  
+) on [PRIMARY]
 go

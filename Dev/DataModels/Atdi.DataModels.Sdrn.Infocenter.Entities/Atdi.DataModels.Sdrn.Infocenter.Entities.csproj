@@ -53,6 +53,9 @@
     <Compile Include="Entities\SdrnServer\ISensor.cs" />
     <Compile Include="Entities\SdrnServer\ISensorAntenna.cs" />
     <Compile Include="Entities\SdrnServer\ISensorAntennaPattern.cs" />
+    <Compile Include="Entities\SdrnServer\ISensorEquipment.cs" />
+    <Compile Include="Entities\SdrnServer\ISensorLocation.cs" />
+    <Compile Include="Entities\SdrnServer\ISensorEquipmentSensitivity.cs" />
     <Compile Include="Entities\SdrnServer\IStationMonitoring.cs" />
     <Compile Include="Entities\SdrnServer\IStationMonitoringStats.cs" />
     <Compile Include="Entities\Stations\IGlobalIdentity.cs" />
@@ -114,6 +117,9 @@
     <Content Include="Metadata\Entities\SdrnServer\Sensor.xml" />
     <Content Include="Metadata\Entities\SdrnServer\SensorAntenna.xml" />
     <Content Include="Metadata\Entities\SdrnServer\SensorAntennaPattern.xml" />
+    <Content Include="Metadata\Entities\SdrnServer\SensorEquipment.xml" />
+    <Content Include="Metadata\Entities\SdrnServer\SensorLocation.xml" />
+    <Content Include="Metadata\Entities\SdrnServer\SensorEquipmentSensitivity.xml" />
     <Content Include="Metadata\Entities\Stations\GlobalIdentity.xml" />
     <Content Include="Metadata\DataTypes\ClrObject\CT.Object.xml" />
     <Content Include="Metadata\DataTypes\ClrObject\CT.ReadOnlyDictionary.String.String.xml" />
