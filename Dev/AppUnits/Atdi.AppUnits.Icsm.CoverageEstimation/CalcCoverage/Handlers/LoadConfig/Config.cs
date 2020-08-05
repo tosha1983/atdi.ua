@@ -278,6 +278,10 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
         private CodeOperatorAndStatusConfig[] GetConfigGroupsMobStation2(XDocument xdoc)
         {
             CodeOperatorAndStatusConfig[] mobStationConfig2 = null;
+
+            if (!xdoc.Element("SettingCoverageCalculation").Element("Params").Element("ObjectDataConfig").ToString().Contains("GroupsMobStation2Config"))
+                return mobStationConfig2;
+
             var settingMobStation2Config = xdoc.Element("SettingCoverageCalculation").Element("Params").Element("ObjectDataConfig").Element("GroupsMobStation2Config").Elements("CodeOperatorAndStatusConfig");
             var stationsConfig = settingMobStation2Config;
             if ((stationsConfig != null) && (stationsConfig.Count() > 0))
@@ -428,6 +432,10 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
         private CodeOperatorAndStatusConfig[] GetConfigGroupsMobStation(XDocument xdoc)
         {
             CodeOperatorAndStatusConfig[] mobStationConfig = null;
+
+            if (!xdoc.Element("SettingCoverageCalculation").Element("Params").Element("ObjectDataConfig").ToString().Contains("GroupsMobStationConfig"))
+                return mobStationConfig;
+
             var settingMobStationConfig = xdoc.Element("SettingCoverageCalculation").Element("Params").Element("ObjectDataConfig").Element("GroupsMobStationConfig").Elements("CodeOperatorAndStatusConfig");
             var stationsConfig = settingMobStationConfig;
             if ((stationsConfig != null) && (stationsConfig.Count() > 0))
