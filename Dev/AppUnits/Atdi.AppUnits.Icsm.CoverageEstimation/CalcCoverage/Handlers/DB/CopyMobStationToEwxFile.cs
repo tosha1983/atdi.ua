@@ -29,7 +29,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
 
 
 
-        public CopyMobStationToEwxFile(Condition condition, string tableName, IDataLayer<IcsmDataOrm> dataLayer,  ILogger logger)
+        public CopyMobStationToEwxFile(Condition condition, string tableName, IDataLayer<IcsmDataOrm> dataLayer, ILogger logger)
         {
             this._dataLayer = dataLayer;
             this._queryExecutor = this._dataLayer.Executor<IcsmDataContext>();
@@ -114,7 +114,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                  var res = false;
                  while (reader.Read())
                  {
-                     var id = reader.GetValueAsInt32(typeof(int), reader.GetOrdinal("ID"));
+                     var id = reader.GetValueAsInt32(reader.GetFieldType(reader.GetOrdinal("ID")), reader.GetOrdinal("ID"));
 
                      if (stationIds.Contains(id))
                      {
@@ -126,32 +126,32 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
 
                      station.Id = id;
 
-                     station.Address = reader.GetNullableValueAsString(typeof(string), reader.GetOrdinal("Position.ADDRESS"));
-                     var Altitude = reader.GetNullableValueAsDouble(typeof(double), reader.GetOrdinal("Position.ASL"));
+                     station.Address = reader.GetNullableValueAsString(reader.GetFieldType(reader.GetOrdinal("Position.ADDRESS")), reader.GetOrdinal("Position.ADDRESS"));
+                     var Altitude = reader.GetNullableValueAsDouble(reader.GetFieldType(reader.GetOrdinal("Position.ASL")), reader.GetOrdinal("Position.ASL"));
                      if (Altitude != null)
                      {
                          station.Altitude = Altitude.Value;
                      }
 
-                     var Azimuth = reader.GetNullableValueAsDouble(typeof(double), reader.GetOrdinal("AZIMUTH"));
+                     var Azimuth = reader.GetNullableValueAsDouble(reader.GetFieldType(reader.GetOrdinal("AZIMUTH")), reader.GetOrdinal("AZIMUTH"));
                      if (Azimuth != null)
                      {
                          station.Azimuth = Azimuth.Value;
                      }
 
-                     var Bandwidth = reader.GetNullableValueAsDouble(typeof(double), reader.GetOrdinal("BW"));
+                     var Bandwidth = reader.GetNullableValueAsDouble(reader.GetFieldType(reader.GetOrdinal("BW")), reader.GetOrdinal("BW"));
                      if (Bandwidth != null)
                      {
                          station.Bandwidth = Bandwidth.Value;
                      }
 
-                     var BandwidthRx = reader.GetNullableValueAsDouble(typeof(double), reader.GetOrdinal("BW"));
+                     var BandwidthRx = reader.GetNullableValueAsDouble(reader.GetFieldType(reader.GetOrdinal("BW")), reader.GetOrdinal("BW"));
                      if (BandwidthRx != null)
                      {
                          station.BandwidthRx = BandwidthRx.Value;
                      }
 
-                     var CallSign = reader.GetNullableValueAsString(typeof(string), reader.GetOrdinal("NAME"));
+                     var CallSign = reader.GetNullableValueAsString(reader.GetFieldType(reader.GetOrdinal("NAME")), reader.GetOrdinal("NAME"));
                      if (CallSign != null)
                      {
                          station.CallSign = CallSign;
@@ -166,60 +166,60 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                          }
                      }
 
-                     var CoordX = reader.GetNullableValueAsDouble(typeof(double), reader.GetOrdinal("Position.LONGITUDE"));
+                     var CoordX = reader.GetNullableValueAsDouble(reader.GetFieldType(reader.GetOrdinal("Position.LONGITUDE")), reader.GetOrdinal("Position.LONGITUDE"));
                      if (CoordX != null)
                      {
                          station.CoordX = CoordX.Value;
                      }
 
 
-                     var CoordY = reader.GetNullableValueAsDouble(typeof(double), reader.GetOrdinal("Position.LATITUDE"));
+                     var CoordY = reader.GetNullableValueAsDouble(reader.GetFieldType(reader.GetOrdinal("Position.LATITUDE")), reader.GetOrdinal("Position.LATITUDE"));
                      if (CoordY != null)
                      {
                          station.CoordY = CoordY.Value;
                      }
 
-                     var DiagH = reader.GetNullableValueAsString(typeof(string), reader.GetOrdinal("Antenna.DIAGH"));
+                     var DiagH = reader.GetNullableValueAsString(reader.GetFieldType(reader.GetOrdinal("Antenna.DIAGH")), reader.GetOrdinal("Antenna.DIAGH"));
                      if (DiagH != null)
                      {
                          station.DiagH = DiagH;
                          station.DiagH = station.DiagH;
                      }
 
-                     var DiagV = reader.GetNullableValueAsString(typeof(string), reader.GetOrdinal("Antenna.DIAGV"));
+                     var DiagV = reader.GetNullableValueAsString(reader.GetFieldType(reader.GetOrdinal("Antenna.DIAGV")), reader.GetOrdinal("Antenna.DIAGV"));
                      if (DiagV != null)
                      {
                          station.DiagV = DiagV;
                          station.DiagV = station.DiagV;
                      }
 
-                     var Frequency = reader.GetNullableValueAsDouble(typeof(double), reader.GetOrdinal("AssignedFrequencies.TX_FREQ"));
+                     var Frequency = reader.GetNullableValueAsDouble(reader.GetFieldType(reader.GetOrdinal("AssignedFrequencies.TX_FREQ")), reader.GetOrdinal("AssignedFrequencies.TX_FREQ"));
                      if (Frequency != null)
                      {
                          station.Frequency = Frequency.Value;
                      }
 
-                     var Gain = reader.GetNullableValueAsDouble(typeof(double), reader.GetOrdinal("GAIN"));
+                     var Gain = reader.GetNullableValueAsDouble(reader.GetFieldType(reader.GetOrdinal("GAIN")), reader.GetOrdinal("GAIN"));
                      if (Gain != null)
                      {
                          station.Gain = Gain.Value;
                          station.GainRx = Gain.Value;
                      }
 
-                     var HAntenna = reader.GetNullableValueAsDouble(typeof(double), reader.GetOrdinal("AGL"));
+                     var HAntenna = reader.GetNullableValueAsDouble(reader.GetFieldType(reader.GetOrdinal("AGL")), reader.GetOrdinal("AGL"));
                      if (HAntenna != null)
                      {
                          station.HAntenna = HAntenna.Value;
                      }
 
-                     var Losses = reader.GetNullableValueAsDouble(typeof(double), reader.GetOrdinal("TX_LOSSES"));
+                     var Losses = reader.GetNullableValueAsDouble(reader.GetFieldType(reader.GetOrdinal("TX_LOSSES")), reader.GetOrdinal("TX_LOSSES"));
                      if (Losses != null)
                      {
                          station.Losses = Losses.Value;
                          station.LossesRx = Losses.Value;
                      }
 
-                     var tilt = reader.GetNullableValueAsDouble(typeof(double), reader.GetOrdinal("ELEVATION"));
+                     var tilt = reader.GetNullableValueAsDouble(reader.GetFieldType(reader.GetOrdinal("ELEVATION")), reader.GetOrdinal("ELEVATION"));
                      if (tilt != null)
                      {
                          if (dataConfig.AnotherParameters == null)
@@ -239,29 +239,29 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                          }
                      }
 
-                     var NetId = reader.GetNullableValueAsInt32(typeof(int), reader.GetOrdinal("Licence.ID"));
+                     var NetId = reader.GetNullableValueAsInt32(reader.GetFieldType(reader.GetOrdinal("Licence.ID")), reader.GetOrdinal("Licence.ID"));
                      if (NetId != null)
                      {
                          station.NetId = NetId.Value;
                      }
 
-                     var NominalPower = reader.GetNullableValueAsDouble(typeof(double), reader.GetOrdinal("PWR_ANT"));
+                     var NominalPower = reader.GetNullableValueAsDouble(reader.GetFieldType(reader.GetOrdinal("PWR_ANT")), reader.GetOrdinal("PWR_ANT"));
                      if (NominalPower != null)
                      {
                          station.NominalPower = NominalPower.Value;
                          station.NominalPower = Math.Round(Math.Pow(10, station.NominalPower / 10), 7);
                      }
 
-                     station.Polar = reader.GetNullableValueAsString(typeof(string), reader.GetOrdinal("Antenna.POLARIZATION"));
-                     station.PolarRx = reader.GetNullableValueAsString(typeof(string), reader.GetOrdinal("Antenna.POLARIZATION"));
+                     station.Polar = reader.GetNullableValueAsString(reader.GetFieldType(reader.GetOrdinal("Antenna.POLARIZATION")), reader.GetOrdinal("Antenna.POLARIZATION"));
+                     station.PolarRx = reader.GetNullableValueAsString(reader.GetFieldType(reader.GetOrdinal("Antenna.POLARIZATION")), reader.GetOrdinal("Antenna.POLARIZATION"));
 
-                     var D_cx1 = reader.GetNullableValueAsDouble(typeof(double), reader.GetOrdinal("AssignedFrequencies.TX_FREQ"));
+                     var D_cx1 = reader.GetNullableValueAsDouble(reader.GetFieldType(reader.GetOrdinal("AssignedFrequencies.TX_FREQ")), reader.GetOrdinal("AssignedFrequencies.TX_FREQ"));
                      if (D_cx1 != null)
                      {
                          station.D_cx1 = D_cx1.Value;
                      }
 
-                     var U_cx1 = reader.GetNullableValueAsDouble(typeof(double), reader.GetOrdinal("AssignedFrequencies.RX_FREQ"));
+                     var U_cx1 = reader.GetNullableValueAsDouble(reader.GetFieldType(reader.GetOrdinal("AssignedFrequencies.RX_FREQ")), reader.GetOrdinal("AssignedFrequencies.RX_FREQ"));
                      if (U_cx1 != null)
                      {
                          station.U_cx1 = U_cx1.Value;

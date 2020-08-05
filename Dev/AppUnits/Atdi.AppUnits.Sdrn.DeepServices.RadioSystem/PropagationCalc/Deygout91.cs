@@ -14,7 +14,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             public int nMax;
         }
 
-        private static NuMaxOut FindMaxNu(double hA, double hB, double wavelength, double dAB, in short[] profile, int profileStart, int profilePointsNumber, double RE, bool mainHillCalc)
+        private static NuMaxOut FindMaxHtoR(double hA, double hB, double wavelength, double dAB, in short[] profile, int profileStart, int profilePointsNumber, double RE, bool mainHillCalc)
         {
             //int __profileArrayLength = (__profileCount - profileStart);
             double dN = dAB / profilePointsNumber;
@@ -34,7 +34,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
 
                 nuMaxOut = new NuMaxOut
                 {
-                    nuMax = hNMax * Math.Sqrt(2 * dAB / (wavelength * dAN * dNB)),
+                    nuMax = hNMax * Math.Sqrt(dAB / (wavelength * dAN * dNB)),
                     nMax = profileStart
                 };
             }
@@ -59,7 +59,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
                     dNB = dN * (profileStart + profilePointsNumber - n);
                     double h = profile[n] + dAN * dNB * inv2rE - (hA * dNB + hB * dAN) * invDaB;
 
-                    double nuN = h * Math.Sqrt(2 * dAB / (wavelength * dAN * dNB));
+                    double nuN = h * Math.Sqrt(dAB / (wavelength * dAN * dNB));
 
                     if (nuN > nuMaxOut.nuMax)
                     {
@@ -68,18 +68,26 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
                     }
                 }
             }
-                return nuMaxOut;
+            return nuMaxOut;
         }
 
-        private static double J(double nu)
+        private static double J(double htr)
         {
-            if (nu <= -0.78)
+            if (htr <= -0.5)
             {
                 return 0.0f;
             }
+            else if (-0.5 < htr && htr <= 0.5)
+            {
+                return 6 + 12 * htr;
+            }
+            else if (0.5 < htr && htr <= 1.0)
+            {
+                return 8 * (1 + htr);
+            }
             else
             {
-                return (double)(6.9 + 20 * Math.Log10(Math.Sqrt(Math.Pow(nu - 0.1, 2) + 1) + nu - 0.1));
+                return (double)(16 + 20 * Math.Log10(htr));
             }
         }
         
@@ -93,31 +101,58 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             double wavelength = 300 / Freq_MHz;
             ha_m += profile_m[profileStartIndex];
             hb_m += profile_m[profileEndIndex];
-            NuMaxOut nu;
-            nu = FindMaxNu(ha_m, hb_m, wavelength, dAB, profile_m, profileStartIndex, profilePointsNumber, rE, mainHill);
+            NuMaxOut htrP = FindMaxHtoR(ha_m, hb_m, wavelength, dAB, profile_m, profileStartIndex, profilePointsNumber, rE, mainHill);
+            
+            double dN = dAB / (profilePointsNumber);
+            double dAP = dN * htrP.nMax;
+            double dPB = dN * (profileEndIndex - htrP.nMax);
 
             
-
-            double nuP = nu.nuMax;
-
-            double dN = dAB / (profilePointsNumber);
-            double dAP = dN * nu.nMax;
-
-            double dPB = dN * (profileEndIndex - nu.nMax);
+            double p = 1.41421356 * htrP.nuMax;
 
             double diffractionLoss_dB = 0;
 
-            if (nuP > -0.78)
+            if (htrP.nuMax > -0.5)
             {
                 mainHill = false;
-                NuMaxOut nuR = FindMaxNu(profile_m[nu.nMax], hb_m, wavelength, dPB, in profile_m, nu.nMax, profileEndIndex - nu.nMax, rE, mainHill);
-                NuMaxOut nuT = FindMaxNu(ha_m, profile_m[nu.nMax], wavelength, dAP, in profile_m, profileStartIndex, nu.nMax - profileStartIndex, rE, mainHill);
+                NuMaxOut htrR = FindMaxHtoR(profile_m[htrP.nMax], hb_m, wavelength, dPB, in profile_m, htrP.nMax, profileEndIndex - htrP.nMax, rE, mainHill);
+                NuMaxOut htrT = FindMaxHtoR(ha_m, profile_m[htrP.nMax], wavelength, dAP, in profile_m, profileStartIndex, htrP.nMax - profileStartIndex, rE, mainHill);
+
+                double Ltc = 0;
+                double alpha = 0;
+                double htrS = -0.8;
+
+                double dAT = 1;
+                if (htrR.nMax > 0)
+                { 
+                    dAT = dN * htrT.nMax;
+                }
+                double dTP = dAB - htrT.nMax * dN;
+                double dPR = 1;
+                if (htrR.nMax > 0)
+                {
+                    dPR = htrR.nMax * dN;
+                }
+
+                if (htrT.nuMax > htrR.nuMax && htrT.nuMax > -0.5)
+                {
+                    double q = 1.41421356 * htrT.nuMax;
+                    htrS = htrT.nuMax;
+                    alpha = Math.Atan(Math.Sqrt(dTP * (dAT + dTP + dPR) / (dAT * dPR)));
+                    Ltc = (12 - 20 * Math.Log10(2 / (1 - alpha / Math.PI))) * Math.Pow(Math.Abs(q / p), 2 * p);
+                }
+                else if (htrT.nuMax < htrR.nuMax && htrR.nuMax > -0.5)
+                {
+                    double dRB = dPB - dPR;
+                    double q = 1.41421356 * htrR.nuMax;
+                    htrS = htrR.nuMax;
+                    alpha = Math.Atan(Math.Sqrt(dPR * (dTP + dPR + dRB) / (dTP * dRB)));
+                    Ltc = (12 - 20 * Math.Log10(2 / (1 - alpha / Math.PI))) * Math.Pow(Math.Abs(q / p), 2 * p);
+                }
                 
-                double C = 10.0f + 0.04 * d_km;
-                diffractionLoss_dB = J(nuP) + (1.0 - Math.Exp(-J(nuP) / 6.0f)) * (J(nuT.nuMax) + J(nuR.nuMax) + C + SubDiffractionLoss);
+                diffractionLoss_dB = J(htrP.nuMax) + J(htrS) + SubDiffractionLoss - Ltc;
             }
             
-
             return diffractionLoss_dB;
         }
     }

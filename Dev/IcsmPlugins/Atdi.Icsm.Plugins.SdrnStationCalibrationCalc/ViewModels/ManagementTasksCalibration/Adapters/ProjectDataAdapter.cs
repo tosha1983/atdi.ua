@@ -25,7 +25,8 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
                 c => c.Projection,
                 c => c.StatusName,
                 c => c.OwnerInstance)
-                .Filter(f => f.StatusCode, 2);
+                .Filter(f => f.StatusCode, 2)
+                .OrderByDesc(o => o.Id);
         }
         protected override ProjectModel ReadData(IDataReader<CS_ES.IProject> reader, int index)
         {

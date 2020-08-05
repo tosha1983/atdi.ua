@@ -87,14 +87,14 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             //координаты, высота, азимут, угол места, мощность
             if (calibrationData.CalibrationParameters.CoordinatesStation)
             {
-                coordinatesStationMinX_m = calibrationData.GSIDGroupeStation.Coordinate.X + calibrationData.CalibrationParameters.ShiftCoordinatesStation_m;
+                coordinatesStationMinX_m = calibrationData.GSIDGroupeStation.Coordinate.X - calibrationData.CalibrationParameters.ShiftCoordinatesStation_m;
                 if (coordinatesStationMinX_m < calibrationData.FieldStrengthCalcData.MapArea.LowerLeft.X) { coordinatesStationMinX_m = calibrationData.FieldStrengthCalcData.MapArea.LowerLeft.X; }
-                coordinatesStationMinY_m = calibrationData.GSIDGroupeStation.Coordinate.Y + calibrationData.CalibrationParameters.ShiftCoordinatesStation_m;
+                coordinatesStationMinY_m = calibrationData.GSIDGroupeStation.Coordinate.Y - calibrationData.CalibrationParameters.ShiftCoordinatesStation_m;
                 if (coordinatesStationMinY_m < calibrationData.FieldStrengthCalcData.MapArea.LowerLeft.Y) { coordinatesStationMinY_m = calibrationData.FieldStrengthCalcData.MapArea.LowerLeft.Y; }
                 coordinatesStationMaxX_m = calibrationData.GSIDGroupeStation.Coordinate.X + calibrationData.CalibrationParameters.ShiftCoordinatesStation_m;
-                if (coordinatesStationMaxX_m < calibrationData.FieldStrengthCalcData.MapArea.UpperRight.X) { coordinatesStationMaxX_m = calibrationData.FieldStrengthCalcData.MapArea.UpperRight.X; }
+                if (coordinatesStationMaxX_m > calibrationData.FieldStrengthCalcData.MapArea.UpperRight.X) { coordinatesStationMaxX_m = calibrationData.FieldStrengthCalcData.MapArea.UpperRight.X; }
                 coordinatesStationMaxY_m = calibrationData.GSIDGroupeStation.Coordinate.Y + calibrationData.CalibrationParameters.ShiftCoordinatesStation_m;
-                if (coordinatesStationMaxY_m < calibrationData.FieldStrengthCalcData.MapArea.UpperRight.Y) { coordinatesStationMaxY_m = calibrationData.FieldStrengthCalcData.MapArea.UpperRight.Y; }
+                if (coordinatesStationMaxY_m > calibrationData.FieldStrengthCalcData.MapArea.UpperRight.Y) { coordinatesStationMaxY_m = calibrationData.FieldStrengthCalcData.MapArea.UpperRight.Y; }
                 coordinatesStationStep_m = calibrationData.CalibrationParameters.ShiftCoordinatesStationStep_m;
             }
             
@@ -213,8 +213,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             var maxCorrelation_pc = correlationResult.Corellation_pc;
             
             var coordinatesStationMinX_m = calibrationData.GSIDGroupeStation.Coordinate.X;
-            var coordinatesStationMaxX_m = calibrationData.GSIDGroupeStation.Coordinate.Y;
-            var coordinatesStationMinY_m = calibrationData.GSIDGroupeStation.Coordinate.X;
+            var coordinatesStationMaxX_m = calibrationData.GSIDGroupeStation.Coordinate.X;
+            var coordinatesStationMinY_m = calibrationData.GSIDGroupeStation.Coordinate.Y;
             var coordinatesStationMaxY_m = calibrationData.GSIDGroupeStation.Coordinate.Y;
             //////////////////////////////////////
 
@@ -233,14 +233,14 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             //координаты, высота, азимут, угол места, мощность
             if (calibrationData.CalibrationParameters.CoordinatesStation)
             {
-                coordinatesStationMinX_m = calibrationData.GSIDGroupeStation.Coordinate.X + calibrationData.CalibrationParameters.ShiftCoordinatesStation_m;
+                coordinatesStationMinX_m = calibrationData.GSIDGroupeStation.Coordinate.X - calibrationData.CalibrationParameters.ShiftCoordinatesStation_m;
                 if (coordinatesStationMinX_m < calibrationData.FieldStrengthCalcData.MapArea.LowerLeft.X) { coordinatesStationMinX_m = calibrationData.FieldStrengthCalcData.MapArea.LowerLeft.X; }
-                coordinatesStationMinY_m = calibrationData.GSIDGroupeStation.Coordinate.Y + calibrationData.CalibrationParameters.ShiftCoordinatesStation_m;
+                coordinatesStationMinY_m = calibrationData.GSIDGroupeStation.Coordinate.Y - calibrationData.CalibrationParameters.ShiftCoordinatesStation_m;
                 if (coordinatesStationMinY_m < calibrationData.FieldStrengthCalcData.MapArea.LowerLeft.Y) { coordinatesStationMinY_m = calibrationData.FieldStrengthCalcData.MapArea.LowerLeft.Y; }
                 coordinatesStationMaxX_m = calibrationData.GSIDGroupeStation.Coordinate.X + calibrationData.CalibrationParameters.ShiftCoordinatesStation_m;
-                if (coordinatesStationMaxX_m < calibrationData.FieldStrengthCalcData.MapArea.UpperRight.X) { coordinatesStationMaxX_m = calibrationData.FieldStrengthCalcData.MapArea.UpperRight.X; }
+                if (coordinatesStationMaxX_m > calibrationData.FieldStrengthCalcData.MapArea.UpperRight.X) { coordinatesStationMaxX_m = calibrationData.FieldStrengthCalcData.MapArea.UpperRight.X; }
                 coordinatesStationMaxY_m = calibrationData.GSIDGroupeStation.Coordinate.Y + calibrationData.CalibrationParameters.ShiftCoordinatesStation_m;
-                if (coordinatesStationMaxY_m < calibrationData.FieldStrengthCalcData.MapArea.UpperRight.Y) { coordinatesStationMaxY_m = calibrationData.FieldStrengthCalcData.MapArea.UpperRight.Y; }
+                if (coordinatesStationMaxY_m > calibrationData.FieldStrengthCalcData.MapArea.UpperRight.Y) { coordinatesStationMaxY_m = calibrationData.FieldStrengthCalcData.MapArea.UpperRight.Y; }
                 
             }
 
@@ -285,11 +285,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             bool azimuthDimCorrelation_pc = false;
             bool azimuthIncCorrelation_pc = false;
 
-            bool latDimCorrelation_pc = false;
-            bool latIncCorrelation_pc = false;
+            bool xCoordDimCorrelation_pc = false;
+            bool xCoordIncCorrelation_pc = false;
 
-            bool lonDimCorrelation_pc = false;
-            bool lonIncCorrelation_pc = false;
+            bool yCoordDimCorrelation_pc = false;
+            bool yCoordIncCorrelation_pc = false;
 
             bool powerDimCorrelation_pc = false;
             bool powerIncCorrelation_pc = false;
@@ -307,10 +307,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 azimuthDimCorrelation_pc = false;
                 azimuthIncCorrelation_pc = false;
 
-                latDimCorrelation_pc = false;
-                latIncCorrelation_pc = false;
-                lonDimCorrelation_pc = false;
-                lonIncCorrelation_pc = false;
+                xCoordDimCorrelation_pc = false;
+                xCoordIncCorrelation_pc = false;
+                yCoordDimCorrelation_pc = false;
+                yCoordIncCorrelation_pc = false;
 
                 powerDimCorrelation_pc = false;
                 powerIncCorrelation_pc = false;
@@ -451,7 +451,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             azimuthDimCorrelation_pc = false;
                             azimuthIncCorrelation_pc = false;
 
-                            latDimCorrelation_pc = true;
+                            xCoordDimCorrelation_pc = true;
                         }
                         calibrationData.GSIDGroupeStation.Coordinate.X += calibrationData.CalibrationParameters.ShiftCoordinatesStationStep_m;
                     }
@@ -474,14 +474,14 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             azimuthDimCorrelation_pc = false;
                             azimuthIncCorrelation_pc = false;
 
-                            latDimCorrelation_pc = false;
-                            latIncCorrelation_pc = true;
+                            xCoordDimCorrelation_pc = false;
+                            xCoordIncCorrelation_pc = true;
                         }
                         calibrationData.GSIDGroupeStation.Coordinate.X -= calibrationData.CalibrationParameters.ShiftCoordinatesStationStep_m;
                     }
                     
 
-                    if (calibrationData.GSIDGroupeStation.Coordinate.Y - calibrationData.CalibrationParameters.ShiftCoordinatesStationStep_m >= coordinatesStationMinX_m)
+                    if (calibrationData.GSIDGroupeStation.Coordinate.Y - calibrationData.CalibrationParameters.ShiftCoordinatesStationStep_m >= coordinatesStationMinY_m)
                     {
                         calibrationData.GSIDGroupeStation.Coordinate.Y -= calibrationData.CalibrationParameters.ShiftCoordinatesStationStep_m;
                         correlationResult = corellationCalcIteration.Run(taskContext, correlationData);
@@ -499,17 +499,17 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             azimuthDimCorrelation_pc = false;
                             azimuthIncCorrelation_pc = false;
 
-                            latDimCorrelation_pc = false;
-                            latIncCorrelation_pc = false;
+                            xCoordDimCorrelation_pc = false;
+                            xCoordIncCorrelation_pc = false;
 
-                            lonDimCorrelation_pc = true;
+                            yCoordDimCorrelation_pc = true;
                         }
-                        calibrationData.GSIDGroupeStation.Coordinate.Y += calibrationData.CalibrationParameters.MaxDeviationCoordinatesStation_m;
+                        calibrationData.GSIDGroupeStation.Coordinate.Y += calibrationData.CalibrationParameters.ShiftAltitudeStationStep_m;
                     }
                     
-                    if (calibrationData.GSIDGroupeStation.Coordinate.Y + calibrationData.CalibrationParameters.ShiftCoordinatesStationStep_m <= coordinatesStationMaxX_m)
+                    if (calibrationData.GSIDGroupeStation.Coordinate.Y + calibrationData.CalibrationParameters.ShiftCoordinatesStationStep_m <= coordinatesStationMaxY_m)
                     {
-                        calibrationData.GSIDGroupeStation.Coordinate.Y += calibrationData.CalibrationParameters.MaxDeviationCoordinatesStation_m;
+                        calibrationData.GSIDGroupeStation.Coordinate.Y += calibrationData.CalibrationParameters.ShiftCoordinatesStationStep_m;
                         correlationResult = corellationCalcIteration.Run(taskContext, correlationData);
                         if (maxCorrelation_pc < correlationResult.Corellation_pc)
                         {
@@ -525,11 +525,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             azimuthDimCorrelation_pc = false;
                             azimuthIncCorrelation_pc = false;
 
-                            latDimCorrelation_pc = false;
-                            latIncCorrelation_pc = false;
+                            xCoordDimCorrelation_pc = false;
+                            xCoordIncCorrelation_pc = false;
 
-                            lonDimCorrelation_pc = false;
-                            lonIncCorrelation_pc = true;
+                            yCoordDimCorrelation_pc = false;
+                            yCoordIncCorrelation_pc = true;
                         }
                         calibrationData.GSIDGroupeStation.Coordinate.Y -= calibrationData.CalibrationParameters.ShiftCoordinatesStationStep_m;
                     }
@@ -555,11 +555,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             azimuthDimCorrelation_pc = false;
                             azimuthIncCorrelation_pc = false;
 
-                            latDimCorrelation_pc = false;
-                            latIncCorrelation_pc = false;
+                            xCoordDimCorrelation_pc = false;
+                            xCoordIncCorrelation_pc = false;
 
-                            lonDimCorrelation_pc = false;
-                            lonIncCorrelation_pc = false;
+                            yCoordDimCorrelation_pc = false;
+                            yCoordIncCorrelation_pc = false;
 
                             powerIncCorrelation_pc = true;
                         }
@@ -585,11 +585,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             azimuthDimCorrelation_pc = false;
                             azimuthIncCorrelation_pc = false;
 
-                            latDimCorrelation_pc = false;
-                            latIncCorrelation_pc = false;
+                            xCoordDimCorrelation_pc = false;
+                            xCoordIncCorrelation_pc = false;
 
-                            lonDimCorrelation_pc = false;
-                            lonIncCorrelation_pc = false;
+                            yCoordDimCorrelation_pc = false;
+                            yCoordIncCorrelation_pc = false;
 
                             powerIncCorrelation_pc = false;
                             powerDimCorrelation_pc = true;
@@ -610,11 +610,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 if (azimuthDimCorrelation_pc) { correlationData.GSIDGroupeStation.Antenna.Azimuth_deg -= calibrationData.CalibrationParameters.ShiftAzimuthStationStep_deg; }
                 if (azimuthIncCorrelation_pc) { correlationData.GSIDGroupeStation.Antenna.Azimuth_deg += calibrationData.CalibrationParameters.ShiftAzimuthStationStep_deg; }
 
-                if (latDimCorrelation_pc) { correlationData.GSIDGroupeStation.Coordinate.X -= calibrationData.CalibrationParameters.ShiftCoordinatesStationStep_m; }
-                if (latIncCorrelation_pc) { correlationData.GSIDGroupeStation.Coordinate.X += calibrationData.CalibrationParameters.ShiftCoordinatesStationStep_m; }
+                if (xCoordDimCorrelation_pc) { correlationData.GSIDGroupeStation.Coordinate.X -= calibrationData.CalibrationParameters.ShiftCoordinatesStationStep_m; }
+                if (xCoordIncCorrelation_pc) { correlationData.GSIDGroupeStation.Coordinate.X += calibrationData.CalibrationParameters.ShiftCoordinatesStationStep_m; }
 
-                if (lonDimCorrelation_pc) { correlationData.GSIDGroupeStation.Coordinate.Y -= calibrationData.CalibrationParameters.ShiftCoordinatesStationStep_m; }
-                if (lonIncCorrelation_pc) { correlationData.GSIDGroupeStation.Coordinate.Y += calibrationData.CalibrationParameters.ShiftCoordinatesStationStep_m; }
+                if (yCoordDimCorrelation_pc) { correlationData.GSIDGroupeStation.Coordinate.Y -= calibrationData.CalibrationParameters.ShiftCoordinatesStationStep_m; }
+                if (yCoordIncCorrelation_pc) { correlationData.GSIDGroupeStation.Coordinate.Y += calibrationData.CalibrationParameters.ShiftCoordinatesStationStep_m; }
 
                 if (powerIncCorrelation_pc) { correlationData.GSIDGroupeStation.Transmitter.MaxPower_dBm += calibrationData.CalibrationParameters.ShiftPowerStationStep_dB; }
                 if (powerDimCorrelation_pc) { correlationData.GSIDGroupeStation.Transmitter.MaxPower_dBm -= calibrationData.CalibrationParameters.ShiftPowerStationStep_dB; }
@@ -650,7 +650,32 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
             var correlationResult = new ResultCorrelationGSIDGroupeStationsWithoutParameters();
             var correlationData = new StationCorellationCalcData();
-            var calibrationData = Atdi.Common.CopyHelper.CreateDeepCopy(data);
+            //var calibrationData = Atdi.Common.CopyHelper.CreateDeepCopy(data);
+            var calibrationData = new StationCalibrationCalcData()
+            {
+                FieldStrengthCalcData = new FieldStrengthCalcData()
+                {
+                    BuildingContent = data.FieldStrengthCalcData.BuildingContent,
+                    ClutterContent = data.FieldStrengthCalcData.ClutterContent,
+                    CluttersDesc = data.FieldStrengthCalcData.CluttersDesc,
+                    MapArea = data.FieldStrengthCalcData.MapArea,
+                    ReliefContent = data.FieldStrengthCalcData.ReliefContent,
+                    Antenna = Atdi.Common.CopyHelper.CreateDeepCopy(data.FieldStrengthCalcData.Antenna),
+                    PointAltitude_m = Atdi.Common.CopyHelper.CreateDeepCopy(data.FieldStrengthCalcData.PointAltitude_m),
+                    PointCoordinate = Atdi.Common.CopyHelper.CreateDeepCopy(data.FieldStrengthCalcData.PointCoordinate),
+                    PropagationModel = Atdi.Common.CopyHelper.CreateDeepCopy(data.FieldStrengthCalcData.PropagationModel),
+                    TargetAltitude_m = Atdi.Common.CopyHelper.CreateDeepCopy(data.FieldStrengthCalcData.TargetAltitude_m),
+                    TargetCoordinate = Atdi.Common.CopyHelper.CreateDeepCopy(data.FieldStrengthCalcData.TargetCoordinate),
+                    Transmitter = Atdi.Common.CopyHelper.CreateDeepCopy(data.FieldStrengthCalcData.Transmitter)
+                },
+
+                CalibrationParameters = Atdi.Common.CopyHelper.CreateDeepCopy(data.CalibrationParameters),
+                CodeProjection = data.CodeProjection,
+                CorellationParameters = Atdi.Common.CopyHelper.CreateDeepCopy(data.CorellationParameters),
+                GeneralParameters = Atdi.Common.CopyHelper.CreateDeepCopy(data.GeneralParameters),
+                GSIDGroupeDriveTests = Atdi.Common.CopyHelper.CreateDeepCopy(data.GSIDGroupeDriveTests),
+                GSIDGroupeStation = Atdi.Common.CopyHelper.CreateDeepCopy(data.GSIDGroupeStation)
+            };
 
             //var corellationResult = new ResultCorrelationGSIDGroupeStationsWithoutParameters();
             StationCorellationCalcIteration correlationCalcIteration = new StationCorellationCalcIteration(_iterationsPool, _transformation, _poolSite, _earthGeometricService, _logger);

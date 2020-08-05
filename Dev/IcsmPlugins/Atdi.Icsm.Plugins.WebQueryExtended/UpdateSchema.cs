@@ -99,8 +99,8 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQueryExtended
                 s.DeclareField("EVES_ID", "NUMBER(9,0)", null, null, null);
                 s.DeclareField("VE_S_ID", "NUMBER(9,0)", null, null, null);
                 s.DeclareField("TX_FREQ_SIMPLE", "NUMBER(22,8)", null, null, null);
-                //s.DeclareField("SCANPATH_CONC", "VARCHAR(500)", null, null, null);
-                //s.DeclareField("SCANPATH_DOZV", "VARCHAR(500)", null, null, null);
+                s.DeclareField("SPECIAL_COND_VISN", "VARCHAR(3000)", null, null, null);
+                s.DeclareField("SPECIAL_COND_DOZV", "VARCHAR(3000)", null, null, null);
             }
 
             //===============================================
@@ -161,8 +161,8 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQueryExtended
                 s.DeclareField("EVES_ID", "NUMBER(9,0)", null, null, null);
                 s.DeclareField("VE_S_ID", "NUMBER(9,0)", null, null, null);
                 s.DeclareField("TX_FREQ_SIMPLE", "NUMBER(22,8)", null, null, null);
-                //s.DeclareField("SCANPATH_CONC", "VARCHAR(500)", null, null, null);
-                //s.DeclareField("SCANPATH_DOZV", "VARCHAR(500)", null, null, null);
+                s.DeclareField("SPECIAL_COND_VISN", "VARCHAR(3000)", null, null, null);
+                s.DeclareField("SPECIAL_COND_DOZV", "VARCHAR(3000)", null, null, null);
 
             }
 
@@ -208,8 +208,8 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQueryExtended
                 s.DeclareField("EVE_ID", "NUMBER(9,0)", null, null, null);
                 s.DeclareField("EVES_ID", "NUMBER(9,0)", null, null, null);
                 s.DeclareField("VE_S_ID", "NUMBER(9,0)", null, null, null);
-                //s.DeclareField("SCANPATH_CONC", "VARCHAR(500)", null, null, null);
-                //s.DeclareField("SCANPATH_DOZV", "VARCHAR(500)", null, null, null);
+                s.DeclareField("SPECIAL_COND_VISN", "VARCHAR(3000)", null, null, null);
+                s.DeclareField("SPECIAL_COND_DOZV", "VARCHAR(3000)", null, null, null);
             }
 
             //===============================================

@@ -99,6 +99,10 @@ namespace OrmCs
 			public DatPtr z_ve_s_id { get { return new DatPtr(this,43); } }
 		public double m_tx_freq_simple { get { return getDouble(44); } set { setDouble(44,value); } }
 			public DatPtr z_tx_freq_simple { get { return new DatPtr(this,44); } }
+		public string m_special_cond_visn { get { return getString(45); } set { setString(45,3000,value); } }
+			public DatPtr z_special_cond_visn { get { return new DatPtr(this,45); } }
+		public string m_special_cond_dozv { get { return getString(46); } set { setString(46,3000,value); } }
+			public DatPtr z_special_cond_dozv { get { return new DatPtr(this,46); } }
 	}
 
 	public class YXvWebRr : Yyy
@@ -216,6 +220,10 @@ namespace OrmCs
 			public DatPtr z_ve_s_id { get { return new DatPtr(this,54); } }
 		public double m_tx_freq_simple { get { return getDouble(55); } set { setDouble(55,value); } }
 			public DatPtr z_tx_freq_simple { get { return new DatPtr(this,55); } }
+		public string m_special_cond_visn { get { return getString(56); } set { setString(56,3000,value); } }
+			public DatPtr z_special_cond_visn { get { return new DatPtr(this,56); } }
+		public string m_special_cond_dozv { get { return getString(57); } set { setString(57,3000,value); } }
+			public DatPtr z_special_cond_dozv { get { return new DatPtr(this,57); } }
 	}
 
 	public class YXvWebRs : Yyy
@@ -301,6 +309,10 @@ namespace OrmCs
 			public DatPtr z_eves_id { get { return new DatPtr(this,38); } }
 		public int m_ve_s_id { get { return getInt(39); } set { setInt(39,value); } }
 			public DatPtr z_ve_s_id { get { return new DatPtr(this,39); } }
+		public string m_special_cond_visn { get { return getString(40); } set { setString(40,3000,value); } }
+			public DatPtr z_special_cond_visn { get { return new DatPtr(this,40); } }
+		public string m_special_cond_dozv { get { return getString(41); } set { setString(41,3000,value); } }
+			public DatPtr z_special_cond_dozv { get { return new DatPtr(this,41); } }
 	}
 
 	public class YXvWebLicence : Yyy

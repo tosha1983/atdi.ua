@@ -33,17 +33,17 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="gdalconst_csharp, Version=1.0.7127.27225, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\GDAL.2.4.2\lib\net40\gdalconst_csharp.dll</HintPath>
+    <Reference Include="gdalconst_csharp, Version=1.0.7372.36899, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\GDAL.2.4.4\lib\net40\gdalconst_csharp.dll</HintPath>
     </Reference>
-    <Reference Include="gdal_csharp, Version=1.0.7127.27225, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\GDAL.2.4.2\lib\net40\gdal_csharp.dll</HintPath>
+    <Reference Include="gdal_csharp, Version=1.0.7372.36899, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\GDAL.2.4.4\lib\net40\gdal_csharp.dll</HintPath>
     </Reference>
-    <Reference Include="ogr_csharp, Version=1.0.7127.27224, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\GDAL.2.4.2\lib\net40\ogr_csharp.dll</HintPath>
+    <Reference Include="ogr_csharp, Version=1.0.7372.36898, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\GDAL.2.4.4\lib\net40\ogr_csharp.dll</HintPath>
     </Reference>
-    <Reference Include="osr_csharp, Version=1.0.7127.27224, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\GDAL.2.4.2\lib\net40\osr_csharp.dll</HintPath>
+    <Reference Include="osr_csharp, Version=1.0.7372.36898, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\GDAL.2.4.4\lib\net40\osr_csharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -66,6 +66,8 @@
     <Compile Include="CalcCoverage\Handlers\Manage\CalcFinalCoverageForMobStation.cs" />
     <Compile Include="CalcCoverage\Handlers\Transliteration\Transliteration.cs" />
     <Compile Include="CalcCoverage\Handlers\Utils\Utils.cs" />
+    <Compile Include="CalcCoverage\Localization\CLocalization.cs" />
+    <Compile Include="CalcCoverage\Localization\Localization.cs" />
     <Compile Include="CalcCoverage\Models\ConcatBlankWithStation\DataForThread.cs" />
     <Compile Include="CalcCoverage\Models\Config\ArgumentConfig.cs" />
     <Compile Include="CalcCoverage\Models\Config\ArgumentsConfig.cs" />
@@ -98,6 +100,7 @@
     <Compile Include="CalcCoverage\Handlers\DB\CopyMobStationToEwxFile.cs" />
     <Compile Include="CalcCoverage\Handlers\DB\CreateConditionForMobStation.cs" />
     <Compile Include="CalcCoverage\Handlers\DB\SaveResultCalcCoverageIntoDB.cs" />
+    <Compile Include="GdalConfiguration.cs" />
     <Compile Include="Hooks\BitBltHook\Injector.cs" />
     <Compile Include="EstimationJobExecutor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -149,14 +152,18 @@
     <Content Include="CalcCoverage\Handlers\XML\CalcCovConfig.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="WebQueryTranslate.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="GdalConfiguration.vb" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\..\packages\GDAL.Native.2.4.2\build\net40\GDAL.Native.targets" Condition="Exists('..\..\packages\GDAL.Native.2.4.2\build\net40\GDAL.Native.targets')" />
+  <Import Project="..\..\packages\GDAL.Native.2.4.4\build\net40\GDAL.Native.targets" Condition="Exists('..\..\packages\GDAL.Native.2.4.4\build\net40\GDAL.Native.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>Данный проект ссылается на пакеты NuGet, отсутствующие на этом компьютере. Используйте восстановление пакетов NuGet, чтобы скачать их.  Дополнительную информацию см. по адресу: http://go.microsoft.com/fwlink/?LinkID=322105. Отсутствует следующий файл: {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\..\packages\GDAL.Native.2.4.2\build\net40\GDAL.Native.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\GDAL.Native.2.4.2\build\net40\GDAL.Native.targets'))" />
+    <Error Condition="!Exists('..\..\packages\GDAL.Native.2.4.4\build\net40\GDAL.Native.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\GDAL.Native.2.4.4\build\net40\GDAL.Native.targets'))" />
   </Target>
 </Project>
