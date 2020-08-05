@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "RefSpectrumByDriveTestsDetailResult"
+  Title       = "Reference spectrum by drive tests detail result"
+  Desc        = "The reference spectrum by drive tests detail result"
+  Type        = "Normal"
+  BaseEntity  = ""
+  
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>CALCRESULTS_REF_SPECTRUM_BY_DRIVE_TESTS_DETAIL</Name>
+    <Schema>CALC</Schema>
+  </DataSource>
+  <Fields>
+
+    <Field Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column" Desc="The Id record." Title="Id record"/>
+    <Field Name="OrderId" SourceType="Column" SourceName="ORDER_ID" DataType="Integer.64"  Required="true" Title="Order ID" Desc="The order ID" />
+    <Field Name="RefSpectrumResultId" SourceType="Column" SourceName="CALCRESULTS_REF_SPECTRUM_BY_DRIVE_TESTS" DataType="Integer.64"  Required="true" Title="RefSpectrum result ID" Desc="The RefSpectrum result ID" />
+    <Field Name="IdIcsm" SourceType="Column" Required="true" SourceName="ID_ICSM" DataType="Integer.64" Title="Id Icsm station" Desc="The identifier ICSM station"/>
+    <Field Name="TableIcsmName" SourceType="Column" SourceName="TABLE_ICSM_NAME" DataType="Text.50" Required="true" Title="Table ICSM Name" Desc="The table icsm name" />
+    <Field Name="IdSensor" SourceType="Column" Required="true" SourceName="ID_SENSOR" DataType="Integer.64" Title="Id sensor" Desc="The id sensor"/>
+    <Field Name="GlobalCID" SourceType="Column" SourceName="GLOBAL_GSID" DataType="Text.50" Required="true" Title="Global gsid" Desc="The Global gsid" />
+    <Field Name="Freq_MHz" SourceType="Column" Required="true" SourceName="FREQ_MHZ" DataType="Double.30.10" Title="Freq, MHz" Desc="The Freq in MHz"/>
+    <Field Name="Level_dBm" SourceType="Column" Required="true" SourceName="LEVEL_DBM" DataType="Float.22.8" Title="Level, dBm" Desc="The level, dBm"/>
+    <Field Name="Percent" SourceType="Column" Required="true" SourceName="PERCENT" DataType="Float.22.8" Title="Percent, %" Desc="The percent, %"/>
+    <Field Name="DateMeas" DataType="DateTimeOffset" SourceName="DATE_MEAS" SourceType="Column" Desc="The date meas" Title="Date meas" Required="true"/>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>
+

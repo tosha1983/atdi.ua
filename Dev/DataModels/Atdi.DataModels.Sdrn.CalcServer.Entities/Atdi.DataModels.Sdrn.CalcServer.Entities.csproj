@@ -94,6 +94,11 @@
     <Compile Include="Entities\IProjectMap.cs" />
     <Compile Include="Entities\IProject.cs" />
     <Compile Include="CalcServerEntityOrmContext.cs" />
+    <Compile Include="Entities\Tasks\IRefSpectrumByDriveTestsArgsDefault.cs" />
+    <Compile Include="Entities\Tasks\IRefSpectrumByDriveTestsDetailResult.cs" />
+    <Compile Include="Entities\Tasks\IRefSpectrumByDriveTestsResult.cs" />
+    <Compile Include="Entities\Tasks\IRefSpectrumByDriveTestsArgsBase.cs" />
+    <Compile Include="Entities\Tasks\IRefSpectrumByDriveTestsArgs.cs" />
     <Compile Include="Entities\Tasks\IStationCalibrationStaResult.cs" />
     <Compile Include="Entities\Tasks\IStationCalibrationDriveTestResult.cs" />
     <Compile Include="Entities\Tasks\IStationCalibrationResult.cs" />
@@ -206,8 +211,12 @@
     <Content Include="DataLayer\Oracle\Tables\CALC.PROJECT_MAPS.sql" />
     <Content Include="DataLayer\Oracle\Tables\CALC.PROJECT_MAP_CONTENTS.sql" />
     <Content Include="DataLayer\Oracle\Tables\CALC.PROJECT_MAP_CONTENT_SOURCES.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.CALCRESULTS_REF_SPECTRUM_BY_DRIVE_TESTS_DETAIL.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.CALCRESULTS_REF_SPECTRUM_BY_DRIVE_TESTS.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.CALCRESULT_EVENTS.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.CALCRESULTS_GN06.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.REF_SPECTRUM_BY_DRIVE_TESTS_ARGS_DEF.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.REF_SPECTRUM_BY_DRIVE_TESTS_ARGS.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.GN06_AFFECTED_ADM_RESULT.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.GN06_ALLOTMENT_OR_ASSIGNMENT_RESULT.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.GN06_CONTOURS_RESULT.sql" />
@@ -332,11 +341,18 @@
     <Content Include="Metadata\Entities\Tasks\PointFieldStrengthArgsDefault.xml" />
     <Content Include="Metadata\Entities\Tasks\Gn06Result.xml" />
     <Content Include="Metadata\Entities\Tasks\Gn06AffectedADMResult.xml" />
+    <Content Include="Metadata\Entities\Tasks\RefSpectrumByDriveTestsArgsDefault.xml" />
+    <Content Include="Metadata\Entities\Tasks\RefSpectrumByDriveTestsArgs.xml" />
+    <Content Include="Metadata\Entities\Tasks\RefSpectrumByDriveTestsResult.xml" />
+    <Content Include="Metadata\Entities\Tasks\RefSpectrumByDriveTestsDetailResult.xml" />
+    <Content Include="Metadata\Entities\Tasks\RefSpectrumByDriveTestsArgsBase.xml" />
     <Content Include="Metadata\Entities\Tasks\StationCalibrationStaResult.xml" />
     <Content Include="Metadata\Entities\Tasks\StationCalibrationResult.xml" />
     <Content Include="Metadata\Entities\Tasks\StationCalibrationDriveTestResult.xml" />
     <Content Include="Metadata\Entities\Tasks\StationCalibrationArgsDefault.xml" />
-    <Content Include="Metadata\Entities\Tasks\StationCalibrationArgsBase.xml" />
+    <Content Include="Metadata\Entities\Tasks\StationCalibrationArgsBase.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Metadata\Entities\Tasks\StationCalibrationArgs.xml" />
     <Content Include="Metadata\Entities\Tasks\PointFieldStrengthResult.xml" />
     <Content Include="Metadata\Entities\Tasks\PointFieldStrengthArgs.xml" />

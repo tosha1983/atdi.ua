@@ -80,7 +80,8 @@
     <Compile Include="Iterations\FieldStrengthCalcIteration.cs" />
     <Compile Include="Iterations\ProfileIndexersCalcIteration.cs" />
     <Compile Include="Tasks\GE06\GE06CalcTask.cs" />
-    <Compile Include="Tasks\StationCalibrationCalcTask.cs" />
+    <Compile Include="Tasks\RefSpectrum\RefSpectrumByDriveTestsCalcTask.cs" />
+    <Compile Include="Tasks\StationCalibration\StationCalibrationCalcTask.cs" />
     <Compile Include="Tasks\PointFieldStrengthCalcTask.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Specification.cs" />
