@@ -21,8 +21,8 @@
     <Field Name="IdSensor" SourceType="Column" Required="true" SourceName="ID_SENSOR" DataType="Integer.64" Title="Id sensor" Desc="The id sensor"/>
     <Field Name="GlobalCID" SourceType="Column" SourceName="GLOBAL_GSID" DataType="Text.50" Required="true" Title="Global gsid" Desc="The Global gsid" />
     <Field Name="Freq_MHz" SourceType="Column" Required="true" SourceName="FREQ_MHZ" DataType="Double.30.10" Title="Freq, MHz" Desc="The Freq in MHz"/>
-    <Field Name="Level_dBm" SourceType="Column" Required="true" SourceName="LEVEL_DBM" DataType="Float.22.8" Title="Level, dBm" Desc="The level, dBm"/>
-    <Field Name="Percent" SourceType="Column" Required="true" SourceName="PERCENT" DataType="Float.22.8" Title="Percent, %" Desc="The percent, %"/>
+    <Field Name="Level_dBm" SourceType="Column" Required="true" SourceName="LEVEL_DBM" DataType="Double.30.10" Title="Level, dBm" Desc="The level, dBm"/>
+    <Field Name="Percent" SourceType="Column" Required="true" SourceName="PERCENT" DataType="Double.30.10" Title="Percent, %" Desc="The percent, %"/>
     <Field Name="DateMeas" DataType="DateTimeOffset" SourceName="DATE_MEAS" SourceType="Column" Desc="The date meas" Title="Date meas" Required="true"/>
   </Fields>
   <PrimaryKey Clustered="true">

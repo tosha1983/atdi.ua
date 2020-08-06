@@ -20,7 +20,9 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 
         public long DriveTestId;
 
-        public long SensorId;
+        public long? SensorId;
+
+        public double RxFeederLoss_dB;
 
         public string SensorName;
 
@@ -32,9 +34,11 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 
         public float Loss;
 
-        public StationAntenna  StationAntenna;
+        public StationAntenna  SensorAntenna;
 
-        public Wgs84Site SeCoordinate;
+        public float SensorAntennaHeight_m;
+
+        public AtdiCoordinate Coordinate;
 
         public DateTime? MeasTime;
 

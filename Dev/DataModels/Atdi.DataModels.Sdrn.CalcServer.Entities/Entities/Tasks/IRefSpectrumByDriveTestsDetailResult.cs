@@ -23,8 +23,8 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks
         long IdSensor { get; set; }
         string GlobalCID { get; set; }
         double Freq_MHz { get; set; }
-        float Level_dBm { get; set; }
-        float Percent { get; set; }
+        double Level_dBm { get; set; }
+        double Percent { get; set; }
         DateTimeOffset DateMeas { get; set; }
     }
 
