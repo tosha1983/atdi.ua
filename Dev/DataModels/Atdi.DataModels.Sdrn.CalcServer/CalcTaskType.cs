@@ -26,12 +26,17 @@ namespace Atdi.DataModels.Sdrn.CalcServer
         /// <summary>
         /// Расчет согласно спецификации GN06
         /// </summary>
-       Gn06CalcTask = 4,
+        Gn06CalcTask = 4,
 
-		/// <summary>
-		/// Первая тестовая расчетная задача
-		/// </summary>
-		FirstExampleTask = 101,
+        /// <summary>
+        /// Формирование сводной таблицы (Ref Spectrum) по результатам драйв-тестов
+        /// </summary>
+        RefSpectrumByDriveTestsCalcTask = 5,
+
+        /// <summary>
+        /// Первая тестовая расчетная задача
+        /// </summary>
+        FirstExampleTask = 101,
 
 		/// <summary>
 		/// Вторая тестовая расчетная задача

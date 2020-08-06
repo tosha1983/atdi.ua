@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "RefSpectrumByDriveTestsArgsBase"
+  Title       = "RefSpectrum by drive tests arguments base"
+  Desc        = "The RefSpectrum by drive tests arguments base"
+  Type        = "Abstract"
+  BaseEntity  = ""
+  
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>REF_SPECTRUM_BY_DRIVE_TESTS_ARGS</Name>
+    <Schema>CALC</Schema>
+  </DataSource>
+  <Fields>
+    <Field Name="StationIds" SourceType="Column" Required="false" SourceName="STATION_IDS" DataType="Array.Long" Title="Context station identifiers" Desc="Context station identifiers"/>
+    <Field Name="PowerThreshold_dBm" SourceType="Column" Required="false" SourceName="POWER_THRESHOLD_DBM" DataType="Float.22.8" Title="PowerThreshold_dBm" Desc="PowerThreshold, dBm"/>
+    <Field Name="Comments" SourceType="Column" Required="false" SourceName="COMMENTS" DataType="Text.4000" Title="Comments" Desc="Comments"/>
+  </Fields>
+
+</Entity>
+
