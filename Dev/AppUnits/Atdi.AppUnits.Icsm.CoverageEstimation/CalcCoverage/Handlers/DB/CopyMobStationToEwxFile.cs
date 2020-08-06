@@ -13,6 +13,7 @@ using Atdi.DataModels.DataConstraint;
 using Atdi.Platform.Logging;
 using Atdi.Contracts.CoreServices.DataLayer;
 using Atdi.Contracts.LegacyServices.Icsm;
+using Atdi.AppUnits.Icsm.CoverageEstimation.Utilities;
 using Atdi.AppUnits.Icsm.CoverageEstimation.Localization;
 
 
@@ -334,7 +335,8 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                              var ELVV_Patt = GetAntennaMobMpt(station.AntennaId.Value, "ELVV");
                              if (((HH_Patt.Length > 0 || VV_Patt.Length > 0) && (ELHH_Patt.Length > 0 || ELVV_Patt.Length > 0)) == false)
                              {
-                                 this._logger.Info(Contexts.CalcCoverages, (EventText)$"{CLocaliz.TxT("Reject station Id")} = '{id}'");
+                                 this._logger.Error(Contexts.CalcCoverages, (EventText)$"{CLocaliz.TxT("Reject station Id")} = '{id}'");
+                                 Utils.LogInfo(dataConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("Reject station Id")} = '{id}'");
                                  continue;
                              }
                              else

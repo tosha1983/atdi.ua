@@ -27,5 +27,11 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation
         [ComponentConfigProperty("Telecom.HookBitBltWinAPIFunctionInjectDll")]
         public string HookBitBltWinAPIFunctionInjectDll { get; set; }
 
+        [ComponentConfigProperty("Job.EnableMobStationCalculation")]
+        public bool EnableMobStationCalculation { get; set; }
+
+        [ComponentConfigProperty("Job.EnableMobStation2Calculation")]
+        public bool EnableMobStation2Calculation { get; set; }
+
     }
 }
