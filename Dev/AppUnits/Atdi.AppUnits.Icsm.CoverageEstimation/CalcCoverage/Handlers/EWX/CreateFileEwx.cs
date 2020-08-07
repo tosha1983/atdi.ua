@@ -11,6 +11,7 @@ using System.IO;
 using Atdi.Platform.Logging;
 using Atdi.AppUnits.Icsm.CoverageEstimation.Models;
 using Atdi.Common;
+using Atdi.AppUnits.Icsm.CoverageEstimation.Utilities;
 using Atdi.AppUnits.Icsm.CoverageEstimation.Localization;
 
 
@@ -19,9 +20,11 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
     public class CreateFileEwx
     {
         private ILogger _logger { get; set; }
-        public CreateFileEwx(ILogger logger)
+        private DataConfig _dataConfig { get; set; }
+        public CreateFileEwx(DataConfig dataConfig, ILogger logger)
         {
             this._logger = logger;
+            this._dataConfig = dataConfig;
         }
 
         public bool CreateFile(string Path, EwxData ewx)
@@ -56,13 +59,15 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                     {
                         if ((CheckDiagH(ref diagH, out diagHNameTag) == false) || (CheckDiagV(ref diagV, out diagVNameTag) == false))
                         {
-                            this._logger.Info(Contexts.CalcCoverages, (EventText)$"{CLocaliz.TxT("Reject station Id")} = '{id}'");
+                            this._logger.Error(Contexts.CalcCoverages, (EventText)$"{CLocaliz.TxT("Reject station Id")} = '{id}'");
+                            Utils.LogInfo(this._dataConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("Reject station Id")} = '{id}'");
                             continue;
                         }
                     }
                     catch (Exception ex)
                     {
                         this._logger.Exception(Contexts.CalcCoverages, (EventCategory)$"{CLocaliz.TxT("Reject station Id")} = '{id}'", ex);
+                        Utils.LogInfo(this._dataConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("Reject station Id")} = '{id}'");
                         continue;
                     }
 
@@ -237,6 +242,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
             else if (diagV.Contains("VECTOR 5"))
             {
                 NameTag = "DIAG_V";
+                Utils.LogInfo(this._dataConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("DiagV value =")} '{diagV}' {CLocaliz.TxT("not support")}");
                 throw new InvalidOperationException($"{CLocaliz.TxT("DiagV value =")} '{diagV}' {CLocaliz.TxT("not support")}");
             }
             else if (diagV.Contains("POINTS"))
@@ -310,20 +316,16 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                         var delta = s.Length - 4;
                         s = s.Remove(s.Length - delta, delta);
                     }
-                    //if (s.Length == 1)
-                    //{
                     if (isFirst)
                     {
                         s = "0000";
                         isFirst = false;
                     }
-                    //}
                     s = s.PadLeft(4, ' ');
                     outString += s;
                 }
             }
             return outString;
-           
         }
 
         private PointObject[] ParseStringToPointObjects(string diag)
@@ -348,6 +350,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                 }
                 else
                 {
+                    Utils.LogInfo(this._dataConfig, Contexts.CalcCoverages, CLocaliz.TxT("Dimension array must be an even number"));
                     throw new InvalidOperationException(CLocaliz.TxT("Dimension array must be an even number"));
                 }
             }
@@ -377,6 +380,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                 }
                 else
                 {
+                    Utils.LogInfo(this._dataConfig, Contexts.CalcCoverages, CLocaliz.TxT("Dimension array must be an even number"));
                     throw new InvalidOperationException(CLocaliz.TxT("Dimension array must be an even number"));
                 }
             }
@@ -408,6 +412,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
             {
                 if (inArray.Length < MinCount)
                 {
+                    Utils.LogInfo(this._dataConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("Incorrect count element in inArray")} ({inArray.Length} < {MinCount})  {CLocaliz.TxT("in the InterpolationForICSTelecomHorizontal method")}");
                     throw new InvalidOperationException($"{CLocaliz.TxT("Incorrect count element in inArray")} ({inArray.Length} < {MinCount})  {CLocaliz.TxT("in the InterpolationForICSTelecomHorizontal method")}");
                 }
                 for (int i = 0; i < 36; i++)
@@ -419,6 +424,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
             }
             else
             {
+                Utils.LogInfo(this._dataConfig, Contexts.CalcCoverages, CLocaliz.TxT("The 'inArray' input parameter in the InterpolationForICSTelecomHorizontal method is null!"));
                 throw new InvalidOperationException(CLocaliz.TxT("The 'inArray' input parameter in the InterpolationForICSTelecomHorizontal method is null!"));
             }
             return result;
@@ -432,6 +438,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
             {
                 if (inArray.Length < MinCount)
                 {
+                    Utils.LogInfo(this._dataConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("Incorrect count element in inArray")} ({inArray.Length} < {MinCount})  {CLocaliz.TxT("in the InterpolationForICSTelecomHorizontal method")}");
                     throw new InvalidOperationException($"{CLocaliz.TxT("Incorrect count element in inArray")} ({inArray.Length} < {MinCount})  {CLocaliz.TxT("in the InterpolationForICSTelecomHorizontal method")}");
                 }
                 for (int i = 0; i < 72; i++)
@@ -441,6 +448,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
             }
             else
             {
+                Utils.LogInfo(this._dataConfig, Contexts.CalcCoverages, CLocaliz.TxT("The 'inArray' input parameter in the InterpolationForICSTelecomHorizontal method is null!"));
                 throw new InvalidOperationException(CLocaliz.TxT("The 'inArray' input parameter in the InterpolationForICSTelecomHorizontal method is null!"));
             }
             return result;
@@ -480,6 +488,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
             }
             else
             {
+                Utils.LogInfo(this._dataConfig, Contexts.CalcCoverages, CLocaliz.TxT("The 'inArray' input parameter in the InterpolationForICSTelecomHorizontal method is null!"));
                 throw new InvalidOperationException(CLocaliz.TxT("The 'inArray' input parameter in the InterpolationForICSTelecomHorizontal method is null!"));
             }
             return result;
@@ -515,6 +524,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
             }
             else
             {
+                Utils.LogInfo(this._dataConfig, Contexts.CalcCoverages, CLocaliz.TxT("The 'inArray' input parameter in the InterpolationForICSTelecomVertical method is null!"));
                 throw new InvalidOperationException(CLocaliz.TxT("The 'inArray' input parameter in the InterpolationForICSTelecomVertical method is null!"));
             }
             return result;
@@ -528,6 +538,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
             {
                 if (inArray.Length < MinCount)
                 {
+                    Utils.LogInfo(this._dataConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("Incorrect count element in inArray")} ({inArray.Length} < {MinCount})  {CLocaliz.TxT("in the InterpolationForICSTelecomVertical method")}");
                     throw new InvalidOperationException($"{CLocaliz.TxT("Incorrect count element in inArray")} ({inArray.Length} < {MinCount})  {CLocaliz.TxT("in the InterpolationForICSTelecomVertical method")}");
                 }
                 for (int i = 0; i < 9; i++)
@@ -550,6 +561,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
             }
             else
             {
+                Utils.LogInfo(this._dataConfig, Contexts.CalcCoverages, CLocaliz.TxT("The 'inArray' input parameter in the InterpolationForICSTelecomVertical method is null!"));
                 throw new InvalidOperationException(CLocaliz.TxT("The 'inArray' input parameter in the InterpolationForICSTelecomVertical method is null!"));
             }
             return result;

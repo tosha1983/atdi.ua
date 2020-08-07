@@ -34,6 +34,24 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration
 		[ComponentConfigProperty("AutoImport.SdrnServer.StationMonitoring.Route.BufferSize")]
 		public int? AutoImportSdrnServerStationMonitoringRouteBufferSize { get; set; }
 
+		[ComponentConfigProperty("AutoImport.SdrnServer.Sensors.FetchRows")]
+		public int? AutoImportSdrnServerSensorsFetchRows { get; set; }
+
+		[ComponentConfigProperty("AutoImport.SdrnServer.SensorAntennas.FetchRows")]
+		public int? AutoImportSdrnServerSensorAntennasFetchRows { get; set; }
+
+		[ComponentConfigProperty("AutoImport.SdrnServer.SensorAntennaPatterns.FetchRows")]
+		public int? AutoImportSdrnServerSensorAntennaPatternsFetchRows { get; set; }
+
+		[ComponentConfigProperty("AutoImport.SdrnServer.SensorEquipment.FetchRows")]
+		public int? AutoImportSdrnServerSensorEquipmentFetchRows { get; set; }
+
+		[ComponentConfigProperty("AutoImport.SdrnServer.SensorEquipmentSensitivities.FetchRows")]
+		public int? AutoImportSdrnServerSensorEquipmentSensitivitiesFetchRows { get; set; }
+
+		[ComponentConfigProperty("AutoImport.SdrnServer.SensorLocations.FetchRows")]
+		public int? AutoImportSdrnServerSensorLocationsFetchRows { get; set; }
+
 
 		[ComponentConfigProperty("AutoImport.Files.Folder")]
 		public string AutoImportFilesFolder { get; set; }
