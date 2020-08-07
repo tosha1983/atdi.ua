@@ -214,7 +214,11 @@ namespace Atdi.Modules.LicenseGenerator
 			//WebQuery_for_CRA_Lithuania_2020_1p();
 
 			//20200721
-			ICSControl_ForUDCR_UNICOM_2020_Aggregation();
+			//ICSControl_ForUDCR_UNICOM_2020_Aggregation();
+
+			//20200806
+			SdrnGN06CalcPlugin_ForBELGIE_2020_1p();
+			CalcServer_ForBELGIE_2020_1p();
 
 			Console.WriteLine("Process was finished");
 
@@ -1768,6 +1772,76 @@ namespace Atdi.Modules.LicenseGenerator
 
 		}
 
+		static void SdrnGN06CalcPlugin_ForBELGIE_2020_1p()
+		{
+
+			var ownerKey = Storage.Clients.BELGIE.OwnerKey; // "BD13-G65";
+			var ownerId = Storage.Clients.BELGIE.OwnerId;  // "OID-BD13-G65-N00";
+			var ownerName = Storage.Clients.BELGIE.OwnerName; // "Державне підприємство «Український державний центр радіочастот»";
+			var company = Storage.Companies.ATDI_Ukraine_EN; // "ТОВ 'Лабораторія інформаційних систем'";
+
+			var startDate = new DateTime(2020, 8, 6);
+			var stopDate = new DateTime(2020, 9, 1);
+
+			var licPrefix = "LIC-P";
+			var instancePrefix = "ICSMP-C";
+
+			//var licPrefix = "LIC-D";
+			//var instancePrefix = "SENSOR-D";
+
+			var path1 = @"C:\Projects\Licensing\BELGIE\ICSM_Plugin_GE06_Calc\20200806";
+			for (int i = 0; i < 1; i++)
+			{
+				BuilProductLicense(
+					path1,
+					licPrefix,
+					instancePrefix,
+					Storage.LicenseTypes.ClientLicense, // "DeviceLicense",
+					Storage.Products.ICSM_Plugin_GE06_Calc, // "ICS Control Device",
+					ownerName,
+					ownerId,
+					ownerKey,
+					company,
+					startDate,
+					stopDate, 2020, LicenseLimitationTerms.TimePeriod);
+			}
+
+		}
+
+		static void CalcServer_ForBELGIE_2020_1p()
+		{
+
+			var ownerKey = Storage.Clients.BELGIE.OwnerKey; // "BD13-G65";
+			var ownerId = Storage.Clients.BELGIE.OwnerId;  // "OID-BD13-G65-N00";
+			var ownerName = Storage.Clients.BELGIE.OwnerName; // "Державне підприємство «Український державний центр радіочастот»";
+			var company = Storage.Companies.ATDI_Ukraine_EN; // "ТОВ 'Лабораторія інформаційних систем'";
+
+			var startDate = new DateTime(2020, 8, 6);
+			var stopDate = new DateTime(2020, 9, 1);
+
+			var licPrefix = "LIC-C";
+			var instancePrefix = "SDRNSV-C";
+
+
+
+			var path1 = @"C:\Projects\Licensing\BELGIE\CalcServer\20200806";
+			for (int i = 0; i < 1; i++)
+			{
+				BuilProductLicense(
+					path1,
+					licPrefix,
+					instancePrefix,
+					Storage.LicenseTypes.ServerLicense, // "DeviceLicense",
+					Storage.Products.SDRN_Calc_Server, // "ICS Control Device",
+					ownerName,
+					ownerId,
+					ownerKey,
+					company,
+					startDate,
+					stopDate, 2020, LicenseLimitationTerms.TimePeriod);
+			}
+
+		}
 		private static string BuildNextLicenseNumber(string licPrefix, string ownerKey, int numMaxSize = 3)
 		{
 			var number = string.Empty;

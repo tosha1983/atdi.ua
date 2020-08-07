@@ -85,4 +85,7 @@ create table [SDRNSVR].[SENSOR_EQUIP_SENSITIVITES] (
 	[ADDLOSS]	[float] null,
 	constraint [PK_SENSOR_EQUIP_SENSITIVITES] primary key clustered ([ID]) on [PRIMARY]  
 ) on [PRIMARY]
-go
+GO
+
+ALTER TABLE [SDRNSVR].[SM_MEAS_RESULTS] ADD [SENSOR_ID] [bigint] NULL
+GO
