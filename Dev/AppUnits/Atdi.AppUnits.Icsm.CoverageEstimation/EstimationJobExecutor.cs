@@ -41,8 +41,14 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation
             {
                 if (context.Token.StartAttempts == 1)
                 {
-                    this._startCalcFinalCoverageForMobstation.Run(this._dataConfig, context.Token.StartAttempts);
-                    this._startCalcFinalCoverageForMobstation2.Run(this._dataConfig, context.Token.StartAttempts);
+                    if (this._appServerComponentConfig.EnableMobStationCalculation)
+                    {
+                        this._startCalcFinalCoverageForMobstation.Run(this._dataConfig, context.Token.StartAttempts);
+                    }
+                    if (this._appServerComponentConfig.EnableMobStation2Calculation)
+                    {
+                        this._startCalcFinalCoverageForMobstation2.Run(this._dataConfig, context.Token.StartAttempts);
+                    }
                 }
                 
 
@@ -52,8 +58,14 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation
                 }
                 else
                 {
-                    this._startCalcFinalCoverageForMobstation.Run(this._dataConfig, context.Token.StartAttempts);
-                    this._startCalcFinalCoverageForMobstation2.Run(this._dataConfig, context.Token.StartAttempts);
+                    if (this._appServerComponentConfig.EnableMobStationCalculation)
+                    {
+                        this._startCalcFinalCoverageForMobstation.Run(this._dataConfig, context.Token.StartAttempts);
+                    }
+                    if (this._appServerComponentConfig.EnableMobStation2Calculation)
+                    {
+                        this._startCalcFinalCoverageForMobstation2.Run(this._dataConfig, context.Token.StartAttempts);
+                    }
                 }
 
                 // если есть длительные цыклы, обязательно проверять на отмену

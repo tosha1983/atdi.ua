@@ -5,6 +5,7 @@ using System.IO;
 using Atdi.AppUnits.Icsm.CoverageEstimation.Models;
 using System.Linq;
 using Atdi.Platform.Logging;
+using System.Globalization;
 
 namespace Atdi.AppUnits.Icsm.CoverageEstimation.Utilities
 {
@@ -127,9 +128,9 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Utilities
             var resultOutFileName = "";
             var loadConfig = dataConfig;
             var templateFile = loadConfig.DirectoryConfig.TemplateOutputFileNameForMobStation;
-            string prov = isAllProvinces(dataConfig, Province) ? "UKR" : Province;
+            string prov = isAllProvinces(dataConfig, Province) ? RegionInfo.CurrentRegion.ThreeLetterISORegionName : Province;
             string oper = string.IsNullOrEmpty(Operator) ? "ALL" : Operator;
-            resultOutFileName = templateFile.Replace(ProvinceTemplate, prov).Replace(StandardTemplate, Standard).Replace(OperatorTemplate, oper).Replace(DateTemplate, DateTime.Now.ToString("dd_MM_yyyy"));
+            resultOutFileName = templateFile.Replace(ProvinceTemplate, prov).Replace(",", "-").Replace(".", "-").Replace(StandardTemplate, Standard).Replace(OperatorTemplate, oper).Replace(DateTemplate, DateTime.Now.ToString("dd_MM_yyyy"));
             return resultOutFileName;
         }
 
@@ -151,9 +152,9 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Utilities
             var resultOutFileName = "";
             var loadConfig = dataConfig;
             var templateFile = loadConfig.DirectoryConfig.TemplateOutputFileNameForMobStation2;
-            string prov = isAllProvinces(dataConfig, Province) ? "UKR" : Province;
+            string prov = isAllProvinces(dataConfig, Province) ? RegionInfo.CurrentRegion.ThreeLetterISORegionName : Province;
             string oper = string.IsNullOrEmpty(Operator) ? "ALL" : Operator;
-            resultOutFileName = templateFile.Replace(ProvinceTemplate, prov).Replace(FreqTemplate, Freq.Replace(";","-")).Replace(OperatorTemplate, oper).Replace(DateTemplate, DateTime.Now.ToString("dd_MM_yyyy"));
+            resultOutFileName = templateFile.Replace(ProvinceTemplate, prov).Replace(",", "-").Replace(".", "-").Replace(FreqTemplate, Freq.Replace(";","-")).Replace(OperatorTemplate, oper).Replace(DateTemplate, DateTime.Now.ToString("dd_MM_yyyy"));
             return resultOutFileName;
         }
 

@@ -148,3 +148,8 @@
 > "Запит до БД для завантаження даних по станціях було успішно виконано"
 "EWX file creation operation '{0}' completed successfully"
 > "Операція створення файла EWX '{0}', успішно завершена"
+"The 'GroupsMobStationConfig' block in the configuration file is empty"
+> "Блок "GroupsMobStationConfig" у файлі конфігурації порожній"
+"The 'GroupsMobStation2Config' block in the configuration file is empty"
+> "Блок "GroupsMobStation2Config" у файлі конфігурації порожній"
+

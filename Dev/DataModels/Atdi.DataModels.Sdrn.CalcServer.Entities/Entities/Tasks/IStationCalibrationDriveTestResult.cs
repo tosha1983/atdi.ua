@@ -16,6 +16,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks
 	[Entity]
 	public interface IStationCalibrationDriveTestResult : IStationCalibrationDriveTestResult_PK
     {
+        IStationCalibrationResult STATION_CALIBRATION_RESULT { get; set; }
         long CalibrationResultId { get; set; }
         long DriveTestId { get; set; }
         long LinkToStationMonitoringId { get; set; }

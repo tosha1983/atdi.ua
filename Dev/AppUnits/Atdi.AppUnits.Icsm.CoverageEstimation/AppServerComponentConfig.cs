@@ -27,5 +27,17 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation
         [ComponentConfigProperty("Telecom.HookBitBltWinAPIFunctionInjectDll")]
         public string HookBitBltWinAPIFunctionInjectDll { get; set; }
 
+        [ComponentConfigProperty("Job.EnableMobStationCalculation")]
+        public bool EnableMobStationCalculation { get; set; }
+
+        [ComponentConfigProperty("Job.EnableMobStation2Calculation")]
+        public bool EnableMobStation2Calculation { get; set; }
+
+        [ComponentConfigProperty("Thresholds.ThresholdsMaxCountThreadFilesForFinalCoverage")]
+        public int MaxCountThreadFilesForFinalCoverage { get; set; }
+
+        [ComponentConfigProperty("Thresholds.ThresholdsMaxCountThreadFilesForConcatBlank")]
+        public int MaxCountThreadFilesForConcatBlank { get; set; }
+
     }
 }
