@@ -27,7 +27,9 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
         public static readonly EventText IterationHandlerTypeWasRegistered = "The iteration handler was registered: '{0}'";
         public static readonly EventText DeepServiceTypeWasRegistered = "The deep service was registered: '{0}'";
 
-	}
+        public static readonly EventText CoordinateNotFound = "Coordinates for sensor id = '{0}' not found";
+
+    }
 
     internal static class TraceScopeNames
     {
@@ -37,6 +39,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
     internal static class Exceptions
     {
         public static readonly string StationCalibration = "Station Calibration";
+        public static readonly string RefSpectrumByDriveTestsCalcTask = "Reference spectrum by drive tests";
+        
     }
 
     internal static class ObjectPools
