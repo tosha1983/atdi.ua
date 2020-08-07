@@ -26,6 +26,8 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 
         public string SensorName;
 
+        public string SensorTechId;
+
         public string SensorTitle;
 
         public float MaxCorrelation;
