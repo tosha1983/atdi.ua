@@ -52,7 +52,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
 
                 Utils.LogInfo(loadConfig, Contexts.CalcCoverages, CLocaliz.TxT($"The start procedure for opening the page for the section 'GroupsMobStationConfig2'"));
 
-                var gdalCalc = new GdalCalc(this._logger);
+                var gdalCalc = new GdalCalc(this._appServerComponentConfig, this._logger);
 
                 if (loadConfig.BlockStationsConfig.MobStation2Config == null)
                 {

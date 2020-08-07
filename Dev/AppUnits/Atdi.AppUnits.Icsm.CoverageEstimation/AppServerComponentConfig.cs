@@ -33,5 +33,11 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation
         [ComponentConfigProperty("Job.EnableMobStation2Calculation")]
         public bool EnableMobStation2Calculation { get; set; }
 
+        [ComponentConfigProperty("Thresholds.ThresholdsMaxCountThreadFilesForFinalCoverage")]
+        public int MaxCountThreadFilesForFinalCoverage { get; set; }
+
+        [ComponentConfigProperty("Thresholds.ThresholdsMaxCountThreadFilesForConcatBlank")]
+        public int MaxCountThreadFilesForConcatBlank { get; set; }
+
     }
 }
