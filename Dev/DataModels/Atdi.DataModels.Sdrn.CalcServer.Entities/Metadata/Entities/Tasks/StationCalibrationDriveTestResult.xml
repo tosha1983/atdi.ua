@@ -15,7 +15,7 @@
 
     <Field Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column" Desc="The Id record." Title="Id record"/>
     <Field Name="DriveTestId" SourceType="Column" SourceName="DRIVE_TEST_ID" DataType="Integer.64"  Required="false" Title="Drive test ID" Desc="The drive test ID" />
-    <Field Name="STATION_CALIBRATION_RESULT" SourceType="Reference" SourceName="Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks.StationCalibrationResult"  Required="true" Title="Station calibration result" Desc="The Station calibration result" />
+    <Field Name="CALCRESULTS_STATION_CALIBRATION" SourceType="Reference" SourceName="Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks.StationCalibrationResult"  Required="true" Title="Station calibration result" Desc="The Station calibration result" />
     <Field Name="LinkToStationMonitoringId" SourceType="Column" SourceName="LINK_STATION_MONITORING_ID" DataType="Integer.64" Required="false" Title="Station calibration result link" Desc="The Station calibration result link" />
     <Field Name="CalibrationResultId" SourceType="Column" SourceName="CALCRESULTS_STATION_CALIBRATION_ID" DataType="Integer.64"  Required="true" Title="calibration result ID" Desc="The calibration result ID" />
     <Field Name="ExternalSource" SourceType="Column" SourceName="EXTERNAL_SOURCE" DataType="Text.50" Required="false" Title="External source" Desc="The external source" />

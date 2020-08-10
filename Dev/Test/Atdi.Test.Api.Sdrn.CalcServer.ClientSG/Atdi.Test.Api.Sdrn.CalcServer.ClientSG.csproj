@@ -60,6 +60,7 @@
     <Compile Include="MapMaker.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tasks\RefSpectrumByDriveTestsCalcTask.cs" />
     <Compile Include="Tasks\PointFieldStrengthCalcTask.cs" />
     <Compile Include="Test\TestDataGenerator.cs" />
   </ItemGroup>

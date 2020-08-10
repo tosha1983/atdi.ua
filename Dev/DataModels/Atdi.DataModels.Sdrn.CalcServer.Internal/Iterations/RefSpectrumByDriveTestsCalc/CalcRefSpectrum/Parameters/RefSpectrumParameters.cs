@@ -10,6 +10,8 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
 	public class RefSpectrumParameters
     {
+        public long ResultId;
+
         public float PowerThreshold_dBm;
 
         public long[] StationIds;
