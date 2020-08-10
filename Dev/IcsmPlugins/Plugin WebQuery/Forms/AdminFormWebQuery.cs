@@ -133,7 +133,7 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
             DialogResult DA = openFileDialog1.ShowDialog();
             if (DA == System.Windows.Forms.DialogResult.OK) {
                 textBoxIRPFilePath.Text = openFileDialog1.FileName;
-                using (StreamReader rdr = new StreamReader(textBoxIRPFilePath.Text, Encoding.Default))
+                using (StreamReader rdr = new StreamReader(textBoxIRPFilePath.Text, Encoding.UTF8))
                 {
                     string cipherText = rdr.ReadToEnd();
                     string[] wordString = cipherText.Split(new char[] { '\n' });
@@ -143,7 +143,7 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
                         {
                             wordString[i] = wordString[i].Replace("CustomExpression", "CustomExpression_" + Guid.NewGuid().ToString());
                         }
-                        AllText += wordString[i] + "\n";
+                        AllText += wordString[i].EndsWith("\r") ? (wordString[i] + "\n") : (wordString[i] + "\r\n");
                     }
                     textBoxQuery.Text = AllText;
                 }
