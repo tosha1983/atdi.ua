@@ -53,29 +53,20 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Datalayer, Version=0.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\ATDI\ICS Manager_Bosnia_RAK_03_12_2018\Datalayer.dll</HintPath>
+    <Reference Include="DatalayerCs">
+      <HintPath>C:\ATDI\ICS Manager\DatalayerCs.dll</HintPath>
     </Reference>
-    <Reference Include="DatalayerCs, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\ATDI\ICS Manager_Bosnia_RAK_03_12_2018\DatalayerCs.dll</HintPath>
+    <Reference Include="FormsCs">
+      <HintPath>C:\ATDI\ICS Manager\FormsCs.dll</HintPath>
     </Reference>
-    <Reference Include="FormsCs, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\ATDI\ICS Manager_Bosnia_RAK_03_12_2018\FormsCs.dll</HintPath>
+    <Reference Include="NetPlugins">
+      <HintPath>C:\ATDI\ICS Manager\NetPlugins.dll</HintPath>
     </Reference>
-    <Reference Include="NetPlugins, Version=0.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\ATDI\ICS Manager_Bosnia_RAK_03_12_2018\NetPlugins.dll</HintPath>
+    <Reference Include="NetPlugins2">
+      <HintPath>C:\ATDI\ICS Manager\NetPlugins2.dll</HintPath>
     </Reference>
-    <Reference Include="NetPlugins2, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\ATDI\ICS Manager_Bosnia_RAK_03_12_2018\NetPlugins2.dll</HintPath>
-    </Reference>
-    <Reference Include="OrmCs, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\ATDI\ICS Manager_Bosnia_RAK_03_12_2018\OrmCs.dll</HintPath>
+    <Reference Include="OrmCs">
+      <HintPath>C:\ATDI\ICS Manager\OrmCs.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />

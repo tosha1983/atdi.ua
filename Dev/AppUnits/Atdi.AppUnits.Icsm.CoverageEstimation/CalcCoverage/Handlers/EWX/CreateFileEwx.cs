@@ -45,6 +45,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                 writer.WriteElementString("COUNT_MWS", XmlConvert.ToString(ewx.Header.CountMWS));
                 writer.WriteEndElement();
 
+                bool isFindStationData = false;
 
                 for (int i = 0; i < ewx.Stations.Length; i++)
                 {
@@ -70,6 +71,8 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                         Utils.LogInfo(this._dataConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("Reject station Id")} = '{id}'");
                         continue;
                     }
+
+                    isFindStationData = true;
 
                     writer.WriteStartElement("STATION");
                     writer.WriteStartElement("RECORD");
@@ -111,8 +114,15 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                 }
                 writer.WriteEndElement();
                 writer.Close();
-                isSuccessCreateEwxFile = true;
-                this._logger.Info(Contexts.CalcCoverages, string.Format(CLocaliz.TxT(Events.OperationSaveEWXFileCompleted.ToString()), Path));
+                if (isFindStationData)
+                {
+                    isSuccessCreateEwxFile = true;
+                    this._logger.Info(Contexts.CalcCoverages, string.Format(CLocaliz.TxT(Events.OperationSaveEWXFileCompleted.ToString()), Path));
+                }
+                else
+                {
+                    File.Delete(Path);
+                }
             }
             catch (Exception e)
             {
