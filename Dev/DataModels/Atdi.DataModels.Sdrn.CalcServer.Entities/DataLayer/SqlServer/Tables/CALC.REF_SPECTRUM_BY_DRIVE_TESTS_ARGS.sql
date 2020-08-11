@@ -8,7 +8,7 @@ CREATE TABLE [CALC].[REF_SPECTRUM_BY_DRIVE_TESTS_ARGS](
  [RESULT_ID] [bigint] NOT NULL,
  [TASK_ID] [bigint] NOT NULL,
  [ID] [bigint] IDENTITY(1,1) NOT NULL,
- [COMMENTS] [nvarchar](4000)  NULL,
+ [COMMENTS] [nvarchar](2000)  NULL,
  [POWER_THRESHOLD_DBM] [FLOAT]  NULL,
  [STATION_IDS] [varbinary](max) NULL,
 
