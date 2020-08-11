@@ -63,6 +63,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                 .SetValue(c => c.ShiftTiltStationMin_deg, command.ShiftTiltStationMin_deg)
                 .SetValue(c => c.ShiftTiltStationStep_deg, command.ShiftTiltStationStep_deg)
                 .SetValue(c => c.StationIds, command.StationIds)
+                .SetValue(c => c.Contours, command.Contours)
                 .SetValue(c => c.TaskId, command.TaskId)
                 .SetValue(c => c.TiltStation, command.TiltStation)
                 .SetValue(c => c.TrustOldResults, command.TrustOldResults)

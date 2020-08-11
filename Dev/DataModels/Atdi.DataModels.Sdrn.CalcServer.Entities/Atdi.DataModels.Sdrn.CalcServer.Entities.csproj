@@ -285,6 +285,7 @@
     <Content Include="Metadata\DataTypes\ClrObject\Time.TIME.xml" />
     <Content Include="Metadata\DataTypes\Database\Array.Double.xml" />
     <Content Include="Metadata\DataTypes\Database\Array.Float.xml" />
+    <Content Include="Metadata\DataTypes\Database\Array.String.xml" />
     <Content Include="Metadata\DataTypes\Database\Array.Long.xml" />
     <Content Include="Metadata\DataTypes\Database\Array.Integer.xml" />
     <Content Include="Metadata\DataTypes\Database\Boolean.xml" />
@@ -348,7 +349,9 @@
     <Content Include="Metadata\Entities\Tasks\Gn06ContoursResult.xml" />
     <Content Include="Metadata\Entities\Tasks\Gn06ArgsBase.xml" />
     <Content Include="Metadata\Entities\Tasks\Gn06Args.xml" />
-    <Content Include="Metadata\Entities\Tasks\PointFieldStrengthArgsBase.xml" />
+    <Content Include="Metadata\Entities\Tasks\PointFieldStrengthArgsBase.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Metadata\Entities\Tasks\Gn06ArgsDefault.xml" />
     <Content Include="Metadata\Entities\Tasks\PointFieldStrengthArgsDefault.xml" />
     <Content Include="Metadata\Entities\Tasks\Gn06Result.xml" />
@@ -357,7 +360,9 @@
     <Content Include="Metadata\Entities\Tasks\RefSpectrumByDriveTestsArgs.xml" />
     <Content Include="Metadata\Entities\Tasks\RefSpectrumByDriveTestsResult.xml" />
     <Content Include="Metadata\Entities\Tasks\RefSpectrumByDriveTestsDetailResult.xml" />
-    <Content Include="Metadata\Entities\Tasks\RefSpectrumByDriveTestsArgsBase.xml" />
+    <Content Include="Metadata\Entities\Tasks\RefSpectrumByDriveTestsArgsBase.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Metadata\Entities\Tasks\StationCalibrationStaResult.xml" />
     <Content Include="Metadata\Entities\Tasks\StationCalibrationResult.xml" />
     <Content Include="Metadata\Entities\Tasks\StationCalibrationDriveTestResult.xml" />
