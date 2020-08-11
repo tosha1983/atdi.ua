@@ -120,6 +120,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                 var sensorIds = driveTestParameters.Select(x => x.SensorId).Distinct().ToArray();
                 var freqs_MHz = driveTestParameters.Select(x => x.Freq_MHz).Distinct().ToArray();
                 int index = 0;
+                int percentComplete = 0;
 
                 for (int i = 0; i < sensorIds.Length; i++)
                 {
@@ -192,6 +193,24 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                 lstReceivedPowerCalcResult.Add(resulLevelCalc);
                                 listResultRefSpectrumByDriveTests.Add(resultRefSpectrumByDriveTests);
                             }
+
+
+                            var clc = (double)(100.0 / (double)(freqs_MHz.Length * this._refSpectrumStationAndDriveTest.Length * sensorIds.Length));
+                            var newCalcPercent = (int)(((k + 1) * (j + 1) * (i + 1)) * clc);
+                            if ((newCalcPercent - percentComplete) > 4)
+                            {
+                                percentComplete = newCalcPercent;
+                                this._taskContext.SendEvent(new CalcResultEvent<CurrentProgress>
+                                {
+                                    Level = CalcResultEventLevel.Info,
+                                    Context = "RefSpectrumByDriveTestsCalcTask",
+                                    Message = $"Percent complete",
+                                    Data = new CurrentProgress
+                                    {
+                                        State = newCalcPercent
+                                    }
+                                });
+                            }
                         }
                     }
                     var percentTimeForGainCalcData = new PercentTimeForGainCalcData();
@@ -213,6 +232,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                         }
                     }
                 }
+
 
                 if (skipDriveTests.Count > 0)
                 {
@@ -247,6 +267,18 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                 var resultId = CreateResult();
                 if ((listResultRefSpectrumByDriveTests != null) && (listResultRefSpectrumByDriveTests.Count > 0))
                 {
+                    this._taskContext.SendEvent(new CalcResultEvent<CurrentProgress>
+                    {
+                        Level = CalcResultEventLevel.Info,
+                        Context = "RefSpectrumByDriveTestsCalcTask",
+                        Message = $"Percent complete",
+                        Data = new CurrentProgress
+                        {
+                            State = 100
+                        }
+                    });
+
+
                     for (int i = 0; i < listResultRefSpectrumByDriveTests.Count; i++)
                     {
                         SaveTaskResult(listResultRefSpectrumByDriveTests[i], resultId);
