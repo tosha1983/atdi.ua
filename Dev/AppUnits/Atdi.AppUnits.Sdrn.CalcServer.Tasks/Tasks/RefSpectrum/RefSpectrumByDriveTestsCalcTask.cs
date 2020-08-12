@@ -120,6 +120,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                 var sensorIds = driveTestParameters.Select(x => x.SensorId).Distinct().ToArray();
                 var freqs_MHz = driveTestParameters.Select(x => x.Freq_MHz).Distinct().ToArray();
                 int index = 0;
+                int percentComplete = 0;
 
                 for (int i = 0; i < sensorIds.Length; i++)
                 {
@@ -171,10 +172,15 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                 resultRefSpectrumByDriveTests.GlobalCID = driveTest.GSID;
                                 resultRefSpectrumByDriveTests.Freq_MHz = driveTest.Freq_MHz;
                                 resultRefSpectrumByDriveTests.DateMeas = new DateTimeOffset(driveTest.MeasTime.Value);
+                                resultRefSpectrumByDriveTests.IdSensor = sensorIds[i].Value;
 
                                 // вызов итерации определения уровня сигнала Level
                                 var resulLevelCalc = iterationReceivedPowerCalcResult.Run(_taskContext, receivedPowerCalcData);
-
+                                //ReceivedPowerCalcResult resulLevelCalc = new ReceivedPowerCalcResult();
+                                //resulLevelCalc.Level_dBm = 30.45;
+                                //resulLevelCalc.Frequency_Mhz = driveTest.Freq_MHz;
+                                //resulLevelCalc.Distance_km = 34;
+                                //resulLevelCalc.AntennaHeight_m = 3;
                                 if (resulLevelCalc.Level_dBm.Value < this._parameters.PowerThreshold_dBm)
                                 {
                                     if (skipDriveTests.Find(x => x.Id == contextStation.Id) == null)
@@ -191,6 +197,24 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                 index++;
                                 lstReceivedPowerCalcResult.Add(resulLevelCalc);
                                 listResultRefSpectrumByDriveTests.Add(resultRefSpectrumByDriveTests);
+                            }
+
+
+                            var clc = (double)(100.0 / (double)(freqs_MHz.Length * this._refSpectrumStationAndDriveTest.Length * sensorIds.Length));
+                            var newCalcPercent = (int)(((k + 1) * (j + 1) * (i + 1)) * clc);
+                            if ((newCalcPercent - percentComplete) > 4)
+                            {
+                                percentComplete = newCalcPercent;
+                                this._taskContext.SendEvent(new CalcResultEvent<CurrentProgress>
+                                {
+                                    Level = CalcResultEventLevel.Info,
+                                    Context = "RefSpectrumByDriveTestsCalcTask",
+                                    Message = $"Percent complete",
+                                    Data = new CurrentProgress
+                                    {
+                                        State = newCalcPercent
+                                    }
+                                });
                             }
                         }
                     }
@@ -213,6 +237,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                         }
                     }
                 }
+
 
                 if (skipDriveTests.Count > 0)
                 {
@@ -244,9 +269,22 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 
 
                 ///// запись результатов
-                var resultId = CreateResult();
                 if ((listResultRefSpectrumByDriveTests != null) && (listResultRefSpectrumByDriveTests.Count > 0))
                 {
+                    var resultId = CreateResult();
+
+                    this._taskContext.SendEvent(new CalcResultEvent<CurrentProgress>
+                    {
+                        Level = CalcResultEventLevel.Info,
+                        Context = "RefSpectrumByDriveTestsCalcTask",
+                        Message = $"Percent complete",
+                        Data = new CurrentProgress
+                        {
+                            State = 100
+                        }
+                    });
+
+
                     for (int i = 0; i < listResultRefSpectrumByDriveTests.Count; i++)
                     {
                         SaveTaskResult(listResultRefSpectrumByDriveTests[i], resultId);
@@ -574,7 +612,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                            c => c.Lat
                            )
                            .Where(c => c.SENSOR.Id, ConditionOperator.Equal, driveTestParameters.SensorId.Value)
-                           .Where(c => c.SENSOR.Status, ConditionOperator.Equal, "A");
+                           .OrderByDesc(c=>c.Id);
 
                             var isSensorLocation = _infoDbScope.Executor.ExecuteAndFetch(querySensorLocation, readerSensorLocation =>
                             {
@@ -592,7 +630,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                         Latitude = readerSensorLocation.GetValue(c => c.Lat).Value
                                     };
                                     driveTestParameters.Coordinate = _transformation.ConvertCoordinateToAtdi(in wgs84Coordinate, this._parameters.Projection);
-                                    driveTestParameters.SensorAntennaHeight_m = (float)readerSensorLocation.GetValue(c => c.Asl).Value;
+                                    driveTestParameters.SensorAntennaHeight_m = 3;//(float)readerSensorLocation.GetValue(c => c.Asl).Value;
                                 }
                                 return true;
                             });
@@ -624,16 +662,34 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                             {
                                 while (readerAntennaPattern.Read())
                                 {
-                                //_transformation.
-                                driveTestParameters.Freq_MHz = readerAntennaPattern.GetValue(c => c.Freq).Value;
-                                    driveTestParameters.RxFeederLoss_dB = readerAntennaPattern.GetValue(c => c.SENSOR_ANTENNA.AddLoss).Value;
-                                    driveTestParameters.SensorAntenna = new DataModels.Sdrn.DeepServices.RadioSystem.Stations.StationAntenna()
+                                    if (readerAntennaPattern.GetValue(c => c.SENSOR_ANTENNA.AddLoss).HasValue)
                                     {
-                                        Azimuth_deg = (float)readerAntennaPattern.GetValue(c => c.SENSOR_ANTENNA.SENSOR.Azimuth),
-                                        Gain_dB = (float)readerAntennaPattern.GetValue(c => c.Gain),
-                                        Tilt_deg = (float)readerAntennaPattern.GetValue(c => c.SENSOR_ANTENNA.SENSOR.Elevation),
-                                        XPD_dB = (float)readerAntennaPattern.GetValue(c => c.SENSOR_ANTENNA.Xpd),
-                                    };
+                                        driveTestParameters.RxFeederLoss_dB = readerAntennaPattern.GetValue(c => c.SENSOR_ANTENNA.AddLoss).Value;
+                                    }
+
+                                    driveTestParameters.SensorAntenna = new DataModels.Sdrn.DeepServices.RadioSystem.Stations.StationAntenna();
+
+                                    if (readerAntennaPattern.GetValue(c => c.Gain).HasValue)
+                                    {
+                                        driveTestParameters.SensorAntenna.Gain_dB = (float)readerAntennaPattern.GetValue(c => c.Gain);
+                                    }
+
+                                    if (readerAntennaPattern.GetValue(c => c.SENSOR_ANTENNA.Xpd).HasValue)
+                                    {
+                                        driveTestParameters.SensorAntenna.XPD_dB = (float)readerAntennaPattern.GetValue(c => c.SENSOR_ANTENNA.Xpd);
+                                    }
+
+                                    if (readerAntennaPattern.GetValue(c => c.SENSOR_ANTENNA.SENSOR.Azimuth).HasValue)
+                                    {
+                                        driveTestParameters.SensorAntenna.Azimuth_deg = (float)readerAntennaPattern.GetValue(c => c.SENSOR_ANTENNA.SENSOR.Azimuth);
+                                    }
+                                   
+                                    if (readerAntennaPattern.GetValue(c => c.SENSOR_ANTENNA.SENSOR.Elevation).HasValue)
+                                    {
+                                        driveTestParameters.SensorAntenna.Tilt_deg = (float)readerAntennaPattern.GetValue(c => c.SENSOR_ANTENNA.SENSOR.Elevation);
+                                    }
+                                    
+
 
 
                                     if (readerAntennaPattern.GetValue(c => c.DiagH) != null)
@@ -763,7 +819,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                 .SetValue(c => c.Level_dBm, result.Level_dBm)
                 .SetValue(c => c.Percent, result.Percent)
                 .SetValue(c => c.TableIcsmName, result.TableIcsmName)
-                .SetValue(c => c.RefSpectrumResultId, resultId)
+                .SetValue(c => c.RESULT_REF_SPECTRUM.Id, resultId)
                 ;
             _calcDbScope.Executor.Execute<IRefSpectrumByDriveTestsDetailResult_PK>(insertQueryRefSpectrumByDriveTestsDetailResult);
         }

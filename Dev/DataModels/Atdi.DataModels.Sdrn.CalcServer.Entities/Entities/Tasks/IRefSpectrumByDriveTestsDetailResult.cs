@@ -16,7 +16,6 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks
 	[Entity]
 	public interface IRefSpectrumByDriveTestsDetailResult : IRefSpectrumByDriveTestsDetailResult_PK
     {
-        long RefSpectrumResultId { get; set; }
         long OrderId { get; set; }
         string TableIcsmName { get; set; }
         long IdIcsm { get; set; }
@@ -26,6 +25,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks
         double Level_dBm { get; set; }
         double Percent { get; set; }
         DateTimeOffset DateMeas { get; set; }
+        IRefSpectrumByDriveTestsResult RESULT_REF_SPECTRUM { get; set; }
     }
 
 }
