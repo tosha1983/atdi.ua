@@ -45,6 +45,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                 writer.WriteElementString("COUNT_MWS", XmlConvert.ToString(ewx.Header.CountMWS));
                 writer.WriteEndElement();
 
+                bool isFindStationData = false;
 
                 for (int i = 0; i < ewx.Stations.Length; i++)
                 {
@@ -71,11 +72,14 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                         continue;
                     }
 
+                    isFindStationData = true;
+
                     writer.WriteStartElement("STATION");
                     writer.WriteStartElement("RECORD");
                     writer.WriteElementString("TYPE_COORD", bts.TypeCoord == null ? "162DEC" : bts.TypeCoord);
                     writer.WriteElementString("Category", bts.Category == null ? "2" : bts.Category); // 2 is generic signal type
-                    writer.WriteElementString("CALL_SIGN", bts.CallSign);
+                    //writer.WriteElementString("CALL_SIGN", bts.CallSign);
+                    writer.WriteElementString("CALL_SIGN", Guid.NewGuid().ToString().SubString(13).Replace("-", "_"));
                     writer.WriteElementString("ADDRESS", bts.Address);
                     writer.WriteElementString("ALTITUDE", Convert.ToString(bts.Altitude).Replace(",","."));
                     writer.WriteElementString("NOMINAL_POWER", Convert.ToString(bts.NominalPower).Replace(",", "."));
@@ -111,8 +115,15 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                 }
                 writer.WriteEndElement();
                 writer.Close();
-                isSuccessCreateEwxFile = true;
-                this._logger.Info(Contexts.CalcCoverages, string.Format(CLocaliz.TxT(Events.OperationSaveEWXFileCompleted.ToString()), Path));
+                if (isFindStationData)
+                {
+                    isSuccessCreateEwxFile = true;
+                    this._logger.Info(Contexts.CalcCoverages, string.Format(CLocaliz.TxT(Events.OperationSaveEWXFileCompleted.ToString()), Path));
+                }
+                else
+                {
+                    File.Delete(Path);
+                }
             }
             catch (Exception e)
             {

@@ -51,5 +51,6 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
         public byte? Method { get; set; }
         public long[] InfocMeasResults { get; set; }
         public long[] StationIds { get; set; }
+        public string[] Contours { get; set; }
     }
 }

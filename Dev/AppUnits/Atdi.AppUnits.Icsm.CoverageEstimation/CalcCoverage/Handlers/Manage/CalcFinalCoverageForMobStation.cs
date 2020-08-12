@@ -204,9 +204,11 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                                         this._logger.Info(Contexts.CalcCoverages, $"{CLocaliz.TxT("The procedure for creating an ewx file has started")} '{createfileEwx}'");
                                         Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("The procedure for creating an ewx file has started")} '{createfileEwx}'");
                                         var createFileEwx = new CreateFileEwx(loadConfig, this._logger);
-                                        createFileEwx.CreateFile(createfileEwx, ewx[h]);
-                                        this._logger.Info(Contexts.CalcCoverages, $"{CLocaliz.TxT("Procedure for creating an ewx file")} '{createfileEwx}'  {CLocaliz.TxT("successfully completed")}");
-                                        Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("Procedure for creating an ewx file")} '{createfileEwx}'  {CLocaliz.TxT("successfully completed")}");
+                                        if (createFileEwx.CreateFile(createfileEwx, ewx[h]))
+                                        {
+                                            this._logger.Info(Contexts.CalcCoverages, $"{CLocaliz.TxT("Procedure for creating an ewx file")} '{createfileEwx}'  {CLocaliz.TxT("successfully completed")}");
+                                            Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("Procedure for creating an ewx file")} '{createfileEwx}'  {CLocaliz.TxT("successfully completed")}");
+                                        }
                                     }
                                 }
 
@@ -309,78 +311,79 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                                         }
 
                                     }
-                                }
 
-                                // проверка протокола
-                                var operationCreateFinalCoverage = new CurrentOperation()
-                                {
-                                    CurrICSTelecomProjectDir = ICSTelecomEwxFileDir,
-                                    Operation = Operation.CreateFinalCoverage,
-                                    Standard = codeOperatorAndStatusesConfig.StandardConfig.Name,
-                                    NameProvince = provincesConfig.Name,
-                                    Status = false
-                                };
-                                // запись параметров текущей операции в отдельный файл
-                                this._checkOperation.Save(operationCreateFinalCoverage);
-                                Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("A new operation has been added to the log file")} {Operation.CreateFinalCoverage}");
 
-                                // На основании сформрованных на предыдщум шаге граческих файлах, формируем один итоговый файл, представляющий собой результат расчета суммарного покрытия 
-                                // Результирующее покрытие записывается в директорию provincesConfig.OutTIFFFilesDirectory 
-                                var nameProvince = provincesConfig.Name;
-                                var provCode = Utils.GetProvincesCode(dataConfig, nameProvince);
-                                var codeOperatorConfig = Utils.GetOperatorConfig(provincesConfig.CodeOperatorConfig);
-                                var fileName = Utils.GetOutFileNameForMobStation(dataConfig, provCode, codeOperatorAndStatusesConfig.StandardConfig.Name, codeOperatorConfig) + ".TIF";
-
-                                var finalCoverageTIFFile = provincesConfig.OutTIFFFilesDirectory + fileName;
-                                var tempPathfinalCoverageTIFFile = System.IO.Path.GetTempPath() + fileName;
-                                this._logger.Info(Contexts.CalcCoverages, $"{CLocaliz.TxT("The procedure for generating the output coverage file has started")}  '{finalCoverageTIFFile}' ");
-                                Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("The procedure for generating the output coverage file has started")}  '{finalCoverageTIFFile}' ");
-                                var isSuccessCreateOutCoverageFile = gdalCalc.Run(loadConfig, System.IO.Path.GetTempPath(), fileName, provincesConfig.BlankTIFFFile);
-                                if (isSuccessCreateOutCoverageFile == false)
-                                {
-                                    throw new InvalidOperationException(string.Format(CLocaliz.TxT(Exceptions.FinalCoverageFileTifNotWritenIntoPath), finalCoverageTIFFile, codeOperatorAndStatusesConfig.StandardConfig.Name));
-                                }
-                                else
-                                {
-                                    if (System.IO.File.Exists(finalCoverageTIFFile))
-                                    {
-                                        System.IO.File.Delete(finalCoverageTIFFile);
-                                    }
-
-                                    if (System.IO.File.Exists(tempPathfinalCoverageTIFFile))
-                                    {
-                                        System.IO.File.Copy(tempPathfinalCoverageTIFFile, finalCoverageTIFFile);
-                                        System.IO.File.Delete(tempPathfinalCoverageTIFFile);
-                                    }
-                                }
-                                this._logger.Info(Contexts.CalcCoverages, $"{CLocaliz.TxT("The procedure for generating the output coverage file")} '{finalCoverageTIFFile}'  {CLocaliz.TxT("successfully completed")}");
-                                Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("The procedure for generating the output coverage file")} '{finalCoverageTIFFile}' {CLocaliz.TxT("successfully completed")}");
-
-                                /*
-                                if (this._appServerComponentConfig.IsSaveFinalCoverageToDB)
-                                {
-                                    var operationSaveFinalCoverageToDB =
-                                    new CurrentOperation()
+                                    // проверка протокола
+                                    var operationCreateFinalCoverage = new CurrentOperation()
                                     {
                                         CurrICSTelecomProjectDir = ICSTelecomEwxFileDir,
-                                        Operation = Operation.SaveFinalCoverageToDB,
+                                        Operation = Operation.CreateFinalCoverage,
                                         Standard = codeOperatorAndStatusesConfig.StandardConfig.Name,
                                         NameProvince = provincesConfig.Name,
                                         Status = false
                                     };
                                     // запись параметров текущей операции в отдельный файл
-                                    this._checkOperation.Save(operationSaveFinalCoverageToDB);
+                                    this._checkOperation.Save(operationCreateFinalCoverage);
+                                    Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("A new operation has been added to the log file")} {Operation.CreateFinalCoverage}");
 
-                                    //Передача полученного суммарного покрытия в виде двоичного файла данных в специальную таблицу (XWEBCOVERAGE) БД ICS Manager
-                                    //var fileFinalCoverage = provincesConfig.OutTIFFFilesDirectory + @"\" + codeOperatorAndStatusesConfig.StandardConfig.Name + ".TIF";
-                                    var saveResultCalcCoverageIntoDB = new SaveResultCalcCoverageIntoDB(TableNameSaveOutCoverage, this._dataLayer, finalCoverageTIFFile, this._logger);
-                                    if (saveResultCalcCoverageIntoDB.SaveImageToBlob(nameProvince) == false)
+                                    // На основании сформрованных на предыдщум шаге граческих файлах, формируем один итоговый файл, представляющий собой результат расчета суммарного покрытия 
+                                    // Результирующее покрытие записывается в директорию provincesConfig.OutTIFFFilesDirectory 
+                                    var nameProvince = provincesConfig.Name;
+                                    var provCode = Utils.GetProvincesCode(dataConfig, nameProvince);
+                                    var codeOperatorConfig = Utils.GetOperatorConfig(provincesConfig.CodeOperatorConfig);
+                                    var fileName = Utils.GetOutFileNameForMobStation(dataConfig, provCode, codeOperatorAndStatusesConfig.StandardConfig.Name, codeOperatorConfig) + ".TIF";
+
+                                    var finalCoverageTIFFile = provincesConfig.OutTIFFFilesDirectory + fileName;
+                                    var tempPathfinalCoverageTIFFile = System.IO.Path.GetTempPath() + fileName;
+                                    this._logger.Info(Contexts.CalcCoverages, $"{CLocaliz.TxT("The procedure for generating the output coverage file has started")}  '{finalCoverageTIFFile}' ");
+                                    Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("The procedure for generating the output coverage file has started")}  '{finalCoverageTIFFile}' ");
+                                    var isSuccessCreateOutCoverageFile = gdalCalc.Run(loadConfig, System.IO.Path.GetTempPath(), fileName, provincesConfig.BlankTIFFFile);
+                                    if (isSuccessCreateOutCoverageFile == false)
                                     {
-                                        throw new InvalidOperationException(string.Format(Exceptions.FinalCoverageFileTifNotWritenIntoDB, finalCoverageTIFFile));
+                                        throw new InvalidOperationException(string.Format(CLocaliz.TxT(Exceptions.FinalCoverageFileTifNotWritenIntoPath), finalCoverageTIFFile, codeOperatorAndStatusesConfig.StandardConfig.Name));
                                     }
-                                }
-                                */
+                                    else
+                                    {
+                                        if (System.IO.File.Exists(finalCoverageTIFFile))
+                                        {
+                                            System.IO.File.Delete(finalCoverageTIFFile);
+                                        }
 
+                                        if (System.IO.File.Exists(tempPathfinalCoverageTIFFile))
+                                        {
+                                            System.IO.File.Copy(tempPathfinalCoverageTIFFile, finalCoverageTIFFile);
+                                            System.IO.File.Delete(tempPathfinalCoverageTIFFile);
+                                        }
+                                    }
+                                    this._logger.Info(Contexts.CalcCoverages, $"{CLocaliz.TxT("The procedure for generating the output coverage file")} '{finalCoverageTIFFile}'  {CLocaliz.TxT("successfully completed")}");
+                                    Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("The procedure for generating the output coverage file")} '{finalCoverageTIFFile}' {CLocaliz.TxT("successfully completed")}");
+
+                                    /*
+                                    if (this._appServerComponentConfig.IsSaveFinalCoverageToDB)
+                                    {
+                                        var operationSaveFinalCoverageToDB =
+                                        new CurrentOperation()
+                                        {
+                                            CurrICSTelecomProjectDir = ICSTelecomEwxFileDir,
+                                            Operation = Operation.SaveFinalCoverageToDB,
+                                            Standard = codeOperatorAndStatusesConfig.StandardConfig.Name,
+                                            NameProvince = provincesConfig.Name,
+                                            Status = false
+                                        };
+                                        // запись параметров текущей операции в отдельный файл
+                                        this._checkOperation.Save(operationSaveFinalCoverageToDB);
+
+                                        //Передача полученного суммарного покрытия в виде двоичного файла данных в специальную таблицу (XWEBCOVERAGE) БД ICS Manager
+                                        //var fileFinalCoverage = provincesConfig.OutTIFFFilesDirectory + @"\" + codeOperatorAndStatusesConfig.StandardConfig.Name + ".TIF";
+                                        var saveResultCalcCoverageIntoDB = new SaveResultCalcCoverageIntoDB(TableNameSaveOutCoverage, this._dataLayer, finalCoverageTIFFile, this._logger);
+                                        if (saveResultCalcCoverageIntoDB.SaveImageToBlob(nameProvince) == false)
+                                        {
+                                            throw new InvalidOperationException(string.Format(Exceptions.FinalCoverageFileTifNotWritenIntoDB, finalCoverageTIFFile));
+                                        }
+                                    }
+                                    */
+
+                                }
 
                                 //очистка временных файлов с директории dataConfig.DirectoryConfig.TempTIFFFilesDirectory
                                 this._logger.Info(Contexts.CalcCoverages, $"{CLocaliz.TxT("Directory cleaning procedure")} {dataConfig.DirectoryConfig.TempTIFFFilesDirectory}");

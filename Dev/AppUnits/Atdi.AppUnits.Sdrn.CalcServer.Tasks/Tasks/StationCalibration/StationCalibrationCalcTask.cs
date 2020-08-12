@@ -58,6 +58,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 
             public long[] StationIds;
 
+            public string[] Contrours;
+
             public CalibrationParameters CalibrationParameters;
 
             public CorellationParameters CorellationParameters;
@@ -393,7 +395,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                 c => c.CorrelationThresholdHard,
                                 c => c.CorrelationThresholdWeak,
                                 c => c.InfocMeasResults,
-                                c => c.StationIds
+                                c => c.StationIds,
+                                c => c.Contours
                             )
                             .Where(c => c.TaskId, ConditionOperator.Equal, _taskContext.TaskId);
 
@@ -468,6 +471,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                     Projection = reader.GetValue(c => c.TASK.CONTEXT.PROJECT.Projection),
                     MapName = reader.GetValue(c => c.TASK.MapName),
                     StationIds = reader.GetValue(c => c.StationIds),
+                    Contrours = reader.GetValue(c => c.Contours),
                     InfocMeasResults = reader.GetValue(c => c.InfocMeasResults),
                     Standard = reader.GetValue(c => c.Standard)
                 };

@@ -66,6 +66,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="DataLayer\Oracle\ChangeLogs\rev.000.sql" />
+    <Content Include="DataLayer\Oracle\ChangeLogs\rev.001.sql" />
     <Content Include="DataLayer\Oracle\Functions\STATIONS.GetID.sql" />
     <Content Include="DataLayer\Oracle\Functions\SDRNSVR.GetID.sql" />
     <Content Include="DataLayer\Oracle\Functions\INFOC.GetID.sql" />

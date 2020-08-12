@@ -30,6 +30,7 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client
         {
             Console.WriteLine($"Press any key to start SDRN Calculation Server Client (AK) ...");
             Console.ReadLine();
+            RunRefSpectrumCalcTask();
 
             //using (var host = PlatformConfigurator.BuildHost())
             //{
@@ -37,9 +38,9 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client
             //host.Container.Register<ITransformation, A.TransformationService>(ServiceLifetime.PerThread);
             //var resolver = host.Container.GetResolver<IServicesResolver>();
             //var transformation = resolver.Resolve<ITransformation>();
-          
 
-            
+
+
 
             var contextStations = new  ContextStation[] {
                 new ContextStation()
@@ -294,7 +295,17 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client
 			PointFieldStrengthCalcTask.Run(dataLayer, dataLayer.GetExecutor(endpoint, dataContext));
 		}
 
-		static void TestWebApiOrm()
+        static void RunRefSpectrumCalcTask()
+        {
+            var endpoint = new WebApiEndpoint(new Uri("http://localhost:15070/"), "/appserver/v1");
+            var dataContext = new WebApiDataContext("SDRN_CalcServer_DB");
+
+            var dataLayer = new WebApiDataLayer();
+
+            RefSpectrumByDriveTestsCalcTask.Run(dataLayer, dataLayer.GetExecutor(endpoint, dataContext));
+        }
+
+        static void TestWebApiOrm()
 		{
 			try
 			{

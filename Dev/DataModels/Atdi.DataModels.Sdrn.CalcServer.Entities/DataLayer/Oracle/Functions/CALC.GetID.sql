@@ -316,6 +316,32 @@ from dual;
 end if;
 
 
+if inttable_name ='CALCRESULTS_REF_SPECTRUM_BY_DRIVE_TESTS' then
+select CALC.CALCRESULTS_REF_SPECTRUM_BY_DRIVE_TESTS_ID_SEQ.nextval
+into n
+from dual;
+end if;
+
+
+if inttable_name ='CALCRESULTS_REF_SPECTRUM_BY_DRIVE_TESTS_DETAIL' then
+select CALC.CALCRESULTS_REF_SPECTRUM_BY_DRIVE_TESTS_DETAIL_ID_SEQ.nextval
+into n
+from dual;
+end if;
+
+if inttable_name ='REF_SPECTRUM_BY_DRIVE_TESTS_ARGS' then
+select CALC.REF_SPECTRUM_BY_DRIVE_TESTS_ARGS_ID_SEQ.nextval
+into n
+from dual;
+end if;
+
+if inttable_name ='REF_SPECTRUM_BY_DRIVE_TESTS_ARGS_DEF' then
+select CALC.REF_SPECTRUM_BY_DRIVE_TESTS_ARGS_DEF_ID_SEQ.nextval
+into n
+from dual;
+end if;
+
+
 return(n);
 end;
 /

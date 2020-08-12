@@ -42,7 +42,8 @@
   DETAIL_OF_CASCADE                    NUMBER(9),
   METHOD                               NUMBER(3),
   INFOC_MEAS_RESULTS                   BLOB,
-  STATION_IDS                          BLOB
+  STATION_IDS                          BLOB,
+  AREA_CONTOURS                        BLOB
 )
 TABLESPACE USERS
 PCTUSED    0

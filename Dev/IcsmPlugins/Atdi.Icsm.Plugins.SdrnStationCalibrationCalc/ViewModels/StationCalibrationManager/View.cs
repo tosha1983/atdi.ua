@@ -743,57 +743,75 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
         {
             if (data != null)
             {
-                if (data.ContextStationIds != null)
+                if (CurrentAreas != null)
                 {
-                    var modifierEditParamsCalculation = new EditParamsCalculation
+                    int idx = 0;
+                    var contours = new string[CurrentAreas.Count];
+                    foreach (AreaModel areaModel in CurrentAreas)
                     {
-                        Standard = GetStationsParams.Standard,
-                        ClientContextId = data.ClientContextId,
-                        TaskId = TaskId,
-                        AltitudeStation = this._currentParamsCalculationModel.AltitudeStation,
-                        AzimuthStation = this._currentParamsCalculationModel.AzimuthStation,
-                        CascadeTuning = this._currentParamsCalculationModel.CascadeTuning,
-                        CoordinatesStation = this._currentParamsCalculationModel.CoordinatesStation,
-                        CorrelationDistance_m = this._currentParamsCalculationModel.CorrelationDistance_m,
-                        CorrelationThresholdHard = this._currentParamsCalculationModel.CorrelationThresholdHard,
-                        CorrelationThresholdWeak = this._currentParamsCalculationModel.CorrelationThresholdWeak,
-                        Delta_dB = this._currentParamsCalculationModel.Delta_dB,
-                        Detail = this._currentParamsCalculationModel.Detail,
-                        DetailOfCascade = this._currentParamsCalculationModel.DetailOfCascade,
-                        DistanceAroundContour_km = this._currentParamsCalculationModel.DistanceAroundContour_km,
-                        InfocMeasResults = this._currentParamsCalculationModel.InfocMeasResults,
-                        MaxAntennasPatternLoss_dB = this._currentParamsCalculationModel.MaxAntennasPatternLoss_dB,
-                        MaxDeviationAltitudeStation_m = this._currentParamsCalculationModel.MaxDeviationAltitudeStation_m,
-                        MaxDeviationAzimuthStation_deg = this._currentParamsCalculationModel.MaxDeviationAzimuthStation_deg,
-                        MaxDeviationCoordinatesStation_m = this._currentParamsCalculationModel.MaxDeviationCoordinatesStation_m,
-                        MaxDeviationTiltStation_deg = this._currentParamsCalculationModel.MaxDeviationTiltStation_deg,
-                        MaxRangeMeasurements_dBmkV = this._currentParamsCalculationModel.MaxRangeMeasurements_dBmkV,
-                        Method = this._currentParamsCalculationModel.Method,
-                        MinNumberPointForCorrelation = this._currentParamsCalculationModel.MinNumberPointForCorrelation,
-                        MinRangeMeasurements_dBmkV = this._currentParamsCalculationModel.MinRangeMeasurements_dBmkV,
-                        NumberCascade = this._currentParamsCalculationModel.NumberCascade,
-                        PowerStation = this._currentParamsCalculationModel.PowerStation,
-                        ShiftAltitudeStationMax_m = this._currentParamsCalculationModel.ShiftAltitudeStationMax_m,
-                        ShiftAltitudeStationMin_m = this._currentParamsCalculationModel.ShiftAltitudeStationMin_m,
-                        ShiftAltitudeStationStep_m = this._currentParamsCalculationModel.ShiftAltitudeStationStep_m,
-                        ShiftAzimuthStationMax_deg = this._currentParamsCalculationModel.ShiftAzimuthStationMax_deg,
-                        ShiftAzimuthStationMin_deg = this._currentParamsCalculationModel.ShiftAzimuthStationMin_deg,
-                        ShiftAzimuthStationStep_deg = this._currentParamsCalculationModel.ShiftAzimuthStationStep_deg,
-                        ShiftCoordinatesStationStep_m = this._currentParamsCalculationModel.ShiftCoordinatesStationStep_m,
-                        ShiftCoordinatesStation_m = this._currentParamsCalculationModel.ShiftCoordinatesStation_m,
-                        ShiftPowerStationMax_dB = this._currentParamsCalculationModel.ShiftPowerStationMax_dB,
-                        ShiftPowerStationMin_dB = this._currentParamsCalculationModel.ShiftPowerStationMin_dB,
-                        ShiftPowerStationStep_dB = this._currentParamsCalculationModel.ShiftPowerStationStep_dB,
-                        ShiftTiltStationMax_deg = this._currentParamsCalculationModel.ShiftTiltStationMax_deg,
-                        ShiftTiltStationMin_deg = this._currentParamsCalculationModel.ShiftTiltStationMin_deg,
-                        ShiftTiltStationStep_deg = this._currentParamsCalculationModel.ShiftTiltStationStep_deg,
-                        StationIds = data.ContextStationIds,
-                        TiltStation = this._currentParamsCalculationModel.TiltStation,
-                        TrustOldResults = this._currentParamsCalculationModel.TrustOldResults,
-                        UseMeasurementSameGSID = this._currentParamsCalculationModel.UseMeasurementSameGSID,
-                    };
+                        if ((areaModel.Location != null) && (areaModel.Location.Length > 0))
+                        {
+                            for (int i = 0; i < areaModel.Location.Length; i++)
+                            {
+                                contours[idx] += $"{areaModel.Location[i].Longitude} {areaModel.Location[i].Latitude}" + Environment.NewLine;
+                            }
+                        }
+                        idx++;
+                    }
 
-                    _commandDispatcher.Send(modifierEditParamsCalculation);
+                    if (data.ContextStationIds != null)
+                    {
+                        var modifierEditParamsCalculation = new EditParamsCalculation
+                        {
+                            Standard = GetStationsParams.Standard,
+                            ClientContextId = data.ClientContextId,
+                            TaskId = TaskId,
+                            AltitudeStation = this._currentParamsCalculationModel.AltitudeStation,
+                            AzimuthStation = this._currentParamsCalculationModel.AzimuthStation,
+                            CascadeTuning = this._currentParamsCalculationModel.CascadeTuning,
+                            CoordinatesStation = this._currentParamsCalculationModel.CoordinatesStation,
+                            CorrelationDistance_m = this._currentParamsCalculationModel.CorrelationDistance_m,
+                            CorrelationThresholdHard = this._currentParamsCalculationModel.CorrelationThresholdHard,
+                            CorrelationThresholdWeak = this._currentParamsCalculationModel.CorrelationThresholdWeak,
+                            Delta_dB = this._currentParamsCalculationModel.Delta_dB,
+                            Detail = this._currentParamsCalculationModel.Detail,
+                            DetailOfCascade = this._currentParamsCalculationModel.DetailOfCascade,
+                            DistanceAroundContour_km = this._currentParamsCalculationModel.DistanceAroundContour_km,
+                            InfocMeasResults = this._currentParamsCalculationModel.InfocMeasResults,
+                            MaxAntennasPatternLoss_dB = this._currentParamsCalculationModel.MaxAntennasPatternLoss_dB,
+                            MaxDeviationAltitudeStation_m = this._currentParamsCalculationModel.MaxDeviationAltitudeStation_m,
+                            MaxDeviationAzimuthStation_deg = this._currentParamsCalculationModel.MaxDeviationAzimuthStation_deg,
+                            MaxDeviationCoordinatesStation_m = this._currentParamsCalculationModel.MaxDeviationCoordinatesStation_m,
+                            MaxDeviationTiltStation_deg = this._currentParamsCalculationModel.MaxDeviationTiltStation_deg,
+                            MaxRangeMeasurements_dBmkV = this._currentParamsCalculationModel.MaxRangeMeasurements_dBmkV,
+                            Method = this._currentParamsCalculationModel.Method,
+                            MinNumberPointForCorrelation = this._currentParamsCalculationModel.MinNumberPointForCorrelation,
+                            MinRangeMeasurements_dBmkV = this._currentParamsCalculationModel.MinRangeMeasurements_dBmkV,
+                            NumberCascade = this._currentParamsCalculationModel.NumberCascade,
+                            PowerStation = this._currentParamsCalculationModel.PowerStation,
+                            ShiftAltitudeStationMax_m = this._currentParamsCalculationModel.ShiftAltitudeStationMax_m,
+                            ShiftAltitudeStationMin_m = this._currentParamsCalculationModel.ShiftAltitudeStationMin_m,
+                            ShiftAltitudeStationStep_m = this._currentParamsCalculationModel.ShiftAltitudeStationStep_m,
+                            ShiftAzimuthStationMax_deg = this._currentParamsCalculationModel.ShiftAzimuthStationMax_deg,
+                            ShiftAzimuthStationMin_deg = this._currentParamsCalculationModel.ShiftAzimuthStationMin_deg,
+                            ShiftAzimuthStationStep_deg = this._currentParamsCalculationModel.ShiftAzimuthStationStep_deg,
+                            ShiftCoordinatesStationStep_m = this._currentParamsCalculationModel.ShiftCoordinatesStationStep_m,
+                            ShiftCoordinatesStation_m = this._currentParamsCalculationModel.ShiftCoordinatesStation_m,
+                            ShiftPowerStationMax_dB = this._currentParamsCalculationModel.ShiftPowerStationMax_dB,
+                            ShiftPowerStationMin_dB = this._currentParamsCalculationModel.ShiftPowerStationMin_dB,
+                            ShiftPowerStationStep_dB = this._currentParamsCalculationModel.ShiftPowerStationStep_dB,
+                            ShiftTiltStationMax_deg = this._currentParamsCalculationModel.ShiftTiltStationMax_deg,
+                            ShiftTiltStationMin_deg = this._currentParamsCalculationModel.ShiftTiltStationMin_deg,
+                            ShiftTiltStationStep_deg = this._currentParamsCalculationModel.ShiftTiltStationStep_deg,
+                            StationIds = data.ContextStationIds,
+                            Contours = contours,
+                            TiltStation = this._currentParamsCalculationModel.TiltStation,
+                            TrustOldResults = this._currentParamsCalculationModel.TrustOldResults,
+                            UseMeasurementSameGSID = this._currentParamsCalculationModel.UseMeasurementSameGSID,
+                        };
+
+                        _commandDispatcher.Send(modifierEditParamsCalculation);
+                    }
                 }
             }
         }

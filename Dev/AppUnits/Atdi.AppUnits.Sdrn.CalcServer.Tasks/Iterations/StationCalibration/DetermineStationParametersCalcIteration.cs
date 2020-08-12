@@ -984,7 +984,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
                 var stationCorellationCalcData = new StationCorellationCalcData()
                 {
-                    GSIDGroupeStation = stations[i],
+                    //GSIDGroupeStation = stations[i],
                     CorellationParameters = data.CorellationParameters,
                     GSIDGroupeDriveTests = driveTest,
                     FieldStrengthCalcData = fieldStrengthCalcData,

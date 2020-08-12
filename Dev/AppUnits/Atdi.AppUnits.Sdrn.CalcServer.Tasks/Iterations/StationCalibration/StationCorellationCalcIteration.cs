@@ -222,7 +222,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     {
                         // условие при котором мы обязаны учесть данную точку
                         var pointSourceArgs = new PointEarthGeometric() { Longitude = calcPointArrayBuffer[i].X, Latitude = calcPointArrayBuffer[i].Y, CoordinateUnits = CoordinateUnits.m };
-                        var pointTargetArgs = new PointEarthGeometric() { Longitude = data.GSIDGroupeStation.Coordinate.X, Latitude = data.GSIDGroupeStation.Coordinate.Y, CoordinateUnits = CoordinateUnits.m };
+                        var pointTargetArgs = new PointEarthGeometric() { Longitude = data.FieldStrengthCalcData.TargetCoordinate.X, Latitude = data.FieldStrengthCalcData.TargetCoordinate.Y, CoordinateUnits = CoordinateUnits.m };
                         var Dist_km = this._earthGeometricService.GetDistance_km(in pointSourceArgs, in pointTargetArgs);
                         calcPointArrayBuffer[i].Dist_km = Dist_km;
                         diffCalcMeas = Math.Abs(calcPointArrayBuffer[i].FSMeas - calcPointArrayBuffer[i].FSCalc);
