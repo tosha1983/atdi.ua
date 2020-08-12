@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<DataType 
+  Name           = "Counter.DateTimeOffset"
+  DataSourceType = "Database"
+  xmlns          =  "http://schemas.atdi.com/orm/entity.xsd">
+  
+  <Autonum Start="0" Step="0"/>
+  <CodeVarType>DateTimeOffset</CodeVarType>
+  <SourceVarType>DATETIMEOFFSET</SourceVarType>  
+</DataType>

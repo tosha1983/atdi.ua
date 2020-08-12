@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "MeasTaskSignaling"
+  Title       = "MeasTaskSignaling"
+  Desc        = "The MeasTaskSignaling"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>MEAS_TASK_SIGNAL</Name>
+    <Schema>ICSC</Schema>
+  </DataSource>
+  <Fields>
+    <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column" Required="true"/>
+    <Field Desc="AutoDivisionEmitting" Title="AutoDivisionEmitting" Name="AutoDivisionEmitting" DataType="Boolean" SourceName="AUTO_DIV_EMIT" SourceType="Column" Required="false"/>
+    <Field Desc="CompareTraceJustWithRefLevels" Title="CompareTraceJustWithRefLevels" Name="CompareTraceJustWithRefLevels" DataType="Boolean" SourceName="COMPARE_TRACE_JUST_REF_LEVELS" SourceType="Column" Required="false"/>
+    <Field Desc="FiltrationTrace" Title="FiltrationTrace" Name="FiltrationTrace" DataType="Boolean" SourceName="FILTRATION_TRACE" SourceType="Column" Required="false"/>
+    <Field Desc="DifferenceMaxMax" Title="DifferenceMaxMax" Name="DifferenceMaxMax" DataType="Double.30.10" SourceName="DIFF_MAX_MAX" SourceType="Column" Required="false"/>
+    <Field Desc="allowableExcess_dB" Title="allowableExcess_dB" Name="allowableExcess_dB" DataType="Double.30.10" SourceName="ALLOW_EXCESS_DB" SourceType="Column" Required="false"/>
+    <Field Desc="SignalizationNCount" Title="SignalizationNCount" Name="SignalizationNCount" DataType="Integer.32" SourceName="SIGN_NCOUNT" SourceType="Column" Required="false"/>
+    <Field Desc="SignalizationNChenal" Title="SignalizationNChenal" Name="SignalizationNChenal" DataType="Integer.32" SourceName="SIGN_NCHENAL" SourceType="Column" Required="false"/>
+    <Field Desc="CorrelationAnalize" Title="CorrelationAnalize" Name="CorrelationAnalize" DataType="Boolean" SourceName="CORELLATION_ANALIZE" SourceType="Column" Required="false"/>
+    <Field Desc="CheckFreqChannel" Title="CheckFreqChannel" Name="CheckFreqChannel" DataType="Boolean" SourceName="CHECK_FREQ_CH" SourceType="Column" Required="false"/>
+    <Field Desc="AnalyzeByChannel" Title="AnalyzeByChannel" Name="AnalyzeByChannel" DataType="Boolean" SourceName="ANALIZE_BY_CH" SourceType="Column" Required="false"/>
+    <Field Desc="AnalyzeSysInfoEmission" Title="AnalyzeSysInfoEmission" Name="AnalyzeSysInfoEmission" DataType="Boolean" SourceName="ANALIZE_SYSINFO_CH" SourceType="Column" Required="false"/>
+    <Field Desc="DetailedMeasurementsBWEmission" Title="DetailedMeasurementsBWEmission" Name="DetailedMeasurementsBWEmission" DataType="Boolean" SourceName="MEAS_BW_EMISSION" SourceType="Column" Required="false"/>
+    <Field Desc="CorrelationFactor" Title="CorrelationFactor" Name="CorrelationFactor" DataType="Double.30.10" SourceName="CORRELATION_FACTOR" SourceType="Column" Required="false"/>
+    <Field Desc="Standard" Title="Standard" Name="Standard" DataType="Text.50" SourceName="STANDARD" SourceType="Column" Required="false"/>
+    <Field Desc="TriggerLevel_dBm_Hz" Title="TriggerLevel_dBm_Hz" Name="TriggerLevel_dBm_Hz" DataType="Double.30.10" SourceName="TRIGGER_LEVEL_DBM_HZ" SourceType="Column" Required="false"/>
+    <Field Desc="NumberPointForChangeExcess" Title="NumberPointForChangeExcess" Name="NumberPointForChangeExcess" DataType="Integer.32" SourceName="NUMBER_POINT_FOR" SourceType="Column" Required="false"/>
+    <Field Desc="WindowBW" Title="WindowBW" Name="WindowBW" DataType="Double.30.10" SourceName="WINDOW_BW" SourceType="Column" Required="false"/>
+    <Field Desc="DiffLevelForCalcBW" Title="DiffLevelForCalcBW" Name="DiffLevelForCalcBW" DataType="Double.30.10" SourceName="DIFF_LEVEL_FOR_BW" SourceType="Column" Required="false"/>
+    <Field Desc="NDbLevel_dB" Title="NDbLevel_dB" Name="NDbLevel_dB" DataType="Double.30.10" SourceName="NDBLEVEL_DB" SourceType="Column" Required="false"/>
+    <Field Desc="NumberIgnoredPoints" Title="NumberIgnoredPoints" Name="NumberIgnoredPoints" DataType="Integer.32" SourceName="NUM_IGNORED_POINTS" SourceType="Column" Required="false"/>
+    <Field Desc="MinExcessNoseLevel_dB" Title="MinExcessNoseLevel_dB" Name="MinExcessNoseLevel_dB" DataType="Double.30.10" SourceName="MIN_EXCESS_NOSE_LVL" SourceType="Column" Required="false"/>
+    <Field Desc="TimeBetweenWorkTimes_sec" Title="TimeBetweenWorkTimes_sec" Name="TimeBetweenWorkTimes_sec" DataType="Integer.32" SourceName="TIME_BETWEEN_WORKTIMES" SourceType="Column" Required="false"/>
+    <Field Desc="TypeJoinSpectrum" Title="TypeJoinSpectrum" Name="TypeJoinSpectrum" DataType="Integer.32" SourceName="TYPE_JOIN_SPECTRUM" SourceType="Column" Required="false"/>
+    <Field Desc="CrossingBWPercentageForGoodSignals" Title="CrossingBWPercentageForGoodSignals" Name="CrossingBWPercentageForGoodSignals" DataType="Double.30.10" SourceName="CROSSING_BW_PERCENT_GOOD" SourceType="Column" Required="false"/>
+    <Field Desc="CrossingBWPercentageForBadSignals" Title="CrossingBWPercentageForBadSignals" Name="CrossingBWPercentageForBadSignals" DataType="Double.30.10" SourceName="CROSSING_BW_PERCENT_BAD" SourceType="Column" Required="false"/>
+    <Field Desc="MaxFreqDeviation" Title="MaxFreqDeviation" Name="MaxFreqDeviation" DataType="Double.30.10" SourceName="MAX_FREQ_DEVIATION" SourceType="Column" Required="false"/>
+    <Field Desc="MinPointForDetailBW" Title="MinPointForDetailBW" Name="MinPointForDetailBW" DataType="Integer.32" SourceName="MIN_POINT_DETAIL_BW" SourceType="Column" Required="false"/>
+    <Field Desc="CheckLevelChannel" Title="CheckLevelChannel" Name="CheckLevelChannel" DataType="Boolean" SourceName="CHECK_LEVEL_CHANNEL" SourceType="Column" Required="false"/>
+    <Field Desc="CollectEmissionInstrumentalEstimation" Title="Collect emission for instrumental estimation" Name="CollectEmissionInstrumentalEstimation" DataType="Boolean" SourceName="COLLECT_EMISSION_INSTRUM_ESTIM" SourceType="Column" Required="false"/>
+    <Field Desc="IsUseRefSpectrum " Title="Is use Reference spectrum" Name="IsUseRefSpectrum" DataType="Boolean" SourceName="IS_USE_REF_SPECTRUM" SourceType="Column" Required="false"/>
+    <Field Name="MEAS_TASK" SourceName="MeasTask" SourceType="Reference" Required="true" Desc="" Title="Relation MeasTaskSignaling to MeasTask"/>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>

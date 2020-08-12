@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "ResRoutes"
+  Title       = "ResRoutes"
+  Desc        = "The ResRoutes"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>RES_ROUTES</Name>
+    <Schema>ICSC</Schema>
+  </DataSource>
+  <Fields>
+    <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column" Required="true"/>
+    <Field Desc="RouteId" Title="RouteId" Name="RouteId" DataType="Text.250" SourceName="ROUTE_ID" SourceType="Column" Required="false"/>
+    <Field Desc="Agl" Title="Agl" Name="Agl" DataType="Double.30.10" SourceName="AGL" SourceType="Column" Required="false"/>
+    <Field Desc="Altitude above sea level, m" Title="Altitude above sea level, m" Name="Asl" DataType="Double.30.10" SourceName="ASL" SourceType="Column" Required="false"/>
+    <Field Desc="StartTime" Title="StartTime" Name="StartTime" DataType="DateTime" SourceName="START_TIME" SourceType="Column" Required="false"/>
+    <Field Desc="FinishTime" Title="FinishTime" Name="FinishTime" DataType="DateTime" SourceName="FINISH_TIME" SourceType="Column" Required="false"/>
+    <Field Desc="Latitude, DEC" Title="Latitude, DEC" Name="Lat" DataType="Double.30.10" SourceName="LAT" SourceType="Column" Required="false" Unit="Latitude.DEC"/>
+    <Field Desc="Longitude, DEC" Title="Longitude, DEC" Name="Lon" DataType="Double.30.10" SourceName="LON" SourceType="Column" Required="false" Unit="Longitude.DEC"/>
+    <Field Desc="PointStayType" Title="PointStayType" Name="PointStayType" DataType="Text.150" SourceName="POINT_STAY_TYPE" SourceType="Column" Required="false"/>
+    <Field Name="RES_MEAS" SourceType="Reference" SourceName="ResMeas" Required="true" Title="Relation ResRoutes to ResMeas"/>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>

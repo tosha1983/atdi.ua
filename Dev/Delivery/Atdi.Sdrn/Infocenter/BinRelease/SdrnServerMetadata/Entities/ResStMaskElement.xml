@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "ResStMaskElement"
+  Title       = "ResStMaskElement"
+  Desc        = "The ResStMaskElement"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>RES_STMASKELM</Name>
+    <Schema>ICSC</Schema>
+  </DataSource>
+  <Fields>
+    <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
+    <Field Desc="Bw" Title="Bw" Name="Bw" DataType="Double.30.10" SourceName="BW" SourceType="Column" Required="false"/>
+    <Field Desc="Level" Title="Level" Name="Level" DataType="Double.30.10" SourceName="LEVEL" SourceType="Column" Required="false"/>
+    <Field Name="RES_STGENERAL" SourceType="Reference" SourceName="ResStGeneral" Required="true" Title="Relation ResStMaskElement to ResStGeneral"/>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>

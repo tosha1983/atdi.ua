@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "LinkProtocolsWithEmittings"
+  Title       = "LinkProtocolsWithEmittings"
+  Desc        = "The link to Protocols table"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>LINK_PROTOCOLS_WITH_EMITTINGS</Name>
+    <Schema>ICSC</Schema>
+  </DataSource>
+  <Fields>
+    <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
+    <Field Desc="Probability" Title="Probability" Name="Probability" DataType="Double.30.10" SourceName="PROBABILITY" SourceType="Column" Required="false"/>
+    <Field Desc="StartFrequency_MHz" Title="StartFrequency_MHz" Name="StartFrequency_MHz" DataType="Double.30.10" SourceName="STARTFREQ_MHZ" SourceType="Column" Required="false"/>
+    <Field Desc="StopFrequency_MHz" Title="StopFrequency_MHz" Name="StopFrequency_MHz" DataType="Double.30.10" SourceName="STOPFREQ_MHZ" SourceType="Column" Required="false"/>
+    <Field Desc="CurentPower_dBm" Title="CurentPower_dBm" Name="CurentPower_dBm" DataType="Double.30.10" SourceName="CURRPOWER_DBM" SourceType="Column" Required="false"/>
+    <Field Desc="ReferenceLevel_dBm" Title="ReferenceLevel_dBm" Name="ReferenceLevel_dBm" DataType="Double.30.10" SourceName="REFLEVEL_DBM" SourceType="Column" Required="false"/>
+    <Field Desc="MeanDeviationFromReference" Title="MeanDeviationFromReference" Name="MeanDeviationFromReference" DataType="Double.30.10" SourceName="MEANDEVFROM_REF" SourceType="Column" Required="false"/>
+    <Field Desc="TriggerDeviationFromReference" Title="TriggerDeviationFromReference" Name="TriggerDeviationFromReference" DataType="Double.30.10" SourceName="TRIGGERDEVFROM_REF" SourceType="Column" Required="false"/>
+    <Field Desc="RollOffFactor" Title="RollOffFactor" Name="RollOffFactor" DataType="Double.30.10" SourceName="ROLL_OFF_ACTOR" SourceType="Column" Required="false"/>
+    <Field Desc="StandardBW" Title="StandardBW" Name="StandardBW" DataType="Double.30.10" SourceName="STANDARD_BW" SourceType="Column" Required="false"/>
+    <Field Desc="LevelsDistributionLvl" Title="LevelsDistributionLvl" Name="LevelsDistributionLvl" DataType="Array.Integer" SourceName="LEVELS_DISTRIBUTION_LVL" SourceType="Column" Required="false"/>
+    <Field Desc="LevelsDistributionCount" Title="LevelsDistributionCount" Name="LevelsDistributionCount" DataType="Array.Integer" SourceName="LEVELS_DISTRIBUTION_COUNT" SourceType="Column" Required="false"/>
+    <Field Desc="Loss_dB" Title="Loss_dB" Name="Loss_dB" DataType="Array.Float" SourceName="LOSS_DB" SourceType="Column" Required="false"/>
+    <Field Desc="Freq_kHz" Title="Freq_kHz" Name="Freq_kHz" DataType="Array.Double" SourceName="FREQ_KHZ" SourceType="Column" Required="false"/>
+    <Field Desc="SpectrumStartFreq_MHz" Title="SpectrumStartFreq_MHz" Name="SpectrumStartFreq_MHz" DataType="Double.30.10" SourceName="SPECTRUM_STARTFREQ_MHZ" SourceType="Column" Required="false"/>
+    <Field Desc="SpectrumSteps_kHz" Title="SpectrumSteps_kHz" Name="SpectrumSteps_kHz" DataType="Double.30.10" SourceName="SPECTRUM_STEPFREQ_KHZ" SourceType="Column" Required="false"/>
+    <Field Desc="T1" Title="T1" Name="T1" DataType="Integer.32" SourceName="T1" SourceType="Column" Required="false"/>
+    <Field Desc="T2" Title="T2" Name="T2" DataType="Integer.32" SourceName="T2" SourceType="Column" Required="false"/>
+    <Field Desc="MarkerIndex" Title="MarkerIndex" Name="MarkerIndex" DataType="Integer.32" SourceName="MARKER_INDEX" SourceType="Column" Required="false"/>
+    <Field Desc="Bandwidth_kHz" Title="Bandwidth_kHz" Name="Bandwidth_kHz" DataType="Double.30.10" SourceName="BW_KHZ" SourceType="Column" Required="false"/>
+    <Field Desc="CorrectnessEstimations" Title="CorrectnessEstimations" Name="CorrectnessEstimations" DataType="Boolean" SourceName="CORRECT_ESTIM" SourceType="Column" Required="false"/>
+    <Field Desc="TraceCount" Title="TraceCount" Name="TraceCount" DataType="Integer.32" SourceName="TRACE_COUNT" SourceType="Column" Required="false"/>
+    <Field Desc="SignalLevel_dBm" Title="SignalLevel_dBm" Name="SignalLevel_dBm" DataType="Float.22.8" SourceName="SIGNALLEVEL_DBM" SourceType="Column" Required="false"/>
+    <Field Desc="Levels_dBm" Title="Levels_dBm" Name="Levels_dBm" DataType="Array.Float" SourceName="LEVELS_DBM" SourceType="Column" Required="false"/>
+    <Field Desc="Contravention" Title="Contravention" Name="Contravention" DataType="Boolean" SourceName="CONTRAVENTION" SourceType="Column" Required="false"/>
+    <Field Name="WorkTimeStart" DataType="DateTime" SourceName="WORK_TIME_START"  SourceType="Column" Desc="The WorkTime of start" Title="The WorkTime of start" Required="false"/>
+    <Field Name="WorkTimeStop" DataType="DateTime" SourceName="WORK_TIME_STOP" SourceType="Column" Desc="The WorkTime of stop" Title="The WorkTime of stop" Required="false"/>
+    <Field Name="PROTOCOLS" SourceName="IeStation.Protocols" SourceType="Reference" Required="true" Desc="" Title="Relation LinkProtocolsWithEmittings to Protocols"/>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>

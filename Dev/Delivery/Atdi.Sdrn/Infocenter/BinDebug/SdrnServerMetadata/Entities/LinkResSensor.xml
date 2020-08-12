@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "LinkResSensor"
+  Title       = "LinkResSensor"
+  Desc        = "The LinkResSensor"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>LINK_RES_SENSOR</Name>
+    <Schema>ICSC</Schema>
+  </DataSource>
+  <Fields>
+    <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
+    <Field Name="SENSOR" SourceType="Reference" SourceName="Sensor" Title="Relation LinkResSensor to Sensor"/>
+    <Field Name="RES_MEAS_STATION" SourceType="Reference" SourceName="ResMeasStation" Title="Relation LinkResSensor to ResMeasStation"/>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>

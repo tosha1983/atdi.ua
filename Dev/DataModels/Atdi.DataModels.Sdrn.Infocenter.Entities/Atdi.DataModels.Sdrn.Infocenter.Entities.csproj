@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\CalcServer\IObservedTask.cs" />
     <Compile Include="Entities\ICluttersDesc.cs" />
     <Compile Include="Entities\ICluttersDescFreqClutter.cs" />
     <Compile Include="Entities\ICluttersDescFreq.cs" />
@@ -113,6 +114,7 @@
     <Content Include="DataLayer\SqlServer\Tables\[SDRNSVR].[DRIVE_TESTS].sql" />
     <Content Include="DataLayer\SqlServer\Tables\[SDRNSVR].[SM_MEAS_RESULTS_STATS].sql" />
     <Content Include="DataLayer\SqlServer\Tables\[SDRNSVR].[SM_MEAS_RESULTS].sql" />
+    <Content Include="Metadata\Entities\CalcServer\ObservedTask.xml" />
     <Content Include="Metadata\Entities\SdrnServer\DriveRoute.xml" />
     <Content Include="Metadata\Entities\SdrnServer\Sensor.xml" />
     <Content Include="Metadata\Entities\SdrnServer\SensorAntenna.xml" />

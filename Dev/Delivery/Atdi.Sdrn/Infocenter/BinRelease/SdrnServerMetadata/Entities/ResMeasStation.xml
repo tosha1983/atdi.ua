@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "ResMeasStation"
+  Title       = "ResMeasStation"
+  Desc        = "The ResMeasStation"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>RES_MEAS_STATION</Name>
+    <Schema>ICSC</Schema>
+  </DataSource>
+  <Fields>
+    <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column" Required="true"/>
+    <Field Desc="GlobalSID" Title="GlobalSID" Name="GlobalSID" DataType="Text.250" SourceName="GLOBAL_SID" SourceType="Column" Required="false"/>
+    <Field Desc="MeasGlobalSID" Title="MeasGlobalSID" Name="MeasGlobalSID" DataType="Text.250" SourceName="MEAS_GLOBAL_SID" SourceType="Column" Required="false"/>
+    
+    <Field Desc="Frequency" Title="Frequency" Name="Frequency" DataType="Decimal.22.8" SourceName="FREQUENCY" SourceType="Column" Required="true"/>
+    
+    <Field Desc="Status" Title="Status" Name="Status" DataType="Text.250" SourceName="STATUS" SourceType="Column" Required="false"/>
+    <Field Desc="Standard" Title="Standard" Name="Standard" DataType="Text.50" SourceName="STANDARD" SourceType="Column" Required="false"/>
+    <Field Name="RES_MEAS" SourceType="Reference" SourceName="ResMeas" Required="true" Title="Relation ResMeasStation to ResMeas"/>
+    <Field Desc="ClientSectorCode" Title="ClientSectorCode" Name="ClientSectorCode" DataType="Integer.32" SourceName="CLIENT_SECTOR_CODE" SourceType="Column" Required="false"/>
+    <Field Desc="ClientStationCode" Title="ClientStationCode" Name="ClientStationCode" DataType="Integer.32" SourceName="CLIENT_STATION_CODE" SourceType="Column" Required="false"/>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>

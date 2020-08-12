@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "LinkOnlineMesurement"
+  Title       = "LinkOnlineMesurement"
+  Desc        = "The LinkOnlineMesurement"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>LINK_ONLINE_MEAS</Name>
+    <Schema>ICSC</Schema>
+  </DataSource>
+  <Fields>
+    <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
+    <Field Name="ONLINE_MEAS" SourceType="Reference" SourceName="OnlineMesurement" Title="Relation LinkOnlineMesurement to OnlineMesurement"/>
+    <Field Desc="OnlineMesurementMasterId" Title="OnlineMesurementMasterId" Name="OnlineMesurementMasterId" DataType="Integer.64" SourceName="ONLINE_MEAS_MASTER_ID" SourceType="Column" Required="true"/>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>

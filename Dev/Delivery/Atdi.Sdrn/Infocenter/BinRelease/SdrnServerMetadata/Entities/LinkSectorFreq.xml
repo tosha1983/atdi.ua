@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "LinkSectorFreq"
+  Title       = "LinkSectorFreq"
+  Desc        = "The LinkSectorFreq"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>LINK_SECTOR_FREQ</Name>
+    <Schema>ICSC</Schema>
+  </DataSource>
+  <Fields>
+    <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
+    <Field Name="SECTOR_FREQ" SourceType="Reference" SourceName="SectorFreq" Title="Relation LinkSectorFreq to SectorFreq"/>
+    <Field Name="SECTOR" SourceType="Reference" SourceName="Sector" Title="Relation LinkSectorFreq to Sector"/>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>
+
+

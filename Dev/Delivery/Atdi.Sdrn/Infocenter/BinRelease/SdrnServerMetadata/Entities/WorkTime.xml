@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "WorkTime"
+  Title       = "WorkTime"
+  Desc        = ""
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>WORK_TIME</Name>
+    <Schema>ICSC</Schema>
+  </DataSource>
+  <Fields>
+    <Field Name="Id" SourceType="Column"  SourceName="ID" DataType="Counter.64" Title="Id" Desc="Id"/>
+    <Field Desc="StartEmitting" Title="StartEmitting" Name="StartEmitting" DataType="DateTime" SourceName="START_EMIT" SourceType="Column" Required="true"/>
+    <Field Desc="StopEmitting" Title="StopEmitting" Name="StopEmitting" DataType="DateTime" SourceName="STOP_EMIT" SourceType="Column" Required="true"/>
+    <Field Desc="HitCount" Title="HitCount" Name="HitCount" DataType="Integer.32" SourceName="HIT_COUNT" SourceType="Column" Required="true"/>
+    <Field Desc="PersentAvailability" Title="PersentAvailability" Name="PersentAvailability" DataType="Float.22.8" SourceName="PERCENT_AVAILABLE" SourceType="Column" Required="true"/>
+    <Field Name="EMITTING" SourceType="Reference" SourceName="Emitting" Title="Relation WorkTime to Emitting"/>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>

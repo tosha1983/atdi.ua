@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "StatisticEntryKey"
+  Title       = "Statistic Entry Key"
+  Desc        = "The entry key of statistic"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="ClrObject" Object="Service">
+    <Name>Atdi.Contracts.CoreServices.Monitoring.IStatisticEntryKeys, Atdi.Contracts.CoreServices.Monitoring, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</Name>
+  </DataSource>
+  <Fields>
+    <Field Name="Name" DataType="String.NTEXT" SourceName="Name" SourceType="Column" Desc="The Name of the entry key" Title="Name" Required="true"/>
+    <Field Name="Type" DataType="CT.Object" SourceName="Type" SourceType="Column" Desc="The type of the value entry" Title="Type" Required="true"/>
+    
+  </Fields>
+</Entity>

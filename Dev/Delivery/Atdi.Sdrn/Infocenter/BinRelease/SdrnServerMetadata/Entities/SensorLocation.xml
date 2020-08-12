@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity 
+  Name        = "SensorLocation" 
+  Title       = "SensorLocation" 
+  Desc        = "The sensor location"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>SENSOR_LOCATION</Name>
+    <Schema>ICSC</Schema>
+  </DataSource>
+  <Fields>
+    <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
+    <Field Desc="DateFrom" Title="DateFrom" Name="DateFrom" DataType="DateTime" SourceName="DATA_FROM" SourceType="Column" Required="false"/>
+    <Field Desc="DateTo" Title="DateTo" Name="DateTo" DataType="DateTime" SourceName="DATA_TO" SourceType="Column" Required="false"/>
+    <Field Desc="DateCreated" Title="DateCreated" Name="DateCreated" DataType="DateTime" SourceName="DATA_CREATED" SourceType="Column" Required="false"/>
+    <Field Desc="Status" Title="Status" Name="Status" DataType="Text.25" SourceName="STATUS" SourceType="Column" Required="false"/>
+    <Field Desc="Longitude, DEC" Title="Longitude, DEC" Name="Lon" DataType="Double.30.10" SourceName="LON" SourceType="Column" Required="false" Unit="Longitude.DEC"/>
+    <Field Desc="Latitude, DEC" Title="Latitude, DEC" Name="Lat" DataType="Double.30.10" SourceName="LAT" SourceType="Column" Required="false" Unit="Latitude.DEC"/>
+    <Field Desc="Altitude above sea level, m" Title="Altitude above sea level, m" Name="Asl" DataType="Double.30.10" SourceName="ASL" SourceType="Column" Required="false"/>
+    <Field Name="SENSOR" SourceName="Sensor" SourceType="Reference" Required="true" Desc="" Title="Relation SensorEquipment to Sensor"/>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>

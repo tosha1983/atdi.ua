@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity 
+  Name        = "SensorEquipment" 
+  Title       = "SensorEquipment" 
+  Desc        = "The sensor equipment"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>SENSOR_EQUIP</Name>
+    <Schema>ICSC</Schema>
+  </DataSource>
+  <Fields>
+    <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
+    <Field Desc="Code of equipment" Title="Code of equipment" Name="Code" DataType="Text.50" SourceName="CODE" SourceType="Column" Required="false"/>
+    <Field Desc="Manufacturer" Title="Manufacturer" Name="Manufacturer" DataType="Text.50" SourceName="MANUFACTURER" SourceType="Column" Required="false"/>
+    <Field Desc="Name" Title="Name" Name="Name" DataType="Text.50" SourceName="NAME" SourceType="Column" Required="false"/>
+    <Field Desc="Family" Title="Family" Name="Family" DataType="Text.50" SourceName="FAMILY" SourceType="Column" Required="false"/>
+    <Field Desc="Technical ID" Title="Technical ID" Name="TechId" DataType="Text.200" SourceName="TECHID" SourceType="Column" Required="false"/>
+    <Field Desc="Version" Title="Version" Name="Version" DataType="Text.50" SourceName="VERSION" SourceType="Column" Required="false"/>
+    <Field Desc="LowerFreq, MHz" Title="LowerFreq, MHz" Name="LowerFreq" DataType="Double.30.10" SourceName="LOWER_FREQ" SourceType="Column" Required="false" Unit="Frequency.MHz"/>
+    <Field Desc="UpperFreq, MHz " Title="UpperFreq, MHz " Name="UpperFreq" DataType="Double.30.10" SourceName="UPPER_FREQ" SourceType="Column" Required="false" Unit="Frequency.MHz"/>
+    <Field Desc="RBWMin, kHz" Title="RBWMin, kHz" Name="RbwMin" DataType="Double.30.10" SourceName="RBW_MIN" SourceType="Column" Required="false" Unit="Frequency.kHz"/>
+    <Field Desc="RBWMax, kHz" Title="RBWMax, kHz" Name="RbwMax" DataType="Double.30.10" SourceName="RBW_MAX" SourceType="Column" Required="false" Unit="Frequency.kHz"/>
+    <Field Desc="VBWMin, kHz" Title="VBWMin, kHz" Name="VbwMin" DataType="Double.30.10" SourceName="VBW_MIN" SourceType="Column" Required="false" Unit="Frequency.kHz"/>
+    <Field Desc="VBWMax, kHz" Title="VBWMax, kHz" Name="VbwMax" DataType="Double.30.10" SourceName="VBW_MAX" SourceType="Column" Required="false" Unit="Frequency.kHz"/>
+    <Field Desc="Mobility - true - can be mobile, false cannot be mobile" Title="Mobility - true - can be mobile, false cannot be mobile" Name="Mobility" DataType="Boolean" SourceName="MOBILITY" SourceType="Column" Required="false"/>
+    <Field Desc="Maximum of points for Fast Fourier Transform" Title="Maximum of points for Fast Fourier Transform" Name="FftPointMax" DataType="Double.30.10" SourceName="FFT_POINT_MAX" SourceType="Column" Required="false"/>
+    <Field Desc="Reference level in dBm" Title="Reference level in dBm" Name="RefLevelDbm" DataType="Double.30.10" SourceName="REF_LEVEL_DBM" SourceType="Column" Required="false" Unit="Level.dBm"/>
+    <Field Desc="OperationMode" Title="OperationMode" Name="OperationMode" DataType="Text.50" SourceName="OPERATION_MODE" SourceType="Column" Required="false"/>
+    <Field Desc="Type" Title="Type" Name="Type" DataType="Text.50" SourceName="TYPE" SourceType="Column" Required="false"/>
+    <Field Desc="EquipClass" Title="EquipClass" Name="EquipClass" DataType="Text.50" SourceName="EQUIP_CLASS" SourceType="Column" Required="false"/>
+    <Field Desc="TuningStep, Hz" Title="TuningStep, Hz" Name="TuningStep" DataType="Double.30.10" SourceName="TUNING_STEP" SourceType="Column" Required="false" Unit="Frequency.Hz"/>
+    <Field Desc="UserType" Title="UserType" Name="UserType" DataType="Text.50" SourceName="USE_TYPE" SourceType="Column" Required="false"/>
+    <Field Desc="Category" Title="Category" Name="Category" DataType="Text.50" SourceName="CATEGORY" SourceType="Column" Required="false"/>
+    <Field Desc="Remark" Title="Remark" Name="Remark" DataType="Text.250" SourceName="REMARK" SourceType="Column" Required="false"/>
+    <Field Desc="CustTxt1" Title="CustTxt1" Name="CustTxt1" DataType="Text.250" SourceName="CUSTTXT1" SourceType="Column" Required="false"/>
+    <Field Desc="CustData1" Title="CustData1" Name="CustData1" DataType="DateTime" SourceName="CUSTDATA1" SourceType="Column" Required="false"/>
+    <Field Desc="CustNbr1" Title="CustNbr1" Name="CustNbr1" DataType="Double.30.10" SourceName="CUSTNBR1" SourceType="Column" Required="false"/>
+    <Field Name="SENSOR" SourceName="Sensor" SourceType="Reference" Required="true" Desc="" Title="Relation SensorEquipment to Sensor"/>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>
