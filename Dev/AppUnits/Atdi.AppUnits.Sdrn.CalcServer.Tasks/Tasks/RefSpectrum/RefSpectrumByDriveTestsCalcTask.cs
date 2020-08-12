@@ -172,10 +172,15 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                 resultRefSpectrumByDriveTests.GlobalCID = driveTest.GSID;
                                 resultRefSpectrumByDriveTests.Freq_MHz = driveTest.Freq_MHz;
                                 resultRefSpectrumByDriveTests.DateMeas = new DateTimeOffset(driveTest.MeasTime.Value);
+                                resultRefSpectrumByDriveTests.IdSensor = sensorIds[i].Value;
 
                                 // вызов итерации определения уровня сигнала Level
                                 var resulLevelCalc = iterationReceivedPowerCalcResult.Run(_taskContext, receivedPowerCalcData);
-
+                                //ReceivedPowerCalcResult resulLevelCalc = new ReceivedPowerCalcResult();
+                                //resulLevelCalc.Level_dBm = 40.45;
+                                //resulLevelCalc.Frequency_Mhz= driveTest.Freq_MHz;
+                                //resulLevelCalc.Distance_km = 34;
+                                //resulLevelCalc.AntennaHeight_m = 3;
                                 if (resulLevelCalc.Level_dBm.Value < this._parameters.PowerThreshold_dBm)
                                 {
                                     if (skipDriveTests.Find(x => x.Id == contextStation.Id) == null)
@@ -624,7 +629,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                         Latitude = readerSensorLocation.GetValue(c => c.Lat).Value
                                     };
                                     driveTestParameters.Coordinate = _transformation.ConvertCoordinateToAtdi(in wgs84Coordinate, this._parameters.Projection);
-                                    driveTestParameters.SensorAntennaHeight_m = (float)readerSensorLocation.GetValue(c => c.Asl).Value;
+                                    driveTestParameters.SensorAntennaHeight_m = 3;//(float)readerSensorLocation.GetValue(c => c.Asl).Value;
                                 }
                                 return true;
                             });

@@ -384,7 +384,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     AntennaHeight_m = data.TxAltitude_m
                 };
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 throw;
             }
