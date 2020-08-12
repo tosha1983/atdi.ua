@@ -173,7 +173,7 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration.CalcServer
 					.Select(c => c.TableIcsmName)
 					.Select(c => c.IdSensor)
 					.Select(c => c.Percent)
-					.Where(c => c.Id, ConditionOperator.Equal , observedTask.ResultId);
+					.Where(c => c.RESULT_REF_SPECTRUM.RESULT.Id, ConditionOperator.Equal , observedTask.ResultId);
 
 				var insQuery = _sdrnsDataLayer.GetBuilder<ES_SD.IeStation.IRefSpectrum>().Insert();
 					
