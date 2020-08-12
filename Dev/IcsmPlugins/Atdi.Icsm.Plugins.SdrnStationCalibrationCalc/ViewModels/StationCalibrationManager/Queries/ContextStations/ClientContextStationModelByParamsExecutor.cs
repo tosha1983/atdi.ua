@@ -11,7 +11,7 @@ using Atdi.DataModels.Sdrn.Infocenter.Entities.SdrnServer;
 
 namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager.Queries
 {
-    public class ClientContextStationModelByParamsExecutor : IReadQueryExecutor<ClientContextStationModelByParams, long?>
+    public class ClientContextStationModelByParamsExecutor : IReadQueryExecutor<ClientContextStationModelByParams, ClientContextStationModelByParamsResult>
     {
         private readonly AppComponentConfig _config;
         private readonly CalcServerDataLayer _dataLayer;
@@ -21,11 +21,15 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
             _config = config;
             _dataLayer = dataLayer;
         }
-        public long? Read(ClientContextStationModelByParams criterion)
+        public ClientContextStationModelByParamsResult Read(ClientContextStationModelByParams criterion)
         {
+            var clientContextStationModelByParamsResult = new ClientContextStationModelByParamsResult();
+
             var query = _dataLayer.GetBuilder<CS_ES.IContextStation>()
                 .Read()
                 .Select(c => c.Id)
+                .Select(c => c.ModifiedDate)
+                .Select(c => c.StateName)
                 .Select(c => c.CONTEXT.Id)
                 .Filter(c => c.CONTEXT.Id, criterion.ClientContextId)
                 .Filter(c => c.ExternalCode, criterion.ExternalCode)
@@ -38,7 +42,11 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
             {
                 return null;
             }
-            return reader.GetValue(c=>c.Id);
+            clientContextStationModelByParamsResult.DateModified = reader.GetValue(c => c.ModifiedDate);
+            clientContextStationModelByParamsResult.StationId = reader.GetValue(c => c.Id);
+            clientContextStationModelByParamsResult.Status= reader.GetValue(c => c.StateName);
+
+            return clientContextStationModelByParamsResult;
         }
     }
 }
