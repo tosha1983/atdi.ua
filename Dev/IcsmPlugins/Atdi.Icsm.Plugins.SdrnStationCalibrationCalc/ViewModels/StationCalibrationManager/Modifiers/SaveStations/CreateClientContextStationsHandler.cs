@@ -31,16 +31,137 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
         {
             var clientContextStations = commandParameters.IcsmMobStation;
             var stations = new long[clientContextStations.Length];
+            var enumStateCode = Enum.GetValues(typeof(StationStateCode)).Cast<StationStateCode>().ToList();
             for (int i = 0; i < clientContextStations.Length; i++)
             {
                 var command = clientContextStations[i];
-                var contextStationId = _objectReader.Read<long?>().By(new ClientContextStationModelByParams() {  ClientContextId = commandParameters.ClientContextId, ExternalCode = command.ExternalCode, ExternalSource = command.ExternalSource, Standard = command.Standard });
-                if (contextStationId!=null)
+                var contextStation = _objectReader.Read<ClientContextStationModelByParamsResult>().By(new ClientContextStationModelByParams() {  ClientContextId = commandParameters.ClientContextId, ExternalCode = command.ExternalCode, ExternalSource = command.ExternalSource, Standard = command.Standard });
+                if (contextStation!=null)
                 {
-                    stations[i] = contextStationId.Value;
+                    stations[i] = contextStation.StationId.Value;
+
+                    var updQueryStatus = _dataLayer.GetBuilder<IContextStation>()
+                         .Update()
+                         .SetValue(c => c.Name, command.Name)
+                         .SetValue(c => c.StateCode, (byte)enumStateCode.Find(x => x.ToString() == command.StateName))
+                         .SetValue(c => c.StateName, command.StateName)
+                         .Filter(c => c.Id, contextStation.StationId.Value);
+                    _dataLayer.Executor.Execute(updQueryStatus);
+
+                    if ((command.ModifiedDate != null) && (contextStation.DateModified!=null))
+                    {
+                        if (command.ModifiedDate.Value > contextStation.DateModified.Value)
+                        {
+                            var updQuery = _dataLayer.GetBuilder<IContextStation>()
+                           .Update()
+                           .SetValue(c => c.Name, command.Name)
+                           .SetValue(c => c.StateCode, (byte)enumStateCode.Find(x => x.ToString() == command.StateName))
+                           .SetValue(c => c.StateName, command.StateName)
+                           .SetValue(c => c.CallSign, command.CallSign)
+                           .SetValue(c => c.Standard, command.Standard)
+                           .SetValue(c => c.RealGsid, command.RealGsid)
+                           .SetValue(c => c.LicenseGsid, command.LicenseGsid)
+                           .SetValue(c => c.RegionCode, command.RegionCode)
+                           .SetValue(c => c.ModifiedDate, command.ModifiedDate)
+                           .SetValue(c => c.ExternalSource, command.ExternalSource)
+                           .SetValue(c => c.ExternalCode, command.ExternalCode)
+                           .Filter(c => c.Id, contextStation.StationId.Value);
+                            _dataLayer.Executor.Execute(updQuery);
+
+
+                            var transUpdQueryAntenna = _dataLayer.GetBuilder<IContextStationAntenna>()
+                           .Update()
+                           .Filter(c => c.Id, contextStation.StationId.Value)
+                           .SetValue(c => c.ItuPatternCode, command.ANTENNA.ItuPatternCode)
+                           .SetValue(c => c.ItuPatternName, command.ANTENNA.ItuPatternName)
+                           .SetValue(c => c.XPD_dB, command.ANTENNA.XPD_dB)
+                           .SetValue(c => c.Gain_dB, command.ANTENNA.Gain_dB)
+                           .SetValue(c => c.Tilt_deg, command.ANTENNA.Tilt_deg)
+                           .SetValue(c => c.Azimuth_deg, command.ANTENNA.Azimuth_deg);
+                            _dataLayer.Executor.Execute(transUpdQueryAntenna);
+
+
+                            var transUpdQuerySite = _dataLayer.GetBuilder<IContextStationSite>()
+                           .Update()
+                           .Filter(c => c.Id, contextStation.StationId.Value)
+                           .SetValue(c => c.Longitude_DEC, command.SITE.Longitude_DEC)
+                           .SetValue(c => c.Latitude_DEC, command.SITE.Latitude_DEC)
+                           .SetValue(c => c.Altitude_m, command.SITE.Altitude_m);
+                            _dataLayer.Executor.Execute(transUpdQuerySite);
+
+                            // создаем запись о трансмитере
+                            var transUpdQuery = _dataLayer.GetBuilder<IContextStationTransmitter>()
+                                .Update()
+                                .Filter(c => c.StationId, contextStation.StationId.Value)
+                                .SetValue(c => c.PolarizationCode, command.TRANSMITTER.PolarizationCode)
+                                .SetValue(c => c.PolarizationName, ((PolarizationCode)(command.TRANSMITTER.PolarizationCode)).ToString())
+                                .SetValue(c => c.Loss_dB, command.TRANSMITTER.Loss_dB)
+                                .SetValue(c => c.Freq_MHz, command.TRANSMITTER.Freq_MHz)
+                                .SetValue(c => c.Freqs_MHz, command.TRANSMITTER.Freqs_MHz)
+                                .SetValue(c => c.BW_kHz, command.TRANSMITTER.BW_kHz)
+                                .SetValue(c => c.MaxPower_dBm, command.TRANSMITTER.MaxPower_dBm);
+                            _dataLayer.Executor.Execute(transUpdQuery);
+
+
+                            // создаем запись о приемнике
+                            var receiveUpdQuery = _dataLayer.GetBuilder<IContextStationReceiver>()
+                                .Update()
+                                .Filter(c => c.StationId, contextStation.StationId.Value)
+                                .SetValue(c => c.PolarizationCode, command.RECEIVER.PolarizationCode)
+                                .SetValue(c => c.PolarizationName, ((PolarizationCode)(command.RECEIVER.PolarizationCode)).ToString())
+                                .SetValue(c => c.Loss_dB, command.RECEIVER.Loss_dB)
+                                .SetValue(c => c.Freq_MHz, command.RECEIVER.Freq_MHz)
+                                .SetValue(c => c.BW_kHz, command.RECEIVER.BW_kHz)
+                                .SetValue(c => c.KTBF_dBm, command.RECEIVER.KTBF_dBm)
+                                .SetValue(c => c.Freqs_MHz, command.RECEIVER.Freqs_MHz)
+                                .SetValue(c => c.Threshold_dBm, command.RECEIVER.Threshold_dBm)
+                                ;
+                            _dataLayer.Executor.Execute(receiveUpdQuery);
+
+
+                            //  создаем патерн антенны
+                            var paternUpdQuery = _dataLayer.GetBuilder<IContextStationPattern>()
+                                .Update()
+                                .Filter(c => c.StationId, contextStation.StationId.Value)
+                                .Filter(c => c.AntennaPlane, "H")
+                                .Filter(c => c.WavePlane, "H")
+                                .SetValue(c => c.Angle_deg, command.ANTENNA.HH_PATTERN.Angle_deg)
+                                .SetValue(c => c.Loss_dB, command.ANTENNA.HH_PATTERN.Loss_dB);
+                            _dataLayer.Executor.Execute(paternUpdQuery);
+
+                            paternUpdQuery = _dataLayer.GetBuilder<IContextStationPattern>()
+                                .Update()
+                                .Filter(c => c.StationId, contextStation.StationId.Value)
+                                .Filter(c => c.AntennaPlane, "H")
+                                .Filter(c => c.WavePlane, "V")
+                                .SetValue(c => c.Angle_deg, command.ANTENNA.HV_PATTERN.Angle_deg)
+                                .SetValue(c => c.Loss_dB, command.ANTENNA.HV_PATTERN.Loss_dB);
+
+                            _dataLayer.Executor.Execute(paternUpdQuery);
+
+                            paternUpdQuery = _dataLayer.GetBuilder<IContextStationPattern>()
+                                .Update()
+                                .Filter(c => c.StationId, contextStation.StationId.Value)
+                                .Filter(c => c.AntennaPlane, "V")
+                                .Filter(c => c.WavePlane, "H")
+                                .SetValue(c => c.Angle_deg, command.ANTENNA.VH_PATTERN.Angle_deg)
+                                .SetValue(c => c.Loss_dB, command.ANTENNA.VH_PATTERN.Loss_dB);
+                            _dataLayer.Executor.Execute(paternUpdQuery);
+
+                            paternUpdQuery = _dataLayer.GetBuilder<IContextStationPattern>()
+                                .Update()
+                                .Filter(c => c.StationId, contextStation.StationId.Value)
+                                .Filter(c => c.AntennaPlane, "V")
+                                .Filter(c => c.WavePlane, "V")
+                                .SetValue(c => c.Angle_deg, command.ANTENNA.VV_PATTERN.Angle_deg)
+                                .SetValue(c => c.Loss_dB, command.ANTENNA.VV_PATTERN.Loss_dB);
+                            _dataLayer.Executor.Execute(paternUpdQuery);
+                        }
+                    }
+
                     continue;
                 }
-                var enumStateCode = Enum.GetValues(typeof(StationStateCode)).Cast<StationStateCode>().ToList();
+                
                 var insQuery = _dataLayer.GetBuilder<IContextStation>()
                     .Create()
                     .SetValue(c => c.CreatedDate, command.CreatedDate)
