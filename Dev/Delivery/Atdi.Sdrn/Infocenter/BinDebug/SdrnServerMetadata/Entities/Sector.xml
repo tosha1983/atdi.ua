@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "Sector"
+  Title       = "Sector"
+  Desc        = "The Sector"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>SECTOR</Name>
+    <Schema>ICSC</Schema>
+  </DataSource>
+  <Fields>
+    <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
+    <Field Desc="Agl" Title="Agl" Name="Agl" DataType="Double.30.10" SourceName="AGL" SourceType="Column" Required="false"/>
+    <Field Desc="Eirp" Title="Eirp" Name="Eirp" DataType="Double.30.10" SourceName="EIRP" SourceType="Column" Required="false"/>
+    <Field Desc="Azimut" Title="Azimut" Name="Azimut" DataType="Double.30.10" SourceName="AZIMUTH" SourceType="Column" Required="false"/>
+    <Field Desc="Bw" Title="Bw" Name="Bw" DataType="Double.30.10" SourceName="BW" SourceType="Column" Required="false"/>
+    <Field Desc="ClassEmission" Title="ClassEmission" Name="ClassEmission" DataType="Text.20" SourceName="CLASS_EMISSION" SourceType="Column" Required="false"/>
+    <Field Desc="ClientSectorCode" Title="ClientSectorCode" Name="ClientSectorCode" DataType="Integer.64" SourceName="CLIENT_SECTOR_CODE" SourceType="Column" Required="true"/>
+    <Field Name="STATION" SourceName="Station" SourceType="Reference" Required="true" Desc="" Title="Relation Sector to Station"/>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>

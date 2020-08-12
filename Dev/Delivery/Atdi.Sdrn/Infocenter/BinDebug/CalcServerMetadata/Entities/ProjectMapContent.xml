@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "ProjectMapContent"
+  Title       = "Project Map Content"
+  Desc        = "The map content of the project"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>PROJECT_MAP_CONTENTS</Name>
+    <Schema>CALC</Schema>
+  </DataSource>
+  <Fields>
+    <Field Name="Id" SourceType="Column"  SourceName="ID" DataType="Counter.64" Title="Project Map ID" Desc="The identifier of the project map"/>
+
+    <Field Name="MAP" SourceType="Reference" SourceName="ProjectMap"  Required="true" Title="Map Project" Desc="The project in which the map is created" />
+    <Field Name="CreatedDate" SourceType="Column" SourceName="CREATED_DATE" DataType="DateTimeOffset"  Required="true" Title="Created date" Desc="The date of the project created"  />
+    <Field Name="TypeCode" DataType="Code.u08" SourceName="TYPE_CODE" SourceType="Column" Desc="The code of the type of the map" Title="Type code" Required="true"/>
+    <Field Name="TypeName" DataType="Text.50" SourceName="TYPE_NAME" SourceType="Column" Desc="The name of the type of the map" Title="Type name" Required="true"/>
+
+    <Field Name="StepDataType" DataType="Text.50" SourceName="STEP_DATATYPE" SourceType="Column" Desc="The data type of the map step" Title="Step data type" Required="true"/>
+    <Field Name="StepDataSize" DataType="Code.u08" SourceName="STEP_DATASIZE" SourceType="Column" Desc="The data size in bytes of the map step" Title="Step data size" Required="true"/>
+
+    <Field Name="SourceCount" DataType="Integer.32" SourceName="SOURCE_COUNT" SourceType="Column" Desc="The source count" Title="Source Count" Required="false"/>
+    <Field Name="SourceCoverage" DataType="Decimal.22.8" SourceName="SOURCE_COVERAGE" SourceType="Column" Desc="The coverage percent" Title="Source Coverage" Required="false"/>
+
+    <Field Name="ContentSize" DataType="Integer.32" SourceName="CONTENT_SIZE" SourceType="Column" Desc="The content size in bytes of the map" Title="Content size" Required="true"/>
+    <Field Name="ContentType" DataType="Text.250" SourceName="CONTENT_TYPE" SourceType="Column" Required="false" Desc="The content type" Title="Content Type"/>
+    <Field Name="ContentEncoding" DataType="Text.250" SourceName="CONTENT_ENCODING" SourceType="Column" Required="false" Desc="The content encoding" Title="Content Encoding"/>
+    <Field Name="Content" DataType="Bytes.MAX" SourceName="CONTENT" SourceType="Column" Desc="The content of the map" Title="Content" Required="true"/>
+
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>

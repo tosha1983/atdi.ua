@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "MeasOther"
+  Title       = "MeasOther"
+  Desc        = "The meas other"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>MEAS_OTHER</Name>
+    <Schema>ICSC</Schema>
+  </DataSource>
+  <Fields>
+    <Field Name="Id" SourceType="Column"  SourceName="ID" DataType="Counter.64" Title="Id" Desc="Id"/>
+    <Field Desc="TypeSpectrumOccupation" Title="TypeSpectrumOccupation" Name="TypeSpectrumOccupation" DataType="Text.50" SourceName="TYPE_SPECTRUM_OCCUPATION" SourceType="Column" Required="false"/>
+    <Field Desc="LevelMinOccup" Title="LevelMinOccup" Name="LevelMinOccup" DataType="Double.30.10" SourceName="LEVEL_MIN_OCCUP" SourceType="Column" Required="false"/>
+    <Field Desc="Nchenal" Title="Nchenal" Name="Nchenal" DataType="Integer.32" SourceName="NCHENAL" SourceType="Column" Required="true"/>
+    <Field Desc="SupportMultyLevel" Title="SupportMultyLevel" Name="SupportMultyLevel" DataType="Boolean" SourceName="SUPP_MULTY_LEVEL" SourceType="Column" Required="false"/>
+    <Field Name="MEAS_TASK" SourceName="MeasTask" SourceType="Reference" Required="true" Desc="" Title="Relation MeasOther to MeasTask"/>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "Entity"
+  Title       = "Entity"
+  Desc        = "The Entity"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>ENTITY</Name>
+    <Schema>ICSC</Schema>
+  </DataSource>
+  <Fields>
+    <Field Desc="Id" Title="Id" Name="Id" DataType="Text.250" SourceName="ID" SourceType="Column" Required="true"/>
+    <Field Desc="Name" Title="Name" Name="Name" DataType="Text.250" SourceName="NAME" SourceType="Column" Required="false"/>
+    <Field Desc="Description" Title="Description" Name="Description" DataType="Text.4000" SourceName="DESCRIPTION" SourceType="Column" Required="false"/>
+    <Field Desc="ParentId" Title="ParentId" Name="ParentId" DataType="Text.250" SourceName="PARENT_ID" SourceType="Column" Required="false"/>
+    <Field Desc="ParentType" Title="ParentType" Name="ParentType" DataType="Text.250" SourceName="PARENT_TYPE" SourceType="Column" Required="false"/>
+    <Field Desc="ContentType" Title="ContentType" Name="ContentType" DataType="Text.250" SourceName="CONTENT_TYPE" SourceType="Column" Required="false"/>
+    <Field Desc="HashAlgoritm" Title="HashAlgoritm" Name="HashAlgoritm" DataType="Text.250" SourceName="HASH_ALGORITM" SourceType="Column" Required="false"/>
+    <Field Desc="HashCode" Title="HashCode" Name="HashCode" DataType="Text.4000" SourceName="HASH_CODE" SourceType="Column" Required="false"/>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>

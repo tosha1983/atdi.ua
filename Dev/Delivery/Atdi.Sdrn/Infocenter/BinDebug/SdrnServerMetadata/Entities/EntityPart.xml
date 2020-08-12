@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "EntityPart"
+  Title       = "EntityPart"
+  Desc        = "The EntityPart"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>ENTITY_PART</Name>
+    <Schema>ICSC</Schema>
+  </DataSource>
+  <Fields>
+    <Field Desc="EntityId" Title="Id" Name="EntityId" DataType="Text.250" SourceName="ENTITY_ID" SourceType="Column" Required="true"/>
+    <Field Desc="PartIndex" Title="PartIndex" Name="PartIndex" DataType="Integer.32" SourceName="PART_INDEX" SourceType="Column" Required="true"/>
+    <Field Desc="Eof" Title="Eof" Name="Eof" DataType="Boolean" SourceName="EOF" SourceType="Column" Required="false"/>
+    <Field Desc="Content" Title="Content" Name="Content" DataType="Bytes.MAX" SourceName="CONTENT" SourceType="Column" Required="false"/>
+    <Field Name="ENTITY" SourceName="Entity" SourceType="Reference" Required="true" Desc="" Title="Relation EntityPart to Entity"/>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="EntityId"/>
+    <FieldRef Name="PartIndex"/>
+  </PrimaryKey>
+</Entity>

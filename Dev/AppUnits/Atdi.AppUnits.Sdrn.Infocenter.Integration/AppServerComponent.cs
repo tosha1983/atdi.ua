@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Atdi.AppUnits.Sdrn.Infocenter.Integration.CalcServer;
 using Atdi.AppUnits.Sdrn.Infocenter.Integration.FilesImport;
 using Atdi.AppUnits.Sdrn.Infocenter.Integration.SdrnServer;
 using Atdi.AppUnits.Sdrn.Infocenter.Integration.Stations;
@@ -77,6 +78,27 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration
 				};
 
 				jobBroker.Run(sdrnServerJobDef);
+
+				startDelaySeconds = appConfig.AutoImportCalcServerStartDelay;
+				if (!startDelaySeconds.HasValue)
+				{
+					startDelaySeconds = 0;
+				}
+				repeatDelaySeconds = appConfig.AutoImportCalcServerRepeatDelay;
+				if (!repeatDelaySeconds.HasValue)
+				{
+					repeatDelaySeconds = 0;
+				}
+				var calcServerJobDef = new JobDefinition<CalcServerSyncJob>()
+				{
+					Name = "Calc Server Synchronization Job",
+					Recoverable = true,
+					Repeatable = true,
+					StartDelay = new TimeSpan(TimeSpan.TicksPerSecond * startDelaySeconds.Value),
+					RepeatDelay = new TimeSpan(TimeSpan.TicksPerSecond * repeatDelaySeconds.Value)
+				};
+
+				jobBroker.Run(calcServerJobDef);
 
 				startDelaySeconds = appConfig.AutoImportFilesStartDelay;
 				if (!startDelaySeconds.HasValue)

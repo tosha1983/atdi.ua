@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "ResLevMeasOnline"
+  Title       = "ResLevMeasOnline"
+  Desc        = "The ResLevMeasOnline"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>RES_LEV_MEAS_ONLINE</Name>
+    <Schema>ICSC</Schema>
+  </DataSource>
+  <Fields>
+    <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
+    <Field Desc="Value" Title="Value" Name="Value" DataType="Double.30.10" SourceName="VALUE" SourceType="Column" Required="false"/>
+    <Field Name="RES_MEAS" SourceType="Reference" SourceName="ResMeas" Required="true" Title="Relation ResLevMeasOnline to ResMeas"/>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>

@@ -63,6 +63,13 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration
 		public int? AutoImportFilesRepeatDelay { get; set; }
 
 
+		[ComponentConfigProperty("AutoImport.CalcServer.StartDelay")]
+		public int? AutoImportCalcServerStartDelay { get; set; }
 
+		[ComponentConfigProperty("AutoImport.CalcServer.RepeatDelay")]
+		public int? AutoImportCalcServerRepeatDelay { get; set; }
+
+		[ComponentConfigProperty("AutoImport.CalcServer.CalcResults.FetchRows")]
+		public int? AutoImportCalcServerCalcResultsFetchRows { get; set; }
 	}
 }

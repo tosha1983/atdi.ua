@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "HealthLogData"
+  Title       = "Health Log Data"
+  Desc        = "The log of the message processing"
+  Type        = "Prototype"
+  BaseEntity  = "HealthLog"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>HEALTH_LOG_DATA</Name>
+    <Schema>ICSC</Schema>
+  </DataSource>
+  <Fields>
+    <Field Name="JsonData" DataType="Text.MAX" SourceName="JSON_DATA" SourceType="Column" Desc="The Json Data" Title="Data" Required="false"/>
+    
+  </Fields>
+</Entity>
