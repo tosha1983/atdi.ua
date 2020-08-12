@@ -34,6 +34,7 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration
 			// Jobs ...
 			this.Container.Register<SdrnServerSyncJob>(ServiceLifetime.Singleton);
 			this.Container.Register<FilesAutoImportJob>(ServiceLifetime.Singleton);
+			this.Container.Register<CalcServerSyncJob>(ServiceLifetime.Singleton);
 
 			// Pipelines ...
 			this.Container.Register<GlobalIdentityPipelineHandler>(ServiceLifetime.Singleton);
