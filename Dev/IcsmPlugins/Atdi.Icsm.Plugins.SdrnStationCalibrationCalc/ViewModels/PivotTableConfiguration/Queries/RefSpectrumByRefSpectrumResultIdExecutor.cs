@@ -35,7 +35,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.PivotTableConf
                 .Select(c => c.Level_dBm)
                 .Select(c => c.Percent)
                 .Select(c => c.DateMeas)
-                .Filter(c => c.RefSpectrumResultId, criterion.RefSpectrumResultId);
+                .Filter(c => c.RESULT_REF_SPECTRUM.Id, criterion.RefSpectrumResultId);
 
             var reader = _dataLayer.Executor.ExecuteReader(query);
             while (reader.Read())
