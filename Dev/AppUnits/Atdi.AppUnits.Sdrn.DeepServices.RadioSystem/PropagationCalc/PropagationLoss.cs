@@ -169,7 +169,10 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             else
             {
                 prof = args.HeightProfile; startIndex = args.HeightStartIndex;
+                int hAcorr = 0;
+                int hBcorr = 0;
                 //Ha = Ha - args.CluttersDesc.Frequencies[0].Clutters[0].Height_m;
+                
                 if (args.ClutterProfile != null && args.ClutterProfile.Length > 0 &&
                     args.CluttersDesc.Frequencies != null && args.CluttersDesc.Frequencies.Length > 0 &&
                     args.CluttersDesc.Frequencies[0].Clutters != null)
@@ -178,9 +181,23 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
                     //hA_m -= args.ClutterProfile[startIndex];
                     //hB_m -= args.ClutterProfile[startIndex + args.ProfileLength - 1];
                     // when clutter height is calculated correctly
-                    hA_m -= args.CluttersDesc.Frequencies[0].Clutters[args.ClutterProfile[startIndex]].Height_m;
-                    hB_m -= args.CluttersDesc.Frequencies[0].Clutters[args.ClutterProfile[startIndex + args.ProfileLength - 1]].Height_m;
+                    hAcorr = args.CluttersDesc.Frequencies[0].Clutters[args.ClutterProfile[startIndex]].Height_m;
+                    hBcorr = args.CluttersDesc.Frequencies[0].Clutters[args.ClutterProfile[startIndex + args.ProfileLength - 1]].Height_m;
                 }
+                if (args.BuildingProfile != null && args.BuildingProfile.Length > 0)
+                {
+                    if (hAcorr < args.BuildingProfile[startIndex])
+                    {
+                        hAcorr = args.BuildingProfile[startIndex];
+                    }
+                    if (hBcorr < args.BuildingProfile[startIndex + args.ProfileLength - 1])
+                    {
+                        hBcorr = args.BuildingProfile[startIndex + args.ProfileLength - 1];
+                    }
+                }
+
+                hA_m -= hAcorr;
+                hB_m -= hBcorr;
 
             }
             //if (Ha < 0) { return 999;}
