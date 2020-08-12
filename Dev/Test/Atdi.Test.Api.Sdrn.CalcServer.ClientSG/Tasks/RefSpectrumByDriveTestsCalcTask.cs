@@ -32,10 +32,10 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client.Tasks
 			
 
 					// создаем новый таск в рамках контекста и первой станции из набора
-					var calcTaskId = CreateCalcTask(dataLayer, executor, 75);
+					var calcTaskId = CreateCalcTask(dataLayer, executor, 22);
 
 					// делаем задачу доступной для расчета
-					MakeCalcTaskAvailable(dataLayer, executor, calcTaskId, 75);
+					MakeCalcTaskAvailable(dataLayer, executor, calcTaskId, 22);
 
 					// создаем запись для результатов
 					var calcResultId = CreateCalcTaskResult(dataLayer, executor, calcTaskId);
@@ -597,8 +597,8 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client.Tasks
 					.SetValue(c => c.TaskId, taskPk.Id)
 					.SetValue(c => c.Comments, "TEST")
                     .SetValue(c => c.PowerThreshold_dBm, 20)
-                    .SetValue(c => c.ResultId, 30650)
-                    .SetValue(c => c.StationIds, new long[3] { 34727, 34728, 34729 })
+                    .SetValue(c => c.ResultId, 1054)
+                    .SetValue(c => c.StationIds, new long[1] { 44399 })
 				;
 			executor.Execute(argsQuery);
 

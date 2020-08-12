@@ -657,15 +657,31 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                 while (readerAntennaPattern.Read())
                                 {
                                 //_transformation.
-                                driveTestParameters.Freq_MHz = readerAntennaPattern.GetValue(c => c.Freq).Value;
+                                //driveTestParameters.Freq_MHz = readerAntennaPattern.GetValue(c => c.Freq).Value;
                                     driveTestParameters.RxFeederLoss_dB = readerAntennaPattern.GetValue(c => c.SENSOR_ANTENNA.AddLoss).Value;
-                                    driveTestParameters.SensorAntenna = new DataModels.Sdrn.DeepServices.RadioSystem.Stations.StationAntenna()
+                                    driveTestParameters.SensorAntenna = new DataModels.Sdrn.DeepServices.RadioSystem.Stations.StationAntenna();
+
+                                    if (readerAntennaPattern.GetValue(c => c.Gain).HasValue)
                                     {
-                                        Azimuth_deg = (float)readerAntennaPattern.GetValue(c => c.SENSOR_ANTENNA.SENSOR.Azimuth),
-                                        Gain_dB = (float)readerAntennaPattern.GetValue(c => c.Gain),
-                                        Tilt_deg = (float)readerAntennaPattern.GetValue(c => c.SENSOR_ANTENNA.SENSOR.Elevation),
-                                        XPD_dB = (float)readerAntennaPattern.GetValue(c => c.SENSOR_ANTENNA.Xpd),
-                                    };
+                                        driveTestParameters.SensorAntenna.Gain_dB = (float)readerAntennaPattern.GetValue(c => c.Gain);
+                                    }
+
+                                    if (readerAntennaPattern.GetValue(c => c.SENSOR_ANTENNA.Xpd).HasValue)
+                                    {
+                                        driveTestParameters.SensorAntenna.XPD_dB = (float)readerAntennaPattern.GetValue(c => c.SENSOR_ANTENNA.Xpd);
+                                    }
+
+                                    if (readerAntennaPattern.GetValue(c => c.SENSOR_ANTENNA.SENSOR.Azimuth).HasValue)
+                                    {
+                                        driveTestParameters.SensorAntenna.Azimuth_deg = (float)readerAntennaPattern.GetValue(c => c.SENSOR_ANTENNA.SENSOR.Azimuth);
+                                    }
+                                   
+                                    if (readerAntennaPattern.GetValue(c => c.SENSOR_ANTENNA.SENSOR.Elevation).HasValue)
+                                    {
+                                        driveTestParameters.SensorAntenna.Tilt_deg = (float)readerAntennaPattern.GetValue(c => c.SENSOR_ANTENNA.SENSOR.Elevation);
+                                    }
+                                    
+
 
 
                                     if (readerAntennaPattern.GetValue(c => c.DiagH) != null)
