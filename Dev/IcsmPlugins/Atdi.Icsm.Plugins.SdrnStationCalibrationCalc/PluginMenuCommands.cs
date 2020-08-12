@@ -56,6 +56,18 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc
                 MessageBox.Show(e.ToString());
             }
         }
+        public void OnPivotTableConfigurationCommand()
+        {
+            try
+            {
+                _viewStarter.Start<VM.PivotTableConfiguration.View>(isModal: true);
+            }
+            catch (Exception e)
+            {
+                _logger.Exception((EventContext)"PluginMenuCommands", (EventCategory)"OnPivotTableConfigurationCommand", e);
+                MessageBox.Show(e.ToString());
+            }
+        }
 
         public void OnRunCalibrationStationsResultCommand()
         {
