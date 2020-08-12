@@ -19,13 +19,13 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
 
     public class GdalCalc
     {
-        private const int MaxCountThreadFilesForFinalCoverage = 250;
-        private const int MaxCountThreadFilesForConcatBlank = 50;
         private static int[,] grayMatrixGlobal { get; set; }
         private ILogger _logger { get; set; }
+        private AppServerComponentConfig _appServerComponentConfig { get; set; }
 
-        public GdalCalc(ILogger logger)
+        public GdalCalc(AppServerComponentConfig appServerComponentConfig, ILogger logger)
         {
+            this._appServerComponentConfig = appServerComponentConfig;
             this._logger = logger;
             GdalConfiguration.ConfigureGdal();
             Gdal.AllRegister();
@@ -191,7 +191,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                 var proj = image.GetProjection();
 
 
-                var lstFiles = BreakDown(files, MaxCountThreadFilesForConcatBlank);
+                var lstFiles = BreakDown(files, this._appServerComponentConfig.MaxCountThreadFilesForConcatBlank);
                 for (int j = 0; j < lstFiles.Count; j++)
                 {
                     var filesSource = lstFiles[j];
@@ -514,7 +514,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
         {
             grayMatrixGlobal = new int[heightValue, widthValue];
             var filesSources = Directory.GetFiles(Path.GetDirectoryName(dataConfig.DirectoryConfig.TempTIFFFilesDirectory), "*_out.TIF");
-            var lstFiles = BreakDown(filesSources, MaxCountThreadFilesForFinalCoverage);
+            var lstFiles = BreakDown(filesSources, this._appServerComponentConfig.MaxCountThreadFilesForFinalCoverage);
             for (int j = 0; j < lstFiles.Count; j++)
             {
                 var filesSource = lstFiles[j];

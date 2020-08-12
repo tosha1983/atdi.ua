@@ -55,5 +55,11 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration
     {
 	    public static readonly string GlobalIdentity = "GlobalIdentity";
 	    public static readonly string StationMonitoring = "StationMonitoring";
-    }
+	    public static readonly string Sensors = "Sensors";
+	    public static readonly string SensorAntennas = "SensorAntennas";
+	    public static readonly string SensorAntennaPatterns = "SensorAntennaPatterns";
+	    public static readonly string SensorEquipment = "SensorEquipment";
+	    public static readonly string SensorEquipmentSensitivities = "SensorEquipmentSensitivities";
+	    public static readonly string SensorLocations = "SensorLocations";
+	}
 }

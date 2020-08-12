@@ -9,7 +9,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 	public struct PercentTimeForGainCalcData
     {
         public ReceivedPowerCalcResult[] StationData;
-        public int SensorId;
+        public long SensorId;
         public double SensorAntennaHeight_m;   
     }
 }

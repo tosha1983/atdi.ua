@@ -11,6 +11,7 @@ using System.IO;
 using Atdi.Platform.Logging;
 using Atdi.AppUnits.Icsm.CoverageEstimation.Models;
 using Atdi.Common;
+using Atdi.AppUnits.Icsm.CoverageEstimation.Utilities;
 using Atdi.AppUnits.Icsm.CoverageEstimation.Localization;
 
 
@@ -19,9 +20,11 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
     public class CreateFileEwx
     {
         private ILogger _logger { get; set; }
-        public CreateFileEwx(ILogger logger)
+        private DataConfig _dataConfig { get; set; }
+        public CreateFileEwx(DataConfig dataConfig, ILogger logger)
         {
             this._logger = logger;
+            this._dataConfig = dataConfig;
         }
 
         public bool CreateFile(string Path, EwxData ewx)
@@ -42,6 +45,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                 writer.WriteElementString("COUNT_MWS", XmlConvert.ToString(ewx.Header.CountMWS));
                 writer.WriteEndElement();
 
+                bool isFindStationData = false;
 
                 for (int i = 0; i < ewx.Stations.Length; i++)
                 {
@@ -56,49 +60,54 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                     {
                         if ((CheckDiagH(ref diagH, out diagHNameTag) == false) || (CheckDiagV(ref diagV, out diagVNameTag) == false))
                         {
-                            this._logger.Info(Contexts.CalcCoverages, (EventText)$"{CLocaliz.TxT("Reject station Id")} = '{id}'");
+                            this._logger.Error(Contexts.CalcCoverages, (EventText)$"{CLocaliz.TxT("Reject station Id")} = '{id}'");
+                            Utils.LogInfo(this._dataConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("Reject station Id")} = '{id}'");
                             continue;
                         }
                     }
                     catch (Exception ex)
                     {
                         this._logger.Exception(Contexts.CalcCoverages, (EventCategory)$"{CLocaliz.TxT("Reject station Id")} = '{id}'", ex);
+                        Utils.LogInfo(this._dataConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("Reject station Id")} = '{id}'");
                         continue;
                     }
+
+                    isFindStationData = true;
 
                     writer.WriteStartElement("STATION");
                     writer.WriteStartElement("RECORD");
                     writer.WriteElementString("TYPE_COORD", bts.TypeCoord == null ? "162DEC" : bts.TypeCoord);
                     writer.WriteElementString("Category", bts.Category == null ? "2" : bts.Category); // 2 is generic signal type
-                    writer.WriteElementString("CALL_SIGN", bts.CallSign);
+                    //writer.WriteElementString("CALL_SIGN", bts.CallSign);
+                    writer.WriteElementString("CALL_SIGN", Guid.NewGuid().ToString().SubString(13).Replace("-", "_"));
                     writer.WriteElementString("ADDRESS", bts.Address);
-                    writer.WriteElementString("ALTITUDE", Convert.ToString(bts.Altitude));
-                    writer.WriteElementString("NOMINAL_POWER", Convert.ToString(bts.NominalPower));
-                    writer.WriteElementString("FREQUENCY", Convert.ToString(bts.Frequency));
-                    writer.WriteElementString("BANDWIDTH", Convert.ToString(bts.Bandwidth));
-                    writer.WriteElementString("BANDWIDTHRX", Convert.ToString(bts.BandwidthRx));
-                    writer.WriteElementString("H_ANTENNA", Convert.ToString(bts.HAntenna));
-                    writer.WriteElementString("AZIMUTH", Convert.ToString(bts.Azimuth));
+                    writer.WriteElementString("ALTITUDE", Convert.ToString(bts.Altitude).Replace(",","."));
+                    writer.WriteElementString("NOMINAL_POWER", Convert.ToString(bts.NominalPower).Replace(",", "."));
+                    writer.WriteElementString("FREQUENCY", Convert.ToString(bts.Frequency).Replace(",", "."));
+                    writer.WriteElementString("BANDWIDTH", Convert.ToString(bts.Bandwidth).Replace(",", "."));
+                    writer.WriteElementString("BANDWIDTHRX", Convert.ToString(bts.BandwidthRx).Replace(",", "."));
+                    writer.WriteElementString("H_ANTENNA", Convert.ToString(bts.HAntenna).Replace(",", "."));
+                    writer.WriteElementString("AZIMUTH", Convert.ToString(bts.Azimuth).Replace(",", "."));
                     //writer.WriteElementString("TILT", Convert.ToString(bts.Tilt));
                     writer.WriteElementString("TILT", "-9");
-                    writer.WriteElementString("GAIN", Convert.ToString(bts.Gain));
-                    writer.WriteElementString("GAINRX", Convert.ToString(bts.GainRx));
-                    writer.WriteElementString("LOSSES", Convert.ToString(bts.Losses));
-                    writer.WriteElementString("LOSSESRX", Convert.ToString(bts.LossesRx));
-                    writer.WriteElementString("COORD_X", Convert.ToString(bts.CoordX));
-                    writer.WriteElementString("COORD_Y", Convert.ToString(bts.CoordY));
+                    writer.WriteElementString("GAIN", Convert.ToString(bts.Gain).Replace(",", "."));
+                    writer.WriteElementString("GAINRX", Convert.ToString(bts.GainRx).Replace(",", "."));
+                    writer.WriteElementString("LOSSES", Convert.ToString(bts.Losses).Replace(",", "."));
+                    writer.WriteElementString("LOSSESRX", Convert.ToString(bts.LossesRx).Replace(",", "."));
+                    writer.WriteElementString("COORD_X", Convert.ToString(bts.CoordX).Replace(",", "."));
+                    writer.WriteElementString("COORD_Y", Convert.ToString(bts.CoordY).Replace(",", "."));
                     writer.WriteElementString("INFO1", bts.Info1);
                     writer.WriteElementString("NETID", Convert.ToString(bts.NetId));
                     writer.WriteElementString("POLAR", bts.Polar);
                     writer.WriteElementString("POLARRX", bts.PolarRx);
                     writer.WriteElementString(diagHNameTag, diagH);
                     writer.WriteElementString(diagVNameTag, diagV);
-                    writer.WriteElementString("D_cx1", Convert.ToString(bts.D_cx1));
-                    writer.WriteElementString("U_cx1", Convert.ToString(bts.U_cx1));
+                    writer.WriteElementString("D_cx1", Convert.ToString(bts.D_cx1).Replace(",", "."));
+                    writer.WriteElementString("U_cx1", Convert.ToString(bts.U_cx1).Replace(",", "."));
                     writer.WriteElementString("Downlink_cx", "1");
                     writer.WriteElementString("Uplink_cx", "1");
                     double KTBF = -174 + 7 + 10 * Math.Log10(bts.Bandwidth);
-                    writer.WriteElementString("FKTB", Convert.ToString(KTBF));
+                    writer.WriteElementString("FKTB", Convert.ToString(KTBF).Replace(",", "."));
                     writer.WriteEndElement();
                     writer.WriteEndElement();
 
@@ -106,8 +115,15 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                 }
                 writer.WriteEndElement();
                 writer.Close();
-                isSuccessCreateEwxFile = true;
-                this._logger.Info(Contexts.CalcCoverages, string.Format(CLocaliz.TxT(Events.OperationSaveEWXFileCompleted.ToString()), Path));
+                if (isFindStationData)
+                {
+                    isSuccessCreateEwxFile = true;
+                    this._logger.Info(Contexts.CalcCoverages, string.Format(CLocaliz.TxT(Events.OperationSaveEWXFileCompleted.ToString()), Path));
+                }
+                else
+                {
+                    File.Delete(Path);
+                }
             }
             catch (Exception e)
             {
@@ -136,7 +152,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                 diagH = diagH.Replace("VECTOR 10", "").Replace(",",".");
                 var array = ParseStringToArray(diagH);
                 var arrayPolarH = InterpolationForICSTelecomHorizontal(array);
-                diagH = GetFormatArray(arrayPolarH);
+                diagH = GetFormatArrayHorizontal(arrayPolarH);
                 NameTag = "DIAG_H";
                 return true;
             }
@@ -146,10 +162,17 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                 var array = ParseStringToArray(diagH);
                 if (array.Length==72)
                 {
-                    diagH = GetFormatArray(array);
+                    diagH = GetFormatArrayHorizontal(array);
                 }
-                //var arrayPolarH = InterpolationForICSTelecomHorizontal(array);
-                //diagH = GetFormatArray(arrayPolarH);
+                NameTag = "DIAG_H";
+                return true;
+            }
+            else if (diagH.Contains("VECTOR 1"))
+            {
+                diagH = diagH.Replace("VECTOR 1", "").Replace(",", ".");
+                var array = ParseStringToArray(diagH);
+                var arrayPolarH = InterpolationForICSTelecomHorizontalOneDeg(array);
+                diagH = GetFormatArrayHorizontal(arrayPolarH);
                 NameTag = "DIAG_H";
                 return true;
             }
@@ -162,8 +185,21 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                     if (isNotZero)
                     {
                         var array = ParseStringToPointObjects(diagH);
-                        var arrayPolarH = InterpolationPointForICSTelecomHorizontal(array);
-                        diagH = GetFormatArray(arrayPolarH);
+
+                        for (int i=0; i< array.Length; i++)
+                        {
+                            if (array[i].Azimuth<0)
+                            {
+                                array[i].Azimuth = 360 + array[i].Azimuth;
+                            }
+                        }
+                        var sortedarray = from u in array
+                                          orderby u.Azimuth ascending
+                                          select u;
+
+                        var arrOrdered = sortedarray.ToArray();
+                        var arrayPolarH = InterpolationPointForICSTelecomHorizontal(arrOrdered);
+                        diagH = GetFormatArrayHorizontal(arrayPolarH);
                     }
                     else
                     {
@@ -202,19 +238,23 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                 diagV = diagV.Replace("VECTOR 10", "").Replace(",", ".");
                 var array = ParseStringToArray(diagV);
                 var arrayPolarV = InterpolationForICSTelecomVertical(array);
-                diagV = GetFormatArray(arrayPolarV);
+                diagV = GetFormatArrayVertical(arrayPolarV);
+                NameTag = "DIAG_V";
+                return true;
+            }
+            if (diagV.Contains("VECTOR 1"))
+            {
+                diagV = diagV.Replace("VECTOR 1", "").Replace(",", ".");
+                var array = ParseStringToArray(diagV);
+                diagV = GetFormatArrayVertical(array);
                 NameTag = "DIAG_V";
                 return true;
             }
             else if (diagV.Contains("VECTOR 5"))
             {
-                //diagV = diagV.Replace("VECTOR 5", "").Replace(",", ".");
-                //var array = ParseStringToArray(diagV);
                 NameTag = "DIAG_V";
+                Utils.LogInfo(this._dataConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("DiagV value =")} '{diagV}' {CLocaliz.TxT("not support")}");
                 throw new InvalidOperationException($"{CLocaliz.TxT("DiagV value =")} '{diagV}' {CLocaliz.TxT("not support")}");
-                //var arrayPolarV = InterpolationForICSTelecomVertical(array);
-                //diagV = GetFormatArray(arrayPolarV);
-                //return true;
             }
             else if (diagV.Contains("POINTS"))
             {
@@ -226,7 +266,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                     {
                         var array = ParseStringToPointObjects(diagV);
                         var arrayPolarV = InterpolationPointForICSTelecomVertical(array);
-                        diagV = GetFormatArray(arrayPolarV);
+                        diagV = GetFormatArrayVertical(arrayPolarV);
                     }
                     else
                     {
@@ -247,18 +287,50 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
             }
         }
 
-
-        private string GetFormatArray(double[] inArr)
+        private string GetFormatArrayVertical(double[] inArr)
         {
             string outString = "";
             if (inArr != null)
             {
                 for (int i = 0; i < inArr.Length; i++)
                 {
-                    var s = Math.Round(inArr[i]).ToString().Replace(",", ".");
-                    if (s.Length==1)
+                    var s = Math.Round(inArr[i].ToString().ConvertStringToDouble().Value, 1).ToString().Replace(",", ".");
+                    if (s.Length > 4)
+                    {
+                        var delta = s.Length - 4;
+                        s = s.Remove(s.Length - delta, delta);
+                    }
+
+                    if (s.Length == 1)
                     {
                         s = "0" + s;
+                    }
+                    s = s.PadLeft(4, ' ');
+                    outString += s;
+                }
+            }
+            return outString;
+        }
+
+        private string GetFormatArrayHorizontal(double[] inArr)
+        {
+            string outString = "";
+            if (inArr != null)
+            {
+                bool isFirst = true;
+
+                for (int i = 0; i < inArr.Length; i++)
+                {
+                    var s = Math.Round(inArr[i].ToString().ConvertStringToDouble().Value, 1).ToString().Replace(",", ".");
+                    if (s.Length > 4)
+                    {
+                        var delta = s.Length - 4;
+                        s = s.Remove(s.Length - delta, delta);
+                    }
+                    if (isFirst)
+                    {
+                        s = "0000";
+                        isFirst = false;
                     }
                     s = s.PadLeft(4, ' ');
                     outString += s;
@@ -289,6 +361,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                 }
                 else
                 {
+                    Utils.LogInfo(this._dataConfig, Contexts.CalcCoverages, CLocaliz.TxT("Dimension array must be an even number"));
                     throw new InvalidOperationException(CLocaliz.TxT("Dimension array must be an even number"));
                 }
             }
@@ -318,6 +391,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                 }
                 else
                 {
+                    Utils.LogInfo(this._dataConfig, Contexts.CalcCoverages, CLocaliz.TxT("Dimension array must be an even number"));
                     throw new InvalidOperationException(CLocaliz.TxT("Dimension array must be an even number"));
                 }
             }
@@ -349,6 +423,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
             {
                 if (inArray.Length < MinCount)
                 {
+                    Utils.LogInfo(this._dataConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("Incorrect count element in inArray")} ({inArray.Length} < {MinCount})  {CLocaliz.TxT("in the InterpolationForICSTelecomHorizontal method")}");
                     throw new InvalidOperationException($"{CLocaliz.TxT("Incorrect count element in inArray")} ({inArray.Length} < {MinCount})  {CLocaliz.TxT("in the InterpolationForICSTelecomHorizontal method")}");
                 }
                 for (int i = 0; i < 36; i++)
@@ -360,6 +435,31 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
             }
             else
             {
+                Utils.LogInfo(this._dataConfig, Contexts.CalcCoverages, CLocaliz.TxT("The 'inArray' input parameter in the InterpolationForICSTelecomHorizontal method is null!"));
+                throw new InvalidOperationException(CLocaliz.TxT("The 'inArray' input parameter in the InterpolationForICSTelecomHorizontal method is null!"));
+            }
+            return result;
+        }
+
+        private double[] InterpolationForICSTelecomHorizontalOneDeg(double[] inArray)
+        {
+            const int MinCount = 360;
+            var result = new double[72];
+            if (inArray != null)
+            {
+                if (inArray.Length < MinCount)
+                {
+                    Utils.LogInfo(this._dataConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("Incorrect count element in inArray")} ({inArray.Length} < {MinCount})  {CLocaliz.TxT("in the InterpolationForICSTelecomHorizontal method")}");
+                    throw new InvalidOperationException($"{CLocaliz.TxT("Incorrect count element in inArray")} ({inArray.Length} < {MinCount})  {CLocaliz.TxT("in the InterpolationForICSTelecomHorizontal method")}");
+                }
+                for (int i = 0; i < 72; i++)
+                {
+                    result[i] = inArray[i*5];
+                }
+            }
+            else
+            {
+                Utils.LogInfo(this._dataConfig, Contexts.CalcCoverages, CLocaliz.TxT("The 'inArray' input parameter in the InterpolationForICSTelecomHorizontal method is null!"));
                 throw new InvalidOperationException(CLocaliz.TxT("The 'inArray' input parameter in the InterpolationForICSTelecomHorizontal method is null!"));
             }
             return result;
@@ -399,6 +499,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
             }
             else
             {
+                Utils.LogInfo(this._dataConfig, Contexts.CalcCoverages, CLocaliz.TxT("The 'inArray' input parameter in the InterpolationForICSTelecomHorizontal method is null!"));
                 throw new InvalidOperationException(CLocaliz.TxT("The 'inArray' input parameter in the InterpolationForICSTelecomHorizontal method is null!"));
             }
             return result;
@@ -434,6 +535,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
             }
             else
             {
+                Utils.LogInfo(this._dataConfig, Contexts.CalcCoverages, CLocaliz.TxT("The 'inArray' input parameter in the InterpolationForICSTelecomVertical method is null!"));
                 throw new InvalidOperationException(CLocaliz.TxT("The 'inArray' input parameter in the InterpolationForICSTelecomVertical method is null!"));
             }
             return result;
@@ -447,6 +549,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
             {
                 if (inArray.Length < MinCount)
                 {
+                    Utils.LogInfo(this._dataConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("Incorrect count element in inArray")} ({inArray.Length} < {MinCount})  {CLocaliz.TxT("in the InterpolationForICSTelecomVertical method")}");
                     throw new InvalidOperationException($"{CLocaliz.TxT("Incorrect count element in inArray")} ({inArray.Length} < {MinCount})  {CLocaliz.TxT("in the InterpolationForICSTelecomVertical method")}");
                 }
                 for (int i = 0; i < 9; i++)
@@ -469,9 +572,12 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
             }
             else
             {
+                Utils.LogInfo(this._dataConfig, Contexts.CalcCoverages, CLocaliz.TxT("The 'inArray' input parameter in the InterpolationForICSTelecomVertical method is null!"));
                 throw new InvalidOperationException(CLocaliz.TxT("The 'inArray' input parameter in the InterpolationForICSTelecomVertical method is null!"));
             }
             return result;
         }
+
+     
     }
 }

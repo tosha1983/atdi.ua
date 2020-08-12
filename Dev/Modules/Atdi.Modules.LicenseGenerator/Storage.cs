@@ -56,6 +56,14 @@ namespace Atdi.Modules.LicenseGenerator
 				public static readonly string OwnerName = "ТОВ 'Лабораторія інформаційних систем'";
 
 			}
+
+			public static class BELGIE
+			{
+				public static readonly string OwnerKey = "BD31-H26";
+				public static readonly string OwnerId = "OID-BD31-H26-N00";
+				public static readonly string OwnerName = "Республиканское унитарное предприятие по надзору за электросвязью «БелГИЭ»";
+
+			}
 		}
 
 		public static class LicenseTypes

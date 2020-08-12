@@ -13,5 +13,6 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
     {
         public CorellationParameters  CorellationParameters;
         public GeneralParameters GeneralParameters;
+
     }
 }

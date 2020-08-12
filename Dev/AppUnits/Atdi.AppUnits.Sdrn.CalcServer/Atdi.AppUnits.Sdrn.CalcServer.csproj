@@ -120,6 +120,10 @@
       <Project>{B1074928-0E74-4230-A326-2A387D4D1A12}</Project>
       <Name>Atdi.Contracts.Sdrn.Infocenter</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.Server\Atdi.Contracts.Sdrn.Server.csproj">
+      <Project>{b6324d12-6e97-4e02-9499-31265565467a}</Project>
+      <Name>Atdi.Contracts.Sdrn.Server</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Api.DataBus\Atdi.DataModels.Api.DataBus.csproj">
       <Project>{f43550a2-fb1b-459c-a839-ea13cd5cd95b}</Project>
       <Name>Atdi.DataModels.Api.DataBus</Name>

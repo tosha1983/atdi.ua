@@ -81,7 +81,8 @@
     <Compile Include="Iterations\FieldStrengthCalcIteration.cs" />
     <Compile Include="Iterations\ProfileIndexersCalcIteration.cs" />
     <Compile Include="Tasks\GE06\GE06CalcTask.cs" />
-    <Compile Include="Tasks\StationCalibrationCalcTask.cs" />
+    <Compile Include="Tasks\RefSpectrum\RefSpectrumByDriveTestsCalcTask.cs" />
+    <Compile Include="Tasks\StationCalibration\StationCalibrationCalcTask.cs" />
     <Compile Include="Tasks\PointFieldStrengthCalcTask.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Specification.cs" />
@@ -100,7 +101,7 @@
       <Name>Atdi.Contracts.CoreServices.EntityOrm</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.CalcServer.Internal\Atdi.Contracts.Sdrn.CalcServer.Internal.csproj">
-      <Project>{07126BD0-63A2-442F-9559-BE94B332B5CA}</Project>
+      <Project>{07126bd0-63a2-442f-9559-be94b332b5ca}</Project>
       <Name>Atdi.Contracts.Sdrn.CalcServer.Internal</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.CalcServer\Atdi.Contracts.Sdrn.CalcServer.csproj">

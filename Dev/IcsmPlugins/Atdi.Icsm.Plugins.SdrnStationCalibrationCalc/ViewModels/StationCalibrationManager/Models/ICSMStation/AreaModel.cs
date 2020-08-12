@@ -14,6 +14,8 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
 
         public string TypeArea { get; set; }
 
+        public string CSys { get; set; }
+
         public string CreatedBy { get; set; }
 
         public DateTime? DateCreated { get; set; }

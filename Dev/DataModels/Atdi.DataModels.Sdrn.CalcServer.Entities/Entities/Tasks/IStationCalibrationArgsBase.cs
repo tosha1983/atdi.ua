@@ -14,6 +14,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks
         string Standard { get; set; }
         long[] InfocMeasResults { get; set; }
         long[] StationIds { get; set; }
+        string[] Contours { get; set; }
         float? CorrelationThresholdHard { get; set; }
         float? CorrelationThresholdWeak { get; set; }
         bool TrustOldResults { get; set; }

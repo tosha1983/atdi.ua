@@ -65,6 +65,10 @@
     <Compile Include="Iterations\Gn06\Output\Enum\PointType.cs" />
     <Compile Include="Iterations\Gn06\Output\Enum\ContourType.cs" />
     <Compile Include="Iterations\Gn06\Output\Ge06CalcResult.cs" />
+    <Compile Include="Iterations\RefSpectrumByDriveTestsCalc\CalcRefSpectrum\Output\ResultRefSpectrumByDriveTests.cs" />
+    <Compile Include="Iterations\RefSpectrumByDriveTestsCalc\CalcRefSpectrum\Parameters\DriveTestParameters.cs" />
+    <Compile Include="Iterations\RefSpectrumByDriveTestsCalc\CalcRefSpectrum\Parameters\RefSpectrumStationAndDriveTest.cs" />
+    <Compile Include="Iterations\RefSpectrumByDriveTestsCalc\CalcRefSpectrum\Parameters\RefSpectrumParameters.cs" />
     <Compile Include="Iterations\StationCalibrationCalc\CalcCorellation\Input\AllStationCorellationCalcData.cs" />
     <Compile Include="Iterations\StationCalibrationCalc\CalcCorellation\Input\StationCorellationCalcDataBase.cs" />
     <Compile Include="Iterations\StationCalibrationCalc\CalcCorellation\Output\ParametersStation.cs" />
