@@ -177,8 +177,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                 // вызов итерации определения уровня сигнала Level
                                 var resulLevelCalc = iterationReceivedPowerCalcResult.Run(_taskContext, receivedPowerCalcData);
                                 //ReceivedPowerCalcResult resulLevelCalc = new ReceivedPowerCalcResult();
-                                //resulLevelCalc.Level_dBm = 40.45;
-                                //resulLevelCalc.Frequency_Mhz= driveTest.Freq_MHz;
+                                //resulLevelCalc.Level_dBm = 10.45;
+                                //resulLevelCalc.Frequency_Mhz = driveTest.Freq_MHz;
                                 //resulLevelCalc.Distance_km = 34;
                                 //resulLevelCalc.AntennaHeight_m = 3;
                                 if (resulLevelCalc.Level_dBm.Value < this._parameters.PowerThreshold_dBm)
@@ -269,9 +269,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 
 
                 ///// запись результатов
-                var resultId = CreateResult();
                 if ((listResultRefSpectrumByDriveTests != null) && (listResultRefSpectrumByDriveTests.Count > 0))
                 {
+                    var resultId = CreateResult();
+
                     this._taskContext.SendEvent(new CalcResultEvent<CurrentProgress>
                     {
                         Level = CalcResultEventLevel.Info,
@@ -611,7 +612,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                            c => c.Lat
                            )
                            .Where(c => c.SENSOR.Id, ConditionOperator.Equal, driveTestParameters.SensorId.Value)
-                           .Where(c => c.SENSOR.Status, ConditionOperator.Equal, "A");
+                           .OrderByDesc(c=>c.Id);
 
                             var isSensorLocation = _infoDbScope.Executor.ExecuteAndFetch(querySensorLocation, readerSensorLocation =>
                             {
@@ -661,9 +662,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                             {
                                 while (readerAntennaPattern.Read())
                                 {
-                                //_transformation.
-                                //driveTestParameters.Freq_MHz = readerAntennaPattern.GetValue(c => c.Freq).Value;
-                                    driveTestParameters.RxFeederLoss_dB = readerAntennaPattern.GetValue(c => c.SENSOR_ANTENNA.AddLoss).Value;
+                                    if (readerAntennaPattern.GetValue(c => c.SENSOR_ANTENNA.AddLoss).HasValue)
+                                    {
+                                        driveTestParameters.RxFeederLoss_dB = readerAntennaPattern.GetValue(c => c.SENSOR_ANTENNA.AddLoss).Value;
+                                    }
+
                                     driveTestParameters.SensorAntenna = new DataModels.Sdrn.DeepServices.RadioSystem.Stations.StationAntenna();
 
                                     if (readerAntennaPattern.GetValue(c => c.Gain).HasValue)
