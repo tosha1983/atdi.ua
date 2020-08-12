@@ -177,7 +177,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                 // вызов итерации определения уровня сигнала Level
                                 var resulLevelCalc = iterationReceivedPowerCalcResult.Run(_taskContext, receivedPowerCalcData);
                                 //ReceivedPowerCalcResult resulLevelCalc = new ReceivedPowerCalcResult();
-                                //resulLevelCalc.Level_dBm = 10.45;
+                                //resulLevelCalc.Level_dBm = 30.45;
                                 //resulLevelCalc.Frequency_Mhz = driveTest.Freq_MHz;
                                 //resulLevelCalc.Distance_km = 34;
                                 //resulLevelCalc.AntennaHeight_m = 3;
@@ -819,7 +819,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                 .SetValue(c => c.Level_dBm, result.Level_dBm)
                 .SetValue(c => c.Percent, result.Percent)
                 .SetValue(c => c.TableIcsmName, result.TableIcsmName)
-                .SetValue(c => c.RefSpectrumResultId, resultId)
+                .SetValue(c => c.RESULT_REF_SPECTRUM.Id, resultId)
                 ;
             _calcDbScope.Executor.Execute<IRefSpectrumByDriveTestsDetailResult_PK>(insertQueryRefSpectrumByDriveTestsDetailResult);
         }
