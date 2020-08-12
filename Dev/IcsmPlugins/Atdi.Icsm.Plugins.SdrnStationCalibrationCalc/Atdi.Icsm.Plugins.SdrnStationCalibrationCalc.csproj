@@ -75,6 +75,20 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="ViewModels\PivotTableConfiguration\Events\OnCreatedCalcTask.cs" />
+    <Compile Include="ViewModels\PivotTableConfiguration\Events\OnRunedCalcTask.cs" />
+    <Compile Include="ViewModels\PivotTableConfiguration\Models\CalcResultEventsModel.cs" />
+    <Compile Include="ViewModels\PivotTableConfiguration\Models\CalcTaskModel.cs" />
+    <Compile Include="ViewModels\PivotTableConfiguration\Models\RefSpectrumResultModel.cs" />
+    <Compile Include="ViewModels\PivotTableConfiguration\Modifiers\CreateCalcTask.cs" />
+    <Compile Include="ViewModels\PivotTableConfiguration\Modifiers\CreateCalcTaskHandler.cs" />
+    <Compile Include="ViewModels\PivotTableConfiguration\Modifiers\RunCalcTask.cs" />
+    <Compile Include="ViewModels\PivotTableConfiguration\Modifiers\RunCalcTaskHandler.cs" />
+    <Compile Include="ViewModels\PivotTableConfiguration\Queries\CalcTaskByResultId.cs" />
+    <Compile Include="ViewModels\PivotTableConfiguration\Queries\CalcTaskByResultIdExecutor.cs" />
+    <Compile Include="ViewModels\PivotTableConfiguration\Queries\ContoursByResultId.cs" />
+    <Compile Include="ViewModels\PivotTableConfiguration\Queries\ContoursByResultIdExecutor.cs" />
+    <Compile Include="ViewModels\PivotTableConfiguration\Queries\DriveTestByResultIds.cs" />
     <Compile Include="ViewModels\ManagementTasksCalibration\Adapters\BaseClientContextDataAdapter.cs" />
     <Compile Include="ViewModels\ManagementTasksCalibration\Adapters\CalcTaskDataAdapter.cs" />
     <Compile Include="ViewModels\ManagementTasksCalibration\Adapters\ClientContextDataAdapter.cs" />
@@ -111,6 +125,25 @@
     <Compile Include="ViewModels\ManagementTasksCalibration\Queries\GetClientContextById.cs" />
     <Compile Include="ViewModels\ManagementTasksCalibration\Queries\GetClientContextByIdExecutor.cs" />
     <Compile Include="ViewModels\ManagementTasksCalibration\View.cs" />
+    <Compile Include="ViewModels\PivotTableConfiguration\Adapters\StationsDataAdapter.cs" />
+    <Compile Include="ViewModels\PivotTableConfiguration\Adapters\SensorsDataAdapter.cs" />
+    <Compile Include="ViewModels\PivotTableConfiguration\Models\PivotTableConfiguration.cs" />
+    <Compile Include="ViewModels\PivotTableConfiguration\Models\SensorModel.cs" />
+    <Compile Include="ViewModels\PivotTableConfiguration\Models\StationModel.cs" />
+    <Compile Include="ViewModels\PivotTableConfiguration\Queries\DriveTestByResultIdsExecutor.cs" />
+    <Compile Include="ViewModels\PivotTableConfiguration\Queries\GetResultEventsByEventIdAndResultId.cs" />
+    <Compile Include="ViewModels\PivotTableConfiguration\Queries\GetResultEventsByEventIdAndResultIdExecutor.cs" />
+    <Compile Include="ViewModels\PivotTableConfiguration\Queries\GetResultIdByTaskId.cs" />
+    <Compile Include="ViewModels\PivotTableConfiguration\Queries\GetResultIdByTaskIdExecutor.cs" />
+    <Compile Include="ViewModels\PivotTableConfiguration\Queries\GetResultStatusById.cs" />
+    <Compile Include="ViewModels\PivotTableConfiguration\Queries\GetResultStatusByIdExecutor.cs" />
+    <Compile Include="ViewModels\PivotTableConfiguration\Queries\RefSpectrumByRefSpectrumResultId.cs" />
+    <Compile Include="ViewModels\PivotTableConfiguration\Queries\RefSpectrumByRefSpectrumResultIdExecutor.cs" />
+    <Compile Include="ViewModels\PivotTableConfiguration\Queries\RefSpectrumResultIdByResultId.cs" />
+    <Compile Include="ViewModels\PivotTableConfiguration\Queries\RefSpectrumResultIdByResultIdExecutor.cs" />
+    <Compile Include="ViewModels\PivotTableConfiguration\Queries\SensorLocationBySensorId.cs" />
+    <Compile Include="ViewModels\PivotTableConfiguration\Queries\SensorLocationBySensorIdExecutor.cs" />
+    <Compile Include="ViewModels\PivotTableConfiguration\View.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Events\PropagationModel\OnCreatePropagationModels.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Events\SaveStations\OnSavedStations.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Models\StationMonitoring\RoutesStationMonitoringModel.cs" />
@@ -264,8 +297,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Commands\" />
-    <Folder Include="Events\" />
-    <Folder Include="Queries\" />
     <Folder Include="ViewModels\StationCalibrationResult\Events\" />
     <Folder Include="Xaml\" />
   </ItemGroup>

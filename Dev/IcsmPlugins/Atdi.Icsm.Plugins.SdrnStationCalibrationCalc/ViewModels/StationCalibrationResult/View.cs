@@ -13,6 +13,8 @@ using MP = Atdi.WpfControls.EntityOrm.Controls;
 using System.Data;
 using Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibrationResult.Adapters;
 using Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibrationResult.Queries;
+using VM = Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels;
+
 using IC_ES = Atdi.DataModels.Sdrn.Infocenter.Entities.SdrnServer;
 using System.ComponentModel;
 
@@ -39,9 +41,11 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
 
 
         public ViewCommand LoadResultsCommand { get; set; }
+        public ViewCommand CreatePivotTableCommand { get; set; }
 
         private CalcServerDataLayer _dataLayer { get; set; }
 
+        private StationCalibrationResultModel _currentStationCalibrationResult;
         private IList _currentStationCalibrationResultModel;
         public StationCalibrationResultDataAdapter  StationCalibrationResultDataAdapter { get; set; }
 
@@ -75,6 +79,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
 
 
             this.LoadResultsCommand = new ViewCommand(this.OnLoadResultsCommand);
+            this.CreatePivotTableCommand = new ViewCommand(this.OnCreatePivotTableCommand);
 
             this._dataLayer = dataLayer;
 
@@ -117,13 +122,28 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                 this._logger.Exception(Exceptions.StationCalibrationCalculation, e);
             }
         }
-
+        private void OnCreatePivotTableCommand(object parameter)
+        {
+            try
+            {
+                if (this._currentStationCalibrationResult != null)
+                    _starter.Start<VM.PivotTableConfiguration.View>(isModal: true, c => c.ResultId = this._currentStationCalibrationResult.Id);
+            }
+            catch (Exception e)
+            {
+                this._logger.Exception(Exceptions.StationCalibrationCalculation, e);
+            }
+        }
         public long ResultId
         {
             get => this._resultId;
             set => this.Set(ref this._resultId, value, () => { this.OnChangeResultId(value); });
         }
-
+        public StationCalibrationResultModel CurrentStationCalibrationResult
+        {
+            get => this._currentStationCalibrationResult;
+            set => this.Set(ref this._currentStationCalibrationResult, value, () => { });
+        }
         private void OnChangeResultId(long resId)
         {
             this.StationCalibrationResultDataAdapter.taskId = GetTaskIdByCalcResultId(resId).Value;

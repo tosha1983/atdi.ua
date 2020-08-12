@@ -645,8 +645,6 @@ namespace Atdi.Icsm.Plugins.GE06Calc.ViewModels.GE06Task
         }
         private void OnRunedCalcTaskHandle(Events.OnRunedCalcTask data)
         {
-            _objectReader.Read<byte?>().By(new GetResultStatusById { ResultId = data.Id });
-
             var resultId = _objectReader.Read<long?>().By(new ST.Queries.GetResultIdByTaskId { TaskId = data.Id });
             if (resultId.HasValue)
             {

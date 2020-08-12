@@ -484,4 +484,70 @@
   <data name="Results" xml:space="preserve">
     <value>Results</value>
   </data>
+  <data name="ListOfSensors" xml:space="preserve">
+    <value>List of sensors</value>
+  </data>
+  <data name="Browse" xml:space="preserve">
+    <value>Browse…</value>
+  </data>
+  <data name="Comments" xml:space="preserve">
+    <value>Comments</value>
+  </data>
+  <data name="CorrelationThreshold" xml:space="preserve">
+    <value>Correlation threshold</value>
+  </data>
+  <data name="FileName" xml:space="preserve">
+    <value>File name</value>
+  </data>
+  <data name="GSID" xml:space="preserve">
+    <value>GSID</value>
+  </data>
+  <data name="ListOfStations" xml:space="preserve">
+    <value>List of stations</value>
+  </data>
+  <data name="PowerThresholdDBm" xml:space="preserve">
+    <value>Power threshold (dBm)</value>
+  </data>
+  <data name="SaveCalculatedDataToCsvFile" xml:space="preserve">
+    <value>Save calculated data to .csv file</value>
+  </data>
+  <data name="StartCalculation" xml:space="preserve">
+    <value>Start calculation</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="UseDefaultValueOfThresholdPower" xml:space="preserve">
+    <value>Use default value of threshold power</value>
+  </data>
+  <data name="Agl" xml:space="preserve">
+    <value>Agl</value>
+  </data>
+  <data name="Azimuth" xml:space="preserve">
+    <value>Azimuth</value>
+  </data>
+  <data name="BringIntoUse" xml:space="preserve">
+    <value>Bring Into Use</value>
+  </data>
+  <data name="Elevation" xml:space="preserve">
+    <value>Elevation</value>
+  </data>
+  <data name="EndOfUse" xml:space="preserve">
+    <value>End Of Use</value>
+  </data>
+  <data name="RxLoss" xml:space="preserve">
+    <value>RxLoss</value>
+  </data>
+  <data name="SensorIdentifierId" xml:space="preserve">
+    <value>Sensor Identifier Id</value>
+  </data>
+  <data name="TechId" xml:space="preserve">
+    <value>TechId</value>
+  </data>
+  <data name="CreatePivotTable" xml:space="preserve">
+    <value>Create pivot table</value>
+  </data>
+  <data name="Refresh" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
 </root>

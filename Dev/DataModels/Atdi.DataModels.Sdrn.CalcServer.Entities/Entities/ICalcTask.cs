@@ -84,6 +84,11 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
         Gn06CalcTask = 4,
 
         /// <summary>
+        /// Формирование сводной таблицы (Ref Spectrum) по результатам драйв-тестов
+        /// </summary>
+        RefSpectrumByDriveTestsCalcTask = 5,
+
+        /// <summary>
         /// Первая тестовая расчетная задача
         /// </summary>
         FirstExampleTask = 101,
