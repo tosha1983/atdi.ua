@@ -338,6 +338,8 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration.CalcServer
 						TaskId = reader.GetValue(c => c.TASK.Id),
 						TaskStatusCode = reader.GetValue(c => c.TASK.StatusCode),
 						TaskStatusName = reader.GetValue(c => c.TASK.StatusName),
+						TaskTypeCode = reader.GetValue(c => c.TASK.TypeCode),
+						TaskTypeName = reader.GetValue(c => c.TASK.TypeName),
 					});
 				}
 
