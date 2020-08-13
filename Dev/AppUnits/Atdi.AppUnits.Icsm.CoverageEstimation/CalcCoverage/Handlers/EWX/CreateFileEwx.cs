@@ -88,8 +88,8 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                     writer.WriteElementString("BANDWIDTHRX", Convert.ToString(bts.BandwidthRx).Replace(",", "."));
                     writer.WriteElementString("H_ANTENNA", Convert.ToString(bts.HAntenna).Replace(",", "."));
                     writer.WriteElementString("AZIMUTH", Convert.ToString(bts.Azimuth).Replace(",", "."));
-                    //writer.WriteElementString("TILT", Convert.ToString(bts.Tilt));
-                    writer.WriteElementString("TILT", "-9");
+                    writer.WriteElementString("TILT", Convert.ToString(bts.Tilt).Replace(",", "."));
+                    //writer.WriteElementString("TILT", "-9");
                     writer.WriteElementString("GAIN", Convert.ToString(bts.Gain).Replace(",", "."));
                     writer.WriteElementString("GAINRX", Convert.ToString(bts.GainRx).Replace(",", "."));
                     writer.WriteElementString("LOSSES", Convert.ToString(bts.Losses).Replace(",", "."));
