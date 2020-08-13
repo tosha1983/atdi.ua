@@ -42,15 +42,26 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
 
                     var updQueryStatus = _dataLayer.GetBuilder<IContextStation>()
                          .Update()
-                         .SetValue(c => c.Name, command.Name)
                          .SetValue(c => c.StateCode, (byte)enumStateCode.Find(x => x.ToString() == command.StateName))
                          .SetValue(c => c.StateName, command.StateName)
                          .Filter(c => c.Id, contextStation.StationId.Value);
                     _dataLayer.Executor.Execute(updQueryStatus);
 
-                    if ((command.ModifiedDate != null) && (contextStation.DateModified!=null))
+                    if (((command.ModifiedDate != null) && (contextStation.DateModified!=null)) || ((command.ModifiedDate != null) && (contextStation.DateModified == null)))
                     {
-                        if (command.ModifiedDate.Value > contextStation.DateModified.Value)
+                        bool isNeedModify = false;
+                        if ((command.ModifiedDate != null) && (contextStation.DateModified != null))
+                        {
+                            if (command.ModifiedDate.Value > contextStation.DateModified.Value)
+                            {
+                                isNeedModify = true;
+                            }
+                        }
+                        if ((command.ModifiedDate != null) && (contextStation.DateModified == null))
+                        {
+                            isNeedModify = true;
+                        }
+                        if (isNeedModify)
                         {
                             var updQuery = _dataLayer.GetBuilder<IContextStation>()
                            .Update()
