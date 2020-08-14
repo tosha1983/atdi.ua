@@ -91,14 +91,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     {
                         var currentDriveTest = arrDriveTests[w];
                         // расчет корелляции
-                        if (statusCorellationLinkGroup == true)
+                        var сalibrationStationsGSIDGroupeStations = CalibrationStations(taskContext, station, currentDriveTest, data);
+                        // если результат выполнения метода CalibrationStations не пустой, тогда добавляем его в список tempResultCorrelationGSIDGroupeStations
+                        if (сalibrationStationsGSIDGroupeStations.Length > 0)
                         {
-                            var сalibrationStationsGSIDGroupeStations = CalibrationStations(taskContext, station, currentDriveTest, data);
-                            // если результат выполнения метода CalibrationStations не пустой, тогда добавляем его в список tempResultCorrelationGSIDGroupeStations
-                            if (сalibrationStationsGSIDGroupeStations.Length > 0)
-                            {
-                                tempResultCorrelationGSIDGroupeStations.AddRange(сalibrationStationsGSIDGroupeStations);
-                            }
+                            tempResultCorrelationGSIDGroupeStations.AddRange(сalibrationStationsGSIDGroupeStations);
                         }
                     }
                 }
@@ -585,9 +582,20 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                 var driveTestsResult = new List<DriveTestsResult>();
 
 
-
                                 var tempResultCorrelationGSIDGroupeStations = CalcStationCalibration(arrDriveTests, taskContext, station, data, ref outListContextStations, ref outListDriveTestsResults, out bool statusCorellationLinkGroup, out double? maxCorellation_pc);
 
+                                bool isСorrelationThresholdHard = false;
+                                if (tempResultCorrelationGSIDGroupeStations.Count > 0)
+                                {
+                                    for (int a = 0; a < tempResultCorrelationGSIDGroupeStations.Count; a++)
+                                    {
+                                        if (tempResultCorrelationGSIDGroupeStations[a].MaxCorrelation_PC > data.GeneralParameters.СorrelationThresholdHard)
+                                        {
+                                            isСorrelationThresholdHard = true;
+                                            break;
+                                        }
+                                    }
+                                }
 
                                 /////////////////////////////////////////////////////////////////////////////////////////////////////////
                                 ///    4.2.8. Сохранение соответствия, изымание станций и Drive Test из дальнейших расчетов (схема бл 8)
