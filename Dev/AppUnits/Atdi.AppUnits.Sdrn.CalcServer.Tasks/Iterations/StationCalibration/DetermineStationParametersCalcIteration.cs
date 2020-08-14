@@ -604,7 +604,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
                                 // По максимуму значения Correlation_pc из п.1 привязываем станции и драйв тесты.
                                 resultCorrelationGSIDGroupeStations = LinkedStationsAndDriveTests(tempResultCorrelationGSIDGroupeStations, out contextStations, out driveTestsResult);
-                                if (resultCorrelationGSIDGroupeStations.Count > 0)
+                                if ((resultCorrelationGSIDGroupeStations.Count > 0) && (isСorrelationThresholdHard))
                                 {
                                     var calibrationStationsAndDriveTestsResult = FillCalibrationStationResultSecondBlock(resultCorrelationGSIDGroupeStations, data.CalibrationParameters, data.CorellationParameters, data.GeneralParameters);
                                     if (calibrationStationsAndDriveTestsResult != null)
