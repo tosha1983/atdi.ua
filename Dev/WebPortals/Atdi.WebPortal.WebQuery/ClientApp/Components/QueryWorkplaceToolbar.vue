@@ -1,6 +1,6 @@
 ﻿<template>
     <div :id="id" class="card-action portal-table-toolbar">
-        <a v-if="allowedFetch" class="waves-effect waves-light" @click="fetchData" href="javascript:undefined">Fetch</a>
+        <a v-if="allowedFetch" class="waves-effect waves-light" @click="fetchData" href="javascript:undefined">Get</a>
         <a v-if="allowedAdd" class="waves-effect waves-light" @click="openAddForm" href="javascript:undefined">Add</a>
         <a v-if="allowedView" class="waves-effect waves-light" @click="openViewForm" href="javascript:undefined">View</a>
         <a v-if="allowedEdit" class="waves-effect waves-light" @click="openEditForm" href="javascript:undefined">Edit</a>

@@ -75,7 +75,7 @@ create table [SDRNSVR].[SENSOR_LOCATIONS] (
 ) on [PRIMARY]
 GO
 
-create table [SDRNSVR].[SENSOR_EQUIP_SENSITIVITES] (
+create table [SDRNSVR].[SENSOR_EQUIP_SENSITIVITIES] (
 	[ID] 	[bigint] not null,
 	[SENSOR_EQUIP_ID]	[bigint] null,
 	[FREQ]	[float] null,
@@ -83,7 +83,7 @@ create table [SDRNSVR].[SENSOR_EQUIP_SENSITIVITES] (
 	[NOISEF]	[float] null,
 	[FREQ_STABILITY]	[float] null,
 	[ADDLOSS]	[float] null,
-	constraint [PK_SENSOR_EQUIP_SENSITIVITES] primary key clustered ([ID]) on [PRIMARY]  
+	constraint [PK_SENSOR_EQUIP_SENSITIVITIES] primary key clustered ([ID]) on [PRIMARY]  
 ) on [PRIMARY]
 GO
 

@@ -88,7 +88,7 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration.CalcServer
 		{
 			using (var infocDbScope = this._infocDataLayer.CreateScope<InfocenterDataContext>())
 			using (var sdrnsDbScope = this._sdrnsDataLayer.CreateScope<SdrnServerDataContext>())
-			using (var calcsDbScope = this._sdrnsDataLayer.CreateScope<CalcServerDataContext>())
+			using (var calcsDbScope = this._calcsDataLayer.CreateScope<CalcServerDataContext>())
 			{
 				this.SynchronizeObservedTasks(infocDbScope, calcsDbScope);
 				this.ProcessObservedTasks(infocDbScope, sdrnsDbScope, calcsDbScope);

@@ -253,6 +253,7 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration.SdrnServer
 						.Select(c => c.UpperFreq)
 						.Select(c => c.AddLoss)
 						.Select(c => c.Xpd)
+						.Where(c => c.SENSOR.Id, ConditionOperator.IsNotNull)
 						.OrderByAsc(c => c.Id)
 						.Paginate(offsetRows, fetchRows);
 
@@ -382,6 +383,7 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration.SdrnServer
 						.Select(c => c.DiagH)
 						.Select(c => c.DiagV)
 						.Select(c => c.Freq)
+						.Where(c => c.SENSOR_ANTENNA.Id, ConditionOperator.IsNotNull)
 						.OrderByAsc(c => c.Id)
 						.Paginate(offsetRows, fetchRows);
 
@@ -494,6 +496,7 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration.SdrnServer
 						.Select(c => c.TechId)
 						.Select(c => c.LowerFreq)
 						.Select(c => c.UpperFreq)
+						.Where(c => c.SENSOR.Id, ConditionOperator.IsNotNull)
 						.OrderByAsc(c => c.Id)
 						.Paginate(offsetRows, fetchRows);
 
@@ -607,6 +610,7 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration.SdrnServer
 						.Select(c => c.FreqStability)
 						.Select(c => c.Ktbf)
 						.Select(c => c.Noisef)
+						.Where(c => c.SENSOR_EQUIP.Id, ConditionOperator.IsNotNull)
 						.OrderByAsc(c => c.Id)
 						.Paginate(offsetRows, fetchRows);
 
@@ -720,6 +724,7 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration.SdrnServer
 						.Select(c => c.DateFrom)
 						.Select(c => c.DateTo)
 						.Select(c => c.Status)
+						.Where(c => c.SENSOR.Id, ConditionOperator.IsNotNull)
 						.OrderByAsc(c => c.Id)
 						.Paginate(offsetRows, fetchRows);
 
