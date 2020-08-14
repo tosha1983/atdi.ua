@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Atdi.DataModels.Sdrn.CalcServer.Entities;
 using Atdi.Platform.Cqrs;
-using CS_ES = Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks;
+using CS_ES = Atdi.DataModels.Sdrn.Infocenter.Entities.SdrnServer;
 using Atdi.DataModels.Sdrn.Infocenter.Entities.SdrnServer;
 using MP = Atdi.WpfControls.EntityOrm.Controls;
 using Atdi.Platform.Logging;
@@ -13,47 +13,35 @@ using Atdi.DataModels.Api.EntityOrm.WebClient;
 
 namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.PivotTableConfiguration.Queries
 {
-    public class ContoursByResultIdExecutor : IReadQueryExecutor<ContoursByResultId, string[]>
+    public class SensorIdsByDriveTestIdsExecutor : IReadQueryExecutor<SensorIdsByDriveTestIds, long[]>
     {
         private readonly AppComponentConfig _config;
-        private readonly CalcServerDataLayer _dataLayer;
+        private readonly InfocenterDataLayer _dataLayer;
         private readonly ILogger _logger;
 
-        public ContoursByResultIdExecutor(AppComponentConfig config, CalcServerDataLayer dataLayer, ILogger logger)
+        public SensorIdsByDriveTestIdsExecutor(AppComponentConfig config, InfocenterDataLayer dataLayer, ILogger logger)
         {
             _config = config;
             _dataLayer = dataLayer;
             _logger = logger;
         }
-        public string[] Read(ContoursByResultId criterion)
+        public long[] Read(SensorIdsByDriveTestIds criterion)
         {
             try
             {
-                var query = _dataLayer.GetBuilder<CS_ES.IStationCalibrationResult>()
+                var listIds = new List<long>();
+                var query = _dataLayer.GetBuilder<CS_ES.IDriveTest>()
                    .Read()
-                   .Select(c => c.RESULT.TASK.Id)
-                   .Filter(f => f.Id, DataModels.Api.EntityOrm.WebClient.FilterOperator.Equal, criterion.ResultId)
-                   .OrderByDesc(o => o.Id);
+                   .Select(c => c.RESULT.SENSOR.Id)
+                   .Filter(f => f.Id, DataModels.Api.EntityOrm.WebClient.FilterOperator.In, criterion.DriveTestIds)
+                   .Distinct();
 
                 var reader = _dataLayer.Executor.ExecuteReader(query);
-                if (!reader.Read())
+                while (reader.Read())
                 {
-                    return null;
+                    listIds.Add(reader.GetValue(c => c.RESULT.SENSOR.Id));
                 }
-
-                var taskId = reader.GetValue(c => c.RESULT.TASK.Id);
-
-                var queryCt = _dataLayer.GetBuilder<CS_ES.IStationCalibrationArgs>()
-                   .Read()
-                   .Select(c => c.Contours)
-                   .Filter(f => f.TASK.Id, DataModels.Api.EntityOrm.WebClient.FilterOperator.Equal, taskId);
-
-                var readerCt = _dataLayer.Executor.ExecuteReader(queryCt);
-                if (!readerCt.Read())
-                {
-                    return null;
-                }
-                return readerCt.GetValue(c => c.Contours);
+                return listIds.ToArray();
             }
             catch (EntityOrmWebApiException e)
             {

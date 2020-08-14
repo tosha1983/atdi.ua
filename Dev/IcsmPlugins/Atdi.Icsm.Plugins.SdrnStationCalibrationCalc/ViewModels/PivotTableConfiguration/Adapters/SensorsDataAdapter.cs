@@ -10,45 +10,45 @@ using CS_ES = Atdi.DataModels.Sdrn.Infocenter.Entities.SdrnServer;
 
 namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.PivotTableConfiguration.Adapters
 {
-    public sealed class SensorsDataAdapter : EntityDataAdapter<CS_ES.IDriveTest, SensorModel>
+    public sealed class SensorsDataAdapter : EntityDataAdapter<CS_ES.ISensor, SensorModel>
     {
-        public long[] DriveTestIds;
+        public long[] SensorIds;
         public SensorsDataAdapter(InfocenterDataLayer dataLayer, ILogger logger) : base(dataLayer.Origin, logger)
         {
         }
-        protected override void PrepareQuery(IReadQuery<CS_ES.IDriveTest> query)
+        protected override void PrepareQuery(IReadQuery<CS_ES.ISensor> query)
         {
             query.Select(
                 c => c.Id,
-                c => c.RESULT.SENSOR.SensorIdentifierId,
-                c => c.RESULT.SENSOR.Status,
-                c => c.RESULT.SENSOR.Name,
-                c => c.RESULT.SENSOR.BiuseDate,
-                c => c.RESULT.SENSOR.EouseDate,
-                c => c.RESULT.SENSOR.Azimuth,
-                c => c.RESULT.SENSOR.Elevation,
-                c => c.RESULT.SENSOR.Azimuth,
-                c => c.RESULT.SENSOR.Agl,
-                c => c.RESULT.SENSOR.RxLoss,
-                c => c.RESULT.SENSOR.TechId)
-                .Filter(f => f.Id, DataModels.Api.EntityOrm.WebClient.FilterOperator.In, DriveTestIds)
+                c => c.SensorIdentifierId,
+                c => c.Status,
+                c => c.Name,
+                c => c.BiuseDate,
+                c => c.EouseDate,
+                c => c.Azimuth,
+                c => c.Elevation,
+                c => c.Azimuth,
+                c => c.Agl,
+                c => c.RxLoss,
+                c => c.TechId)
+                .Filter(f => f.Id, DataModels.Api.EntityOrm.WebClient.FilterOperator.In, SensorIds)
                 .Distinct();
         }
-        protected override SensorModel ReadData(IDataReader<CS_ES.IDriveTest> reader, int index)
+        protected override SensorModel ReadData(IDataReader<CS_ES.ISensor> reader, int index)
         {
             return new SensorModel
             {
                 Id = reader.GetValue(c => c.Id),
-                SensorIdentifierId = reader.GetValue(c => c.RESULT.SENSOR.SensorIdentifierId),
-                Status = reader.GetValue(c => c.RESULT.SENSOR.Status),
-                Name = reader.GetValue(c => c.RESULT.SENSOR.Name),
-                BiuseDate = reader.GetValue(c => c.RESULT.SENSOR.BiuseDate),
-                EouseDate = reader.GetValue(c => c.RESULT.SENSOR.EouseDate),
-                Azimuth = reader.GetValue(c => c.RESULT.SENSOR.Azimuth),
-                Elevation = reader.GetValue(c => c.RESULT.SENSOR.Elevation),
-                Agl = reader.GetValue(c => c.RESULT.SENSOR.Agl),
-                RxLoss = reader.GetValue(c => c.RESULT.SENSOR.RxLoss),
-                TechId = reader.GetValue(c => c.RESULT.SENSOR.TechId)
+                SensorIdentifierId = reader.GetValue(c => c.SensorIdentifierId),
+                Status = reader.GetValue(c => c.Status),
+                Name = reader.GetValue(c => c.Name),
+                BiuseDate = reader.GetValue(c => c.BiuseDate),
+                EouseDate = reader.GetValue(c => c.EouseDate),
+                Azimuth = reader.GetValue(c => c.Azimuth),
+                Elevation = reader.GetValue(c => c.Elevation),
+                Agl = reader.GetValue(c => c.Agl),
+                RxLoss = reader.GetValue(c => c.RxLoss),
+                TechId = reader.GetValue(c => c.TechId)
             };
         }
     }

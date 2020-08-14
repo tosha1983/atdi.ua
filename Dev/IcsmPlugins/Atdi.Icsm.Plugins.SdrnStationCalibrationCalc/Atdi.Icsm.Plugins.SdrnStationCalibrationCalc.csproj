@@ -141,6 +141,8 @@
     <Compile Include="ViewModels\PivotTableConfiguration\Queries\RefSpectrumByRefSpectrumResultIdExecutor.cs" />
     <Compile Include="ViewModels\PivotTableConfiguration\Queries\RefSpectrumResultIdByResultId.cs" />
     <Compile Include="ViewModels\PivotTableConfiguration\Queries\RefSpectrumResultIdByResultIdExecutor.cs" />
+    <Compile Include="ViewModels\PivotTableConfiguration\Queries\SensorIdsByDriveTestIds.cs" />
+    <Compile Include="ViewModels\PivotTableConfiguration\Queries\SensorIdsByDriveTestIdsExecutor.cs" />
     <Compile Include="ViewModels\PivotTableConfiguration\Queries\SensorLocationBySensorId.cs" />
     <Compile Include="ViewModels\PivotTableConfiguration\Queries\SensorLocationBySensorIdExecutor.cs" />
     <Compile Include="ViewModels\PivotTableConfiguration\View.cs" />
