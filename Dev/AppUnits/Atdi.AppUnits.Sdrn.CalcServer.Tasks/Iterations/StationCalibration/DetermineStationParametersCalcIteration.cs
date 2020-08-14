@@ -64,6 +64,46 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             _logger = logger;
         }
 
+        public List<ResultCorrelationGSIDGroupeStations> CalcStationCalibration(DriveTestsResult[] arrDriveTests, ITaskContext taskContext, ContextStation[] station, AllStationCorellationCalcData data, ref List<ContextStation[]> outContextStations, ref List<DriveTestsResult[]> outDriveTestsResults, out bool statusCorellationLinkGroup, out double? maxCorellation_pc)
+        {
+            var tempResultCorrelationGSIDGroupeStations = new List<ResultCorrelationGSIDGroupeStations>();
+            maxCorellation_pc = null;
+            statusCorellationLinkGroup = false;
+            for (int j = 0; j < arrDriveTests.Length; j++)
+            {
+                statusCorellationLinkGroup = CalcCorellation(taskContext, station, arrDriveTests[j], data, out maxCorellation_pc);
+                if (statusCorellationLinkGroup)
+                {
+                    break;
+                }
+            }
+
+            if (statusCorellationLinkGroup == false)
+            {
+                outContextStations.Add(station);
+                outDriveTestsResults.Add(arrDriveTests);
+            }
+            else
+            {
+                if (arrDriveTests != null)
+                {
+                    for (int w = 0; w < arrDriveTests.Length; w++)
+                    {
+                        var currentDriveTest = arrDriveTests[w];
+                        // расчет корелляции
+                        var сalibrationStationsGSIDGroupeStations = CalibrationStations(taskContext, station, currentDriveTest, data);
+                        // если результат выполнения метода CalibrationStations не пустой, тогда добавляем его в список tempResultCorrelationGSIDGroupeStations
+                        if (сalibrationStationsGSIDGroupeStations.Length > 0)
+                        {
+                            tempResultCorrelationGSIDGroupeStations.AddRange(сalibrationStationsGSIDGroupeStations);
+                        }
+                    }
+                }
+            }
+            return tempResultCorrelationGSIDGroupeStations;
+        }
+
+
         /// <summary>
         /// Минимальное расстояние к drive point для заданного в файле конфигурации стандарта
         /// </summary>
@@ -288,50 +328,16 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         var driveTest = linkDriveTestsAndStations[z].DriveTestsResults;
 
                         ///  4.2.2. Расчет корреляции weake (схема бл 2)
-                        var StatusCorellationLinkGroup = false;
-                        for (int j = 0; j < driveTest.Length; j++)
-                        {
-                            StatusCorellationLinkGroup = CalcCorellation(taskContext, station, driveTest[j], data, out double? maxCorellation_pc);
-                            if (StatusCorellationLinkGroup)
-                            {
-                                break;
-                            }
-                        }
-                        ///////////////////////////////////////////////////////////////////////////////////////////
-                        ///
-                        /// 
-                        /// Если связанные GSIDGroupeStations и  GSIDGroupeDriveTests в блоке 2(Расчет корреляции weake) получили False то они также 
-                        /// изымаються из дальнейшего расмотрения в группе блоков
-                        /// «Прямые соответсвия GSID(основная масса)» и переноситься в: -массив(или список) массивов станций и массив(или список) 
-                        /// массивов драйв тестов для последующего анализа в группе блоков «НДП, изменение GSID, новые РЕЗ»
-                        /// 
-                        ///////////////////////////////////////////////////////////////////////////////////////////
-                        if (StatusCorellationLinkGroup == false)
-                        {
-                            outListContextStations.Add(station);
-                            outListDriveTestsResults.Add(driveTest);
-                        }
-                        else
-                        {
-                            // создаем список для хранения результатов обработки по отдельно взятому стандарту и заданой группе GSID
-                            var tempResultCorrelationGSIDGroupeStations = new List<ResultCorrelationGSIDGroupeStations>();
-                            //  4.2.3. Подбор параметров станции по результатам Drive Test (hard)
+                        ///  
 
-                            var contextStations = new List<ContextStation>();
-                            var driveTestsResult = new List<DriveTestsResult>();
+                        var tempResultCorrelationGSIDGroupeStations = CalcStationCalibration(driveTest, taskContext, station, data, ref outListContextStations, ref outListDriveTestsResults, out bool statusCorellationLinkGroup, out double? maxCorellation_pc);
+                        var contextStations = new List<ContextStation>();
+                        var driveTestsResult = new List<DriveTestsResult>();
+                        //// По максимуму значения Correlation_pc из п.1 привязываем станции и драйв тесты.
+                        var resultCorrelationGSIDGroupeStations = LinkedStationsAndDriveTests(tempResultCorrelationGSIDGroupeStations, out contextStations, out driveTestsResult);
 
-                            for (int j = 0; j < driveTest.Length; j++)
-                            {
-                                var сalibrationStationsGSIDGroupeStations = CalibrationStations(taskContext, station, driveTest[j], data);
-                                // если результат выполнения метода CalibrationStations не пустой, тогда добавляем его в список tempResultCorrelationGSIDGroupeStations
-                                if (сalibrationStationsGSIDGroupeStations.Length > 0)
-                                {
-                                    tempResultCorrelationGSIDGroupeStations.AddRange(/*Atdi.Common.CopyHelper.CreateDeepCopy*/(сalibrationStationsGSIDGroupeStations));
-                                }
-                            }
-
-                            // По максимуму значения Correlation_pc из п.1 привязываем станции и драйв тесты.
-                            var resultCorrelationGSIDGroupeStations = LinkedStationsAndDriveTests(tempResultCorrelationGSIDGroupeStations, out contextStations, out driveTestsResult);
+                        if (resultCorrelationGSIDGroupeStations.Count > 0)
+                        {
 
                             //4.2.4. Сохранение соответствия, изымание станций и Drive Test из дальнейших расчетов (схема бл 4)
                             var calibrationStationsAndDriveTestsResult = FillCalibrationStationResultFirstBlock(resultCorrelationGSIDGroupeStations, data.CalibrationParameters, data.CorellationParameters, data.GeneralParameters);
@@ -355,6 +361,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                 }
                             }
                         }
+                        //}
 
                         if (linkDriveTestsAndStations.Length > 0)
                         {
@@ -575,33 +582,20 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                 var driveTestsResult = new List<DriveTestsResult>();
 
 
-                                bool statusCorellationLinkGroup = false;
-                                double? maxCorellation_pc = null;
+                                var tempResultCorrelationGSIDGroupeStations = CalcStationCalibration(arrDriveTests, taskContext, station, data, ref outListContextStations, ref outListDriveTestsResults, out bool statusCorellationLinkGroup, out double? maxCorellation_pc);
 
-                                var tempResultCorrelationGSIDGroupeStations = new List<ResultCorrelationGSIDGroupeStations>();
-                                if (arrDriveTests != null)
+                                bool isСorrelationThresholdHard = false;
+                                if (tempResultCorrelationGSIDGroupeStations.Count > 0)
                                 {
-                                    for (int w = 0; w < arrDriveTests.Length; w++)
+                                    for (int a = 0; a < tempResultCorrelationGSIDGroupeStations.Count; a++)
                                     {
-                                        var currentDriveTest = arrDriveTests[w];
-                                        // расчет корелляции
-                                        statusCorellationLinkGroup = CalcCorellation(taskContext, station, currentDriveTest, data, out maxCorellation_pc);
-                                        if (statusCorellationLinkGroup == true)
+                                        if (tempResultCorrelationGSIDGroupeStations[a].MaxCorrelation_PC > data.GeneralParameters.СorrelationThresholdHard)
                                         {
-
-
-                                            var сalibrationStationsGSIDGroupeStations = CalibrationStations(taskContext, station, currentDriveTest, data);
-                                            // если результат выполнения метода CalibrationStations не пустой, тогда добавляем его в список tempResultCorrelationGSIDGroupeStations
-                                            if (сalibrationStationsGSIDGroupeStations.Length > 0)
-                                            {
-                                                tempResultCorrelationGSIDGroupeStations.AddRange(сalibrationStationsGSIDGroupeStations);
-                                            }
+                                            isСorrelationThresholdHard = true;
+                                            break;
                                         }
                                     }
                                 }
-
-
-
 
                                 /////////////////////////////////////////////////////////////////////////////////////////////////////////
                                 ///    4.2.8. Сохранение соответствия, изымание станций и Drive Test из дальнейших расчетов (схема бл 8)
@@ -610,7 +604,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
                                 // По максимуму значения Correlation_pc из п.1 привязываем станции и драйв тесты.
                                 resultCorrelationGSIDGroupeStations = LinkedStationsAndDriveTests(tempResultCorrelationGSIDGroupeStations, out contextStations, out driveTestsResult);
-                                if (resultCorrelationGSIDGroupeStations.Count > 0)
+                                if ((resultCorrelationGSIDGroupeStations.Count > 0) && (isСorrelationThresholdHard))
                                 {
                                     var calibrationStationsAndDriveTestsResult = FillCalibrationStationResultSecondBlock(resultCorrelationGSIDGroupeStations, data.CalibrationParameters, data.CorellationParameters, data.GeneralParameters);
                                     if (calibrationStationsAndDriveTestsResult != null)
@@ -694,124 +688,97 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                     //CompressedStations(ref outListContextStations, station); ///?????????????????????????????????????
                                     CompressedStationsAndDriveTest(ref outListContextStations, ref outListDriveTestsResults, resultCorrelationGSIDGroupeStations);
                                 }
-                            }
-                        }
-
-                        /////////////////////////////////////////////////////////////////////////////////////////////////////////
-                        ///
-                        ///   4.2.10. Оценка Drive Test на предмет НДП (схема бл. 9)
-                        ///   
-                        /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-                        // обработка станций со статусом "P"
-                        if ((outListContextStationsForStatusP != null) && (outListContextStationsForStatusP.Length > 0))
-                        {
-                            var lstStationsForStatusP = outListContextStationsForStatusP.ToList();
-                            for (int m = 0; m < lstStationsForStatusP.Count; m++)
-                            {
-                                var station = lstStationsForStatusP[m];
-
-                                if (arrDriveTests != null)
+                                else
                                 {
-                                    if (isContainDriveTest(outListDriveTestsResults, arrDriveTests))
+                                    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+                                    ///
+                                    ///   4.2.10. Оценка Drive Test на предмет НДП (схема бл. 9)
+                                    ///   
+                                    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                                    // обработка станций со статусом "P"
+                                    if ((outListContextStationsForStatusP != null) && (outListContextStationsForStatusP.Length > 0))
                                     {
-
-                                        for (int w = 0; w < arrDriveTests.Length; w++)
+                                        var lstStationsForStatusP = outListContextStationsForStatusP.ToList();
+                                        for (int mx = 0; mx < lstStationsForStatusP.Count; mx++)
                                         {
-                                            var currentDriveTest = arrDriveTests[w];
+                                            var stationP = lstStationsForStatusP[mx];
 
-                                            if ((station != null && station.Length > 0))
-                                            { 
-
-                                            // проводим анализ по каждой отдельно взятой группе станций отдельно
-                                            bool isNeedAdded = false;
-                                            if (calibrationStationsAndDriveTestsResultByGroup.Count > 0)
+                                            if (arrDriveTests != null)
                                             {
-                                                for (int q = 0; q < calibrationStationsAndDriveTestsResultByGroup.Count; q++)
+                                                if (isContainDriveTest(outListDriveTestsResults, arrDriveTests))
                                                 {
-                                                    var lst = calibrationStationsAndDriveTestsResultByGroup[q].ResultCalibrationDriveTest.ToList();
-                                                    if (lst.Find(x => x.DriveTestId == currentDriveTest.DriveTestId) == null)
+
+                                                    for (int w = 0; w < arrDriveTests.Length; w++)
                                                     {
-                                                        isNeedAdded = true;
-                                                    }
-                                                }
-                                            }
-                                            else
-                                            {
-                                                isNeedAdded = true;
-                                            }
+                                                        var currentDriveTest = arrDriveTests[w];
 
-                                                if (isNeedAdded)
-                                                {
-                                                    // расчет корелляции
-                                                    bool statusCorellationLinkGroup = CalcCorellation(taskContext, station, currentDriveTest, data, out double? maxCorellation_pc);
-                                                    if (statusCorellationLinkGroup == true)
-                                                    {
-
-                                                        var lstCalibrationDriveTestResult = new List<CalibrationDriveTestResult>();
-                                                        var lsttempCalibrationStationResult = new List<CalibrationStationResult>();
-                                                        for (int d = 0; d < station.Length; d++)
+                                                        if ((stationP != null && stationP.Length > 0))
                                                         {
-                                                            lsttempCalibrationStationResult.Add(new CalibrationStationResult()
+
+                                                            // проводим анализ по каждой отдельно взятой группе станций отдельно
+                                                            bool isNeedAdded = false;
+                                                            if (calibrationStationsAndDriveTestsResultByGroup.Count > 0)
                                                             {
-                                                                ExternalSource = station[d].ExternalSource,
-                                                                ExternalCode = station[d].ExternalCode,
-                                                                LicenseGsid = station[d].LicenseGsid,
-                                                                //RealGsid = station[d].RealGsid,
-                                                                RealGsid = currentDriveTest.GSID,
-                                                                ResultStationStatus = StationStatusResult.UN,
-                                                                IsContour = station[d].Type == ClientContextStationType.A ? true : false,
-                                                                StationMonitoringId = station[d].Id,
-                                                                MaxCorellation = (float)maxCorellation_pc,
-                                                                //ParametersStationNew=  ??????????????????????
-                                                                ParametersStationOld = new ParametersStation()
+                                                                for (int q = 0; q < calibrationStationsAndDriveTestsResultByGroup.Count; q++)
                                                                 {
-                                                                    Altitude_m = (int)station[d].Site.Altitude,
-                                                                    Azimuth_deg = station[d].Antenna.Azimuth_deg,
-                                                                    Tilt_Deg = station[d].Antenna.Tilt_deg,
-                                                                    Lat_deg = station[d].Site.Latitude,
-                                                                    Lon_deg = station[d].Site.Longitude,
-                                                                    Power_dB = station[d].Transmitter.MaxPower_dBm,
-                                                                    Freq_MHz = station[d].Transmitter.Freq_MHz
-                                                                },
-                                                                Standard = station[d].RealStandard,
-                                                                Freq_MHz = currentDriveTest.Freq_MHz
-                                                            });
-                                                        }
-
-
-
-                                                        calibrationStationsAndDriveTestsResultByGroup.Add(new CalibrationStationsAndDriveTestsResult()
-                                                        {
-                                                            ResultCalibrationDriveTest = new CalibrationDriveTestResult[1]
-                                                            {
-                                                                new CalibrationDriveTestResult()
-                                                                {
-                                                                CountPointsInDriveTest = currentDriveTest.Points.Length,
-                                                                DriveTestId = currentDriveTest.DriveTestId,
-                                                                Gsid = currentDriveTest.GSID,
-                                                                LinkToStationMonitoringId = currentDriveTest.LinkToStationMonitoringId,
-                                                                ResultDriveTestStatus = DriveTestStatusResult.IT,
-                                                                Standard = currentDriveTest.RealStandard,
-                                                                Freq_MHz = (float)currentDriveTest.Freq_MHz
+                                                                    var lst = calibrationStationsAndDriveTestsResultByGroup[q].ResultCalibrationDriveTest.ToList();
+                                                                    if (lst.Find(x => x.DriveTestId == currentDriveTest.DriveTestId) == null)
+                                                                    {
+                                                                        isNeedAdded = true;
+                                                                    }
                                                                 }
-                                                            },
-                                                            ResultCalibrationStation = lsttempCalibrationStationResult.ToArray()
-                                                        });
+                                                            }
+                                                            else
+                                                            {
+                                                                isNeedAdded = true;
+                                                            }
 
-                                                        // убираем из общего списка станций  те которые попали в результаты
-                                                        CompressedStations(ref lstStationsForStatusP, station);
+                                                            if (isNeedAdded)
+                                                            {
+                                                                // расчет корелляции
+                                                                bool statusCorellationLinkGroupP = CalcCorellation(taskContext, stationP, currentDriveTest, data, out double? maxCorellationP_pc);
+                                                                if (statusCorellationLinkGroupP == true)
+                                                                {
+                                                                    var resCalibrationDriveTest = new CalibrationDriveTestResult[arrDriveTests.Length];
+                                                                    for (int wx = 0; wx < arrDriveTests.Length; wx++)
+                                                                    {
+                                                                        var currentDriveTestP = arrDriveTests[wx];
+                                                                        resCalibrationDriveTest[wx] = new CalibrationDriveTestResult()
+                                                                        {
+                                                                            CountPointsInDriveTest = currentDriveTestP.Points.Length,
+                                                                            DriveTestId = currentDriveTestP.DriveTestId,
+                                                                            Gsid = currentDriveTestP.GSID,
+                                                                            LinkToStationMonitoringId = currentDriveTestP.LinkToStationMonitoringId,
+                                                                            ResultDriveTestStatus = DriveTestStatusResult.IT,
+                                                                            Standard = currentDriveTestP.RealStandard,
+                                                                            Freq_MHz = (float)currentDriveTestP.Freq_MHz,
+                                                                            MaxPercentCorellation = (float)maxCorellationP_pc
+                                                                        };
+                                                                    }
 
-                                                        station = new ContextStation[0];
+                                                                    calibrationStationsAndDriveTestsResultByGroup.Add(new CalibrationStationsAndDriveTestsResult()
+                                                                    {
+                                                                        ResultCalibrationDriveTest = resCalibrationDriveTest,
+                                                                        ResultCalibrationStation = null
+                                                                    });
+
+                                                                    // убираем из общего списка станций  те которые попали в результаты
+                                                                    CompressedStations(ref lstStationsForStatusP, stationP);
+
+                                                                    stationP = new ContextStation[0];
+                                                                }
+                                                            }
+                                                        }
                                                     }
                                                 }
                                             }
                                         }
+                                        outListContextStationsForStatusP = lstStationsForStatusP.ToArray();
+                                        CompressedStations(ref outListContextStations, station);
                                     }
                                 }
-
                             }
-                            outListContextStationsForStatusP = lstStationsForStatusP.ToArray();
                         }
 
                         ///////////////////////////  если до текущего мемента драйв тест никуда не попал, тогда формируем результат с ним ////////////////////////////////
@@ -907,10 +874,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         ///   
                         /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-                        if (outListContextStationsForStatusP.Length > 0)
-                        {
-                            outListContextStations.AddRange(outListContextStationsForStatusP);
-                        }
+                        //if (outListContextStationsForStatusP.Length > 0)
+                        //{
+                            //outListContextStations.AddRange(outListContextStationsForStatusP);
+                        //}
 
                         var lstCalibrationStationResult = new List<CalibrationStationResult>();
                         for (int j = 0; j < outListContextStations.Count; j++)
@@ -1175,50 +1142,50 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         /// <returns></returns>
         private bool CheckParameterStation(ParametersStation parametersStationOld, ParametersStation parametersStationNew, CalibrationParameters calibrationParameters)
         {
-            bool isCorrect = true;
+            bool isNotCorrect = false;
             if ((parametersStationOld !=null) && (parametersStationNew != null))
             {
                 if (calibrationParameters.AltitudeStation)
                 {
                     if ((Math.Abs(parametersStationOld.Altitude_m - parametersStationNew.Altitude_m) <= calibrationParameters.MaxDeviationAltitudeStation_m)==false)
                     {
-                        isCorrect = false;
+                        isNotCorrect = true;
                     }
                 }
                 if (calibrationParameters.AzimuthStation)
                 {
                     if ((Math.Abs(parametersStationOld.Azimuth_deg - parametersStationNew.Azimuth_deg) <= calibrationParameters.MaxDeviationAzimuthStation_deg)==false)
                     {
-                        isCorrect = false;
+                        isNotCorrect = true;
                     }
                 }
                 if (calibrationParameters.CoordinatesStation)
                 {
                     if ((Math.Abs(parametersStationOld.Lat_deg - parametersStationNew.Lat_deg) <= calibrationParameters.MaxDeviationCoordinatesStation_m)==false)
                     {
-                        isCorrect = false;
+                        isNotCorrect = true;
                     }
                     if ((Math.Abs(parametersStationOld.Lon_deg - parametersStationNew.Lon_deg) <= calibrationParameters.MaxDeviationCoordinatesStation_m)==false)
                     {
-                        isCorrect = false;
+                        isNotCorrect = true;
                     }
                 }
                 if (calibrationParameters.PowerStation)
                 {
                     if ((Math.Abs(parametersStationOld.Power_dB - parametersStationNew.Power_dB) <= calibrationParameters.ShiftPowerStationStep_dB)==false) // ??????????????????????????
                     {
-                        isCorrect = false;
+                        isNotCorrect = true;
                     }
                 }
                 if (calibrationParameters.TiltStation)
                 {
                     if ((Math.Abs(parametersStationOld.Tilt_Deg - parametersStationNew.Tilt_Deg) <= calibrationParameters.MaxDeviationTiltStationDeg)==false)
                     {
-                        isCorrect = false;
+                        isNotCorrect = true;
                     }
                 }
             }
-            return isCorrect;
+            return isNotCorrect;
         }
 
         /// <summary>
