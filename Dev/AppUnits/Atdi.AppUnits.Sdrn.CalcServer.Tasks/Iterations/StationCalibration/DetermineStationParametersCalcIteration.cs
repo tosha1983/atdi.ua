@@ -1163,7 +1163,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 {
                     if ((Math.Abs(parametersStationOld.Lat_deg - parametersStationNew.Lat_deg) <= calibrationParameters.MaxDeviationCoordinatesStation_m)==false)
                     {
-                        isNotCorrect = false;
+                        isNotCorrect = true;
                     }
                     if ((Math.Abs(parametersStationOld.Lon_deg - parametersStationNew.Lon_deg) <= calibrationParameters.MaxDeviationCoordinatesStation_m)==false)
                     {
