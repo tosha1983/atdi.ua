@@ -160,6 +160,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.PivotTableConf
         {
             ReloadSensors();
             ReloadStations();
+            RedrawMap();
         }
         private void ReloadSensors()
         {
