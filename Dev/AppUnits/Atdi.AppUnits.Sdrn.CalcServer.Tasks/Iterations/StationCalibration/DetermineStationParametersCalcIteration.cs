@@ -1142,50 +1142,50 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         /// <returns></returns>
         private bool CheckParameterStation(ParametersStation parametersStationOld, ParametersStation parametersStationNew, CalibrationParameters calibrationParameters)
         {
-            bool isCorrect = true;
+            bool isNotCorrect = false;
             if ((parametersStationOld !=null) && (parametersStationNew != null))
             {
                 if (calibrationParameters.AltitudeStation)
                 {
                     if ((Math.Abs(parametersStationOld.Altitude_m - parametersStationNew.Altitude_m) <= calibrationParameters.MaxDeviationAltitudeStation_m)==false)
                     {
-                        isCorrect = false;
+                        isNotCorrect = true;
                     }
                 }
                 if (calibrationParameters.AzimuthStation)
                 {
                     if ((Math.Abs(parametersStationOld.Azimuth_deg - parametersStationNew.Azimuth_deg) <= calibrationParameters.MaxDeviationAzimuthStation_deg)==false)
                     {
-                        isCorrect = false;
+                        isNotCorrect = true;
                     }
                 }
                 if (calibrationParameters.CoordinatesStation)
                 {
                     if ((Math.Abs(parametersStationOld.Lat_deg - parametersStationNew.Lat_deg) <= calibrationParameters.MaxDeviationCoordinatesStation_m)==false)
                     {
-                        isCorrect = false;
+                        isNotCorrect = false;
                     }
                     if ((Math.Abs(parametersStationOld.Lon_deg - parametersStationNew.Lon_deg) <= calibrationParameters.MaxDeviationCoordinatesStation_m)==false)
                     {
-                        isCorrect = false;
+                        isNotCorrect = true;
                     }
                 }
                 if (calibrationParameters.PowerStation)
                 {
                     if ((Math.Abs(parametersStationOld.Power_dB - parametersStationNew.Power_dB) <= calibrationParameters.ShiftPowerStationStep_dB)==false) // ??????????????????????????
                     {
-                        isCorrect = false;
+                        isNotCorrect = true;
                     }
                 }
                 if (calibrationParameters.TiltStation)
                 {
                     if ((Math.Abs(parametersStationOld.Tilt_Deg - parametersStationNew.Tilt_Deg) <= calibrationParameters.MaxDeviationTiltStationDeg)==false)
                     {
-                        isCorrect = false;
+                        isNotCorrect = true;
                     }
                 }
             }
-            return isCorrect;
+            return isNotCorrect;
         }
 
         /// <summary>
