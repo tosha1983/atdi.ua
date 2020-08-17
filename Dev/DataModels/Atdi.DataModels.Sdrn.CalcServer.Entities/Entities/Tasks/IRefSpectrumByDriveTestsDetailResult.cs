@@ -18,7 +18,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks
     {
         long OrderId { get; set; }
         string TableIcsmName { get; set; }
-        long IdIcsm { get; set; }
+        int IdIcsm { get; set; }
         long IdSensor { get; set; }
         string GlobalCID { get; set; }
         double Freq_MHz { get; set; }

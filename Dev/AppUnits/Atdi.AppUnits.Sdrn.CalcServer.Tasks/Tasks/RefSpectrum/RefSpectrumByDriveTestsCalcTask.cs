@@ -168,7 +168,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                 var resultRefSpectrumByDriveTests = new ResultRefSpectrumByDriveTests();
                                 resultRefSpectrumByDriveTests.OrderId = index;
                                 resultRefSpectrumByDriveTests.TableIcsmName = contextStation.ExternalSource;
-                                resultRefSpectrumByDriveTests.IdIcsm = Convert.ToInt64(contextStation.ExternalCode);
+                                resultRefSpectrumByDriveTests.IdIcsm = Convert.ToInt32(contextStation.ExternalCode);
                                 resultRefSpectrumByDriveTests.GlobalCID = driveTest.GSID;
                                 resultRefSpectrumByDriveTests.Freq_MHz = driveTest.Freq_MHz;
                                 resultRefSpectrumByDriveTests.DateMeas = new DateTimeOffset(driveTest.MeasTime.Value);

@@ -11,7 +11,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
     {
         public long OrderId { get; set; }
         public string TableIcsmName { get; set; }
-        public long IdIcsm { get; set; }
+        public int IdIcsm { get; set; }
         public long IdSensor { get; set; }
         public string GlobalCID { get; set; }
         public double Freq_MHz { get; set; }
