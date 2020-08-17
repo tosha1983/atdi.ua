@@ -80,6 +80,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         public List<ResultCorrelationGSIDGroupeStations> CalcStationCalibration(DriveTestsResult[] arrDriveTests, ITaskContext taskContext, ContextStation[] station, AllStationCorellationCalcData data, ref List<ContextStation[]> outContextStations, ref List<DriveTestsResult[]> outDriveTestsResults, out bool statusCorellationLinkGroup, out double? maxCorellation_pc)
         {
             var tempResultCorrelationGSIDGroupeStations = new List<ResultCorrelationGSIDGroupeStations>();
+            var lstMaxCorellation_pc = new List<double>();
             //обнуляем значение maxCorellation_pc
             maxCorellation_pc = null;
             // переводим статус statusCorellationLinkGroup в false
@@ -92,6 +93,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 // если расчет корреляции прошел успешно, тогда флаг statusCorellationLinkGroup изменяем в состояние true и выходим из цикла обработки драйв тестов
                 if (statusCorellationLinkGroup)
                 {
+                    lstMaxCorellation_pc.Add(maxCorellation_pc.Value);
                     break;
                 }
             }
@@ -122,6 +124,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         }
                     }
                 }
+            }
+            if (lstMaxCorellation_pc.Count>0)
+            {
+                lstMaxCorellation_pc.Sort();
+                maxCorellation_pc = lstMaxCorellation_pc[0];
             }
             return tempResultCorrelationGSIDGroupeStations;
         }
@@ -636,11 +643,13 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                 /////////////////////////////////////////////////////////////////////////////////////////////////////////
                                 // Производим последовательную обработку массива (ResultCorrelationGSIDGroupeStations) запись за записью.
 
-                                // По максимуму значения Correlation_pc из п.1 привязываем станции и драйв тесты.
-                                resultCorrelationGSIDGroupeStations = LinkedStationsAndDriveTests(tempResultCorrelationGSIDGroupeStations, out contextStations, out driveTestsResult);
+
                                 // в случае, если флаги Drive Test (hard) и Drive Test (weak) имеют значения true
-                                if ((resultCorrelationGSIDGroupeStations.Count > 0) && (isСorrelationThresholdHard))
+                                if ((statusCorellationLinkGroup) && (isСorrelationThresholdHard))
                                 {
+                                    // По максимуму значения Correlation_pc из п.1 привязываем станции и драйв тесты.
+                                    resultCorrelationGSIDGroupeStations = LinkedStationsAndDriveTests(tempResultCorrelationGSIDGroupeStations, out contextStations, out driveTestsResult);
+
                                     var calibrationStationsAndDriveTestsResult = FillCalibrationStationResultSecondBlock(resultCorrelationGSIDGroupeStations, data.CalibrationParameters, data.CorellationParameters, data.GeneralParameters);
                                     if (calibrationStationsAndDriveTestsResult != null)
                                     {
@@ -1455,7 +1464,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             {
                 for (int s = 0; s < groupsDriveTestsResults.Length; s++)
                 {
-                    if (outGroupsDriveTestsResult.Find(x => x.DriveTestsResult.DriveTestId == groupsDriveTestsResults[s].DriveTestId) == null)
+                    var fndGroupsDriveTestsResult = outGroupsDriveTestsResult.Find(x => x.DriveTestsResult.DriveTestId == groupsDriveTestsResults[s].DriveTestId);
+                    if (fndGroupsDriveTestsResult==null)
                     {
                         outGroupsDriveTestsResult.Add(new GroupsDriveTestsResult()
                         {
@@ -1463,6 +1473,13 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             MaxCorellation_pc = maxCorellation_pc,
                             DriveTestStatusResult = DriveTestStatusResult.UN
                         });
+                    }
+                    else
+                    {
+                        if (maxCorellation_pc > fndGroupsDriveTestsResult.MaxCorellation_pc)
+                        {
+                            fndGroupsDriveTestsResult.MaxCorellation_pc = maxCorellation_pc;
+                        }
                     }
                 }
             }
@@ -1503,7 +1520,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             {
                 for (int s = 0; s < contextStations.Length; s++)
                 {
-                    if (outGroupsContextStations.Find(x=>x.ContextStations.Id== contextStations[s].Id)==null)
+                    var fndContextStations = outGroupsContextStations.Find(x => x.ContextStations.Id == contextStations[s].Id);
+                    if (fndContextStations==null)
                     {
                         outGroupsContextStations.Add(new GroupsContextStations()
                         {
@@ -1511,6 +1529,13 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             MaxCorellation_pc = maxCorellation_pc,
                             StationStatusResult = StationStatusResult.UN
                         });
+                    }
+                    else
+                    {
+                        if (maxCorellation_pc> fndContextStations.MaxCorellation_pc)
+                        {
+                            fndContextStations.MaxCorellation_pc = maxCorellation_pc;
+                        }
                     }
                 }
             }
