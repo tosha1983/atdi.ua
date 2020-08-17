@@ -809,11 +809,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                 {
                                     ContextStation copystation = Atdi.Common.CopyHelper.CreateDeepCopy(contextStation);
                                     copystation.Transmitter.Freq_MHz = contextStation.Transmitter.Freqs_MHz[p];
-                                    copystation.Transmitter.Freqs_MHz = new double[1] { contextStation.Transmitter.Freqs_MHz[p] };
-
-
                                     copystation.Receiver.Freq_MHz = contextStation.Receiver.Freqs_MHz[p];
-                                    copystation.Receiver.Freqs_MHz = new double[1] { contextStation.Receiver.Freqs_MHz[p] };
 
                                     lstDuplicateStations.Add(copystation);
                                 }

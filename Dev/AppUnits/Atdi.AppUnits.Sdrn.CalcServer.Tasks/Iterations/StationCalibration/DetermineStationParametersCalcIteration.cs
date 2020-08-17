@@ -1761,13 +1761,13 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         if ((arrStations != null) && (arrStations.Length > 0))
                         {
                             var stationsResults = new ContextStation[arrStations.Length];
-                            var keyValueStations = new Dictionary<long, double>();
+                            var keyValueStations = new List<KeyValuePair<long, double>>();
                             for (int z = 0; z < arrStations.Length; z++)
                             {
                                 var sourcePointArgs = new PointEarthGeometric() { Longitude = centerWeightCoordinateOfDriveTest.X, Latitude = centerWeightCoordinateOfDriveTest.Y, CoordinateUnits = CoordinateUnits.m };
                                 var targetPointArgs = new PointEarthGeometric() { Longitude = arrStations[0].Coordinate.X, Latitude = arrStations[0].Coordinate.Y, CoordinateUnits = CoordinateUnits.m };
                                 var distance = this._earthGeometricService.GetDistance_km(in sourcePointArgs, in targetPointArgs);
-                                keyValueStations.Add(arrStations[z].Id, distance);
+                                keyValueStations.Add(new KeyValuePair<long, double>(arrStations[z].Id, distance));
                             }
                             var orderStations = from z in keyValueStations.ToList() orderby z.Value ascending select z;
                             var tempOrderStations = orderStations.ToArray();
