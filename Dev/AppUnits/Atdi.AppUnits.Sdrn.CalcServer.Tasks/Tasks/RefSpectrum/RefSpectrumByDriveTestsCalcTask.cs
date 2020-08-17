@@ -712,14 +712,14 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                     {
                                         driveTestParameters.SensorAntenna.Tilt_deg = (float)readerAntennaPattern.GetValue(c => c.SENSOR_ANTENNA.SENSOR.Elevation);
                                     }
-                                    
+
 
 
 
                                     if (readerAntennaPattern.GetValue(c => c.DiagH) != null)
                                     {
-                                    // HH
-                                    var argsHH = new DiagrammArgs()
+                                        // HH
+                                        var argsHH = new DiagrammArgs()
                                         {
                                             AntennaPatternType = AntennaPatternType.HH,
                                             Gain = driveTestParameters.SensorAntenna.Gain_dB,
@@ -736,8 +736,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                         };
 
 
-                                    // HV
-                                    var argsHV = new DiagrammArgs()
+                                        // HV
+                                        var argsHV = new DiagrammArgs()
                                         {
                                             AntennaPatternType = AntennaPatternType.HV,
                                             Gain = driveTestParameters.SensorAntenna.Gain_dB,
@@ -753,11 +753,25 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                             driveTestParameters.SensorAntenna.HvPattern.Angle_deg = diagrammPointsResult.Where(x => x.Angle != null).Select(c => c.Angle.Value).ToArray();
                                         };
                                     }
+                                    else
+                                    {
+                                        // HH
+
+                                        driveTestParameters.SensorAntenna.HhPattern = new DataModels.Sdrn.DeepServices.RadioSystem.Stations.StationAntennaPattern();
+                                        driveTestParameters.SensorAntenna.HhPattern.Loss_dB = new float[2] { 0, 0 };
+                                        driveTestParameters.SensorAntenna.HhPattern.Angle_deg = new double[2] { 0, 350 };
+
+                                        // HV
+                                        driveTestParameters.SensorAntenna.HvPattern = new DataModels.Sdrn.DeepServices.RadioSystem.Stations.StationAntennaPattern();
+                                        driveTestParameters.SensorAntenna.HvPattern.Loss_dB = new float[2] { 0, 0 };
+                                        driveTestParameters.SensorAntenna.HvPattern.Angle_deg = new double[2] { 0, 350 };
+
+                                    }
 
                                     if (readerAntennaPattern.GetValue(c => c.DiagV) != null)
                                     {
-                                    // VH
-                                    var argsVH = new DiagrammArgs()
+                                        // VH
+                                        var argsVH = new DiagrammArgs()
                                         {
                                             AntennaPatternType = AntennaPatternType.VH,
                                             Gain = driveTestParameters.SensorAntenna.Gain_dB,
@@ -774,8 +788,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                         };
 
 
-                                    // VV
-                                    var argsVV = new DiagrammArgs()
+                                        // VV
+                                        var argsVV = new DiagrammArgs()
                                         {
                                             AntennaPatternType = AntennaPatternType.VV,
                                             Gain = driveTestParameters.SensorAntenna.Gain_dB,
@@ -790,6 +804,22 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                             driveTestParameters.SensorAntenna.VvPattern.Loss_dB = diagrammPointsResult.Where(x => x.Loss != null).Select(c => c.Loss.Value).ToArray();
                                             driveTestParameters.SensorAntenna.VvPattern.Angle_deg = diagrammPointsResult.Where(x => x.Angle != null).Select(c => c.Angle.Value).ToArray();
                                         };
+                                    }
+                                    else
+                                    {
+
+                                        // VH
+
+                                        driveTestParameters.SensorAntenna.VhPattern = new DataModels.Sdrn.DeepServices.RadioSystem.Stations.StationAntennaPattern();
+                                        driveTestParameters.SensorAntenna.VhPattern.Loss_dB = new float[2] { 0, 0 };
+                                        driveTestParameters.SensorAntenna.VhPattern.Angle_deg = new double[2] { -90, 90 };
+
+                                        // VV
+                                        driveTestParameters.SensorAntenna.VvPattern = new DataModels.Sdrn.DeepServices.RadioSystem.Stations.StationAntennaPattern();
+                                        driveTestParameters.SensorAntenna.VvPattern.Loss_dB = new float[2] { 0, 0 };
+                                        driveTestParameters.SensorAntenna.VvPattern.Angle_deg = new double[2] { -90, 90 };
+
+
                                     }
                                     break;
                                 }
