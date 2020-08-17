@@ -85,5 +85,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
         [ComponentConfigProperty("Brific.DBSource")]
         public string BrificDBSource { get; set; }
 
+        public string StandardsForDuplicateStations { get; set; }
+
     }
 }

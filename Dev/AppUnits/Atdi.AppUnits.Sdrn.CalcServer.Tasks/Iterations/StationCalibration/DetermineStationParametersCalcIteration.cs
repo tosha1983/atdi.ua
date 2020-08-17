@@ -652,7 +652,6 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                     Freq_MHz = arrStations[d].Transmitter.Freq_MHz
                                 },
                                 Standard = arrStations[d].RealStandard,
-                                //Freq_MHz = arrStations[d].Transmitter.Freq_MHz,
                                 MaxCorellation = (float)maxPercentCorellation.Value
                             });
                         }
@@ -709,6 +708,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             }
                         }
                     }
+
 
                     // извлекаем неповторяющиеся значения регионов
                     var areasSelect = data.GSIDGroupeStation.ToList().Select(x => x.RegionCode).Distinct();
@@ -1002,6 +1002,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     var calibrationStatusParameters = RulesStatusParameters.CalibrationFirstStatusParameters.Find(c => c.Corellation == corellation && c.StatusStation == status && c.TrustOldResults == trustOldResults && c.PointForCorrelation == pointForCorrelation && c.ExceptionParameter == exceptionParameter);
                     if (calibrationStatusParameters != null)
                     {
+
                         var calibrationStationResult = new CalibrationStationResult()
                         {
                             ExternalSource = calibrationStationsAndDriveTestsResult.ClientContextStation.ExternalSource,
@@ -1018,6 +1019,17 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             Standard = calibrationStationsAndDriveTestsResult.ClientContextStation.RealStandard,
                             Freq_MHz = calibrationStationsAndDriveTestsResult.DriveTestsResult.Freq_MHz
                         };
+
+                        var freq_MHz = GetFreqStation(calibrationStationsAndDriveTestsResult.DriveTestsResult, calibrationStationsAndDriveTestsResult.ClientContextStation);
+                        if (freq_MHz!=null)
+                        {
+                            calibrationStationResult.ParametersStationOld.Freq_MHz = freq_MHz.Value;
+                        }
+                        else
+                        {
+                            calibrationStationResult.ParametersStationOld.Freq_MHz = calibrationStationsAndDriveTestsResult.DriveTestsResult.Freq_MHz;
+                        }
+
                         listCalibrationStationResults.Add(calibrationStationResult);
 
                         var calibrationDriveTestResult = new CalibrationDriveTestResult()
@@ -1136,6 +1148,17 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             Standard = calibrationStationsAndDriveTestsResult.ClientContextStation.RealStandard,
                             Freq_MHz = calibrationStationsAndDriveTestsResult.DriveTestsResult.Freq_MHz
                         };
+
+                        var freq_MHz = GetFreqStation(calibrationStationsAndDriveTestsResult.DriveTestsResult, calibrationStationsAndDriveTestsResult.ClientContextStation);
+                        if (freq_MHz != null)
+                        {
+                            calibrationStationResult.ParametersStationOld.Freq_MHz = freq_MHz.Value;
+                        }
+                        else
+                        {
+                            calibrationStationResult.ParametersStationOld.Freq_MHz = calibrationStationsAndDriveTestsResult.DriveTestsResult.Freq_MHz;
+                        }
+
                         listCalibrationStationResults.Add(calibrationStationResult);
 
                         var calibrationDriveTestResult = new CalibrationDriveTestResult()
@@ -1776,5 +1799,23 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             }
             return false; 
         }
+
+        private double? GetFreqStation(DriveTestsResult driveTestsResult, ContextStation contextStation)
+        {
+            var FreqDT = driveTestsResult.Freq_MHz;
+            var FreqST = contextStation.Transmitter.Freq_MHz;
+            var FreqArr = contextStation.Transmitter.Freqs_MHz;
+            var BW = contextStation.Transmitter.BW_kHz / 1000.0;
+            if ((FreqST - BW <= FreqDT) && (FreqST + BW >= FreqDT)) { return FreqST; }
+            if ((FreqArr != null) && (FreqArr.Length > 0))
+            {
+                for (int i = 0; FreqArr.Length > i; i++)
+                {
+                    if ((FreqArr[i] - BW <= FreqDT) && (FreqArr[i] + BW >= FreqDT)) { return FreqArr[i]; }
+                }
+            }
+            return null;
+        }
+
     }
 }
