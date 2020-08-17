@@ -353,6 +353,30 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                     };
                 });
 
+                var stationIdsRes = new List<long>();
+
+
+                var partstationIdsRes = BreakDownElemBlocks.BreakDown(this._parameters.StationIds);
+                for (int i = 0; i < partstationIdsRes.Count; i++)
+                {
+                    var queryStationCalibrationStaResult = _calcServerDataLayer.GetBuilder<IStationCalibrationStaResult>()
+                     .From()
+                     .Select(
+                         c => c.StationMonitoringId
+                     )
+                    .Where(c => c.Id, ConditionOperator.In, partstationIdsRes[i]);
+
+                    _calcDbScope.Executor.ExecuteAndFetch(queryStationCalibrationStaResult, readerStationCalibrationStaResult =>
+                    {
+                        while (readerStationCalibrationStaResult.Read())
+                        {
+                            stationIdsRes.Add(readerStationCalibrationStaResult.GetValue(c => c.StationMonitoringId));
+                        }
+                        return true;
+                    });
+                }
+
+                this._parameters.StationIds = stationIdsRes.ToArray();
 
                 // load stations
                 List<ContextStation> lstStations = new List<ContextStation>();
@@ -428,7 +452,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                             c => c.RECEIVER.PolarizationCode,
                             c => c.RECEIVER.Freqs_MHz
                         )
-                        .Where(c => c.CONTEXT.Id, ConditionOperator.Equal, _taskContext.ClientContextId)
+                        //.Where(c => c.CONTEXT.Id, ConditionOperator.Equal, _taskContext.ClientContextId)
                         .Where(c => c.Id, ConditionOperator.In, partStationIdsByCalcServer[i].ToArray());
 
                     var contextStation = _calcDbScope.Executor.ExecuteAndFetch(queryStation, reader =>
@@ -553,7 +577,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                           c => c.StationGcid
                       )
                      .Where(c => c.LinkToStationMonitoringId, ConditionOperator.Equal, stationRecord.Id)
-                    .Where(c => c.CALCRESULTS_STATION_CALIBRATION.RESULT.Id, ConditionOperator.Equal, this._parameters.ResultId);
+                    .Where(c => c.CALCRESULTS_STATION_CALIBRATION.Id, ConditionOperator.Equal, this._parameters.ResultId);
 
                     _calcDbScope.Executor.ExecuteAndFetch(queryStationCalibrationDriveTestResult, readerStationCalibrationDriveTestResult =>
                     {
