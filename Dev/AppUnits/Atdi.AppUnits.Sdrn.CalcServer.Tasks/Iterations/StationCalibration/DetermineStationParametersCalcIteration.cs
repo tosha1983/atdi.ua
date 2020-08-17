@@ -563,17 +563,19 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     {
                         // извлекаем очередную группу драйв тестов
                         var arrDriveTests = outListDriveTestsResults[dw];
-                        for (int w = 0; w < arrDriveTests.Length; w++)
+
+                        if ((arrDriveTests != null) && (arrDriveTests.Length > 0))
                         {
+
                             // извлекаем драйв тест
-                            var currentDriveTest = arrDriveTests[w];
+                            var currentDriveTest = arrDriveTests[0];
                             // обнуляем значение коэффициента корреляции
                             double? maxPercentCorellation = 0;
                             // по умолчанию устанавливаем значение статуса для драйв теста в IT и уточняем:
                             var driveTestStatusResult = DriveTestStatusResult.IT;
                             // если в списке драйв тестов groupsDriveTestsResult есть драйв тест с таким же идентификатором, тогда извлекаем его статус
                             var fndDriveTest = groupsDriveTestsResult.Find(x => x.DriveTestsResult.DriveTestId == currentDriveTest.DriveTestId);
-                            if (fndDriveTest!=null)
+                            if (fndDriveTest != null)
                             {
                                 driveTestStatusResult = fndDriveTest.DriveTestStatusResult;
                                 maxPercentCorellation = fndDriveTest.MaxCorellation_pc;
@@ -583,28 +585,31 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             {
                                 // передаем в метод RecaclNDP драйв тест currentDriveTest для поиска среди станций со статусом P (outListContextStationsForStatusP) таких для которых процент корреляции maxPercentCorellation будет выше 0
                                 // в данном случае для такого драйв теста currentDriveTest извлекаем новый статус (обновляем статус IT на  UN в случае если maxPercentCorellation > 0)
-                                RecaclNDP(outListContextStationsForStatusP, taskContext, currentDriveTest, data, out maxPercentCorellation, out driveTestStatusResult);
+                                RecaclNDP(outListContextStationsForStatusP, taskContext, arrDriveTests, data, out maxPercentCorellation, out driveTestStatusResult);
                             }
+
+                            var tempCalibrationDriveTestResult = new CalibrationDriveTestResult[arrDriveTests.Length];
+                            for (int p=0; p< arrDriveTests.Length; p++)
+                            {
+                                tempCalibrationDriveTestResult[p] = new CalibrationDriveTestResult()
+                                {
+                                    CountPointsInDriveTest = arrDriveTests[p].Points.Length,
+                                    DriveTestId = arrDriveTests[p].DriveTestId,
+                                    Gsid = arrDriveTests[p].GSID,
+                                    LinkToStationMonitoringId = arrDriveTests[p].LinkToStationMonitoringId,
+                                    ResultDriveTestStatus = driveTestStatusResult,
+                                    Standard = arrDriveTests[p].RealStandard,
+                                    Freq_MHz = (float)arrDriveTests[p].Freq_MHz,
+                                    MaxPercentCorellation = (float)maxPercentCorellation.Value
+                                };
+                            }
+
                             // формируем результат по драйв тесту currentDriveTest со статусом, который дважды уточнялся - по списку groupsDriveTestsResult (который содержит сведения по драйв тестах со статусами UN) и в методе RecaclNDP поиска по станциям со статусом P
                             calibrationStationsAndDriveTestsResultByGroup.Add(new CalibrationStationsAndDriveTestsResult()
                             {
-                                ResultCalibrationDriveTest = new CalibrationDriveTestResult[1]
-                                      {
-                                                    new CalibrationDriveTestResult()
-                                                    {
-                                                        CountPointsInDriveTest = currentDriveTest.Points.Length,
-                                                        DriveTestId = currentDriveTest.DriveTestId,
-                                                        Gsid = currentDriveTest.GSID,
-                                                        LinkToStationMonitoringId = currentDriveTest.LinkToStationMonitoringId,
-                                                        ResultDriveTestStatus = driveTestStatusResult,
-                                                        Standard = currentDriveTest.RealStandard,
-                                                        Freq_MHz = (float)currentDriveTest.Freq_MHz,
-                                                        MaxPercentCorellation = (float)maxPercentCorellation.Value
-                                                    }
-                                      },
+                                ResultCalibrationDriveTest = tempCalibrationDriveTestResult,
                                 ResultCalibrationStation = null
                             });
-
                         }
                     }
 
@@ -752,7 +757,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         /// <param name="data">Набор вспомогательных параметров</param>
         /// <param name="maxCorellationP_pc">Максимальное значение процента корреляции</param>
         /// <param name="driveTestStatusResult">итоговый статус драйв теста currentDriveTestP </param>
-        private void RecaclNDP(ContextStation[][] outListContextStationsForStatusP, ITaskContext taskContext, DriveTestsResult currentDriveTestP, AllStationCorellationCalcData data, out double? maxCorellationP_pc, out DriveTestStatusResult driveTestStatusResult)
+        private void RecaclNDP(ContextStation[][] outListContextStationsForStatusP, ITaskContext taskContext, DriveTestsResult[] driveTestsP, AllStationCorellationCalcData data, out double? maxCorellationP_pc, out DriveTestStatusResult driveTestStatusResult)
         {
             maxCorellationP_pc = 0;
             driveTestStatusResult = DriveTestStatusResult.IT;
@@ -766,11 +771,19 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
                     if ((stationP != null && stationP.Length > 0))
                     {
-                        // расчет корелляции
-                        bool statusCorellationLinkGroupP = CalcCorellation(taskContext, stationP, currentDriveTestP, data, out  maxCorellationP_pc);
-                        if (statusCorellationLinkGroupP == true)
+                        for (int w = 0; w < driveTestsP.Length; w++)
                         {
-                            driveTestStatusResult = DriveTestStatusResult.UN;
+                            // расчет корелляции
+                            bool statusCorellationLinkGroupP = CalcCorellation(taskContext, stationP, driveTestsP[w], data, out maxCorellationP_pc);
+                            if (statusCorellationLinkGroupP == true)
+                            {
+                                driveTestStatusResult = DriveTestStatusResult.UN;
+                                break;
+                            }
+                        }
+                        if (driveTestStatusResult== DriveTestStatusResult.UN)
+                        {
+                            break;
                         }
                     }
                 }
