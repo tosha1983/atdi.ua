@@ -407,24 +407,17 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     }
 
                     /////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    ///
                     ///                     БЛОК
                     ///         "НДП, изменение GSID, новые РЕЗ"
-                    /// 
                     /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
                     /////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    ///
-                    /// 
                     ///     4.2.5. Ранжирование драйв тестов с GSID (по количеству данных и их уровню)
-                    ///     
                     ///     Внутри GSIDGroupeDriveTests данные уже ранжированы в данном блоки необходимо ранжировать сам массив (или список) массивов драйв тестов. 
                     ///     Ранжируется на основании количества точек первого DriveTests из GSIDGroupeDriveTests с большим количеством точек идут первые. 
                     ///     При равном количестве точек первым будет идти тот у кого средний уровень по всем точкам выше. 
                     ///     На входи и выходе одинаковое количество элементов у массивов.Ничего не удаляется и не переноситься.
-                    ///     
-                    /// 
                     /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
                     for (int i = 0; i < outListDriveTestsResults.Count; i++)
@@ -434,7 +427,6 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         var duplicateCountPoints = drvTests.GroupBy(x => new { x.CountPoints }).Where(g => g.Count() > 1).SelectMany(g => g.Select(gg => gg));
                         outListDriveTestsResults[i] = orderByCountPoints.ToArray();
                     }
-
                     for (int i = 0; i < outListDriveTestsResults.Count; i++)
                     {
                         var drvTests = outListDriveTestsResults[i];
@@ -477,154 +469,40 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             outListDriveTestsResults[i] = drvTests;
                         }
                     }
-
-
-
+                    
                     /////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    ///
-                    ///     4.2.6. Ранжирование Stations под данный Drive Test
-                    ///     
+                    ////////////////////////// Асоциирование станций когда не совпадают GSID
                     /////////////////////////////////////////////////////////////////////////////////////////////////////////
                     
                     // список для хранения сведений о драйв тестах со статусом UN
                     var groupsDriveTestsResult = new List<GroupsDriveTestsResult>();
                     // список для хранения сведений о станциях со статусом UN
                     var groupsContextStations = new List<GroupsContextStations>();
+
                     for (int i = 0; i < outListDriveTestsResults.Count; i++)
                     {
                         var GSIDGroupeStations = new List<ContextStation[]>();
                         var arrDriveTests = outListDriveTestsResults[i];
+                        /////////////////////////////////////////////////////////////////////////////////////////////////////////
+                        ///     4.2.6. Ранжирование Stations под данный Drive Test
+                        /////////////////////////////////////////////////////////////////////////////////////////////////////////
                         if (arrDriveTests != null)
-                        {
-                            for (int w = 0; w < arrDriveTests.Length; w++)
-                            {
-
-                                //получаем очередной драйв тест
-                                var currentDriveTest = arrDriveTests[w];
-                                if (currentDriveTest != null)
-                                {
-
-                                    var coordinatesDrivePoint = currentDriveTest.Points.Select(x => x.Coordinate).ToArray();
-
-                                    /////////////////////////////////////////////////////////////////////////////////////////////////////////
-                                    ///
-                                    ///     1. Для GSIDGroupeDriveTests мы считаем центр масс всех координат, всех точек по заданному драйв тесту. 
-                                    ///     
-                                    /////////////////////////////////////////////////////////////////////////////////////////////////////////
-                                    var centerWeightCoordinateOfDriveTest = Utils.CenterWeightAllCoordinates(currentDriveTest.Points);
-
-
-                                    /////////////////////////////////////////////////////////////////////////////////////////////////////////
-                                    ///
-                                    ///    2. Формируем новый массив (или список) массивов станций (GSIDGroupeStations) на основании того перемещаем туда все станции
-                                    ///     из массива (или списка) массивов станций (outListContextStations) если хотябы одна из станций  outListContextStations 
-                                    ///     имеют координаты ближе чем 1км (параметр вынести в файл конфигурации в зависимости от STANDART) к координатам GSIDGroupeDriveTests.
-                                    ///     
-                                    /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-                                    for (int j = 0; j < outListContextStations.Count; j++)
-                                    {
-                                        var arrStations = outListContextStations[j];
-                                        if ((arrStations != null) && (arrStations.Length > 0))
-                                        {
-                                            for (int p = 0; p < coordinatesDrivePoint.Length; p++)
-                                            {
-                                                var sourcePointArgs = new PointEarthGeometric() { Longitude = coordinatesDrivePoint[p].X, Latitude = coordinatesDrivePoint[p].Y, CoordinateUnits = CoordinateUnits.m };
-                                                var targetPointArgs = new PointEarthGeometric() { Longitude = arrStations[0].Coordinate.X, Latitude = arrStations[0].Coordinate.Y, CoordinateUnits = CoordinateUnits.m };
-                                                if (this._earthGeometricService.GetDistance_km(in sourcePointArgs, in targetPointArgs) <= GetMinDistanceFromConfigByStandard(standard))
-                                                {
-                                                    // добавляем весь массив станций arrStations в случае если одна из станций, которая входит в arrStations имеет расстояние до одной из точек текущего DrivePoint меньше 1 км (берем с конфигурации)
-
-                                                    var lstGSID = GSIDGroupeStations;
-                                                    List<ContextStation> listContextStation = new List<ContextStation>();
-                                                    for (int d = 0; d < lstGSID.Count; d++)
-                                                    {
-                                                        var lstStations = lstGSID[d].ToList();
-
-                                                        for (int s = 0; s < arrStations.Length; s++)
-                                                        {
-
-                                                            if ((lstStations.Find(x => x.Id == arrStations[s].Id)) == null)
-                                                            {
-                                                                listContextStation.Add(arrStations[s]);
-                                                            }
-                                                        }
-
-                                                    }
-
-                                                    if (listContextStation.Count > 0)
-                                                    {
-                                                        GSIDGroupeStations.Add(listContextStation.ToArray());
-                                                    }
-                                                    else
-                                                    {
-                                                        if (GSIDGroupeStations.Count == 0)
-                                                        {
-                                                            GSIDGroupeStations.Add(arrStations);
-                                                        }
-                                                    }
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                    /////////////////////////////////////////////////////////////////////////////////////////////////////////
-                                    ///
-                                    ///    3. В новый массив (или список) массивов станций (GSIDGroupeStations) проводим ранжирование 
-                                    ///    GSIDGroupeStations по критерию минимальное расстояние от центра масс GSIDGroupeDriveTests 
-                                    ///     
-                                    /////////////////////////////////////////////////////////////////////////////////////////////////////////
-                                    for (int q = 0; q < GSIDGroupeStations.Count; q++)
-                                    {
-                                        var arrStations = GSIDGroupeStations[q];
-                                        if ((arrStations != null) && (arrStations.Length > 0))
-                                        {
-                                            var stationsResults = new ContextStation[arrStations.Length];
-                                            var keyValueStations = new Dictionary<long, double>();
-                                            for (int z = 0; z < arrStations.Length; z++)
-                                            {
-                                                var sourcePointArgs = new PointEarthGeometric() { Longitude = centerWeightCoordinateOfDriveTest.X, Latitude = centerWeightCoordinateOfDriveTest.Y, CoordinateUnits = CoordinateUnits.m };
-                                                var targetPointArgs = new PointEarthGeometric() { Longitude = arrStations[0].Coordinate.X, Latitude = arrStations[0].Coordinate.Y, CoordinateUnits = CoordinateUnits.m };
-                                                var distance = this._earthGeometricService.GetDistance_km(in sourcePointArgs, in targetPointArgs);
-                                                keyValueStations.Add(arrStations[z].Id, distance);
-                                            }
-                                            var orderStations = from z in keyValueStations.ToList() orderby z.Value ascending select z;
-                                            var tempOrderStations = orderStations.ToArray();
-                                            for (int s = 0; s < tempOrderStations.Length; s++)
-                                            {
-                                                var fndStations = arrStations.First(x => x.Id == tempOrderStations[s].Key);
-                                                stationsResults[s] = fndStations;
-                                            }
-                                            GSIDGroupeStations[q] = stationsResults;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
+                        {GSIDGroupeStations = GetOrderStationForDriveTests(ref arrDriveTests, ref outListContextStations, standard); }
                         /////////////////////////////////////////////////////////////////////////////////////////////////////////
-                        ///
                         ///    4.2.7 Подбор параметров станции по результатам Drive Test (hard) (схема бл 7)
-                        ///    
-                        ///     
                         /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
                         if (GSIDGroupeStations != null)
                         {
                             for (int m = 0; m < GSIDGroupeStations.Count; m++)
                             {
-
                                 // проводим анализ по каждой отдельно взятой группе станций отдельно
                                 var station = GSIDGroupeStations[m];
                                 var resultCorrelationGSIDGroupeStations = new List<ResultCorrelationGSIDGroupeStations>();
                                 var contextStations = new List<ContextStation>();
                                 var driveTestsResult = new List<DriveTestsResult>();
-
                                 ///  Расчет корреляции weake (схема бл 2)
                                 ///  Подбор параметров станции по результатам Drive Test (hard) (схема бл 3)
                                 var tempResultCorrelationGSIDGroupeStations = CalcStationCalibration(arrDriveTests, taskContext, station, data, ref outListContextStations, ref outListDriveTestsResults, out bool statusCorellationLinkGroup, out double? maxCorellation_pc);
-
                                 bool isСorrelationThresholdHard = false;
                                 if (tempResultCorrelationGSIDGroupeStations.Count > 0)
                                 {
@@ -637,38 +515,28 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                         }
                                     }
                                 }
-
                                 /////////////////////////////////////////////////////////////////////////////////////////////////////////
                                 ///    4.2.8. Сохранение соответствия, изымание станций и Drive Test из дальнейших расчетов (схема бл 8)
                                 /////////////////////////////////////////////////////////////////////////////////////////////////////////
                                 // Производим последовательную обработку массива (ResultCorrelationGSIDGroupeStations) запись за записью.
-
-
                                 // в случае, если флаги Drive Test (hard) и Drive Test (weak) имеют значения true
                                 if ((statusCorellationLinkGroup) && (isСorrelationThresholdHard))
                                 {
                                     // По максимуму значения Correlation_pc из п.1 привязываем станции и драйв тесты.
                                     resultCorrelationGSIDGroupeStations = LinkedStationsAndDriveTests(tempResultCorrelationGSIDGroupeStations, out contextStations, out driveTestsResult);
-
+                                    //Определение статусов 
                                     var calibrationStationsAndDriveTestsResult = FillCalibrationStationResultSecondBlock(resultCorrelationGSIDGroupeStations, data.CalibrationParameters, data.CorellationParameters, data.GeneralParameters);
                                     if (calibrationStationsAndDriveTestsResult != null)
                                     {
                                         if ((calibrationStationsAndDriveTestsResult.ResultCalibrationStation.Length > 0) || (calibrationStationsAndDriveTestsResult.ResultCalibrationDriveTest.Length > 0))
                                         {
-                                            // добавляем промежуточный результат в массив результатов
-                                            calibrationStationsAndDriveTestsResultByGroup.Add(calibrationStationsAndDriveTestsResult);
-
-                                            // убираем из общего списка станций и  драйв тестов  те которые попали в результаты
-                                            CompressedStationsAndDriveTest(ref outListContextStations, ref outListDriveTestsResults, resultCorrelationGSIDGroupeStations);
-
-                                            // удаление из списка со сведениями о станциях со статусом UN массива station
-                                            RemoveFromGroupsContextStations(ref groupsContextStations, station);
-
-                                            // удаление из списка со сведениями о драйв тестах со статусом UN массива arrDriveTests
-                                            RemoveFromGroupsDriveTestsResult(ref groupsDriveTestsResult, arrDriveTests);
-                                            
+                                            calibrationStationsAndDriveTestsResultByGroup.Add(calibrationStationsAndDriveTestsResult); // добавляем промежуточный результат в массив результатов
+                                            CompressedStationsAndDriveTest(ref outListContextStations, ref outListDriveTestsResults, resultCorrelationGSIDGroupeStations); // убираем из общего списка станций и  драйв тестов  те которые попали в результаты
+                                            RemoveFromGroupsContextStations(ref groupsContextStations, station); // удаление из списка со сведениями о станциях со статусом UN массива station
+                                            RemoveFromGroupsDriveTestsResult(ref groupsDriveTestsResult, arrDriveTests); // удаление из списка со сведениями о драйв тестах со статусом UN массива arrDriveTests
                                         }
                                     }
+                                    break;
                                 }
                                 ///   в случае, если флаг Drive Test (hard) равен false,  Drive Test (weak) имеют значение true
                                 else if ((isСorrelationThresholdHard==false) && (statusCorellationLinkGroup == true))
@@ -687,16 +555,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         }
                     }
 
-
-
-
                     /////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    ///
                     ///   4.2.11. Все не изъятые Stations помечаются как необнаруженные (схема бл. 10)
                     ///   Все драйв тесты для которых не найдена пара станций и которые не помечены как UN выставляется статус IT
-                    ///   
                     /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
                     for (int dw = 0; dw < outListDriveTestsResults.Count; dw++)
                     {
                         // извлекаем очередную группу драйв тестов
@@ -705,7 +567,6 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         {
                             // извлекаем драйв тест
                             var currentDriveTest = arrDriveTests[w];
-
                             // обнуляем значение коэффициента корреляции
                             double? maxPercentCorellation = 0;
                             // по умолчанию устанавливаем значение статуса для драйв теста в IT и уточняем:
@@ -724,7 +585,6 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                 // в данном случае для такого драйв теста currentDriveTest извлекаем новый статус (обновляем статус IT на  UN в случае если maxPercentCorellation > 0)
                                 RecaclNDP(outListContextStationsForStatusP, taskContext, currentDriveTest, data, out maxPercentCorellation, out driveTestStatusResult);
                             }
-
                             // формируем результат по драйв тесту currentDriveTest со статусом, который дважды уточнялся - по списку groupsDriveTestsResult (который содержит сведения по драйв тестах со статусами UN) и в методе RecaclNDP поиска по станциям со статусом P
                             calibrationStationsAndDriveTestsResultByGroup.Add(new CalibrationStationsAndDriveTestsResult()
                             {
@@ -1783,6 +1643,106 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 }
             }
             return resultCorrelationGSIDGroupeStations;
+        }
+        /// <summary>
+        /// Отбирает и ранжирует станции для данного блока драйвтестов
+        /// </summary>
+        /// <param name="arrDriveTests"></param>
+        /// <param name="outListContextStations"></param>
+        /// <param name="standard"></param>
+        /// <returns></returns>
+        public List<ContextStation[]> GetOrderStationForDriveTests(ref DriveTestsResult[] arrDriveTests, ref List<ContextStation[]> outListContextStations, string standard)
+        {
+            var GSIDGroupeStations = new List<ContextStation[]>();
+            for (int w = 0; w < arrDriveTests.Length; w++)
+            {
+                //получаем очередной драйв тест
+                var currentDriveTest = arrDriveTests[w];
+                if (currentDriveTest != null)
+                {
+                    var coordinatesDrivePoint = currentDriveTest.Points.Select(x => x.Coordinate).ToArray();
+                    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    ///     1. Для GSIDGroupeDriveTests мы считаем центр масс всех координат, всех точек по заданному драйв тесту. 
+                    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    var centerWeightCoordinateOfDriveTest = Utils.CenterWeightAllCoordinates(currentDriveTest.Points);
+                    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    ///    2. Формируем новый массив (или список) массивов станций (GSIDGroupeStations) на основании того перемещаем туда все станции
+                    ///     из массива (или списка) массивов станций (outListContextStations) если хотябы одна из станций  outListContextStations 
+                    ///     имеют координаты ближе чем 1км (параметр вынести в файл конфигурации в зависимости от STANDART) к координатам GSIDGroupeDriveTests.
+                    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    for (int j = 0; j < outListContextStations.Count; j++)
+                    {
+                        var arrStations = outListContextStations[j];
+                        if ((arrStations != null) && (arrStations.Length > 0))
+                        {
+                            for (int p = 0; p < coordinatesDrivePoint.Length; p++)
+                            {
+                                var sourcePointArgs = new PointEarthGeometric() { Longitude = coordinatesDrivePoint[p].X, Latitude = coordinatesDrivePoint[p].Y, CoordinateUnits = CoordinateUnits.m };
+                                var targetPointArgs = new PointEarthGeometric() { Longitude = arrStations[0].Coordinate.X, Latitude = arrStations[0].Coordinate.Y, CoordinateUnits = CoordinateUnits.m };
+                                if (this._earthGeometricService.GetDistance_km(in sourcePointArgs, in targetPointArgs) <= GetMinDistanceFromConfigByStandard(standard))
+                                {
+                                    // добавляем весь массив станций arrStations в случае если одна из станций, которая входит в arrStations имеет расстояние до одной из точек текущего DrivePoint меньше 1 км (берем с конфигурации)
+                                    var lstGSID = GSIDGroupeStations;
+                                    List<ContextStation> listContextStation = new List<ContextStation>();
+                                    for (int d = 0; d < lstGSID.Count; d++)
+                                    {
+                                        var lstStations = lstGSID[d].ToList();
+                                        for (int s = 0; s < arrStations.Length; s++)
+                                        {
+                                            if ((lstStations.Find(x => x.Id == arrStations[s].Id)) == null)
+                                            {
+                                                listContextStation.Add(arrStations[s]);
+                                            }
+                                        }
+
+                                    }
+                                    if (listContextStation.Count > 0)
+                                    {
+                                        GSIDGroupeStations.Add(listContextStation.ToArray());
+                                    }
+                                    else
+                                    {
+                                        if (GSIDGroupeStations.Count == 0)
+                                        {
+                                            GSIDGroupeStations.Add(arrStations);
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    ///    3. В новый массив (или список) массивов станций (GSIDGroupeStations) проводим ранжирование 
+                    ///    GSIDGroupeStations по критерию минимальное расстояние от центра масс GSIDGroupeDriveTests 
+                    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    for (int q = 0; q < GSIDGroupeStations.Count; q++)
+                    {
+                        var arrStations = GSIDGroupeStations[q];
+                        if ((arrStations != null) && (arrStations.Length > 0))
+                        {
+                            var stationsResults = new ContextStation[arrStations.Length];
+                            var keyValueStations = new Dictionary<long, double>();
+                            for (int z = 0; z < arrStations.Length; z++)
+                            {
+                                var sourcePointArgs = new PointEarthGeometric() { Longitude = centerWeightCoordinateOfDriveTest.X, Latitude = centerWeightCoordinateOfDriveTest.Y, CoordinateUnits = CoordinateUnits.m };
+                                var targetPointArgs = new PointEarthGeometric() { Longitude = arrStations[0].Coordinate.X, Latitude = arrStations[0].Coordinate.Y, CoordinateUnits = CoordinateUnits.m };
+                                var distance = this._earthGeometricService.GetDistance_km(in sourcePointArgs, in targetPointArgs);
+                                keyValueStations.Add(arrStations[z].Id, distance);
+                            }
+                            var orderStations = from z in keyValueStations.ToList() orderby z.Value ascending select z;
+                            var tempOrderStations = orderStations.ToArray();
+                            for (int s = 0; s < tempOrderStations.Length; s++)
+                            {
+                                var fndStations = arrStations.First(x => x.Id == tempOrderStations[s].Key);
+                                stationsResults[s] = fndStations;
+                            }
+                            GSIDGroupeStations[q] = stationsResults;
+                        }
+                    }
+                }
+            }
+            return GSIDGroupeStations;
         }
     }
 }
