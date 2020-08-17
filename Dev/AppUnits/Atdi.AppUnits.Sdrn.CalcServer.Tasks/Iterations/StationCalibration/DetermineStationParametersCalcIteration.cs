@@ -652,7 +652,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                     Freq_MHz = arrStations[d].Transmitter.Freq_MHz
                                 },
                                 Standard = arrStations[d].RealStandard,
-                                Freq_MHz = arrStations[d].Transmitter.Freq_MHz,
+                                //Freq_MHz = arrStations[d].Transmitter.Freq_MHz,
                                 MaxCorellation = (float)maxPercentCorellation.Value
                             });
                         }
@@ -1664,7 +1664,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         /// <param name="outListContextStations"></param>
         /// <param name="standard"></param>
         /// <returns></returns>
-        public List<ContextStation[]> GetOrderStationForDriveTests(ref DriveTestsResult[] arrDriveTests, ref List<ContextStation[]> outListContextStations, string standard)
+        private List<ContextStation[]> GetOrderStationForDriveTests(ref DriveTestsResult[] arrDriveTests, ref List<ContextStation[]> outListContextStations, string standard)
         {
             var GSIDGroupeStations = new List<ContextStation[]>();
             for (int w = 0; w < arrDriveTests.Length; w++)
@@ -1688,39 +1688,42 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         var arrStations = outListContextStations[j];
                         if ((arrStations != null) && (arrStations.Length > 0))
                         {
-                            for (int p = 0; p < coordinatesDrivePoint.Length; p++)
+                            if (CompareFreqStAndDriveTest(currentDriveTest, arrStations[j]))
                             {
-                                var sourcePointArgs = new PointEarthGeometric() { Longitude = coordinatesDrivePoint[p].X, Latitude = coordinatesDrivePoint[p].Y, CoordinateUnits = CoordinateUnits.m };
-                                var targetPointArgs = new PointEarthGeometric() { Longitude = arrStations[0].Coordinate.X, Latitude = arrStations[0].Coordinate.Y, CoordinateUnits = CoordinateUnits.m };
-                                if (this._earthGeometricService.GetDistance_km(in sourcePointArgs, in targetPointArgs) <= GetMinDistanceFromConfigByStandard(standard))
+                                for (int p = 0; p < coordinatesDrivePoint.Length; p++)
                                 {
-                                    // добавляем весь массив станций arrStations в случае если одна из станций, которая входит в arrStations имеет расстояние до одной из точек текущего DrivePoint меньше 1 км (берем с конфигурации)
-                                    var lstGSID = GSIDGroupeStations;
-                                    List<ContextStation> listContextStation = new List<ContextStation>();
-                                    for (int d = 0; d < lstGSID.Count; d++)
+                                    var sourcePointArgs = new PointEarthGeometric() { Longitude = coordinatesDrivePoint[p].X, Latitude = coordinatesDrivePoint[p].Y, CoordinateUnits = CoordinateUnits.m };
+                                    var targetPointArgs = new PointEarthGeometric() { Longitude = arrStations[0].Coordinate.X, Latitude = arrStations[0].Coordinate.Y, CoordinateUnits = CoordinateUnits.m };
+                                    if (this._earthGeometricService.GetDistance_km(in sourcePointArgs, in targetPointArgs) <= GetMinDistanceFromConfigByStandard(standard))
                                     {
-                                        var lstStations = lstGSID[d].ToList();
-                                        for (int s = 0; s < arrStations.Length; s++)
+                                        // добавляем весь массив станций arrStations в случае если одна из станций, которая входит в arrStations имеет расстояние до одной из точек текущего DrivePoint меньше 1 км (берем с конфигурации)
+                                        var lstGSID = GSIDGroupeStations;
+                                        List<ContextStation> listContextStation = new List<ContextStation>();
+                                        for (int d = 0; d < lstGSID.Count; d++)
                                         {
-                                            if ((lstStations.Find(x => x.Id == arrStations[s].Id)) == null)
+                                            var lstStations = lstGSID[d].ToList();
+                                            for (int s = 0; s < arrStations.Length; s++)
                                             {
-                                                listContextStation.Add(arrStations[s]);
+                                                if ((lstStations.Find(x => x.Id == arrStations[s].Id)) == null)
+                                                {
+                                                    listContextStation.Add(arrStations[s]);
+                                                }
+                                            }
+
+                                        }
+                                        if (listContextStation.Count > 0)
+                                        {
+                                            GSIDGroupeStations.Add(listContextStation.ToArray());
+                                        }
+                                        else
+                                        {
+                                            if (GSIDGroupeStations.Count == 0)
+                                            {
+                                                GSIDGroupeStations.Add(arrStations);
                                             }
                                         }
-
+                                        break;
                                     }
-                                    if (listContextStation.Count > 0)
-                                    {
-                                        GSIDGroupeStations.Add(listContextStation.ToArray());
-                                    }
-                                    else
-                                    {
-                                        if (GSIDGroupeStations.Count == 0)
-                                        {
-                                            GSIDGroupeStations.Add(arrStations);
-                                        }
-                                    }
-                                    break;
                                 }
                             }
                         }
@@ -1756,6 +1759,22 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 }
             }
             return GSIDGroupeStations;
+        }
+        private bool CompareFreqStAndDriveTest(DriveTestsResult driveTestsResult, ContextStation contextStation)
+        {
+            var FreqDT = driveTestsResult.Freq_MHz;
+            var FreqST = contextStation.Transmitter.Freq_MHz;
+            var FreqArr = contextStation.Transmitter.Freqs_MHz;
+            var BW = contextStation.Transmitter.BW_kHz / 1000.0;
+            if ((FreqST - BW <= FreqDT) && (FreqST + BW >= FreqDT)) { return true; }
+            if ((FreqArr != null) && (FreqArr.Length > 0))
+            {
+                for (int i = 0; FreqArr.Length > i; i++)
+                {
+                    if ((FreqArr[i] - BW <= FreqDT) && (FreqArr[i] + BW >= FreqDT)) { return true; }
+                }
+            }
+            return false; 
         }
     }
 }
