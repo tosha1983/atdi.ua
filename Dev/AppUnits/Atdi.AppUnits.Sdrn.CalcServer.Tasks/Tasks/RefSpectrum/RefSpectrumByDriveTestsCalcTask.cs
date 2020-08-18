@@ -553,6 +553,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                             }
 
 
+                            stationRes.Add(refSpectrumStationCalibration);
+
                         }
                         return true;
                     });
