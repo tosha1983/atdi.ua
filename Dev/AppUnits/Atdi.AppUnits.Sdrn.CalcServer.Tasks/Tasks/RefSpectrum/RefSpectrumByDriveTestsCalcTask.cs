@@ -121,6 +121,23 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
             return false;
         }
 
+        private bool CompareFreqStationForRefLevel(double Freq_MHz, ContextStation contextStation)
+        {
+            var FreqDT = Freq_MHz;
+            var FreqST = contextStation.Transmitter.Freq_MHz;
+            var FreqArr = contextStation.Transmitter.Freqs_MHz;
+            var BW = contextStation.Transmitter.BW_kHz / 1000.0;
+            if ((FreqST - BW <= FreqDT) && (FreqST + BW >= FreqDT)) { return true; }
+            if ((FreqArr != null) && (FreqArr.Length > 0))
+            {
+                for (int i = 0; FreqArr.Length > i; i++)
+                {
+                    if ((FreqArr[i] - BW <= FreqDT) && (FreqArr[i] + BW >= FreqDT)) { return true; }
+                }
+            }
+            return false;
+        }
+
 
         public void Run()
         {
@@ -631,8 +648,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                     {
                         SensorParameters sensorParameter = new SensorParameters();
                         var sensorId = this._parameters.SensorIds[i];
-
-
+                        sensorParameter.SensorId = sensorId;
                         var querySensorLocation = _infocenterDataLayer.GetBuilder<IC.SdrnServer.ISensorLocation>()
                        .From()
                        .Select(

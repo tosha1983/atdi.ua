@@ -15,11 +15,11 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 
         public double RxFeederLoss_dB;
 
-        public string SensorName;
+        //public string SensorName;
 
-        public string SensorTechId;
+        //public string SensorTechId;
 
-        public string SensorTitle;
+        //public string SensorTitle;
 
         public float Gain;
 
