@@ -168,7 +168,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                 var resultRefSpectrumByDriveTests = new ResultRefSpectrumByDriveTests();
                                 resultRefSpectrumByDriveTests.OrderId = index;
                                 resultRefSpectrumByDriveTests.TableIcsmName = contextStation.ExternalSource;
-                                resultRefSpectrumByDriveTests.IdIcsm = Convert.ToInt64(contextStation.ExternalCode);
+                                resultRefSpectrumByDriveTests.IdIcsm = Convert.ToInt32(contextStation.ExternalCode);
                                 resultRefSpectrumByDriveTests.GlobalCID = driveTest.GSID;
                                 resultRefSpectrumByDriveTests.Freq_MHz = driveTest.Freq_MHz;
                                 resultRefSpectrumByDriveTests.DateMeas = new DateTimeOffset(driveTest.MeasTime.Value);
@@ -353,6 +353,30 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                     };
                 });
 
+                var stationIdsRes = new List<long>();
+
+
+                var partstationIdsRes = BreakDownElemBlocks.BreakDown(this._parameters.StationIds);
+                for (int i = 0; i < partstationIdsRes.Count; i++)
+                {
+                    var queryStationCalibrationStaResult = _calcServerDataLayer.GetBuilder<IStationCalibrationStaResult>()
+                     .From()
+                     .Select(
+                         c => c.StationMonitoringId
+                     )
+                    .Where(c => c.Id, ConditionOperator.In, partstationIdsRes[i]);
+
+                    _calcDbScope.Executor.ExecuteAndFetch(queryStationCalibrationStaResult, readerStationCalibrationStaResult =>
+                    {
+                        while (readerStationCalibrationStaResult.Read())
+                        {
+                            stationIdsRes.Add(readerStationCalibrationStaResult.GetValue(c => c.StationMonitoringId));
+                        }
+                        return true;
+                    });
+                }
+
+                this._parameters.StationIds = stationIdsRes.ToArray();
 
                 // load stations
                 List<ContextStation> lstStations = new List<ContextStation>();
@@ -428,7 +452,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                             c => c.RECEIVER.PolarizationCode,
                             c => c.RECEIVER.Freqs_MHz
                         )
-                        .Where(c => c.CONTEXT.Id, ConditionOperator.Equal, _taskContext.ClientContextId)
+                        //.Where(c => c.CONTEXT.Id, ConditionOperator.Equal, _taskContext.ClientContextId)
                         .Where(c => c.Id, ConditionOperator.In, partStationIdsByCalcServer[i].ToArray());
 
                     var contextStation = _calcDbScope.Executor.ExecuteAndFetch(queryStation, reader =>
@@ -553,7 +577,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                           c => c.StationGcid
                       )
                      .Where(c => c.LinkToStationMonitoringId, ConditionOperator.Equal, stationRecord.Id)
-                    .Where(c => c.CALCRESULTS_STATION_CALIBRATION.RESULT.Id, ConditionOperator.Equal, this._parameters.ResultId);
+                    .Where(c => c.CALCRESULTS_STATION_CALIBRATION.Id, ConditionOperator.Equal, this._parameters.ResultId);
 
                     _calcDbScope.Executor.ExecuteAndFetch(queryStationCalibrationDriveTestResult, readerStationCalibrationDriveTestResult =>
                     {
@@ -688,14 +712,14 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                     {
                                         driveTestParameters.SensorAntenna.Tilt_deg = (float)readerAntennaPattern.GetValue(c => c.SENSOR_ANTENNA.SENSOR.Elevation);
                                     }
-                                    
+
 
 
 
                                     if (readerAntennaPattern.GetValue(c => c.DiagH) != null)
                                     {
-                                    // HH
-                                    var argsHH = new DiagrammArgs()
+                                        // HH
+                                        var argsHH = new DiagrammArgs()
                                         {
                                             AntennaPatternType = AntennaPatternType.HH,
                                             Gain = driveTestParameters.SensorAntenna.Gain_dB,
@@ -712,8 +736,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                         };
 
 
-                                    // HV
-                                    var argsHV = new DiagrammArgs()
+                                        // HV
+                                        var argsHV = new DiagrammArgs()
                                         {
                                             AntennaPatternType = AntennaPatternType.HV,
                                             Gain = driveTestParameters.SensorAntenna.Gain_dB,
@@ -729,11 +753,25 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                             driveTestParameters.SensorAntenna.HvPattern.Angle_deg = diagrammPointsResult.Where(x => x.Angle != null).Select(c => c.Angle.Value).ToArray();
                                         };
                                     }
+                                    else
+                                    {
+                                        // HH
+
+                                        driveTestParameters.SensorAntenna.HhPattern = new DataModels.Sdrn.DeepServices.RadioSystem.Stations.StationAntennaPattern();
+                                        driveTestParameters.SensorAntenna.HhPattern.Loss_dB = new float[2] { 0, 0 };
+                                        driveTestParameters.SensorAntenna.HhPattern.Angle_deg = new double[2] { 0, 350 };
+
+                                        // HV
+                                        driveTestParameters.SensorAntenna.HvPattern = new DataModels.Sdrn.DeepServices.RadioSystem.Stations.StationAntennaPattern();
+                                        driveTestParameters.SensorAntenna.HvPattern.Loss_dB = new float[2] { 0, 0 };
+                                        driveTestParameters.SensorAntenna.HvPattern.Angle_deg = new double[2] { 0, 350 };
+
+                                    }
 
                                     if (readerAntennaPattern.GetValue(c => c.DiagV) != null)
                                     {
-                                    // VH
-                                    var argsVH = new DiagrammArgs()
+                                        // VH
+                                        var argsVH = new DiagrammArgs()
                                         {
                                             AntennaPatternType = AntennaPatternType.VH,
                                             Gain = driveTestParameters.SensorAntenna.Gain_dB,
@@ -750,8 +788,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                         };
 
 
-                                    // VV
-                                    var argsVV = new DiagrammArgs()
+                                        // VV
+                                        var argsVV = new DiagrammArgs()
                                         {
                                             AntennaPatternType = AntennaPatternType.VV,
                                             Gain = driveTestParameters.SensorAntenna.Gain_dB,
@@ -766,6 +804,22 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                             driveTestParameters.SensorAntenna.VvPattern.Loss_dB = diagrammPointsResult.Where(x => x.Loss != null).Select(c => c.Loss.Value).ToArray();
                                             driveTestParameters.SensorAntenna.VvPattern.Angle_deg = diagrammPointsResult.Where(x => x.Angle != null).Select(c => c.Angle.Value).ToArray();
                                         };
+                                    }
+                                    else
+                                    {
+
+                                        // VH
+
+                                        driveTestParameters.SensorAntenna.VhPattern = new DataModels.Sdrn.DeepServices.RadioSystem.Stations.StationAntennaPattern();
+                                        driveTestParameters.SensorAntenna.VhPattern.Loss_dB = new float[2] { 0, 0 };
+                                        driveTestParameters.SensorAntenna.VhPattern.Angle_deg = new double[2] { -90, 90 };
+
+                                        // VV
+                                        driveTestParameters.SensorAntenna.VvPattern = new DataModels.Sdrn.DeepServices.RadioSystem.Stations.StationAntennaPattern();
+                                        driveTestParameters.SensorAntenna.VvPattern.Loss_dB = new float[2] { 0, 0 };
+                                        driveTestParameters.SensorAntenna.VvPattern.Angle_deg = new double[2] { -90, 90 };
+
+
                                     }
                                     break;
                                 }

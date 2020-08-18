@@ -53,7 +53,7 @@ namespace Atdi.DataModels.Sdrn.DeepServices.RadioSystem.AntennaPattern
                 BuildFromPoints(newPoints);
                 return TypePattern.FOREIGN;
             }
-            else if (split[0] == "POINTS")
+            else if ((split[0] == "POINTS") || (split[0] == "POINT"))
             {
                 BuildFromPoints(Points);
                 return TypePattern.POINTS;
@@ -148,7 +148,7 @@ namespace Atdi.DataModels.Sdrn.DeepServices.RadioSystem.AntennaPattern
             provider.NumberDecimalSeparator = ".";
             string[] split = Points.Split(new Char[] { ' ' });
 
-            if ((split[0] == "POINTS") || (split[0] == "FOREIGN"))
+            if ((split[0] == "POINTS") || (split[0] == "POINT") || (split[0] == "FOREIGN"))
             {
                 for (int k = 1; k < split.Length; k++)
                 {

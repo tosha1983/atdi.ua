@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Atdi.DataModels.Sdrn.CalcServer.Entities;
 using Atdi.Platform.Cqrs;
-using CS_ES = Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks;
+using Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks;
 
 
 namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.PivotTableConfiguration.Queries
@@ -22,11 +22,11 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.PivotTableConf
         }
         public CalcTaskModel Read(CalcTaskByResultId criterion)
         {
-            var query = _dataLayer.GetBuilder<ICalcResult>()
+            var query = _dataLayer.GetBuilder<IStationCalibrationResult>()
                 .Read()
-                .Select(c => c.TASK.CONTEXT.Id)
-                .Select(c => c.TASK.MapName)
-                .Select(c => c.StatusCode)
+                .Select(c => c.RESULT.TASK.CONTEXT.Id)
+                .Select(c => c.RESULT.TASK.MapName)
+                .Select(c => c.RESULT.StatusCode)
                 .Filter(c => c.Id, criterion.ResultId);
 
             var reader = _dataLayer.Executor.ExecuteReader(query);
@@ -35,7 +35,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.PivotTableConf
                 return null;
             }
 
-            return new CalcTaskModel() { ContextId = reader.GetValue(c => c.TASK.CONTEXT.Id), MapName = reader.GetValue(c => c.TASK.MapName) };
+            return new CalcTaskModel() { ContextId = reader.GetValue(c => c.RESULT.TASK.CONTEXT.Id), MapName = reader.GetValue(c => c.RESULT.TASK.MapName) };
         }
     }
 }

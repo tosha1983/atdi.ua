@@ -49,6 +49,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.PivotTableConf
                     .SetValue(c => c.TASK.Id, pk.Id)
                     .SetValue(c => c.ResultId, command.ResultId)
                     .SetValue(c => c.StationIds, command.StationIds)
+                    .SetValue(c => c.SensorIds, command.SensorIds)
                     .SetValue(c => c.PowerThreshold_dBm, command.PowerThreshold_dBm)
                     .SetValue(c => c.Comments, command.Comments);
                 var pk_StationCalibrationArgs = _dataLayer.Executor.Execute<IRefSpectrumByDriveTestsArgs_PK>(queryArgs);

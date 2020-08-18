@@ -20,6 +20,7 @@ using Atdi.WpfControls.EntityOrm.Controls;
 using Atdi.DataModels.Sdrn.CalcServer.Entities;
 using Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.PivotTableConfiguration.Queries;
 using System.Globalization;
+using ICSM;
 
 namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.PivotTableConfiguration
 {
@@ -160,10 +161,11 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.PivotTableConf
         {
             ReloadSensors();
             ReloadStations();
+            RedrawMap();
         }
         private void ReloadSensors()
         {
-            this.Sensors.DriveTestIds = _objectReader.Read<long[]>().By(new DriveTestByResultIds { ResultId = this.ResultId });
+            this.Sensors.SensorIds = _objectReader.Read<long[]>().By(new SensorIdsByDriveTestIds { DriveTestIds = _objectReader.Read<long[]>().By(new DriveTestByResultIds { ResultId = this.ResultId }) });
             this.Sensors.Refresh();
             this.CurrentSensor = null;
         }
@@ -206,6 +208,11 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.PivotTableConf
                     foreach (StationModel v in this._currentStations)
                         stationIds.Add(v.Id);
 
+                var sensorIds = new List<long>();
+                if (this._currentSensor != null)
+                    foreach (SensorModel v in this._currentSensors)
+                        sensorIds.Add(v.Id);
+
                 if (!ValidateData())
                     return;
 
@@ -217,7 +224,8 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.PivotTableConf
                     Comments = this._pivotTableConfiguration.Comments,
                     PowerThreshold_dBm = this._pivotTableConfiguration.IsUseDefaultThreshold ? -90 : this._pivotTableConfiguration.Threshold,
                     ResultId = this._resultId,
-                    StationIds = stationIds.ToArray()
+                    StationIds = stationIds.ToArray(),
+                    SensorIds = sensorIds.ToArray()
                 };
                 _commandDispatcher.Send(modifier);
             }
@@ -492,7 +500,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.PivotTableConf
                     if (cord.Length == 2)
                     {
                         if (double.TryParse(cord[0].Replace(".", sep).Replace(",", sep), out double lon) && double.TryParse(cord[1].Replace(".", sep).Replace(",", sep), out double lat))
-                            listLocation.Add(new Location() { Lon = lon, Lat = lat });
+                            listLocation.Add(new Location() { Lon = IMPosition.Dms2Dec(lon), Lat = IMPosition.Dms2Dec(lat) });
                     }
                 }
             }
