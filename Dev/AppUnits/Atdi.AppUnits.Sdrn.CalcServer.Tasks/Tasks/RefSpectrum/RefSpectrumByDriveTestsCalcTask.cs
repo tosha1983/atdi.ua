@@ -29,6 +29,7 @@ using Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations;
 using Atdi.Platform.Data;
 using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.AntennaPattern;
 using Atdi.Contracts.Sdrn.DeepServices.RadioSystem;
+using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations;
 
 namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 {
@@ -121,7 +122,15 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
             return false;
         }
 
-        private bool CompareFreqStationForRefLevel(double Freq_MHz, ContextStation contextStation)
+        private long? FindSensor(double Freq_MHz, StationAntenna[] stationAntennas )
+        {
+            long? id = null;
+            if ((stationAntennas != null) && (stationAntennas.Length > 0)) { return 0; }
+            else { }
+            return id;
+        }
+
+            private bool CompareFreqStationForRefLevel(double Freq_MHz, ContextStation contextStation)
         {
             var FreqDT = Freq_MHz;
             var FreqST = contextStation.Transmitter.Freq_MHz;
@@ -224,11 +233,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                     }
                     for (int j = 0; j < freqs_MHz.Length; j++)
                     {
-                        var fndSensorAntennas = sensor.SensorAntennas.ToList().Find(x => Math.Round(x.Freq_MHz, 6) >= Math.Round(freqs_MHz[j], 6));
-                        if (fndSensorAntennas == null)
-                        {
-                            continue;
-                        }
+                        var idSensor = FindSensor(freqs_MHz[j], sensor.SensorAntennas);
+   
 
                         var lstReceivedPowerCalcResult = new List<ReceivedPowerCalcResult>();
                         for (int k = 0; k < this._refSpectrumStationCalibrations.Length; k++)
