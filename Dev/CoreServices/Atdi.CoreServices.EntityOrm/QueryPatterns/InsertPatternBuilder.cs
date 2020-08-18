@@ -26,14 +26,14 @@ namespace Atdi.CoreServices.EntityOrm.QueryPatterns
 
         private static readonly IStatisticCounterKey CounterKey = STS.DefineCounterKey("ORM.Entity.Patterns.Insert");
 
-        private readonly IEntityOrm _entityOrm;
+        //private readonly IEntityOrm _entityOrm;
         private readonly DataTypeSystem _dataTypeSystem;
         private readonly IStatistics _statistics;
         private readonly IStatisticCounter _counter;
 
-        public InsertPatternBuilder(IEntityOrm entityOrm, DataTypeSystem dataTypeSystem, IStatistics statistics, ILogger logger) : base(logger)
+        public InsertPatternBuilder(DataTypeSystem dataTypeSystem, IStatistics statistics, ILogger logger) : base(logger)
         {
-            this._entityOrm = entityOrm;
+            //this._entityOrm = entityOrm;
             this._dataTypeSystem = dataTypeSystem;
             this._statistics = statistics;
             this._counter = _statistics.Counter(CounterKey);
@@ -95,31 +95,31 @@ namespace Atdi.CoreServices.EntityOrm.QueryPatterns
             return pattren;
         }
 
-        private TResult Execute<TResult, TModel>(PatternExecutionContex<TResult, TModel> executionContex, QueryInsertStatement statement, PS.InsertPattern pattern)
+        private TResult Execute<TResult, TModel>(PatternExecutionContex<TResult, TModel> executionContext, QueryInsertStatement statement, PS.InsertPattern pattern)
         {
             var result = default(TResult);
-            switch (executionContex.ResultKind)
+            switch (executionContext.ResultKind)
             {
                 case EngineExecutionResultKind.None:
-                    executionContex.Executer.Execute(pattern);
+                    executionContext.Executer.Execute(pattern);
                     break;
                 case EngineExecutionResultKind.RowsAffected:
                     var execResult = pattern.DefResult<EngineExecutionRowsAffectedResult>();
-                    executionContex.Executer.Execute(pattern);
+                    executionContext.Executer.Execute(pattern);
                     result = (TResult)(object)execResult.RowsAffected; 
                     break;
                 case EngineExecutionResultKind.Scalar:
                     // скалярный тип возвращает первичный ключ ввиде объекта IEntityName_PK
                     var scalarResult = pattern.DefResult<EngineExecutionScalarResult>();
-                    scalarResult.Value = this._entityOrm.CreatePrimaryKeyInstance(statement.InsertDecriptor.Entity); ;
-                    executionContex.Executer.Execute(pattern);
+                    scalarResult.Value = statement.InsertDecriptor.Entity.EntityOrm.CreatePrimaryKeyInstance(statement.InsertDecriptor.Entity); ;
+                    executionContext.Executer.Execute(pattern);
                     result = (TResult)scalarResult.Value;
                     break;
                 case EngineExecutionResultKind.Reader:
                     break;
                 case EngineExecutionResultKind.Custom:
                 default:
-                    throw new InvalidOperationException($"Unsupported result kind '{executionContex.ResultKind}'");
+                    throw new InvalidOperationException($"Unsupported result kind '{executionContext.ResultKind}'");
             }
             return result;
         }

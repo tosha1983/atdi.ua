@@ -8,6 +8,7 @@ namespace Atdi.Contracts.CoreServices.DataLayer
 {
     public interface IQueryStatement
     {
+
     }
 
     public interface IQueryStatement<TModel> : IQueryStatement
