@@ -43,10 +43,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             {
                 pw = 100 - Math.Pow(10, (-1.7 + 0.2 * Aooi - E_dB) / 3.5);
             }
-            else
+            else if (E_dB > 0 && E_dB <= 10)
             {
                 double pw_ = 100.0 - Math.Pow(10, (-1.7 + 0.2 * Aooi - E_dB) / 3.5);
-                double qe_ = -20.0 / E_dB * Math.Log10(-Math.Log(1 - (100.0 - pw_) / 58.21));
+                double qe_ = -2.0 * Math.Log10(-Math.Log(1 - (100.0 - pw_) / 58.21));
                 double qs = 2.05 * qe_ - 20.3;
                 double qe = 8.0 + (1.0 + 0.3 * Math.Pow(10, -E_dB / 20.0)) * Math.Pow(10, -0.7 * E_dB / 20.0) * (qs + 12.0 * (Math.Pow(10, -E_dB / 20.0) + E_dB / 800));
                 pw = 100 - 58.21 * (1 - Math.Exp(-Math.Pow(10, -qe * E_dB / 20)));
