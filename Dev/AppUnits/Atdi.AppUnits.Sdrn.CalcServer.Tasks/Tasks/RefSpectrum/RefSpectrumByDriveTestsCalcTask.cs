@@ -123,13 +123,13 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
             var FreqArr = contextStation.Transmitter.Freqs_MHz;
             var BW = contextStation.Transmitter.BW_kHz / 1000.0;
             if ((FreqST - BW <= FreqDT) && (FreqST + BW >= FreqDT)) { return true; }
-            if ((FreqArr != null) && (FreqArr.Length > 0))
-            {
-                for (int i = 0; FreqArr.Length > i; i++)
-                {
-                    if ((FreqArr[i] - BW <= FreqDT) && (FreqArr[i] + BW >= FreqDT)) { return true; }
-                }
-            }
+            //if ((FreqArr != null) && (FreqArr.Length > 0))
+            //{
+            //    for (int i = 0; FreqArr.Length > i; i++)
+            //    {
+            //        if ((FreqArr[i] - BW <= FreqDT) && (FreqArr[i] + BW >= FreqDT)) { return true; }
+            //    }
+            //}
             return false;
         }
 
@@ -234,6 +234,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                             var refSpectrumStation = this._refSpectrumStationCalibrations[k];
                             if ((CompareFreqStationForRefLevel(freqs_MHz[j], refSpectrumStation.contextStation))==false)
                             {
+                                k++;
                                 continue;
                             }
                             else
