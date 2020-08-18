@@ -266,27 +266,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                                            contextStation.Antenna, _transformation.ConvertCoordinateToAtdi(in wgs84Coordinate, this._parameters.Projection),
                                                             contextStation.Site.Altitude, fndSensorAntennas, sensor.Coordinate, sensor.RxFeederLoss_dB, refSpectrumStation.Freq_MHz, sensor.SensorAntennaHeight_m);
 
-                                //var receivedPowerCalcData = new ReceivedPowerCalcData();
-                                //receivedPowerCalcData.BuildingContent = mapData.BuildingContent;
-                                //receivedPowerCalcData.ClutterContent = mapData.ClutterContent;
-                                //receivedPowerCalcData.CluttersDesc = _mapRepository.GetCluttersDesc(this._calcDbScope, mapData.Id);
-                                //receivedPowerCalcData.MapArea = mapData.Area;
-                                //receivedPowerCalcData.PropagationModel = propagationModel;
-                                //receivedPowerCalcData.ReliefContent = mapData.ReliefContent;
-                                //receivedPowerCalcData.Transmitter = contextStation.Transmitter;
-                                //receivedPowerCalcData.TxAntenna = contextStation.Antenna;
-                              
-                                //receivedPowerCalcData.TxCoordinate = _transformation.ConvertCoordinateToAtdi(in wgs84Coordinate, this._parameters.Projection);
-                                //receivedPowerCalcData.TxAltitude_m = contextStation.Site.Altitude;
 
-                              
-
-                                //receivedPowerCalcData.RxAntenna = fndSensorAntennas;
-                                //receivedPowerCalcData.RxCoordinate = sensor.Coordinate;
-                                //receivedPowerCalcData.RxFeederLoss_dB = sensor.RxFeederLoss_dB;
-                                //receivedPowerCalcData.TxFreq_Mhz = refSpectrumStation.Freq_MHz;
-                                //receivedPowerCalcData.RxAltitude_m = sensor.SensorAntennaHeight_m;
-                                
 
                                 var resultRefSpectrumBySensors = new ResultRefSpectrumBySensors();
                                 resultRefSpectrumBySensors.OrderId = index;
@@ -488,7 +468,19 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                          c => c.Freq_MHz,
                          c => c.Old_Freq_MHz,
                          c => c.Standard,
-                         c => c.RealGsid
+                         c => c.RealGsid,
+                         c => c.New_Altitude_m,
+                         c => c.Old_Altitude_m,
+                         c => c.New_Tilt_deg,
+                         c => c.Old_Tilt_deg,
+                         c => c.New_Azimuth_deg,
+                         c => c.Old_Azimuth_deg,
+                         c => c.New_Lon_deg,
+                         c => c.Old_Lon_deg,
+                         c => c.New_Lat_deg,
+                         c => c.Old_Lat_deg,
+                         c => c.New_Power_dB,
+                         c => c.Old_Power_dB
                      )
                     .Where(c => c.Id, ConditionOperator.In, partstationIdsRes[i]);
 
@@ -496,16 +488,71 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                     {
                         while (readerStationCalibrationStaResult.Read())
                         {
-                            stationRes.Add(
-                                new RefSpectrumStationCalibration()
-                                {
-                                    StationMonitoringId = readerStationCalibrationStaResult.GetValue(c => c.StationMonitoringId),
-                                    Freq_MHz = readerStationCalibrationStaResult.GetValue(c => c.Freq_MHz),
-                                    Old_Freq_MHz = readerStationCalibrationStaResult.GetValue(c => c.Old_Freq_MHz),
-                                    Standard = readerStationCalibrationStaResult.GetValue(c => c.Standard),
-                                    RealGsid = readerStationCalibrationStaResult.GetValue(c => c.RealGsid)
-                                }
-                                );
+                            RefSpectrumStationCalibration refSpectrumStationCalibration = new RefSpectrumStationCalibration()
+                            {
+                                StationMonitoringId = readerStationCalibrationStaResult.GetValue(c => c.StationMonitoringId),
+                                Freq_MHz = readerStationCalibrationStaResult.GetValue(c => c.Freq_MHz),
+                                Old_Freq_MHz = readerStationCalibrationStaResult.GetValue(c => c.Old_Freq_MHz),
+                                Standard = readerStationCalibrationStaResult.GetValue(c => c.Standard),
+                                RealGsid = readerStationCalibrationStaResult.GetValue(c => c.RealGsid)
+                            };
+
+                            if (readerStationCalibrationStaResult.GetValue(c => c.New_Altitude_m).HasValue)
+                            {
+                                refSpectrumStationCalibration.Altitude_m = readerStationCalibrationStaResult.GetValue(c => c.New_Altitude_m).Value;
+                            }
+                            else 
+                            {
+                                refSpectrumStationCalibration.Altitude_m = readerStationCalibrationStaResult.GetValue(c => c.Old_Altitude_m);
+                            }
+
+
+                            if (readerStationCalibrationStaResult.GetValue(c => c.New_Tilt_deg).HasValue)
+                            {
+                                refSpectrumStationCalibration.Tilt_Deg = readerStationCalibrationStaResult.GetValue(c => c.New_Tilt_deg).Value;
+                            }
+                            else
+                            {
+                                refSpectrumStationCalibration.Tilt_Deg = readerStationCalibrationStaResult.GetValue(c => c.Old_Tilt_deg);
+                            }
+
+                            if (readerStationCalibrationStaResult.GetValue(c => c.New_Azimuth_deg).HasValue)
+                            {
+                                refSpectrumStationCalibration.Azimuth_deg = readerStationCalibrationStaResult.GetValue(c => c.New_Azimuth_deg).Value;
+                            }
+                            else
+                            {
+                                refSpectrumStationCalibration.Azimuth_deg = readerStationCalibrationStaResult.GetValue(c => c.Old_Azimuth_deg);
+                            }
+
+                            if (readerStationCalibrationStaResult.GetValue(c => c.New_Lon_deg).HasValue)
+                            {
+                                refSpectrumStationCalibration.Lon_deg = readerStationCalibrationStaResult.GetValue(c => c.New_Lon_deg).Value;
+                            }
+                            else
+                            {
+                                refSpectrumStationCalibration.Lon_deg = readerStationCalibrationStaResult.GetValue(c => c.Old_Lon_deg);
+                            }
+
+                            if (readerStationCalibrationStaResult.GetValue(c => c.New_Lat_deg).HasValue)
+                            {
+                                refSpectrumStationCalibration.Lat_deg = readerStationCalibrationStaResult.GetValue(c => c.New_Lat_deg).Value;
+                            }
+                            else
+                            {
+                                refSpectrumStationCalibration.Lat_deg = readerStationCalibrationStaResult.GetValue(c => c.Old_Lat_deg);
+                            }
+
+                            if (readerStationCalibrationStaResult.GetValue(c => c.New_Power_dB).HasValue)
+                            {
+                                refSpectrumStationCalibration.Power_dB = readerStationCalibrationStaResult.GetValue(c => c.New_Power_dB).Value;
+                            }
+                            else
+                            {
+                                refSpectrumStationCalibration.Power_dB = readerStationCalibrationStaResult.GetValue(c => c.Old_Power_dB);
+                            }
+
+
                         }
                         return true;
                     });
@@ -685,6 +732,16 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                             if (refSpectrumStationCalibration != null)
                             {
                                 refSpectrumStationCalibration.contextStation = stationRecord;
+                                refSpectrumStationCalibration.contextStation.RealGsid = refSpectrumStationCalibration.RealGsid;
+                                refSpectrumStationCalibration.contextStation.Antenna.Azimuth_deg = refSpectrumStationCalibration.Azimuth_deg;
+                                //refSpectrumStationCalibration.contextStation.Antenna.Freq_MHz = (float)refSpectrumStationCalibration.Freq_MHz;
+                                refSpectrumStationCalibration.contextStation.Antenna.Tilt_deg = refSpectrumStationCalibration.Tilt_Deg;
+                                refSpectrumStationCalibration.contextStation.Transmitter.Freq_MHz = (float)refSpectrumStationCalibration.Freq_MHz;
+                                refSpectrumStationCalibration.contextStation.Transmitter.MaxPower_dBm = refSpectrumStationCalibration.Power_dB;
+                                refSpectrumStationCalibration.contextStation.Site = new Wgs84Site();
+                                refSpectrumStationCalibration.contextStation.Site.Altitude = refSpectrumStationCalibration.Altitude_m;
+                                refSpectrumStationCalibration.contextStation.Site.Longitude = refSpectrumStationCalibration.Lon_deg;
+                                refSpectrumStationCalibration.contextStation.Site.Latitude = refSpectrumStationCalibration.Lat_deg;
                             }
 
                             lstStations.Add(stationRecord);

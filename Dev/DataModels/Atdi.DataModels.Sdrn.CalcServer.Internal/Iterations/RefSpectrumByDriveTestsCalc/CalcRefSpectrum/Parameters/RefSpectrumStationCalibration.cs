@@ -16,5 +16,11 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
         public double Freq_MHz;
         public string Standard;
         public ContextStation contextStation;
+        public int Altitude_m;
+        public float Tilt_Deg;
+        public float Azimuth_deg;
+        public double Lat_deg;
+        public double Lon_deg;
+        public float Power_dB;
     }
 }
