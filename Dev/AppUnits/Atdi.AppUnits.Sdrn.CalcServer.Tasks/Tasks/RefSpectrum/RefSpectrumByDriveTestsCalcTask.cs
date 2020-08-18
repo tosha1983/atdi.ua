@@ -235,7 +235,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                     for (int j = 0; j < freqs_MHz.Length; j++)
                     {
                         var idSensor = FindSensor(freqs_MHz[j], sensor.SensorAntennas);
-   
+                        if (idSensor==null)
+                        {
+                            continue;
+                        }
+                        var fndSensorAntennas = sensor.SensorAntennas[idSensor.Value];
 
                         var lstReceivedPowerCalcResult = new List<ReceivedPowerCalcResult>();
                         for (int k = 0; k < this._refSpectrumStationCalibrations.Length; k++)
@@ -344,11 +348,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                         {
                             for (int n = 0; n < percentTimeForGainCalcData.StationData.Length; n++)
                             {
-                                var fndStationData = listResultRefSpectrumBySensors.Find(x =>  Math.Round(x.Freq_MHz,6) == Math.Round(percentTimeForGainCalcData.StationData[n].Frequency_Mhz.Value,6));
-                                if (fndStationData != null)
-                                {
-                                    fndStationData.Percent = resultPercent[n];
-                                }
+                                listResultRefSpectrumBySensors[n].Percent = resultPercent[n];
                             }
                         }
                     }
