@@ -125,7 +125,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
         private long? FindSensor(double Freq_MHz, StationAntenna[] stationAntennas )
         {
             long? id = null;
-            if ((stationAntennas != null) && (stationAntennas.Length > 0)) { return 0; }
+            if ((stationAntennas != null) && (stationAntennas.Length > 0))
+            {return 0;}
             else { }
             return id;
         }
@@ -137,13 +138,13 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
             var FreqArr = contextStation.Transmitter.Freqs_MHz;
             var BW = contextStation.Transmitter.BW_kHz / 1000.0;
             if ((FreqST - BW <= FreqDT) && (FreqST + BW >= FreqDT)) { return true; }
-            if ((FreqArr != null) && (FreqArr.Length > 0))
-            {
-                for (int i = 0; FreqArr.Length > i; i++)
-                {
-                    if ((FreqArr[i] - BW <= FreqDT) && (FreqArr[i] + BW >= FreqDT)) { return true; }
-                }
-            }
+            //if ((FreqArr != null) && (FreqArr.Length > 0))
+            //{
+            //    for (int i = 0; FreqArr.Length > i; i++)
+            //    {
+            //        if ((FreqArr[i] - BW <= FreqDT) && (FreqArr[i] + BW >= FreqDT)) { return true; }
+            //    }
+            //}
             return false;
         }
 
