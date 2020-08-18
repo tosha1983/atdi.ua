@@ -208,6 +208,11 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.PivotTableConf
                     foreach (StationModel v in this._currentStations)
                         stationIds.Add(v.Id);
 
+                var sensorIds = new List<long>();
+                if (this._currentSensor != null)
+                    foreach (SensorModel v in this._currentSensors)
+                        sensorIds.Add(v.Id);
+
                 if (!ValidateData())
                     return;
 
@@ -219,7 +224,8 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.PivotTableConf
                     Comments = this._pivotTableConfiguration.Comments,
                     PowerThreshold_dBm = this._pivotTableConfiguration.IsUseDefaultThreshold ? -90 : this._pivotTableConfiguration.Threshold,
                     ResultId = this._resultId,
-                    StationIds = stationIds.ToArray()
+                    StationIds = stationIds.ToArray(),
+                    SensorIds = sensorIds.ToArray()
                 };
                 _commandDispatcher.Send(modifier);
             }
