@@ -826,7 +826,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 
                                 if (readerAntennaPattern.GetValue(c => c.SENSOR_ANTENNA.SENSOR.Elevation).HasValue)
                                 {
-                                    sensorAntenna.Freq_MHz = (float)readerAntennaPattern.GetValue(c => c.Freq)*1000;
+                                    sensorAntenna.Freq_MHz = (float)readerAntennaPattern.GetValue(c => c.Freq);
                                 }
 
 
