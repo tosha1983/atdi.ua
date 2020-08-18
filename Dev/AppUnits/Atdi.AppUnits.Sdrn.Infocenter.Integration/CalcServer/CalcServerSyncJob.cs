@@ -179,9 +179,36 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration.CalcServer
 					
 				var result = calcsDbScope.Executor.ExecuteAndFetch(resultQuery, reader =>
 				{
-					
+					var maxFreq = (double?)null;
+					var minFreq = (double?)null;
+					var count = 0;
+					var sensors = new HashSet<long>();
 					while (reader.Read())
 					{
+						var freq = reader.GetValue(c => c.Freq_MHz);
+						var sensorId = reader.GetValue(c => c.IdSensor);
+
+						sensors.Add(sensorId);
+
+						if (!maxFreq.HasValue)
+						{
+							maxFreq = freq;
+						}
+						if (!minFreq.HasValue)
+						{
+							minFreq = freq;
+						}
+						if (maxFreq < freq)
+						{
+							maxFreq = freq;
+						}
+						if (minFreq > freq)
+						{
+							minFreq = freq;
+						}
+
+						++count;
+
 						insQuery
 							.SetValue(c => c.HEAD_REF_SPECTRUM.Id, headPk.Id)
 							.SetValue(c => c.Freq_MHz, reader.GetValue(c => c.Freq_MHz))
@@ -197,6 +224,15 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration.CalcServer
 						var pk = sdrnsDbScope.Executor.Execute<ES_SD.IeStation.IRefSpectrum_PK>(insQuery);
 					}
 
+					var updHeadQuery = _sdrnsDataLayer.GetBuilder<ES_SD.IeStation.IHeadRefSpectrum>()
+						.Update()
+						.SetValue(c => c.MaxFreqMHz, maxFreq)
+						.SetValue(c => c.MinFreqMHz, minFreq)
+						.SetValue(c => c.CountImportRecords, count)
+						.SetValue(c => c.CountSensors, sensors.Count)
+						.Where(c => c.Id, ConditionOperator.Equal, headPk.Id)
+					;
+					sdrnsDbScope.Executor.Execute(updHeadQuery);
 					return true;
 				});
 

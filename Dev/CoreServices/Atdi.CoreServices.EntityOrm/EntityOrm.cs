@@ -1032,7 +1032,7 @@ namespace Atdi.CoreServices.EntityOrm
                 throw new InvalidOperationException($"The entity name (BaseEntity attribute) is not defined in the inheritance entity '{entityDef.Name}'");
             }
 
-            var entityMetadata = new EntityMetadata
+            var entityMetadata = new EntityMetadata(this)
             {
                 Name = entityPath.Name,
                 QualifiedName = entityPath.QualifiedName,
