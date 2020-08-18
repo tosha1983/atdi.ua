@@ -12,6 +12,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.PivotTableConf
         public long ContextId;
         public Guid OwnerId;
         public long ResultId;
+        public long[] SensorIds;
         public long[] StationIds;
         public float PowerThreshold_dBm;
         public string Comments;
