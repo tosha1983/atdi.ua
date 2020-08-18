@@ -264,7 +264,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                 resultRefSpectrumBySensors.Freq_MHz = refSpectrumStation.Freq_MHz;
                                 if (refSpectrumStation.DateTimeMeas != null)
                                 {
-                                    resultRefSpectrumBySensors.DateMeas = new DateTimeOffset(refSpectrumStation.DateTimeMeas.Value);
+                                    resultRefSpectrumBySensors.DateMeas = refSpectrumStation.DateTimeMeas.Value;
                                 }
                                 resultRefSpectrumBySensors.IdSensor = sensorIds[i].Value;
 

@@ -2,7 +2,7 @@
 (
   ID					NUMBER(15)                NOT NULL,
   ORDER_ID				NUMBER(15)                NOT NULL,
-  RESULT_REF_SPECTRUM_ID      NUMBER(15)                NOT NULL,
+  RESULT_REF_SPECTRUM_ID      NUMBER(15)           NOT NULL,
   ID_ICSM				NUMBER(15)                NOT NULL,
   TABLE_ICSM_NAME		NVARCHAR2(50)		      NOT NULL,
   ID_SENSOR				NUMBER(15)                NOT NULL,
@@ -10,7 +10,7 @@
   FREQ_MHZ				NUMBER(30,10)             NOT NULL,
   LEVEL_DBM				NUMBER(30,10)             NOT NULL,
   PERCENT				NUMBER(30,10)             NOT NULL,
-  DATE_MEAS				TIMESTAMP(7)			  NOT NULL
+  DATE_MEAS				DATE   	   		          NOT NULL
 )
 TABLESPACE USERS
 PCTUSED    0

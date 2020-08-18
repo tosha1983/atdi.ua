@@ -23,7 +23,7 @@
     <Field Name="Freq_MHz" SourceType="Column" Required="true" SourceName="FREQ_MHZ" DataType="Double.30.10" Title="Freq, MHz" Desc="The Freq in MHz"/>
     <Field Name="Level_dBm" SourceType="Column" Required="true" SourceName="LEVEL_DBM" DataType="Double.30.10" Title="Level, dBm" Desc="The level, dBm"/>
     <Field Name="Percent" SourceType="Column" Required="true" SourceName="PERCENT" DataType="Double.30.10" Title="Percent, %" Desc="The percent, %"/>
-    <Field Name="DateMeas" DataType="DateTimeOffset" SourceName="DATE_MEAS" SourceType="Column" Desc="The date meas" Title="Date meas" Required="true"/>
+    <Field Name="DateMeas" DataType="DateTime" SourceName="DATE_MEAS" SourceType="Column" Desc="The date meas" Title="Date meas" Required="true"/>
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>

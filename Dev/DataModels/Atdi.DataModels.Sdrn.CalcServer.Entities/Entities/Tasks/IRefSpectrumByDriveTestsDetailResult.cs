@@ -24,7 +24,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks
         double Freq_MHz { get; set; }
         double Level_dBm { get; set; }
         double Percent { get; set; }
-        DateTimeOffset DateMeas { get; set; }
+        DateTime DateMeas { get; set; }
         IRefSpectrumByDriveTestsResult RESULT_REF_SPECTRUM { get; set; }
     }
 
