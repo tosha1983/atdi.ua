@@ -224,7 +224,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                     }
                     for (int j = 0; j < freqs_MHz.Length; j++)
                     {
-                        var fndSensorAntennas = sensor.SensorAntennas.ToList().Find(x => Math.Round(x.Freq_MHz, 6) == Math.Round(freqs_MHz[j], 6));
+                        var fndSensorAntennas = sensor.SensorAntennas.ToList().Find(x => Math.Round(x.Freq_MHz, 6) >= Math.Round(freqs_MHz[j], 6));
                         if (fndSensorAntennas == null)
                         {
                             continue;
