@@ -29,7 +29,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         /// <param name="f_GHz">transmitter frequency, GHz</param>
         /// <param name="hTx_m">transmitter antenna height, m</param>
         /// <param name="hRx_m">receiver antenna height, m</param>
-        /// <returns></returns>
+        /// <returns>pw in percent</returns>
         private double CalcPw(double E_dB, double d_km, double f_GHz, double hTx_m, double hRx_m)
         {
             int dN1 = -400; // taken from ITU-R-P.453 pic 12
@@ -43,16 +43,22 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             {
                 pw = 100 - Math.Pow(10, (-1.7 + 0.2 * Aooi - E_dB) / 3.5);
             }
-            else
+            else if (E_dB > 0 && E_dB <= 10)
             {
                 double pw_ = 100.0 - Math.Pow(10, (-1.7 + 0.2 * Aooi - E_dB) / 3.5);
-                double qe_ = -20.0 / E_dB * Math.Log10(-Math.Log(1 - (100.0 - pw_) / 58.21));
+                double qe_ = -2.0 * Math.Log10(-Math.Log(1 - (100.0 - pw_) / 58.21));
                 double qs = 2.05 * qe_ - 20.3;
                 double qe = 8.0 + (1.0 + 0.3 * Math.Pow(10, -E_dB / 20.0)) * Math.Pow(10, -0.7 * E_dB / 20.0) * (qs + 12.0 * (Math.Pow(10, -E_dB / 20.0) + E_dB / 800));
                 pw = 100 - 58.21 * (1 - Math.Exp(-Math.Pow(10, -qe * E_dB / 20)));
             }
             return pw;
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="taskContext"></param>
+        /// <param name="data"></param>
+        /// <returns>returns P_pc in percent</returns>
         public double[] Run(ITaskContext taskContext, PercentTimeForGainCalcData data)
         {
             double[] P_pc = new double[data.StationData.Length];
