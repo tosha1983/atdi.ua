@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
-	public class ResultRefSpectrumByDriveTests 
+	public class ResultRefSpectrumBySensors
     {
         public long OrderId { get; set; }
         public string TableIcsmName { get; set; }
