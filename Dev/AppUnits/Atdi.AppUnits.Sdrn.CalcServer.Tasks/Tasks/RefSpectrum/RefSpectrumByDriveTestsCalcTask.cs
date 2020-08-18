@@ -257,37 +257,37 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                 }
 
 
-                if (skipDriveTests.Count > 0)
-                {
-                    // справочник с данными по стандарту и количеству базовых станций, которые были пропущены по причине невыполнения условия (resulLevelCalc.Level_dBm.Value < this._parameters.PowerThreshold_dBm)
-                    string baseStations = "";
-                    var tempContextStations = _refSpectrumStationCalibrations.Select(v => v.contextStation);
-                    if (tempContextStations != null)
-                    {
-                        var standards = tempContextStations.Select(x => x.Standard).Distinct().ToArray();
-                        for (int n = 0; n < standards.Length; n++)
-                        {
-                            var allDriveTestsByStandard = tempContextStations.ToList().FindAll(x => x.Standard == standards[n]);
-                            if ((allDriveTestsByStandard != null) && (allDriveTestsByStandard.Count > 0))
-                            {
-                                var distinctDriveTests = allDriveTestsByStandard.Select(x => x.RealGsid).Distinct();
-                                if ((distinctDriveTests != null) && (distinctDriveTests.Count() > 0))
-                                {
-                                    baseStations += $"{standards[n]}: {distinctDriveTests.Count()} base stations;" + Environment.NewLine;
-                                }
-                            }
-                        }
-                        string message = "The following emission sources have too small signal level and are not associated with any sensor:" + Environment.NewLine;
-                        message += baseStations;
-                        message += "Please check the power threshold value" + Environment.NewLine;
-                        this._taskContext.SendEvent(new CalcResultEvent
-                        {
-                            Level = CalcResultEventLevel.Warning,
-                            Context = "RefSpectrumByDriveTestsCalcTask",
-                            Message = message
-                        });
-                    }
-                }
+                //if (skipDriveTests.Count > 0)
+                //{
+                //    // справочник с данными по стандарту и количеству базовых станций, которые были пропущены по причине невыполнения условия (resulLevelCalc.Level_dBm.Value < this._parameters.PowerThreshold_dBm)
+                //    string baseStations = "";
+                //    var tempContextStations = _refSpectrumStationCalibrations.Select(v => v.contextStation);
+                //    if (tempContextStations != null)
+                //    {
+                //        var standards = tempContextStations.Select(x => x.Standard).Distinct().ToArray();
+                //        for (int n = 0; n < standards.Length; n++)
+                //        {
+                //            var allDriveTestsByStandard = tempContextStations.ToList().FindAll(x => x.Standard == standards[n]);
+                //            if ((allDriveTestsByStandard != null) && (allDriveTestsByStandard.Count > 0))
+                //            {
+                //                var distinctDriveTests = allDriveTestsByStandard.Select(x => x.RealGsid).Distinct();
+                //                if ((distinctDriveTests != null) && (distinctDriveTests.Count() > 0))
+                //                {
+                //                    baseStations += $"{standards[n]}: {distinctDriveTests.Count()} base stations;" + Environment.NewLine;
+                //                }
+                //            }
+                //        }
+                //        string message = "The following emission sources have too small signal level and are not associated with any sensor:" + Environment.NewLine;
+                //        message += baseStations;
+                //        message += "Please check the power threshold value" + Environment.NewLine;
+                //        this._taskContext.SendEvent(new CalcResultEvent
+                //        {
+                //            Level = CalcResultEventLevel.Warning,
+                //            Context = "RefSpectrumByDriveTestsCalcTask",
+                //            Message = message
+                //        });
+                //    }
+                //}
 
 
                 ///// запись результатов
