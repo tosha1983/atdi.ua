@@ -8,10 +8,13 @@ using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
-	public class RefSpectrumStationAndDriveTest
+	public class RefSpectrumStationCalibration
     {
-        public ContextStation  ContextStation;
-
-        public DriveTestParameters  DriveTestParameters;
+        public string RealGsid;
+        public long StationMonitoringId;
+        public double Old_Freq_MHz;
+        public double Freq_MHz;
+        public string Standard;
+        public ContextStation contextStation;
     }
 }

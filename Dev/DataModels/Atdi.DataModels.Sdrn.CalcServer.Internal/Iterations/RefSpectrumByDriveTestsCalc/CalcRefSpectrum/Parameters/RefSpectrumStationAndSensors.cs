@@ -8,20 +8,10 @@ using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
-	public class RefSpectrumParameters
+	public class RefSpectrumStationAndSensors
     {
-        public long ResultId;
+        public ContextStation  ContextStation;
 
-        public float PowerThreshold_dBm;
-
-        public long[] StationIds;
-
-        public long[] SensorIds;
-
-        public string Comments;
-
-        public string Projection;
-
-        public string MapName;
+        public SensorParameters  SensorParameters;
     }
 }

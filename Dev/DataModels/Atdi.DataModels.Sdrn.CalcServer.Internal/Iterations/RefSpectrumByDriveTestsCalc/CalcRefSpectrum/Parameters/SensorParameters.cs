@@ -8,17 +8,8 @@ using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
-	public class DriveTestParameters
+	public class SensorParameters
     {
-        public string GSID;
-
-        public double Freq_MHz;
-
-        public string Standard;
-
-        public int CountPoints;
-
-        public long DriveTestId;
 
         public long? SensorId;
 
@@ -30,8 +21,6 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 
         public string SensorTitle;
 
-        public float MaxCorrelation;
-
         public float Gain;
 
         public float Loss;
@@ -41,8 +30,6 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
         public float SensorAntennaHeight_m;
 
         public AtdiCoordinate Coordinate;
-
-        public DateTime? MeasTime;
 
     }
 }
