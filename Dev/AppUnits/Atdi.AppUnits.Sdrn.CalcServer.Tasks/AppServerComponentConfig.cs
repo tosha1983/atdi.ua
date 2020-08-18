@@ -88,5 +88,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
         [ComponentConfigProperty("Thresholds.RefractivityGradient")]
         public int? ThresholdsRefractivityGradient { get; set; }
 
+        public string StandardsForDuplicateStations { get; set; }
+
     }
 }
