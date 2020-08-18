@@ -104,6 +104,23 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
             this.LoadTaskParameters();
         }
 
+        private bool CompareFreqSt(double Freq_MHz, ContextStation contextStation)
+        {
+            var FreqDT = Freq_MHz;
+            var FreqST = contextStation.Transmitter.Freq_MHz;
+            var FreqArr = contextStation.Transmitter.Freqs_MHz;
+            var BW = contextStation.Transmitter.BW_kHz / 1000.0;
+            if ((FreqST - BW <= FreqDT) && (FreqST + BW >= FreqDT)) { return true; }
+            if ((FreqArr != null) && (FreqArr.Length > 0))
+            {
+                for (int i = 0; FreqArr.Length > i; i++)
+                {
+                    if ((FreqArr[i] - BW <= FreqDT) && (FreqArr[i] + BW >= FreqDT)) { return true; }
+                }
+            }
+            return false;
+        }
+
 
         public void Run()
         {
@@ -130,7 +147,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                         for (int k = 0; k < this._refSpectrumStationCalibrations.Length; k++)
                         {
                             var refSpectrumStation = this._refSpectrumStationCalibrations[k];
-                            if (((refSpectrumStation.Freq_MHz == freqs_MHz[j])) == false)
+                            if ((CompareFreqSt(freqs_MHz[j], refSpectrumStation.contextStation))==false)
                             {
                                 continue;
                             }
@@ -172,7 +189,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                 resultRefSpectrumBySensors.IdIcsm = Convert.ToInt32(contextStation.ExternalCode);
                                 resultRefSpectrumBySensors.GlobalCID = refSpectrumStation.RealGsid;
                                 resultRefSpectrumBySensors.Freq_MHz = refSpectrumStation.Freq_MHz;
-                                resultRefSpectrumBySensors.DateMeas = new DateTimeOffset(DateTime.Now);
+                                resultRefSpectrumBySensors.DateMeas = DateTimeOffset.Now;
                                 resultRefSpectrumBySensors.IdSensor = sensorIds[i].Value;
 
                                 // вызов итерации определения уровня сигнала Level
