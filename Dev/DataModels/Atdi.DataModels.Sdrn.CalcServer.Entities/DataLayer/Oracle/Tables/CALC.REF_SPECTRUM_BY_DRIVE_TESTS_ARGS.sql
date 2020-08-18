@@ -4,7 +4,8 @@
   TASK_ID             NUMBER(15)                NOT NULL,
   COMMENTS NVARCHAR2(2000)  ,
   POWER  NUMBER(22,8)       ,
-  STATION_IDS  BLOB         
+  STATION_IDS  BLOB        ,
+  SENSOR_IDS  BLOB        
 )
 TABLESPACE USERS
 PCTUSED    0

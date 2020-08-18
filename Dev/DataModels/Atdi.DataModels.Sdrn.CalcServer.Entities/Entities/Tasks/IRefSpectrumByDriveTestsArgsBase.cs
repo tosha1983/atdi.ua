@@ -12,6 +12,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks
     public interface IRefSpectrumByDriveTestsArgsBase
     {
         long ResultId { get; set; }
+        long[] SensorIds { get; set; }
         long[] StationIds { get; set; }
         float PowerThreshold_dBm { get; set; }
         string Comments { get; set; }
