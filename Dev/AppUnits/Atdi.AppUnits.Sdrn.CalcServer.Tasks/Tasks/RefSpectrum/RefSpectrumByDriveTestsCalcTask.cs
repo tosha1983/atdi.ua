@@ -105,22 +105,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
             this.LoadTaskParameters();
         }
 
-        //private bool CompareFreqSt(double Freq_MHz, ContextStation contextStation)
-        //{
-        //    var FreqDT = Freq_MHz;
-        //    var FreqST = contextStation.Transmitter.Freq_MHz;
-        //    var FreqArr = contextStation.Transmitter.Freqs_MHz;
-        //    var BW = contextStation.Transmitter.BW_kHz / 1000.0;
-        //    if ((FreqST - BW <= FreqDT) && (FreqST + BW >= FreqDT)) { return true; }
-        //    if ((FreqArr != null) && (FreqArr.Length > 0))
-        //    {
-        //        for (int i = 0; FreqArr.Length > i; i++)
-        //        {
-        //            if ((FreqArr[i] - BW <= FreqDT) && (FreqArr[i] + BW >= FreqDT)) { return true; }
-        //        }
-        //    }
-        //    return false;
-        //}
+
 
         private long? FindSensor(double Freq_MHz, StationAntenna[] stationAntennas )
         {
@@ -242,8 +227,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                         var fndSensorAntennas = sensor.SensorAntennas[idSensor.Value];
 
                         var lstReceivedPowerCalcResult = new List<ReceivedPowerCalcResult>();
-                        for (int k = 0; k < this._refSpectrumStationCalibrations.Length; k++)
+                        for (int k = 0; k < this._refSpectrumStationCalibrations.Length;)
                         {
+                            bool isDeleteStation = false;
+
                             var refSpectrumStation = this._refSpectrumStationCalibrations[k];
                             if ((CompareFreqStationForRefLevel(freqs_MHz[j], refSpectrumStation.contextStation))==false)
                             {
@@ -274,7 +261,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                 resultRefSpectrumBySensors.IdIcsm = Convert.ToInt32(contextStation.ExternalCode);
                                 resultRefSpectrumBySensors.GlobalCID = refSpectrumStation.RealGsid;
                                 resultRefSpectrumBySensors.Freq_MHz = refSpectrumStation.Freq_MHz;
-                                resultRefSpectrumBySensors.DateMeas = DateTimeOffset.Now;
+                                if (refSpectrumStation.DateTimeMeas != null)
+                                {
+                                    resultRefSpectrumBySensors.DateMeas = new DateTimeOffset(refSpectrumStation.DateTimeMeas.Value);
+                                }
                                 resultRefSpectrumBySensors.IdSensor = sensorIds[i].Value;
 
                                 // вызов итерации определения уровня сигнала Level
@@ -296,6 +286,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                 index++;
                                 lstReceivedPowerCalcResult.Add(resulLevelCalc);
                                 listResultRefSpectrumBySensors.Add(resultRefSpectrumBySensors);
+
+                                isDeleteStation = true;
                             }
 
 
@@ -315,6 +307,15 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                     }
                                 });
                             }
+                            if (isDeleteStation)
+                            {
+                                List<RefSpectrumStationCalibration> tmp =_refSpectrumStationCalibrations.ToList();
+                                tmp.RemoveAt(k);
+                               _refSpectrumStationCalibrations = tmp.ToArray();
+                                k = 0;
+                                continue;
+                            }
+                            k++;
                         }
 
                         var percentTimeForGainCalcData = new PercentTimeForGainCalcData();
@@ -418,7 +419,36 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
             }
         }
 
-
+        private DateTime? GetDateTimeMeas(long[] infocMeasResults)
+        {
+            DateTime? dateTimeMeas = null;
+            var partResultIds = BreakDownElemBlocks.BreakDown(infocMeasResults);
+            for (int i = 0; i < partResultIds.Count; i++)
+            {
+                var driveTests = new List<DriveTestsResult>();
+                var queryDriveTest = _infocenterDataLayer.GetBuilder<IDriveTest>()
+                .From()
+                .Select(
+                    c => c.Id,
+                    c => c.Freq_MHz,
+                    c => c.Gsid,
+                    c => c.PointsCount,
+                    c => c.Standard,
+                    c => c.RESULT.MeasTime
+                )
+                .Where(c => c.RESULT.Id, ConditionOperator.In, partResultIds[i].ToArray());
+                var contextDriveTestsResults = _infoDbScope.Executor.ExecuteAndFetch(queryDriveTest, reader =>
+                {
+                    while (reader.Read())
+                    {
+                        dateTimeMeas = reader.GetValue(c => c.RESULT.MeasTime);
+                        break;
+                    }
+                    return true;
+                });
+            }
+            return dateTimeMeas;
+        }
 
         private void LoadTaskParameters()
         {
@@ -481,7 +511,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                          c => c.New_Lat_deg,
                          c => c.Old_Lat_deg,
                          c => c.New_Power_dB,
-                         c => c.Old_Power_dB
+                         c => c.Old_Power_dB,
+                         c => c.CALCRESULTS_STATION_CALIBRATION.PARAMETERS.InfocMeasResults
                      )
                     .Where(c => c.Id, ConditionOperator.In, partstationIdsRes[i]);
 
@@ -553,6 +584,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                 refSpectrumStationCalibration.Power_dB = readerStationCalibrationStaResult.GetValue(c => c.Old_Power_dB);
                             }
 
+                            refSpectrumStationCalibration.DateTimeMeas = GetDateTimeMeas(readerStationCalibrationStaResult.GetValue(c => c.CALCRESULTS_STATION_CALIBRATION.PARAMETERS.InfocMeasResults));
 
                             stationRes.Add(refSpectrumStationCalibration);
 
@@ -561,8 +593,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                     });
                 }
 
+               
 
-                this._parameters.StationIds = stationRes.Select(x => x.StationMonitoringId).ToArray();
+
+                 this._parameters.StationIds = stationRes.Select(x => x.StationMonitoringId).ToArray();
 
                 // load stations
                 List<ContextStation> lstStations = new List<ContextStation>();
@@ -827,7 +861,18 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 
                                 if (readerSensorAntenna.GetValue(c => c.SENSOR.Agl).HasValue)
                                 {
-                                    sensorParameter.SensorAntennaHeight_m = (float)readerSensorAntenna.GetValue(c => c.SENSOR.Agl).Value;
+                                    if ((float)readerSensorAntenna.GetValue(c => c.SENSOR.Agl).Value >= 10)
+                                    {
+                                        sensorParameter.SensorAntennaHeight_m = (float)readerSensorAntenna.GetValue(c => c.SENSOR.Agl).Value;
+                                    }
+                                    else
+                                    {
+                                        sensorParameter.SensorAntennaHeight_m = 10;
+                                    }
+                                }
+                                else
+                                {
+                                    sensorParameter.SensorAntennaHeight_m = 10;
                                 }
 
                                 break;
@@ -1029,9 +1074,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
         {
             var insertQueryRefSpectrumByDriveTestsDetailResult = _calcServerDataLayer.GetBuilder<IRefSpectrumByDriveTestsDetailResult>()
                 .Insert()
-                .SetValue(c => c.OrderId, result.OrderId)
-                .SetValue(c => c.DateMeas, result.DateMeas)
-                .SetValue(c => c.Freq_MHz, result.Freq_MHz)
+                .SetValue(c => c.OrderId, result.OrderId);
+                if (result.DateMeas != null)
+                {
+                    insertQueryRefSpectrumByDriveTestsDetailResult.SetValue(c => c.DateMeas, result.DateMeas);
+                }
+                insertQueryRefSpectrumByDriveTestsDetailResult.SetValue(c => c.Freq_MHz, result.Freq_MHz)
                 .SetValue(c => c.GlobalCID, result.GlobalCID)
                 .SetValue(c => c.IdIcsm, result.IdIcsm)
                 .SetValue(c => c.IdSensor, result.IdSensor)

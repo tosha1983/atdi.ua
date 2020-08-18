@@ -22,5 +22,6 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
         public double Lat_deg;
         public double Lon_deg;
         public float Power_dB;
+        public DateTime? DateTimeMeas;
     }
 }
