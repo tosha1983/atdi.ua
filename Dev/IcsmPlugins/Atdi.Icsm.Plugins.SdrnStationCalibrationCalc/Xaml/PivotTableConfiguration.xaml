@@ -1,0 +1,130 @@
+﻿<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:XICSM.SdrnCalcServerClient.WpfControls"
+             xmlns:res="clr-namespace:Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties;assembly=XICSM_SdrnStationCalibrationCalc"
+             xmlns:orm="clr-namespace:Atdi.WpfControls.EntityOrm.Controls;assembly=Atdi.WpfControls.EntityOrm"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+  <UserControl.Resources>    
+    <Style x:Key="DataGridHeaderCentered" TargetType="DataGridColumnHeader">
+      <Setter Property="HorizontalAlignment" Value="Stretch"/>
+      <Setter Property="HorizontalContentAlignment" Value="Center"/>
+    </Style>
+    <Style x:Key="DataGridCellCentered" TargetType="DataGridCell">
+      <Setter Property="TextBlock.TextAlignment" Value="Center" />
+    </Style>
+    <Style x:Key="DataGridCellRighted" TargetType="DataGridCell">
+      <Setter Property="TextBlock.TextAlignment" Value="Right" />
+    </Style>
+  </UserControl.Resources>
+  <DockPanel LastChildFill="True" MinHeight="30">
+    <Grid>
+      <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" MinWidth="100"/>
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="*" MinWidth="100"/>
+      </Grid.ColumnDefinitions>
+      <Grid.RowDefinitions>
+          <RowDefinition Height="*"></RowDefinition>
+      </Grid.RowDefinitions>
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="30" MinHeight="30"></RowDefinition>
+          <RowDefinition Height="66*" MinHeight="100"></RowDefinition>
+          <RowDefinition Height="Auto"></RowDefinition>
+          <RowDefinition Height="33*" MinHeight="100"></RowDefinition>
+          <RowDefinition Height="30" MinHeight="30"></RowDefinition>
+        </Grid.RowDefinitions>
+        <WrapPanel Grid.Row="0">
+          <orm:OrmCheckBox CaptionWith="150" Width="200" Caption="{x:Static res:Resources.UseDefaultValueOfThresholdPower}" SelectedValue="{Binding Path=IsUseDefaultThreshold, Mode=TwoWay}" IsRequired="True"/>
+          <orm:OrmTextBox CaptionWith="100" Width="150" Caption="{x:Static res:Resources.PowerThresholdDBm}" Text="{Binding Path=PivotTableConfiguration.Threshold, Mode=TwoWay}" Enabled="{Binding Path=IsEnabledThreshold, Mode=TwoWay}"/>
+          <orm:OrmTextBox CaptionWith="50" Width="300" Caption="{x:Static res:Resources.Comments}" Text="{Binding Path=PivotTableConfiguration.Comments, Mode=TwoWay}"/>
+        </WrapPanel>
+        <orm:Map Grid.Row="1" DrawingData="{Binding CurrentMapData}"></orm:Map>
+        <orm:OrmGridSplitter Grid.Row="2" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center"></orm:OrmGridSplitter>
+        <GroupBox Grid.Row="3" Header="{x:Static res:Resources.ListOfSensors}" Margin="5,5,5,0">
+          <orm:OrmDataGrid IsReadOnly="True" Margin="5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding Sensors}" SelectedItem="{Binding CurrentSensor}" SelectedItemsList="{Binding CurrentSensors, Mode=TwoWay}">
+            <DataGrid.Columns>
+              <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=Id}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.SensorIdentifierId}" Binding="{Binding Path=SensorIdentifierId}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.Status}" Binding="{Binding Path=Status}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.Name}" Binding="{Binding Path=Name}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.Azimuth}" Binding="{Binding Path=Azimuth}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.Elevation}" Binding="{Binding Path=Elevation}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.Agl}" Binding="{Binding Path=Agl}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.RxLoss}" Binding="{Binding Path=RxLoss}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.TechId}" Binding="{Binding Path=TechId}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.BringIntoUse}" Binding="{Binding Path=BiuseDate, StringFormat='{}{0:dd.MM.yyyy HH:mm}'}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.EndOfUse}" Binding="{Binding Path=EouseDate, StringFormat='{}{0:dd.MM.yyyy HH:mm}'}"></DataGridTextColumn>
+            </DataGrid.Columns>
+          </orm:OrmDataGrid>
+        </GroupBox>
+        <WrapPanel Grid.Row="4" >
+          <!--Orientation="Vertical"-->
+          <orm:OrmCheckBox CaptionWith="120" Width="200" Caption="{x:Static res:Resources.SaveCalculatedDataToCsvFile}" SelectedValue="{Binding Path=IsSaveDataToCSV, Mode=TwoWay}" IsRequired="True"/>
+          <orm:OrmTextBox CaptionWith="50" Width="300" Caption="{x:Static res:Resources.FileName}" Text="{Binding Path=FilePath, Mode=TwoWay}" Enabled="{Binding Path=IsEnabledSelectFile, Mode=TwoWay}"/>
+          <orm:OrmButton Content="{x:Static res:Resources.Browse}" Width="70" Height="20" Command="{Binding SelectFileCommand}" IsEnabled="{Binding Path=IsEnabledSelectFile, Mode=TwoWay}"/>
+        </WrapPanel>
+      </Grid>
+      <orm:OrmGridSplitter Grid.Column="1" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch" Grid.RowSpan="3"></orm:OrmGridSplitter>
+      <Grid Grid.Column="2">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*"></RowDefinition>
+          <RowDefinition Height="30" MinHeight="30"></RowDefinition>
+        </Grid.RowDefinitions>
+        <GroupBox Grid.Row="0" Header="{x:Static res:Resources.ListOfStations}" Margin="5,5,5,0">
+          <Grid Grid.Column="2">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="30"></RowDefinition>
+              <RowDefinition Height="*" MinHeight="30"></RowDefinition>
+            </Grid.RowDefinitions>
+            <WrapPanel Grid.Row="0">
+              <orm:OrmTextBox CaptionWith="40" Width="200" Caption="{x:Static res:Resources.GSID}" Text="{Binding Path=PivotTableConfiguration.GSID, Mode=TwoWay}"/>
+              <orm:OrmTextBox CaptionWith="90" Width="200" Caption="{x:Static res:Resources.CorrelationThreshold}" Text="{Binding Path=PivotTableConfiguration.CorrelationThreshold, Mode=TwoWay}"/>
+              <orm:OrmTextBox CaptionWith="40" Width="200" Caption="{x:Static res:Resources.Status}" Text="{Binding Path=PivotTableConfiguration.Status, Mode=TwoWay}"/>
+              <orm:OrmButton Content="{x:Static res:Resources.Refresh}" Width="70" Height="20" Command="{Binding RefreshCommand}"/>
+            </WrapPanel>
+            <orm:OrmDataGrid Grid.Row="1" IsReadOnly="True" Margin="5,0,5,5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding Stations}" SelectedItem="{Binding CurrentStation}" SelectedItemsList="{Binding CurrentStations, Mode=TwoWay}">
+            <DataGrid.Columns>
+              <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=Id}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.ResultStationStatus}" Binding="{Binding Path=ResultStationStatus}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.MaxCorellation}" Binding="{Binding Path=MaxCorellation}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.ExternalCode}" Binding="{Binding Path=ExternalCode}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.ExternalSource}" Binding="{Binding Path=ExternalSource}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.LicenseGsid}" Binding="{Binding Path=LicenseGsid}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.RealGsid}" Binding="{Binding Path=RealGsid}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.New_Tilt_deg}" Binding="{Binding Path=New_Tilt_deg}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.Old_Tilt_deg}" Binding="{Binding Path=Old_Tilt_deg}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.New_Azimuth_deg}" Binding="{Binding Path=New_Azimuth_deg}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.Old_Azimuth_deg}" Binding="{Binding Path=Old_Azimuth_deg}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.New_Altitude_m}" Binding="{Binding Path=New_Altitude_m}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.Old_Altitude_m}" Binding="{Binding Path=Old_Altitude_m}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.New_Lat_deg}" Binding="{Binding Path=New_Lat_dms_deg}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.Old_Lat_deg}" Binding="{Binding Path=Old_Lat_dms_deg}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.New_Lon_deg}" Binding="{Binding Path=New_Lon_dms_deg}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.Old_Lon_deg}" Binding="{Binding Path=Old_Lon_dms_deg}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.New_Power_dB}" Binding="{Binding Path=New_Power_dB}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.Old_Power_dB}" Binding="{Binding Path=Old_Power_dB}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.OldFreq_MHz}" Binding="{Binding Path=Old_Freq_MHz}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.FreqLinkDriveTest_MHz}" Binding="{Binding Path=Freq_MHz}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.Standard}" Binding="{Binding Path=Standard}"></DataGridTextColumn>
+              </DataGrid.Columns>
+            </orm:OrmDataGrid>
+          </Grid>
+        </GroupBox>
+        <orm:OrmButton Grid.Row="1" Content="{x:Static res:Resources.StartCalculation}" Width="100" Height="20" Command="{Binding StartCalculationCommand}"/>
+      </Grid>
+    </Grid>
+  </DockPanel>
+</UserControl>

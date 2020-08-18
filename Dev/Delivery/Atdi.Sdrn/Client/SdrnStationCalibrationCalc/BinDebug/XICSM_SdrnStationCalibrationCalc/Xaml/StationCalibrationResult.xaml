@@ -59,7 +59,7 @@
           <Button Grid.Column="0" Grid.Row="0" Margin="350,5,5,5" Content="Load" Command="{Binding LoadResultsCommand}" Width="70" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top"/>
           
           <GroupBox Grid.Row="0" Margin="5, 25, 5, 5" Header="Results">
-            <cdg:OrmDataGrid IsReadOnly="True" Margin="5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding StationCalibrationResultDataAdapter}" SelectedItemsList="{Binding CurrentStationCalibrationResultModel, Mode=TwoWay}" >
+            <cdg:OrmDataGrid IsReadOnly="True" Margin="5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding StationCalibrationResultDataAdapter}" SelectedItem="{Binding CurrentStationCalibrationResult}" SelectedItemsList="{Binding CurrentStationCalibrationResultModel, Mode=TwoWay}" >
             <DataGrid.Columns>
               
                 <DataGridTextColumn Header="{x:Static res:Resources.PercentComplete}" Binding="{Binding Path=PercentComplete}"></DataGridTextColumn>
@@ -219,9 +219,8 @@
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
               <RowDefinition Height="*"></RowDefinition>
+              <RowDefinition Height="30" MinHeight="30"></RowDefinition>
             </Grid.RowDefinitions>
-
-
 
             <GroupBox Grid.Row="0" Margin="5, 5, 5, 5" Header="Table with drive tests">
               <cdg:OrmDataGrid IsReadOnly="True" Margin="5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding StationCalibrationDriveTestsDataAdapter}" SelectedItemsList="{Binding CurrentStationCalibrationDriveTestsModel, Mode=TwoWay}" >
@@ -240,6 +239,7 @@
                 </DataGrid.Columns>
               </cdg:OrmDataGrid>
             </GroupBox>
+            <cdg:OrmButton Grid.Row="1" Content="{x:Static res:Resources.CreatePivotTable}" Width="100" Height="20" Command="{Binding CreatePivotTableCommand}"/>
           </Grid>
         </GroupBox>
         

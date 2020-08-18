@@ -20,6 +20,8 @@
 
     <Field Name="MeasTime" DataType="DateTime" SourceName="MEAS_TIME" SourceType="Column" Desc="The date of the measurement result" Title="Measurement date" Required="false"/>
 
+    <Field Name="SENSOR" SourceName="Atdi.DataModels.Sdrn.Infocenter.Entities.SdrnServer.Sensor" SourceType="Reference" Required="false" Desc="" Title="Relation Station Monitoring to Sensor"/>
+    
     <Field Name="SensorName" DataType="Text.150" SourceName="SENSOR_NAME" SourceType="Column" Desc="The name of the sensor" Title="Sensor Name" Required="false"/>
     <Field Name="SensorTitle" DataType="Text.250" SourceName="SENSOR_TITLE" SourceType="Column" Desc="The title of the sensor" Title="Sensor Title" Required="false"/>
 

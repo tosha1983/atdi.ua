@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "ContextStationCoordinates"
+  Title       = "Station Coordinates"
+  Desc        = "The Coordinates of the station of the client context"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>CONTEXT_STATION_COORDINATES</Name>
+    <Schema>CALC</Schema>
+  </DataSource>
+  <Fields>
+    <Field Name="StationId" SourceType="Column" SourceName="STATION_ID" DataType="Integer.64"  Required="true" Title="Station" Desc="The station in which the record of the pattern is created" />
+    <Field Name="AtdiX" SourceType="Column" SourceName="ATDI_X" DataType="Integer.32"  Required="true" Title="X-axis" Desc="The coordinate along the X-axis" />
+    <Field Name="AtdiY" SourceType="Column" SourceName="ATDI_Y" DataType="Integer.32"  Required="true" Title="Y-axis" Desc="The coordinate along the Y-axis" />
+    <Field Name="EpsgX" SourceType="Column" SourceName="EPSG_X" DataType="Double.30.10"  Required="true" Title="X-axis" Desc="The coordinate along the X-axis" />
+    <Field Name="EpsgY" SourceType="Column" SourceName="EPSG_Y" DataType="Double.30.10"  Required="true" Title="Y-axis" Desc="The coordinate along the Y-axis" />
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="StationId"/>
+  </PrimaryKey>
+</Entity>

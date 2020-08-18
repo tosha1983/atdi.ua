@@ -23,6 +23,8 @@ namespace XICSM.SdrnStationCalibrationCalc
 
             //mainMenu.InsertItem(PluginMetadata.Menu.MainTool, "Calibration of stations according measurements", _menuCommands.OnRunCalibrationStationsMeasurementsCommand);
             //mainMenu.InsertItem(PluginMetadata.Menu.MainTool, "Results calibration of stations measurements", _menuCommands.OnRunCalibrationStationsResultCommand);
+            //mainMenu.InsertItem(PluginMetadata.Menu.MainTool, "Pivot table configuration", _menuCommands.OnPivotTableConfigurationCommand);
+
         }
         protected override void AddBoard(IMBoard b)
         {

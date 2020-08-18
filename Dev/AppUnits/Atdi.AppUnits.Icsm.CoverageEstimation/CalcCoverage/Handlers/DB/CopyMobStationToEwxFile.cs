@@ -294,6 +294,20 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                              }
                          }
                      }
+                     else
+                     {
+                         if (dataConfig.AnotherParameters.Elevation != null)
+                         {
+                             station.Tilt = dataConfig.AnotherParameters.Elevation.Value;
+                         }
+                         else
+                         {
+                             this._logger.Error(Contexts.CalcCoverages, (EventText)$"{CLocaliz.TxT("Reject station Id")} = '{id}'");
+                             Utils.LogInfo(dataConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("Reject station Id")} = '{id}'");
+                             continue;
+                         }
+                     }
+
 
                      var NetId = reader.GetNullableValueAsInt32(reader.GetFieldType(reader.GetOrdinal("Licence.ID")), reader.GetOrdinal("Licence.ID"));
                      if (NetId != null)

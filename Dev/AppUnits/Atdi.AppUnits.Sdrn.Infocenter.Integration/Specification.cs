@@ -50,7 +50,8 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration
     {
 	    public static readonly string SdrnServer = "SDRN Server";
 		public static readonly string CsvFile = "CSV File";
-    }
+		public static readonly string CalcServer = "Calc Server";
+	}
     internal static class IntegrationObjects
     {
 	    public static readonly string GlobalIdentity = "GlobalIdentity";
@@ -61,5 +62,7 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration
 	    public static readonly string SensorEquipment = "SensorEquipment";
 	    public static readonly string SensorEquipmentSensitivities = "SensorEquipmentSensitivities";
 	    public static readonly string SensorLocations = "SensorLocations";
+
+	    public static readonly string ObservedTasks = "ObservedTasks";
 	}
 }

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "ResSysInfo"
+  Title       = "ResSysInfo"
+  Desc        = "The ResSysInfo"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>RES_SYS_INFO</Name>
+    <Schema>ICSC</Schema>
+  </DataSource>
+  <Fields>
+    <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
+    <Field Desc="Bandwidth" Title="Bandwidth" Name="Bandwidth" DataType="Double.30.10" SourceName="BANDWIDTH" SourceType="Column" Required="false"/>
+    <Field Desc="BaseId" Title="BaseId" Name="BaseId" DataType="Integer.32" SourceName="BASEID" SourceType="Column" Required="false"/>
+    <Field Desc="Bsic" Title="Bsic" Name="Bsic" DataType="Integer.32" SourceName="BSIC" SourceType="Column" Required="false"/>
+    <Field Desc="ChannelNumber" Title="ChannelNumber" Name="ChannelNumber" DataType="Integer.32" SourceName="CHANNELNUMBER" SourceType="Column" Required="false"/>
+    <Field Desc="Cid" Title="Cid" Name="Cid" DataType="Integer.32" SourceName="CID" SourceType="Column" Required="false"/>
+    <Field Desc="Code" Title="Code" Name="Code" DataType="Double.30.10" SourceName="CODE" SourceType="Column" Required="false"/>
+    <Field Desc="Ctoi" Title="Ctoi" Name="Ctoi" DataType="Double.30.10" SourceName="CTOI" SourceType="Column" Required="false"/>
+    <Field Desc="Eci" Title="Eci" Name="Eci" DataType="Integer.32" SourceName="ECI" SourceType="Column" Required="false"/>
+    <Field Desc="Enodebid" Title="Enodebid" Name="Enodebid" DataType="Integer.32" SourceName="ENODEBID" SourceType="Column" Required="false"/>
+    <Field Desc="Freq" Title="Freq" Name="Freq" DataType="Double.30.10" SourceName="FREQ" SourceType="Column" Required="false"/>
+    <Field Desc="Icio" Title="Icio" Name="Icio" DataType="Double.30.10" SourceName="ICIO" SourceType="Column" Required="false"/>
+    <Field Desc="InbandPower" Title="InbandPower" Name="InbandPower" DataType="Double.30.10" SourceName="INBAND_POWER" SourceType="Column" Required="false"/>
+    <Field Desc="Iscp" Title="Iscp" Name="Iscp" DataType="Double.30.10" SourceName="ISCP" SourceType="Column" Required="false"/>
+    <Field Desc="Lac" Title="Lac" Name="Lac" DataType="Integer.32" SourceName="LAC" SourceType="Column" Required="false"/>
+    <Field Desc="Agl" Title="Agl" Name="Agl" DataType="Double.30.10" SourceName="AGL" SourceType="Column" Required="false"/>
+    <Field Desc="Asl" Title="Asl" Name="Asl" DataType="Double.30.10" SourceName="ASL" SourceType="Column" Required="false"/>
+    <Field Desc="Longitude, DEC" Title="Longitude, DEC" Name="Lon" DataType="Double.30.10" SourceName="LON" SourceType="Column" Required="false" Unit="Longitude.DEC"/>
+    <Field Desc="Latitude, DEC" Title="Latitude, DEC" Name="Lat" DataType="Double.30.10" SourceName="LAT" SourceType="Column" Required="false" Unit="Latitude.DEC"/>
+    <Field Desc="Mcc" Title="Mcc" Name="Mcc" DataType="Integer.32" SourceName="MCC" SourceType="Column" Required="false"/>
+    <Field Desc="Mnc" Title="Mnc" Name="Mnc" DataType="Integer.32" SourceName="MNC" SourceType="Column" Required="false"/>
+    <Field Desc="Nid" Title="Nid" Name="Nid" DataType="Integer.32" SourceName="NID" SourceType="Column" Required="false"/>
+    <Field Desc="Pci" Title="Pci" Name="Pci" DataType="Integer.32" SourceName="PCI" SourceType="Column" Required="false"/>
+    <Field Desc="Pn" Title="Pn" Name="Pn" DataType="Integer.32" SourceName="PN" SourceType="Column" Required="false"/>
+    <Field Desc="Power" Title="Power" Name="Power" DataType="Double.30.10" SourceName="POWER" SourceType="Column" Required="false"/>
+    <Field Desc="Ptotal" Title="Ptotal" Name="Ptotal" DataType="Double.30.10" SourceName="PTOTAL" SourceType="Column" Required="false"/>
+    <Field Desc="Rnc" Title="Rnc" Name="Rnc" DataType="Integer.32" SourceName="RNC" SourceType="Column" Required="false"/>
+    <Field Desc="Rscp" Title="Rscp" Name="Rscp" DataType="Double.30.10" SourceName="RSCP" SourceType="Column" Required="false"/>
+    <Field Desc="Rsrp" Title="Rsrp" Name="Rsrp" DataType="Double.30.10" SourceName="RSRP" SourceType="Column" Required="false"/>
+    <Field Desc="Rsrq" Title="Rsrq" Name="Rsrq" DataType="Double.30.10" SourceName="RSRQ" SourceType="Column" Required="false"/>
+    <Field Desc="Sc" Title="Sc" Name="Sc" DataType="Integer.32" SourceName="SC" SourceType="Column" Required="false"/>
+    <Field Desc="Sid" Title="Sid" Name="Sid" DataType="Integer.32" SourceName="SID" SourceType="Column" Required="false"/>
+    <Field Desc="Tac" Title="Tac" Name="Tac" DataType="Integer.32" SourceName="TAC" SourceType="Column" Required="false"/>
+    <Field Desc="TypeCdmaevdo" Title="TypeCdmaevdo" Name="TypeCdmaevdo" DataType="Text.250" SourceName="TYPECDMAEVDO" SourceType="Column" Required="false"/>
+    <Field Desc="Ucid" Title="Ucid" Name="Ucid" DataType="Integer.32" SourceName="UCID" SourceType="Column" Required="false"/>
+    <Field Name="RES_STGENERAL" SourceType="Reference" SourceName="ResStGeneral" Required="true" Title="Relation ResSysInfo to ResStGeneral"/>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>

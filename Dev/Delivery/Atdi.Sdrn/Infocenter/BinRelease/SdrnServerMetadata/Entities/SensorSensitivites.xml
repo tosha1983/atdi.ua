@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity 
+  Name        = "SensorSensitivites" 
+  Title       = "SensorSensitivites" 
+  Desc        = "The sensor equipment sensitivites"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>SENSOR_EQUIP_SENSITIVITES</Name>
+    <Schema>ICSC</Schema>
+  </DataSource>
+  <Fields>
+    <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
+    <Field Desc="Freq, MHz" Title="Freq, MHz" Name="Freq" DataType="Double.30.10" SourceName="FREQ" SourceType="Column" Required="false" Unit="Frequency.MHz"/>
+    <Field Desc="own noise level, dBm" Title="own noise level, dBm" Name="Ktbf" DataType="Double.30.10" SourceName="KTBF" SourceType="Column" Required="false" Unit="Level.dBm"/>
+    <Field Desc=" noise figure, dB" Title=" noise figure, dB" Name="Noisef" DataType="Double.30.10" SourceName="NOISEF" SourceType="Column" Required="false" Unit="Power.dB"/>
+    <Field Desc="FreqStability, %" Title="FreqStability, %" Name="FreqStability" DataType="Double.30.10" SourceName="FREQ_STABILITY" SourceType="Column" Required="false" Unit="Frequency.MHz"/>
+    <Field Desc="Additional Loss, dB" Title="Additional Loss, dB" Name="AddLoss" DataType="Double.30.10" SourceName="ADDLOSS" SourceType="Column" Required="false" Unit="Power.dB"/>
+    <Field Name="SENSOR_EQUIP" SourceName="SensorEquipment" SourceType="Reference" Required="true" Desc="" Title="Relation SensorEquipmentSensitivites to SensorEquipment"/>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>

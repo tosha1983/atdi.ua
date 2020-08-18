@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "CoverageProfilesCalcTask"
+  Title       = "Calculation Task"
+  Desc        = "The task of the coverage profiles calculation"
+  Type        = "Prototype"
+  BaseEntity  = "CalcTask"
+  
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>CALCTASKS_COVERAGEPROFILES</Name>
+    <Schema>CALC</Schema>
+  </DataSource>
+  <Fields>
+
+    <Field Name="ModeCode" SourceType="Column" SourceName="MODE_CODE" DataType="Code.u08" Required="true" Title="Status Code" Desc="The code of the mode of the task processing"  />
+    <Field Name="ModeName" SourceType="Column" SourceName="MODE_NAME" DataType="Text.50" Title="Mode Name" Desc="The name of the mode of the task processing" />
+
+    <Field Name="PointsX" DataType="Array.Integer"  SourceName="POINTS_CRDS_X" SourceType="Column" Desc="Coordinates of points on the X" Title="X point coordinates" Required="false"/>
+    <Field Name="PointsY" DataType="Array.Integer"  SourceName="POINTS_CRDS_Y" SourceType="Column" Desc="Coordinates of points on the Y" Title="Y point coordinates" Required="false"/>
+
+    <Field Name="ResultPath" DataType="Text.450" SourceName="RESULT_PATH" SourceType="Column" Desc="The path of the result" Title="Result Path" Required="false"/>
+
+  </Fields>
+  
+</Entity>

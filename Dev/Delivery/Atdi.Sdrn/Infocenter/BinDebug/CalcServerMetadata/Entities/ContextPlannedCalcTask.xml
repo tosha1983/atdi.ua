@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "ContextPlannedCalcTask"
+  Title       = "Client Context Calculation Task"
+  Desc        = "The task of the calculation in the client context"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>CONTEXT_PLANNEDCALCTASK</Name>
+    <Schema>CALC</Schema>
+  </DataSource>
+  <Fields>
+    <Field Name="Id" SourceType="Column"  SourceName="ID" DataType="Counter.64" Title="Task ID" Desc="The identifier of the calculation task"/>
+    <Field Name="CONTEXT" SourceType="Reference" SourceName="ClientContext"  Required="true" Title="Context" Desc="The client context in which the task is created for the calculation" />
+    <Field Name="TypeCode" SourceType="Column" SourceName="TYPE_CODE" DataType="Code.32" Required="true" Title="Type Code" Desc="The code of the task type"  />
+    <Field Name="TypeName" SourceType="Column" SourceName="TYPE_NAME" DataType="Text.250" Required="true" Title="Status Name" Desc="The name of the status of the task processing" />
+    <Field Name="StartNumber" SourceType="Column" SourceName="START_NUMBER" DataType="Integer.32" Required="true" Title="Status Code" Desc="The code of the status of the task processing"  />
+    <Field Name="MapName" SourceType="Column" SourceName="MAP_NAME" DataType="Text.250" Required="false" Title="Map Name" Desc="The name of the map project." />
+    <Field Name="Note" SourceType="Column" SourceName="NOTE" DataType="Text.MAX" Required="false" Title="Note" Desc="The note of the task." />
+
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>

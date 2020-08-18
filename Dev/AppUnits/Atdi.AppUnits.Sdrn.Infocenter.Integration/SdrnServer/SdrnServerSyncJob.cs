@@ -29,7 +29,41 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration.SdrnServer
 		}
 	}
 
-	
+	[Serializable]
+	public class SensorsSyncKey
+	{
+		public DateTime LastSyncTime;
+
+		public override string ToString()
+		{
+			return $"LastSyncTime = '{LastSyncTime:O}'";
+		}
+	}
+
+	[Serializable]
+	public class SensorAntennasSyncKey : SensorsSyncKey
+	{
+	}
+
+	[Serializable]
+	public class SensorAntennaPatternsSyncKey : SensorsSyncKey
+	{
+	}
+
+	[Serializable]
+	public class SensorEquipmentSyncKey : SensorsSyncKey
+	{
+	}
+	[Serializable]
+	public class SensorEquipmentSensitivitiesSyncKey : SensorsSyncKey
+	{
+	}
+
+	[Serializable]
+	public class SensorLocationsSyncKey : SensorsSyncKey
+	{
+	}
+
 	internal class SdrnServerSyncJob : IJobExecutor
 	{
 		private struct SdrnMeasResult
@@ -101,69 +135,85 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration.SdrnServer
 		{
 			var statusNote = "Sync completed successfully";
 			var statusCode = ES_IC.IntegrationStatusCode.Done;
-			var fetchRows = _config.AutoImportSdrnServerSensorsFetchRows.GetValueOrDefault(1000); ;
+			var fetchRows = _config.AutoImportSdrnServerSensorsFetchRows.GetValueOrDefault(1000);
 			var offsetRows = 0;
 			var createdCount = 0;
 			var updatedCount = 0;
-			var token = _integrationService.Start(DataSource.SdrnServer, IntegrationObjects.Sensors);
+			
+			var periodHours = _config.AutoImportSdrnServerSensorsPeriod.GetValueOrDefault(24);
+			var syncKey =
+				_integrationService.GetSyncKey<SensorsSyncKey>(DataSource.SdrnServer,
+					IntegrationObjects.Sensors);
 
-			try
+			if (syncKey == null
+			    || syncKey.LastSyncTime.AddHours(periodHours) <= DateTime.Now)
 			{
-				var needFetch = true;
-				while (needFetch)
+				if (syncKey == null)
 				{
-					var sdrnsSensorQuery = _sdrnsDataLayer.GetBuilder<ES_SD.ISensor>()
-						.From()
-						.Select(c => c.Id)
-						.Select(c => c.SensorIdentifierId)
-						.Select(c => c.Status)
-						.Select(c => c.Name)
-						.Select(c => c.BiuseDate)
-						.Select(c => c.EouseDate)
-						.Select(c => c.Azimuth)
-						.Select(c => c.Elevation)
-						.Select(c => c.Agl)
-						.Select(c => c.RxLoss)
-						.Select(c => c.TechId)
-						.OrderByAsc(c => c.Id)
-						.Paginate(offsetRows, fetchRows);
-
-					needFetch = sdrnsDbScope.Executor.ExecuteAndFetch(sdrnsSensorQuery, reader =>
-					{
-						var result = false;
-						while (reader.Read())
-						{
-							++offsetRows;
-							result = true;
-
-							var created = this.SynchronizeSensor(infocDbScope, reader);
-							if (created)
-							{
-								++createdCount;
-							}
-							else
-							{
-								++updatedCount;
-							}
-						}
-
-						return result;
-					});
+					syncKey = new SensorsSyncKey();
 				}
 
-			}
-			catch (Exception e)
-			{
-				_logger.Exception(Contexts.ThisComponent, Categories.Synchronization, e, this);
-				statusNote = e.Message;
-				statusCode = ES_IC.IntegrationStatusCode.Aborted;
-			}
-			finally
-			{
-				var total =
-					$"Read={offsetRows}, Created={createdCount}, Updated={updatedCount}";
+				syncKey.LastSyncTime = DateTime.Now;
 
-				_integrationService.Finish(token, statusCode, statusNote, total);
+				var token = _integrationService.Start(DataSource.SdrnServer, IntegrationObjects.Sensors);
+				try
+				{
+					var needFetch = true;
+					while (needFetch)
+					{
+						var sdrnsSensorQuery = _sdrnsDataLayer.GetBuilder<ES_SD.ISensor>()
+							.From()
+							.Select(c => c.Id)
+							.Select(c => c.SensorIdentifierId)
+							.Select(c => c.Status)
+							.Select(c => c.Name)
+							.Select(c => c.BiuseDate)
+							.Select(c => c.EouseDate)
+							.Select(c => c.Azimuth)
+							.Select(c => c.Elevation)
+							.Select(c => c.Agl)
+							.Select(c => c.RxLoss)
+							.Select(c => c.TechId)
+							.OrderByAsc(c => c.Id)
+							.Paginate(offsetRows, fetchRows);
+
+						needFetch = sdrnsDbScope.Executor.ExecuteAndFetch(sdrnsSensorQuery, reader =>
+						{
+							var result = false;
+							while (reader.Read())
+							{
+								++offsetRows;
+								result = true;
+
+								var created = this.SynchronizeSensor(infocDbScope, reader);
+								if (created)
+								{
+									++createdCount;
+								}
+								else
+								{
+									++updatedCount;
+								}
+							}
+
+							return result;
+						});
+					}
+
+				}
+				catch (Exception e)
+				{
+					_logger.Exception(Contexts.ThisComponent, Categories.Synchronization, e, this);
+					statusNote = e.Message;
+					statusCode = ES_IC.IntegrationStatusCode.Aborted;
+				}
+				finally
+				{
+					var total =
+						$"Read={offsetRows}, Created={createdCount}, Updated={updatedCount}";
+
+					_integrationService.Finish(token, statusCode, statusNote, total, syncKey);
+				}
 			}
 		}
 
@@ -228,70 +278,86 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration.SdrnServer
 			var offsetRows = 0;
 			var createdCount = 0;
 			var updatedCount = 0;
-			var token = _integrationService.Start(DataSource.SdrnServer, IntegrationObjects.SensorAntennas);
 
-			try
+			var periodHours = _config.AutoImportSdrnServerSensorAntennasPeriod.GetValueOrDefault(24);
+			var syncKey =
+				_integrationService.GetSyncKey<SensorAntennasSyncKey>(DataSource.SdrnServer,
+					IntegrationObjects.SensorAntennas);
+
+			if (syncKey == null
+			    || syncKey.LastSyncTime.AddHours(periodHours) <= DateTime.Now)
 			{
-				var needFetch = true;
-				while (needFetch)
+				if (syncKey == null)
 				{
-					var sdrnsSensorQuery = _sdrnsDataLayer.GetBuilder<ES_SD.ISensorAntenna>()
-						.From()
-						.Select(c => c.Id)
-						.Select(c => c.SENSOR.Id)
-						.Select(c => c.Code)
-						.Select(c => c.Manufacturer)
-						.Select(c => c.Name)
-						.Select(c => c.TechId)
-						.Select(c => c.AntDir)
-						.Select(c => c.HbeamWidth)
-						.Select(c => c.VbeamWidth)
-						.Select(c => c.Polarization)
-						.Select(c => c.GainType)
-						.Select(c => c.GainMax)
-						.Select(c => c.LowerFreq)
-						.Select(c => c.UpperFreq)
-						.Select(c => c.AddLoss)
-						.Select(c => c.Xpd)
-						.OrderByAsc(c => c.Id)
-						.Paginate(offsetRows, fetchRows);
-
-					needFetch = sdrnsDbScope.Executor.ExecuteAndFetch(sdrnsSensorQuery, reader =>
-					{
-						var result = false;
-						while (reader.Read())
-						{
-							++offsetRows;
-							result = true;
-
-							var created = this.SynchronizeSensorAntenna(infocDbScope, reader);
-							if (created)
-							{
-								++createdCount;
-							}
-							else
-							{
-								++updatedCount;
-							}
-						}
-
-						return result;
-					});
+					syncKey = new SensorAntennasSyncKey();
 				}
+				syncKey.LastSyncTime = DateTime.Now;
 
-			}
-			catch (Exception e)
-			{
-				_logger.Exception(Contexts.ThisComponent, Categories.Synchronization, e, this);
-				statusNote = e.Message;
-				statusCode = ES_IC.IntegrationStatusCode.Aborted;
-			}
-			finally
-			{
-				var total =
-					$"Read={offsetRows}, Created={createdCount}, Updated={updatedCount}";
+				var token = _integrationService.Start(DataSource.SdrnServer, IntegrationObjects.SensorAntennas);
+				try
+				{
+					var needFetch = true;
+					while (needFetch)
+					{
+						var sdrnsSensorQuery = _sdrnsDataLayer.GetBuilder<ES_SD.ISensorAntenna>()
+							.From()
+							.Select(c => c.Id)
+							.Select(c => c.SENSOR.Id)
+							.Select(c => c.Code)
+							.Select(c => c.Manufacturer)
+							.Select(c => c.Name)
+							.Select(c => c.TechId)
+							.Select(c => c.AntDir)
+							.Select(c => c.HbeamWidth)
+							.Select(c => c.VbeamWidth)
+							.Select(c => c.Polarization)
+							.Select(c => c.GainType)
+							.Select(c => c.GainMax)
+							.Select(c => c.LowerFreq)
+							.Select(c => c.UpperFreq)
+							.Select(c => c.AddLoss)
+							.Select(c => c.Xpd)
+							.Where(c => c.SENSOR.Id, ConditionOperator.IsNotNull)
+							.OrderByAsc(c => c.Id)
+							.Paginate(offsetRows, fetchRows);
 
-				_integrationService.Finish(token, statusCode, statusNote, total);
+						needFetch = sdrnsDbScope.Executor.ExecuteAndFetch(sdrnsSensorQuery, reader =>
+						{
+							var result = false;
+							while (reader.Read())
+							{
+								++offsetRows;
+								result = true;
+
+								var created = this.SynchronizeSensorAntenna(infocDbScope, reader);
+								if (created)
+								{
+									++createdCount;
+								}
+								else
+								{
+									++updatedCount;
+								}
+							}
+
+							return result;
+						});
+					}
+
+				}
+				catch (Exception e)
+				{
+					_logger.Exception(Contexts.ThisComponent, Categories.Synchronization, e, this);
+					statusNote = e.Message;
+					statusCode = ES_IC.IntegrationStatusCode.Aborted;
+				}
+				finally
+				{
+					var total =
+						$"Read={offsetRows}, Created={createdCount}, Updated={updatedCount}";
+
+					_integrationService.Finish(token, statusCode, statusNote, total, syncKey);
+				}
 			}
 		}
 
@@ -366,61 +432,78 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration.SdrnServer
 			var offsetRows = 0;
 			var createdCount = 0;
 			var updatedCount = 0;
-			var token = _integrationService.Start(DataSource.SdrnServer, IntegrationObjects.SensorAntennaPatterns);
 
-			try
+			var periodHours = _config.AutoImportSdrnServerSensorAntennaPatternsPeriod.GetValueOrDefault(24);
+			var syncKey =
+				_integrationService.GetSyncKey<SensorAntennaPatternsSyncKey>(DataSource.SdrnServer,
+					IntegrationObjects.SensorAntennaPatterns);
+
+			if (syncKey == null
+			    || syncKey.LastSyncTime.AddHours(periodHours) <= DateTime.Now)
 			{
-				var needFetch = true;
-				while (needFetch)
+				if (syncKey == null)
 				{
-					var sdrnsSensorQuery = _sdrnsDataLayer.GetBuilder<ES_SD.IAntennaPattern>()
-						.From()
-						.Select(c => c.Id)
-						.Select(c => c.SENSOR_ANTENNA.Id)
-						.Select(c => c.Gain)
-						.Select(c => c.DiagA)
-						.Select(c => c.DiagH)
-						.Select(c => c.DiagV)
-						.Select(c => c.Freq)
-						.OrderByAsc(c => c.Id)
-						.Paginate(offsetRows, fetchRows);
-
-					needFetch = sdrnsDbScope.Executor.ExecuteAndFetch(sdrnsSensorQuery, reader =>
-					{
-						var result = false;
-						while (reader.Read())
-						{
-							++offsetRows;
-							result = true;
-
-							var created = this.SynchronizeSensorAntennaPattern(infocDbScope, reader);
-							if (created)
-							{
-								++createdCount;
-							}
-							else
-							{
-								++updatedCount;
-							}
-						}
-
-						return result;
-					});
+					syncKey = new SensorAntennaPatternsSyncKey();
 				}
 
-			}
-			catch (Exception e)
-			{
-				_logger.Exception(Contexts.ThisComponent, Categories.Synchronization, e, this);
-				statusNote = e.Message;
-				statusCode = ES_IC.IntegrationStatusCode.Aborted;
-			}
-			finally
-			{
-				var total =
-					$"Read={offsetRows}, Created={createdCount}, Updated={updatedCount}";
+				syncKey.LastSyncTime = DateTime.Now;
+				var token = _integrationService.Start(DataSource.SdrnServer, IntegrationObjects.SensorAntennaPatterns);
 
-				_integrationService.Finish(token, statusCode, statusNote, total);
+				try
+				{
+					var needFetch = true;
+					while (needFetch)
+					{
+						var sdrnsSensorQuery = _sdrnsDataLayer.GetBuilder<ES_SD.IAntennaPattern>()
+							.From()
+							.Select(c => c.Id)
+							.Select(c => c.SENSOR_ANTENNA.Id)
+							.Select(c => c.Gain)
+							.Select(c => c.DiagA)
+							.Select(c => c.DiagH)
+							.Select(c => c.DiagV)
+							.Select(c => c.Freq)
+							.Where(c => c.SENSOR_ANTENNA.Id, ConditionOperator.IsNotNull)
+							.OrderByAsc(c => c.Id)
+							.Paginate(offsetRows, fetchRows);
+
+						needFetch = sdrnsDbScope.Executor.ExecuteAndFetch(sdrnsSensorQuery, reader =>
+						{
+							var result = false;
+							while (reader.Read())
+							{
+								++offsetRows;
+								result = true;
+
+								var created = this.SynchronizeSensorAntennaPattern(infocDbScope, reader);
+								if (created)
+								{
+									++createdCount;
+								}
+								else
+								{
+									++updatedCount;
+								}
+							}
+
+							return result;
+						});
+					}
+
+				}
+				catch (Exception e)
+				{
+					_logger.Exception(Contexts.ThisComponent, Categories.Synchronization, e, this);
+					statusNote = e.Message;
+					statusCode = ES_IC.IntegrationStatusCode.Aborted;
+				}
+				finally
+				{
+					var total =
+						$"Read={offsetRows}, Created={createdCount}, Updated={updatedCount}";
+
+					_integrationService.Finish(token, statusCode, statusNote, total, syncKey);
+				}
 			}
 		}
 
@@ -477,62 +560,79 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration.SdrnServer
 			var offsetRows = 0;
 			var createdCount = 0;
 			var updatedCount = 0;
-			var token = _integrationService.Start(DataSource.SdrnServer, IntegrationObjects.SensorEquipment);
 
-			try
+			var periodHours = _config.AutoImportSdrnServerSensorEquipmentPeriod.GetValueOrDefault(24);
+			var syncKey =
+				_integrationService.GetSyncKey<SensorEquipmentSyncKey>(DataSource.SdrnServer,
+					IntegrationObjects.SensorEquipment);
+
+			if (syncKey == null
+			    || syncKey.LastSyncTime.AddHours(periodHours) <= DateTime.Now)
 			{
-				var needFetch = true;
-				while (needFetch)
+				if (syncKey == null)
 				{
-					var sdrnsSensorQuery = _sdrnsDataLayer.GetBuilder<ES_SD.ISensorEquipment>()
-						.From()
-						.Select(c => c.Id)
-						.Select(c => c.SENSOR.Id)
-						.Select(c => c.Code)
-						.Select(c => c.Manufacturer)
-						.Select(c => c.Name)
-						.Select(c => c.TechId)
-						.Select(c => c.LowerFreq)
-						.Select(c => c.UpperFreq)
-						.OrderByAsc(c => c.Id)
-						.Paginate(offsetRows, fetchRows);
-
-					needFetch = sdrnsDbScope.Executor.ExecuteAndFetch(sdrnsSensorQuery, reader =>
-					{
-						var result = false;
-						while (reader.Read())
-						{
-							++offsetRows;
-							result = true;
-
-							var created = this.SynchronizeSensorEquipmentItem(infocDbScope, reader);
-							if (created)
-							{
-								++createdCount;
-							}
-							else
-							{
-								++updatedCount;
-							}
-						}
-
-						return result;
-					});
+					syncKey = new SensorEquipmentSyncKey();
 				}
 
-			}
-			catch (Exception e)
-			{
-				_logger.Exception(Contexts.ThisComponent, Categories.Synchronization, e, this);
-				statusNote = e.Message;
-				statusCode = ES_IC.IntegrationStatusCode.Aborted;
-			}
-			finally
-			{
-				var total =
-					$"Read={offsetRows}, Created={createdCount}, Updated={updatedCount}";
+				syncKey.LastSyncTime = DateTime.Now;
 
-				_integrationService.Finish(token, statusCode, statusNote, total);
+				var token = _integrationService.Start(DataSource.SdrnServer, IntegrationObjects.SensorEquipment);
+				try
+				{
+					var needFetch = true;
+					while (needFetch)
+					{
+						var sdrnsSensorQuery = _sdrnsDataLayer.GetBuilder<ES_SD.ISensorEquipment>()
+							.From()
+							.Select(c => c.Id)
+							.Select(c => c.SENSOR.Id)
+							.Select(c => c.Code)
+							.Select(c => c.Manufacturer)
+							.Select(c => c.Name)
+							.Select(c => c.TechId)
+							.Select(c => c.LowerFreq)
+							.Select(c => c.UpperFreq)
+							.Where(c => c.SENSOR.Id, ConditionOperator.IsNotNull)
+							.OrderByAsc(c => c.Id)
+							.Paginate(offsetRows, fetchRows);
+
+						needFetch = sdrnsDbScope.Executor.ExecuteAndFetch(sdrnsSensorQuery, reader =>
+						{
+							var result = false;
+							while (reader.Read())
+							{
+								++offsetRows;
+								result = true;
+
+								var created = this.SynchronizeSensorEquipmentItem(infocDbScope, reader);
+								if (created)
+								{
+									++createdCount;
+								}
+								else
+								{
+									++updatedCount;
+								}
+							}
+
+							return result;
+						});
+					}
+
+				}
+				catch (Exception e)
+				{
+					_logger.Exception(Contexts.ThisComponent, Categories.Synchronization, e, this);
+					statusNote = e.Message;
+					statusCode = ES_IC.IntegrationStatusCode.Aborted;
+				}
+				finally
+				{
+					var total =
+						$"Read={offsetRows}, Created={createdCount}, Updated={updatedCount}";
+
+					_integrationService.Finish(token, statusCode, statusNote, total, syncKey);
+				}
 			}
 		}
 
@@ -591,61 +691,80 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration.SdrnServer
 			var offsetRows = 0;
 			var createdCount = 0;
 			var updatedCount = 0;
-			var token = _integrationService.Start(DataSource.SdrnServer, IntegrationObjects.SensorEquipmentSensitivities);
 
-			try
+			var periodHours = _config.AutoImportSdrnServerSensorEquipmentSensitivitiesPeriod.GetValueOrDefault(24);
+			var syncKey =
+				_integrationService.GetSyncKey<SensorEquipmentSensitivitiesSyncKey>(DataSource.SdrnServer,
+					IntegrationObjects.SensorEquipmentSensitivities);
+
+			if (syncKey == null
+			    || syncKey.LastSyncTime.AddHours(periodHours) <= DateTime.Now)
 			{
-				var needFetch = true;
-				while (needFetch)
+				if (syncKey == null)
 				{
-					var sdrnsSensorQuery = _sdrnsDataLayer.GetBuilder<ES_SD.ISensorSensitivites>()
-						.From()
-						.Select(c => c.Id)
-						.Select(c => c.SENSOR_EQUIP.Id)
-						.Select(c => c.AddLoss)
-						.Select(c => c.Freq)
-						.Select(c => c.FreqStability)
-						.Select(c => c.Ktbf)
-						.Select(c => c.Noisef)
-						.OrderByAsc(c => c.Id)
-						.Paginate(offsetRows, fetchRows);
-
-					needFetch = sdrnsDbScope.Executor.ExecuteAndFetch(sdrnsSensorQuery, reader =>
-					{
-						var result = false;
-						while (reader.Read())
-						{
-							++offsetRows;
-							result = true;
-
-							var created = this.SynchronizeSensorEquipmentSensitivity(infocDbScope, reader);
-							if (created)
-							{
-								++createdCount;
-							}
-							else
-							{
-								++updatedCount;
-							}
-						}
-
-						return result;
-					});
+					syncKey = new SensorEquipmentSensitivitiesSyncKey();
 				}
 
-			}
-			catch (Exception e)
-			{
-				_logger.Exception(Contexts.ThisComponent, Categories.Synchronization, e, this);
-				statusNote = e.Message;
-				statusCode = ES_IC.IntegrationStatusCode.Aborted;
-			}
-			finally
-			{
-				var total =
-					$"Read={offsetRows}, Created={createdCount}, Updated={updatedCount}";
+				syncKey.LastSyncTime = DateTime.Now;
 
-				_integrationService.Finish(token, statusCode, statusNote, total);
+				var token = _integrationService.Start(DataSource.SdrnServer,
+					IntegrationObjects.SensorEquipmentSensitivities);
+
+				try
+				{
+					var needFetch = true;
+					while (needFetch)
+					{
+						var sdrnsSensorQuery = _sdrnsDataLayer.GetBuilder<ES_SD.ISensorSensitivites>()
+							.From()
+							.Select(c => c.Id)
+							.Select(c => c.SENSOR_EQUIP.Id)
+							.Select(c => c.AddLoss)
+							.Select(c => c.Freq)
+							.Select(c => c.FreqStability)
+							.Select(c => c.Ktbf)
+							.Select(c => c.Noisef)
+							.Where(c => c.SENSOR_EQUIP.Id, ConditionOperator.IsNotNull)
+							.OrderByAsc(c => c.Id)
+							.Paginate(offsetRows, fetchRows);
+
+						needFetch = sdrnsDbScope.Executor.ExecuteAndFetch(sdrnsSensorQuery, reader =>
+						{
+							var result = false;
+							while (reader.Read())
+							{
+								++offsetRows;
+								result = true;
+
+								var created = this.SynchronizeSensorEquipmentSensitivity(infocDbScope, reader);
+								if (created)
+								{
+									++createdCount;
+								}
+								else
+								{
+									++updatedCount;
+								}
+							}
+
+							return result;
+						});
+					}
+
+				}
+				catch (Exception e)
+				{
+					_logger.Exception(Contexts.ThisComponent, Categories.Synchronization, e, this);
+					statusNote = e.Message;
+					statusCode = ES_IC.IntegrationStatusCode.Aborted;
+				}
+				finally
+				{
+					var total =
+						$"Read={offsetRows}, Created={createdCount}, Updated={updatedCount}";
+
+					_integrationService.Finish(token, statusCode, statusNote, total, syncKey);
+				}
 			}
 		}
 
@@ -702,63 +821,80 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration.SdrnServer
 			var offsetRows = 0;
 			var createdCount = 0;
 			var updatedCount = 0;
-			var token = _integrationService.Start(DataSource.SdrnServer, IntegrationObjects.SensorLocations);
 
-			try
+			var periodHours = _config.AutoImportSdrnServerSensorAntennasPeriod.GetValueOrDefault(24);
+			var syncKey =
+				_integrationService.GetSyncKey<SensorLocationsSyncKey>(DataSource.SdrnServer,
+					IntegrationObjects.SensorLocations);
+
+			if (syncKey == null
+			    || syncKey.LastSyncTime.AddHours(periodHours) <= DateTime.Now)
 			{
-				var needFetch = true;
-				while (needFetch)
+				if (syncKey == null)
 				{
-					var sdrnsSensorQuery = _sdrnsDataLayer.GetBuilder<ES_SD.ISensorLocation>()
-						.From()
-						.Select(c => c.Id)
-						.Select(c => c.Lon)
-						.Select(c => c.Lat)
-						.Select(c => c.SENSOR.Id)
-						.Select(c => c.Asl)
-						.Select(c => c.DateCreated)
-						.Select(c => c.DateFrom)
-						.Select(c => c.DateTo)
-						.Select(c => c.Status)
-						.OrderByAsc(c => c.Id)
-						.Paginate(offsetRows, fetchRows);
-
-					needFetch = sdrnsDbScope.Executor.ExecuteAndFetch(sdrnsSensorQuery, reader =>
-					{
-						var result = false;
-						while (reader.Read())
-						{
-							++offsetRows;
-							result = true;
-
-							var created = this.SynchronizeSensorLocation(infocDbScope, reader);
-							if (created)
-							{
-								++createdCount;
-							}
-							else
-							{
-								++updatedCount;
-							}
-						}
-
-						return result;
-					});
+					syncKey = new SensorLocationsSyncKey();
 				}
 
-			}
-			catch (Exception e)
-			{
-				_logger.Exception(Contexts.ThisComponent, Categories.Synchronization, e, this);
-				statusNote = e.Message;
-				statusCode = ES_IC.IntegrationStatusCode.Aborted;
-			}
-			finally
-			{
-				var total =
-					$"Read={offsetRows}, Created={createdCount}, Updated={updatedCount}";
+				syncKey.LastSyncTime = DateTime.Now;
+				var token = _integrationService.Start(DataSource.SdrnServer, IntegrationObjects.SensorLocations);
 
-				_integrationService.Finish(token, statusCode, statusNote, total);
+				try
+				{
+					var needFetch = true;
+					while (needFetch)
+					{
+						var sdrnsSensorQuery = _sdrnsDataLayer.GetBuilder<ES_SD.ISensorLocation>()
+							.From()
+							.Select(c => c.Id)
+							.Select(c => c.Lon)
+							.Select(c => c.Lat)
+							.Select(c => c.SENSOR.Id)
+							.Select(c => c.Asl)
+							.Select(c => c.DateCreated)
+							.Select(c => c.DateFrom)
+							.Select(c => c.DateTo)
+							.Select(c => c.Status)
+							.Where(c => c.SENSOR.Id, ConditionOperator.IsNotNull)
+							.OrderByAsc(c => c.Id)
+							.Paginate(offsetRows, fetchRows);
+
+						needFetch = sdrnsDbScope.Executor.ExecuteAndFetch(sdrnsSensorQuery, reader =>
+						{
+							var result = false;
+							while (reader.Read())
+							{
+								++offsetRows;
+								result = true;
+
+								var created = this.SynchronizeSensorLocation(infocDbScope, reader);
+								if (created)
+								{
+									++createdCount;
+								}
+								else
+								{
+									++updatedCount;
+								}
+							}
+
+							return result;
+						});
+					}
+
+				}
+				catch (Exception e)
+				{
+					_logger.Exception(Contexts.ThisComponent, Categories.Synchronization, e, this);
+					statusNote = e.Message;
+					statusCode = ES_IC.IntegrationStatusCode.Aborted;
+				}
+				finally
+				{
+					var total =
+						$"Read={offsetRows}, Created={createdCount}, Updated={updatedCount}";
+
+					_integrationService.Finish(token, statusCode, statusNote, total, syncKey);
+				}
 			}
 		}
 

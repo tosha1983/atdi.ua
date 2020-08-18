@@ -18,6 +18,7 @@
 --   Sequences: 8 
 --   Tables: 8          Columns: 89         
 
+alter session set "_ORACLE_SCRIPT"=true; 
 
 CREATE USER INFOC
   IDENTIFIED BY INFOC

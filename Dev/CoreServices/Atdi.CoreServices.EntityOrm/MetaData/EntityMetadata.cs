@@ -12,12 +12,15 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
     {
         private readonly Dictionary<string, IFieldMetadata> _localFields;
 
-        public EntityMetadata()
+        public EntityMetadata(IEntityOrm entityOrm)
         {
+	        this.EntityOrm = entityOrm;
             this._localFields = new Dictionary<string, IFieldMetadata>();
         }
 
-        public string Name { get; set; }
+        public IEntityOrm EntityOrm { get; }
+
+		public string Name { get; set; }
 
         public string Namespace { get; set; }
 

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "TestRefSubBookExt1"
+  Title       = "Test Reference Sub Book Extension 1"
+  Desc        = "The entity of the different data types testing"
+  Type        = "Extension"
+  BaseEntity  = "TestRefSubBook"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>TEST_REF_SUBBOOK_EXT1</Name>
+    <Schema>CORE</Schema>
+  </DataSource>
+  <Fields>
+    
+    <Field Name="Prop1" DataType="Text.50" SourceName="PROP_01" SourceType="Column" Required="false" Desc="" Title="Prop1" />
+    <Field Name="Prop2" DataType="Text.50" SourceName="PROP_02" SourceType="Column" Required="false" Desc="" Title="Prop2" />
+    <Field Name="Prop3" DataType="Text.50" SourceName="PROP_03" SourceType="Column" Required="false" Desc="" Title="Prop3" />
+    
+
+  </Fields>
+</Entity>
+
+<!--
+    [Entity]
+    public interface ITestRefSubBookExt1
+    {
+        string Prop1 { get; set; }
+
+        string Prop2 { get; set; }
+
+        string Prop3 { get; set; }
+    }
+-->
+<!--
+CREATE TABLE [CORE].[TEST_REF_SUBBOOK_EXT1](
+	[CODE]    [nvarchar](50) NOT NULL,
+	[SUBTYPE] [nvarchar](50) NOT NULL,
+	[PROP_01] [nvarchar](50) NULL,
+	[PROP_02] [nvarchar](50) NULL,
+	[PROP_03] [nvarchar](50) NULL,
+ CONSTRAINT [PK_TEST_REF_SUBBOOK_EXT1] PRIMARY KEY CLUSTERED 
+(
+	[CODE] DESC,
+	[SUBTYPE] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+-->

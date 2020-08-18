@@ -70,6 +70,15 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Agl.
+        /// </summary>
+        public static string Agl {
+            get {
+                return ResourceManager.GetString("Agl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Altitude Station.
         /// </summary>
         public static string AltitudeStation {
@@ -84,6 +93,15 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         public static string AreaName {
             get {
                 return ResourceManager.GetString("AreaName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Azimuth.
+        /// </summary>
+        public static string Azimuth {
+            get {
+                return ResourceManager.GetString("Azimuth", resourceCulture);
             }
         }
         
@@ -111,6 +129,24 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         public static string BaseContexts {
             get {
                 return ResourceManager.GetString("BaseContexts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bring Into Use.
+        /// </summary>
+        public static string BringIntoUse {
+            get {
+                return ResourceManager.GetString("BringIntoUse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Browse….
+        /// </summary>
+        public static string Browse {
+            get {
+                return ResourceManager.GetString("Browse", resourceCulture);
             }
         }
         
@@ -160,6 +196,15 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Comments.
+        /// </summary>
+        public static string Comments {
+            get {
+                return ResourceManager.GetString("Comments", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Context.
         /// </summary>
         public static string Context {
@@ -192,6 +237,15 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         public static string CorrelationDistance {
             get {
                 return ResourceManager.GetString("CorrelationDistance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Correlation threshold.
+        /// </summary>
+        public static string CorrelationThreshold {
+            get {
+                return ResourceManager.GetString("CorrelationThreshold", resourceCulture);
             }
         }
         
@@ -322,6 +376,15 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Create pivot table.
+        /// </summary>
+        public static string CreatePivotTable {
+            get {
+                return ResourceManager.GetString("CreatePivotTable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Date Created.
         /// </summary>
         public static string DateCreated {
@@ -394,6 +457,24 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Elevation.
+        /// </summary>
+        public static string Elevation {
+            get {
+                return ResourceManager.GetString("Elevation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to End Of Use.
+        /// </summary>
+        public static string EndOfUse {
+            get {
+                return ResourceManager.GetString("EndOfUse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to External code.
         /// </summary>
         public static string ExternalCode {
@@ -408,6 +489,15 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         public static string ExternalSource {
             get {
                 return ResourceManager.GetString("ExternalSource", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File name.
+        /// </summary>
+        public static string FileName {
+            get {
+                return ResourceManager.GetString("FileName", resourceCulture);
             }
         }
         
@@ -439,6 +529,15 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to GSID.
+        /// </summary>
+        public static string GSID {
+            get {
+                return ResourceManager.GetString("GSID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Id.
         /// </summary>
         public static string Id {
@@ -453,6 +552,24 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         public static string LicenseGsid {
             get {
                 return ResourceManager.GetString("LicenseGsid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to List of sensors.
+        /// </summary>
+        public static string ListOfSensors {
+            get {
+                return ResourceManager.GetString("ListOfSensors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to List of stations.
+        /// </summary>
+        public static string ListOfStations {
+            get {
+                return ResourceManager.GetString("ListOfStations", resourceCulture);
             }
         }
         
@@ -817,6 +934,15 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Power threshold (dBm).
+        /// </summary>
+        public static string PowerThresholdDBm {
+            get {
+                return ResourceManager.GetString("PowerThresholdDBm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Projection.
         /// </summary>
         public static string Projection {
@@ -840,6 +966,15 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         public static string RealGsid {
             get {
                 return ResourceManager.GetString("RealGsid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refresh.
+        /// </summary>
+        public static string Refresh {
+            get {
+                return ResourceManager.GetString("Refresh", resourceCulture);
             }
         }
         
@@ -871,11 +1006,38 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to RxLoss.
+        /// </summary>
+        public static string RxLoss {
+            get {
+                return ResourceManager.GetString("RxLoss", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Save.
         /// </summary>
         public static string Save {
             get {
                 return ResourceManager.GetString("Save", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save calculated data to .csv file.
+        /// </summary>
+        public static string SaveCalculatedDataToCsvFile {
+            get {
+                return ResourceManager.GetString("SaveCalculatedDataToCsvFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sensor Identifier Id.
+        /// </summary>
+        public static string SensorIdentifierId {
+            get {
+                return ResourceManager.GetString("SensorIdentifierId", resourceCulture);
             }
         }
         
@@ -1033,6 +1195,15 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Start calculation.
+        /// </summary>
+        public static string StartCalculation {
+            get {
+                return ResourceManager.GetString("StartCalculation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to State for active station.
         /// </summary>
         public static string StateForActiveStation {
@@ -1069,6 +1240,15 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Status.
+        /// </summary>
+        public static string Status {
+            get {
+                return ResourceManager.GetString("Status", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Status Name.
         /// </summary>
         public static string StatusName {
@@ -1083,6 +1263,15 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         public static string StatusNote {
             get {
                 return ResourceManager.GetString("StatusNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to TechId.
+        /// </summary>
+        public static string TechId {
+            get {
+                return ResourceManager.GetString("TechId", resourceCulture);
             }
         }
         
@@ -1146,6 +1335,15 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         public static string TypeOfArea {
             get {
                 return ResourceManager.GetString("TypeOfArea", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use default value of threshold power.
+        /// </summary>
+        public static string UseDefaultValueOfThresholdPower {
+            get {
+                return ResourceManager.GetString("UseDefaultValueOfThresholdPower", resourceCulture);
             }
         }
         

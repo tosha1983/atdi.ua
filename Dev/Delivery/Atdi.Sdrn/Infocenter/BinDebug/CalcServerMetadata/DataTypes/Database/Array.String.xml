@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<DataType 
+  Name           = "Array.String"
+  DataSourceType = "Database"
+  xmlns          =  "http://schemas.atdi.com/orm/entity.xsd">
+
+  <CodeVarType ClrType="System.String[]">ClrType</CodeVarType>
+  <StoreContentType>Binary</StoreContentType>
+  <SourceVarType>BLOB</SourceVarType>  
+</DataType>

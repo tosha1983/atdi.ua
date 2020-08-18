@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "StationCalibrationArgs"
+  Title       = "Station calibration arguments"
+  Desc        = "The Station calibration arguments"
+  Type        = "Simple"
+  BaseEntity  = "Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks.StationCalibrationArgsBase"
+  
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>CALCTASKS_STATION_CALIBRATION_ARGS</Name>
+    <Schema>CALC</Schema>
+  </DataSource>
+  <Fields>
+    <Field Name="TaskId" SourceType="Column" SourceName="TASK_ID" DataType="Integer.64"  Required="true" Title="Task ID" Desc="The task ID" />
+    <Field Name="TASK" SourceType="Reference" SourceName="Atdi.DataModels.Sdrn.CalcServer.Entities.CalcTask"  Required="true" Title="Task ID" Desc="The ID in which the task record is created" />
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="TaskId"/>
+  </PrimaryKey>
+</Entity>

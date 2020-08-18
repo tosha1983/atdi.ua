@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "TestDataType"
+  Title       = "Test Data Type"
+  Desc        = "The entity of the different data types testing"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>TEST_DATATYPES</Name>
+    <Schema>CORE</Schema>
+  </DataSource>
+  <Fields>
+    
+    <Field Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column" Desc="The id of the message record" Title="Id record"/>
+    
+    <Field Name="Boolean_BOOL_Bit" DataType="Boolean" SourceName="Boolean_BOOL_BIT" SourceType="Column" Required="false" Desc="" Title="Boolean_BOOL_Bit"/>
+    <Field Name="Boolean_BOOL_Tinyint" DataType="Boolean" SourceName="Boolean_BOOL_TINYINT" SourceType="Column" Required="false" Desc="" Title="Boolean_BOOL_Tinyint"/>
+    <Field Name="Boolean_BOOL_Integer" DataType="Boolean" SourceName="Boolean_BOOL_INT" SourceType="Column" Required="false" Desc="" Title="Boolean_BOOL_Integer"/>
+    <Field Name="Boolean_BOOL_Byte" DataType="Boolean" SourceName="Boolean_BOOL_BYTE" SourceType="Column" Required="false" Desc="" Title="Boolean_BOOL_Byte"/>
+    <Field Name="Boolean_BOOL_Char" DataType="Boolean" SourceName="Boolean_BOOL_CHAR" SourceType="Column" Required="false" Desc="" Title="Boolean_BOOL_Char"/>
+    <Field Name="Boolean_BOOL_Nchar" DataType="Boolean" SourceName="Boolean_BOOL_NCHAR" SourceType="Column" Required="false" Desc="" Title="Boolean_BOOL_Nchar"/>
+    <Field Name="Boolean_BOOL_Varchar" DataType="Boolean" SourceName="Boolean_BOOL_VARCHAR" SourceType="Column" Required="false" Desc="" Title="Boolean_BOOL_Varchar"/>
+    <Field Name="Boolean_BOOL_Nvarchar" DataType="Boolean" SourceName="Boolean_BOOL_NVARCHAR" SourceType="Column" Required="false" Desc="" Title="Boolean_BOOL_Nvarchar"/>
+    
+    
+
+  </Fields>
+ 
+</Entity>

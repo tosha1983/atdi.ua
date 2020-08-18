@@ -133,30 +133,30 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             var optY = correlationData.FieldStrengthCalcData.PointCoordinate.Y;
             var optAlt = correlationData.FieldStrengthCalcData.PointAltitude_m;
             var optPow = correlationData.FieldStrengthCalcData.Transmitter.MaxPower_dBm;
-            for (var coordinatesStationX = coordinatesStationMinX_m; coordinatesStationX < coordinatesStationMaxX_m; coordinatesStationX += coordinatesStationStep_m)
+            for (var coordinatesStationX = coordinatesStationMinX_m; coordinatesStationX <= coordinatesStationMaxX_m; coordinatesStationX += coordinatesStationStep_m)
             {
                 correlationData.FieldStrengthCalcData.PointCoordinate.X = coordinatesStationX;
 
-                for (var coordinatesStationY = coordinatesStationMinY_m; coordinatesStationY < coordinatesStationMaxY_m; coordinatesStationY += coordinatesStationStep_m)
+                for (var coordinatesStationY = coordinatesStationMinY_m; coordinatesStationY <= coordinatesStationMaxY_m; coordinatesStationY += coordinatesStationStep_m)
                 {
                     correlationData.FieldStrengthCalcData.PointCoordinate.Y = coordinatesStationY;
 
                     // высота, азимут, угол места, мощность
-                    for (var altitudeStation = altitudeStationMin_m; altitudeStation < altitudeStationMax_m; altitudeStation += altitudeStationStep_m)
+                    for (var altitudeStation = altitudeStationMin_m; altitudeStation <= altitudeStationMax_m; altitudeStation += altitudeStationStep_m)
                     {
                         correlationData.FieldStrengthCalcData.PointAltitude_m = altitudeStation;
 
                         // азимут, угол места, мощность
-                        for (var azimuthStation = azimuthStationMin; azimuthStation < azimuthStationMax; azimuthStation += azimuthStationStep)
+                        for (var azimuthStation = azimuthStationMin; azimuthStation <= azimuthStationMax; azimuthStation += azimuthStationStep)
                         {
                             correlationData.FieldStrengthCalcData.Antenna.Azimuth_deg = azimuthStation;
 
                             // угол места, мощность
-                            for (var tiltStation = tiltStationMin; tiltStation < tiltStationMax; tiltStation += tiltStationStep)
+                            for (var tiltStation = tiltStationMin; tiltStation <= tiltStationMax; tiltStation += tiltStationStep)
                             {
                                 correlationData.FieldStrengthCalcData.Antenna.Tilt_deg = tiltStation;
                                 // мощность
-                                for (var powerStation = powerStationMin; powerStation < powerStationMax; powerStation += powerStationStep)
+                                for (var powerStation = powerStationMin; powerStation <= powerStationMax; powerStation += powerStationStep)
                                 {
                                     correlationData.FieldStrengthCalcData.Transmitter.MaxPower_dBm = powerStation;
                                     correlationResult = corellationCalcIteration.Run(taskContext, correlationData);
@@ -444,7 +444,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         correlationData.FieldStrengthCalcData.PointCoordinate.X += calibrationData.CalibrationParameters.ShiftCoordinatesStationStep_m;
                     }
 
-                    if (calibrationData.GSIDGroupeStation.Coordinate.X + calibrationData.CalibrationParameters.ShiftCoordinatesStationStep_m <= coordinatesStationMaxX_m)
+                    if (calibrationData.FieldStrengthCalcData.PointCoordinate.X + calibrationData.CalibrationParameters.ShiftCoordinatesStationStep_m <= coordinatesStationMaxX_m)
                     {
                         correlationData.FieldStrengthCalcData.PointCoordinate.X += calibrationData.CalibrationParameters.ShiftCoordinatesStationStep_m;
                         correlationResult = corellationCalcIteration.Run(taskContext, correlationData);
@@ -492,7 +492,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
                             yCoordDimCorrelation_pc = true;
                         }
-                        correlationData.FieldStrengthCalcData.PointCoordinate.Y += calibrationData.CalibrationParameters.ShiftAltitudeStationStep_m;
+                        correlationData.FieldStrengthCalcData.PointCoordinate.Y += calibrationData.CalibrationParameters.ShiftCoordinatesStationStep_m;
                     }
 
                     if (correlationData.FieldStrengthCalcData.PointCoordinate.Y + calibrationData.CalibrationParameters.ShiftCoordinatesStationStep_m <= coordinatesStationMaxY_m)
@@ -737,7 +737,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             calcCalibrationResult.ParametersStationNew.Power_dB = correlationData.FieldStrengthCalcData.Transmitter.MaxPower_dBm;
 
             //- Freq_MHz(частота передатчика станции)
-            calcCalibrationResult.Freq_MHz = correlationResult.Freq_MHz;
+            //calcCalibrationResult.Freq_MHz = correlationResult.Freq_MHz;
             //- Delta_dB(входной параметр)
             calcCalibrationResult.Delta_dB = correlationResult.Delta_dB;
             //- Correlation_pc(процент точек где результаты измерений отличаться от расчетного менее чем на Delta_dB)
@@ -771,8 +771,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 var CurrentMax = curentDate.PointAltitude_m + NewShift;
                 if (LimithMin <= CurrentMin){ CalibrationParameters.ShiftAltitudeStationMin_m = -NewShift;}
                 else {CalibrationParameters.ShiftAltitudeStationMin_m = (int)(LimithMin- curentDate.Antenna.Azimuth_deg);}
-                if (LimithMax >= CurrentMax) { CalibrationParameters.ShiftAltitudeStationMin_m = NewShift; }
-                else {CalibrationParameters.ShiftAltitudeStationMin_m = (int)(LimithMax - curentDate.PointAltitude_m);}
+                if (LimithMax >= CurrentMax) { CalibrationParameters.ShiftAltitudeStationMax_m = NewShift; }
+                else {CalibrationParameters.ShiftAltitudeStationMax_m = (int)(LimithMax - curentDate.PointAltitude_m);}
                 CalibrationParameters.ShiftAltitudeStationStep_m = CalibrationParameters.ShiftAltitudeStationStep_m/CalibrationParameters.DetailOfCascade;
             }
             // Изменение азимута станции
@@ -809,7 +809,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             {
                 var NewShift = CalibrationParameters.ShiftPowerStationStep_dB;
                 var LimithMin = EtalonStation.Transmitter.MaxPower_dBm + CalibrationParameters.ShiftPowerStationMin_dB;
-                var LimithMax = EtalonStation.Transmitter.MaxPower_dBm + CalibrationParameters.ShiftPowerStationMin_dB;
+                var LimithMax = EtalonStation.Transmitter.MaxPower_dBm + CalibrationParameters.ShiftPowerStationMax_dB;
                 var CurrentMin = curentDate.Transmitter.MaxPower_dBm - NewShift;
                 var CurrentMax = curentDate.Transmitter.MaxPower_dBm + NewShift;
                 if (LimithMin <= CurrentMin) { CalibrationParameters.ShiftPowerStationMin_dB = -NewShift; }

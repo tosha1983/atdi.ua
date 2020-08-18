@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "StationCalibrationStaResult"
+  Title       = "Calibration station result"
+  Desc        = "The calibration station result"
+  Type        = "Normal"
+  BaseEntity  = ""
+  
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>CALCRESULTS_STATION_CALIBRATION_STA</Name>
+    <Schema>CALC</Schema>
+  </DataSource>
+  <Fields>
+
+    <Field Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column" Desc="The Id record." Title="Id record"/>
+    <Field Name="StationMonitoringId" SourceType="Column" SourceName="STATION_MONITORING_ID" DataType="Integer.64"  Required="false" Title="Station  monitoring ID" Desc="The station  monitoring ID" />
+    <Field Name="CalibrationResultId" SourceType="Column" SourceName="CALCRESULTS_STATION_CALIBRATION_ID" DataType="Integer.64"  Required="true" Title="calibration result ID" Desc="The calibration result ID" />
+    <Field Name="ExternalSource" SourceType="Column" SourceName="EXTERNAL_SOURCE" DataType="Text.50" Required="false" Title="External source" Desc="The external source" />
+    <Field Name="ExternalCode" SourceType="Column" SourceName="EXTERNAL_CODE" DataType="Text.50" Required="false" Title="External code" Desc="The external code" />
+    <Field Name="LicenseGsid" SourceType="Column" SourceName="LICENSE_GSID" DataType="Text.50" Required="false" Title="License gsid" Desc="The license gsid" />
+    <Field Name="RealGsid" SourceType="Column" SourceName="REAL_GSID" DataType="Text.50" Required="false" Title="Real Gsid" Desc="The real Gsid" />
+    <Field Name="ResultStationStatus" SourceType="Column" SourceName="RESULT_STATION_STATUS" DataType="Text.50" Required="false" Title="Result station status" Desc="The result station status" />
+    <Field Name="MaxCorellation" SourceType="Column" Required="false" SourceName="MAX_CORELLATION" DataType="Float.22.8" Title="Max corellation" Desc="The maximum corellation"/>
+    <Field Name="Old_Altitude_m" SourceType="Column" Required="false" SourceName="OLD_ALTITUDE_M" DataType="Integer.32" Title="Old station parameter altitude, m" Desc="The Old station parameter altitude, m"/>
+    <Field Name="Old_Tilt_deg" SourceType="Column" Required="false" SourceName="OLD_TILT_DEG" DataType="Float.22.8" Title="Old station parameter tilt, Deg" Desc="The Old station parameter tilt, Deg"/>
+    <Field Name="Old_Azimuth_deg" SourceType="Column" Required="false" SourceName="OLD_AZIMUTRH_DEG" DataType="Float.22.8" Title="Old station parameter azimuth, Deg" Desc="The Old station parameter azimuth, Deg"/>
+    <Field Name="Old_Lat_deg" SourceType="Column" Required="false" SourceName="OLD_LAT_DEG" DataType="Double.30.10" Title="Old station latitude, Deg" Desc="The Old station parameter latitude, Deg"/>
+    <Field Name="Old_Lon_deg" SourceType="Column" Required="false" SourceName="OLD_LON_DEG" DataType="Double.30.10" Title="Old station longitude, Deg" Desc="The Old station parameter longitude, Deg"/>
+    <Field Name="Old_Power_dB" SourceType="Column" Required="false" SourceName="OLD_POWER_DB" DataType="Float.22.8" Title="Old station power, dB" Desc="The Old station parameter power, dB"/>
+    <Field Name="Old_Freq_MHz" SourceType="Column" Required="false" SourceName="OLD_FREQ_MHZ" DataType="Double.30.10" Title="Old station freq, MHz" Desc="The Old station parameter frequency, MHz"/>
+    <Field Name="New_Altitude_m" SourceType="Column" Required="false" SourceName="NEW_ALTITUDE_M" DataType="Integer.32" Title="New station parameter altitude, m" Desc="The New station parameter altitude, m"/>
+    <Field Name="New_Tilt_deg" SourceType="Column" Required="false" SourceName="NEW_TILT_DEG" DataType="Float.22.8" Title="New station parameter tilt, Deg" Desc="The New station parameter tilt, Deg"/>
+    <Field Name="New_Azimuth_deg" SourceType="Column" Required="false" SourceName="NEW_AZIMUTRH_DEG" DataType="Float.22.8" Title="New station parameter azimuth, Deg" Desc="The New station parameter azimuth, Deg"/>
+    <Field Name="New_Lat_deg" SourceType="Column" Required="false" SourceName="NEW_LAT_DEG" DataType="Double.30.10" Title="New station latitude, Deg" Desc="The New station parameter latitude, Deg"/>
+    <Field Name="New_Lon_deg" SourceType="Column" Required="false" SourceName="NEW_LON_DEG" DataType="Double.30.10" Title="New station longitude, Deg" Desc="The New station parameter longitude, Deg"/>
+    <Field Name="New_Power_dB" SourceType="Column" Required="false" SourceName="NEW_POWER_DB" DataType="Float.22.8" Title="New station power, dB" Desc="The New station parameter power, dB"/>
+    <Field Name="Standard" SourceType="Column" SourceName="STANDARD" DataType="Text.50" Required="false" Title="Standard" Desc="The Standard of the station calibration" />
+    <Field Name="Freq_MHz" SourceType="Column" Required="true" SourceName="FREQ_MHZ" DataType="Double.30.10" Title="Freq, MHz" Desc="The Freq in MHz"/>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>
+

@@ -31,21 +31,23 @@ namespace Atdi.Test.WebApi.RestOrm
 		{
 			Console.ReadLine();
 
-			var endpoint = new WebApiEndpoint(new Uri("http://localhost:15070/"), "/appserver/v1");
-			var dataContext = new WebApiDataContext("SDRN_CalcServer_DB");
-			var dataLayer = new WebApiDataLayer(endpoint, dataContext);
+			TestStringArray();
 
-			var data = new long[14000];
-			for (int i = 0; i < data.Length; i++)
-			{
-				data[i] = i;
-			}
-			var webQuery = dataLayer.GetBuilder<IStationCalibrationArgs>()
-				.Create()
-				.SetValue(c => c.TaskId, 2)
-				.SetValue(c => c.StationIds, data);
+			//var endpoint = new WebApiEndpoint(new Uri("http://localhost:15070/"), "/appserver/v1");
+			//var dataContext = new WebApiDataContext("SDRN_CalcServer_DB");
+			//var dataLayer = new WebApiDataLayer(endpoint, dataContext);
 
-			var count = dataLayer.Executor.Execute(webQuery);
+			//var data = new long[14000];
+			//for (int i = 0; i < data.Length; i++)
+			//{
+			//	data[i] = i;
+			//}
+			//var webQuery = dataLayer.GetBuilder<IStationCalibrationArgs>()
+			//	.Create()
+			//	.SetValue(c => c.TaskId, 2)
+			//	.SetValue(c => c.StationIds, data);
+
+			//var count = dataLayer.Executor.Execute(webQuery);
 
 			//var webQuery = dataLayer.GetBuilder<IProject>()
 			//	.Create()
@@ -64,17 +66,59 @@ namespace Atdi.Test.WebApi.RestOrm
 			//TestUpdateMethod(dataLayer);
 			//TestDeleteMethod(dataLayer);
 
-			var e1 = dataLayer.MetadataSite.GetEntityMetadata(
-				"Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks.PointFieldStrengthArgs");
+			//var e1 = dataLayer.MetadataSite.GetEntityMetadata(
+			//	"Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks.PointFieldStrengthArgs");
 
-			var e2 = dataLayer.MetadataSite.GetEntityMetadata(
-				"Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks", "PointFieldStrengthArgs");
+			//var e2 = dataLayer.MetadataSite.GetEntityMetadata(
+			//	"Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks", "PointFieldStrengthArgs");
 
-			var e3 = dataLayer.MetadataSite.GetEntityMetadata<IPointFieldStrengthArgs>();
+			//var e3 = dataLayer.MetadataSite.GetEntityMetadata<IPointFieldStrengthArgs>();
 
-			
+
 		}
 
+
+		private static void TestStringArray()
+		{
+			var endpoint = new WebApiEndpoint(new Uri("http://localhost:15070/"), "/appserver/v1");
+			var dataContext = new WebApiDataContext("SDRN_CalcServer_DB");
+			var dataLayer = new WebApiDataLayer(endpoint, dataContext);
+
+			var data = new long[14];
+			for (int i = 0; i < data.Length; i++)
+			{
+				data[i] = i;
+			}
+			var insQuery = dataLayer.GetBuilder<IStationCalibrationArgs>()
+				.Create()
+				.SetValue(c => c.TaskId, 4)
+				.SetValue(c => c.StationIds, data)
+				.SetValue(c => c.Contours, new string[]{"val1", "val2", "val3"});
+
+			var count = dataLayer.Executor.Execute(insQuery);
+
+			var ids = new long[200];
+			for (int i = 1; i <= ids.Length; i++)
+			{
+				ids[i-1] = i;
+			}
+
+			var selQuery = dataLayer.GetBuilder<IStationCalibrationArgs>()
+				.Read()
+				.Select(
+					c => c.StationIds, 
+					c => c.Contours
+				)
+				.Filter(c => c.TaskId, FilterOperator.In, ids);
+
+			var reader = dataLayer.Executor.ExecuteReader(selQuery);
+
+			while (reader.Read())
+			{
+				var longArray = reader.GetValue(c => c.StationIds);
+				var stingArray = reader.GetValue(c => c.Contours);
+			}
+		}
 		static void TestUpdateMethod(WebApiDataLayer dataLayer)
 		{
 			var webQuery = dataLayer.GetBuilder<IProject>()

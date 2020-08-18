@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "LinkSectorMaskElement"
+  Title       = "LinkSectorMaskElement"
+  Desc        = "The LinkSectorMaskElement"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>LINK_SECTOR_MASK</Name>
+    <Schema>ICSC</Schema>
+  </DataSource>
+  <Fields>
+    <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
+    <Field Name="SECTOR_MASK_ELEM" SourceType="Reference" SourceName="SectorMaskElement" Title="Relation LinkSectorMaskElement to SectorMaskElement"/>
+    <Field Name="SECTOR" SourceType="Reference" SourceName="Sector" Title="Relation LinkSectorMaskElement to Sector"/>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>
+
+

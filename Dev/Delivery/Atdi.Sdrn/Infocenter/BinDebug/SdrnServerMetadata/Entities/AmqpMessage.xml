@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "AmqpMessage"
+  Title       = "AMQP Message"
+  Desc        = "The message of Advanced Message Queuing Protocol"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>AMQP_MESSAGES</Name>
+    <Schema>ICSC</Schema>
+  </DataSource>
+  <Fields>
+    <Field Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column" Desc="The id of the message record" Title="Id record"/>
+    <Field Name="StatusCode" DataType="Code.u08" SourceName="STATUS_CODE" SourceType="Column" Desc="The code of the status of the message processing" Title="Status code" Required="true"/>
+    <Field Name="StatusName" DataType="Text.50" SourceName="STATUS_NAME" SourceType="Column" Desc="The name of the status of the message processing" Title="Status name" Required="false"/>
+    <Field Name="StatusNote" DataType="Text.MAX" SourceName="STATUS_NOTE" SourceType="Column" Desc="The note of the status of the message processing" Title="Status note" Required="false"/>
+    <Field Name="CreatedDate" DataType="DateTimeOffset" SourceName="CREATED_DATE" SourceType="Column" Desc="The date of the record created" Title="Created date" Required="true"/>
+    <Field Name="ThreadId" DataType="Integer.32" SourceName="THREAD_ID" SourceType="Column" Desc="The thread id of the app server process" Title="Thread Id" Required="true"/>
+    <Field Name="ProcessedStartDate" DataType="DateTimeOffset" SourceName="PROCESSED_SDATE" SourceType="Column" Desc="The start date of the record processed" Title="Processed date"/>
+    <Field Name="ProcessedFinishDate" DataType="DateTimeOffset" SourceName="PROCESSED_FDATE" SourceType="Column" Desc="The finish date of the record processed" Title="Processed date"/>
+    
+    <Field Name="PropExchange" DataType="Text.250" SourceName="PROP_EXCHANGE" SourceType="Column" Required="false" Desc="The message property: Exchange" Title="Property: Exchange"/>
+    <Field Name="PropRoutingKey" DataType="Text.250" SourceName="PROP_ROUTING_KEY" SourceType="Column" Required="false" Desc="The message property: Routing Key" Title="Property: Routing Key"/>
+    <Field Name="PropDeliveryTag" DataType="Text.250" SourceName="PROP_DELIVERY_TAG" SourceType="Column" Required="false" Desc="The message property: delivery tag" Title="Property: Delivery Tag"/>
+    <Field Name="PropConsumerTag" DataType="Text.250" SourceName="PROP_CONSUMER_TAG" SourceType="Column" Required="false" Desc="The message property: consumer mode" Title="Property: Consumer Tag"/>
+
+    
+    <Field Name="PropAppId" DataType="Text.250" SourceName="PROP_APP_ID" SourceType="Column" Required="false" Desc="The message property: app_id" Title="Property: App ID"/>
+    <Field Name="PropType" DataType="Text.250" SourceName="PROP_TYPE" SourceType="Column" Required="false" Desc="The message property: type" Title="Message prop: Type"/>
+    <Field Name="PropTimestamp" DataType="Integer.64" SourceName="PROP_TIMESTAMP" SourceType="Column" Required="false" Desc="The message property: timestamp" Title="Property: Timestamp"/>
+    <Field Name="PropMessageId" DataType="Text.250" SourceName="PROP_MESSAGE_ID" SourceType="Column" Required="false" Desc="The message property: message_id" Title="Property: Message Id"/>
+    <Field Name="PropCorrelationId" DataType="Text.250" SourceName="PROP_CORRELATION_ID" SourceType="Column" Required="false" Desc="The message property: correlation_id" Title="Property: Correlation Id"/>
+    <Field Name="PropContentEncoding" DataType="Text.250" SourceName="PROP_CONTENT_ENCODING" SourceType="Column" Required="false" Desc="The message property: content_encoding" Title="Property: Content Encoding"/>
+    <Field Name="PropContentType" DataType="Text.250" SourceName="PROP_CONTENT_TYPE" SourceType="Column" Required="false" Desc="The message property: content_type" Title="Property: Content Type"/>
+
+    <Field Name="HeaderCreated" DataType="Text.250" SourceName="HEADER_CREATED" SourceType="Column" Required="false" Desc="The message header: Created" Title="Header: Created"/>
+    <Field Name="HeaderSdrnServer" DataType="Text.250" SourceName="HEADER_SDRNSERVER" SourceType="Column" Required="false" Desc="The message header: SdrnServer" Title="Header: SDRN Server Instance"/>
+    <Field Name="HeaderSensorName" DataType="Text.250" SourceName="HEADER_SENSORNAME" SourceType="Column" Required="false" Desc="The message header: SensorName" Title="Header: Sensor Name"/>
+    <Field Name="HeaderSensorTechId" DataType="Text.250" SourceName="HEADER_SENSORTECHID" SourceType="Column" Required="false" Desc="The message header: SensorTechId" Title="Header: Sensor Tech Id"/>
+
+    <Field Name="HeaderApiVersion" DataType="Text.50" SourceName="HEADER_APIVERSION" SourceType="Column" Required="false" Desc="The message header: ApiVersion" Title="Header: API Version"/>
+    <Field Name="HeaderProtocol" DataType="Text.50" SourceName="HEADER_PROTOCOL" SourceType="Column" Required="false" Desc="The message header: Protocol" Title="Header: Protocol"/>
+    <Field Name="HeaderBodyAQName" DataType="Text.250" SourceName="HEADER_BODYAQNAME" SourceType="Column" Required="false" Desc="The message header: Assembly Qualify Name of the body type" Title="Header: Body AQ Name"/>
+
+    <Field Name="BodyContentType" DataType="Text.250" SourceName="BODY_CONTENT_TYPE" SourceType="Column" Required="false" Desc="The message body: content type" Title="Body: Content Type"/>
+    <Field Name="BodyContentEncoding" DataType="Text.250" SourceName="BODY_CONTENT_ENCODING" SourceType="Column" Required="false" Desc="The message body: content encoding" Title="Body: Content Encoding"/>
+    <Field Name="BodyContent" DataType="Bytes.MAX" SourceName="BODY_CONTENT" SourceType="Column" Required="false" Desc="The message body: content" Title="Body: Content"/>
+    
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>
