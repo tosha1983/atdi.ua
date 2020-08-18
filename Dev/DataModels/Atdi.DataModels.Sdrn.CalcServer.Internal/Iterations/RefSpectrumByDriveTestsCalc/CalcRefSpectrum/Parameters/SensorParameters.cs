@@ -15,17 +15,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 
         public double RxFeederLoss_dB;
 
-        //public string SensorName;
-
-        //public string SensorTechId;
-
-        //public string SensorTitle;
-
-        public float Gain;
-
-        public float Loss;
-
-        public StationAntenna  SensorAntenna;
+        public StationAntenna[]  SensorAntennas;
 
         public float SensorAntennaHeight_m;
 

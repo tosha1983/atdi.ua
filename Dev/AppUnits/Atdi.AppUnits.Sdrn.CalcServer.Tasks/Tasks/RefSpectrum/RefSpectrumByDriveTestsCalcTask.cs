@@ -138,6 +138,43 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
             return false;
         }
 
+        private ReceivedPowerCalcData FillReceivedPowerCalcData(byte[] buildingContent, 
+                                               byte[] clutterContent,
+                                               CluttersDesc cluttersDesc,
+                                               AtdiMapArea atdiMapArea,
+                                               PropagationModel propagationModel, 
+                                               short[] reliefContent,
+                                               Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations.StationTransmitter stationTransmitter,
+                                               Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations.StationAntenna stationAntennaTx,
+
+                                               AtdiCoordinate coordinateTx,
+                                               double TxAltitude_m,
+                                                Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations.StationAntenna stationAntennaRx,
+                                                AtdiCoordinate coordinateRx,
+                                                double rxFeederLoss_dB,
+                                                double txFreq_Mhz,
+                                               double RxAltitude_m
+                                               )
+        {
+            var receivedPowerCalcData = new ReceivedPowerCalcData();
+            receivedPowerCalcData.BuildingContent = buildingContent;
+            receivedPowerCalcData.ClutterContent = clutterContent;
+            receivedPowerCalcData.CluttersDesc = cluttersDesc;
+            receivedPowerCalcData.MapArea = atdiMapArea;
+            receivedPowerCalcData.PropagationModel = propagationModel;
+            receivedPowerCalcData.ReliefContent = reliefContent;
+            receivedPowerCalcData.Transmitter = stationTransmitter;
+            receivedPowerCalcData.TxAntenna = stationAntennaTx;
+            receivedPowerCalcData.TxCoordinate = coordinateTx;
+            receivedPowerCalcData.TxAltitude_m = TxAltitude_m;
+            receivedPowerCalcData.RxAntenna = stationAntennaRx;
+            receivedPowerCalcData.RxCoordinate = coordinateRx;
+            receivedPowerCalcData.RxFeederLoss_dB = rxFeederLoss_dB;
+            receivedPowerCalcData.TxFreq_Mhz = txFreq_Mhz;
+            receivedPowerCalcData.RxAltitude_m = RxAltitude_m;
+
+            return receivedPowerCalcData;
+        }
 
         public void Run()
         {
@@ -156,18 +193,18 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                 {
                     if (listRefSpectrumStationCalibrations[i].Freq_MHz > 0)
                     {
-                        if (!listFreqs.Contains(listRefSpectrumStationCalibrations[i].Freq_MHz))
+                        if (!listFreqs.Contains(Math.Round(listRefSpectrumStationCalibrations[i].Freq_MHz,6)))
                         {
-                            listFreqs.Add(listRefSpectrumStationCalibrations[i].Freq_MHz);
+                            listFreqs.Add(Math.Round(listRefSpectrumStationCalibrations[i].Freq_MHz,6));
                         }
                     }
                     else
                     {
                         if (listRefSpectrumStationCalibrations[i].Old_Freq_MHz > 0)
                         {
-                            if (!listFreqs.Contains(listRefSpectrumStationCalibrations[i].Old_Freq_MHz))
+                            if (!listFreqs.Contains(Math.Round(listRefSpectrumStationCalibrations[i].Old_Freq_MHz,6)))
                             {
-                                listFreqs.Add(listRefSpectrumStationCalibrations[i].Old_Freq_MHz);
+                                listFreqs.Add(Math.Round(listRefSpectrumStationCalibrations[i].Old_Freq_MHz,6));
                             }
                         }
                     }
@@ -179,48 +216,66 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 
                 for (int i = 0; i < sensorIds.Length; i++)
                 {
-                    var lstReceivedPowerCalcResult = new List<ReceivedPowerCalcResult>();
-                    float sensorAntennaHeight_m = 0;
+                  
+                    var sensor = _sensorParameters.ToList().Find(x => x.SensorId == sensorIds[i]);
+                    if (sensor == null)
+                    {
+                        continue;
+                    }
                     for (int j = 0; j < freqs_MHz.Length; j++)
                     {
+                        var fndSensorAntennas = sensor.SensorAntennas.ToList().Find(x => Math.Round(x.Freq_MHz, 6) == Math.Round(freqs_MHz[j], 6));
+                        if (fndSensorAntennas == null)
+                        {
+                            continue;
+                        }
+
+                        var lstReceivedPowerCalcResult = new List<ReceivedPowerCalcResult>();
                         for (int k = 0; k < this._refSpectrumStationCalibrations.Length; k++)
                         {
                             var refSpectrumStation = this._refSpectrumStationCalibrations[k];
-                            if ((CompareFreqSt(freqs_MHz[j], refSpectrumStation.contextStation))==false)
+                            if ((CompareFreqStationForRefLevel(freqs_MHz[j], refSpectrumStation.contextStation))==false)
                             {
                                 continue;
                             }
                             else
                             {
                                 var contextStation = refSpectrumStation.contextStation;
-                                var sensor = _sensorParameters.ToList().Find(x=>x.SensorId== sensorIds[i]);
-                                if (sensor==null)
-                                {
-                                    continue;
-                                }
 
-                                var receivedPowerCalcData = new ReceivedPowerCalcData();
-                                receivedPowerCalcData.BuildingContent = mapData.BuildingContent;
-                                receivedPowerCalcData.ClutterContent = mapData.ClutterContent;
-                                receivedPowerCalcData.CluttersDesc = _mapRepository.GetCluttersDesc(this._calcDbScope, mapData.Id);
-                                receivedPowerCalcData.MapArea = mapData.Area;
-                                receivedPowerCalcData.PropagationModel = propagationModel;
-                                receivedPowerCalcData.ReliefContent = mapData.ReliefContent;
-                                receivedPowerCalcData.Transmitter = contextStation.Transmitter;
-                                receivedPowerCalcData.TxAntenna = contextStation.Antenna;
                                 var wgs84Coordinate = new Wgs84Coordinate()
                                 {
                                     Longitude = contextStation.Site.Longitude,
                                     Latitude = contextStation.Site.Latitude
                                 };
-                                receivedPowerCalcData.TxCoordinate = _transformation.ConvertCoordinateToAtdi(in wgs84Coordinate, this._parameters.Projection);
-                                receivedPowerCalcData.TxAltitude_m = contextStation.Site.Altitude;
-                                receivedPowerCalcData.RxAntenna = sensor.SensorAntenna;
-                                receivedPowerCalcData.RxCoordinate = sensor.Coordinate;
-                                receivedPowerCalcData.RxFeederLoss_dB = sensor.RxFeederLoss_dB;
-                                receivedPowerCalcData.TxFreq_Mhz = refSpectrumStation.Freq_MHz;
-                                receivedPowerCalcData.RxAltitude_m = sensor.SensorAntennaHeight_m;
-                                sensorAntennaHeight_m = sensor.SensorAntennaHeight_m;
+
+
+                                var receivedPowerCalcData = FillReceivedPowerCalcData(mapData.BuildingContent, mapData.ClutterContent,
+                                                          _mapRepository.GetCluttersDesc(this._calcDbScope, mapData.Id), mapData.Area,
+                                                           propagationModel, mapData.ReliefContent, contextStation.Transmitter,
+                                                           contextStation.Antenna, _transformation.ConvertCoordinateToAtdi(in wgs84Coordinate, this._parameters.Projection),
+                                                            contextStation.Site.Altitude, fndSensorAntennas, sensor.Coordinate, sensor.RxFeederLoss_dB, refSpectrumStation.Freq_MHz, sensor.SensorAntennaHeight_m);
+
+                                //var receivedPowerCalcData = new ReceivedPowerCalcData();
+                                //receivedPowerCalcData.BuildingContent = mapData.BuildingContent;
+                                //receivedPowerCalcData.ClutterContent = mapData.ClutterContent;
+                                //receivedPowerCalcData.CluttersDesc = _mapRepository.GetCluttersDesc(this._calcDbScope, mapData.Id);
+                                //receivedPowerCalcData.MapArea = mapData.Area;
+                                //receivedPowerCalcData.PropagationModel = propagationModel;
+                                //receivedPowerCalcData.ReliefContent = mapData.ReliefContent;
+                                //receivedPowerCalcData.Transmitter = contextStation.Transmitter;
+                                //receivedPowerCalcData.TxAntenna = contextStation.Antenna;
+                              
+                                //receivedPowerCalcData.TxCoordinate = _transformation.ConvertCoordinateToAtdi(in wgs84Coordinate, this._parameters.Projection);
+                                //receivedPowerCalcData.TxAltitude_m = contextStation.Site.Altitude;
+
+                              
+
+                                //receivedPowerCalcData.RxAntenna = fndSensorAntennas;
+                                //receivedPowerCalcData.RxCoordinate = sensor.Coordinate;
+                                //receivedPowerCalcData.RxFeederLoss_dB = sensor.RxFeederLoss_dB;
+                                //receivedPowerCalcData.TxFreq_Mhz = refSpectrumStation.Freq_MHz;
+                                //receivedPowerCalcData.RxAltitude_m = sensor.SensorAntennaHeight_m;
+                                
 
                                 var resultRefSpectrumBySensors = new ResultRefSpectrumBySensors();
                                 resultRefSpectrumBySensors.OrderId = index;
@@ -233,11 +288,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 
                                 // вызов итерации определения уровня сигнала Level
                                 var resulLevelCalc = iterationReceivedPowerCalcResult.Run(_taskContext, receivedPowerCalcData);
-                                //ReceivedPowerCalcResult resulLevelCalc = new ReceivedPowerCalcResult();
-                                //resulLevelCalc.Level_dBm = 30.45;
-                                //resulLevelCalc.Frequency_Mhz = driveTest.Freq_MHz;
-                                //resulLevelCalc.Distance_km = 34;
-                                //resulLevelCalc.AntennaHeight_m = 3;
+
                                 if (resulLevelCalc.Level_dBm.Value < this._parameters.PowerThreshold_dBm)
                                 {
                                     if (skipDriveTests.Find(x => x.Id == contextStation.Id) == null)
@@ -274,25 +325,27 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                 });
                             }
                         }
-                    }
-                    var percentTimeForGainCalcData = new PercentTimeForGainCalcData();
-                    percentTimeForGainCalcData.SensorAntennaHeight_m = sensorAntennaHeight_m;
-                    percentTimeForGainCalcData.SensorId = sensorIds[i].Value;
-                    percentTimeForGainCalcData.StationData = lstReceivedPowerCalcResult.ToArray();
 
-                    // вызов итерации определения процента времени P, в течение которого излучение данного сектора доминирует на данном сенсоре
-                    var resultPercent = iterationPercentTimeForGainCalcDataResult.Run(_taskContext, percentTimeForGainCalcData);
-                    if ((resultPercent != null) && (resultPercent.Length > 0))
-                    {
-                        for (int n = 0; n < percentTimeForGainCalcData.StationData.Length; n++)
+                        var percentTimeForGainCalcData = new PercentTimeForGainCalcData();
+                        percentTimeForGainCalcData.SensorAntennaHeight_m = sensor.SensorAntennaHeight_m;
+                        percentTimeForGainCalcData.SensorId = sensorIds[i].Value;
+                        percentTimeForGainCalcData.StationData = lstReceivedPowerCalcResult.ToArray();
+
+                        // вызов итерации определения процента времени P, в течение которого излучение данного сектора доминирует на данном сенсоре
+                        var resultPercent = iterationPercentTimeForGainCalcDataResult.Run(_taskContext, percentTimeForGainCalcData);
+                        if ((resultPercent != null) && (resultPercent.Length > 0))
                         {
-                            var fndStationData = listResultRefSpectrumBySensors.Find(x => x.IdSensor == sensorIds[i].Value && x.Freq_MHz == percentTimeForGainCalcData.StationData[n].Frequency_Mhz.Value);
-                            if (fndStationData != null)
+                            for (int n = 0; n < percentTimeForGainCalcData.StationData.Length; n++)
                             {
-                                fndStationData.Percent = resultPercent[n];
+                                var fndStationData = listResultRefSpectrumBySensors.Find(x =>  Math.Round(x.Freq_MHz,6) == Math.Round(percentTimeForGainCalcData.StationData[n].Frequency_Mhz.Value,6));
+                                if (fndStationData != null)
+                                {
+                                    fndStationData.Percent = resultPercent[n];
+                                }
                             }
                         }
                     }
+                  
                 }
 
 
@@ -528,15 +581,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                             c => c.RECEIVER.PolarizationCode,
                             c => c.RECEIVER.Freqs_MHz
                         )
-                        //.Where(c => c.CONTEXT.Id, ConditionOperator.Equal, _taskContext.ClientContextId)
                         .Where(c => c.Id, ConditionOperator.In, partStationIdsByCalcServer[i].ToArray());
 
                     var contextStation = _calcDbScope.Executor.ExecuteAndFetch(queryStation, reader =>
                     {
                         while (reader.Read())
                         {
-
-
                             var stationRecord = new ContextStation
                             {
                                 Id = reader.GetValue(c => c.Id),
@@ -552,8 +602,6 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                 ModifiedDate = reader.GetValue(c => c.ModifiedDate),
                                 LicenseGsid = reader.GetValue(c => c.LicenseGsid),
                                 RealGsid = reader.GetValue(c => c.RealGsid),
-
-
                                 RegionCode = reader.GetValue(c => c.RegionCode),
 
                                 Site = new Wgs84Site
@@ -675,7 +723,6 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                     Latitude = readerSensorLocation.GetValue(c => c.Lat).Value
                                 };
                                 sensorParameter.Coordinate = _transformation.ConvertCoordinateToAtdi(in wgs84Coordinate, this._parameters.Projection);
-                                sensorParameter.SensorAntennaHeight_m = 3;//(float)readerSensorLocation.GetValue(c => c.Asl).Value;
                                 }
                             return true;
                         });
@@ -686,6 +733,42 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                             this._logger.Warning(Contexts.ThisComponent, Events.CoordinateNotFound.With(sensorId));
                             continue;
                         }
+
+
+                        var querySensorAntenna = _infocenterDataLayer.GetBuilder<IC.SdrnServer.ISensorAntenna>()
+                    .From()
+                    .Select(
+                    c => c.AddLoss,
+                    c => c.SENSOR.RxLoss,
+                    c => c.SENSOR.Agl
+                    )
+                    .Where(c => c.SENSOR.Id, ConditionOperator.Equal, sensorId);
+
+                        _infoDbScope.Executor.ExecuteAndFetch(querySensorAntenna, readerSensorAntenna =>
+                        {
+                            while (readerSensorAntenna.Read())
+                            {
+
+                                if (readerSensorAntenna.GetValue(c => c.AddLoss).HasValue)
+                                {
+                                    sensorParameter.RxFeederLoss_dB = readerSensorAntenna.GetValue(c => c.AddLoss).Value;
+                                }
+                                if (readerSensorAntenna.GetValue(c => c.SENSOR.RxLoss).HasValue)
+                                {
+                                    sensorParameter.RxFeederLoss_dB += readerSensorAntenna.GetValue(c => c.SENSOR.RxLoss).Value;
+                                }
+
+                                if (readerSensorAntenna.GetValue(c => c.SENSOR.Agl).HasValue)
+                                {
+                                    sensorParameter.SensorAntennaHeight_m = (float)readerSensorAntenna.GetValue(c => c.SENSOR.Agl).Value;
+                                }
+
+                                break;
+                            }
+                            return true;
+                        });
+
+                        var lstSensorStationAntenna = new List<DataModels.Sdrn.DeepServices.RadioSystem.Stations.StationAntenna>();
 
                         var queryAntennaPattern = _infocenterDataLayer.GetBuilder<IC.SdrnServer.ISensorAntennaPattern>()
                        .From()
@@ -698,6 +781,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                        c => c.SENSOR_ANTENNA.Xpd,
                        c => c.SENSOR_ANTENNA.AddLoss,
                        c => c.SENSOR_ANTENNA.SENSOR.Azimuth,
+                       c => c.SENSOR_ANTENNA.SENSOR.RxLoss,
                        c => c.SENSOR_ANTENNA.SENSOR.Elevation
                        )
                        .Where(c => c.SENSOR_ANTENNA.SENSOR.Id, ConditionOperator.Equal, sensorId)
@@ -707,43 +791,45 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                         {
                             while (readerAntennaPattern.Read())
                             {
-                                if (readerAntennaPattern.GetValue(c => c.SENSOR_ANTENNA.AddLoss).HasValue)
-                                {
-                                    sensorParameter.RxFeederLoss_dB = readerAntennaPattern.GetValue(c => c.SENSOR_ANTENNA.AddLoss).Value;
-                                }
 
-                                sensorParameter.SensorAntenna = new DataModels.Sdrn.DeepServices.RadioSystem.Stations.StationAntenna();
+                               var sensorAntenna =  new DataModels.Sdrn.DeepServices.RadioSystem.Stations.StationAntenna();
+
+
+                                sensorAntenna = new DataModels.Sdrn.DeepServices.RadioSystem.Stations.StationAntenna();
 
                                 if (readerAntennaPattern.GetValue(c => c.Gain).HasValue)
                                 {
-                                    sensorParameter.SensorAntenna.Gain_dB = (float)readerAntennaPattern.GetValue(c => c.Gain);
+                                    sensorAntenna.Gain_dB = (float)readerAntennaPattern.GetValue(c => c.Gain);
                                 }
 
                                 if (readerAntennaPattern.GetValue(c => c.SENSOR_ANTENNA.Xpd).HasValue)
                                 {
-                                    sensorParameter.SensorAntenna.XPD_dB = (float)readerAntennaPattern.GetValue(c => c.SENSOR_ANTENNA.Xpd);
+                                    sensorAntenna.XPD_dB = (float)readerAntennaPattern.GetValue(c => c.SENSOR_ANTENNA.Xpd);
                                 }
 
                                 if (readerAntennaPattern.GetValue(c => c.SENSOR_ANTENNA.SENSOR.Azimuth).HasValue)
                                 {
-                                    sensorParameter.SensorAntenna.Azimuth_deg = (float)readerAntennaPattern.GetValue(c => c.SENSOR_ANTENNA.SENSOR.Azimuth);
+                                    sensorAntenna.Azimuth_deg = (float)readerAntennaPattern.GetValue(c => c.SENSOR_ANTENNA.SENSOR.Azimuth);
                                 }
 
                                 if (readerAntennaPattern.GetValue(c => c.SENSOR_ANTENNA.SENSOR.Elevation).HasValue)
                                 {
-                                    sensorParameter.SensorAntenna.Tilt_deg = (float)readerAntennaPattern.GetValue(c => c.SENSOR_ANTENNA.SENSOR.Elevation);
+                                    sensorAntenna.Tilt_deg = (float)readerAntennaPattern.GetValue(c => c.SENSOR_ANTENNA.SENSOR.Elevation);
                                 }
 
-
+                                if (readerAntennaPattern.GetValue(c => c.SENSOR_ANTENNA.SENSOR.Elevation).HasValue)
+                                {
+                                    sensorAntenna.Freq_MHz = (float)readerAntennaPattern.GetValue(c => c.Freq);
+                                }
 
 
                                 if (readerAntennaPattern.GetValue(c => c.DiagH) != null)
                                 {
                                         // HH
-                                        var argsHH = new DiagrammArgs()
+                                    var argsHH = new DiagrammArgs()
                                     {
                                         AntennaPatternType = AntennaPatternType.HH,
-                                        Gain = sensorParameter.SensorAntenna.Gain_dB,
+                                        Gain = (float)readerAntennaPattern.GetValue(c => c.Gain),
                                         Points = readerAntennaPattern.GetValue(c => c.DiagH)
                                     };
                                     var diagrammPointsResult = new DiagrammPoint[1000];
@@ -751,9 +837,9 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                     this._signalService.CalcAntennaPattern(in argsHH, ref diagrammPointsResult);
                                     if (diagrammPointsResult[0].Angle != null)
                                     {
-                                        sensorParameter.SensorAntenna.HhPattern = new DataModels.Sdrn.DeepServices.RadioSystem.Stations.StationAntennaPattern();
-                                        sensorParameter.SensorAntenna.HhPattern.Loss_dB = diagrammPointsResult.Where(x => x.Loss != null).Select(c => c.Loss.Value).ToArray();
-                                        sensorParameter.SensorAntenna.HhPattern.Angle_deg = diagrammPointsResult.Where(x => x.Angle != null).Select(c => c.Angle.Value).ToArray();
+                                        sensorAntenna.HhPattern = new DataModels.Sdrn.DeepServices.RadioSystem.Stations.StationAntennaPattern();
+                                        sensorAntenna.HhPattern.Loss_dB = diagrammPointsResult.Where(x => x.Loss != null).Select(c => c.Loss.Value).ToArray();
+                                        sensorAntenna.HhPattern.Angle_deg = diagrammPointsResult.Where(x => x.Angle != null).Select(c => c.Angle.Value).ToArray();
                                     };
 
 
@@ -761,7 +847,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                         var argsHV = new DiagrammArgs()
                                     {
                                         AntennaPatternType = AntennaPatternType.HV,
-                                        Gain = sensorParameter.SensorAntenna.Gain_dB,
+                                        Gain = (float)readerAntennaPattern.GetValue(c => c.Gain),
                                         Points = readerAntennaPattern.GetValue(c => c.DiagH)
                                     };
                                     diagrammPointsResult = new DiagrammPoint[1000];
@@ -769,23 +855,23 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                     this._signalService.CalcAntennaPattern(in argsHV, ref diagrammPointsResult);
                                     if (diagrammPointsResult[0].Angle != null)
                                     {
-                                        sensorParameter.SensorAntenna.HvPattern = new DataModels.Sdrn.DeepServices.RadioSystem.Stations.StationAntennaPattern();
-                                        sensorParameter.SensorAntenna.HvPattern.Loss_dB = diagrammPointsResult.Where(x => x.Loss != null).Select(c => c.Loss.Value).ToArray();
-                                        sensorParameter.SensorAntenna.HvPattern.Angle_deg = diagrammPointsResult.Where(x => x.Angle != null).Select(c => c.Angle.Value).ToArray();
+                                        sensorAntenna.HvPattern = new DataModels.Sdrn.DeepServices.RadioSystem.Stations.StationAntennaPattern();
+                                        sensorAntenna.HvPattern.Loss_dB = diagrammPointsResult.Where(x => x.Loss != null).Select(c => c.Loss.Value).ToArray();
+                                        sensorAntenna.HvPattern.Angle_deg = diagrammPointsResult.Where(x => x.Angle != null).Select(c => c.Angle.Value).ToArray();
                                     };
                                 }
                                 else
                                 {
-                                        // HH
+                                    // HH
 
-                                        sensorParameter.SensorAntenna.HhPattern = new DataModels.Sdrn.DeepServices.RadioSystem.Stations.StationAntennaPattern();
-                                    sensorParameter.SensorAntenna.HhPattern.Loss_dB = new float[2] { 0, 0 };
-                                    sensorParameter.SensorAntenna.HhPattern.Angle_deg = new double[2] { 0, 350 };
+                                    sensorAntenna.HhPattern = new DataModels.Sdrn.DeepServices.RadioSystem.Stations.StationAntennaPattern();
+                                    sensorAntenna.HhPattern.Loss_dB = new float[2] { 0, 0 };
+                                    sensorAntenna.HhPattern.Angle_deg = new double[2] { 0, 350 };
 
-                                        // HV
-                                        sensorParameter.SensorAntenna.HvPattern = new DataModels.Sdrn.DeepServices.RadioSystem.Stations.StationAntennaPattern();
-                                    sensorParameter.SensorAntenna.HvPattern.Loss_dB = new float[2] { 0, 0 };
-                                    sensorParameter.SensorAntenna.HvPattern.Angle_deg = new double[2] { 0, 350 };
+                                    // HV
+                                    sensorAntenna.HvPattern = new DataModels.Sdrn.DeepServices.RadioSystem.Stations.StationAntennaPattern();
+                                    sensorAntenna.HvPattern.Loss_dB = new float[2] { 0, 0 };
+                                    sensorAntenna.HvPattern.Angle_deg = new double[2] { 0, 350 };
 
                                 }
 
@@ -795,7 +881,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                     var argsVH = new DiagrammArgs()
                                     {
                                         AntennaPatternType = AntennaPatternType.VH,
-                                        Gain = sensorParameter.SensorAntenna.Gain_dB,
+                                        Gain = (float)readerAntennaPattern.GetValue(c => c.Gain),
                                         Points = readerAntennaPattern.GetValue(c => c.DiagV)
                                     };
                                     var diagrammPointsResult = new DiagrammPoint[1000];
@@ -803,9 +889,9 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                     this._signalService.CalcAntennaPattern(in argsVH, ref diagrammPointsResult);
                                     if (diagrammPointsResult[0].Angle != null)
                                     {
-                                        sensorParameter.SensorAntenna.VhPattern = new DataModels.Sdrn.DeepServices.RadioSystem.Stations.StationAntennaPattern();
-                                        sensorParameter.SensorAntenna.VhPattern.Loss_dB = diagrammPointsResult.Where(x => x.Loss != null).Select(c => c.Loss.Value).ToArray();
-                                        sensorParameter.SensorAntenna.VhPattern.Angle_deg = diagrammPointsResult.Where(x => x.Angle != null).Select(c => c.Angle.Value).ToArray();
+                                        sensorAntenna.VhPattern = new DataModels.Sdrn.DeepServices.RadioSystem.Stations.StationAntennaPattern();
+                                        sensorAntenna.VhPattern.Loss_dB = diagrammPointsResult.Where(x => x.Loss != null).Select(c => c.Loss.Value).ToArray();
+                                        sensorAntenna.VhPattern.Angle_deg = diagrammPointsResult.Where(x => x.Angle != null).Select(c => c.Angle.Value).ToArray();
                                     };
 
 
@@ -813,7 +899,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                     var argsVV = new DiagrammArgs()
                                     {
                                         AntennaPatternType = AntennaPatternType.VV,
-                                        Gain = sensorParameter.SensorAntenna.Gain_dB,
+                                        Gain = (float)readerAntennaPattern.GetValue(c => c.Gain),
                                         Points = readerAntennaPattern.GetValue(c => c.DiagV)
                                     };
                                     diagrammPointsResult = new DiagrammPoint[1000];
@@ -821,9 +907,9 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                     this._signalService.CalcAntennaPattern(in argsVV, ref diagrammPointsResult);
                                     if (diagrammPointsResult[0].Angle != null)
                                     {
-                                        sensorParameter.SensorAntenna.VvPattern = new DataModels.Sdrn.DeepServices.RadioSystem.Stations.StationAntennaPattern();
-                                        sensorParameter.SensorAntenna.VvPattern.Loss_dB = diagrammPointsResult.Where(x => x.Loss != null).Select(c => c.Loss.Value).ToArray();
-                                        sensorParameter.SensorAntenna.VvPattern.Angle_deg = diagrammPointsResult.Where(x => x.Angle != null).Select(c => c.Angle.Value).ToArray();
+                                        sensorAntenna.VvPattern = new DataModels.Sdrn.DeepServices.RadioSystem.Stations.StationAntennaPattern();
+                                        sensorAntenna.VvPattern.Loss_dB = diagrammPointsResult.Where(x => x.Loss != null).Select(c => c.Loss.Value).ToArray();
+                                        sensorAntenna.VvPattern.Angle_deg = diagrammPointsResult.Where(x => x.Angle != null).Select(c => c.Angle.Value).ToArray();
                                     };
                                 }
                                 else
@@ -831,21 +917,22 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 
                                     // VH
 
-                                    sensorParameter.SensorAntenna.VhPattern = new DataModels.Sdrn.DeepServices.RadioSystem.Stations.StationAntennaPattern();
-                                    sensorParameter.SensorAntenna.VhPattern.Loss_dB = new float[2] { 0, 0 };
-                                    sensorParameter.SensorAntenna.VhPattern.Angle_deg = new double[2] { -90, 90 };
+                                    sensorAntenna.VhPattern = new DataModels.Sdrn.DeepServices.RadioSystem.Stations.StationAntennaPattern();
+                                    sensorAntenna.VhPattern.Loss_dB = new float[2] { 0, 0 };
+                                    sensorAntenna.VhPattern.Angle_deg = new double[2] { -90, 90 };
 
                                     // VV
-                                    sensorParameter.SensorAntenna.VvPattern = new DataModels.Sdrn.DeepServices.RadioSystem.Stations.StationAntennaPattern();
-                                    sensorParameter.SensorAntenna.VvPattern.Loss_dB = new float[2] { 0, 0 };
-                                    sensorParameter.SensorAntenna.VvPattern.Angle_deg = new double[2] { -90, 90 };
+                                    sensorAntenna.VvPattern = new DataModels.Sdrn.DeepServices.RadioSystem.Stations.StationAntennaPattern();
+                                    sensorAntenna.VvPattern.Loss_dB = new float[2] { 0, 0 };
+                                    sensorAntenna.VvPattern.Angle_deg = new double[2] { -90, 90 };
 
                                 }
-                                break;
+                                lstSensorStationAntenna.Add(sensorAntenna);
                             }
                             return true;
                         });
 
+                        sensorParameter.SensorAntennas = lstSensorStationAntenna.ToArray();
                         sensorParameters.Add(sensorParameter);
                     }
                 }
