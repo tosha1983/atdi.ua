@@ -223,10 +223,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                 
                 int index = 0;
                 int percentComplete = 0;
-
+                int indexForPC = 0;
                 for (int i = 0; i < sensorIds.Length; i++)
                 {
-                  
+                    
                     var sensor = _sensorParameters.ToList().Find(x => x.SensorId == sensorIds[i]);
                     if (sensor == null)
                     {
@@ -328,8 +328,9 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                         {
                             for (int n = 0; n < percentTimeForGainCalcData.StationData.Length; n++)
                             {
-                                listResultRefSpectrumBySensors[n].Percent = resultPercent[n];
+                                listResultRefSpectrumBySensors[n+ indexForPC].Percent = resultPercent[n];
                             }
+                            indexForPC = indexForPC + percentTimeForGainCalcData.StationData.Length;
                         }
                     }
                   
