@@ -134,7 +134,29 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                 var skipDriveTests = new List<ContextStation>();
                 var listRefSpectrumStationCalibrations = this._refSpectrumStationCalibrations.ToList();
                 var sensorIds = _sensorParameters.Select(x => x.SensorId).Distinct().ToArray();
-                var freqs_MHz = listRefSpectrumStationCalibrations.Select(x => x.Freq_MHz).Distinct().ToArray();
+                List<double> listFreqs = new List<double>();
+                for (int i=0; i< listRefSpectrumStationCalibrations.Count; i++)
+                {
+                    if (listRefSpectrumStationCalibrations[i].Freq_MHz > 0)
+                    {
+                        if (!listFreqs.Contains(listRefSpectrumStationCalibrations[i].Freq_MHz))
+                        {
+                            listFreqs.Add(listRefSpectrumStationCalibrations[i].Freq_MHz);
+                        }
+                    }
+                    else
+                    {
+                        if (listRefSpectrumStationCalibrations[i].Old_Freq_MHz > 0)
+                        {
+                            if (!listFreqs.Contains(listRefSpectrumStationCalibrations[i].Old_Freq_MHz))
+                            {
+                                listFreqs.Add(listRefSpectrumStationCalibrations[i].Old_Freq_MHz);
+                            }
+                        }
+                    }
+                }
+                var freqs_MHz = listFreqs.ToArray();
+                
                 int index = 0;
                 int percentComplete = 0;
 
