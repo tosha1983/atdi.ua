@@ -642,7 +642,16 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                             stationRecord.Antenna.VvPattern.Angle_deg = reader.GetValue(c => c.ANTENNA.VV_PATTERN.Angle_deg);
                             stationRecord.Antenna.VvPattern.Loss_dB = reader.GetValue(c => c.ANTENNA.VV_PATTERN.Loss_dB);
                         }
-                        clientContextStations.Add(stationRecord);
+
+                        //var arrStations = DuplicateContextStation(stationRecord, reader.GetValue(c => c.Standard));
+                        //if ((arrStations != null) && (arrStations.Length > 0))
+                        //{
+                        //    clientContextStations.AddRange(arrStations);
+                        //}
+                        //else
+                        //{
+                            clientContextStations.Add(stationRecord);
+                        //}
                         var standards = clientContextStations.Select(c => c.Standard).ToArray();
                         for (int j = 0; j < standards.Length; j++)
                         {
@@ -657,6 +666,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                 });
             }
             this._contextStations = clientContextStations.ToArray();
+
 
 
             // load drive tests
@@ -785,6 +795,35 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                           .Where(c => c.Id, ConditionOperator.Equal, resultId);
             _calcDbScope.Executor.Execute(updateQueryStationCalibrationResult);
         }
+
+        //private ContextStation[] DuplicateContextStation(ContextStation contextStation, string standard)
+        //{
+        //    var lstDuplicateStations = new List<ContextStation>();
+        //    if (this._appServerComponentConfig.StandardsForDuplicateStations != null)
+        //    {
+        //        if (this._appServerComponentConfig.StandardsForDuplicateStations.Contains(standard))
+        //        {
+        //            if (contextStation != null)
+        //            {
+        //                if ((contextStation.Transmitter.Freqs_MHz != null) && (contextStation.Receiver.Freqs_MHz != null))
+        //                {
+        //                    if ((contextStation.Transmitter.Freqs_MHz.Length > 0) && (contextStation.Receiver.Freqs_MHz.Length > 0))
+        //                    {
+        //                        for (int p = 0; p < contextStation.Transmitter.Freqs_MHz.Length; p++)
+        //                        {
+        //                            ContextStation copystation = Atdi.Common.CopyHelper.CreateDeepCopy(contextStation);
+        //                            copystation.Transmitter.Freq_MHz = contextStation.Transmitter.Freqs_MHz[p];
+        //                            copystation.Receiver.Freq_MHz = contextStation.Receiver.Freqs_MHz[p];
+
+        //                            lstDuplicateStations.Add(copystation);
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+        //    return lstDuplicateStations.ToArray();
+        //}
 
         private void SaveTaskResult(in CalibrationResult result, long resultId)
         {

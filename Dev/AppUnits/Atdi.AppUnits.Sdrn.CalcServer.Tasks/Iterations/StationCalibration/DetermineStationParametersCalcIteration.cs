@@ -563,17 +563,19 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     {
                         // извлекаем очередную группу драйв тестов
                         var arrDriveTests = outListDriveTestsResults[dw];
-                        for (int w = 0; w < arrDriveTests.Length; w++)
+
+                        if ((arrDriveTests != null) && (arrDriveTests.Length > 0))
                         {
+
                             // извлекаем драйв тест
-                            var currentDriveTest = arrDriveTests[w];
+                            var currentDriveTest = arrDriveTests[0];
                             // обнуляем значение коэффициента корреляции
                             double? maxPercentCorellation = 0;
                             // по умолчанию устанавливаем значение статуса для драйв теста в IT и уточняем:
                             var driveTestStatusResult = DriveTestStatusResult.IT;
                             // если в списке драйв тестов groupsDriveTestsResult есть драйв тест с таким же идентификатором, тогда извлекаем его статус
                             var fndDriveTest = groupsDriveTestsResult.Find(x => x.DriveTestsResult.DriveTestId == currentDriveTest.DriveTestId);
-                            if (fndDriveTest!=null)
+                            if (fndDriveTest != null)
                             {
                                 driveTestStatusResult = fndDriveTest.DriveTestStatusResult;
                                 maxPercentCorellation = fndDriveTest.MaxCorellation_pc;
@@ -583,28 +585,31 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             {
                                 // передаем в метод RecaclNDP драйв тест currentDriveTest для поиска среди станций со статусом P (outListContextStationsForStatusP) таких для которых процент корреляции maxPercentCorellation будет выше 0
                                 // в данном случае для такого драйв теста currentDriveTest извлекаем новый статус (обновляем статус IT на  UN в случае если maxPercentCorellation > 0)
-                                RecaclNDP(outListContextStationsForStatusP, taskContext, currentDriveTest, data, out maxPercentCorellation, out driveTestStatusResult);
+                                RecaclNDP(outListContextStationsForStatusP, taskContext, arrDriveTests, data, out maxPercentCorellation, out driveTestStatusResult);
                             }
+
+                            var tempCalibrationDriveTestResult = new CalibrationDriveTestResult[arrDriveTests.Length];
+                            for (int p=0; p< arrDriveTests.Length; p++)
+                            {
+                                tempCalibrationDriveTestResult[p] = new CalibrationDriveTestResult()
+                                {
+                                    CountPointsInDriveTest = arrDriveTests[p].Points.Length,
+                                    DriveTestId = arrDriveTests[p].DriveTestId,
+                                    Gsid = arrDriveTests[p].GSID,
+                                    LinkToStationMonitoringId = arrDriveTests[p].LinkToStationMonitoringId,
+                                    ResultDriveTestStatus = driveTestStatusResult,
+                                    Standard = arrDriveTests[p].RealStandard,
+                                    Freq_MHz = (float)arrDriveTests[p].Freq_MHz,
+                                    MaxPercentCorellation = (float)maxPercentCorellation.Value
+                                };
+                            }
+
                             // формируем результат по драйв тесту currentDriveTest со статусом, который дважды уточнялся - по списку groupsDriveTestsResult (который содержит сведения по драйв тестах со статусами UN) и в методе RecaclNDP поиска по станциям со статусом P
                             calibrationStationsAndDriveTestsResultByGroup.Add(new CalibrationStationsAndDriveTestsResult()
                             {
-                                ResultCalibrationDriveTest = new CalibrationDriveTestResult[1]
-                                      {
-                                                    new CalibrationDriveTestResult()
-                                                    {
-                                                        CountPointsInDriveTest = currentDriveTest.Points.Length,
-                                                        DriveTestId = currentDriveTest.DriveTestId,
-                                                        Gsid = currentDriveTest.GSID,
-                                                        LinkToStationMonitoringId = currentDriveTest.LinkToStationMonitoringId,
-                                                        ResultDriveTestStatus = driveTestStatusResult,
-                                                        Standard = currentDriveTest.RealStandard,
-                                                        Freq_MHz = (float)currentDriveTest.Freq_MHz,
-                                                        MaxPercentCorellation = (float)maxPercentCorellation.Value
-                                                    }
-                                      },
+                                ResultCalibrationDriveTest = tempCalibrationDriveTestResult,
                                 ResultCalibrationStation = null
                             });
-
                         }
                     }
 
@@ -647,7 +652,6 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                     Freq_MHz = arrStations[d].Transmitter.Freq_MHz
                                 },
                                 Standard = arrStations[d].RealStandard,
-                                Freq_MHz = arrStations[d].Transmitter.Freq_MHz,
                                 MaxCorellation = (float)maxPercentCorellation.Value
                             });
                         }
@@ -705,6 +709,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         }
                     }
 
+
                     // извлекаем неповторяющиеся значения регионов
                     var areasSelect = data.GSIDGroupeStation.ToList().Select(x => x.RegionCode).Distinct();
                     // формируем их через запятую
@@ -752,7 +757,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         /// <param name="data">Набор вспомогательных параметров</param>
         /// <param name="maxCorellationP_pc">Максимальное значение процента корреляции</param>
         /// <param name="driveTestStatusResult">итоговый статус драйв теста currentDriveTestP </param>
-        private void RecaclNDP(ContextStation[][] outListContextStationsForStatusP, ITaskContext taskContext, DriveTestsResult currentDriveTestP, AllStationCorellationCalcData data, out double? maxCorellationP_pc, out DriveTestStatusResult driveTestStatusResult)
+        private void RecaclNDP(ContextStation[][] outListContextStationsForStatusP, ITaskContext taskContext, DriveTestsResult[] driveTestsP, AllStationCorellationCalcData data, out double? maxCorellationP_pc, out DriveTestStatusResult driveTestStatusResult)
         {
             maxCorellationP_pc = 0;
             driveTestStatusResult = DriveTestStatusResult.IT;
@@ -766,11 +771,19 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
                     if ((stationP != null && stationP.Length > 0))
                     {
-                        // расчет корелляции
-                        bool statusCorellationLinkGroupP = CalcCorellation(taskContext, stationP, currentDriveTestP, data, out  maxCorellationP_pc);
-                        if (statusCorellationLinkGroupP == true)
+                        for (int w = 0; w < driveTestsP.Length; w++)
                         {
-                            driveTestStatusResult = DriveTestStatusResult.UN;
+                            // расчет корелляции
+                            bool statusCorellationLinkGroupP = CalcCorellation(taskContext, stationP, driveTestsP[w], data, out maxCorellationP_pc);
+                            if (statusCorellationLinkGroupP == true)
+                            {
+                                driveTestStatusResult = DriveTestStatusResult.UN;
+                                break;
+                            }
+                        }
+                        if (driveTestStatusResult== DriveTestStatusResult.UN)
+                        {
+                            break;
                         }
                     }
                 }
@@ -989,6 +1002,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     var calibrationStatusParameters = RulesStatusParameters.CalibrationFirstStatusParameters.Find(c => c.Corellation == corellation && c.StatusStation == status && c.TrustOldResults == trustOldResults && c.PointForCorrelation == pointForCorrelation && c.ExceptionParameter == exceptionParameter);
                     if (calibrationStatusParameters != null)
                     {
+
                         var calibrationStationResult = new CalibrationStationResult()
                         {
                             ExternalSource = calibrationStationsAndDriveTestsResult.ClientContextStation.ExternalSource,
@@ -1005,6 +1019,17 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             Standard = calibrationStationsAndDriveTestsResult.ClientContextStation.RealStandard,
                             Freq_MHz = calibrationStationsAndDriveTestsResult.DriveTestsResult.Freq_MHz
                         };
+
+                        var freq_MHz = GetFreqStation(calibrationStationsAndDriveTestsResult.DriveTestsResult, calibrationStationsAndDriveTestsResult.ClientContextStation);
+                        if (freq_MHz!=null)
+                        {
+                            calibrationStationResult.ParametersStationOld.Freq_MHz = freq_MHz.Value;
+                        }
+                        else
+                        {
+                            calibrationStationResult.ParametersStationOld.Freq_MHz = calibrationStationsAndDriveTestsResult.DriveTestsResult.Freq_MHz;
+                        }
+
                         listCalibrationStationResults.Add(calibrationStationResult);
 
                         var calibrationDriveTestResult = new CalibrationDriveTestResult()
@@ -1123,6 +1148,17 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             Standard = calibrationStationsAndDriveTestsResult.ClientContextStation.RealStandard,
                             Freq_MHz = calibrationStationsAndDriveTestsResult.DriveTestsResult.Freq_MHz
                         };
+
+                        var freq_MHz = GetFreqStation(calibrationStationsAndDriveTestsResult.DriveTestsResult, calibrationStationsAndDriveTestsResult.ClientContextStation);
+                        if (freq_MHz != null)
+                        {
+                            calibrationStationResult.ParametersStationOld.Freq_MHz = freq_MHz.Value;
+                        }
+                        else
+                        {
+                            calibrationStationResult.ParametersStationOld.Freq_MHz = calibrationStationsAndDriveTestsResult.DriveTestsResult.Freq_MHz;
+                        }
+
                         listCalibrationStationResults.Add(calibrationStationResult);
 
                         var calibrationDriveTestResult = new CalibrationDriveTestResult()
@@ -1651,7 +1687,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         /// <param name="outListContextStations"></param>
         /// <param name="standard"></param>
         /// <returns></returns>
-        public List<ContextStation[]> GetOrderStationForDriveTests(ref DriveTestsResult[] arrDriveTests, ref List<ContextStation[]> outListContextStations, string standard)
+        private List<ContextStation[]> GetOrderStationForDriveTests(ref DriveTestsResult[] arrDriveTests, ref List<ContextStation[]> outListContextStations, string standard)
         {
             var GSIDGroupeStations = new List<ContextStation[]>();
             for (int w = 0; w < arrDriveTests.Length; w++)
@@ -1675,39 +1711,42 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         var arrStations = outListContextStations[j];
                         if ((arrStations != null) && (arrStations.Length > 0))
                         {
-                            for (int p = 0; p < coordinatesDrivePoint.Length; p++)
+                            if (CompareFreqStAndDriveTest(currentDriveTest, arrStations[j]))
                             {
-                                var sourcePointArgs = new PointEarthGeometric() { Longitude = coordinatesDrivePoint[p].X, Latitude = coordinatesDrivePoint[p].Y, CoordinateUnits = CoordinateUnits.m };
-                                var targetPointArgs = new PointEarthGeometric() { Longitude = arrStations[0].Coordinate.X, Latitude = arrStations[0].Coordinate.Y, CoordinateUnits = CoordinateUnits.m };
-                                if (this._earthGeometricService.GetDistance_km(in sourcePointArgs, in targetPointArgs) <= GetMinDistanceFromConfigByStandard(standard))
+                                for (int p = 0; p < coordinatesDrivePoint.Length; p++)
                                 {
-                                    // добавляем весь массив станций arrStations в случае если одна из станций, которая входит в arrStations имеет расстояние до одной из точек текущего DrivePoint меньше 1 км (берем с конфигурации)
-                                    var lstGSID = GSIDGroupeStations;
-                                    List<ContextStation> listContextStation = new List<ContextStation>();
-                                    for (int d = 0; d < lstGSID.Count; d++)
+                                    var sourcePointArgs = new PointEarthGeometric() { Longitude = coordinatesDrivePoint[p].X, Latitude = coordinatesDrivePoint[p].Y, CoordinateUnits = CoordinateUnits.m };
+                                    var targetPointArgs = new PointEarthGeometric() { Longitude = arrStations[0].Coordinate.X, Latitude = arrStations[0].Coordinate.Y, CoordinateUnits = CoordinateUnits.m };
+                                    if (this._earthGeometricService.GetDistance_km(in sourcePointArgs, in targetPointArgs) <= GetMinDistanceFromConfigByStandard(standard))
                                     {
-                                        var lstStations = lstGSID[d].ToList();
-                                        for (int s = 0; s < arrStations.Length; s++)
+                                        // добавляем весь массив станций arrStations в случае если одна из станций, которая входит в arrStations имеет расстояние до одной из точек текущего DrivePoint меньше 1 км (берем с конфигурации)
+                                        var lstGSID = GSIDGroupeStations;
+                                        List<ContextStation> listContextStation = new List<ContextStation>();
+                                        for (int d = 0; d < lstGSID.Count; d++)
                                         {
-                                            if ((lstStations.Find(x => x.Id == arrStations[s].Id)) == null)
+                                            var lstStations = lstGSID[d].ToList();
+                                            for (int s = 0; s < arrStations.Length; s++)
                                             {
-                                                listContextStation.Add(arrStations[s]);
+                                                if ((lstStations.Find(x => x.Id == arrStations[s].Id)) == null)
+                                                {
+                                                    listContextStation.Add(arrStations[s]);
+                                                }
+                                            }
+
+                                        }
+                                        if (listContextStation.Count > 0)
+                                        {
+                                            GSIDGroupeStations.Add(listContextStation.ToArray());
+                                        }
+                                        else
+                                        {
+                                            if (GSIDGroupeStations.Count == 0)
+                                            {
+                                                GSIDGroupeStations.Add(arrStations);
                                             }
                                         }
-
+                                        break;
                                     }
-                                    if (listContextStation.Count > 0)
-                                    {
-                                        GSIDGroupeStations.Add(listContextStation.ToArray());
-                                    }
-                                    else
-                                    {
-                                        if (GSIDGroupeStations.Count == 0)
-                                        {
-                                            GSIDGroupeStations.Add(arrStations);
-                                        }
-                                    }
-                                    break;
                                 }
                             }
                         }
@@ -1722,13 +1761,13 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         if ((arrStations != null) && (arrStations.Length > 0))
                         {
                             var stationsResults = new ContextStation[arrStations.Length];
-                            var keyValueStations = new Dictionary<long, double>();
+                            var keyValueStations = new List<KeyValuePair<long, double>>();
                             for (int z = 0; z < arrStations.Length; z++)
                             {
                                 var sourcePointArgs = new PointEarthGeometric() { Longitude = centerWeightCoordinateOfDriveTest.X, Latitude = centerWeightCoordinateOfDriveTest.Y, CoordinateUnits = CoordinateUnits.m };
                                 var targetPointArgs = new PointEarthGeometric() { Longitude = arrStations[0].Coordinate.X, Latitude = arrStations[0].Coordinate.Y, CoordinateUnits = CoordinateUnits.m };
                                 var distance = this._earthGeometricService.GetDistance_km(in sourcePointArgs, in targetPointArgs);
-                                keyValueStations.Add(arrStations[z].Id, distance);
+                                keyValueStations.Add(new KeyValuePair<long, double>(arrStations[z].Id, distance));
                             }
                             var orderStations = from z in keyValueStations.ToList() orderby z.Value ascending select z;
                             var tempOrderStations = orderStations.ToArray();
@@ -1744,5 +1783,39 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             }
             return GSIDGroupeStations;
         }
+        private bool CompareFreqStAndDriveTest(DriveTestsResult driveTestsResult, ContextStation contextStation)
+        {
+            var FreqDT = driveTestsResult.Freq_MHz;
+            var FreqST = contextStation.Transmitter.Freq_MHz;
+            var FreqArr = contextStation.Transmitter.Freqs_MHz;
+            var BW = contextStation.Transmitter.BW_kHz / 1000.0;
+            if ((FreqST - BW <= FreqDT) && (FreqST + BW >= FreqDT)) { return true; }
+            if ((FreqArr != null) && (FreqArr.Length > 0))
+            {
+                for (int i = 0; FreqArr.Length > i; i++)
+                {
+                    if ((FreqArr[i] - BW <= FreqDT) && (FreqArr[i] + BW >= FreqDT)) { return true; }
+                }
+            }
+            return false; 
+        }
+
+        private double? GetFreqStation(DriveTestsResult driveTestsResult, ContextStation contextStation)
+        {
+            var FreqDT = driveTestsResult.Freq_MHz;
+            var FreqST = contextStation.Transmitter.Freq_MHz;
+            var FreqArr = contextStation.Transmitter.Freqs_MHz;
+            var BW = contextStation.Transmitter.BW_kHz / 1000.0;
+            if ((FreqST - BW <= FreqDT) && (FreqST + BW >= FreqDT)) { return FreqST; }
+            if ((FreqArr != null) && (FreqArr.Length > 0))
+            {
+                for (int i = 0; FreqArr.Length > i; i++)
+                {
+                    if ((FreqArr[i] - BW <= FreqDT) && (FreqArr[i] + BW >= FreqDT)) { return FreqArr[i]; }
+                }
+            }
+            return null;
+        }
+
     }
 }

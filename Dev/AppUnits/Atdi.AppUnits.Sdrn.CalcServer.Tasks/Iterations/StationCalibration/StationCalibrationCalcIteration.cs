@@ -737,7 +737,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             calcCalibrationResult.ParametersStationNew.Power_dB = correlationData.FieldStrengthCalcData.Transmitter.MaxPower_dBm;
 
             //- Freq_MHz(частота передатчика станции)
-            calcCalibrationResult.Freq_MHz = correlationResult.Freq_MHz;
+            //calcCalibrationResult.Freq_MHz = correlationResult.Freq_MHz;
             //- Delta_dB(входной параметр)
             calcCalibrationResult.Delta_dB = correlationResult.Delta_dB;
             //- Correlation_pc(процент точек где результаты измерений отличаться от расчетного менее чем на Delta_dB)
