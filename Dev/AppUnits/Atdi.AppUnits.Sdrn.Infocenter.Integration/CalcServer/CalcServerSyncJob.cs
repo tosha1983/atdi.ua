@@ -165,7 +165,8 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration.CalcServer
 
 				var resultQuery = _calcsDataLayer.GetBuilder<ES_CC.Tasks.IRefSpectrumByDriveTestsDetailResult>()
 					.From()
-					.Select(c => c.Freq_MHz)
+                    .Select(c => c.OrderId)
+                    .Select(c => c.Freq_MHz)
 					.Select(c => c.Level_dBm)
 					.Select(c => c.DateMeas)
 					.Select(c => c.GlobalCID)
@@ -211,7 +212,8 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration.CalcServer
 
 						insQuery
 							.SetValue(c => c.HEAD_REF_SPECTRUM.Id, headPk.Id)
-							.SetValue(c => c.Freq_MHz, reader.GetValue(c => c.Freq_MHz))
+                            .SetValue(c => c.IdNum, reader.GetValue(c => c.OrderId))
+                            .SetValue(c => c.Freq_MHz, reader.GetValue(c => c.Freq_MHz))
 							.SetValue(c => c.Level_dBm, reader.GetValue(c => c.Level_dBm))
 							.SetValue(c => c.SensorId, reader.GetValue(c => c.IdSensor))
 							.SetValue(c => c.TableId, reader.GetValue(c => c.IdIcsm))

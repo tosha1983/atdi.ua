@@ -16,7 +16,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks
 	[Entity]
 	public interface IRefSpectrumByDriveTestsDetailResult : IRefSpectrumByDriveTestsDetailResult_PK
     {
-        long OrderId { get; set; }
+        int OrderId { get; set; }
         string TableIcsmName { get; set; }
         int IdIcsm { get; set; }
         long IdSensor { get; set; }
