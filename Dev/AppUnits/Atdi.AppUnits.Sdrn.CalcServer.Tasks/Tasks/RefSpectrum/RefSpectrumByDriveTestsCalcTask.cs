@@ -345,11 +345,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 
                                 if (resulLevelCalc.Level_dBm.Value < this._parameters.PowerThreshold_dBm)
                                 {
-                                    if (skipDriveTests.Find(x => x.Id == contextStation.Id) == null)
-                                    {
-                                        skipDriveTests.Add(contextStation);
-                                        continue;
-                                    }
+                                    //if (skipDriveTests.Find(x => x.Id == contextStation.Id) == null)
+                                    //{
+                                    //skipDriveTests.Add(contextStation);
+                                    k++;
+                                    continue;
+                                    //}
                                 }
                                 else
                                 {
