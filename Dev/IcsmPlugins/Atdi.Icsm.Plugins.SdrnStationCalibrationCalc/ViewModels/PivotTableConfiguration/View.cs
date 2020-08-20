@@ -165,7 +165,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.PivotTableConf
         }
         private void ReloadSensors()
         {
-            this.Sensors.SensorIds = _objectReader.Read<long[]>().By(new SensorIdsByDriveTestIds { DriveTestIds = _objectReader.Read<long[]>().By(new DriveTestByResultIds { ResultId = this.ResultId }) });
+            //this.Sensors.SensorIds = _objectReader.Read<long[]>().By(new SensorIdsByDriveTestIds { DriveTestIds = _objectReader.Read<long[]>().By(new DriveTestByResultIds { ResultId = this.ResultId }) });
             this.Sensors.Refresh();
             this.CurrentSensor = null;
         }
