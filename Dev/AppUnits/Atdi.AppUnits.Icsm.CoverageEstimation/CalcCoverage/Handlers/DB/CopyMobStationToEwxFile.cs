@@ -13,7 +13,8 @@ using Atdi.DataModels.DataConstraint;
 using Atdi.Platform.Logging;
 using Atdi.Contracts.CoreServices.DataLayer;
 using Atdi.Contracts.LegacyServices.Icsm;
-
+using Atdi.AppUnits.Icsm.CoverageEstimation.Utilities;
+using Atdi.AppUnits.Icsm.CoverageEstimation.Localization;
 
 
 namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
@@ -29,7 +30,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
 
 
 
-        public CopyMobStationToEwxFile(Condition condition, string tableName, IDataLayer<IcsmDataOrm> dataLayer,  ILogger logger)
+        public CopyMobStationToEwxFile(Condition condition, string tableName, IDataLayer<IcsmDataOrm> dataLayer, ILogger logger)
         {
             this._dataLayer = dataLayer;
             this._queryExecutor = this._dataLayer.Executor<IcsmDataContext>();
@@ -62,6 +63,55 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
             return arrIntEmitting;
         }
 
+        private string GeneratePointString(PointObject[] inArray)
+        {
+            string points = "POINTS ";
+            var lstArray = new List<string>();
+            for (int i=0; i< inArray.Length; i++)
+            {
+                lstArray.Add(inArray[i].Azimuth.ToString().Replace(",", "."));
+                lstArray.Add(inArray[i].Value.ToString().Replace(",", "."));
+            }
+            return points + string.Join(" ", lstArray);
+        }
+
+        private PointObject[] GetAntennaMobMpt(int antId, string typePatt)
+        {
+            var pointObjects = new List<PointObject>();
+            var selectedColumns = new string[] {
+                    "ANT_ID",
+                    "TYPE",
+                    "NUM",
+                    "ANGLE",
+                    "ATTN"
+                };
+
+
+            var QueryFromTable = _dataLayer.Builder
+            .From("ANTENNA_MOB_MPT")
+            .Where("ANT_ID", antId)
+            .Where("TYPE", typePatt)
+            .OrderByAsc("NUM")
+            .Select(selectedColumns);
+
+            var isNotEmptyInTable = this._queryExecutor
+         .Fetch(QueryFromTable, reader =>
+         {
+             
+             while (reader.Read())
+             {
+                 var angle = reader.GetValueAsInt32(reader.GetFieldType(reader.GetOrdinal("ANGLE")), reader.GetOrdinal("ANGLE"));
+                 var value = reader.GetValueAsDouble(reader.GetFieldType(reader.GetOrdinal("ATTN")), reader.GetOrdinal("ATTN"));
+                 pointObjects.Add(new PointObject()
+                 {
+                     Azimuth = angle,
+                     Value = value
+                 });
+             }
+             return true;
+         });
+            return pointObjects.ToArray();
+        }
 
 
         public EwxData[] Copy(DataConfig dataConfig, string icsTelecomEwxFile, ILogger logger)
@@ -79,6 +129,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                     "Position.ADDRESS",
                     "Position.ASL",
                     "PWR_ANT",
+                    "POWER",
                     "TX_HIGH_FREQ",
                     "BW",
                     "AZIMUTH",
@@ -89,6 +140,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                     "Position.LONGITUDE",
                     "Position.LATITUDE",
                     "Licence.ID",
+                    "Antenna.ID",
                     "Antenna.POLARIZATION",
                     "Antenna.DIAGA",
                     "Antenna.DIAGH",
@@ -114,7 +166,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                  var res = false;
                  while (reader.Read())
                  {
-                     var id = reader.GetValueAsInt32(typeof(int), reader.GetOrdinal("ID"));
+                     var id = reader.GetValueAsInt32(reader.GetFieldType(reader.GetOrdinal("ID")), reader.GetOrdinal("ID"));
 
                      if (stationIds.Contains(id))
                      {
@@ -126,32 +178,32 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
 
                      station.Id = id;
 
-                     station.Address = reader.GetNullableValueAsString(typeof(string), reader.GetOrdinal("Position.ADDRESS"));
-                     var Altitude = reader.GetNullableValueAsDouble(typeof(double), reader.GetOrdinal("Position.ASL"));
+                     station.Address = reader.GetNullableValueAsString(reader.GetFieldType(reader.GetOrdinal("Position.ADDRESS")), reader.GetOrdinal("Position.ADDRESS"));
+                     var Altitude = reader.GetNullableValueAsDouble(reader.GetFieldType(reader.GetOrdinal("Position.ASL")), reader.GetOrdinal("Position.ASL"));
                      if (Altitude != null)
                      {
                          station.Altitude = Altitude.Value;
                      }
 
-                     var Azimuth = reader.GetNullableValueAsDouble(typeof(double), reader.GetOrdinal("AZIMUTH"));
+                     var Azimuth = reader.GetNullableValueAsDouble(reader.GetFieldType(reader.GetOrdinal("AZIMUTH")), reader.GetOrdinal("AZIMUTH"));
                      if (Azimuth != null)
                      {
                          station.Azimuth = Azimuth.Value;
                      }
 
-                     var Bandwidth = reader.GetNullableValueAsDouble(typeof(double), reader.GetOrdinal("BW"));
+                     var Bandwidth = reader.GetNullableValueAsDouble(reader.GetFieldType(reader.GetOrdinal("BW")), reader.GetOrdinal("BW"));
                      if (Bandwidth != null)
                      {
                          station.Bandwidth = Bandwidth.Value;
                      }
 
-                     var BandwidthRx = reader.GetNullableValueAsDouble(typeof(double), reader.GetOrdinal("BW"));
+                     var BandwidthRx = reader.GetNullableValueAsDouble(reader.GetFieldType(reader.GetOrdinal("BW")), reader.GetOrdinal("BW"));
                      if (BandwidthRx != null)
                      {
                          station.BandwidthRx = BandwidthRx.Value;
                      }
 
-                     var CallSign = reader.GetNullableValueAsString(typeof(string), reader.GetOrdinal("NAME"));
+                     var CallSign = reader.GetNullableValueAsString(reader.GetFieldType(reader.GetOrdinal("NAME")), reader.GetOrdinal("NAME"));
                      if (CallSign != null)
                      {
                          station.CallSign = CallSign;
@@ -166,60 +218,64 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                          }
                      }
 
-                     var CoordX = reader.GetNullableValueAsDouble(typeof(double), reader.GetOrdinal("Position.LONGITUDE"));
+                     var CoordX = reader.GetNullableValueAsDouble(reader.GetFieldType(reader.GetOrdinal("Position.LONGITUDE")), reader.GetOrdinal("Position.LONGITUDE"));
                      if (CoordX != null)
                      {
                          station.CoordX = CoordX.Value;
                      }
 
 
-                     var CoordY = reader.GetNullableValueAsDouble(typeof(double), reader.GetOrdinal("Position.LATITUDE"));
+                     var CoordY = reader.GetNullableValueAsDouble(reader.GetFieldType(reader.GetOrdinal("Position.LATITUDE")), reader.GetOrdinal("Position.LATITUDE"));
                      if (CoordY != null)
                      {
                          station.CoordY = CoordY.Value;
                      }
 
-                     var DiagH = reader.GetNullableValueAsString(typeof(string), reader.GetOrdinal("Antenna.DIAGH"));
+                     var DiagA = reader.GetNullableValueAsString(reader.GetFieldType(reader.GetOrdinal("Antenna.DIAGA")), reader.GetOrdinal("Antenna.DIAGA"));
+                     if (DiagA != null)
+                     {
+                         station.DiagA = DiagA;
+                     }
+
+                     var DiagH = reader.GetNullableValueAsString(reader.GetFieldType(reader.GetOrdinal("Antenna.DIAGH")), reader.GetOrdinal("Antenna.DIAGH"));
                      if (DiagH != null)
                      {
                          station.DiagH = DiagH;
-                         station.DiagH = station.DiagH;
                      }
 
-                     var DiagV = reader.GetNullableValueAsString(typeof(string), reader.GetOrdinal("Antenna.DIAGV"));
+                     var DiagV = reader.GetNullableValueAsString(reader.GetFieldType(reader.GetOrdinal("Antenna.DIAGV")), reader.GetOrdinal("Antenna.DIAGV"));
                      if (DiagV != null)
                      {
                          station.DiagV = DiagV;
-                         station.DiagV = station.DiagV;
                      }
 
-                     var Frequency = reader.GetNullableValueAsDouble(typeof(double), reader.GetOrdinal("AssignedFrequencies.TX_FREQ"));
+                     var Frequency = reader.GetNullableValueAsDouble(reader.GetFieldType(reader.GetOrdinal("AssignedFrequencies.TX_FREQ")), reader.GetOrdinal("AssignedFrequencies.TX_FREQ"));
                      if (Frequency != null)
                      {
                          station.Frequency = Frequency.Value;
                      }
 
-                     var Gain = reader.GetNullableValueAsDouble(typeof(double), reader.GetOrdinal("GAIN"));
+                     var Gain = reader.GetNullableValueAsDouble(reader.GetFieldType(reader.GetOrdinal("GAIN")), reader.GetOrdinal("GAIN"));
                      if (Gain != null)
                      {
                          station.Gain = Gain.Value;
                          station.GainRx = Gain.Value;
                      }
 
-                     var HAntenna = reader.GetNullableValueAsDouble(typeof(double), reader.GetOrdinal("AGL"));
+                     var HAntenna = reader.GetNullableValueAsDouble(reader.GetFieldType(reader.GetOrdinal("AGL")), reader.GetOrdinal("AGL"));
                      if (HAntenna != null)
                      {
                          station.HAntenna = HAntenna.Value;
                      }
 
-                     var Losses = reader.GetNullableValueAsDouble(typeof(double), reader.GetOrdinal("TX_LOSSES"));
+                     var Losses = reader.GetNullableValueAsDouble(reader.GetFieldType(reader.GetOrdinal("TX_LOSSES")), reader.GetOrdinal("TX_LOSSES"));
                      if (Losses != null)
                      {
                          station.Losses = Losses.Value;
                          station.LossesRx = Losses.Value;
                      }
 
-                     var tilt = reader.GetNullableValueAsDouble(typeof(double), reader.GetOrdinal("ELEVATION"));
+                     var tilt = reader.GetNullableValueAsDouble(reader.GetFieldType(reader.GetOrdinal("ELEVATION")), reader.GetOrdinal("ELEVATION"));
                      if (tilt != null)
                      {
                          if (dataConfig.AnotherParameters == null)
@@ -238,38 +294,108 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                              }
                          }
                      }
+                     else
+                     {
+                         if (dataConfig.AnotherParameters.Elevation != null)
+                         {
+                             station.Tilt = dataConfig.AnotherParameters.Elevation.Value;
+                         }
+                         else
+                         {
+                             this._logger.Error(Contexts.CalcCoverages, (EventText)$"{CLocaliz.TxT("Reject station Id")} = '{id}'");
+                             Utils.LogInfo(dataConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("Reject station Id")} = '{id}'");
+                             continue;
+                         }
+                     }
 
-                     var NetId = reader.GetNullableValueAsInt32(typeof(int), reader.GetOrdinal("Licence.ID"));
+
+                     var NetId = reader.GetNullableValueAsInt32(reader.GetFieldType(reader.GetOrdinal("Licence.ID")), reader.GetOrdinal("Licence.ID"));
                      if (NetId != null)
                      {
                          station.NetId = NetId.Value;
                      }
 
-                     var NominalPower = reader.GetNullableValueAsDouble(typeof(double), reader.GetOrdinal("PWR_ANT"));
+                     var NominalPower = reader.GetNullableValueAsDouble(reader.GetFieldType(reader.GetOrdinal("PWR_ANT")), reader.GetOrdinal("PWR_ANT"));
                      if (NominalPower != null)
                      {
                          station.NominalPower = NominalPower.Value;
                          station.NominalPower = Math.Round(Math.Pow(10, station.NominalPower / 10), 7);
                      }
 
-                     station.Polar = reader.GetNullableValueAsString(typeof(string), reader.GetOrdinal("Antenna.POLARIZATION"));
-                     station.PolarRx = reader.GetNullableValueAsString(typeof(string), reader.GetOrdinal("Antenna.POLARIZATION"));
+                     station.AntennaId = reader.GetNullableValueAsInt32(reader.GetFieldType(reader.GetOrdinal("Antenna.ID")), reader.GetOrdinal("Antenna.ID"));
 
-                     var D_cx1 = reader.GetNullableValueAsDouble(typeof(double), reader.GetOrdinal("AssignedFrequencies.TX_FREQ"));
+                     station.Polar = reader.GetNullableValueAsString(reader.GetFieldType(reader.GetOrdinal("Antenna.POLARIZATION")), reader.GetOrdinal("Antenna.POLARIZATION"));
+                     station.PolarRx = reader.GetNullableValueAsString(reader.GetFieldType(reader.GetOrdinal("Antenna.POLARIZATION")), reader.GetOrdinal("Antenna.POLARIZATION"));
+
+                     var D_cx1 = reader.GetNullableValueAsDouble(reader.GetFieldType(reader.GetOrdinal("AssignedFrequencies.TX_FREQ")), reader.GetOrdinal("AssignedFrequencies.TX_FREQ"));
                      if (D_cx1 != null)
                      {
                          station.D_cx1 = D_cx1.Value;
                      }
 
-                     var U_cx1 = reader.GetNullableValueAsDouble(typeof(double), reader.GetOrdinal("AssignedFrequencies.RX_FREQ"));
+                     var U_cx1 = reader.GetNullableValueAsDouble(reader.GetFieldType(reader.GetOrdinal("AssignedFrequencies.RX_FREQ")), reader.GetOrdinal("AssignedFrequencies.RX_FREQ"));
                      if (U_cx1 != null)
                      {
                          station.U_cx1 = U_cx1.Value;
                      }
 
+                     if (station.AntennaId != null)
+                     {
+                         if (DiagA == "NS")
+                         {
+                             var HH_Patt = GetAntennaMobMpt(station.AntennaId.Value, "HH");
+                             var ELHH_Patt = GetAntennaMobMpt(station.AntennaId.Value, "ELHH");
+                             var VV_Patt = GetAntennaMobMpt(station.AntennaId.Value, "VV");
+                             var ELVV_Patt = GetAntennaMobMpt(station.AntennaId.Value, "ELVV");
+                             if (((HH_Patt.Length > 0 || VV_Patt.Length > 0) && (ELHH_Patt.Length > 0 || ELVV_Patt.Length > 0)) == false)
+                             {
+                                 this._logger.Error(Contexts.CalcCoverages, (EventText)$"{CLocaliz.TxT("Reject station Id")} = '{id}'");
+                                 Utils.LogInfo(dataConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("Reject station Id")} = '{id}'");
+                                 continue;
+                             }
+                             else
+                             {
+                                 if (station.Polar == "H")
+                                 {
+                                     station.DiagH = GeneratePointString(HH_Patt);
+                                     station.DiagV = GeneratePointString(ELHH_Patt);
+                                 }
+                                 else if (station.Polar == "V")
+                                 {
+                                     station.DiagH = GeneratePointString(VV_Patt);
+                                     station.DiagV = GeneratePointString(ELVV_Patt);
+                                 }
+                                 else
+                                 {
+                                     if ((VV_Patt.Length > 0 && ELVV_Patt.Length > 0))
+                                     {
+                                         station.DiagH = GeneratePointString(VV_Patt);
+                                         station.DiagV = GeneratePointString(ELVV_Patt);
+                                     }
+                                     else if ((HH_Patt.Length > 0 && ELHH_Patt.Length > 0))
+                                     {
+                                         station.DiagH = GeneratePointString(HH_Patt);
+                                         station.DiagV = GeneratePointString(ELHH_Patt);
+                                     }
+                                 }
+                             }
+                         }
+                     }
+
+                     var RaditedPower = reader.GetNullableValueAsDouble(reader.GetFieldType(reader.GetOrdinal("POWER")), reader.GetOrdinal("POWER"));
+                     if (RaditedPower != null)
+                     {
+                         station.RaditedPower = RaditedPower.Value;
+                         station.Gain = 0;
+                         station.GainRx = 0;
+                         station.Losses = 0;
+                         station.LossesRx = 0;
+                         station.NominalPower = Math.Round(Math.Pow(10, RaditedPower.Value / 10), 7); 
+                     }
 
                      lstStations.Add(new Station()
                      {
+                         Id = station.Id,
                          Address = station.Address,
                          Altitude = station.Altitude,
                          Azimuth = station.Azimuth,
@@ -279,6 +405,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                          Category = station.Category,
                          CoordX = station.CoordX,
                          CoordY = station.CoordY,
+                         DiagA = station.DiagA,
                          DiagH = station.DiagH,
                          DiagV = station.DiagV,
                          D_cx1 = station.D_cx1,
@@ -292,6 +419,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                          LossesRx = station.LossesRx,
                          NetId = station.NetId,
                          NominalPower = station.NominalPower,
+                         RaditedPower  = station.RaditedPower,
                          Polar = station.Polar,
                          PolarRx = station.PolarRx,
                          Tilt = station.Tilt,

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "ObservedTask"
+  Title       = "Observed Task"
+  Desc        = "The Observed Task"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>OBSERVED_TASKS</Name>
+    <Schema>CALCSVR</Schema>
+  </DataSource>
+  <Fields>
+
+    <Field Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column" Desc="The id of the integration log" Title="Record Id"/>
+    <Field Name="CreatedDate" DataType="DateTimeOffset" SourceName="CREATED_DATE" SourceType="Column" Desc="The date of the record created" Title="Created Date" Required="true"/>
+    <Field Name="UpdatedDate" DataType="DateTimeOffset" SourceName="UPDATED_DATE" SourceType="Column" Desc="The date of the record last updated" Title="Updated Date" Required="false"/>
+    
+    <Field Name="TaskId" DataType="Integer.64" SourceName="TASK_ID" SourceType="Column" Title="Task ID" Required="true"/>
+    <Field Name="TaskStatusCode" DataType="Code.u08" SourceName="TASK_STATUS_CODE" SourceType="Column" Desc="The code of the task status." Title="Task Status Code" Required="true"/>
+    <Field Name="TaskStatusName" DataType="Text.50"  SourceName="TASK_STATUS_NAME" SourceType="Column" Desc="The name of the task status." Title="Task Status Name" Required="true"/>
+    <Field Name="TaskTypeCode" DataType="Code.32" SourceName="TASK_TYPE_CODE" SourceType="Column" Desc="The code of the task type." Title="Task Type Code" Required="true"/>
+    <Field Name="TaskTypeName" DataType="Text.250"  SourceName="TASK_TYPE_NAME" SourceType="Column" Desc="The name of the task type." Title="Task Type Name" Required="true"/>
+
+    <Field Name="ResultId" DataType="Integer.64" SourceName="RESULT_ID" SourceType="Column" Title="Result ID" Required="true"/>
+    <Field Name="ResultStatusCode" DataType="Code.u08" SourceName="RESULT_STATUS_CODE" SourceType="Column" Desc="The code of the result status." Title="Result Status Code" Required="true"/>
+    <Field Name="ResultStatusName" DataType="Text.50"  SourceName="RESULT_STATUS_NAME" SourceType="Column" Desc="The name of the result status." Title="Result Status Name" Required="true"/>
+    
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>

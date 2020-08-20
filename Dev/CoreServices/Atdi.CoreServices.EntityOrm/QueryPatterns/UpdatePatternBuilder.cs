@@ -24,15 +24,14 @@ namespace Atdi.CoreServices.EntityOrm.QueryPatterns
             }
         }
         private static readonly IStatisticCounterKey CounterKey = STS.DefineCounterKey("ORM.Entity.Patterns.Update");
-        private readonly IEntityOrm _entityOrm;
+
         private readonly DataTypeSystem _dataTypeSystem;
         private readonly IStatistics _statistics;
         private readonly IStatisticCounter _counter;
 
-        public UpdatePatternBuilder(IEntityOrm entityOrm, DataTypeSystem dataTypeSystem, IStatistics statistics, ILogger logger) : base(logger)
+        public UpdatePatternBuilder(DataTypeSystem dataTypeSystem, IStatistics statistics, ILogger logger) : base(logger)
         {
-            this._entityOrm = entityOrm;
-            this._dataTypeSystem = dataTypeSystem;
+	        this._dataTypeSystem = dataTypeSystem;
             this._statistics = statistics;
             this._counter = _statistics.Counter(CounterKey);
         }

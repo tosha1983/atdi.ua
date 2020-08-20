@@ -43,6 +43,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Clients\ClientContext.cs" />
+    <Compile Include="Iterations\PercentTimeForGainCalcData.cs" />
+    <Compile Include="Iterations\ReceivedPowerCalcResult.cs" />
+    <Compile Include="Iterations\ReceivedPowerCalcData.cs" />
     <Compile Include="Iterations\Gn06\Input\BroadcastingFieldStrengthInPointGE06.cs" />
     <Compile Include="Iterations\Gn06\Input\BroadcastingFieldStrengthCalcData.cs" />
     <Compile Include="Iterations\Gn06\Output\BroadcastingFieldStrengthCalcResult.cs" />
@@ -62,6 +65,11 @@
     <Compile Include="Iterations\Gn06\Output\Enum\PointType.cs" />
     <Compile Include="Iterations\Gn06\Output\Enum\ContourType.cs" />
     <Compile Include="Iterations\Gn06\Output\Ge06CalcResult.cs" />
+    <Compile Include="Iterations\RefSpectrumByDriveTestsCalc\CalcRefSpectrum\Output\ResultRefSpectrumBySensors.cs" />
+    <Compile Include="Iterations\RefSpectrumByDriveTestsCalc\CalcRefSpectrum\Parameters\SensorParameters.cs" />
+    <Compile Include="Iterations\RefSpectrumByDriveTestsCalc\CalcRefSpectrum\Parameters\RefSpectrumStationCalibration.cs" />
+    <Compile Include="Iterations\RefSpectrumByDriveTestsCalc\CalcRefSpectrum\Parameters\RefSpectrumStationAndSensors.cs" />
+    <Compile Include="Iterations\RefSpectrumByDriveTestsCalc\CalcRefSpectrum\Parameters\RefSpectrumParameters.cs" />
     <Compile Include="Iterations\StationCalibrationCalc\CalcCorellation\Input\AllStationCorellationCalcData.cs" />
     <Compile Include="Iterations\StationCalibrationCalc\CalcCorellation\Input\StationCorellationCalcDataBase.cs" />
     <Compile Include="Iterations\StationCalibrationCalc\CalcCorellation\Output\ParametersStation.cs" />
@@ -72,6 +80,8 @@
     <Compile Include="Iterations\StationCalibrationCalc\MainBlock\CalcStatus\ModeStatusParameters.cs" />
     <Compile Include="Iterations\StationCalibrationCalc\MainBlock\CalcStatus\CalibrationStatusParameters.cs" />
     <Compile Include="Iterations\StationCalibrationCalc\MainBlock\Input\ContextStation.cs" />
+    <Compile Include="Iterations\StationCalibrationCalc\MainBlock\Input\GroupsContextStations.cs" />
+    <Compile Include="Iterations\StationCalibrationCalc\MainBlock\Input\GroupsDriveTestsResult.cs" />
     <Compile Include="Iterations\StationCalibrationCalc\MainBlock\Input\LinkGoupDriveTestsAndStations.cs" />
     <Compile Include="Iterations\StationCalibrationCalc\MainBlock\Input\CalcPoint.cs" />
     <Compile Include="Iterations\StationCalibrationCalc\MainBlock\Output\CalibrationStationsAndDriveTestsResult.cs" />

@@ -1,0 +1,666 @@
+﻿alter session set "_ORACLE_SCRIPT"=true; 
+
+CREATE SEQUENCE SDRNSVR.SENSORS_ID_SEQ
+  START WITH 1
+  MAXVALUE 9999999999999999999999999999
+  MINVALUE 0
+  NOCYCLE
+  CACHE 2
+  NOORDER;
+
+  CREATE SEQUENCE SDRNSVR.SENSOR_ANTENNAS_ID_SEQ
+  START WITH 1
+  MAXVALUE 9999999999999999999999999999
+  MINVALUE 0
+  NOCYCLE
+  CACHE 2
+  NOORDER;
+
+
+  
+  CREATE SEQUENCE SDRNSVR.SENSOR_ANTENNA_PATTERNS_ID_SEQ
+  START WITH 1
+  MAXVALUE 9999999999999999999999999999
+  MINVALUE 0
+  NOCYCLE
+  CACHE 2
+  NOORDER;
+
+
+  CREATE SEQUENCE SDRNSVR.SENSOR_EQUIP_ID_SEQ
+  START WITH 1
+  MAXVALUE 9999999999999999999999999999
+  MINVALUE 0
+  NOCYCLE
+  CACHE 2
+  NOORDER;
+
+  CREATE SEQUENCE SDRNSVR.SENSOR_LOCATIONS_ID_SEQ
+  START WITH 1
+  MAXVALUE 9999999999999999999999999999
+  MINVALUE 0
+  NOCYCLE
+  CACHE 2
+  NOORDER;
+
+  CREATE SEQUENCE SDRNSVR.SENSOR_EQUIP_SENSITIVITES_ID_SEQ
+  START WITH 1
+  MAXVALUE 9999999999999999999999999999
+  MINVALUE 0
+  NOCYCLE
+  CACHE 2
+  NOORDER;
+
+
+CREATE TABLE SDRNSVR.SENSORS
+(
+  ID                  NUMBER(15)                NOT NULL,
+  SENSORIDENTIFIER_ID           NUMBER(15),
+  STATUS             NVARCHAR2(25)  ,
+  NAME NVARCHAR2(150)  ,
+  BIUSEDATE            DATE,
+  EOUSEDATE            DATE,
+  AZIMUTH              NUMBER(30,10),
+  ELEVATION            NUMBER(30,10),
+  AGL                  NUMBER(30,10),
+  RXLOSS               NUMBER(30,10),
+  TECHID               NVARCHAR2(150)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE UNIQUE INDEX SDRNSVR.SENSORS_PK ON SDRNSVR.SENSORS
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+ALTER TABLE SDRNSVR.SENSORS ADD (
+  CONSTRAINT SENSORS_PK
+ PRIMARY KEY
+ (ID)
+    USING INDEX 
+    TABLESPACE USERS
+    PCTFREE    10
+    INITRANS   2
+    MAXTRANS   255
+    STORAGE    (
+                INITIAL          64K
+                NEXT             1M
+                MINEXTENTS       1
+                MAXEXTENTS       UNLIMITED
+                PCTINCREASE      0
+               ));
+
+
+
+CREATE TABLE SDRNSVR.SENSOR_ANTENNAS
+(
+  ID                  NUMBER(15)                NOT NULL,
+  SENSOR_ID           NUMBER(15),
+  CODE                NVARCHAR2(50)  ,
+  MANUFACTURER        NVARCHAR2(50)  ,
+  NAME                NVARCHAR2(50)  ,  
+  TECHID              NVARCHAR2(150)  ,
+  ANTDIR              NVARCHAR2(50)  ,
+  HBEAMWIDTH          NUMBER(22,8),
+  VBEAMWIDTH          NUMBER(22,8),
+  POLARIZATION        NVARCHAR2(50)  ,
+  GAINTYPE            NVARCHAR2(50)  ,
+  GAINMAX             NUMBER(22,8),
+  LOWERFREQ           NUMBER(22,8),
+  UPPERFREQ           NUMBER(22,8),
+  ADDLOSS             NUMBER(22,8),
+  XPD                 NUMBER(22,8)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE UNIQUE INDEX SDRNSVR.SENSOR_ANTENNAS_PK ON SDRNSVR.SENSOR_ANTENNAS
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+ALTER TABLE SDRNSVR.SENSOR_ANTENNAS ADD (
+  CONSTRAINT SENSOR_ANTENNAS_PK
+ PRIMARY KEY
+ (ID)
+    USING INDEX 
+    TABLESPACE USERS
+    PCTFREE    10
+    INITRANS   2
+    MAXTRANS   255
+    STORAGE    (
+                INITIAL          64K
+                NEXT             1M
+                MINEXTENTS       1
+                MAXEXTENTS       UNLIMITED
+                PCTINCREASE      0
+               ));
+
+
+CREATE TABLE SDRNSVR.SENSOR_ANTENNA_PATTERNS
+(
+  ID                  NUMBER(15)                NOT NULL,
+  SENSOR_ANTENNA_ID   NUMBER(15),
+  FREQ                NUMBER(22,8),
+  GAIN                NUMBER(22,8),
+  DIAGA               NVARCHAR2(1000)  ,
+  DIAGH               NVARCHAR2(1000)  ,
+  DIAGV               NVARCHAR2(1000)  
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE UNIQUE INDEX SDRNSVR.SENSOR_ANTENNA_PATTERNS_PK ON SDRNSVR.SENSOR_ANTENNA_PATTERNS
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+ALTER TABLE SDRNSVR.SENSOR_ANTENNA_PATTERNS ADD (
+  CONSTRAINT SENSOR_ANTENNA_PATTERNS_PK
+ PRIMARY KEY
+ (ID)
+    USING INDEX 
+    TABLESPACE USERS
+    PCTFREE    10
+    INITRANS   2
+    MAXTRANS   255
+    STORAGE    (
+                INITIAL          64K
+                NEXT             1M
+                MINEXTENTS       1
+                MAXEXTENTS       UNLIMITED
+                PCTINCREASE      0
+               ));
+
+
+
+CREATE TABLE SDRNSVR.SENSOR_EQUIP
+(
+  ID                 NUMBER(15)                NOT NULL,
+  SENSOR_ID          NUMBER(15),
+  CODE               NVARCHAR2(50)  ,
+  MANUFACTURER       NVARCHAR2(50)  ,
+  NAME               NVARCHAR2(50)  ,
+  TECHID             NVARCHAR2(200)  ,
+  LOWER_FREQ          NUMBER(22,8),
+  UPPER_FREQ          NUMBER(22,8)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE UNIQUE INDEX SDRNSVR.SENSOR_EQUIP_PK ON SDRNSVR.SENSOR_EQUIP
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+ALTER TABLE SDRNSVR.SENSOR_EQUIP ADD (
+  CONSTRAINT SENSOR_EQUIP_PK
+ PRIMARY KEY
+ (ID)
+    USING INDEX 
+    TABLESPACE USERS
+    PCTFREE    10
+    INITRANS   2
+    MAXTRANS   255
+    STORAGE    (
+                INITIAL          64K
+                NEXT             1M
+                MINEXTENTS       1
+                MAXEXTENTS       UNLIMITED
+                PCTINCREASE      0
+               ));
+
+
+CREATE TABLE SDRNSVR.SENSOR_LOCATIONS
+(
+  ID                 NUMBER(15)                NOT NULL,
+  SENSOR_ID          NUMBER(15),
+  DATA_FROM          DATE,
+  DATA_TO            DATE,
+  DATA_CREATED       DATE,
+  STATUS             NVARCHAR2(25)  ,
+  LON                NUMBER(22,8),
+  LAT                NUMBER(22,8),
+  ASL                NUMBER(22,8)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE UNIQUE INDEX SDRNSVR.SENSOR_LOCATIONS_PK ON SDRNSVR.SENSOR_LOCATIONS
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+ALTER TABLE SDRNSVR.SENSOR_LOCATIONS ADD (
+  CONSTRAINT SENSOR_LOCATIONS_PK
+ PRIMARY KEY
+ (ID)
+    USING INDEX 
+    TABLESPACE USERS
+    PCTFREE    10
+    INITRANS   2
+    MAXTRANS   255
+    STORAGE    (
+                INITIAL          64K
+                NEXT             1M
+                MINEXTENTS       1
+                MAXEXTENTS       UNLIMITED
+                PCTINCREASE      0
+               ));
+
+
+CREATE TABLE SDRNSVR.SENSOR_EQUIP_SENSITIVITIES
+(
+  ID                 NUMBER(15)                NOT NULL,
+  SENSOR_EQUIP_ID    NUMBER(15),
+  FREQ               NUMBER(22,8),
+  KTBF               NUMBER(22,8),
+  NOISEF             NUMBER(22,8),
+  FREQ_STABILITY     NUMBER(22,8),
+  ADDLOSS            NUMBER(22,8)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE UNIQUE INDEX SDRNSVR.SENSOR_EQUIP_SENSITIVITIES_PK ON SDRNSVR.SENSOR_EQUIP_SENSITIVITIES
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+ALTER TABLE SDRNSVR.SENSOR_EQUIP_SENSITIVITIES ADD (
+  CONSTRAINT SENSOR_EQUIP_SENSITIVITIES_PK
+ PRIMARY KEY
+ (ID)
+    USING INDEX 
+    TABLESPACE USERS
+    PCTFREE    10
+    INITRANS   2
+    MAXTRANS   255
+    STORAGE    (
+                INITIAL          64K
+                NEXT             1M
+                MINEXTENTS       1
+                MAXEXTENTS       UNLIMITED
+                PCTINCREASE      0
+               ));
+
+
+ALTER TABLE SDRNSVR.SM_MEAS_RESULTS
+  ADD (
+  SENSOR_ID       NUMBER(15)
+);
+
+
+
+Check
+
+  CREATE OR REPLACE FUNCTION SDRNSVR.GetID (inttable_name IN varchar2)
+return number
+is
+n number(15);
+
+
+BEGIN
+
+
+if inttable_name ='DRIVE_ROUTES' then
+select SDRNSVR.DRIVE_ROUTES_ID_SEQ.nextval
+into n
+from dual;
+end if;
+
+
+if inttable_name ='DRIVE_TESTS' then
+select SDRNSVR.DRIVE_TESTS_ID_SEQ.nextval
+into n
+from dual;
+end if;
+
+if inttable_name ='DRIVE_TESTS_POINTS' then
+select SDRNSVR.DRIVE_TESTS_POINTS_ID_SEQ.nextval
+into n
+from dual;
+end if;
+
+
+
+if inttable_name ='SM_MEAS_RESULTS' then
+select SDRNSVR.SM_MEAS_RESULTS_ID_SEQ.nextval
+into n
+from dual;
+end if;
+
+
+if inttable_name ='SM_MEAS_RESULTS_STATS' then
+select SDRNSVR.SM_MEAS_RESULTS_STATS_ID_SEQ.nextval
+into n
+from dual;
+end if;
+
+
+
+if inttable_name ='SENSORS' then
+select SDRNSVR.SENSORS_ID_SEQ.nextval
+into n
+from dual;
+end if;
+
+
+if inttable_name ='SENSOR_EQUIP' then
+select SDRNSVR.SENSOR_EQUIP_ID_SEQ.nextval
+into n
+from dual;
+end if;
+
+if inttable_name ='SENSOR_ANTENNA_PATTERNS' then
+select SDRNSVR.SENSOR_ANTENNA_PATTERNS_ID_SEQ.nextval
+into n
+from dual;
+end if;
+
+if inttable_name ='SENSOR_LOCATIONS' then
+select SDRNSVR.SENSOR_LOCATIONS_ID_SEQ.nextval
+into n
+from dual;
+end if;
+
+if inttable_name ='SENSOR_EQUIP_SENSITIVITES' then
+select SDRNSVR.SENSOR_EQUIP_SENSITIVITES_ID_SEQ.nextval
+into n
+from dual;
+end if;
+
+return(n);
+end;
+/
+
+
+
+
+CREATE USER CALCSVR
+  IDENTIFIED BY CALCSVR
+  DEFAULT TABLESPACE USERS
+  TEMPORARY TABLESPACE TEMP
+  PROFILE DEFAULT
+  ACCOUNT UNLOCK;
+   
+  GRANT UNLIMITED TABLESPACE TO CALCSVR;
+  GRANT ALTER USER TO CALCSVR;
+  GRANT DROP ANY VIEW TO CALCSVR;
+  GRANT ALTER ANY PROCEDURE TO CALCSVR;
+  GRANT DROP ANY TRIGGER TO CALCSVR;
+  GRANT CREATE SEQUENCE TO CALCSVR;
+  GRANT ALTER ANY TABLE TO CALCSVR;
+  GRANT CREATE TRIGGER TO CALCSVR;
+  GRANT CREATE VIEW TO CALCSVR;
+  GRANT DELETE ANY TABLE TO CALCSVR;
+  GRANT UNLIMITED TABLESPACE TO CALCSVR;
+  GRANT ALTER ANY TRIGGER TO CALCSVR;
+  GRANT CREATE SESSION TO CALCSVR;
+  GRANT DROP ANY PROCEDURE TO CALCSVR;
+  GRANT CREATE PROCEDURE TO CALCSVR;
+  GRANT DROP ANY TABLE TO CALCSVR;
+  GRANT CREATE TABLE TO CALCSVR;
+
+
+CREATE SEQUENCE CALCSVR.OBSERVED_TASKS_ID_SEQ
+  START WITH 1
+  MAXVALUE 9999999999999999999999999999
+  MINVALUE 0
+  NOCYCLE
+  CACHE 2
+  NOORDER;
+  
+  
+CREATE TABLE CALCSVR.OBSERVED_TASKS
+(
+  ID                  NUMBER(15)                NOT NULL,
+  CREATED_DATE        TIMESTAMP(7) WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP AT TIME ZONE 'GMT',
+  UPDATED_DATE        TIMESTAMP(7) WITH TIME ZONE,
+  TASK_ID             NUMBER(15),
+  TASK_TYPE_CODE      NUMBER(9),
+  TASK_TYPE_NAME      NVARCHAR2(250),
+  TASK_STATUS_CODE    NUMBER(3),
+  TASK_STATUS_NAME    NVARCHAR2(50),
+  RESULT_ID           NUMBER(15),
+  RESULT_STATUS_CODE  NUMBER(3),
+  RESULT_STATUS_NAME  NVARCHAR2(50)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE UNIQUE INDEX CALCSVR.OBSERVED_TASKS_PK ON CALCSVR.OBSERVED_TASKS
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+ALTER TABLE CALCSVR.OBSERVED_TASKS ADD (
+  CONSTRAINT OBSERVED_TASKS_PK
+ PRIMARY KEY
+ (ID));
+
+
+
+
+ CREATE OR REPLACE FUNCTION CALCSVR.GetID (inttable_name IN varchar2)
+return number
+is
+n number(15);
+
+
+BEGIN
+
+
+if inttable_name ='OBSERVED_TASKS' then
+select CALCSVR.OBSERVED_TASKS_ID_SEQ.nextval
+into n
+from dual;
+end if;
+
+
+return(n);
+end;
+/

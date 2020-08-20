@@ -34,6 +34,35 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration
 		[ComponentConfigProperty("AutoImport.SdrnServer.StationMonitoring.Route.BufferSize")]
 		public int? AutoImportSdrnServerStationMonitoringRouteBufferSize { get; set; }
 
+		[ComponentConfigProperty("AutoImport.SdrnServer.Sensors.FetchRows")]
+		public int? AutoImportSdrnServerSensorsFetchRows { get; set; }
+		[ComponentConfigProperty("AutoImport.SdrnServer.Sensors.Period")]
+		public int? AutoImportSdrnServerSensorsPeriod { get; set; }
+
+		[ComponentConfigProperty("AutoImport.SdrnServer.SensorAntennas.FetchRows")]
+		public int? AutoImportSdrnServerSensorAntennasFetchRows { get; set; }
+		[ComponentConfigProperty("AutoImport.SdrnServer.SensorAntennas.Period")]
+		public int? AutoImportSdrnServerSensorAntennasPeriod { get; set; }
+
+		[ComponentConfigProperty("AutoImport.SdrnServer.SensorAntennaPatterns.FetchRows")]
+		public int? AutoImportSdrnServerSensorAntennaPatternsFetchRows { get; set; }
+		[ComponentConfigProperty("AutoImport.SdrnServer.SensorAntennaPatterns.Period")]
+		public int? AutoImportSdrnServerSensorAntennaPatternsPeriod { get; set; }
+
+		[ComponentConfigProperty("AutoImport.SdrnServer.SensorEquipment.FetchRows")]
+		public int? AutoImportSdrnServerSensorEquipmentFetchRows { get; set; }
+		[ComponentConfigProperty("AutoImport.SdrnServer.SensorEquipment.Period")]
+		public int? AutoImportSdrnServerSensorEquipmentPeriod { get; set; }
+
+		[ComponentConfigProperty("AutoImport.SdrnServer.SensorEquipmentSensitivities.FetchRows")]
+		public int? AutoImportSdrnServerSensorEquipmentSensitivitiesFetchRows { get; set; }
+		[ComponentConfigProperty("AutoImport.SdrnServer.SensorEquipmentSensitivities.Period")]
+		public int? AutoImportSdrnServerSensorEquipmentSensitivitiesPeriod { get; set; }
+
+		[ComponentConfigProperty("AutoImport.SdrnServer.SensorLocations.FetchRows")]
+		public int? AutoImportSdrnServerSensorLocationsFetchRows { get; set; }
+		[ComponentConfigProperty("AutoImport.SdrnServer.SensorLocations.Period")]
+		public int? AutoImportSdrnServerSensorLocationsPeriod { get; set; }
 
 		[ComponentConfigProperty("AutoImport.Files.Folder")]
 		public string AutoImportFilesFolder { get; set; }
@@ -45,6 +74,13 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration
 		public int? AutoImportFilesRepeatDelay { get; set; }
 
 
+		[ComponentConfigProperty("AutoImport.CalcServer.StartDelay")]
+		public int? AutoImportCalcServerStartDelay { get; set; }
 
+		[ComponentConfigProperty("AutoImport.CalcServer.RepeatDelay")]
+		public int? AutoImportCalcServerRepeatDelay { get; set; }
+
+		[ComponentConfigProperty("AutoImport.CalcServer.CalcResults.FetchRows")]
+		public int? AutoImportCalcServerCalcResultsFetchRows { get; set; }
 	}
 }

@@ -217,6 +217,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="README.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="HookDll.dll">
@@ -243,6 +246,9 @@ copy "$(TargetDir)gdal_csharp.dll" "..\..\..\..\Delivery\Atdi.WebQuery\AppServer
 copy "$(TargetDir)gdalconst_csharp.dll" "..\..\..\..\Delivery\Atdi.WebQuery\AppServer\Bin$(ConfigurationName)"
 copy "$(TargetDir)ogr_csharp.dll" "..\..\..\..\Delivery\Atdi.WebQuery\AppServer\Bin$(ConfigurationName)"
 copy "$(TargetDir)osr_csharp.dll" "..\..\..\..\Delivery\Atdi.WebQuery\AppServer\Bin$(ConfigurationName)"
+copy "$(TargetDir)WebQueryTranslate.txt" "..\..\..\..\Delivery\Atdi.WebQuery\AppServer\Bin$(ConfigurationName)"
+copy "$(TargetDir)README.md" "..\..\..\..\Delivery\Atdi.WebQuery"
+
 
 
 copy "$(TargetDir)Atdi.DataModels.dll" "..\..\..\..\Delivery\Atdi.WebQuery\WcfClient\Bin$(ConfigurationName)"
@@ -251,7 +257,12 @@ copy "$(TargetDir)Atdi.DataModels.WebQuery.dll" "..\..\..\..\Delivery\Atdi.WebQu
 copy "$(TargetDir)Atdi.Contracts.WcfServices.Identity.dll" "..\..\..\..\Delivery\Atdi.WebQuery\WcfClient\Bin$(ConfigurationName)"
 copy "$(TargetDir)Atdi.Contracts.WcfServices.WebQuery.dll" "..\..\..\..\Delivery\Atdi.WebQuery\WcfClient\Bin$(ConfigurationName)"
 
+
+
+
 xcopy /Y /I /E "..\..\..\..\packages\GDAL.Native.2.4.4\build\gdal\*.*" "..\..\..\..\Delivery\Atdi.WebQuery\AppServer\Bin$(ConfigurationName)\gdal"
+
+
 </PostBuildEvent>
   </PropertyGroup>
 </Project>

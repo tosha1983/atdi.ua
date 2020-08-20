@@ -85,5 +85,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
         [ComponentConfigProperty("Brific.DBSource")]
         public string BrificDBSource { get; set; }
 
+        [ComponentConfigProperty("Thresholds.RefractivityGradient")]
+        public int? ThresholdsRefractivityGradient { get; set; }
+
+        public string StandardsForDuplicateStations { get; set; }
+
     }
 }

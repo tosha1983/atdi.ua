@@ -16,7 +16,9 @@ namespace Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations
 
 		public float XPD_dB;
 
-		public AntennaItuPattern ItuPattern;
+        public float Freq_MHz;
+
+        public AntennaItuPattern ItuPattern;
 
 		public StationAntennaPattern HhPattern;
 

@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "SensorEquipment"
+  Title       = "SensorEquipment"
+  Desc        = "The sensor equipment from SDRN Server"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>SENSOR_EQUIP</Name>
+    <Schema>SDRNSVR</Schema>
+  </DataSource>
+  <Fields>
+    <Field Name="Id" Desc="Id" Title="Id" DataType="Integer.64" SourceName="ID" SourceType="Column"/>
+    <Field Name="Code" Desc="Code of equipment" Title="Code of equipment" DataType="Text.50" SourceName="CODE" SourceType="Column" Required="false"/>
+    <Field Name="Manufacturer" Desc="Manufacturer" Title="Manufacturer" DataType="Text.50" SourceName="MANUFACTURER" SourceType="Column" Required="false"/>
+    <Field Name="Name" Desc="Name" Title="Name" DataType="Text.50" SourceName="NAME" SourceType="Column" Required="false"/>
+    <Field Name="TechId" Desc="Technical ID" Title="Technical ID" DataType="Text.200" SourceName="TECHID" SourceType="Column" Required="false"/>
+    <Field Name="LowerFreq" Desc="LowerFreq, MHz" Title="LowerFreq, MHz" DataType="Double.30.10" SourceName="LOWER_FREQ" SourceType="Column" Required="false" Unit="Frequency.MHz"/>
+    <Field Name="UpperFreq" Desc="UpperFreq, MHz " Title="UpperFreq, MHz " DataType="Double.30.10" SourceName="UPPER_FREQ" SourceType="Column" Required="false" Unit="Frequency.MHz"/>
+    <Field Name="SENSOR" SourceName="Atdi.DataModels.Sdrn.Infocenter.Entities.SdrnServer.Sensor" SourceType="Reference" Required="true" Desc="" Title="Relation SensorEquipment to Sensor"/>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>

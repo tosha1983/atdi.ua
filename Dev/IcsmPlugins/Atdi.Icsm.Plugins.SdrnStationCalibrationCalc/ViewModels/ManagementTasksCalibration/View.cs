@@ -224,6 +224,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
         {
             ReloadProjectContext();
             ReloadClientContext();
+            ReloadCalcTask();
             CurrentClientContextCard = new ClientContextModel();
             CurrentCalcTaskCard = new CalcTaskModel();
             ClientContextSaveEnabled = false;
@@ -326,6 +327,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
                 this.ClientContexts.ProjectId = 0;
                 this.ClientContexts.Refresh();
             }
+            this.CurrentClientContext = null;
             ClientContextEditEnabled = false;
             ClientContextDelEnabled = false;
         }

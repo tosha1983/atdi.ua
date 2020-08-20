@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "ClientContextReflection"
+  Title       = "Client Context Reflection"
+  Desc        = "The Reflection of the signal attenuation calculation"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>CLIENT_CONTEXTS_REFLECTION</Name>
+    <Schema>CALC</Schema>
+  </DataSource>
+  <Fields>
+    <Field Name="ContextId" SourceType="Column" SourceName="CONTEXT_ID" DataType="Integer.64"  Required="true" Title="Context" Desc="The client context" />
+    <Field Name="Available" SourceType="Column" SourceName="AVAILABLE" DataType="Boolean" Required="true" Title="Available" Desc="The model availability during the calculation process" />
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="ContextId"/>
+  </PrimaryKey>
+</Entity>

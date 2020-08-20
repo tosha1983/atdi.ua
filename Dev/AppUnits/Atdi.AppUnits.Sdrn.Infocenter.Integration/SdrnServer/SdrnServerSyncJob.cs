@@ -29,13 +29,48 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration.SdrnServer
 		}
 	}
 
-	
+	[Serializable]
+	public class SensorsSyncKey
+	{
+		public DateTime LastSyncTime;
+
+		public override string ToString()
+		{
+			return $"LastSyncTime = '{LastSyncTime:O}'";
+		}
+	}
+
+	[Serializable]
+	public class SensorAntennasSyncKey : SensorsSyncKey
+	{
+	}
+
+	[Serializable]
+	public class SensorAntennaPatternsSyncKey : SensorsSyncKey
+	{
+	}
+
+	[Serializable]
+	public class SensorEquipmentSyncKey : SensorsSyncKey
+	{
+	}
+	[Serializable]
+	public class SensorEquipmentSensitivitiesSyncKey : SensorsSyncKey
+	{
+	}
+
+	[Serializable]
+	public class SensorLocationsSyncKey : SensorsSyncKey
+	{
+	}
+
 	internal class SdrnServerSyncJob : IJobExecutor
 	{
 		private struct SdrnMeasResult
 		{
 			public long Id;
 			public DateTime MeasTime;
+			public long? SensorId;
 			public string SensorName;
 			public string SensorTitle;
 		}
@@ -86,8 +121,830 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration.SdrnServer
 			using (var sdrnsDbScope = this._sdrnsDataLayer.CreateScope<SdrnServerDataContext>())
 			{
 				this.SynchronizeStationMonitoring(infocDbScope, sdrnsDbScope);
+				this.SynchronizeSensors(infocDbScope, sdrnsDbScope);
+				this.SynchronizeSensorAntennas(infocDbScope, sdrnsDbScope);
+				this.SynchronizeSensorAntennaPatterns(infocDbScope, sdrnsDbScope);
+				this.SynchronizeSensorEquipmentItems(infocDbScope, sdrnsDbScope);
+				this.SynchronizeSensorEquipmentSensitivities(infocDbScope, sdrnsDbScope);
+				this.SynchronizeSensorLocations(infocDbScope, sdrnsDbScope);
 			}
 			return JobExecutionResult.Completed;
+		}
+
+		private void SynchronizeSensors(IDataLayerScope infocDbScope, IDataLayerScope sdrnsDbScope)
+		{
+			var statusNote = "Sync completed successfully";
+			var statusCode = ES_IC.IntegrationStatusCode.Done;
+			var fetchRows = _config.AutoImportSdrnServerSensorsFetchRows.GetValueOrDefault(1000);
+			var offsetRows = 0;
+			var createdCount = 0;
+			var updatedCount = 0;
+			
+			var periodHours = _config.AutoImportSdrnServerSensorsPeriod.GetValueOrDefault(24);
+			var syncKey =
+				_integrationService.GetSyncKey<SensorsSyncKey>(DataSource.SdrnServer,
+					IntegrationObjects.Sensors);
+
+			if (syncKey == null
+			    || syncKey.LastSyncTime.AddHours(periodHours) <= DateTime.Now)
+			{
+				if (syncKey == null)
+				{
+					syncKey = new SensorsSyncKey();
+				}
+
+				syncKey.LastSyncTime = DateTime.Now;
+
+				var token = _integrationService.Start(DataSource.SdrnServer, IntegrationObjects.Sensors);
+				try
+				{
+					var needFetch = true;
+					while (needFetch)
+					{
+						var sdrnsSensorQuery = _sdrnsDataLayer.GetBuilder<ES_SD.ISensor>()
+							.From()
+							.Select(c => c.Id)
+							.Select(c => c.SensorIdentifierId)
+							.Select(c => c.Status)
+							.Select(c => c.Name)
+							.Select(c => c.BiuseDate)
+							.Select(c => c.EouseDate)
+							.Select(c => c.Azimuth)
+							.Select(c => c.Elevation)
+							.Select(c => c.Agl)
+							.Select(c => c.RxLoss)
+							.Select(c => c.TechId)
+							.OrderByAsc(c => c.Id)
+							.Paginate(offsetRows, fetchRows);
+
+						needFetch = sdrnsDbScope.Executor.ExecuteAndFetch(sdrnsSensorQuery, reader =>
+						{
+							var result = false;
+							while (reader.Read())
+							{
+								++offsetRows;
+								result = true;
+
+								var created = this.SynchronizeSensor(infocDbScope, reader);
+								if (created)
+								{
+									++createdCount;
+								}
+								else
+								{
+									++updatedCount;
+								}
+							}
+
+							return result;
+						});
+					}
+
+				}
+				catch (Exception e)
+				{
+					_logger.Exception(Contexts.ThisComponent, Categories.Synchronization, e, this);
+					statusNote = e.Message;
+					statusCode = ES_IC.IntegrationStatusCode.Aborted;
+				}
+				finally
+				{
+					var total =
+						$"Read={offsetRows}, Created={createdCount}, Updated={updatedCount}";
+
+					_integrationService.Finish(token, statusCode, statusNote, total, syncKey);
+				}
+			}
+		}
+
+		private bool SynchronizeSensor(IDataLayerScope infocDbScope, IDataReader<ES_SD.ISensor> sourceReader)
+		{
+			var id = sourceReader.GetValue(c => c.Id);
+
+			var existsQuery = _infocDataLayer.GetBuilder<ES_IC.SdrnServer.ISensor>()
+				.From()
+				.Select(c => c.Id)
+				.Where(c => c.Id, ConditionOperator.Equal, id);
+
+			var exists = infocDbScope.Executor.ExecuteAndFetch(existsQuery, reader => reader.Read());
+
+			if (exists)
+			{
+				var updQuery = _infocDataLayer.GetBuilder<ES_IC.SdrnServer.ISensor>()
+					.Update()
+					.SetValue(c => c.Name, sourceReader.GetValue(c => c.Name))
+					.SetValue(c => c.Status, sourceReader.GetValue(c => c.Status))
+					.SetValue(c => c.TechId, sourceReader.GetValue(c => c.TechId))
+					.SetValue(c => c.SensorIdentifierId, sourceReader.GetValue(c => c.SensorIdentifierId))
+					.SetValue(c => c.Agl, sourceReader.GetValue(c => c.Agl))
+					.SetValue(c => c.Azimuth, sourceReader.GetValue(c => c.Azimuth))
+					.SetValue(c => c.BiuseDate, sourceReader.GetValue(c => c.BiuseDate))
+					.SetValue(c => c.Elevation, sourceReader.GetValue(c => c.Elevation))
+					.SetValue(c => c.EouseDate, sourceReader.GetValue(c => c.EouseDate))
+					.SetValue(c => c.RxLoss, sourceReader.GetValue(c => c.RxLoss))
+					.Where(c => c.Id, ConditionOperator.Equal, id);
+
+				infocDbScope.Executor.Execute(updQuery);
+
+				return false;
+			}
+			else
+			{
+				var insQuery = _infocDataLayer.GetBuilder<ES_IC.SdrnServer.ISensor>()
+					.Insert()
+					.SetValue(c => c.Id, id)
+					.SetValue(c => c.Name, sourceReader.GetValue(c => c.Name))
+					.SetValue(c => c.Status, sourceReader.GetValue(c => c.Status))
+					.SetValue(c => c.TechId, sourceReader.GetValue(c => c.TechId))
+					.SetValue(c => c.SensorIdentifierId, sourceReader.GetValue(c => c.SensorIdentifierId))
+					.SetValue(c => c.Agl, sourceReader.GetValue(c => c.Agl))
+					.SetValue(c => c.Azimuth, sourceReader.GetValue(c => c.Azimuth))
+					.SetValue(c => c.BiuseDate, sourceReader.GetValue(c => c.BiuseDate))
+					.SetValue(c => c.Elevation, sourceReader.GetValue(c => c.Elevation))
+					.SetValue(c => c.EouseDate, sourceReader.GetValue(c => c.EouseDate))
+					.SetValue(c => c.RxLoss, sourceReader.GetValue(c => c.RxLoss));
+
+				infocDbScope.Executor.Execute(insQuery);
+
+				return true;
+			}
+		}
+
+		private void SynchronizeSensorAntennas(IDataLayerScope infocDbScope, IDataLayerScope sdrnsDbScope)
+		{
+			var statusNote = "Sync completed successfully";
+			var statusCode = ES_IC.IntegrationStatusCode.Done;
+			var fetchRows = _config.AutoImportSdrnServerSensorAntennasFetchRows.GetValueOrDefault(1000); ;
+			var offsetRows = 0;
+			var createdCount = 0;
+			var updatedCount = 0;
+
+			var periodHours = _config.AutoImportSdrnServerSensorAntennasPeriod.GetValueOrDefault(24);
+			var syncKey =
+				_integrationService.GetSyncKey<SensorAntennasSyncKey>(DataSource.SdrnServer,
+					IntegrationObjects.SensorAntennas);
+
+			if (syncKey == null
+			    || syncKey.LastSyncTime.AddHours(periodHours) <= DateTime.Now)
+			{
+				if (syncKey == null)
+				{
+					syncKey = new SensorAntennasSyncKey();
+				}
+				syncKey.LastSyncTime = DateTime.Now;
+
+				var token = _integrationService.Start(DataSource.SdrnServer, IntegrationObjects.SensorAntennas);
+				try
+				{
+					var needFetch = true;
+					while (needFetch)
+					{
+						var sdrnsSensorQuery = _sdrnsDataLayer.GetBuilder<ES_SD.ISensorAntenna>()
+							.From()
+							.Select(c => c.Id)
+							.Select(c => c.SENSOR.Id)
+							.Select(c => c.Code)
+							.Select(c => c.Manufacturer)
+							.Select(c => c.Name)
+							.Select(c => c.TechId)
+							.Select(c => c.AntDir)
+							.Select(c => c.HbeamWidth)
+							.Select(c => c.VbeamWidth)
+							.Select(c => c.Polarization)
+							.Select(c => c.GainType)
+							.Select(c => c.GainMax)
+							.Select(c => c.LowerFreq)
+							.Select(c => c.UpperFreq)
+							.Select(c => c.AddLoss)
+							.Select(c => c.Xpd)
+							.Where(c => c.SENSOR.Id, ConditionOperator.IsNotNull)
+							.OrderByAsc(c => c.Id)
+							.Paginate(offsetRows, fetchRows);
+
+						needFetch = sdrnsDbScope.Executor.ExecuteAndFetch(sdrnsSensorQuery, reader =>
+						{
+							var result = false;
+							while (reader.Read())
+							{
+								++offsetRows;
+								result = true;
+
+								var created = this.SynchronizeSensorAntenna(infocDbScope, reader);
+								if (created)
+								{
+									++createdCount;
+								}
+								else
+								{
+									++updatedCount;
+								}
+							}
+
+							return result;
+						});
+					}
+
+				}
+				catch (Exception e)
+				{
+					_logger.Exception(Contexts.ThisComponent, Categories.Synchronization, e, this);
+					statusNote = e.Message;
+					statusCode = ES_IC.IntegrationStatusCode.Aborted;
+				}
+				finally
+				{
+					var total =
+						$"Read={offsetRows}, Created={createdCount}, Updated={updatedCount}";
+
+					_integrationService.Finish(token, statusCode, statusNote, total, syncKey);
+				}
+			}
+		}
+
+		private bool SynchronizeSensorAntenna(IDataLayerScope infocDbScope, IDataReader<ES_SD.ISensorAntenna> sourceReader)
+		{
+			var id = sourceReader.GetValue(c => c.Id);
+
+			var existsQuery = _infocDataLayer.GetBuilder<ES_IC.SdrnServer.ISensorAntenna>()
+				.From()
+				.Select(c => c.Id)
+				.Where(c => c.Id, ConditionOperator.Equal, id);
+
+			var exists = infocDbScope.Executor.ExecuteAndFetch(existsQuery, reader => reader.Read());
+
+			if (exists)
+			{
+				var updQuery = _infocDataLayer.GetBuilder<ES_IC.SdrnServer.ISensorAntenna>()
+					.Update()
+					.SetValue(c => c.Code, sourceReader.GetValue(c => c.Code))
+					.SetValue(c => c.Polarization, sourceReader.GetValue(c => c.Polarization))
+					.SetValue(c => c.Name, sourceReader.GetValue(c => c.Name))
+					.SetValue(c => c.TechId, sourceReader.GetValue(c => c.TechId))
+					.SetValue(c => c.GainType, sourceReader.GetValue(c => c.GainType))
+					.SetValue(c => c.Xpd, sourceReader.GetValue(c => c.Xpd))
+					.SetValue(c => c.AntDir, sourceReader.GetValue(c => c.AntDir))
+					.SetValue(c => c.AddLoss, sourceReader.GetValue(c => c.AddLoss))
+					.SetValue(c => c.GainMax, sourceReader.GetValue(c => c.GainMax))
+					.SetValue(c => c.UpperFreq, sourceReader.GetValue(c => c.UpperFreq))
+					.SetValue(c => c.HbeamWidth, sourceReader.GetValue(c => c.HbeamWidth))
+					.SetValue(c => c.VbeamWidth, sourceReader.GetValue(c => c.VbeamWidth))
+					.SetValue(c => c.LowerFreq, sourceReader.GetValue(c => c.LowerFreq))
+					.SetValue(c => c.Manufacturer, sourceReader.GetValue(c => c.Manufacturer))
+					//.SetValue(c => c.SENSOR.Id, sourceReader.GetValue(c => c.SENSOR.Id))
+					.Where(c => c.Id, ConditionOperator.Equal, id);
+
+				infocDbScope.Executor.Execute(updQuery);
+
+				return false;
+			}
+			else
+			{
+				var insQuery = _infocDataLayer.GetBuilder<ES_IC.SdrnServer.ISensorAntenna>()
+					.Insert()
+					.SetValue(c => c.Id, id)
+					.SetValue(c => c.Code, sourceReader.GetValue(c => c.Code))
+					.SetValue(c => c.Polarization, sourceReader.GetValue(c => c.Polarization))
+					.SetValue(c => c.Name, sourceReader.GetValue(c => c.Name))
+					.SetValue(c => c.TechId, sourceReader.GetValue(c => c.TechId))
+					.SetValue(c => c.GainType, sourceReader.GetValue(c => c.GainType))
+					.SetValue(c => c.Xpd, sourceReader.GetValue(c => c.Xpd))
+					.SetValue(c => c.AntDir, sourceReader.GetValue(c => c.AntDir))
+					.SetValue(c => c.AddLoss, sourceReader.GetValue(c => c.AddLoss))
+					.SetValue(c => c.GainMax, sourceReader.GetValue(c => c.GainMax))
+					.SetValue(c => c.UpperFreq, sourceReader.GetValue(c => c.UpperFreq))
+					.SetValue(c => c.HbeamWidth, sourceReader.GetValue(c => c.HbeamWidth))
+					.SetValue(c => c.VbeamWidth, sourceReader.GetValue(c => c.VbeamWidth))
+					.SetValue(c => c.LowerFreq, sourceReader.GetValue(c => c.LowerFreq))
+					.SetValue(c => c.Manufacturer, sourceReader.GetValue(c => c.Manufacturer))
+					.SetValue(c => c.SENSOR.Id, sourceReader.GetValue(c => c.SENSOR.Id));
+
+				infocDbScope.Executor.Execute(insQuery);
+
+				return true;
+			}
+		}
+
+		private void SynchronizeSensorAntennaPatterns(IDataLayerScope infocDbScope, IDataLayerScope sdrnsDbScope)
+		{
+			var statusNote = "Sync completed successfully";
+			var statusCode = ES_IC.IntegrationStatusCode.Done;
+			var fetchRows = _config.AutoImportSdrnServerSensorAntennaPatternsFetchRows.GetValueOrDefault(1000); ;
+			var offsetRows = 0;
+			var createdCount = 0;
+			var updatedCount = 0;
+
+			var periodHours = _config.AutoImportSdrnServerSensorAntennaPatternsPeriod.GetValueOrDefault(24);
+			var syncKey =
+				_integrationService.GetSyncKey<SensorAntennaPatternsSyncKey>(DataSource.SdrnServer,
+					IntegrationObjects.SensorAntennaPatterns);
+
+			if (syncKey == null
+			    || syncKey.LastSyncTime.AddHours(periodHours) <= DateTime.Now)
+			{
+				if (syncKey == null)
+				{
+					syncKey = new SensorAntennaPatternsSyncKey();
+				}
+
+				syncKey.LastSyncTime = DateTime.Now;
+				var token = _integrationService.Start(DataSource.SdrnServer, IntegrationObjects.SensorAntennaPatterns);
+
+				try
+				{
+					var needFetch = true;
+					while (needFetch)
+					{
+						var sdrnsSensorQuery = _sdrnsDataLayer.GetBuilder<ES_SD.IAntennaPattern>()
+							.From()
+							.Select(c => c.Id)
+							.Select(c => c.SENSOR_ANTENNA.Id)
+							.Select(c => c.Gain)
+							.Select(c => c.DiagA)
+							.Select(c => c.DiagH)
+							.Select(c => c.DiagV)
+							.Select(c => c.Freq)
+							.Where(c => c.SENSOR_ANTENNA.Id, ConditionOperator.IsNotNull)
+							.OrderByAsc(c => c.Id)
+							.Paginate(offsetRows, fetchRows);
+
+						needFetch = sdrnsDbScope.Executor.ExecuteAndFetch(sdrnsSensorQuery, reader =>
+						{
+							var result = false;
+							while (reader.Read())
+							{
+								++offsetRows;
+								result = true;
+
+								var created = this.SynchronizeSensorAntennaPattern(infocDbScope, reader);
+								if (created)
+								{
+									++createdCount;
+								}
+								else
+								{
+									++updatedCount;
+								}
+							}
+
+							return result;
+						});
+					}
+
+				}
+				catch (Exception e)
+				{
+					_logger.Exception(Contexts.ThisComponent, Categories.Synchronization, e, this);
+					statusNote = e.Message;
+					statusCode = ES_IC.IntegrationStatusCode.Aborted;
+				}
+				finally
+				{
+					var total =
+						$"Read={offsetRows}, Created={createdCount}, Updated={updatedCount}";
+
+					_integrationService.Finish(token, statusCode, statusNote, total, syncKey);
+				}
+			}
+		}
+
+		private bool SynchronizeSensorAntennaPattern(IDataLayerScope infocDbScope, IDataReader<ES_SD.IAntennaPattern> sourceReader)
+		{
+			var id = sourceReader.GetValue(c => c.Id);
+
+			var existsQuery = _infocDataLayer.GetBuilder<ES_IC.SdrnServer.ISensorAntennaPattern>()
+				.From()
+				.Select(c => c.Id)
+				.Where(c => c.Id, ConditionOperator.Equal, id);
+
+			var exists = infocDbScope.Executor.ExecuteAndFetch(existsQuery, reader => reader.Read());
+
+			if (exists)
+			{
+				var updQuery = _infocDataLayer.GetBuilder<ES_IC.SdrnServer.ISensorAntennaPattern>()
+					.Update()
+					.SetValue(c => c.Freq, sourceReader.GetValue(c => c.Freq))
+					.SetValue(c => c.DiagA, sourceReader.GetValue(c => c.DiagA))
+					.SetValue(c => c.Gain, sourceReader.GetValue(c => c.Gain))
+					.SetValue(c => c.DiagV, sourceReader.GetValue(c => c.DiagV))
+					//.SetValue(c => c.SENSOR_ANTENNA.Id, sourceReader.GetValue(c => c.SENSOR_ANTENNA.Id))
+					.SetValue(c => c.DiagH, sourceReader.GetValue(c => c.DiagH))
+					.Where(c => c.Id, ConditionOperator.Equal, id);
+
+				infocDbScope.Executor.Execute(updQuery);
+
+				return false;
+			}
+			else
+			{
+				var insQuery = _infocDataLayer.GetBuilder<ES_IC.SdrnServer.ISensorAntennaPattern>()
+					.Insert()
+					.SetValue(c => c.Id, id)
+					.SetValue(c => c.Freq, sourceReader.GetValue(c => c.Freq))
+					.SetValue(c => c.DiagA, sourceReader.GetValue(c => c.DiagA))
+					.SetValue(c => c.Gain, sourceReader.GetValue(c => c.Gain))
+					.SetValue(c => c.DiagV, sourceReader.GetValue(c => c.DiagV))
+					.SetValue(c => c.SENSOR_ANTENNA.Id, sourceReader.GetValue(c => c.SENSOR_ANTENNA.Id))
+					.SetValue(c => c.DiagH, sourceReader.GetValue(c => c.DiagH));
+
+				infocDbScope.Executor.Execute(insQuery);
+
+				return true;
+			}
+		}
+
+		private void SynchronizeSensorEquipmentItems(IDataLayerScope infocDbScope, IDataLayerScope sdrnsDbScope)
+		{
+			var statusNote = "Sync completed successfully";
+			var statusCode = ES_IC.IntegrationStatusCode.Done;
+			var fetchRows = _config.AutoImportSdrnServerSensorEquipmentFetchRows.GetValueOrDefault(1000); ;
+			var offsetRows = 0;
+			var createdCount = 0;
+			var updatedCount = 0;
+
+			var periodHours = _config.AutoImportSdrnServerSensorEquipmentPeriod.GetValueOrDefault(24);
+			var syncKey =
+				_integrationService.GetSyncKey<SensorEquipmentSyncKey>(DataSource.SdrnServer,
+					IntegrationObjects.SensorEquipment);
+
+			if (syncKey == null
+			    || syncKey.LastSyncTime.AddHours(periodHours) <= DateTime.Now)
+			{
+				if (syncKey == null)
+				{
+					syncKey = new SensorEquipmentSyncKey();
+				}
+
+				syncKey.LastSyncTime = DateTime.Now;
+
+				var token = _integrationService.Start(DataSource.SdrnServer, IntegrationObjects.SensorEquipment);
+				try
+				{
+					var needFetch = true;
+					while (needFetch)
+					{
+						var sdrnsSensorQuery = _sdrnsDataLayer.GetBuilder<ES_SD.ISensorEquipment>()
+							.From()
+							.Select(c => c.Id)
+							.Select(c => c.SENSOR.Id)
+							.Select(c => c.Code)
+							.Select(c => c.Manufacturer)
+							.Select(c => c.Name)
+							.Select(c => c.TechId)
+							.Select(c => c.LowerFreq)
+							.Select(c => c.UpperFreq)
+							.Where(c => c.SENSOR.Id, ConditionOperator.IsNotNull)
+							.OrderByAsc(c => c.Id)
+							.Paginate(offsetRows, fetchRows);
+
+						needFetch = sdrnsDbScope.Executor.ExecuteAndFetch(sdrnsSensorQuery, reader =>
+						{
+							var result = false;
+							while (reader.Read())
+							{
+								++offsetRows;
+								result = true;
+
+								var created = this.SynchronizeSensorEquipmentItem(infocDbScope, reader);
+								if (created)
+								{
+									++createdCount;
+								}
+								else
+								{
+									++updatedCount;
+								}
+							}
+
+							return result;
+						});
+					}
+
+				}
+				catch (Exception e)
+				{
+					_logger.Exception(Contexts.ThisComponent, Categories.Synchronization, e, this);
+					statusNote = e.Message;
+					statusCode = ES_IC.IntegrationStatusCode.Aborted;
+				}
+				finally
+				{
+					var total =
+						$"Read={offsetRows}, Created={createdCount}, Updated={updatedCount}";
+
+					_integrationService.Finish(token, statusCode, statusNote, total, syncKey);
+				}
+			}
+		}
+
+		private bool SynchronizeSensorEquipmentItem(IDataLayerScope infocDbScope, IDataReader<ES_SD.ISensorEquipment> sourceReader)
+		{
+			var id = sourceReader.GetValue(c => c.Id);
+
+			var existsQuery = _infocDataLayer.GetBuilder< ES_IC.SdrnServer.ISensorEquipment>()
+				.From()
+				.Select(c => c.Id)
+				.Where(c => c.Id, ConditionOperator.Equal, id);
+
+			var exists = infocDbScope.Executor.ExecuteAndFetch(existsQuery, reader => reader.Read());
+
+			if (exists)
+			{
+				var updQuery = _infocDataLayer.GetBuilder<ES_IC.SdrnServer.ISensorEquipment>()
+					.Update()
+					.SetValue(c => c.Name, sourceReader.GetValue(c => c.Name))
+					.SetValue(c => c.Code, sourceReader.GetValue(c => c.Code))
+					.SetValue(c => c.Manufacturer, sourceReader.GetValue(c => c.Manufacturer))
+					.SetValue(c => c.TechId, sourceReader.GetValue(c => c.TechId))
+					.SetValue(c => c.LowerFreq, sourceReader.GetValue(c => c.LowerFreq))
+					.SetValue(c => c.UpperFreq, sourceReader.GetValue(c => c.UpperFreq))
+					//.SetValue(c => c.SENSOR.Id, sourceReader.GetValue(c => c.SENSOR.Id))
+					.Where(c => c.Id, ConditionOperator.Equal, id);
+
+				infocDbScope.Executor.Execute(updQuery);
+
+				return false;
+			}
+			else
+			{
+				var insQuery = _infocDataLayer.GetBuilder<ES_IC.SdrnServer.ISensorEquipment>()
+					.Insert()
+					.SetValue(c => c.Id, id)
+					.SetValue(c => c.Name, sourceReader.GetValue(c => c.Name))
+					.SetValue(c => c.Code, sourceReader.GetValue(c => c.Code))
+					.SetValue(c => c.Manufacturer, sourceReader.GetValue(c => c.Manufacturer))
+					.SetValue(c => c.TechId, sourceReader.GetValue(c => c.TechId))
+					.SetValue(c => c.LowerFreq, sourceReader.GetValue(c => c.LowerFreq))
+					.SetValue(c => c.UpperFreq, sourceReader.GetValue(c => c.UpperFreq))
+					.SetValue(c => c.SENSOR.Id, sourceReader.GetValue(c => c.SENSOR.Id));
+
+				infocDbScope.Executor.Execute(insQuery);
+
+				return true;
+			}
+		}
+
+		private void SynchronizeSensorEquipmentSensitivities(IDataLayerScope infocDbScope, IDataLayerScope sdrnsDbScope)
+		{
+			var statusNote = "Sync completed successfully";
+			var statusCode = ES_IC.IntegrationStatusCode.Done;
+			var fetchRows = _config.AutoImportSdrnServerSensorEquipmentSensitivitiesFetchRows.GetValueOrDefault(1000); ;
+			var offsetRows = 0;
+			var createdCount = 0;
+			var updatedCount = 0;
+
+			var periodHours = _config.AutoImportSdrnServerSensorEquipmentSensitivitiesPeriod.GetValueOrDefault(24);
+			var syncKey =
+				_integrationService.GetSyncKey<SensorEquipmentSensitivitiesSyncKey>(DataSource.SdrnServer,
+					IntegrationObjects.SensorEquipmentSensitivities);
+
+			if (syncKey == null
+			    || syncKey.LastSyncTime.AddHours(periodHours) <= DateTime.Now)
+			{
+				if (syncKey == null)
+				{
+					syncKey = new SensorEquipmentSensitivitiesSyncKey();
+				}
+
+				syncKey.LastSyncTime = DateTime.Now;
+
+				var token = _integrationService.Start(DataSource.SdrnServer,
+					IntegrationObjects.SensorEquipmentSensitivities);
+
+				try
+				{
+					var needFetch = true;
+					while (needFetch)
+					{
+						var sdrnsSensorQuery = _sdrnsDataLayer.GetBuilder<ES_SD.ISensorSensitivites>()
+							.From()
+							.Select(c => c.Id)
+							.Select(c => c.SENSOR_EQUIP.Id)
+							.Select(c => c.AddLoss)
+							.Select(c => c.Freq)
+							.Select(c => c.FreqStability)
+							.Select(c => c.Ktbf)
+							.Select(c => c.Noisef)
+							.Where(c => c.SENSOR_EQUIP.Id, ConditionOperator.IsNotNull)
+							.OrderByAsc(c => c.Id)
+							.Paginate(offsetRows, fetchRows);
+
+						needFetch = sdrnsDbScope.Executor.ExecuteAndFetch(sdrnsSensorQuery, reader =>
+						{
+							var result = false;
+							while (reader.Read())
+							{
+								++offsetRows;
+								result = true;
+
+								var created = this.SynchronizeSensorEquipmentSensitivity(infocDbScope, reader);
+								if (created)
+								{
+									++createdCount;
+								}
+								else
+								{
+									++updatedCount;
+								}
+							}
+
+							return result;
+						});
+					}
+
+				}
+				catch (Exception e)
+				{
+					_logger.Exception(Contexts.ThisComponent, Categories.Synchronization, e, this);
+					statusNote = e.Message;
+					statusCode = ES_IC.IntegrationStatusCode.Aborted;
+				}
+				finally
+				{
+					var total =
+						$"Read={offsetRows}, Created={createdCount}, Updated={updatedCount}";
+
+					_integrationService.Finish(token, statusCode, statusNote, total, syncKey);
+				}
+			}
+		}
+
+		private bool SynchronizeSensorEquipmentSensitivity(IDataLayerScope infocDbScope, IDataReader<ES_SD.ISensorSensitivites> sourceReader)
+		{
+			var id = sourceReader.GetValue(c => c.Id);
+
+			var existsQuery = _infocDataLayer.GetBuilder<ES_IC.SdrnServer.ISensorEquipmentSensitivity>()
+				.From()
+				.Select(c => c.Id)
+				.Where(c => c.Id, ConditionOperator.Equal, id);
+
+			var exists = infocDbScope.Executor.ExecuteAndFetch(existsQuery, reader => reader.Read());
+
+			if (exists)
+			{
+				var updQuery = _infocDataLayer.GetBuilder<ES_IC.SdrnServer.ISensorEquipmentSensitivity>()
+					.Update()
+					//.SetValue(c => c.SENSOR_EQUIP.Id, sourceReader.GetValue(c => c.SENSOR_EQUIP.Id))
+					.SetValue(c => c.AddLoss, sourceReader.GetValue(c => c.AddLoss))
+					.SetValue(c => c.Freq, sourceReader.GetValue(c => c.Freq))
+					.SetValue(c => c.FreqStability, sourceReader.GetValue(c => c.FreqStability))
+					.SetValue(c => c.Ktbf, sourceReader.GetValue(c => c.Ktbf))
+					.SetValue(c => c.Noisef, sourceReader.GetValue(c => c.Noisef))
+					.Where(c => c.Id, ConditionOperator.Equal, id);
+
+				infocDbScope.Executor.Execute(updQuery);
+
+				return false;
+			}
+			else
+			{
+				var insQuery = _infocDataLayer.GetBuilder<ES_IC.SdrnServer.ISensorEquipmentSensitivity>()
+					.Insert()
+					.SetValue(c => c.Id, id)
+					.SetValue(c => c.SENSOR_EQUIP.Id, sourceReader.GetValue(c => c.SENSOR_EQUIP.Id))
+					.SetValue(c => c.AddLoss, sourceReader.GetValue(c => c.AddLoss))
+					.SetValue(c => c.Freq, sourceReader.GetValue(c => c.Freq))
+					.SetValue(c => c.FreqStability, sourceReader.GetValue(c => c.FreqStability))
+					.SetValue(c => c.Ktbf, sourceReader.GetValue(c => c.Ktbf))
+					.SetValue(c => c.Noisef, sourceReader.GetValue(c => c.Noisef));
+
+				infocDbScope.Executor.Execute(insQuery);
+
+				return true;
+			}
+		}
+
+		private void SynchronizeSensorLocations(IDataLayerScope infocDbScope, IDataLayerScope sdrnsDbScope)
+		{
+			var statusNote = "Sync completed successfully";
+			var statusCode = ES_IC.IntegrationStatusCode.Done;
+			var fetchRows = _config.AutoImportSdrnServerSensorLocationsFetchRows.GetValueOrDefault(1000); ;
+			var offsetRows = 0;
+			var createdCount = 0;
+			var updatedCount = 0;
+
+			var periodHours = _config.AutoImportSdrnServerSensorAntennasPeriod.GetValueOrDefault(24);
+			var syncKey =
+				_integrationService.GetSyncKey<SensorLocationsSyncKey>(DataSource.SdrnServer,
+					IntegrationObjects.SensorLocations);
+
+			if (syncKey == null
+			    || syncKey.LastSyncTime.AddHours(periodHours) <= DateTime.Now)
+			{
+				if (syncKey == null)
+				{
+					syncKey = new SensorLocationsSyncKey();
+				}
+
+				syncKey.LastSyncTime = DateTime.Now;
+				var token = _integrationService.Start(DataSource.SdrnServer, IntegrationObjects.SensorLocations);
+
+				try
+				{
+					var needFetch = true;
+					while (needFetch)
+					{
+						var sdrnsSensorQuery = _sdrnsDataLayer.GetBuilder<ES_SD.ISensorLocation>()
+							.From()
+							.Select(c => c.Id)
+							.Select(c => c.Lon)
+							.Select(c => c.Lat)
+							.Select(c => c.SENSOR.Id)
+							.Select(c => c.Asl)
+							.Select(c => c.DateCreated)
+							.Select(c => c.DateFrom)
+							.Select(c => c.DateTo)
+							.Select(c => c.Status)
+							.Where(c => c.SENSOR.Id, ConditionOperator.IsNotNull)
+							.OrderByAsc(c => c.Id)
+							.Paginate(offsetRows, fetchRows);
+
+						needFetch = sdrnsDbScope.Executor.ExecuteAndFetch(sdrnsSensorQuery, reader =>
+						{
+							var result = false;
+							while (reader.Read())
+							{
+								++offsetRows;
+								result = true;
+
+								var created = this.SynchronizeSensorLocation(infocDbScope, reader);
+								if (created)
+								{
+									++createdCount;
+								}
+								else
+								{
+									++updatedCount;
+								}
+							}
+
+							return result;
+						});
+					}
+
+				}
+				catch (Exception e)
+				{
+					_logger.Exception(Contexts.ThisComponent, Categories.Synchronization, e, this);
+					statusNote = e.Message;
+					statusCode = ES_IC.IntegrationStatusCode.Aborted;
+				}
+				finally
+				{
+					var total =
+						$"Read={offsetRows}, Created={createdCount}, Updated={updatedCount}";
+
+					_integrationService.Finish(token, statusCode, statusNote, total, syncKey);
+				}
+			}
+		}
+
+		private bool SynchronizeSensorLocation(IDataLayerScope infocDbScope, IDataReader<ES_SD.ISensorLocation> sourceReader)
+		{
+			var id = sourceReader.GetValue(c => c.Id);
+
+			var existsQuery = _infocDataLayer.GetBuilder<ES_IC.SdrnServer.ISensorLocation>()
+				.From()
+				.Select(c => c.Id)
+				.Where(c => c.Id, ConditionOperator.Equal, id);
+
+			var exists = infocDbScope.Executor.ExecuteAndFetch(existsQuery, reader => reader.Read());
+
+			if (exists)
+			{
+				var updQuery = _infocDataLayer.GetBuilder<ES_IC.SdrnServer.ISensorLocation>()
+					.Update()
+					.SetValue(c => c.Lon, sourceReader.GetValue(c => c.Lon))
+					.SetValue(c => c.Lat, sourceReader.GetValue(c => c.Lat))
+					.SetValue(c => c.DateCreated, sourceReader.GetValue(c => c.DateCreated))
+					//.SetValue(c => c.SENSOR.Id, sourceReader.GetValue(c => c.SENSOR.Id))
+					.SetValue(c => c.DateFrom, sourceReader.GetValue(c => c.DateFrom))
+					.SetValue(c => c.DateTo, sourceReader.GetValue(c => c.DateTo))
+					.SetValue(c => c.Status, sourceReader.GetValue(c => c.Status))
+					.SetValue(c => c.Asl, sourceReader.GetValue(c => c.Asl))
+					.Where(c => c.Id, ConditionOperator.Equal, id);
+
+				infocDbScope.Executor.Execute(updQuery);
+
+				return false;
+			}
+			else
+			{
+				var insQuery = _infocDataLayer.GetBuilder<ES_IC.SdrnServer.ISensorLocation>()
+					.Insert()
+					.SetValue(c => c.Id, id)
+					.SetValue(c => c.Lon, sourceReader.GetValue(c => c.Lon))
+					.SetValue(c => c.Lat, sourceReader.GetValue(c => c.Lat))
+					.SetValue(c => c.DateCreated, sourceReader.GetValue(c => c.DateCreated))
+					.SetValue(c => c.SENSOR.Id, sourceReader.GetValue(c => c.SENSOR.Id))
+					.SetValue(c => c.DateFrom, sourceReader.GetValue(c => c.DateFrom))
+					.SetValue(c => c.DateTo, sourceReader.GetValue(c => c.DateTo))
+					.SetValue(c => c.Status, sourceReader.GetValue(c => c.Status))
+					.SetValue(c => c.Asl, sourceReader.GetValue(c => c.Asl));
+
+				infocDbScope.Executor.Execute(insQuery);
+
+				return true;
+			}
 		}
 
 		private void SynchronizeStationMonitoring(IDataLayerScope infocDbScope, IDataLayerScope sdrnsDbScope)
@@ -171,7 +1028,9 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration.SdrnServer
 			var sdrnsReadResultQuery = _sdrnsDataLayer.GetBuilder<ES_SD.IResMeas>()
 					.From()
 					.Select(c => c.Id)
+
 					.Select(c => c.TimeMeas)
+					.Select(c => c.SUBTASK_SENSOR.SENSOR.Id)
 					.Select(c => c.SUBTASK_SENSOR.SENSOR.Name)
 					.Select(c => c.SUBTASK_SENSOR.SENSOR.Title)
 					// движимся по идентификаторам, последовательно по возрастанию
@@ -195,6 +1054,7 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration.SdrnServer
 						{
 							Id = reader.GetValue(c => c.Id),
 							MeasTime = measTime.Value,
+							SensorId = reader.GetValue(c => c.SUBTASK_SENSOR.SENSOR.Id),
 							SensorName = reader.GetValue(c => c.SUBTASK_SENSOR.SENSOR.Name),
 							SensorTitle = reader.GetValue(c => c.SUBTASK_SENSOR.SENSOR.Title)
 						});
@@ -232,6 +1092,10 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration.SdrnServer
 						.SetValue(c => c.SensorTitle, sdrnMeasResult.SensorTitle)
 						.SetValue(c => c.STATS.GsidCount, 0)
 					;
+				if (sdrnMeasResult.SensorId.HasValue)
+				{
+					insQuery.SetValue(c => c.SENSOR.Id, sdrnMeasResult.SensorId.Value);
+				}
 				infocDbScope.Executor.Execute(insQuery);
 
 				// читаем постранично одним потоком две сущности

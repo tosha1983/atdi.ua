@@ -63,7 +63,8 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                 c => c.CorrelationThresholdHard,
                 c => c.CorrelationThresholdWeak,
                 c => c.InfocMeasResults,
-                c => c.StationIds
+                c => c.StationIds,
+                c => c.Contours
 
             ).Filter(f => f.TASK.Id, DataModels.Api.EntityOrm.WebClient.FilterOperator.Equal, TaskId);
         }
@@ -112,7 +113,8 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                 CorrelationThresholdHard = reader.GetValue(c => c.CorrelationThresholdHard),
                 CorrelationThresholdWeak = reader.GetValue(c => c.CorrelationThresholdWeak),
                 InfocMeasResults = reader.GetValue(c => c.InfocMeasResults),
-                StationIds = reader.GetValue(c => c.StationIds)
+                StationIds = reader.GetValue(c => c.StationIds),
+                Contours  = reader.GetValue(c => c.Contours)
             };
         }
     }

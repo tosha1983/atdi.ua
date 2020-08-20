@@ -16,6 +16,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks
 	[Entity]
 	public interface IStationCalibrationStaResult : IStationCalibrationStaResult_PK
     {
+        IStationCalibrationResult CALCRESULTS_STATION_CALIBRATION { get; set; }
         long CalibrationResultId { get; set; }
         long StationMonitoringId { get; set; }
         string ExternalSource { get; set; }

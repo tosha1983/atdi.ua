@@ -11,6 +11,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Atdi.Api.EntityOrm.WebClient
 {
@@ -131,6 +132,31 @@ namespace Atdi.Api.EntityOrm.WebClient
 				if (type == typeof(ulong) || type == typeof(ulong?))
 				{
 					return (TValue)(object)Convert.ToUInt64(value);
+				}
+
+				if (type == typeof(long[]) )
+				{
+					return (TValue)(object)((JArray)value).ToObject<long[]>();
+				}
+				if (type == typeof(int[]))
+				{
+					return (TValue)(object)((JArray)value).ToObject<int[]>();
+				}
+				if (type == typeof(string[]))
+				{
+					return (TValue)(object)((JArray)value).ToObject<string[]>();
+				}
+				if (type == typeof(decimal[]))
+				{
+					return (TValue)(object)((JArray)value).ToObject<decimal[]>();
+				}
+				if (type == typeof(float[]))
+				{
+					return (TValue)(object)((JArray)value).ToObject<float[]>();
+				}
+				if (type == typeof(double[]))
+				{
+					return (TValue)(object)((JArray)value).ToObject<double[]>();
 				}
 
 				return (TValue) value;

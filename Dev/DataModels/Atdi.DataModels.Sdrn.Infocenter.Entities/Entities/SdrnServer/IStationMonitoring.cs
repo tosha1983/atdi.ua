@@ -28,6 +28,8 @@ namespace Atdi.DataModels.Sdrn.Infocenter.Entities.SdrnServer
 		string SensorTitle { get; set; }
 
 		IStationMonitoringStats STATS { get; set; }
+
+		ISensor SENSOR { get; set; }
 	}
 
 	public enum StationMonitoringStatusCode

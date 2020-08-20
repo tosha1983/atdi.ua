@@ -1,0 +1,63 @@
+﻿CREATE TABLE CALC.REF_SPECTRUM_BY_DRIVE_TESTS_ARGS
+(
+  RESULT_ID           NUMBER(15)                NOT NULL,
+  TASK_ID             NUMBER(15)                NOT NULL,
+  COMMENTS NVARCHAR2(2000)  ,
+  POWER  NUMBER(22,8)       ,
+  STATION_IDS  BLOB        ,
+  SENSOR_IDS  BLOB        
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE UNIQUE INDEX CALC.REF_SPECTRUM_BY_DRIVE_TESTS_ARGS_PK ON CALC.REF_SPECTRUM_BY_DRIVE_TESTS_ARGS
+(TASK_ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+ALTER TABLE CALC.REF_SPECTRUM_BY_DRIVE_TESTS_ARGS ADD (
+  CONSTRAINT REF_SPECTRUM_BY_DRIVE_TESTS_ARGS_PK
+ PRIMARY KEY
+ (TASK_ID)
+    USING INDEX 
+    TABLESPACE USERS
+    PCTFREE    10
+    INITRANS   2
+    MAXTRANS   255
+    STORAGE    (
+                INITIAL          64K
+                NEXT             1M
+                MINEXTENTS       1
+                MAXEXTENTS       UNLIMITED
+                PCTINCREASE      0
+               ));

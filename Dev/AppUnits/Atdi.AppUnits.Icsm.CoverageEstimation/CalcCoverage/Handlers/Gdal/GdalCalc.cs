@@ -11,7 +11,7 @@ using System.IO;
 using OSGeo.GDAL;
 using Atdi.Platform.Logging;
 using Atdi.AppUnits.Icsm.CoverageEstimation.Models;
-
+using Atdi.AppUnits.Icsm.CoverageEstimation.Localization;
 
 
 namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
@@ -19,12 +19,13 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
 
     public class GdalCalc
     {
-        private const int MaxCountThreadFilesForFinalCoverage = 250;
-        private const int MaxCountThreadFilesForConcatBlank = 50;
         private static int[,] grayMatrixGlobal { get; set; }
         private ILogger _logger { get; set; }
-        public GdalCalc(ILogger logger)
+        private AppServerComponentConfig _appServerComponentConfig { get; set; }
+
+        public GdalCalc(AppServerComponentConfig appServerComponentConfig, ILogger logger)
         {
+            this._appServerComponentConfig = appServerComponentConfig;
             this._logger = logger;
             GdalConfiguration.ConfigureGdal();
             Gdal.AllRegister();
@@ -38,13 +39,13 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
             var words = File.ReadAllText(fileTFWBlank).Split(new char[] { '\t', '\n', '\r', ' ' }, StringSplitOptions.RemoveEmptyEntries);
             if (words == null)
             {
-                throw new InvalidOperationException($"File '{TiffFile}' is null content");
+                throw new InvalidOperationException($"{CLocaliz.TxT("File")}  '{TiffFile}' {CLocaliz.TxT("is null content")}");
             }
             else
             {
                 if (words.Length != 6)
                 {
-                    throw new InvalidOperationException($"Incorrect TFW file '{fileTFWBlank}'");
+                    throw new InvalidOperationException($"{CLocaliz.TxT("Incorrect TFW file")} '{fileTFWBlank}'");
                 }
                 else
                 {
@@ -71,12 +72,12 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                 }
                 else
                 {
-                    throw new InvalidOperationException($"Incorrect TFWParameter's");
+                    throw new InvalidOperationException(CLocaliz.TxT("Incorrect TFWParameter's"));
                 }
             }
             else
             {
-                throw new InvalidOperationException($"Incorrect TFWParameter.Step = '{tFWParameterBlank.Step}'");
+                throw new InvalidOperationException($"{CLocaliz.TxT("Incorrect TFWParameter.Step =")} '{tFWParameterBlank.Step}'");
             }
             return coordinate;
         }
@@ -190,7 +191,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                 var proj = image.GetProjection();
 
 
-                var lstFiles = BreakDown(files, MaxCountThreadFilesForConcatBlank);
+                var lstFiles = BreakDown(files, this._appServerComponentConfig.MaxCountThreadFilesForConcatBlank);
                 for (int j = 0; j < lstFiles.Count; j++)
                 {
                     var filesSource = lstFiles[j];
@@ -213,7 +214,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                     for (int i = 0; i < listThreads.Length; i++)
                     {
                         listThreads[i].Join();
-                        this._logger.Info(Contexts.CalcCoverages, string.Format(Events.OperationSaveTempCovarageFileCompleted.ToString(), filesSource[i]));
+                        this._logger.Info(Contexts.CalcCoverages, string.Format(CLocaliz.TxT(Events.OperationSaveTempCovarageFileCompleted.ToString()), filesSource[i]));
                     }
                 }
                 image.Dispose();
@@ -299,7 +300,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                             }
                             outImage.FlushCache();
                             isSuccessCreateFiles = true;
-                            this._logger.Info(Contexts.CalcCoverages, string.Format(Events.OperationSaveTempCovarageFileCompleted.ToString(), tempCoverageFile));
+                            this._logger.Info(Contexts.CalcCoverages, string.Format(CLocaliz.TxT(Events.OperationSaveTempCovarageFileCompleted.ToString()), tempCoverageFile));
                         }
                         GC.Collect();
                     }
@@ -455,7 +456,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                         }
                         outImage.FlushCache();
                         isSuccessCreateFile = true;
-                        this._logger.Info(Contexts.CalcCoverages, string.Format(Events.OperationSaveFinalCovarageFileCompleted.ToString(), outPutFileName));
+                        this._logger.Info(Contexts.CalcCoverages, string.Format(CLocaliz.TxT(Events.OperationSaveFinalCovarageFileCompleted.ToString()), outPutFileName));
                     }
                 }
             }
@@ -513,7 +514,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
         {
             grayMatrixGlobal = new int[heightValue, widthValue];
             var filesSources = Directory.GetFiles(Path.GetDirectoryName(dataConfig.DirectoryConfig.TempTIFFFilesDirectory), "*_out.TIF");
-            var lstFiles = BreakDown(filesSources, MaxCountThreadFilesForFinalCoverage);
+            var lstFiles = BreakDown(filesSources, this._appServerComponentConfig.MaxCountThreadFilesForFinalCoverage);
             for (int j = 0; j < lstFiles.Count; j++)
             {
                 var filesSource = lstFiles[j];
@@ -530,7 +531,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                 for (int i = 0; i < listThreads.Length; i++)
                 {
                     listThreads[i].Join();
-                    this._logger.Info(Contexts.CalcCoverages, string.Format(Events.OperationSaveTempCovarageFileCompleted.ToString(), filesSource[i])+$" count = {cnt}");
+                    this._logger.Info(Contexts.CalcCoverages, string.Format(CLocaliz.TxT(Events.OperationSaveTempCovarageFileCompleted.ToString()), filesSource[i])+$" count = {cnt}");
                     cnt++;
                 }
             }
@@ -745,7 +746,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                     }
                 }
             }
-            this._logger.Info(Contexts.CalcCoverages, Events.ClearFilesFromTempTIFFFilesDirectory);
+            this._logger.Info(Contexts.CalcCoverages, CLocaliz.TxT(Events.ClearFilesFromTempTIFFFilesDirectory.ToString()));
         }
 
 
@@ -769,7 +770,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                     }
                 }
             }
-            this._logger.Info(Contexts.CalcCoverages, Events.ClearFilesFromICSTelecomProjectDir);
+            this._logger.Info(Contexts.CalcCoverages,CLocaliz.TxT(Events.ClearFilesFromICSTelecomProjectDir.ToString()));
         }
 
         /*

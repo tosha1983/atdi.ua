@@ -14,5 +14,6 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
         public CorellationParameters CorellationParameters;
         public CalibrationParameters CalibrationParameters;
         public GeneralParameters GeneralParameters;
+        public ContextStation GSIDGroupeStation;
     }
 }

@@ -67,6 +67,10 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                   {
                      query.SetValue(c => c.StationIds, commandParameters.StationIds);
                   }
+                 if (commandParameters.Contours != null)
+                 {
+                    query.SetValue(c => c.Contours, commandParameters.Contours);
+                 }
                  if (commandParameters.InfocMeasResults != null)
                  {
                      query.SetValue(c => c.InfocMeasResults, commandParameters.InfocMeasResults);

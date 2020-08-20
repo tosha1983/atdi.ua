@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "TestEntityRef2"
+  Title       = "Test Abstract Entity"
+  Desc        = ""
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>TEST_ENTITY_REF_2</Name>
+    <Schema>CORE</Schema>
+  </DataSource>
+  <Fields>
+    
+    <Field Name="Ref2PkId1" DataType="Counter.64" SourceName="REF_2_PK_ID_1" SourceType="Column" Desc="" Title="Abs Pk Id 1"/>
+    <Field Name="Ref2PkId2" DataType="Counter.Guid" SourceName="REF_2_PK_ID_2" SourceType="Column" Desc="" Title="Abs Pk Id 2"/>
+    <Field Name="Ref2PkId3" DataType="Counter.DateTimeOffset" SourceName="REF_2_PK_ID_3" SourceType="Column" Desc="" Title="Abs Pk Id 3"/>
+
+    <Field Name="Ref2Field1" DataType="Text.10" SourceName="REF_2_FLD_1" SourceType="Column" Desc="" Title="Abs Field 1"/>
+    <Field Name="Ref2Field2" DataType="Text.10" SourceName="REF_2_FLD_2" SourceType="Column" Desc="" Title="Abs Field 2"/>
+    <Field Name="Ref2Field3" DataType="Text.10" SourceName="REF_2_FLD_3" SourceType="Column" Desc="" Title="Abs Field 3"/>
+
+    <Field Name="REFTO3" SourceName="TestEntityRef3" SourceType="Reference" Title="Refernce to 3" Required="true">
+      <PrimaryKeyMapping>
+        <Mapped KeyFieldName="Ref3PkId1" MatchWith="SourceName">MAP_REFTO3_REF_3_PK_ID_1</Mapped>
+        <Mapped KeyFieldName="Ref3PkId2" MatchWith="SourceName">MAP_REFTO3_REF_3_PK_ID_2</Mapped>
+        <Mapped KeyFieldName="Ref3PkId3" MatchWith="SourceName">MAP_REFTO3_REF_3_PK_ID_3</Mapped>
+      </PrimaryKeyMapping>
+    </Field>
+    
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Ref2PkId1"/>
+    <FieldRef Name="Ref2PkId2"/>
+    <FieldRef Name="Ref2PkId3"/>
+  </PrimaryKey>
+</Entity>

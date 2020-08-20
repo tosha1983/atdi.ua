@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\CalcServer\IObservedTask.cs" />
     <Compile Include="Entities\ICluttersDesc.cs" />
     <Compile Include="Entities\ICluttersDescFreqClutter.cs" />
     <Compile Include="Entities\ICluttersDescFreq.cs" />
@@ -50,6 +51,12 @@
     <Compile Include="Entities\SdrnServer\IDriveRoute.cs" />
     <Compile Include="Entities\SdrnServer\IDriveTest.cs" />
     <Compile Include="Entities\SdrnServer\IDriveTestPoints.cs" />
+    <Compile Include="Entities\SdrnServer\ISensor.cs" />
+    <Compile Include="Entities\SdrnServer\ISensorAntenna.cs" />
+    <Compile Include="Entities\SdrnServer\ISensorAntennaPattern.cs" />
+    <Compile Include="Entities\SdrnServer\ISensorEquipment.cs" />
+    <Compile Include="Entities\SdrnServer\ISensorLocation.cs" />
+    <Compile Include="Entities\SdrnServer\ISensorEquipmentSensitivity.cs" />
     <Compile Include="Entities\SdrnServer\IStationMonitoring.cs" />
     <Compile Include="Entities\SdrnServer\IStationMonitoringStats.cs" />
     <Compile Include="Entities\Stations\IGlobalIdentity.cs" />
@@ -59,6 +66,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="DataLayer\Oracle\ChangeLogs\rev.000.sql" />
+    <Content Include="DataLayer\Oracle\ChangeLogs\rev.001.sql" />
     <Content Include="DataLayer\Oracle\Functions\STATIONS.GetID.sql" />
     <Content Include="DataLayer\Oracle\Functions\SDRNSVR.GetID.sql" />
     <Content Include="DataLayer\Oracle\Functions\INFOC.GetID.sql" />
@@ -91,6 +100,8 @@
     <Content Include="DataLayer\Oracle\Tables\SDRNSVR.DRIVE_TESTS_POINTS.sql" />
     <Content Include="DataLayer\Oracle\Tables\SDRNSVR.SM_MEAS_RESULTS.sql" />
     <Content Include="DataLayer\Oracle\Tables\SDRNSVR.SM_MEAS_RESULTS_STATS.sql" />
+    <Content Include="DataLayer\SqlServer\ChangeLogs\rev.000.sql" />
+    <Content Include="DataLayer\SqlServer\ChangeLogs\rev.001.sql" />
     <Content Include="DataLayer\SqlServer\Tables\[SDRNSVR].[DRIVE_ROUTES].sql" />
     <Content Include="DataLayer\SqlServer\Tables\[STATIONS].[GLOBAL_IDENTITIES].sql" />
     <Content Include="DataLayer\SqlServer\Tables\[INFOC].[INTEGRATION_LOG].sql" />
@@ -105,7 +116,14 @@
     <Content Include="DataLayer\SqlServer\Tables\[SDRNSVR].[DRIVE_TESTS].sql" />
     <Content Include="DataLayer\SqlServer\Tables\[SDRNSVR].[SM_MEAS_RESULTS_STATS].sql" />
     <Content Include="DataLayer\SqlServer\Tables\[SDRNSVR].[SM_MEAS_RESULTS].sql" />
+    <Content Include="Metadata\Entities\CalcServer\ObservedTask.xml" />
     <Content Include="Metadata\Entities\SdrnServer\DriveRoute.xml" />
+    <Content Include="Metadata\Entities\SdrnServer\Sensor.xml" />
+    <Content Include="Metadata\Entities\SdrnServer\SensorAntenna.xml" />
+    <Content Include="Metadata\Entities\SdrnServer\SensorAntennaPattern.xml" />
+    <Content Include="Metadata\Entities\SdrnServer\SensorEquipment.xml" />
+    <Content Include="Metadata\Entities\SdrnServer\SensorLocation.xml" />
+    <Content Include="Metadata\Entities\SdrnServer\SensorEquipmentSensitivity.xml" />
     <Content Include="Metadata\Entities\Stations\GlobalIdentity.xml" />
     <Content Include="Metadata\DataTypes\ClrObject\CT.Object.xml" />
     <Content Include="Metadata\DataTypes\ClrObject\CT.ReadOnlyDictionary.String.String.xml" />

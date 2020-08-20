@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "SensorAntenna"
+  Title       = "SensorAntenna"
+  Desc        = "The sensor antenna from SDRN Server"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>SENSOR_ANTENNAS</Name>
+    <Schema>SDRNSVR</Schema>
+  </DataSource>
+  <Fields>
+    <Field Name="Id" Desc="Id" Title="Id" DataType="Integer.64" SourceName="ID" SourceType="Column"/>
+    <Field Name="Code"  Desc="Code of Antenna" Title="Code of Antenna" DataType="Text.50" SourceName="CODE" SourceType="Column" Required="false"/>
+    <Field Name="Manufacturer" Desc="Manufacturer" Title="Manufacturer" DataType="Text.50" SourceName="MANUFACTURER" SourceType="Column" Required="false"/>
+    <Field Name="Name" Desc="Name of antenna" Title="Name of antenna" DataType="Text.50" SourceName="NAME" SourceType="Column" Required="false"/>
+    <Field Name="TechId" Desc="Technical ID" Title="Technical ID" DataType="Text.150" SourceName="TECHID" SourceType="Column" Required="false"/>
+    <Field Name="AntDir" Desc="Directional of antenna D - directional, ND - not directional" Title="Directional of antenna D - directional, ND - not directional" DataType="Text.50" SourceName="ANTDIR" SourceType="Column" Required="false"/>
+    <Field Name="HbeamWidth" Desc="Horizontal Beamwidth, degree" Title="Horizontal Beamwidth, degree" DataType="Double.30.10" SourceName="HBEAMWIDTH" SourceType="Column" Required="false" Unit="Angle.Degree"/>
+    <Field Name="VbeamWidth" Desc="Vertical Beamwidth, degree" Title="Vertical Beamwidth, degree" DataType="Double.30.10" SourceName="VBEAMWIDTH" SourceType="Column" Required="false" Unit="Angle.Degree"/>
+    <Field Name="Polarization" Desc="Polarization V, H, M" Title="Polarization V, H, M" DataType="Text.50" SourceName="POLARIZATION" SourceType="Column" Required="false"/>
+    <Field Name="GainType"  Desc="Type of Gain D - dipole, V -vertical, I - isotropic" Title="Type of Gain D - dipole, V -vertical, I - isotropic" DataType="Text.50" SourceName="GAINTYPE" SourceType="Column" Required="false"/>
+    <Field Name="GainMax" Desc="Maximum gain of antenna, dB" Title="Maximum gain of antenna, dB" DataType="Double.30.10" SourceName="GAINMAX" SourceType="Column" Required="false" Unit="Power.dB"/>
+    <Field Name="LowerFreq" Desc="Lower Frequency, MHz" Title="Lower Frequency, MHz" DataType="Double.30.10" SourceName="LOWERFREQ" SourceType="Column" Required="false" Unit="Frequency.MHz"/>
+    <Field Name="UpperFreq" Desc="Upper Frequency, MHz" Title="Upper Frequency, MHz" DataType="Double.30.10" SourceName="UPPERFREQ" SourceType="Column" Required="false" Unit="Frequency.MHz"/>
+    <Field Name="AddLoss" Desc="Additional loss, dB" Title="Additional loss, dB" DataType="Double.30.10" SourceName="ADDLOSS" SourceType="Column" Required="false" Unit="Power.dB"/>
+    <Field Name="Xpd" Desc="XPD, dB" Title="XPD, dB" DataType="Double.30.10" SourceName="XPD" SourceType="Column" Required="false" Unit="Power.dB"/>
+    <Field Name="SENSOR" SourceName="Atdi.DataModels.Sdrn.Infocenter.Entities.SdrnServer.Sensor" SourceType="Reference" Required="true" Desc="" Title="Relation SensorAntenna to Sensor"/>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>

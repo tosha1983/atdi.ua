@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "ResMeas"
+  Title       = "ResMeas"
+  Desc        = "The ResMeas"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>RES_MEAS</Name>
+    <Schema>ICSC</Schema>
+  </DataSource>
+  <Fields>
+    <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column" Required="true"/>
+    <Field Desc="AntVal" Title="AntVal" Name="AntVal" DataType="Double.30.10" SourceName="ANTVAL" SourceType="Column" Required="false"/>
+    <Field Desc="TimeMeas" Title="TimeMeas" Name="TimeMeas" DataType="DateTime" SourceName="TIME_MEAS" SourceType="Column" Required="false"/>
+    <Field Desc="DataRank" Title="DataRank" Name="DataRank" DataType="Integer.32" SourceName="DATA_RANK" SourceType="Column" Required="false"/>
+    <Field Desc="N" Title="N" Name="N" DataType="Integer.32" SourceName="N" SourceType="Column" Required="false"/>
+    <Field Desc="Status" Title="Status" Name="Status" DataType="Text.50" SourceName="STATUS" SourceType="Column" Required="false"/>
+    <Field Desc="MeasResultSID" Title="TypeMeasurements" Name="MeasResultSID" DataType="Text.50" SourceName="MEAS_SDR_RESULT_SID" SourceType="Column" Required="false"/>
+    <Field Desc="TypeMeasurements" Title="TypeMeasurements" Name="TypeMeasurements" DataType="Text.450" SourceName="TYPE_MEASUREMENTS" SourceType="Column" Required="false"/>
+    <Field Desc="Synchronized" Title="Synchronized" Name="Synchronized" DataType="Boolean" SourceName="SYNCHRONIZED" SourceType="Column" Required="true"/>
+    <Field Desc="StartTime" Title="StartTime" Name="StartTime" DataType="DateTime" SourceName="START_TIME" SourceType="Column" Required="false"/>
+    <Field Desc="StopTime" Title="StopTime" Name="StopTime" DataType="DateTime" SourceName="STOP_TIME" SourceType="Column" Required="false"/>
+    <Field Desc="ScansNumber" Title="ScansNumber" Name="ScansNumber" DataType="Integer.32" SourceName="SCANS_NUMBER" SourceType="Column" Required="false"/>
+    <Field Name="SUBTASK_SENSOR" SourceType="Reference" SourceName="SubTaskSensor" Title="Relation ResMeas to SubTaskSensor"/>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>

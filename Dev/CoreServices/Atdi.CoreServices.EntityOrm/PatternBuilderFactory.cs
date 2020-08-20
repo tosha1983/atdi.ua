@@ -20,7 +20,7 @@ namespace Atdi.CoreServices.EntityOrm
         private readonly IStatisticCounter _entityHitsCounter;
         private readonly IStatisticCounter _entityErrorsCounter;
 
-        public PatternBuilderFactory(IEntityOrm entityOrm, DataTypeSystem dataTypeSystem, IStatistics statistics,  ILogger logger)
+        public PatternBuilderFactory(DataTypeSystem dataTypeSystem, IStatistics statistics,  ILogger logger)
             : base(logger)
         {
             this._statistics = statistics;
@@ -29,10 +29,10 @@ namespace Atdi.CoreServices.EntityOrm
 
             this._builders = new Dictionary<Type, QueryPatterns.IPatternBuilder>
             {
-                [typeof(QueryInsertStatement)] = new QueryPatterns.InsertPatternBuilder(entityOrm, dataTypeSystem, statistics, logger),
-                [typeof(QuerySelectStatement)] = new QueryPatterns.SelectPatternBuilder(entityOrm, dataTypeSystem, statistics, logger),
-                [typeof(QueryUpdateStatement)] = new QueryPatterns.UpdatePatternBuilder(entityOrm, dataTypeSystem, statistics, logger),
-                [typeof(QueryDeleteStatement)] = new QueryPatterns.DeletePatternBuilder(entityOrm, dataTypeSystem, statistics, logger)
+                [typeof(QueryInsertStatement)] = new QueryPatterns.InsertPatternBuilder(dataTypeSystem, statistics, logger),
+                [typeof(QuerySelectStatement)] = new QueryPatterns.SelectPatternBuilder(dataTypeSystem, statistics, logger),
+                [typeof(QueryUpdateStatement)] = new QueryPatterns.UpdatePatternBuilder(dataTypeSystem, statistics, logger),
+                [typeof(QueryDeleteStatement)] = new QueryPatterns.DeletePatternBuilder(dataTypeSystem, statistics, logger)
             };
 
             logger.Verbouse(Contexts.EntityOrm, Categories.Creation, Events.ObjectWasCreated.With("PatternBuilderFactory"));

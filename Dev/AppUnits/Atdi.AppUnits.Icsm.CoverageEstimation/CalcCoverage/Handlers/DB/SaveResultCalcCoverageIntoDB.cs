@@ -12,7 +12,7 @@ using Atdi.DataModels.DataConstraint;
 using Atdi.Platform.Logging;
 using Atdi.Contracts.CoreServices.DataLayer;
 using Atdi.Contracts.LegacyServices.Icsm;
-
+using Atdi.AppUnits.Icsm.CoverageEstimation.Localization;
 
 namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
 {
@@ -81,7 +81,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                this._queryExecutor.Execute(insertDocLink);
 
 
-               this._logger.Info(Contexts.CalcCoverages, string.Format(Events.OperationSaveImageFileCompleted.ToString(), this._imageFile));
+               this._logger.Info(Contexts.CalcCoverages, string.Format(CLocaliz.TxT(Events.OperationSaveImageFileCompleted.ToString()), this._imageFile));
                return true;
             }
             else
