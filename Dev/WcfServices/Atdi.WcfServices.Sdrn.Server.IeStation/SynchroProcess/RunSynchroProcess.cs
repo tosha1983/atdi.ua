@@ -1339,21 +1339,22 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
             for (int i = 0; i < numOfIterations; i++)
             {
                 var corrEmittingBuffer = new EmittingDataToSort();
-                double levelDifference_dB = stationsDataToCorrespondList[i].Level_dBm - emittingsDataToCorrespondList[i].CurrentPower_dBm;
+                double levelDifference_dB = Math.Abs(stationsDataToCorrespondList[i].Level_dBm - emittingsDataToCorrespondList[i].CurrentPower_dBm);
                 //возожно следует внести в конфиг, DifferenceBetweenStationAndEmittingLevel_dB = -30
-                if (levelDifference_dB < -30)
+                double differenceBetweenStationAndEmittingLevel_dB = 70;
+                if (levelDifference_dB < differenceBetweenStationAndEmittingLevel_dB)
                 {
                     for (int j = i; j < numOfIterations; j++)
                     {
                         levelDifference_dB = stationsDataToCorrespondList[i].Level_dBm - emittingsDataToCorrespondList[j].CurrentPower_dBm;
-                        if (levelDifference_dB > -30)
+                        if (levelDifference_dB > differenceBetweenStationAndEmittingLevel_dB)
                         {
                             corrEmittingBuffer = emittingsDataToCorrespondList[i];
                             emittingsDataToCorrespondList[i] = emittingsDataToCorrespondList[j];
                             emittingsDataToCorrespondList[j] = corrEmittingBuffer;
                             break;
                         }
-                        else if ((levelDifference_dB < -30) && (j == numOfIterations - 1))
+                        else if ((levelDifference_dB < differenceBetweenStationAndEmittingLevel_dB) && (j == numOfIterations - 1))
                         {
                                                            
                             stationsDataToCorrespondList.RemoveRange(i, 1);
