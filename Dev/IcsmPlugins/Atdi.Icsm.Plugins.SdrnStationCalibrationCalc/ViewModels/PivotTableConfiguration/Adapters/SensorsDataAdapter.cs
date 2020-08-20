@@ -12,7 +12,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.PivotTableConf
 {
     public sealed class SensorsDataAdapter : EntityDataAdapter<CS_ES.ISensor, SensorModel>
     {
-        public long[] SensorIds;
+        //public long[] SensorIds;
         public SensorsDataAdapter(InfocenterDataLayer dataLayer, ILogger logger) : base(dataLayer.Origin, logger)
         {
         }
@@ -31,7 +31,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.PivotTableConf
                 c => c.Agl,
                 c => c.RxLoss,
                 c => c.TechId)
-                .Filter(f => f.Id, DataModels.Api.EntityOrm.WebClient.FilterOperator.In, SensorIds)
+                //.Filter(f => f.Id, DataModels.Api.EntityOrm.WebClient.FilterOperator.In, SensorIds)
                 .Distinct();
         }
         protected override SensorModel ReadData(IDataReader<CS_ES.ISensor> reader, int index)

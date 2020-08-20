@@ -243,16 +243,47 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                     var sensor = _sensorParameters.ToList().Find(x => x.SensorId == sensorIds[i]);
                     if (sensor == null)
                     {
+                        this._logger.Info(Contexts.ThisComponent, $"For sensor id = {sensorIds[i]} not find additional parameters!");
                         continue;
                     }
+                    if ((sensor.Coordinate.X == 0) && (sensor.Coordinate.Y == 0))
+                    {
+                        this._logger.Info(Contexts.ThisComponent, $"Sensor id = {sensor.SensorId} contain is null coordinate! ");
+                        continue;
+                    }
+
+                    //sensor.RxFeederLoss_dB = 0;
+                    if (sensor.SensorAntennaHeight_m == 0)
+                    {
+                        sensor.SensorAntennaHeight_m = 75;
+                    }
+
                     for (int j = 0; j < freqs_MHz.Length; j++)
                     {
                         var idSensor = FindSensor(freqs_MHz[j], sensor.SensorAntennas);
                         if (idSensor==null)
                         {
+                            this._logger.Info(Contexts.ThisComponent, $"idSensor not found");
                             continue;
                         }
                         var fndSensorAntennas = sensor.SensorAntennas[idSensor.Value];
+                        if (fndSensorAntennas == null)
+                        {
+                            this._logger.Info(Contexts.ThisComponent, $"SensorAntennas not found for idSensor = {idSensor.Value}");
+                            continue;
+                        }
+                        //fndSensorAntennas.Azimuth_deg = 0;
+                        //fndSensorAntennas.Gain_dB = 0;
+                        //fndSensorAntennas.Tilt_deg = 0;
+
+                        if (fndSensorAntennas.Freq_MHz == 0)
+                        {
+                            fndSensorAntennas.Freq_MHz = 1000;
+                        }
+                        if (fndSensorAntennas.XPD_dB == 0)
+                        {
+                            fndSensorAntennas.XPD_dB = 25;
+                        }
 
                         var lstReceivedPowerCalcResult = new List<ReceivedPowerCalcResult>();
                         for (int k = 0; k < this._refSpectrumStationCalibrations.Length;)
@@ -268,6 +299,19 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                             else
                             {
                                 var contextStation = refSpectrumStation.contextStation;
+
+                                //contextStation.Antenna.Azimuth_deg = 0;
+                                //contextStation.Antenna.Freq_MHz = 1000;
+                                //contextStation.Antenna.Gain_dB = 0;
+                                //contextStation.Antenna.Tilt_deg = 0;
+                                //contextStation.Antenna.XPD_dB = 25;
+
+                                //sensor.Coordinate  - if null - ERROR
+
+                              
+
+
+
 
                                 var wgs84Coordinate = new Wgs84Coordinate()
                                 {
@@ -1099,6 +1143,42 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                             }
                             return true;
                         });
+
+
+                        if (lstSensorStationAntenna.Count == 0)
+                        {
+                            var sensorAntenna = new DataModels.Sdrn.DeepServices.RadioSystem.Stations.StationAntenna();
+                            sensorAntenna = new DataModels.Sdrn.DeepServices.RadioSystem.Stations.StationAntenna();
+                            sensorAntenna.Gain_dB = 0;
+                            sensorAntenna.XPD_dB = 25;
+                            sensorAntenna.Azimuth_deg = 0;
+                            sensorAntenna.Tilt_deg = 0;
+                            sensorAntenna.Freq_MHz = 1000;
+
+                            // HH
+                            sensorAntenna.HhPattern = new DataModels.Sdrn.DeepServices.RadioSystem.Stations.StationAntennaPattern();
+                            sensorAntenna.HhPattern.Loss_dB = new float[2] { 0, 0 };
+                            sensorAntenna.HhPattern.Angle_deg = new double[2] { 0, 350 };
+
+                            // HV
+                            sensorAntenna.HvPattern = new DataModels.Sdrn.DeepServices.RadioSystem.Stations.StationAntennaPattern();
+                            sensorAntenna.HvPattern.Loss_dB = new float[2] { 0, 0 };
+                            sensorAntenna.HvPattern.Angle_deg = new double[2] { 0, 350 };
+
+                            // VH
+
+                            sensorAntenna.VhPattern = new DataModels.Sdrn.DeepServices.RadioSystem.Stations.StationAntennaPattern();
+                            sensorAntenna.VhPattern.Loss_dB = new float[2] { 0, 0 };
+                            sensorAntenna.VhPattern.Angle_deg = new double[2] { -90, 90 };
+
+                            // VV
+                            sensorAntenna.VvPattern = new DataModels.Sdrn.DeepServices.RadioSystem.Stations.StationAntennaPattern();
+                            sensorAntenna.VvPattern.Loss_dB = new float[2] { 0, 0 };
+                            sensorAntenna.VvPattern.Angle_deg = new double[2] { -90, 90 };
+
+
+                            lstSensorStationAntenna.Add(sensorAntenna);
+                        }
 
                         sensorParameter.SensorAntennas = lstSensorStationAntenna.ToArray();
                         sensorParameters.Add(sensorParameter);

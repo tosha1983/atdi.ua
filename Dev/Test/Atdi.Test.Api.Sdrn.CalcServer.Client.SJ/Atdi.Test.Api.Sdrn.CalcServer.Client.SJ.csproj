@@ -64,6 +64,7 @@
     <Compile Include="Tasks\BroadcastingFieldStrengthCalcTask_BlackSeaCoast.cs" />
     <Compile Include="Tasks\PointFieldStrengthCalcTask_Fr.cs" />
     <Compile Include="Tasks\PointFieldStrengthCalcTask_BlackSeaCoast.cs" />
+    <Compile Include="Tasks\PointFieldStrengthCalcTask_Kyiv30018.cs" />
     <Compile Include="Tasks\PointFieldStrengthCalcTask_Kyivska.cs" />
     <Compile Include="Tasks\PointFieldStrengthCalcTask_Lviv.cs" />
     <Compile Include="Tasks\StationCorrelationCalcTask.cs" />
