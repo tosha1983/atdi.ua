@@ -65,7 +65,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                 this._logger.Error(Contexts.ThisComponent, Categories.ImportData, $"Incorrect value DataRefSpectrum.Freq_MHz = {dataRefSpectrum.Freq_MHz}");
                 return false;
             }
-            if (((dataRefSpectrum.Level_dBm >= -120) && (dataRefSpectrum.Level_dBm <= 10)) == false)
+            if (((dataRefSpectrum.Level_dBm >= -200) && (dataRefSpectrum.Level_dBm <= 10)) == false)
             {
                 this._logger.Error(Contexts.ThisComponent, Categories.ImportData, $"Incorrect value DataRefSpectrum.Level_dBm = {dataRefSpectrum.Level_dBm}");
                 return false;
