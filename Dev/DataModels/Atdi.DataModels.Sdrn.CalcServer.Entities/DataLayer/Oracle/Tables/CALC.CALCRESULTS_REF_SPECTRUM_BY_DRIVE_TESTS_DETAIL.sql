@@ -1,9 +1,9 @@
 ﻿CREATE TABLE CALC.CALCRESULTS_REF_SPECTRUM_BY_DRIVE_TESTS_DETAIL
 (
   ID					NUMBER(15)                NOT NULL,
-  ORDER_ID				NUMBER(15)                NOT NULL,
+  ORDER_ID				NUMBER(9)                NOT NULL,
   RESULT_REF_SPECTRUM_ID      NUMBER(15)           NOT NULL,
-  ID_ICSM				NUMBER(15)                NOT NULL,
+  ID_ICSM				NUMBER(9)                NOT NULL,
   TABLE_ICSM_NAME		NVARCHAR2(50)		      NOT NULL,
   ID_SENSOR				NUMBER(15)                NOT NULL,
   GLOBAL_GSID			NVARCHAR2(50)             NOT NULL,

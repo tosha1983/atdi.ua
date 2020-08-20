@@ -9,7 +9,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
 	public class ResultRefSpectrumBySensors
     {
-        public long OrderId { get; set; }
+        public int OrderId { get; set; }
         public string TableIcsmName { get; set; }
         public int IdIcsm { get; set; }
         public long IdSensor { get; set; }

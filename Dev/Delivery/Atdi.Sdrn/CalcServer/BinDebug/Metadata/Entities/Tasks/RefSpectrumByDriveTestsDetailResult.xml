@@ -14,7 +14,7 @@
   <Fields>
 
     <Field Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column" Desc="The Id record." Title="Id record"/>
-    <Field Name="OrderId" SourceType="Column" SourceName="ORDER_ID" DataType="Integer.64"  Required="true" Title="Order ID" Desc="The order ID" />
+    <Field Name="OrderId" SourceType="Column" SourceName="ORDER_ID" DataType="Integer.32"  Required="true" Title="Order ID" Desc="The order ID" />
     <Field Name="RESULT_REF_SPECTRUM" SourceType="Reference" SourceName="Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks.RefSpectrumByDriveTestsResult"  Required="true" Title="RefSpectrum result ID" Desc="The RefSpectrum result ID" />
     <Field Name="IdIcsm" SourceType="Column" Required="true" SourceName="ID_ICSM" DataType="Integer.32" Title="Id Icsm station" Desc="The identifier ICSM station"/>
     <Field Name="TableIcsmName" SourceType="Column" SourceName="TABLE_ICSM_NAME" DataType="Text.50" Required="true" Title="Table ICSM Name" Desc="The table icsm name" />

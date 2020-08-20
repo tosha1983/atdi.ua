@@ -175,6 +175,34 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
         {
             try
             {
+
+                if ((this._sensorParameters == null) || ((this._sensorParameters != null) && (this._sensorParameters.Length == 0)))
+                {
+                    this._taskContext.SendEvent(new CalcResultEvent
+                    {
+                        Level = CalcResultEventLevel.Error,
+                        Context = "RefSpectrumByDriveTestsCalcTask",
+                        Message = $"For task id = '{this._taskContext.TaskId}' no information about sensor parameters"
+                    });
+                    var except = new Exception($"For task id = '{this._taskContext.TaskId}' no information about sensor parameters");
+                    this._logger.Exception(Contexts.ThisComponent, except);
+                    throw except;
+                }
+
+                if ((this._refSpectrumStationCalibrations == null) || ((this._refSpectrumStationCalibrations != null) && (this._refSpectrumStationCalibrations.Length == 0)))
+                {
+                    this._taskContext.SendEvent(new CalcResultEvent
+                    {
+                        Level = CalcResultEventLevel.Error,
+                        Context = "RefSpectrumByDriveTestsCalcTask",
+                        Message = $"For task id = '{this._taskContext.TaskId}' no information about stations calibration"
+                    });
+                    var except = new Exception($"For task id = '{this._taskContext.TaskId}' no information about stations calibration");
+                    this._logger.Exception(Contexts.ThisComponent, except);
+                    throw except;
+                }
+
+
                 var iterationReceivedPowerCalcResult = _iterationsPool.GetIteration<ReceivedPowerCalcData, ReceivedPowerCalcResult>();
                 var iterationPercentTimeForGainCalcDataResult = _iterationsPool.GetIteration<PercentTimeForGainCalcData, double[]>();
                 var mapData = _mapRepository.GetMapByName(this._calcDbScope, this._taskContext.ProjectId, this._parameters.MapName);
@@ -206,7 +234,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                 }
                 var freqs_MHz = listFreqs.ToArray();
                 
-                int index = 0;
+                int index = 1;
                 int percentComplete = 0;
                 int indexForPC = 0;
                 for (int i = 0; i < sensorIds.Length; i++)
@@ -486,6 +514,33 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                         SensorIds = reader.GetValue(c => c.SensorIds)
                     };
                 });
+
+                if ((this._parameters.SensorIds == null) || ((this._parameters.SensorIds != null) && (this._parameters.SensorIds.Length == 0)))
+                {
+                    this._taskContext.SendEvent(new CalcResultEvent
+                    {
+                        Level = CalcResultEventLevel.Error,
+                        Context = "RefSpectrumByDriveTestsCalcTask",
+                        Message = $"For task id = '{this._taskContext.TaskId}' no information about sensors"
+                    });
+                    var except = new Exception($"For task id = '{this._taskContext.TaskId}' no information about sensors");
+                    this._logger.Exception(Contexts.ThisComponent, except);
+                    throw except;
+                }
+
+                if ((this._parameters.StationIds == null) || ((this._parameters.StationIds != null) && (this._parameters.StationIds.Length == 0)))
+                {
+                    this._taskContext.SendEvent(new CalcResultEvent
+                    {
+                        Level = CalcResultEventLevel.Error,
+                        Context = "RefSpectrumByDriveTestsCalcTask",
+                        Message = $"For task id = '{this._taskContext.TaskId}' no information about stations"
+                    });
+                    var except = new Exception($"For task id = '{this._taskContext.TaskId}' no information about stations");
+                    this._logger.Exception(Contexts.ThisComponent, except);
+                    throw except;
+                }
+
 
                 var stationRes = new List<RefSpectrumStationCalibration>();
 
