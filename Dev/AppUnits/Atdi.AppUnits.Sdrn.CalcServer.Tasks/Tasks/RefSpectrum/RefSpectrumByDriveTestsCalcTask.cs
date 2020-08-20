@@ -33,21 +33,21 @@ using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations;
 
 namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 {
-	[TaskHandler(CalcTaskType.RefSpectrumByDriveTestsCalcTask)]
-	public class RefSpectrumByDriveTestsCalcTask : ITaskHandler
-	{
-		private readonly IDataLayer<EntityDataOrm<CalcServerEntityOrmContext>> _calcServerDataLayer;
+    [TaskHandler(CalcTaskType.RefSpectrumByDriveTestsCalcTask)]
+    public class RefSpectrumByDriveTestsCalcTask : ITaskHandler
+    {
+        private readonly IDataLayer<EntityDataOrm<CalcServerEntityOrmContext>> _calcServerDataLayer;
         private readonly IDataLayer<EntityDataOrm<IC.InfocenterEntityOrmContext>> _infocenterDataLayer;
         private readonly IMapRepository _mapRepository;
-        public  readonly ISignalService _signalService;
+        public readonly ISignalService _signalService;
         private readonly IClientContextService _contextService;
-		private readonly IIterationsPool _iterationsPool;
+        private readonly IIterationsPool _iterationsPool;
         private readonly ITransformation _transformation;
-		private readonly ILogger _logger;
+        private readonly ILogger _logger;
         private readonly IObjectPoolSite _poolSite;
         private readonly AppServerComponentConfig _appServerComponentConfig;
         private ITaskContext _taskContext;
-		private IDataLayerScope _calcDbScope;
+        private IDataLayerScope _calcDbScope;
         private IDataLayerScope _infoDbScope;
         private RefSpectrumParameters _parameters;
         private SensorParameters[] _sensorParameters;
@@ -62,38 +62,38 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
             IDataLayer<EntityDataOrm<IC.InfocenterEntityOrmContext>> infocenterDataLayer,
             IMapRepository mapRepository,
             IClientContextService contextService,
-			IIterationsPool iterationsPool,
-			ITransformation transformation,
+            IIterationsPool iterationsPool,
+            ITransformation transformation,
             IObjectPoolSite poolSite,
             ISignalService signalService,
             ILogger logger)
-		{
+        {
             _mapRepository = mapRepository;
             _calcServerDataLayer = calcServerDataLayer;
             _infocenterDataLayer = infocenterDataLayer;
             _contextService = contextService;
-			_iterationsPool = iterationsPool;
-			_transformation = transformation;
+            _iterationsPool = iterationsPool;
+            _transformation = transformation;
             _appServerComponentConfig = appServerComponentConfig;
             _poolSite = poolSite;
             _logger = logger;
             _signalService = signalService;
         }
 
-		public void Dispose()
-		{
-			if (_calcDbScope != null)
-			{
-				_calcDbScope.Dispose();
-				_calcDbScope = null;
-			}
+        public void Dispose()
+        {
+            if (_calcDbScope != null)
+            {
+                _calcDbScope.Dispose();
+                _calcDbScope = null;
+            }
             if (_infoDbScope != null)
             {
                 _infoDbScope.Dispose();
                 _infoDbScope = null;
             }
             _taskContext = null;
-		}
+        }
 
         public void Load(ITaskContext taskContext)
         {
@@ -107,16 +107,16 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 
 
 
-        private long? FindSensor(double Freq_MHz, StationAntenna[] stationAntennas )
+        private long? FindSensor(double Freq_MHz, StationAntenna[] stationAntennas)
         {
             long? id = null;
             if ((stationAntennas != null) && (stationAntennas.Length > 0))
-            {return 0;}
+            { return 0; }
             else { }
             return id;
         }
 
-            private bool CompareFreqStationForRefLevel(double Freq_MHz, ContextStation contextStation)
+        private bool CompareFreqStationForRefLevel(double Freq_MHz, ContextStation contextStation)
         {
             var FreqDT = Freq_MHz;
             var FreqST = contextStation.Transmitter.Freq_MHz;
@@ -133,11 +133,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
             return false;
         }
 
-        private ReceivedPowerCalcData FillReceivedPowerCalcData(byte[] buildingContent, 
+        private ReceivedPowerCalcData FillReceivedPowerCalcData(byte[] buildingContent,
                                                byte[] clutterContent,
                                                CluttersDesc cluttersDesc,
                                                AtdiMapArea atdiMapArea,
-                                               PropagationModel propagationModel, 
+                                               PropagationModel propagationModel,
                                                short[] reliefContent,
                                                Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations.StationTransmitter stationTransmitter,
                                                Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations.StationAntenna stationAntennaTx,
@@ -212,34 +212,34 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                 var listRefSpectrumStationCalibrations = this._refSpectrumStationCalibrations.ToList();
                 var sensorIds = _sensorParameters.Select(x => x.SensorId).Distinct().ToArray();
                 List<double> listFreqs = new List<double>();
-                for (int i=0; i< listRefSpectrumStationCalibrations.Count; i++)
+                for (int i = 0; i < listRefSpectrumStationCalibrations.Count; i++)
                 {
                     if (listRefSpectrumStationCalibrations[i].Freq_MHz > 0)
                     {
-                        if (!listFreqs.Contains(Math.Round(listRefSpectrumStationCalibrations[i].Freq_MHz,6)))
+                        if (!listFreqs.Contains(Math.Round(listRefSpectrumStationCalibrations[i].Freq_MHz, 6)))
                         {
-                            listFreqs.Add(Math.Round(listRefSpectrumStationCalibrations[i].Freq_MHz,6));
+                            listFreqs.Add(Math.Round(listRefSpectrumStationCalibrations[i].Freq_MHz, 6));
                         }
                     }
                     else
                     {
                         if (listRefSpectrumStationCalibrations[i].Old_Freq_MHz > 0)
                         {
-                            if (!listFreqs.Contains(Math.Round(listRefSpectrumStationCalibrations[i].Old_Freq_MHz,6)))
+                            if (!listFreqs.Contains(Math.Round(listRefSpectrumStationCalibrations[i].Old_Freq_MHz, 6)))
                             {
-                                listFreqs.Add(Math.Round(listRefSpectrumStationCalibrations[i].Old_Freq_MHz,6));
+                                listFreqs.Add(Math.Round(listRefSpectrumStationCalibrations[i].Old_Freq_MHz, 6));
                             }
                         }
                     }
                 }
                 var freqs_MHz = listFreqs.ToArray();
-                
+
                 int index = 1;
                 int percentComplete = 0;
                 int indexForPC = 0;
                 for (int i = 0; i < sensorIds.Length; i++)
                 {
-                    
+
                     var sensor = _sensorParameters.ToList().Find(x => x.SensorId == sensorIds[i]);
                     if (sensor == null)
                     {
@@ -261,7 +261,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                     for (int j = 0; j < freqs_MHz.Length; j++)
                     {
                         var idSensor = FindSensor(freqs_MHz[j], sensor.SensorAntennas);
-                        if (idSensor==null)
+                        if (idSensor == null)
                         {
                             this._logger.Info(Contexts.ThisComponent, $"idSensor not found");
                             continue;
@@ -286,14 +286,14 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                         }
 
                         var lstReceivedPowerCalcResult = new List<ReceivedPowerCalcResult>();
-                        for (int k = 0; k < this._refSpectrumStationCalibrations.Length;)
+                        for (int k = 0; k < this._refSpectrumStationCalibrations.Length; k++)
                         {
-                            bool isDeleteStation = false;
+                            //bool isDeleteStation = false;
 
                             var refSpectrumStation = this._refSpectrumStationCalibrations[k];
-                            if ((CompareFreqStationForRefLevel(freqs_MHz[j], refSpectrumStation.contextStation))==false)
+                            if ((CompareFreqStationForRefLevel(freqs_MHz[j], refSpectrumStation.contextStation)) == false)
                             {
-                                k++;
+                                //k++;
                                 continue;
                             }
                             else
@@ -308,7 +308,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 
                                 //sensor.Coordinate  - if null - ERROR
 
-                              
+
 
 
 
@@ -348,7 +348,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                     //if (skipDriveTests.Find(x => x.Id == contextStation.Id) == null)
                                     //{
                                     //skipDriveTests.Add(contextStation);
-                                    k++;
+                                    //k++;
                                     continue;
                                     //}
                                 }
@@ -361,7 +361,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                 lstReceivedPowerCalcResult.Add(resulLevelCalc);
                                 listResultRefSpectrumBySensors.Add(resultRefSpectrumBySensors);
 
-                                isDeleteStation = true;
+                                //isDeleteStation = true;
                             }
 
 
@@ -381,15 +381,15 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                     }
                                 });
                             }
-                            if (isDeleteStation)
-                            {
-                                List<RefSpectrumStationCalibration> tmp =_refSpectrumStationCalibrations.ToList();
-                                tmp.RemoveAt(k);
-                               _refSpectrumStationCalibrations = tmp.ToArray();
-                                k = 0;
-                                continue;
-                            }
-                            k++;
+                            //if (isDeleteStation)
+                            //{
+                            //List<RefSpectrumStationCalibration> tmp =_refSpectrumStationCalibrations.ToList();
+                            //tmp.RemoveAt(k);
+                            //_refSpectrumStationCalibrations = tmp.ToArray();
+                            //k = 0;
+                            //continue;
+                            //}
+                            //k++;
                         }
 
                         var percentTimeForGainCalcData = new PercentTimeForGainCalcData();
@@ -403,12 +403,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                         {
                             for (int n = 0; n < percentTimeForGainCalcData.StationData.Length; n++)
                             {
-                                listResultRefSpectrumBySensors[n+ indexForPC].Percent = resultPercent[n];
+                                listResultRefSpectrumBySensors[n + indexForPC].Percent = resultPercent[n];
                             }
                             indexForPC = indexForPC + percentTimeForGainCalcData.StationData.Length;
                         }
                     }
-                  
+
                 }
 
 
@@ -634,7 +634,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                             {
                                 refSpectrumStationCalibration.Altitude_m = readerStationCalibrationStaResult.GetValue(c => c.New_Altitude_m).Value;
                             }
-                            else 
+                            else
                             {
                                 refSpectrumStationCalibration.Altitude_m = readerStationCalibrationStaResult.GetValue(c => c.Old_Altitude_m);
                             }
@@ -694,10 +694,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                     });
                 }
 
-               
 
 
-                 this._parameters.StationIds = stationRes.Select(x => x.StationMonitoringId).ToArray();
+
+                this._parameters.StationIds = stationRes.Select(x => x.StationMonitoringId).ToArray();
 
                 // load stations
                 List<ContextStation> lstStations = new List<ContextStation>();
@@ -925,7 +925,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                     Latitude = readerSensorLocation.GetValue(c => c.Lat).Value
                                 };
                                 sensorParameter.Coordinate = _transformation.ConvertCoordinateToAtdi(in wgs84Coordinate, this._parameters.Projection);
-                                }
+                            }
                             return true;
                         });
 
@@ -1005,7 +1005,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                             while (readerAntennaPattern.Read())
                             {
 
-                               var sensorAntenna =  new DataModels.Sdrn.DeepServices.RadioSystem.Stations.StationAntenna();
+                                var sensorAntenna = new DataModels.Sdrn.DeepServices.RadioSystem.Stations.StationAntenna();
 
 
                                 sensorAntenna = new DataModels.Sdrn.DeepServices.RadioSystem.Stations.StationAntenna();
@@ -1038,7 +1038,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 
                                 if (readerAntennaPattern.GetValue(c => c.DiagH) != null)
                                 {
-                                        // HH
+                                    // HH
                                     var argsHH = new DiagrammArgs()
                                     {
                                         AntennaPatternType = AntennaPatternType.HH,
@@ -1056,8 +1056,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                     };
 
 
-                                        // HV
-                                        var argsHV = new DiagrammArgs()
+                                    // HV
+                                    var argsHV = new DiagrammArgs()
                                     {
                                         AntennaPatternType = AntennaPatternType.HV,
                                         Gain = (float)readerAntennaPattern.GetValue(c => c.Gain),
@@ -1212,19 +1212,19 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
             var insertQueryRefSpectrumByDriveTestsDetailResult = _calcServerDataLayer.GetBuilder<IRefSpectrumByDriveTestsDetailResult>()
                 .Insert()
                 .SetValue(c => c.OrderId, result.OrderId);
-                if (result.DateMeas != null)
-                {
-                    insertQueryRefSpectrumByDriveTestsDetailResult.SetValue(c => c.DateMeas, result.DateMeas);
-                }
-                insertQueryRefSpectrumByDriveTestsDetailResult.SetValue(c => c.Freq_MHz, result.Freq_MHz)
-                .SetValue(c => c.GlobalCID, result.GlobalCID)
-                .SetValue(c => c.IdIcsm, result.IdIcsm)
-                .SetValue(c => c.IdSensor, result.IdSensor)
-                .SetValue(c => c.Level_dBm, result.Level_dBm)
-                .SetValue(c => c.Percent, result.Percent)
-                .SetValue(c => c.TableIcsmName, result.TableIcsmName)
-                .SetValue(c => c.RESULT_REF_SPECTRUM.Id, resultId)
-                ;
+            if (result.DateMeas != null)
+            {
+                insertQueryRefSpectrumByDriveTestsDetailResult.SetValue(c => c.DateMeas, result.DateMeas);
+            }
+            insertQueryRefSpectrumByDriveTestsDetailResult.SetValue(c => c.Freq_MHz, result.Freq_MHz)
+            .SetValue(c => c.GlobalCID, result.GlobalCID)
+            .SetValue(c => c.IdIcsm, result.IdIcsm)
+            .SetValue(c => c.IdSensor, result.IdSensor)
+            .SetValue(c => c.Level_dBm, result.Level_dBm)
+            .SetValue(c => c.Percent, result.Percent)
+            .SetValue(c => c.TableIcsmName, result.TableIcsmName)
+            .SetValue(c => c.RESULT_REF_SPECTRUM.Id, resultId)
+            ;
             _calcDbScope.Executor.Execute<IRefSpectrumByDriveTestsDetailResult_PK>(insertQueryRefSpectrumByDriveTestsDetailResult);
         }
     }
