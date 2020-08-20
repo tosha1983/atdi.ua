@@ -107,7 +107,7 @@ CREATE TABLE CALC.CALCRESULTS_REF_SPECTRUM_BY_DRIVE_TESTS_DETAIL
   FREQ_MHZ				NUMBER(30,10)             NOT NULL,
   LEVEL_DBM				NUMBER(30,10)             NOT NULL,
   PERCENT				NUMBER(30,10)             NOT NULL,
-  DATE_MEAS				TIMESTAMP(7)			  NOT NULL
+  DATE_MEAS				DATE				   	  NOT NULL
 )
 TABLESPACE USERS
 PCTUSED    0
@@ -576,45 +576,6 @@ end if;
 
 if inttable_name ='PROJECTS' then
 select CALC.PROJECTS_ID_SEQ.nextval
-into n
-from dual;
-end if;
-
-
-if inttable_name ='CALCRESULTS_GN06' then
-select CALC.CALCRESULTS_GN06_ID_SEQ.nextval
-into n
-from dual;
-end if;
-
-if inttable_name ='CALCTASKS_GN06_ARGS_DEF' then
-select CALC.CALCTASKS_GN06_ARGS_DEF_ID_SEQ.nextval
-into n
-from dual;
-end if;
-
-if inttable_name ='CALCTASKS_GN06_ARGS' then
-select CALC.CALCTASKS_GN06_ARGS_ID_SEQ.nextval
-into n
-from dual;
-end if;
-
-
-if inttable_name ='GN06_AFFECTED_ADM_RESULT' then
-select CALC.GN06_AFFECTED_ADM_RESULT_ID_SEQ.nextval
-into n
-from dual;
-end if;
-
-
-if inttable_name ='GN06_CONTOURS_RESULT' then
-select CALC.GN06_CONTOURS_RESULT_ID_SEQ.nextval
-into n
-from dual;
-end if;
-
-if inttable_name ='GN06_ALLOTMENT_OR_ASSIGNMENT_RESULT' then
-select CALC.GN06_ALLOTMENT_OR_ASSIGNMENT_RESULT_ID_SEQ.nextval
 into n
 from dual;
 end if;

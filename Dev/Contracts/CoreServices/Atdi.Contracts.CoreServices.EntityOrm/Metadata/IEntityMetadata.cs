@@ -9,10 +9,12 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
 {
     public interface IEntityMetadata
     {
-        /// <summary>
-        /// Имя сущности
-        /// </summary>
-        string Name { get; }
+	    IEntityOrm EntityOrm { get; }
+
+		/// <summary>
+		/// Имя сущности
+		/// </summary>
+		string Name { get; }
 
         /// <summary>
         /// Простарнство имен в котором расположена сущность
