@@ -12,7 +12,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.PivotTableConf
 {
     public sealed class SensorsDataAdapter : EntityDataAdapter<CS_ES.ISensor, SensorModel>
     {
-        public long[] SensorIds;
+        //public long[] SensorIds;
         public SensorsDataAdapter(InfocenterDataLayer dataLayer, ILogger logger) : base(dataLayer.Origin, logger)
         {
         }
