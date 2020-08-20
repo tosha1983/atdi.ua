@@ -113,7 +113,9 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration.CalcServer
 
 					for (var i = 0; i < observedTasks.Length; i++)
 					{
+
 						var observedTask = observedTasks[i];
+						lastId = observedTask.Id;
 
 						var currentStatus = this.GetCurrentResultStatusCode(calcsDbScope, observedTask.ResultId);
 						if (currentStatus == (byte)ES_CC.CalcResultStatusCode.Processing
@@ -138,7 +140,7 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.Integration.CalcServer
 							// перестаем мониторить
 							DeleteInfocObservedTask(infocDbScope, observedTask.Id);
 						}
-						lastId = observedTask.Id;
+						
 					}
 
 				} while (true);
