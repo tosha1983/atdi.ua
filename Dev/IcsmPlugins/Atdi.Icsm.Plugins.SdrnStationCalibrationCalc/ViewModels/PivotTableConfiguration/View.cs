@@ -165,7 +165,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.PivotTableConf
         }
         private void ReloadSensors()
         {
-            this.Sensors.SensorIds = _objectReader.Read<long[]>().By(new SensorIdsByDriveTestIds { DriveTestIds = _objectReader.Read<long[]>().By(new DriveTestByResultIds { ResultId = this.ResultId }) });
+            //this.Sensors.SensorIds = _objectReader.Read<long[]>().By(new SensorIdsByDriveTestIds { DriveTestIds = _objectReader.Read<long[]>().By(new DriveTestByResultIds { ResultId = this.ResultId }) });
             this.Sensors.Refresh();
             this.CurrentSensor = null;
         }
@@ -282,7 +282,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.PivotTableConf
                                 }
                             }
                             var output = new List<string>();
-                            output.Add("#;OrderId;Table ICSM Name;ID ICSM;ID Sensor;Global SID;Freq MHz;Level dBm;Percent;DateMeas");
+                            output.Add("ID;Table ICSM Name;ID ICSM;ID Sensor;Global SID;Freq MHz;Level dBm;dispersion low;dispersion up;P %;Date Meas");
 
                             long i = 0;
 
@@ -291,7 +291,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.PivotTableConf
 
                             foreach (var sp in refSpectrums)
                             {
-                                output.Add($"{++i};{sp.OrderId};{sp.TableIcsmName};{sp.IdIcsm};{sp.IdSensor};{sp.GlobalCID};{sp.Freq_MHz};{sp.Level_dBm};{sp.Percent};{sp.DateMeas}");
+                                output.Add($"{++i};{sp.TableIcsmName};{sp.IdIcsm};{sp.IdSensor};{sp.GlobalCID};{sp.Freq_MHz};{sp.Level_dBm};;;{sp.Percent};{sp.DateMeas.ToString("dd.MM.yyyy HH:mm")}");
                             }
 
                             System.IO.File.WriteAllLines(this._filePath, output.ToArray(), System.Text.Encoding.UTF8);
@@ -300,7 +300,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.PivotTableConf
                         }
                         else
                         {
-                            this._logger.Exception(Exceptions.StationCalibrationCalculation, new Exception($"For selected task not found information in RefSpectrumResultIdByResultId!"));
+                            this._logger.Exception(Exceptions.StationCalibrationCalculation, new Exception($"For selected task not found information in IRefSpectrumByDriveTestsResult!"));
                             //_starter.ShowException("Warning!", new Exception($"For selected task not found information in IGn06Result!"));
                         }
                     }

@@ -33,7 +33,8 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client
             //RunPointFieldStrengthCalcTaskKyivska_10();
             //RunPointFieldStrengthCalcTaskWybrzezeCarnegoMorza();
             //RunBroarcastFieldStrengthCalcIsolated();
-            RunPointFieldStrengthCalcTaskFr();
+            //RunPointFieldStrengthCalcTaskFr();
+            RunPointFieldStrengthCalcTaskKyiv30018();
 
             //TestWebApiOrm();
             //RunPointFieldStrengthCalcTask();
@@ -184,6 +185,17 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client
 
             PointFieldStrengthCalcTaskKyivska.Run(dataLayer, dataLayer.GetExecutor(endpoint, dataContext));
         }
+
+        static void RunPointFieldStrengthCalcTaskKyiv30018()
+        {
+            var endpoint = new WebApiEndpoint(new Uri("http://localhost:15070/"), "/appserver/v1");
+            var dataContext = new WebApiDataContext("SDRN_CalcServer_DB");
+
+            var dataLayer = new WebApiDataLayer();
+
+            PointFieldStrengthCalcTaskKyiv30018.Run(dataLayer, dataLayer.GetExecutor(endpoint, dataContext));
+        }
+
 
         static void RunPointFieldStrengthCalcTaskWybrzezeCarnegoMorza()
         {

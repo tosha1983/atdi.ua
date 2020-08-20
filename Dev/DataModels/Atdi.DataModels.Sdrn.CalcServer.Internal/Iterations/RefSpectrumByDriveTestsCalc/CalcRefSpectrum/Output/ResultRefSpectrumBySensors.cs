@@ -9,7 +9,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
 	public class ResultRefSpectrumBySensors
     {
-        public long OrderId { get; set; }
+        public int OrderId { get; set; }
         public string TableIcsmName { get; set; }
         public int IdIcsm { get; set; }
         public long IdSensor { get; set; }
@@ -17,6 +17,6 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
         public double Freq_MHz { get; set; }
         public double Level_dBm { get; set; }
         public double Percent { get; set; }
-        public DateTimeOffset DateMeas { get; set; }
+        public DateTime DateMeas { get; set; }
     }
 }
