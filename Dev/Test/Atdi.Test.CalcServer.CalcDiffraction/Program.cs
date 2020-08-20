@@ -45,130 +45,130 @@ namespace Atdi.Test.CalcServer
             double tiltA;
             double tiltB;
 
-            DiffractionLoss = Deygout91.Calc(10, 10, 100, dt1_km, ht1_m, 0, ht1_m.Length, re_km, C);
-            ProfilesCalculation.CalcTilts(re_km, ha_m, hb_m, dt4_km, ht4_m, 0, ht4_m.Length - 1, out tiltA, out tiltB);
-            System.Console.WriteLine($"L_diff: {DiffractionLoss}; tiltA: {tiltA}; tiltB: {tiltB}");
+            //DiffractionLoss = Deygout91.Calc(10, 10, 100, dt1_km, ht1_m, 0, ht1_m.Length, re_km, C);
+            //ProfilesCalculation.CalcTilts(re_km, ha_m, hb_m, dt4_km, ht4_m, 0, ht4_m.Length - 1, out tiltA, out tiltB);
+            //System.Console.WriteLine($"L_diff: {DiffractionLoss}; tiltA: {tiltA}; tiltB: {tiltB}");
 
-            DiffractionLoss = Deygout91.Calc(ha_m, hb_m, freq4_MHz, dt4_km, ht4_m, 0, ht4_m.Length - 1, re_km, C);
-            ProfilesCalculation.CalcTilts(re_km, ha_m, hb_m, dt4_km, ht4_m, 0, ht4_m.Length - 1, out tiltA, out tiltB);
-            System.Console.WriteLine($"L_diff: {DiffractionLoss}; tiltA: {tiltA}; tiltB: {tiltB}");
+            //DiffractionLoss = Deygout91.Calc(ha_m, hb_m, freq4_MHz, dt4_km, ht4_m, 0, ht4_m.Length - 1, re_km, C);
+            //ProfilesCalculation.CalcTilts(re_km, ha_m, hb_m, dt4_km, ht4_m, 0, ht4_m.Length - 1, out tiltA, out tiltB);
+            //System.Console.WriteLine($"L_diff: {DiffractionLoss}; tiltA: {tiltA}; tiltB: {tiltB}");
 
-            ha_m = 80;
-            hb_m = 30;
-            dt_km = dt3_km;
-            freq_MHz = 2560;
+            //ha_m = 80;
+            //hb_m = 30;
+            //dt_km = dt3_km;
+            //freq_MHz = 2560;
 
-            System.Console.WriteLine($"\nha: {ha_m}; hb: {hb_m}; tiltB: {freq_MHz}");
+            //System.Console.WriteLine($"\nha: {ha_m}; hb: {hb_m}; tiltB: {freq_MHz}");
 
-            DiffractionLoss = Deygout91.Calc(ha_m, hb_m, freq_MHz, dt_km, ht3_m, 0, ht3_m.Length - 1, re_km, C);
-            ProfilesCalculation.CalcTilts(re_km, ha_m, hb_m, dt_km, ht3_m, 0, ht3_m.Length - 1, out tiltA, out tiltB);
-            System.Console.WriteLine($"L_diff: {DiffractionLoss}; tiltA: {tiltA}; tiltB: {tiltB}");
+            //DiffractionLoss = Deygout91.Calc(ha_m, hb_m, freq_MHz, dt_km, ht3_m, 0, ht3_m.Length - 1, re_km, C);
+            //ProfilesCalculation.CalcTilts(re_km, ha_m, hb_m, dt_km, ht3_m, 0, ht3_m.Length - 1, out tiltA, out tiltB);
+            //System.Console.WriteLine($"L_diff: {DiffractionLoss}; tiltA: {tiltA}; tiltB: {tiltB}");
             
-            ProfilesCalculation.CalcTilts(re_km, ha_m + ht3_m[0], hb_m + ht3_m[ht3_m.Length - 1], dt_km, out tiltA, out tiltB);
-            System.Console.WriteLine($"L_diff: {DiffractionLoss}; tiltA: {tiltA}; tiltB: {tiltB}");
+            //ProfilesCalculation.CalcTilts(re_km, ha_m + ht3_m[0], hb_m + ht3_m[ht3_m.Length - 1], dt_km, out tiltA, out tiltB);
+            //System.Console.WriteLine($"L_diff: {DiffractionLoss}; tiltA: {tiltA}; tiltB: {tiltB}");
 
-            ha_m = 20;
-            hb_m = 10;
-            dt_km = dt3_km;
-            freq_MHz = 2560;
+            //ha_m = 20;
+            //hb_m = 10;
+            //dt_km = dt3_km;
+            //freq_MHz = 2560;
 
-            System.Console.WriteLine($"\nha: {ha_m}; hb: {hb_m}; tiltB: {freq_MHz}");
+            //System.Console.WriteLine($"\nha: {ha_m}; hb: {hb_m}; tiltB: {freq_MHz}");
 
-            DiffractionLoss = Deygout91.Calc(ha_m, hb_m, freq_MHz, dt_km, ht3_m, 0, ht3_m.Length - 1, re_km, C);
-            ProfilesCalculation.CalcTilts(re_km, ha_m, hb_m, dt_km, ht3_m, 0, ht3_m.Length - 1, out tiltA, out tiltB);
-            System.Console.WriteLine($"L_diff: {DiffractionLoss}; tiltA: {tiltA}; tiltB: {tiltB}");
+            //DiffractionLoss = Deygout91.Calc(ha_m, hb_m, freq_MHz, dt_km, ht3_m, 0, ht3_m.Length - 1, re_km, C);
+            //ProfilesCalculation.CalcTilts(re_km, ha_m, hb_m, dt_km, ht3_m, 0, ht3_m.Length - 1, out tiltA, out tiltB);
+            //System.Console.WriteLine($"L_diff: {DiffractionLoss}; tiltA: {tiltA}; tiltB: {tiltB}");
 
-            ProfilesCalculation.CalcTilts(re_km, ha_m + ht3_m[0], hb_m + ht3_m[ht3_m.Length - 1], dt_km, out tiltA, out tiltB);
-            System.Console.WriteLine($"L_diff: {DiffractionLoss}; tiltA: {tiltA}; tiltB: {tiltB}");
+            //ProfilesCalculation.CalcTilts(re_km, ha_m + ht3_m[0], hb_m + ht3_m[ht3_m.Length - 1], dt_km, out tiltA, out tiltB);
+            //System.Console.WriteLine($"L_diff: {DiffractionLoss}; tiltA: {tiltA}; tiltB: {tiltB}");
 
-            ha_m = 30;
-            hb_m = 20;
-            dt_km = dt3_km;
-            freq_MHz = 2560;
+            //ha_m = 30;
+            //hb_m = 20;
+            //dt_km = dt3_km;
+            //freq_MHz = 2560;
 
-            System.Console.WriteLine($"\nha: {ha_m}; hb: {hb_m}; tiltB: {freq_MHz}");
+            //System.Console.WriteLine($"\nha: {ha_m}; hb: {hb_m}; tiltB: {freq_MHz}");
 
-            DiffractionLoss = Deygout91.Calc(ha_m, hb_m, freq_MHz, dt_km, ht3_m, 0, ht3_m.Length - 1, re_km, C);
-            ProfilesCalculation.CalcTilts(re_km, ha_m, hb_m, dt_km, ht3_m, 0, ht3_m.Length - 1, out tiltA, out tiltB);
-            System.Console.WriteLine($"L_diff: {DiffractionLoss}; tiltA: {tiltA}; tiltB: {tiltB}");
+            //DiffractionLoss = Deygout91.Calc(ha_m, hb_m, freq_MHz, dt_km, ht3_m, 0, ht3_m.Length - 1, re_km, C);
+            //ProfilesCalculation.CalcTilts(re_km, ha_m, hb_m, dt_km, ht3_m, 0, ht3_m.Length - 1, out tiltA, out tiltB);
+            //System.Console.WriteLine($"L_diff: {DiffractionLoss}; tiltA: {tiltA}; tiltB: {tiltB}");
 
-            ProfilesCalculation.CalcTilts(re_km, ha_m + ht3_m[0], hb_m + ht3_m[ht3_m.Length - 1], dt_km, out tiltA, out tiltB);
-            System.Console.WriteLine($"L_diff: {DiffractionLoss}; tiltA: {tiltA}; tiltB: {tiltB}");
+            //ProfilesCalculation.CalcTilts(re_km, ha_m + ht3_m[0], hb_m + ht3_m[ht3_m.Length - 1], dt_km, out tiltA, out tiltB);
+            //System.Console.WriteLine($"L_diff: {DiffractionLoss}; tiltA: {tiltA}; tiltB: {tiltB}");
 
-            ha_m = 30;
-            hb_m = 30;
-            dt_km = dt4_km;
-            freq_MHz = 10240;
+            //ha_m = 30;
+            //hb_m = 30;
+            //dt_km = dt4_km;
+            //freq_MHz = 10240;
 
-            System.Console.WriteLine($"\n  d_km: {dt_km}; ha: {ha_m}; hb: {hb_m}; tiltB: {freq_MHz}");
+            //System.Console.WriteLine($"\n  d_km: {dt_km}; ha: {ha_m}; hb: {hb_m}; tiltB: {freq_MHz}");
 
-            DiffractionLoss = Deygout91.Calc(ha_m, hb_m, freq_MHz, dt_km, ht4_m, 0, ht4_m.Length - 1, re_km, C);
-            ProfilesCalculation.CalcTilts(re_km, ha_m, hb_m, dt_km, ht4_m, 0, ht4_m.Length - 1, out tiltA, out tiltB);
-            System.Console.WriteLine($"L_diff: {DiffractionLoss}; tiltA: {tiltA}; tiltB: {tiltB}");
+            //DiffractionLoss = Deygout91.Calc(ha_m, hb_m, freq_MHz, dt_km, ht4_m, 0, ht4_m.Length - 1, re_km, C);
+            //ProfilesCalculation.CalcTilts(re_km, ha_m, hb_m, dt_km, ht4_m, 0, ht4_m.Length - 1, out tiltA, out tiltB);
+            //System.Console.WriteLine($"L_diff: {DiffractionLoss}; tiltA: {tiltA}; tiltB: {tiltB}");
 
-            ProfilesCalculation.CalcTilts(re_km, ha_m + ht4_m[0], hb_m + ht4_m[ht4_m.Length - 1], dt_km, out tiltA, out tiltB);
-            System.Console.WriteLine($"L_diff: {DiffractionLoss}; tiltA: {tiltA}; tiltB: {tiltB}");
-
-
-            ha_m = 30;
-            hb_m = 30;
-            dt_km = dt5_km;
-            freq_MHz = 1280;
-
-            System.Console.WriteLine($"\n  d_km: {dt_km}; ha: {ha_m}; hb: {hb_m}; tiltB: {freq_MHz}");
-
-            DiffractionLoss = Deygout91.Calc(ha_m, hb_m, freq_MHz, dt_km, ht5_m, 0, ht5_m.Length - 1, re_km, C);
-            ProfilesCalculation.CalcTilts(re_km, ha_m, hb_m, dt_km, ht5_m, 0, ht5_m.Length - 1, out tiltA, out tiltB);
-            System.Console.WriteLine($"L_diff: {DiffractionLoss}; tiltA: {tiltA}; tiltB: {tiltB}");
-
-            ProfilesCalculation.CalcTilts(re_km, ha_m + ht5_m[0], hb_m + ht5_m[ht5_m.Length - 1], dt_km, out tiltA, out tiltB);
-            System.Console.WriteLine($"L_diff: {DiffractionLoss}; tiltA: {tiltA}; tiltB: {tiltB}");
+            //ProfilesCalculation.CalcTilts(re_km, ha_m + ht4_m[0], hb_m + ht4_m[ht4_m.Length - 1], dt_km, out tiltA, out tiltB);
+            //System.Console.WriteLine($"L_diff: {DiffractionLoss}; tiltA: {tiltA}; tiltB: {tiltB}");
 
 
+            //ha_m = 30;
+            //hb_m = 30;
+            //dt_km = dt5_km;
+            //freq_MHz = 1280;
 
-            ha_m = 10;
-            hb_m = 10;
-            dt_km = dt2_km;
-            freq_MHz = 20480;
+            //System.Console.WriteLine($"\n  d_km: {dt_km}; ha: {ha_m}; hb: {hb_m}; tiltB: {freq_MHz}");
 
-            System.Console.WriteLine($"\n  d_km: {dt_km}; ha: {ha_m}; hb: {hb_m}; tiltB: {freq_MHz}");
+            //DiffractionLoss = Deygout91.Calc(ha_m, hb_m, freq_MHz, dt_km, ht5_m, 0, ht5_m.Length - 1, re_km, C);
+            //ProfilesCalculation.CalcTilts(re_km, ha_m, hb_m, dt_km, ht5_m, 0, ht5_m.Length - 1, out tiltA, out tiltB);
+            //System.Console.WriteLine($"L_diff: {DiffractionLoss}; tiltA: {tiltA}; tiltB: {tiltB}");
 
-            DiffractionLoss = Deygout91.Calc(ha_m, hb_m, freq_MHz, dt_km, ht2_m, 0, ht2_m.Length - 1, re_km, C);
-            ProfilesCalculation.CalcTilts(re_km, ha_m, hb_m, dt_km, ht2_m, 0, ht2_m.Length - 1, out tiltA, out tiltB);
-            System.Console.WriteLine($"L_diff: {DiffractionLoss}; tiltA: {tiltA}; tiltB: {tiltB}");
-
-            ProfilesCalculation.CalcTilts(re_km, ha_m + ht2_m[0], hb_m + ht2_m[ht2_m.Length - 1], dt_km, out tiltA, out tiltB);
-            System.Console.WriteLine($"L_diff: {DiffractionLoss}; tiltA: {tiltA}; tiltB: {tiltB}");
-
-
-            ha_m = 10;
-            hb_m = 2;
-            dt_km = dt2_km;
-            freq_MHz = 20480;
-
-            System.Console.WriteLine($"\n  d_km: {dt_km}; ha: {ha_m}; hb: {hb_m}; tiltB: {freq_MHz}");
-
-            DiffractionLoss = Deygout91.Calc(ha_m, hb_m, freq_MHz, dt_km, ht2_m, 0, ht2_m.Length - 1, re_km, C);
-            ProfilesCalculation.CalcTilts(re_km, ha_m, hb_m, dt_km, ht2_m, 0, ht2_m.Length - 1, out tiltA, out tiltB);
-            System.Console.WriteLine($"L_diff: {DiffractionLoss}; tiltA: {tiltA}; tiltB: {tiltB}");
-
-            ProfilesCalculation.CalcTilts(re_km, ha_m + ht2_m[0], hb_m + ht2_m[ht2_m.Length - 1], dt_km, out tiltA, out tiltB);
-            System.Console.WriteLine($"L_diff: {DiffractionLoss}; tiltA: {tiltA}; tiltB: {tiltB}");
+            //ProfilesCalculation.CalcTilts(re_km, ha_m + ht5_m[0], hb_m + ht5_m[ht5_m.Length - 1], dt_km, out tiltA, out tiltB);
+            //System.Console.WriteLine($"L_diff: {DiffractionLoss}; tiltA: {tiltA}; tiltB: {tiltB}");
 
 
-            ha_m = 2;
-            hb_m = 2;
-            dt_km = dt2_km;
-            freq_MHz = 20480;
 
-            System.Console.WriteLine($"\n  d_km: {dt_km}; ha: {ha_m}; hb: {hb_m}; tiltB: {freq_MHz}");
+            //ha_m = 10;
+            //hb_m = 10;
+            //dt_km = dt2_km;
+            //freq_MHz = 20480;
 
-            DiffractionLoss = Deygout91.Calc(ha_m, hb_m, freq_MHz, dt_km, ht2_m, 0, ht2_m.Length - 1, re_km, C);
-            ProfilesCalculation.CalcTilts(re_km, ha_m, hb_m, dt_km, ht2_m, 0, ht2_m.Length - 1, out tiltA, out tiltB);
-            System.Console.WriteLine($"L_diff: {DiffractionLoss}; tiltA: {tiltA}; tiltB: {tiltB}");
+            //System.Console.WriteLine($"\n  d_km: {dt_km}; ha: {ha_m}; hb: {hb_m}; tiltB: {freq_MHz}");
 
-            ProfilesCalculation.CalcTilts(re_km, ha_m + ht2_m[0], hb_m + ht2_m[ht2_m.Length - 1], dt_km, out tiltA, out tiltB);
-            System.Console.WriteLine($"L_diff: {DiffractionLoss}; tiltA: {tiltA}; tiltB: {tiltB}");
+            //DiffractionLoss = Deygout91.Calc(ha_m, hb_m, freq_MHz, dt_km, ht2_m, 0, ht2_m.Length - 1, re_km, C);
+            //ProfilesCalculation.CalcTilts(re_km, ha_m, hb_m, dt_km, ht2_m, 0, ht2_m.Length - 1, out tiltA, out tiltB);
+            //System.Console.WriteLine($"L_diff: {DiffractionLoss}; tiltA: {tiltA}; tiltB: {tiltB}");
+
+            //ProfilesCalculation.CalcTilts(re_km, ha_m + ht2_m[0], hb_m + ht2_m[ht2_m.Length - 1], dt_km, out tiltA, out tiltB);
+            //System.Console.WriteLine($"L_diff: {DiffractionLoss}; tiltA: {tiltA}; tiltB: {tiltB}");
+
+
+            //ha_m = 10;
+            //hb_m = 2;
+            //dt_km = dt2_km;
+            //freq_MHz = 20480;
+
+            //System.Console.WriteLine($"\n  d_km: {dt_km}; ha: {ha_m}; hb: {hb_m}; tiltB: {freq_MHz}");
+
+            //DiffractionLoss = Deygout91.Calc(ha_m, hb_m, freq_MHz, dt_km, ht2_m, 0, ht2_m.Length - 1, re_km, C);
+            //ProfilesCalculation.CalcTilts(re_km, ha_m, hb_m, dt_km, ht2_m, 0, ht2_m.Length - 1, out tiltA, out tiltB);
+            //System.Console.WriteLine($"L_diff: {DiffractionLoss}; tiltA: {tiltA}; tiltB: {tiltB}");
+
+            //ProfilesCalculation.CalcTilts(re_km, ha_m + ht2_m[0], hb_m + ht2_m[ht2_m.Length - 1], dt_km, out tiltA, out tiltB);
+            //System.Console.WriteLine($"L_diff: {DiffractionLoss}; tiltA: {tiltA}; tiltB: {tiltB}");
+
+
+            //ha_m = 2;
+            //hb_m = 2;
+            //dt_km = dt2_km;
+            //freq_MHz = 20480;
+
+            //System.Console.WriteLine($"\n  d_km: {dt_km}; ha: {ha_m}; hb: {hb_m}; tiltB: {freq_MHz}");
+
+            //DiffractionLoss = Deygout91.Calc(ha_m, hb_m, freq_MHz, dt_km, ht2_m, 0, ht2_m.Length - 1, re_km, C);
+            //ProfilesCalculation.CalcTilts(re_km, ha_m, hb_m, dt_km, ht2_m, 0, ht2_m.Length - 1, out tiltA, out tiltB);
+            //System.Console.WriteLine($"L_diff: {DiffractionLoss}; tiltA: {tiltA}; tiltB: {tiltB}");
+
+            //ProfilesCalculation.CalcTilts(re_km, ha_m + ht2_m[0], hb_m + ht2_m[ht2_m.Length - 1], dt_km, out tiltA, out tiltB);
+            //System.Console.WriteLine($"L_diff: {DiffractionLoss}; tiltA: {tiltA}; tiltB: {tiltB}");
 
             Console.Read();
 
