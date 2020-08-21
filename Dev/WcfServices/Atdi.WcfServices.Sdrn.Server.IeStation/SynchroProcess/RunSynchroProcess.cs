@@ -1899,7 +1899,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                 if ((startDateVal != null) && (stopDateVal != null))
                 {
                     startDateVal = new DateTime(startDateVal.Value.Year, startDateVal.Value.Month, startDateVal.Value.Day, 0, 0, 0, 0);
-                    stopDateVal = new DateTime(stopDateVal.Value.Year, stopDateVal.Value.Month, stopDateVal.Value.Day, 23, 59, 59, 999);
+                    stopDateVal = new DateTime(stopDate.Year, stopDate.Month, stopDate.Day, 23, 59, 59, 999);
 
                     var queryEmitting = this._dataLayer.GetBuilder<MDBase.IEmitting>()
                    .From()
