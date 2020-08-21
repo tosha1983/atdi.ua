@@ -1341,7 +1341,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                 var corrEmittingBuffer = new EmittingDataToSort();
                 double levelDifference_dB = Math.Abs(stationsDataToCorrespondList[i].Level_dBm - emittingsDataToCorrespondList[i].CurrentPower_dBm);
                 //возожно следует внести в конфиг, DifferenceBetweenStationAndEmittingLevel_dB = -30
-                double differenceBetweenStationAndEmittingLevel_dB = 70;
+                double differenceBetweenStationAndEmittingLevel_dB = 120;
                 if (levelDifference_dB < differenceBetweenStationAndEmittingLevel_dB)
                 {
                     for (int j = i; j < numOfIterations; j++)
