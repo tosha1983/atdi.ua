@@ -737,7 +737,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
             return polygonAll;
         }
 
-      
+
 
         /// <summary>
         /// Метод, выполняющий "прорежение" RefSpectrum в БД
@@ -1144,14 +1144,14 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
 
                     var foundProtocol = lstProtocols.Find(x => x.DataRefSpectrum.Id == dataRefSpectrum.Id);
 
-                    if (foundProtocol == null) 
+                    if (foundProtocol == null)
                     {
                         lstProtocols.Add(protocol);
                     }
                 }
             }
         }
-        
+
 
         private void FillProtocolsDataWithEmittings(RefSpectrum[] refSpectrums, StationDataToSort[] stationsDataToCorrespond, EmittingDataToSort[] emittingsDataToCorrespond, Emitting[] emittings, ref List<Protocols> lstProtocols)
         {
@@ -1266,6 +1266,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
         /// <returns></returns>
         public void SynchroEmittings(RefSpectrum[] refSpectrums, Emitting[] emittings, Calculation.EmitParams[] emittingParameters, ref List<Protocols> lstProtocols)
         {
+
             // ---- СОХРАНИТЬ ИСХОДНЫЕ ЗНАЧЕНИЯ refSpectrums
             List<RefSpectrum> initialRefSpectrums = new List<RefSpectrum>();
             for (int i = 0; i < refSpectrums.Length; i++)
@@ -1281,7 +1282,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
 
             //
             this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.SynchroEmittings.Text);
-            
+
             // count 
             int desiredNumberOfEmittings = CountUniqueStations(refSpectrums);
             emittings = DeleteUnestimatedEmittings(emittings);
@@ -1346,17 +1347,17 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                 {
                     for (int j = i; j < numOfIterations; j++)
                     {
-                        levelDifference_dB = stationsDataToCorrespondList[i].Level_dBm - emittingsDataToCorrespondList[j].CurrentPower_dBm;
-                        if (levelDifference_dB > differenceBetweenStationAndEmittingLevel_dB)
+                        levelDifference_dB = Math.Abs(stationsDataToCorrespondList[i].Level_dBm - emittingsDataToCorrespondList[j].CurrentPower_dBm);
+                        if (levelDifference_dB < differenceBetweenStationAndEmittingLevel_dB)
                         {
                             corrEmittingBuffer = emittingsDataToCorrespondList[i];
                             emittingsDataToCorrespondList[i] = emittingsDataToCorrespondList[j];
                             emittingsDataToCorrespondList[j] = corrEmittingBuffer;
                             break;
                         }
-                        else if ((levelDifference_dB < differenceBetweenStationAndEmittingLevel_dB) && (j == numOfIterations - 1))
+                        else if (j == numOfIterations - 1)
                         {
-                                                           
+
                             stationsDataToCorrespondList.RemoveRange(i, 1);
                             numOfIterations = Math.Min(stationsDataToCorrespondList.Count(), emittingsDataToCorrespondList.Count());
                             i--;
@@ -1365,40 +1366,39 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                 }
             }
 
-            // ---- ВАЛИДАЦИЯ ПО СООТВНТСТВИЮ WorkTime (любое измерение, которое приведено как соответствующее, если в соответствие не найден ворктйм - удаляется)
-            for (int i = 0; i < numOfIterations; i++)
-            {
-                long emittingId = emittingsDataToCorrespondList[i].Id.Value;
-                long refSpectId = stationsDataToCorrespondList[i].RefSpectrumId.Value;
-                long dRefSpectId = stationsDataToCorrespondList[i].DataRefSpectrumId.Value;
+            //// ---- ВАЛИДАЦИЯ ПО СООТВНТСТВИЮ WorkTime (любое измерение, которое приведено как соответствующее, если в соответствие не найден ворктйм - удаляется)
+            //for (int i = 0; i < numOfIterations; i++)
+            //{
+            //    long emittingId = emittingsDataToCorrespondList[i].Id.Value;
+            //    long refSpectId = stationsDataToCorrespondList[i].RefSpectrumId.Value;
+            //    long dRefSpectId = stationsDataToCorrespondList[i].DataRefSpectrumId.Value;
 
-                var foundEmitting = emittings.ToList().Find(x => x.Id == emittingId);
-                if (foundEmitting != null)
-                {
-                    var foundRefSpectrum = refSpectrums.ToList().Find(x => x.Id == refSpectId);
-                    if (foundRefSpectrum != null)
-                    {
-                        var foundDRefSpectrum = foundRefSpectrum.DataRefSpectrum.ToList().Find(x => x.Id == dRefSpectId);
-                        if (foundDRefSpectrum != null)
-                        {
-                            for (int j = 0; j < foundEmitting.WorkTimes.Length; j++)
-                            {
-                                if ((foundDRefSpectrum.DateMeas.Date < foundEmitting.WorkTimes[j].StartEmitting.Date)
-                                    || (foundDRefSpectrum.DateMeas.Date > foundEmitting.WorkTimes[j].StopEmitting.Date))
-                                {
-                                    uncorrespondEmittingsSpectrum.Add(foundEmitting.Spectrum);
-                                    stationsDataToCorrespondList.RemoveRange(i, 1);
-                                    emittingsDataToCorrespondList.RemoveRange(i, 1);
-                                    numOfIterations = Math.Min(stationsDataToCorrespondList.Count(), emittingsDataToCorrespondList.Count());
-                                    i--;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-                
-            }
+            //    var foundEmitting = emittings.ToList().Find(x => x.Id == emittingId);
+            //    if (foundEmitting != null)
+            //    {
+            //        var foundRefSpectrum = refSpectrums.ToList().Find(x => x.Id == refSpectId);
+            //        if (foundRefSpectrum != null)
+            //        {
+            //            var foundDRefSpectrum = foundRefSpectrum.DataRefSpectrum.ToList().Find(x => x.Id == dRefSpectId);
+            //            if (foundDRefSpectrum != null)
+            //            {
+            //                for (int j = 0; j < foundEmitting.WorkTimes.Length; j++)
+            //                {
+            //                    if ((foundDRefSpectrum.DateMeas.Date < foundEmitting.WorkTimes[j].StartEmitting.Date)
+            //                        || (foundDRefSpectrum.DateMeas.Date > foundEmitting.WorkTimes[j].StopEmitting.Date))
+            //                    {
+            //                        uncorrespondEmittingsSpectrum.Add(foundEmitting.Spectrum);
+            //                        stationsDataToCorrespondList.RemoveRange(i, 1);
+            //                        emittingsDataToCorrespondList.RemoveRange(i, 1);
+            //                        numOfIterations = Math.Min(stationsDataToCorrespondList.Count(), emittingsDataToCorrespondList.Count());
+            //                        i--;
+            //                        break;
+            //                    }
+            //                }
+            //            }
+            //        }
+            //    }
+            //}
 
             if (stationsDataToCorrespondList.Count > emittingsDataToCorrespondList.Count)
             {
@@ -1435,12 +1435,12 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                         initialRefSpectrums[i].DataRefSpectrum = listDataSpectrum.ToArray();
                     }
                 }
-                    
+
 
                 // ---- Удаление использованных излучений (Поиск соответствия по спектру)
                 for (int i = 0; i < numOfIterations; i++)
                 {
-                    
+
                     long emittingId = emittingsDataToCorrespondList[i].Id.Value;
                     for (int j = 0; j < initialEmittings.Count; j++)
                     {
@@ -1448,13 +1448,13 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                         if (foundEmitting != null)
                         {
                             // если спект соответствует - излучения удляются
-                            if(CompareEmittingSpectrums(initialEmittings[j].Spectrum, foundEmitting.Spectrum))
+                            if (CompareEmittingSpectrums(initialEmittings[j].Spectrum, foundEmitting.Spectrum))
                             {
                                 initialEmittings.RemoveRange(j, 1);
                                 j--;
                                 break;
                             }
-                                
+
                             ////
                             //if (initialEmittings[j].Spectrum.Levels_dBm.Length == foundEmitting.Spectrum.Levels_dBm.Length)
                             //{
@@ -1472,7 +1472,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                             //    }
                             //}////
                         }
-                        
+
                     }
                 }
                 // ---- рекурсивный вызов функции длл невалидных соответствий (валидные измерения и излучения убраны)
@@ -1732,7 +1732,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                         }
                         else
                         {
-                            this._logger.Warning(Contexts.ThisComponent, Categories.Processing, (EventText)$"For DataSynchronizationProcess.Id='{protocol.DataSynchronizationProcess.Id}' StationExtended property is null!" );
+                            this._logger.Warning(Contexts.ThisComponent, Categories.Processing, (EventText)$"For DataSynchronizationProcess.Id='{protocol.DataSynchronizationProcess.Id}' StationExtended property is null!");
                         }
                     }
                     scope.Commit();
@@ -1803,14 +1803,14 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                 {
                     scope.BeginTran();
 
-                    for (int i=0; i< refSpectrums.Count(); i++)
+                    for (int i = 0; i < refSpectrums.Count(); i++)
                     {
                         CountRecordsImported += refSpectrums[i].DataRefSpectrum.Length;
                     }
 
                     for (int i = 0; i < protocolsOutput.Count(); i++)
                     {
-                        if (protocolsOutput[i].ProtocolsLinkedWithEmittings==null)
+                        if (protocolsOutput[i].ProtocolsLinkedWithEmittings == null)
                         {
                             CountRecordsOutputWithoutEmitting = CountRecordsOutputWithoutEmitting + 1;
                         }
@@ -1836,7 +1836,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
             return isSuccess;
         }
 
-      
+
         /// <summary>
         /// Извлечение данных об эмитингах с БД
         /// </summary>
@@ -2229,7 +2229,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
 
 
 
-       
+
 
         public Area[] GetAreas(DataSynchronizationBase dataSynchronization)
         {
@@ -2261,12 +2261,12 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                     var queryAreaFrom = this._dataLayer.GetBuilder<MD.IArea>()
                     .From()
                     .Select(c => c.Id, c => c.CreatedBy, c => c.CreatedDate, c => c.IdentifierFromICSM, c => c.Name, c => c.TypeOfArea)
-                    .Where(c => c.Id, ConditionOperator.Equal, areaIds[i]) ;
+                    .Where(c => c.Id, ConditionOperator.Equal, areaIds[i]);
                     queryExecuter.Fetch(queryAreaFrom, readerAreaFrom =>
                     {
                         while (readerAreaFrom.Read())
                         {
-                            area.CreatedBy = readerAreaFrom.GetValue(c=>c.CreatedBy);
+                            area.CreatedBy = readerAreaFrom.GetValue(c => c.CreatedBy);
                             area.DateCreated = readerAreaFrom.GetValue(c => c.CreatedDate);
                             area.IdentifierFromICSM = readerAreaFrom.GetValue(c => c.IdentifierFromICSM);
                             area.Name = readerAreaFrom.GetValue(c => c.Name);
