@@ -205,6 +205,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.AppUnits.Sdrn.DeviceSe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.AppUnits.Sdrn.DeviceServer.Adapters.LERFSwitch", "AppUnits\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.LERFSwitch\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.LERFSwitch.csproj", "{A5334015-0E27-4149-8C8A-1A9F24865637}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.Test.Sdrn.DeviceServer.DecodeMessage", "Test\Atdi.Test.Sdrn.DeviceServer.DecodeMessage\Atdi.Test.Sdrn.DeviceServer.DecodeMessage.csproj", "{F7B70FEF-2AD5-4317-9124-B82B0C75284B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1167,6 +1169,18 @@ Global
 		{A5334015-0E27-4149-8C8A-1A9F24865637}.Release|x64.Build.0 = Release|Any CPU
 		{A5334015-0E27-4149-8C8A-1A9F24865637}.Release|x86.ActiveCfg = Release|Any CPU
 		{A5334015-0E27-4149-8C8A-1A9F24865637}.Release|x86.Build.0 = Release|Any CPU
+		{F7B70FEF-2AD5-4317-9124-B82B0C75284B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7B70FEF-2AD5-4317-9124-B82B0C75284B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7B70FEF-2AD5-4317-9124-B82B0C75284B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F7B70FEF-2AD5-4317-9124-B82B0C75284B}.Debug|x64.Build.0 = Debug|Any CPU
+		{F7B70FEF-2AD5-4317-9124-B82B0C75284B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F7B70FEF-2AD5-4317-9124-B82B0C75284B}.Debug|x86.Build.0 = Debug|Any CPU
+		{F7B70FEF-2AD5-4317-9124-B82B0C75284B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7B70FEF-2AD5-4317-9124-B82B0C75284B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7B70FEF-2AD5-4317-9124-B82B0C75284B}.Release|x64.ActiveCfg = Release|Any CPU
+		{F7B70FEF-2AD5-4317-9124-B82B0C75284B}.Release|x64.Build.0 = Release|Any CPU
+		{F7B70FEF-2AD5-4317-9124-B82B0C75284B}.Release|x86.ActiveCfg = Release|Any CPU
+		{F7B70FEF-2AD5-4317-9124-B82B0C75284B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1270,6 +1284,7 @@ Global
 		{4843C1EF-4E5E-440C-AB55-5EDB1DE495EC} = {D6ABFCC0-41D6-441D-9CB0-9729127FC5BC}
 		{78D1ED8D-0AC3-4B8C-B2FE-C42D49DC2EDB} = {D6ABFCC0-41D6-441D-9CB0-9729127FC5BC}
 		{A5334015-0E27-4149-8C8A-1A9F24865637} = {D6ABFCC0-41D6-441D-9CB0-9729127FC5BC}
+		{F7B70FEF-2AD5-4317-9124-B82B0C75284B} = {8489C394-6CB0-4100-A850-702CF94BAE52}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5098ACB0-865F-4136-B16E-747897FBA792}
