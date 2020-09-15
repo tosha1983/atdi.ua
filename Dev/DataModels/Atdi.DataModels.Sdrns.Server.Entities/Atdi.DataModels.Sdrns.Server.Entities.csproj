@@ -131,7 +131,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="DataLayer\Oracle\Functions\ICSC.GetID.sql" />
+    <Content Include="DataLayer\Oracle\Functions\Aggregation\ICSC.GetID.sql" />
+    <Content Include="DataLayer\Oracle\Functions\Master\ICSC.GetID.sql" />
     <Content Include="DataLayer\Oracle\Jobs\ICSC.CHECKACTIVITY_JOB.sql" />
     <Content Include="DataLayer\Oracle\Procedures\ICSC.CHECKACTIVITY.sql" />
     <Content Include="DataLayer\Oracle\Sequences\ICSC.AMQP_MESSAGES_LOG_ID_SEQ.sql" />
