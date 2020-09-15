@@ -2,7 +2,7 @@
 return number
 is
 n number(15);
-
+last_used NVARCHAR2(15);
 
 BEGIN
 
@@ -136,11 +136,26 @@ into n
 from dual;
 end if;
 
+
+
 if inttable_name ='RES_MEAS_STATION' then
-select ICSC.RES_MEAS_STATION_ID_SEQ.nextval
-into n
-from dual;
+
+SELECT Max(ID) INTO last_used FROM ICSC.RES_MEAS_STATION;
+
+LOOP
+SELECT ICSC.RES_MEAS_STATION_ID_SEQ.nextval INTO n FROM dual;
+
+IF (last_used IS NULL)
+THEN EXIT;
+END IF;
+
+IF (n > TO_NUMBER(last_used)) THEN EXIT;
+END IF;
+END LOOP;
 end if;
+
+
+
 
 if inttable_name ='RES_MEAS' then
 select ICSC.RES_MEAS_ID_SEQ.nextval
@@ -155,9 +170,19 @@ from dual;
 end if;
 
 if inttable_name ='RES_STLEVEL_CAR' then
-select ICSC.RES_STLEVEL_CAR_ID_SEQ.nextval
-into n
-from dual;
+
+SELECT Max(ID) INTO last_used FROM ICSC.RES_STLEVEL_CAR;
+
+LOOP
+SELECT ICSC.RES_STLEVEL_CAR_ID_SEQ.nextval INTO n FROM dual;
+
+IF (last_used IS NULL)
+THEN EXIT;
+END IF;
+
+IF (n > TO_NUMBER(last_used)) THEN EXIT;
+END IF;
+END LOOP;
 end if;
 
 
