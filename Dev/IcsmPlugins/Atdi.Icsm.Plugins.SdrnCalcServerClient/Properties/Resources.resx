@@ -213,4 +213,7 @@
   <data name="Id" xml:space="preserve">
     <value>Id</value>
   </data>
+  <data name="Message_YouMustSelectTheRequiredProject" xml:space="preserve">
+    <value>You must select the required project!</value>
+  </data>
 </root>

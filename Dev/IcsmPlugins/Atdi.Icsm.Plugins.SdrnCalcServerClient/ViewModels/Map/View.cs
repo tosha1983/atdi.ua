@@ -15,7 +15,7 @@ using Atdi.DataModels.Sdrn.CalcServer.Entities;
 
 namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.Map
 {
-    [ViewXaml("Map.xaml", WindowState = FormWindowState.Normal, Width = 350, Height = 340)]
+    [ViewXaml("Map.xaml", WindowState = FormWindowState.Normal, Width = 530, Height = 490)]
     [ViewCaption("Calc Server Client: Creating layers")]
     public class View : ViewBase
     {
