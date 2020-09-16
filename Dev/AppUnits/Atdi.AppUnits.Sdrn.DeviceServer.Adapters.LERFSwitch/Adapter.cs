@@ -43,8 +43,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.LERFSwitch
                 port.Open();
                 
 
-                RotatorDeviceProperties rdp = GetProperties(adapterConfig);
-                host.RegisterHandler<COM.SetSwitchSettingsCommand, bool>(SetSwitchSettingsCommandHandler, rdp);
+                //RotatorDeviceProperties rdp = GetProperties(adapterConfig);
+                //host.RegisterHandler<COM.SetRFSwitchSettingsCommand, bool>(SetRFSwitchSettingsCommandHandler, rdp);
             }
             #region Exception
             catch (Exception exp)
@@ -61,10 +61,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.LERFSwitch
         }
 
 
-        public void SetSwitchSettingsCommandHandler(COM.SetSwitchSettingsCommand command, IExecutionContext context)
-        {
+        //public void SetSwitchSettingsCommandHandler(COM.SetSwitchSettingsCommand command, IExecutionContext context)
+        //{
 
-        }
+        //}
 
 
         #region param
@@ -97,56 +97,56 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.LERFSwitch
 
 
 
-        private RotatorDeviceProperties GetProperties(AdapterConfig config)
-        {
-            if (config.ElevationIsPolarization)
-            {
-                return new RotatorDeviceProperties()
-                {
-                    ControlDeviceManufacturer = config.ControlDeviceManufacturer,
-                    ControlDeviceName = config.ControlDeviceName,
-                    ControlDeviceCode = config.ControlDeviceCode,
-                    RotationDeviceManufacturer = config.RotationDeviceManufacturer,
-                    RotationDeviceName = config.RotationDeviceName,
-                    RotationDeviceCode = config.RotationDeviceCode,
-                    AzimuthMin_dg = config.AzimuthMin_dg,
-                    AzimuthMax_dg = config.AzimuthMax_dg,
-                    ElevationMin_dg = 0,//нету, всего две оси вращения 
-                    ElevationMax_dg = 0,//нету, всего две оси вращения 
-                    PolarizationMin_dg = config.ElevationMin_dg,//елевацию используем как поляризацию
-                    PolarizationMax_dg = config.ElevationMax_dg,//елевацию используем как поляризацию
-                    AzimuthStep_dg = stepAz,
-                    ElevationStep_dg = 0,
-                    PolarizationStep_dg = stepEl,
-                    AzimuthSpeedAvailable = new int[] { 1 },//доступна одна скорость
-                    ElevationSpeedAvailable = null,//нету, всего две оси вращения
-                    PolarizationSpeedAvailable = new int[] { 1 }//доступна одна скорость
-                };
-            }
-            else
-            {
-                return new RotatorDeviceProperties()
-                {
-                    ControlDeviceManufacturer = config.ControlDeviceManufacturer,
-                    ControlDeviceName = config.ControlDeviceName,
-                    ControlDeviceCode = config.ControlDeviceCode,
-                    RotationDeviceManufacturer = config.RotationDeviceManufacturer,
-                    RotationDeviceName = config.RotationDeviceName,
-                    RotationDeviceCode = config.RotationDeviceCode,
-                    AzimuthMin_dg = config.AzimuthMin_dg,
-                    AzimuthMax_dg = config.AzimuthMax_dg,
-                    ElevationMin_dg = config.ElevationMin_dg,
-                    ElevationMax_dg = config.ElevationMax_dg,
-                    PolarizationMin_dg = 0, //нету, всего две оси вращения
-                    PolarizationMax_dg = 0, //нету, всего две оси вращения
-                    AzimuthStep_dg = stepAz,
-                    ElevationStep_dg = stepEl,
-                    PolarizationStep_dg = 0,
-                    AzimuthSpeedAvailable = new int[] { 1 },//доступна одна скорость
-                    ElevationSpeedAvailable = new int[] { 1 },//доступна одна скорость
-                    PolarizationSpeedAvailable = null//нету, всего две оси вращения
-                };
-            }
-        }
+        //private RotatorDeviceProperties GetProperties(AdapterConfig config)
+        //{
+        //    //if (config.ElevationIsPolarization)
+        //    //{
+        //    //    return new RotatorDeviceProperties()
+        //    //    {
+        //    //        ControlDeviceManufacturer = config.ControlDeviceManufacturer,
+        //    //        ControlDeviceName = config.ControlDeviceName,
+        //    //        ControlDeviceCode = config.ControlDeviceCode,
+        //    //        RotationDeviceManufacturer = config.RotationDeviceManufacturer,
+        //    //        RotationDeviceName = config.RotationDeviceName,
+        //    //        RotationDeviceCode = config.RotationDeviceCode,
+        //    //        AzimuthMin_dg = config.AzimuthMin_dg,
+        //    //        AzimuthMax_dg = config.AzimuthMax_dg,
+        //    //        ElevationMin_dg = 0,//нету, всего две оси вращения 
+        //    //        ElevationMax_dg = 0,//нету, всего две оси вращения 
+        //    //        PolarizationMin_dg = config.ElevationMin_dg,//елевацию используем как поляризацию
+        //    //        PolarizationMax_dg = config.ElevationMax_dg,//елевацию используем как поляризацию
+        //    //        AzimuthStep_dg = stepAz,
+        //    //        ElevationStep_dg = 0,
+        //    //        PolarizationStep_dg = stepEl,
+        //    //        AzimuthSpeedAvailable = new int[] { 1 },//доступна одна скорость
+        //    //        ElevationSpeedAvailable = null,//нету, всего две оси вращения
+        //    //        PolarizationSpeedAvailable = new int[] { 1 }//доступна одна скорость
+        //    //    };
+        //    //}
+        //    //else
+        //    //{
+        //    //    return new RotatorDeviceProperties()
+        //    //    {
+        //    //        ControlDeviceManufacturer = config.ControlDeviceManufacturer,
+        //    //        ControlDeviceName = config.ControlDeviceName,
+        //    //        ControlDeviceCode = config.ControlDeviceCode,
+        //    //        RotationDeviceManufacturer = config.RotationDeviceManufacturer,
+        //    //        RotationDeviceName = config.RotationDeviceName,
+        //    //        RotationDeviceCode = config.RotationDeviceCode,
+        //    //        AzimuthMin_dg = config.AzimuthMin_dg,
+        //    //        AzimuthMax_dg = config.AzimuthMax_dg,
+        //    //        ElevationMin_dg = config.ElevationMin_dg,
+        //    //        ElevationMax_dg = config.ElevationMax_dg,
+        //    //        PolarizationMin_dg = 0, //нету, всего две оси вращения
+        //    //        PolarizationMax_dg = 0, //нету, всего две оси вращения
+        //    //        AzimuthStep_dg = stepAz,
+        //    //        ElevationStep_dg = stepEl,
+        //    //        PolarizationStep_dg = 0,
+        //    //        AzimuthSpeedAvailable = new int[] { 1 },//доступна одна скорость
+        //    //        ElevationSpeedAvailable = new int[] { 1 },//доступна одна скорость
+        //    //        PolarizationSpeedAvailable = null//нету, всего две оси вращения
+        //    //    };
+        //    //}
+        //}
     }
 }

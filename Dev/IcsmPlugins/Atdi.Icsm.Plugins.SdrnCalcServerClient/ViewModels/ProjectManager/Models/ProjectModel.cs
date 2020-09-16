@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Atdi.WpfControls.EntityOrm.Controls;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,6 +18,7 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
         public byte StatusCode { get; set; }
         public string StatusName { get; set; }
         public string StatusNote { get; set; }
+        public OrmEnumBoxData ProjectionCombo { get; set; }
         public string Projection { get; set; }
     }
 }

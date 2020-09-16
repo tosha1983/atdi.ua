@@ -492,6 +492,7 @@
     <Content Include="ICSM 6.2.70\NetPlugins.dll" />
     <Content Include="ICSM 6.2.70\NetPlugins2.dll" />
     <Content Include="ICSM 6.2.70\OrmCs.dll" />
+    <Content Include="ICSM 6.2.70\Sql\Oracle\XPROTOCOL_REPORT.sql" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Forms\Base\SelectPeriodForm.resx">

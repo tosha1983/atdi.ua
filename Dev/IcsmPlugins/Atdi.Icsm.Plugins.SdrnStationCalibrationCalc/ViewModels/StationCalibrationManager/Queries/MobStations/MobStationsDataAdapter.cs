@@ -100,7 +100,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
 
         public string[] GetStandards(string status)
         {
-            return status.Split(new char[] { ';', ',' }, StringSplitOptions.RemoveEmptyEntries);
+            return status.Split(new char[] { ';', ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
         }
 
         public bool CheckHitting(DataLocationModel[] poligon, YPosition site)

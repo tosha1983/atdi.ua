@@ -464,7 +464,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 
                     for (int i = 0; i < listResultRefSpectrumBySensors.Count; i++)
                     {
-                        SaveTaskResult(listResultRefSpectrumBySensors[i], resultId);
+                        if (!string.IsNullOrEmpty(listResultRefSpectrumBySensors[i].GlobalCID))
+                        {
+                            SaveTaskResult(listResultRefSpectrumBySensors[i], resultId);
+                        }
                     }
                 }
                 else

@@ -169,6 +169,15 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You must select the required project!.
+        /// </summary>
+        public static string Message_YouMustSelectTheRequiredProject {
+            get {
+                return ResourceManager.GetString("Message_YouMustSelectTheRequiredProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Modify.
         /// </summary>
         public static string Modify {

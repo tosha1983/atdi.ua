@@ -207,7 +207,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                     builderProtocols.OrderByDesc(c => c.DateMeasYear);
                     builderProtocols.OrderByDesc(c => c.DateMeasMonth);
                     builderProtocols.OrderByDesc(c => c.DateMeasDay);
-                    builderProtocols.OnTop(200);
+                    //builderProtocols.OnTop(200);
                 }
                 queryExecuter.Fetch(builderProtocols, readerProtocols =>
                 {
@@ -540,7 +540,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                     builderProtocols.OrderByDesc(c => c.DateMeasYear);
                     builderProtocols.OrderByDesc(c => c.DateMeasMonth);
                     builderProtocols.OrderByDesc(c => c.DateMeasDay);
-                    builderProtocols.OnTop(200);
+                    //builderProtocols.OnTop(200);
                 }
                 queryExecuter.Fetch(builderProtocols, readerProtocols =>
                 {

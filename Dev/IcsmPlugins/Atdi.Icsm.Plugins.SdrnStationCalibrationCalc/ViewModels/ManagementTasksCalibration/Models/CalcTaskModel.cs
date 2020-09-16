@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Atdi.WpfControls.EntityOrm.Controls;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,6 +19,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
         public Guid OwnerTaskId { get; set; }
         public DateTimeOffset CreatedDate { get; set; }
         public string MapName { get; set; }
+        public OrmEnumBoxData MapCombo { get; set; }
         public long ContextId { get; set; }
         public string ContextName { get; set; }
     }
