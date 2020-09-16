@@ -36,11 +36,74 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client.Tasks
         private static double[] sitesLongitudes = new double[] { 30.620833 };
         private static double[] sitesHeights = new double[] { 74 };
 
-        private static double[] pointsLatitudes = new double[] { 50.470088, 50.474911, 50.471063 };
-        private static double[] pointsLongitudes = new double[] { 30.642755, 30.610237, 30.642072 };
-        private static double[] pointsHeights = new double[] { 2, 2 };
+        //private static double[] pointsLatitudes = new double[] { 50.470088, 50.474911, 50.471063 };
+        //private static double[] pointsLongitudes = new double[] { 30.642755, 30.610237, 30.642072 };
+        //private static double[] pointsHeights = new double[] { 2, 2, 2};
 
+        //// j-0
+        private static double[] pointsLatitudes = new double[] { 50.474911 };
+        private static double[] pointsLongitudes = new double[] { 30.610237 };
+        private static double[] pointsHeights = new double[] { 2 };
 
+        //// j-2
+        //private static double[] pointsLatitudes = new double[] { 50.470088 };
+        //private static double[] pointsLongitudes = new double[] { 30.642755 };
+        //private static double[] pointsHeights = new double[] { 2 };
+
+        //// j-4
+        //private static double[] pointsLatitudes = new double[] { 50.471063 };
+        //private static double[] pointsLongitudes = new double[] { 30.642072 };
+        //private static double[] pointsHeights = new double[] { 2 };
+
+        //// j-18
+        //private static double[] pointsLatitudes = new double[] { 50.474388 };
+        //private static double[] pointsLongitudes = new double[] { 30.639722 };
+        //private static double[] pointsHeights = new double[] { 2 };
+
+        //// j-21
+        //private static double[] pointsLatitudes = new double[] { 50.474877 };
+        //private static double[] pointsLongitudes = new double[] { 30.639415 };
+        //private static double[] pointsHeights = new double[] { 2 };
+
+        //// j-31
+        //private static double[] pointsLatitudes = new double[] { 50.479714 };
+        //private static double[] pointsLongitudes = new double[] { 30.636214 };
+        //private static double[] pointsHeights = new double[] { 2 };
+
+        //// j-38
+        //private static double[] pointsLatitudes = new double[] { 50.483896 };
+        //private static double[] pointsLongitudes = new double[] { 30.638402 };
+        //private static double[] pointsHeights = new double[] { 2 };
+
+        //// j-59
+        //private static double[] pointsLatitudes = new double[] { 50.486531 };
+        //private static double[] pointsLongitudes = new double[] { 30.644121 };
+        //private static double[] pointsHeights = new double[] { 2 };
+
+        //// j-96
+        //private static double[] pointsLatitudes = new double[] { 50.489093 };
+        //private static double[] pointsLongitudes = new double[] { 30.635182 };
+        //private static double[] pointsHeights = new double[] { 2 };
+
+        //// j-118
+        //private static double[] pointsLatitudes = new double[] { 50.487784 };
+        //private static double[] pointsLongitudes = new double[] { 30.630524 };
+        //private static double[] pointsHeights = new double[] { 2 };
+
+        //// j-124
+        //private static double[] pointsLatitudes = new double[] { 50.486854 };
+        //private static double[] pointsLongitudes = new double[] { 30.631276 };
+        //private static double[] pointsHeights = new double[] { 2 };
+
+        //// j-161
+        //private static double[] pointsLatitudes = new double[] { 50.475243 };
+        //private static double[] pointsLongitudes = new double[] { 30.619875 };
+        //private static double[] pointsHeights = new double[] { 2 };
+
+        //// j-182
+        //private static double[] pointsLatitudes = new double[] { 50.482784 };
+        //private static double[] pointsLongitudes = new double[] { 30.614774 };
+        //private static double[] pointsHeights = new double[] { 2 };
 
         public static void Run(WebApiDataLayer dataLayer, IQueryExecutor executor)
         {
