@@ -141,7 +141,9 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             this.ReloadData();
             this.RedrawMap();
 
-
+            this.StationMonitoringDataAdapter.StartDateTime = DateTime.Now.AddDays(1);
+            this.StationMonitoringDataAdapter.StopDateTime = DateTime.Now.AddDays(1);
+            this.StationMonitoringDataAdapter.Refresh();
         }
 
         public bool IsEnabledStart
