@@ -87,6 +87,8 @@
     <Compile Include="ViewModels\ClientContext\Modifiers\EditClientContextHandler.cs" />
     <Compile Include="ViewModels\ClientContext\Queries\GetClientContextById.cs" />
     <Compile Include="ViewModels\ClientContext\Queries\GetClientContextByIdExecutor.cs" />
+    <Compile Include="ViewModels\ProjectManager\Queries\GetProjections.cs" />
+    <Compile Include="ViewModels\ProjectManager\Queries\GetProjectionsExecutor.cs" />
     <Compile Include="ViewModels\ClientContext\View.cs" />
     <Compile Include="ViewModels\EntityOrmTest\Adapters\ProjectDataAdapter.cs" />
     <Compile Include="ViewModels\EntityOrmTest\Events\OnCreatedProject.cs" />
