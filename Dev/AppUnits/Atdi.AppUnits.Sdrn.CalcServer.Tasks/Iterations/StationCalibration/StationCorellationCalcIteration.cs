@@ -17,12 +17,12 @@ using Atdi.Contracts.Sdrn.DeepServices.EarthGeometry;
 
 namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 {
-	/// <summary>
+    /// <summary>
     /// 
-	/// </summary>
-	public class StationCorellationCalcIteration : IIterationHandler<StationCorellationCalcData, ResultCorrelationGSIDGroupeStationsWithoutParameters>
-	{
-		private readonly ILogger _logger;
+    /// </summary>
+    public class StationCorellationCalcIteration : IIterationHandler<StationCorellationCalcData, ResultCorrelationGSIDGroupeStationsWithoutParameters>
+    {
+        private readonly ILogger _logger;
         private readonly IIterationsPool _iterationsPool;
         private readonly ITransformation _transformation;
         private readonly IObjectPool<CalcPoint[]> _calcPointArrayPool;
@@ -47,20 +47,19 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             _logger = logger;
         }
 
-        public static double ConvertdBuVmTouV (double dBuVm)
+        public static double ConvertdBuVmTouV(double dBuVm)
         {
             return Math.Pow(10, 0.05 * dBuVm);
         }
 
         public ResultCorrelationGSIDGroupeStationsWithoutParameters Run(ITaskContext taskContext, StationCorellationCalcData data)
-		{
+        {
             var calcCorellationResult = new ResultCorrelationGSIDGroupeStationsWithoutParameters();
             var calcPointArrayBuffer = default(CalcPoint[]);
 
             // вызываем механизм расчета FieldStrengthCalcData на основе переданных данных data.FieldStrengthCalcData
             var iterationFieldStrengthCalcData = _iterationsPool.GetIteration<FieldStrengthCalcData, FieldStrengthCalcResult>();
-
-
+            //string val = "";
             try
             {
                 calcPointArrayBuffer = _calcPointArrayPool.Take();
@@ -87,7 +86,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     if (data.GSIDGroupeDriveTests.Points[i].FieldStrength_dBmkVm >= data.CorellationParameters.MinRangeMeasurements_dBmkV &&
                         data.GSIDGroupeDriveTests.Points[i].FieldStrength_dBmkVm <= data.CorellationParameters.MaxRangeMeasurements_dBmkV &&
                        Utils.IsInsideMap(data.GSIDGroupeDriveTests.Points[i].Coordinate.X, data.GSIDGroupeDriveTests.Points[i].Coordinate.Y, lowerLeftCoord_m.X, lowerLeftCoord_m.Y, upperRightCoord_m.X, upperRightCoord_m.Y))
-                        {
+                    {
                         bool isFoubdInBuffer = false;
 
                         if (counter > 0)
@@ -116,7 +115,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             data.FieldStrengthCalcData.TargetCoordinate.X = newTargertCoordX;
                             data.FieldStrengthCalcData.TargetCoordinate.Y = newTargertCoordY;
                             data.FieldStrengthCalcData.TargetAltitude_m = data.GSIDGroupeDriveTests.Points[0].Height_m; // add to FS buffer model ?????????????????
-                            if ((Utils.IsInsideMap(newTargertCoordX, newTargertCoordY, lowerLeftCoord_m.X, lowerLeftCoord_m.Y, upperRightCoord_m.X, upperRightCoord_m.Y)) 
+                            if ((Utils.IsInsideMap(newTargertCoordX, newTargertCoordY, lowerLeftCoord_m.X, lowerLeftCoord_m.Y, upperRightCoord_m.X, upperRightCoord_m.Y))
                                 && (Utils.IsInsideMap(data.FieldStrengthCalcData.PointCoordinate.X, data.FieldStrengthCalcData.PointCoordinate.Y, lowerLeftCoord_m.X, lowerLeftCoord_m.Y, upperRightCoord_m.X, upperRightCoord_m.Y)))
                             {
                                 var faCalculationResult = iterationFieldStrengthCalcData.Run(taskContext, data.FieldStrengthCalcData);
@@ -147,7 +146,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 }
                 if (counter > 0)
                 {
-                   
+
                     // 2 - расчёт напряжённости в окрестности точки
                     for (int i = 0; i < counter; i++)
                     {
@@ -167,7 +166,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                 for (int latPointAround = latAroundStart; latPointAround < latAroundStop; latPointAround += data.FieldStrengthCalcData.MapArea.AxisY.Step)
                                 {
                                     if ((Utils.IsInsideMap(lonPointAround, latPointAround, lowerLeftCoord_m.X, lowerLeftCoord_m.Y, upperRightCoord_m.X, upperRightCoord_m.Y))
-                                        &&   (Utils.IsInsideMap(data.FieldStrengthCalcData.PointCoordinate.X, data.FieldStrengthCalcData.PointCoordinate.Y, lowerLeftCoord_m.X, lowerLeftCoord_m.Y, upperRightCoord_m.X, upperRightCoord_m.Y)))
+                                        && (Utils.IsInsideMap(data.FieldStrengthCalcData.PointCoordinate.X, data.FieldStrengthCalcData.PointCoordinate.Y, lowerLeftCoord_m.X, lowerLeftCoord_m.Y, upperRightCoord_m.X, upperRightCoord_m.Y)))
                                     {
                                         data.FieldStrengthCalcData.TargetCoordinate.X = lonPointAround;
                                         data.FieldStrengthCalcData.TargetCoordinate.Y = latPointAround;
@@ -183,7 +182,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                     {
                                         outOfMapCount++;
                                     }
-                                    
+
                                 }
                             }
                             // если находится точка с расчётной напряжённостью ближе к измеренной - запоминается это значение
@@ -213,16 +212,16 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     double DeltaLossUnrderLimith_dB = 12;
                     int MinPointForThecnikCorrelation = 3;
                     double PercentPointIntoDistance = 50;
-                    if (data.GSIDGroupeDriveTests.Freq_MHz > 1000) { LimithDistance_km = 4;}
-                    if (data.GSIDGroupeDriveTests.Freq_MHz > 2000) { LimithDistance_km = 2;}
-                    if (data.GSIDGroupeDriveTests.Freq_MHz > 2500) { LimithDistance_km = 1;}
+                    if (data.GSIDGroupeDriveTests.Freq_MHz > 1000) { LimithDistance_km = 4; }
+                    if (data.GSIDGroupeDriveTests.Freq_MHz > 2000) { LimithDistance_km = 2; }
+                    if (data.GSIDGroupeDriveTests.Freq_MHz > 2500) { LimithDistance_km = 1; }
                     int countPointDistOut = 0;
 
                     for (int i = 0; i < counter; i++)
                     {
                         // условие при котором мы обязаны учесть данную точку
-                        var pointSourceArgs = new PointEarthGeometric() { Longitude = calcPointArrayBuffer[i].X, Latitude = calcPointArrayBuffer[i].Y, CoordinateUnits = CoordinateUnits.m };
-                        var pointTargetArgs = new PointEarthGeometric() { Longitude = data.FieldStrengthCalcData.TargetCoordinate.X, Latitude = data.FieldStrengthCalcData.TargetCoordinate.Y, CoordinateUnits = CoordinateUnits.m };
+                        var pointSourceArgs = new PointEarthGeometric() { Longitude = data.FieldStrengthCalcData.PointCoordinate.X, Latitude = data.FieldStrengthCalcData.PointCoordinate.Y, CoordinateUnits = CoordinateUnits.m };
+                        var pointTargetArgs = new PointEarthGeometric() { Longitude = calcPointArrayBuffer[i].X, Latitude = calcPointArrayBuffer[i].Y, CoordinateUnits = CoordinateUnits.m };
                         var Dist_km = this._earthGeometricService.GetDistance_km(in pointSourceArgs, in pointTargetArgs);
                         calcPointArrayBuffer[i].Dist_km = Dist_km;
                         diffCalcMeas = Math.Abs(calcPointArrayBuffer[i].FSMeas - calcPointArrayBuffer[i].FSCalc);
@@ -257,11 +256,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         }
                         else
                         {
-                            if (Dist_km >= LimithDistance_km) { countPointDistOut++;}
+                            if (Dist_km >= LimithDistance_km) { countPointDistOut++; }
                         }
                     }
 
-                    if ((pointCount >= MinPointForThecnikCorrelation)&&(countPointDistOut/counter< PercentPointIntoDistance/100.0))
+                    if ((pointCount >= MinPointForThecnikCorrelation) && (countPointDistOut / counter < PercentPointIntoDistance / 100.0))
                     {
                         meanMeasFS /= pointCount;
                         meanCalcFS /= pointCount;
@@ -323,6 +322,13 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     calcCorellationResult.Corellation_factor = 0;
                     calcCorellationResult.CountPoints = 0;
                 }
+
+                //val += $"Count;DiffractionLoss_dB;Dist_km;FSCalc;FSMeas;X;Y;Corellation_pc={calcCorellationResult.Corellation_pc}" + Environment.NewLine;
+                //for (int k=0; k< data.GSIDGroupeDriveTests.Points.Length; k++)
+                //{
+                //val += $"{calcPointArrayBuffer[k].Count};{calcPointArrayBuffer[k].DiffractionLoss_dB};{calcPointArrayBuffer[k].Dist_km};{calcPointArrayBuffer[k].FSCalc};{calcPointArrayBuffer[k].FSMeas};{calcPointArrayBuffer[k].X}; {calcPointArrayBuffer[k].Y};" + Environment.NewLine;
+                //}
+                //System.IO.File.WriteAllText($@"C:\Temp\{data.GSIDGroupeDriveTests.GSID}.csv", val);
             }
             catch (Exception)
             {
@@ -337,5 +343,5 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             }
             return calcCorellationResult;
         }
-	}
+    }
 }
