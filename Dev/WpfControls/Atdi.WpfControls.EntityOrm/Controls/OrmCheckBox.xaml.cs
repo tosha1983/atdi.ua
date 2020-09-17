@@ -114,7 +114,7 @@ namespace Atdi.WpfControls.EntityOrm.Controls
         }
         private void cmbMain_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if ((sender as ComboBox).SelectedValue != null)
+            if ((sender as ComboBox).SelectedValue != null && e.AddedItems.Count > 0)
                 SelectedValue = (e.AddedItems[0] as OrmCheckBoxData).Value;
         }
         private void UpdateSource()
