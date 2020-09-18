@@ -620,40 +620,52 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         var arrStations = outListContextStations[j];
                         for (int d = 0; d < arrStations.Length; d++)
                         {
-                            // обнуляем значение коэффициента корреляции
-                            double? maxPercentCorellation = 0;
-                            // по умолчанию устанавливаем значение статуса для станции в NF и уточняем:
-                            var stationStatusResult = StationStatusResult.NF;
-                            // если в списке станций groupsContextStations есть станция с таким же идентификатором, тогда извлекаем ее статус и процент корреляции
-                            var fndContextStation = groupsContextStations.Find(x => x.ContextStations.Id == arrStations[d].Id);
-                            if (fndContextStation != null)
+                            if (arrStations[d] != null)
                             {
-                                stationStatusResult = fndContextStation.StationStatusResult;
-                                maxPercentCorellation = fndContextStation.MaxCorellation_pc;
-                            }
-
-                            // формируем результат по станциям arrStations со статусом, который  уточнялся - по списку groupsContextStations (который содержит сведения по станциям со статусами UN) 
-                            lstCalibrationStationResult.Add(new CalibrationStationResult()
-                            {
-                                ExternalSource = arrStations[d].ExternalSource,
-                                ExternalCode = arrStations[d].ExternalCode,
-                                LicenseGsid = arrStations[d].LicenseGsid,
-                                ResultStationStatus = stationStatusResult,
-                                StationMonitoringId = arrStations[d].Id,
-                                IsContour = arrStations[d].Type == ClientContextStationType.A ? true : false,
-                                ParametersStationOld = new ParametersStation()
+                                // обнуляем значение коэффициента корреляции
+                                double? maxPercentCorellation = 0;
+                                // по умолчанию устанавливаем значение статуса для станции в NF и уточняем:
+                                var stationStatusResult = StationStatusResult.NF;
+                                // если в списке станций groupsContextStations есть станция с таким же идентификатором, тогда извлекаем ее статус и процент корреляции
+                                var fndContextStation = groupsContextStations.Find(x => x.ContextStations.Id == arrStations[d].Id);
+                                if (fndContextStation != null)
                                 {
-                                    Altitude_m = (int)arrStations[d].Site.Altitude,
-                                    Azimuth_deg = arrStations[d].Antenna.Azimuth_deg,
-                                    Tilt_Deg = arrStations[d].Antenna.Tilt_deg,
-                                    Lat_deg = arrStations[d].Site.Latitude,
-                                    Lon_deg = arrStations[d].Site.Longitude,
-                                    Power_dB = arrStations[d].Transmitter.MaxPower_dBm,
-                                    Freq_MHz = arrStations[d].Transmitter.Freq_MHz
-                                },
-                                Standard = arrStations[d].RealStandard,
-                                MaxCorellation = (float)maxPercentCorellation.Value
-                            });
+                                    stationStatusResult = fndContextStation.StationStatusResult;
+                                    maxPercentCorellation = fndContextStation.MaxCorellation_pc;
+                                }
+
+                                // формируем результат по станциям arrStations со статусом, который  уточнялся - по списку groupsContextStations (который содержит сведения по станциям со статусами UN) 
+
+                                var parametersStationOld = new ParametersStation();
+                                if (arrStations[d].Antenna != null)
+                                {
+                                    parametersStationOld.Azimuth_deg = arrStations[d].Antenna.Azimuth_deg;
+                                    parametersStationOld.Tilt_Deg = arrStations[d].Antenna.Tilt_deg;
+                                }
+                                parametersStationOld.Lat_deg = arrStations[d].Site.Latitude;
+                                parametersStationOld.Altitude_m = (int)arrStations[d].Site.Altitude;
+                                parametersStationOld.Lon_deg = arrStations[d].Site.Longitude;
+
+                                if (arrStations[d].Transmitter != null)
+                                {
+                                    parametersStationOld.Power_dB = arrStations[d].Transmitter.MaxPower_dBm;
+                                    parametersStationOld.Freq_MHz = arrStations[d].Transmitter.Freq_MHz;
+                                }
+
+
+                                lstCalibrationStationResult.Add(new CalibrationStationResult()
+                                {
+                                    ExternalSource = arrStations[d].ExternalSource,
+                                    ExternalCode = arrStations[d].ExternalCode,
+                                    LicenseGsid = arrStations[d].LicenseGsid,
+                                    ResultStationStatus = stationStatusResult,
+                                    StationMonitoringId = arrStations[d].Id,
+                                    IsContour = arrStations[d].Type == ClientContextStationType.A ? true : false,
+                                    ParametersStationOld = parametersStationOld,
+                                    Standard = arrStations[d].RealStandard,
+                                    MaxCorellation = (float)maxPercentCorellation.Value
+                                });
+                            }
                         }
                     }
 
