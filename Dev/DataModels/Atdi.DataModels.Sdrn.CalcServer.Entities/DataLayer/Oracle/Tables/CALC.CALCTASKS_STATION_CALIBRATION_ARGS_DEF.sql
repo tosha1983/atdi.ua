@@ -1,6 +1,6 @@
 ﻿CREATE TABLE CALC.CALCTASKS_STATION_CALIBRATION_ARGS_DEF
 (
-  STANDARD							   NVARCHAR2(50),
+  STANDARD                             NVARCHAR2(50),
   TASK_ID                              NUMBER(15) NOT NULL,
   CORRELATION_THRESHOLD_HARD           NUMBER(22,8),
   CORRELATION_THRESHOLD_WEAK           NUMBER(22,8),
@@ -43,7 +43,9 @@
   METHOD                               NUMBER(3),
   INFOC_MEAS_RESULTS                   BLOB,
   STATION_IDS                          BLOB,
-  AREA_CONTOURS                        BLOB
+  MAX_DEVIATION_POWER_STATION_DB       NUMBER(22,8),
+  AREA_CONTOURS                        BLOB,
+  AREAS                                NVARCHAR2(1000)
 )
 TABLESPACE USERS
 PCTUSED    0
@@ -51,11 +53,87 @@ PCTFREE    10
 INITRANS   1
 MAXTRANS   255
 STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
             PCTINCREASE      0
             BUFFER_POOL      DEFAULT
            )
 LOGGING 
 NOCOMPRESS 
+LOB (STATION_IDS) STORE AS SECUREFILE 
+      ( TABLESPACE  USERS 
+        ENABLE      STORAGE IN ROW
+        CHUNK       8192
+        NOCACHE
+        INDEX       (
+          TABLESPACE USERS
+          STORAGE    (
+                      INITIAL          64K
+                      NEXT             1
+                      MINEXTENTS       1
+                      MAXEXTENTS       UNLIMITED
+                      PCTINCREASE      0
+                      BUFFER_POOL      DEFAULT
+                     ))
+        STORAGE    (
+                    INITIAL          104K
+                    NEXT             1M
+                    MINEXTENTS       1
+                    MAXEXTENTS       UNLIMITED
+                    PCTINCREASE      0
+                    BUFFER_POOL      DEFAULT
+                   )
+      )
+  LOB (INFOC_MEAS_RESULTS) STORE AS SECUREFILE 
+      ( TABLESPACE  USERS 
+        ENABLE      STORAGE IN ROW
+        CHUNK       8192
+        NOCACHE
+        INDEX       (
+          TABLESPACE USERS
+          STORAGE    (
+                      INITIAL          64K
+                      NEXT             1
+                      MINEXTENTS       1
+                      MAXEXTENTS       UNLIMITED
+                      PCTINCREASE      0
+                      BUFFER_POOL      DEFAULT
+                     ))
+        STORAGE    (
+                    INITIAL          104K
+                    NEXT             1M
+                    MINEXTENTS       1
+                    MAXEXTENTS       UNLIMITED
+                    PCTINCREASE      0
+                    BUFFER_POOL      DEFAULT
+                   )
+      )
+  LOB (AREA_CONTOURS) STORE AS SECUREFILE 
+      ( TABLESPACE  USERS 
+        ENABLE      STORAGE IN ROW
+        CHUNK       8192
+        NOCACHE
+        INDEX       (
+          TABLESPACE USERS
+          STORAGE    (
+                      INITIAL          64K
+                      NEXT             1
+                      MINEXTENTS       1
+                      MAXEXTENTS       UNLIMITED
+                      PCTINCREASE      0
+                      BUFFER_POOL      DEFAULT
+                     ))
+        STORAGE    (
+                    INITIAL          104K
+                    NEXT             1M
+                    MINEXTENTS       1
+                    MAXEXTENTS       UNLIMITED
+                    PCTINCREASE      0
+                    BUFFER_POOL      DEFAULT
+                   )
+      )
 NOCACHE
 NOPARALLEL
 MONITORING;
@@ -69,6 +147,10 @@ PCTFREE    10
 INITRANS   2
 MAXTRANS   255
 STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
             PCTINCREASE      0
             BUFFER_POOL      DEFAULT
            )
@@ -78,4 +160,16 @@ NOPARALLEL;
 ALTER TABLE CALC.CALCTASKS_STATION_CALIBRATION_ARGS_DEF ADD (
   CONSTRAINT PK_CALCTASKS_STATION_CALIBRATION_ARGS_DEF_NEW_
  PRIMARY KEY
- (TASK_ID));
+ (TASK_ID)
+    USING INDEX 
+    TABLESPACE USERS
+    PCTFREE    10
+    INITRANS   2
+    MAXTRANS   255
+    STORAGE    (
+                INITIAL          64K
+                NEXT             1M
+                MINEXTENTS       1
+                MAXEXTENTS       UNLIMITED
+                PCTINCREASE      0
+               ));

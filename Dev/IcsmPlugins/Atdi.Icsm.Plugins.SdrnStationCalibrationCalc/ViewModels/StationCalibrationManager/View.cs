@@ -747,10 +747,12 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             {
                 if (CurrentAreas != null)
                 {
+                    string Areas = "";
                     int idx = 0;
                     var contours = new string[CurrentAreas.Count];
                     foreach (AreaModel areaModel in CurrentAreas)
                     {
+                        Areas += areaModel.Name+";";
                         if ((areaModel.Location != null) && (areaModel.Location.Length > 0))
                         {
                             for (int i = 0; i < areaModel.Location.Length; i++)
@@ -807,6 +809,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                             ShiftTiltStationStep_deg = this._currentParamsCalculationModel.ShiftTiltStationStep_deg,
                             StationIds = data.ContextStationIds,
                             Contours = contours,
+                            Areas = Areas,
                             TiltStation = this._currentParamsCalculationModel.TiltStation,
                             TrustOldResults = this._currentParamsCalculationModel.TrustOldResults,
                             UseMeasurementSameGSID = this._currentParamsCalculationModel.UseMeasurementSameGSID,

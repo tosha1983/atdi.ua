@@ -76,6 +76,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                      query.SetValue(c => c.InfocMeasResults, commandParameters.InfocMeasResults);
                  }
                  query.SetValue(c => c.TiltStation, commandParameters.TiltStation)
+                .SetValue(c => c.Areas, commandParameters.Areas)
                 .SetValue(c => c.TrustOldResults, commandParameters.TrustOldResults)
                 .SetValue(c => c.UseMeasurementSameGSID, commandParameters.UseMeasurementSameGSID)
                 .SetValue(c => c.CorrelationThresholdHard, commandParameters.CorrelationThresholdHard)

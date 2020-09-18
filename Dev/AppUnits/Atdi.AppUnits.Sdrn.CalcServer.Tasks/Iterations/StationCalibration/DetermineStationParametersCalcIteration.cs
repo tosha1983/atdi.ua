@@ -723,9 +723,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
 
                     // извлекаем неповторяющиеся значения регионов
-                    var areasSelect = data.GSIDGroupeStation.ToList().Select(x => x.RegionCode).Distinct();
+                    //var areasSelect = data.GSIDGroupeStation.ToList().Select(x => x.RegionCode).Distinct();
+
                     // формируем их через запятую
-                    string areas = string.Join(",", areasSelect.ToArray());
+                    //string areas = string.Join(",", areasSelect.ToArray());
+                    string areas = data.Areas!=null ? data.Areas : "";
                     // генерация итогового результата
                     var calcCorellationResult = new CalibrationResult()
                     {
@@ -891,8 +893,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             for (int i = 0; i < stations.Length; i++)
             {
                 // при условии совпадения частот
-                if (stations[i].Transmitter.Freqs_MHz.Contains(driveTest.Freq_MHz))
+                var freq_MHz = GetFreqStation(driveTest, stations[i]);
+                if (freq_MHz != null)
                 {
+                //if (stations[i].Transmitter.Freqs_MHz.Contains(driveTest.Freq_MHz))
+                //{
                     var fieldStrengthCalcData = new FieldStrengthCalcData
                     {
                         Antenna = stations[i].Antenna,
@@ -1266,17 +1271,24 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             }
             else
             {
+                bool isFind = false;
                 for (int d = 0; d < outListContextStation.Count; d++)
                 {
                     var lstStations = outListContextStation[d].ToList();
                     for (int s = 0; s < contextStation.Length; s++)
                     {
-                        if ((lstStations.Find(x => x.Id == contextStation[s].Id)) == null)
+                        if ((lstStations.Find(x => x.Id == contextStation[s].Id)) != null)
                         {
-                            lstStations.Add(contextStation[s]);
+                            isFind = true;
+                            break;
+                            //lstStations.Add(contextStation[s]);
                         }
                     }
-                    outListContextStation[d] = lstStations.ToArray();
+                    //outListContextStation[d] = lstStations.ToArray();
+                }
+                if (!isFind)
+                {
+                    outListContextStation.Add(contextStation);
                 }
             }
         }
@@ -1299,17 +1311,23 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             }
             else
             {
+                bool isFind = false;
                 for (int d = 0; d < outListDriveTestsResults.Count; d++)
                 {
                     var lstdriveTestsResults = outListDriveTestsResults[d].ToList();
                     for (int s = 0; s < driveTestsResults.Length; s++)
                     {
-                        if ((lstdriveTestsResults.Find(x => x.DriveTestId == driveTestsResults[s].DriveTestId)) == null)
+                        if ((lstdriveTestsResults.Find(x => x.DriveTestId == driveTestsResults[s].DriveTestId)) != null)
                         {
-                            lstdriveTestsResults.Add(driveTestsResults[s]);
+                            isFind = true;
+                            break;
+                            //lstdriveTestsResults.Add(driveTestsResults[s]);
                         }
                     }
-                    outListDriveTestsResults[d] = lstdriveTestsResults.ToArray();
+                }
+                if (!isFind)
+                {
+                    outListDriveTestsResults.Add(driveTestsResults);
                 }
             }
         }
