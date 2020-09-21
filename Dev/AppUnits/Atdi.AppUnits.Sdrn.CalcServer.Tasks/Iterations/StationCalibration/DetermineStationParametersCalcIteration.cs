@@ -1104,6 +1104,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         Standard = calibrationStationsAndDriveTestsResult.ClientContextStation.RealStandard,
                         Freq_MHz = calibrationStationsAndDriveTestsResult.ClientContextStation.Transmitter.Freq_MHz
                     };
+                    if ((float)calibrationStationsAndDriveTestsResult.MaxCorrelation_PC > 0)
+                    {
+                        calibrationStationResult.ResultStationStatus = StationStatusResult.UN;
+                    }
                     listCalibrationStationResults.Add(calibrationStationResult);
                 }
             }
@@ -1236,9 +1240,13 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         IsContour = calibrationStationsAndDriveTestsResult.ClientContextStation.Type == ClientContextStationType.A ? true : false,
                         StationMonitoringId = calibrationStationsAndDriveTestsResult.ClientContextStation.Id,
                         Standard = calibrationStationsAndDriveTestsResult.ClientContextStation.RealStandard,
-                        Freq_MHz = calibrationStationsAndDriveTestsResult.ClientContextStation.Transmitter.Freq_MHz
+                        Freq_MHz = calibrationStationsAndDriveTestsResult.ClientContextStation.Transmitter.Freq_MHz,
+                        ResultStationStatus = StationStatusResult.NF,
                     };
-                    calibrationStationResult.ResultStationStatus = StationStatusResult.UN;
+                    if ((float)calibrationStationsAndDriveTestsResult.MaxCorrelation_PC > 0)
+                    {
+                        calibrationStationResult.ResultStationStatus = StationStatusResult.UN;
+                    }
                     listCalibrationStationResults.Add(calibrationStationResult);
                 }
             }
