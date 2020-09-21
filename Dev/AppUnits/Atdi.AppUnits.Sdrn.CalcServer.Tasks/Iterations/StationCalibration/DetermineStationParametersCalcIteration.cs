@@ -1741,7 +1741,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         var arrStations = outListContextStations[j];
                         if ((arrStations != null) && (arrStations.Length > 0))
                         {
-                            if (CompareFreqStAndDriveTest(currentDriveTest, arrStations[j]))
+                            if (CompareFreqStAndDriveTest(currentDriveTest, arrStations[0]))
                             {
                                 for (int p = 0; p < coordinatesDrivePoint.Length; p++)
                                 {
@@ -1795,7 +1795,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             for (int z = 0; z < arrStations.Length; z++)
                             {
                                 var sourcePointArgs = new PointEarthGeometric() { Longitude = centerWeightCoordinateOfDriveTest.X, Latitude = centerWeightCoordinateOfDriveTest.Y, CoordinateUnits = CoordinateUnits.m };
-                                var targetPointArgs = new PointEarthGeometric() { Longitude = arrStations[0].Coordinate.X, Latitude = arrStations[0].Coordinate.Y, CoordinateUnits = CoordinateUnits.m };
+                                var targetPointArgs = new PointEarthGeometric() { Longitude = arrStations[z].Coordinate.X, Latitude = arrStations[z].Coordinate.Y, CoordinateUnits = CoordinateUnits.m };
                                 var distance = this._earthGeometricService.GetDistance_km(in sourcePointArgs, in targetPointArgs);
                                 keyValueStations.Add(new KeyValuePair<long, double>(arrStations[z].Id, distance));
                             }
