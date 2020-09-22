@@ -1749,7 +1749,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         var arrStations = outListContextStations[j];
                         if ((arrStations != null) && (arrStations.Length > 0))
                         {
-                            if (CompareFreqStAndDriveTest(currentDriveTest, arrStations[0]))
+                            if (Utils.CompareFreqStAndDriveTest(currentDriveTest, arrStations[0]))
                             {
                                 for (int p = 0; p < coordinatesDrivePoint.Length; p++)
                                 {
@@ -1821,22 +1821,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             }
             return GSIDGroupeStations;
         }
-        private bool CompareFreqStAndDriveTest(DriveTestsResult driveTestsResult, ContextStation contextStation)
-        {
-            var FreqDT = driveTestsResult.Freq_MHz;
-            var FreqST = contextStation.Transmitter.Freq_MHz;
-            var FreqArr = contextStation.Transmitter.Freqs_MHz;
-            var BW = contextStation.Transmitter.BW_kHz / 1000.0;
-            if ((FreqST - BW <= FreqDT) && (FreqST + BW >= FreqDT)) { return true; }
-            if ((FreqArr != null) && (FreqArr.Length > 0))
-            {
-                for (int i = 0; FreqArr.Length > i; i++)
-                {
-                    if ((FreqArr[i] - BW * 0.49 <= FreqDT) && (FreqArr[i] + BW * 0.49 >= FreqDT)) { return true; }
-                }
-            }
-            return false; 
-        }
+   
 
         private double? GetFreqStation(DriveTestsResult driveTestsResult, ContextStation contextStation)
         {

@@ -148,6 +148,27 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             }
         }
 
+
+        /// <summary>
+        /// Сравнение драйв тестов со станциями
+        /// </summary>
+        /// <param name="GCID1"></param>
+        /// <param name="GCID2"></param>
+        /// <param name="standard"></param>
+        /// <returns></returns>
+        public static bool CompareGSIDBetweenDriveTestAndStation(string GCIDDriveTest, string GCIDStation, string standard)
+        {
+            if (GCIDComparisonRDB.Compare(standard, GCIDDriveTest, GCIDStation))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+
         /// <summary>
         /// Сравнение с базовыми станциями
         /// </summary>
@@ -701,8 +722,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     var driveTestsResults = new List<DriveTestsResult>();
                     for (int j = i + 1; j < contextDriveTestsResult.Length; j++)
                     {
-
-                        if (GCIDComparisonRR.Compare(Standard, contextDriveTestsResult[i].GSID, contextDriveTestsResult[j].GSID))
+                        if ((GCIDComparisonRR.Compare(Standard, contextDriveTestsResult[i].GSID, contextDriveTestsResult[j].GSID)) || (GCIDComparisonRR.Compare(Standard, contextDriveTestsResult[j].GSID, contextDriveTestsResult[i].GSID)))
                         {
                             if ((driveTestsResults.Find(x => x.GSID == contextDriveTestsResult[j].GSID)) == null)
                             {
@@ -840,6 +860,23 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             countRecords = arrUniqueGSID.Length;
         }
 
+        public static bool CompareFreqStAndDriveTest(DriveTestsResult driveTestsResult, ContextStation contextStation)
+        {
+            var FreqDT = driveTestsResult.Freq_MHz;
+            var FreqST = contextStation.Transmitter.Freq_MHz;
+            var FreqArr = contextStation.Transmitter.Freqs_MHz;
+            var BW = contextStation.Transmitter.BW_kHz / 1000.0;
+            if ((FreqST - BW <= FreqDT) && (FreqST + BW >= FreqDT)) { return true; }
+            if ((FreqArr != null) && (FreqArr.Length > 0))
+            {
+                for (int i = 0; FreqArr.Length > i; i++)
+                {
+                    if ((FreqArr[i] - BW * 0.49 <= FreqDT) && (FreqArr[i] + BW * 0.49 >= FreqDT)) { return true; }
+                }
+            }
+            return false;
+        }
+
 
         /// <summary>
         /// Поиcк соответствий между драйв тестами и станицями
@@ -880,7 +917,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             {
                                 if ((groupedDriveTests.Count > 0) && (groupedStations.Count > 0))
                                 {
-                                    if (CompareGSIDBetweenDriveTestAndStation(driveTestGSID[0].GSID, stationsGSID[0].LicenseGsid, Standard.GetStandardForDriveTest(), groupedDriveTests[m][0].Freq_MHz, groupedStations[i][0].Transmitter.Freqs_MHz))
+                                    //if (CompareGSIDBetweenDriveTestAndStation(driveTestGSID[0].GSID, stationsGSID[0].LicenseGsid, Standard.GetStandardForDriveTest(), groupedDriveTests[m][0].Freq_MHz, groupedStations[i][0].Transmitter.Freqs_MHz))
+                                    if ((CompareGSIDBetweenDriveTestAndStation(driveTestGSID[0].GSID, stationsGSID[0].LicenseGsid, Standard.GetStandardForDriveTest())) && (CompareFreqStAndDriveTest(driveTestGSID[0], stationsGSID[0])))
                                     {
                                         var lnkDriveTest = new LinkGoupDriveTestsAndStations()
                                         {
@@ -919,7 +957,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             }
             if (lstStations.Count > 0)
             {
-                outContextStations = new ContextStation[1][] { lstStations.ToArray() };
+                //outContextStations = new ContextStation[1][] { lstStations.ToArray() };
+                outContextStations = CompareStations(lstStations.ToArray(), Standard, transformation, earthGeometricService, maxDistance, projection);
             }
             else
             {
@@ -943,7 +982,6 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             if (lstDriveTests.Count > 0)
             {
                 outDriveTestsResults = CompareDriveTests(lstDriveTests.ToArray(), Standard);
-                //outDriveTestsResults = new DriveTestsResult[1][] { lstDriveTests.ToArray() };
             }
             else
             {
