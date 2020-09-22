@@ -106,6 +106,7 @@ namespace Atdi.AppUnits.Sdrn.MasterServer.PrimaryHandlers.MessageHandlers
                     builderInsertSensor.SetValue(c => c.TypeSensor, sensorData.TypeSensor);
                     builderInsertSensor.SetValue(c => c.ApiVersion, "2.0");
                     builderInsertSensor.SetValue(c => c.TechId, sensorData.Equipment.TechId);
+                    builderInsertSensor.SetValue(c => c.Agl, sensorData.AGL);
 
                     var sensor_PK = scope.Executor.Execute<MD.ISensor_PK>(builderInsertSensor);
                     if (sensor_PK.Id > 0)
@@ -351,6 +352,7 @@ namespace Atdi.AppUnits.Sdrn.MasterServer.PrimaryHandlers.MessageHandlers
                         builderUpdateSensor.SetValue(c => c.Status, sensorData.Status);
                         builderUpdateSensor.SetValue(c => c.StepMeasTime, sensorData.StepMeasTime);
                         builderUpdateSensor.SetValue(c => c.TypeSensor, sensorData.TypeSensor);
+                        builderUpdateSensor.SetValue(c => c.Agl, sensorData.AGL);
                         builderUpdateSensor.Where(c => c.Id, ConditionOperator.Equal, idSensor);
                         if (scope.Executor
                         .Execute(builderUpdateSensor) > 0)

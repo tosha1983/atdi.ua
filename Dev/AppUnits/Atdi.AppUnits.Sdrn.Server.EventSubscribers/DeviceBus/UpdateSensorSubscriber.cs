@@ -110,6 +110,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                         builderUpdateSensor.SetValue(c => c.Status, sensorData.Status);
                         builderUpdateSensor.SetValue(c => c.StepMeasTime, sensorData.StepMeasTime);
                         builderUpdateSensor.SetValue(c => c.TypeSensor, sensorData.Type);
+                        builderUpdateSensor.SetValue(c => c.Agl, sensorData.AGL);
                         builderUpdateSensor.Where(c => c.Id, ConditionOperator.Equal, idSensor);
                         if (scope.Executor
                         .Execute(builderUpdateSensor) > 0)
