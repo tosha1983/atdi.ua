@@ -1232,7 +1232,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
             }
         }
 
-        private void ValidateAndSetTraceType(COMP.TraceType traceType, bool frequencyChanged)
+        private void ValidateAndSetTraceType(COMP.TraceType traceType, int traceCount, bool frequencyChanged)
         {
             ParamWithId res = new ParamWithId { Id = 0, Parameter = "BLAN" };
             for (int i = 0; i < traceTypes.Count; i++)
@@ -1259,7 +1259,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
                     res = traceTypes[i];
                 }
             }
-            if (res.Parameter == "BLAN")
+            if (res.Id != (int)EN.TraceType.ClearWrite && traceCount < 2)
+            {
+                throw new Exception("If TraceType is not ClearWrite, then TraceCount must be set greater than or equal to two to work effectively.");
+            }
+            else if (res.Parameter == "BLAN")
             {
                 throw new Exception("The TraceType must be set to the available instrument range.");
             }
@@ -1495,7 +1499,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
 
                 //все спехнем на прибор
                 ValidateAndSetLevelUnit(command.Parameter.LevelUnit);
-                ValidateAndSetTraceType(command.Parameter.TraceType, frequencyChanged);
+                ValidateAndSetTraceType(command.Parameter.TraceType, command.Parameter.TraceCount, frequencyChanged);
                 ValidateAndSetSweepTime((decimal)command.Parameter.SweepTime_s);
                 GetFreqArr();//узнаем что там с сеткой частот
 
@@ -1516,7 +1520,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
                 else
                 {
                     throw new Exception("TraceCount must be set greater than zero.");
-                }                
+                }
                 GetAndPushTraceResults(command, context);
             }
             else//странно но так надо
@@ -1578,64 +1582,64 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
             SweepDuration = (long)(QueryDecimal("SWE:DUR?") * 10000000);
             long time = timeService.TimeStamp.Ticks;
             bool setInit = false;
-            long count = 1 + (long)traceCountToMeas;//костыль
+            long count = /*1 + */(long)traceCountToMeas;//костыль
             //Если TraceType ClearWrite то пушаем каждый результат
             if (trace1Type.Id == (int)EN.TraceType.ClearWrite)
             {
                 for (long i = 0; i < count; i++)
                 {
-                    if (!setInit)
-                    {
-                        WriteString(":INIT;*WAI");
-                        time = timeService.TimeStamp.Ticks;
-                        setInit = true;
-                    }
+                    //if (!setInit)
+                    //{
+                    WriteString(":INIT;*WAI");
+                    time = timeService.TimeStamp.Ticks;
+                    setInit = true;
+                    //}
                     if (time + SweepDuration - 1000000 < timeService.TimeStamp.Ticks + timeOutRMinTicks)
                     {
                         if (GetTrace())
-                        {                            
-                            if (i > 0)//костыль
+                        {
+                            //if (i > 0)//костыль
+                            //{
+                            // пушаем результат
+                            traceCount++;
+
+                            if (!poolKeyFind)
                             {
-                                // пушаем результат
-                                traceCount++;
-
-                                if (!poolKeyFind)
-                                {
-                                    FindTracePoolName(LevelArr.Length, ref poolKeyFind, ref poolKeyName);
-                                }
-                                COMR.MesureTraceResult result;
-                                if (traceCountToMeas == traceCount)
-                                {
-                                    result = context.TakeResult<COMR.MesureTraceResult>(poolKeyName, traceCount - 1, CommandResultStatus.Final);
-                                }
-                                else
-                                {
-                                    result = context.TakeResult<COMR.MesureTraceResult>(poolKeyName, traceCount - 1, CommandResultStatus.Next);
-                                }
-
-                                for (int j = 0; j < LevelArrLength; j++)
-                                {
-                                    result.Level[j] = LevelArr[j];
-                                }
-                                result.LevelMaxIndex = LevelArrLength;
-                                result.FrequencyStart_Hz = resFreqStart;
-                                result.FrequencyStep_Hz = resFreqStep;
-
-                                result.TimeStamp = timeService.GetGnssUtcTime().Ticks - uTCOffset;// new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;//неюзабельно
-                                                                                                  //result.TimeStamp = DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
-                                result.Att_dB = (int)AttLevelSpec;
-                                result.PreAmp_dB = preAmpSpec ? 1 : 0;
-                                result.RefLevel_dBm = (int)RefLevelSpec;
-                                result.RBW_Hz = (double)RBW;
-                                result.VBW_Hz = (double)VBW;
-                                result.DeviceStatus = COMR.Enums.DeviceStatus.Normal;
-                                if (PowerRegister != EN.PowerRegister.Normal)
-                                {
-                                    result.DeviceStatus = COMR.Enums.DeviceStatus.RFOverload;
-                                }
-                                setInit = false;
-                                context.PushResult(result);
+                                FindTracePoolName(LevelArr.Length, ref poolKeyFind, ref poolKeyName);
                             }
+                            COMR.MesureTraceResult result;
+                            if (traceCountToMeas == traceCount)
+                            {
+                                result = context.TakeResult<COMR.MesureTraceResult>(poolKeyName, traceCount - 1, CommandResultStatus.Final);
+                            }
+                            else
+                            {
+                                result = context.TakeResult<COMR.MesureTraceResult>(poolKeyName, traceCount - 1, CommandResultStatus.Next);
+                            }
+
+                            for (int j = 0; j < LevelArrLength; j++)
+                            {
+                                result.Level[j] = LevelArr[j];
+                            }
+
+                            result.LevelMaxIndex = LevelArrLength;
+                            result.FrequencyStart_Hz = resFreqStart;
+                            result.FrequencyStep_Hz = resFreqStep;
+
+                            result.TimeStamp = timeService.GetGnssUtcTime().Ticks - uTCOffset;// new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;//неюзабельно
+                                                                                              //result.TimeStamp = DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
+                            result.Att_dB = (int)AttLevelSpec;
+                            result.PreAmp_dB = preAmpSpec ? 1 : 0;
+                            result.RefLevel_dBm = (int)RefLevelSpec;
+                            result.RBW_Hz = (double)RBW;
+                            result.VBW_Hz = (double)VBW;
+                            result.DeviceStatus = COMR.Enums.DeviceStatus.Normal;
+                            if (PowerRegister != EN.PowerRegister.Normal)
+                            {
+                                result.DeviceStatus = COMR.Enums.DeviceStatus.RFOverload;
+                            }
+                            setInit = false;
+                            context.PushResult(result);
                         }
                         else
                         {
@@ -1670,7 +1674,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
             {
                 bool _RFOverload = false;
                 SweepDuration = (long)(QueryDecimal("SWE:DUR?") * 10000000);
-                WriteString(":INIT");
+                WriteString(":INIT;*WAI");
                 for (long i = 0; i < count; i++)
                 {
                     if (GetNumberOfSweeps())
@@ -1678,6 +1682,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
                         if (GetTrace())
                         {
                             break;//таки новые данные можно публиковать
+                        }
+                        else//ркзультат некоректный
+                        {
+                            i--;
+                            WriteString(":INIT;*WAI");
                         }
                     }
                     else
@@ -1799,7 +1808,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
                         {
                             result.DeviceStatus = COMR.Enums.DeviceStatus.RFOverload;
                         }
-
                         context.PushResult(result);
                     }
                     else
@@ -1927,7 +1935,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
 
                 //все спехнем на прибор
                 ValidateAndSetLevelUnit(command.Parameter.LevelUnit);
-                ValidateAndSetTraceType(COMP.TraceType.ClearWhrite, frequencyChanged);
+                ValidateAndSetTraceType(COMP.TraceType.ClearWhrite, 1, frequencyChanged);
                 ValidateAndSetSweepTime((decimal)command.Parameter.SweepTime_s);
                 GetFreqArr();//узнаем что там с сеткой частот
                 WriteString(":SENSe:AVERage:COUNt 1");
@@ -2352,11 +2360,36 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
                 else if (pow.Contains("1")) { PowerRegister = EN.PowerRegister.RFOverload; }//правильно
                 WriteString("TRAC:DATA? TRACE1");
                 formattedIO.ReadBinaryBlockOfByte(byteArray, 0, SweepPoints * 4);
+
+                bool badlevel = false;
+                bool badlevelislevel = false;
+                int badlevelindex = 0;
+                int badlevelindexislevel = 0;
                 for (int j = 0; j < SweepPoints; j++)
                 {
                     LevelArr[j] = System.BitConverter.ToSingle(byteArray, j * 4);
+                    if ((j > 5 &&
+                        !badlevel) &&
+                        LevelArr[j] % 10 == 0 &&
+                        LevelArr[j - 1] % 10 == 0 &&
+                        LevelArr[j - 2] % 10 == 0)
+                    {
+                        badlevel = true;
+                        badlevelindex = j;
+                    }
+                    if (j > 5 &&
+                        !badlevelislevel &&
+                        LevelArr[j] == LevelArr[j - 1] &&
+                        LevelArr[j - 1] == LevelArr[j - 2])
+                    {
+                        badlevelislevel = true;
+                        badlevelindexislevel = j;
+                    }
                 }
-
+                if (badlevel || badlevelislevel)
+                {
+                    res = false;
+                }
                 LevelArrLength = SweepPoints;
                 //таки новый трейс полностью
                 if (getSweeptime)
@@ -2585,9 +2618,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
             }
 #if DEBUG
             delta2 = timeService.TimeStamp.Ticks - delta2;
-            System.Diagnostics.Debug.WriteLine("delta " + (new TimeSpan(delta)).ToString());
-            System.Diagnostics.Debug.WriteLine("delta2 " + (new TimeSpan(delta2)).ToString());
-            System.Diagnostics.Debug.WriteLine("delta++ " + (new TimeSpan(delta2 + delta)).ToString());
+            //System.Diagnostics.Debug.WriteLine("delta " + (new TimeSpan(delta)).ToString());
+            //System.Diagnostics.Debug.WriteLine("delta2 " + (new TimeSpan(delta2)).ToString());
+            //System.Diagnostics.Debug.WriteLine("delta++ " + (new TimeSpan(delta2 + delta)).ToString());
 #endif
             triggerOffsetInSample = QueryDecimal("TRACe:IQ:TPISample?");
             //Посчитаем когда точно был триггер относительно первого семпла

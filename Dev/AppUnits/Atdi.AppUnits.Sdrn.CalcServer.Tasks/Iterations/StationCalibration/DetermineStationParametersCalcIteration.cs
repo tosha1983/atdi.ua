@@ -620,40 +620,52 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         var arrStations = outListContextStations[j];
                         for (int d = 0; d < arrStations.Length; d++)
                         {
-                            // обнуляем значение коэффициента корреляции
-                            double? maxPercentCorellation = 0;
-                            // по умолчанию устанавливаем значение статуса для станции в NF и уточняем:
-                            var stationStatusResult = StationStatusResult.NF;
-                            // если в списке станций groupsContextStations есть станция с таким же идентификатором, тогда извлекаем ее статус и процент корреляции
-                            var fndContextStation = groupsContextStations.Find(x => x.ContextStations.Id == arrStations[d].Id);
-                            if (fndContextStation != null)
+                            if (arrStations[d] != null)
                             {
-                                stationStatusResult = fndContextStation.StationStatusResult;
-                                maxPercentCorellation = fndContextStation.MaxCorellation_pc;
-                            }
-
-                            // формируем результат по станциям arrStations со статусом, который  уточнялся - по списку groupsContextStations (который содержит сведения по станциям со статусами UN) 
-                            lstCalibrationStationResult.Add(new CalibrationStationResult()
-                            {
-                                ExternalSource = arrStations[d].ExternalSource,
-                                ExternalCode = arrStations[d].ExternalCode,
-                                LicenseGsid = arrStations[d].LicenseGsid,
-                                ResultStationStatus = stationStatusResult,
-                                StationMonitoringId = arrStations[d].Id,
-                                IsContour = arrStations[d].Type == ClientContextStationType.A ? true : false,
-                                ParametersStationOld = new ParametersStation()
+                                // обнуляем значение коэффициента корреляции
+                                double? maxPercentCorellation = 0;
+                                // по умолчанию устанавливаем значение статуса для станции в NF и уточняем:
+                                var stationStatusResult = StationStatusResult.NF;
+                                // если в списке станций groupsContextStations есть станция с таким же идентификатором, тогда извлекаем ее статус и процент корреляции
+                                var fndContextStation = groupsContextStations.Find(x => x.ContextStations.Id == arrStations[d].Id);
+                                if (fndContextStation != null)
                                 {
-                                    Altitude_m = (int)arrStations[d].Site.Altitude,
-                                    Azimuth_deg = arrStations[d].Antenna.Azimuth_deg,
-                                    Tilt_Deg = arrStations[d].Antenna.Tilt_deg,
-                                    Lat_deg = arrStations[d].Site.Latitude,
-                                    Lon_deg = arrStations[d].Site.Longitude,
-                                    Power_dB = arrStations[d].Transmitter.MaxPower_dBm,
-                                    Freq_MHz = arrStations[d].Transmitter.Freq_MHz
-                                },
-                                Standard = arrStations[d].RealStandard,
-                                MaxCorellation = (float)maxPercentCorellation.Value
-                            });
+                                    stationStatusResult = fndContextStation.StationStatusResult;
+                                    maxPercentCorellation = fndContextStation.MaxCorellation_pc;
+                                }
+
+                                // формируем результат по станциям arrStations со статусом, который  уточнялся - по списку groupsContextStations (который содержит сведения по станциям со статусами UN) 
+
+                                var parametersStationOld = new ParametersStation();
+                                if (arrStations[d].Antenna != null)
+                                {
+                                    parametersStationOld.Azimuth_deg = arrStations[d].Antenna.Azimuth_deg;
+                                    parametersStationOld.Tilt_Deg = arrStations[d].Antenna.Tilt_deg;
+                                }
+                                parametersStationOld.Lat_deg = arrStations[d].Site.Latitude;
+                                parametersStationOld.Altitude_m = (int)arrStations[d].Site.Altitude;
+                                parametersStationOld.Lon_deg = arrStations[d].Site.Longitude;
+
+                                if (arrStations[d].Transmitter != null)
+                                {
+                                    parametersStationOld.Power_dB = arrStations[d].Transmitter.MaxPower_dBm;
+                                    parametersStationOld.Freq_MHz = arrStations[d].Transmitter.Freq_MHz;
+                                }
+
+
+                                lstCalibrationStationResult.Add(new CalibrationStationResult()
+                                {
+                                    ExternalSource = arrStations[d].ExternalSource,
+                                    ExternalCode = arrStations[d].ExternalCode,
+                                    LicenseGsid = arrStations[d].LicenseGsid,
+                                    ResultStationStatus = stationStatusResult,
+                                    StationMonitoringId = arrStations[d].Id,
+                                    IsContour = arrStations[d].Type == ClientContextStationType.A ? true : false,
+                                    ParametersStationOld = parametersStationOld,
+                                    Standard = arrStations[d].RealStandard,
+                                    MaxCorellation = (float)maxPercentCorellation.Value
+                                });
+                            }
                         }
                     }
 
@@ -711,9 +723,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
 
                     // извлекаем неповторяющиеся значения регионов
-                    var areasSelect = data.GSIDGroupeStation.ToList().Select(x => x.RegionCode).Distinct();
+                    //var areasSelect = data.GSIDGroupeStation.ToList().Select(x => x.RegionCode).Distinct();
+
                     // формируем их через запятую
-                    string areas = string.Join(",", areasSelect.ToArray());
+                    //string areas = string.Join(",", areasSelect.ToArray());
+                    string areas = data.Areas!=null ? data.Areas : "";
                     // генерация итогового результата
                     var calcCorellationResult = new CalibrationResult()
                     {
@@ -879,8 +893,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             for (int i = 0; i < stations.Length; i++)
             {
                 // при условии совпадения частот
-                if (stations[i].Transmitter.Freqs_MHz.Contains(driveTest.Freq_MHz))
+                var freq_MHz = GetFreqStation(driveTest, stations[i]);
+                if (freq_MHz != null)
                 {
+                //if (stations[i].Transmitter.Freqs_MHz.Contains(driveTest.Freq_MHz))
+                //{
                     var fieldStrengthCalcData = new FieldStrengthCalcData
                     {
                         Antenna = stations[i].Antenna,
@@ -1087,6 +1104,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         Standard = calibrationStationsAndDriveTestsResult.ClientContextStation.RealStandard,
                         Freq_MHz = calibrationStationsAndDriveTestsResult.ClientContextStation.Transmitter.Freq_MHz
                     };
+                    if ((float)calibrationStationsAndDriveTestsResult.MaxCorrelation_PC > 0)
+                    {
+                        calibrationStationResult.ResultStationStatus = StationStatusResult.UN;
+                    }
                     listCalibrationStationResults.Add(calibrationStationResult);
                 }
             }
@@ -1219,9 +1240,13 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         IsContour = calibrationStationsAndDriveTestsResult.ClientContextStation.Type == ClientContextStationType.A ? true : false,
                         StationMonitoringId = calibrationStationsAndDriveTestsResult.ClientContextStation.Id,
                         Standard = calibrationStationsAndDriveTestsResult.ClientContextStation.RealStandard,
-                        Freq_MHz = calibrationStationsAndDriveTestsResult.ClientContextStation.Transmitter.Freq_MHz
+                        Freq_MHz = calibrationStationsAndDriveTestsResult.ClientContextStation.Transmitter.Freq_MHz,
+                        ResultStationStatus = StationStatusResult.NF,
                     };
-                    calibrationStationResult.ResultStationStatus = StationStatusResult.UN;
+                    if ((float)calibrationStationsAndDriveTestsResult.MaxCorrelation_PC > 0)
+                    {
+                        calibrationStationResult.ResultStationStatus = StationStatusResult.UN;
+                    }
                     listCalibrationStationResults.Add(calibrationStationResult);
                 }
             }
@@ -1254,17 +1279,24 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             }
             else
             {
+                bool isFind = false;
                 for (int d = 0; d < outListContextStation.Count; d++)
                 {
                     var lstStations = outListContextStation[d].ToList();
                     for (int s = 0; s < contextStation.Length; s++)
                     {
-                        if ((lstStations.Find(x => x.Id == contextStation[s].Id)) == null)
+                        if ((lstStations.Find(x => x.Id == contextStation[s].Id)) != null)
                         {
-                            lstStations.Add(contextStation[s]);
+                            isFind = true;
+                            break;
+                            //lstStations.Add(contextStation[s]);
                         }
                     }
-                    outListContextStation[d] = lstStations.ToArray();
+                    //outListContextStation[d] = lstStations.ToArray();
+                }
+                if (!isFind)
+                {
+                    outListContextStation.Add(contextStation);
                 }
             }
         }
@@ -1287,17 +1319,23 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             }
             else
             {
+                bool isFind = false;
                 for (int d = 0; d < outListDriveTestsResults.Count; d++)
                 {
                     var lstdriveTestsResults = outListDriveTestsResults[d].ToList();
                     for (int s = 0; s < driveTestsResults.Length; s++)
                     {
-                        if ((lstdriveTestsResults.Find(x => x.DriveTestId == driveTestsResults[s].DriveTestId)) == null)
+                        if ((lstdriveTestsResults.Find(x => x.DriveTestId == driveTestsResults[s].DriveTestId)) != null)
                         {
-                            lstdriveTestsResults.Add(driveTestsResults[s]);
+                            isFind = true;
+                            break;
+                            //lstdriveTestsResults.Add(driveTestsResults[s]);
                         }
                     }
-                    outListDriveTestsResults[d] = lstdriveTestsResults.ToArray();
+                }
+                if (!isFind)
+                {
+                    outListDriveTestsResults.Add(driveTestsResults);
                 }
             }
         }
@@ -1711,7 +1749,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         var arrStations = outListContextStations[j];
                         if ((arrStations != null) && (arrStations.Length > 0))
                         {
-                            if (CompareFreqStAndDriveTest(currentDriveTest, arrStations[j]))
+                            if (Utils.CompareFreqStAndDriveTest(currentDriveTest, arrStations[0]))
                             {
                                 for (int p = 0; p < coordinatesDrivePoint.Length; p++)
                                 {
@@ -1765,7 +1803,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             for (int z = 0; z < arrStations.Length; z++)
                             {
                                 var sourcePointArgs = new PointEarthGeometric() { Longitude = centerWeightCoordinateOfDriveTest.X, Latitude = centerWeightCoordinateOfDriveTest.Y, CoordinateUnits = CoordinateUnits.m };
-                                var targetPointArgs = new PointEarthGeometric() { Longitude = arrStations[0].Coordinate.X, Latitude = arrStations[0].Coordinate.Y, CoordinateUnits = CoordinateUnits.m };
+                                var targetPointArgs = new PointEarthGeometric() { Longitude = arrStations[z].Coordinate.X, Latitude = arrStations[z].Coordinate.Y, CoordinateUnits = CoordinateUnits.m };
                                 var distance = this._earthGeometricService.GetDistance_km(in sourcePointArgs, in targetPointArgs);
                                 keyValueStations.Add(new KeyValuePair<long, double>(arrStations[z].Id, distance));
                             }
@@ -1783,22 +1821,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             }
             return GSIDGroupeStations;
         }
-        private bool CompareFreqStAndDriveTest(DriveTestsResult driveTestsResult, ContextStation contextStation)
-        {
-            var FreqDT = driveTestsResult.Freq_MHz;
-            var FreqST = contextStation.Transmitter.Freq_MHz;
-            var FreqArr = contextStation.Transmitter.Freqs_MHz;
-            var BW = contextStation.Transmitter.BW_kHz / 1000.0;
-            if ((FreqST - BW <= FreqDT) && (FreqST + BW >= FreqDT)) { return true; }
-            if ((FreqArr != null) && (FreqArr.Length > 0))
-            {
-                for (int i = 0; FreqArr.Length > i; i++)
-                {
-                    if ((FreqArr[i] - BW * 0.49 <= FreqDT) && (FreqArr[i] + BW * 0.49 >= FreqDT)) { return true; }
-                }
-            }
-            return false; 
-        }
+   
 
         private double? GetFreqStation(DriveTestsResult driveTestsResult, ContextStation contextStation)
         {

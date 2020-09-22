@@ -24,7 +24,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
             mesureTraceParameter.TracePoint = (int)Math.Ceiling((double)((mesureTraceParameter.FreqStop_Hz - mesureTraceParameter.FreqStart_Hz)) / (1000 * (taskParameters.StepSO_kHz / taskParameters.NChenal)));
 
             mesureTraceParameter.TraceCount = 1; // константа для Signaling
-            mesureTraceParameter.TraceType = TraceType.MaxHold; // константа для Signaling
+            mesureTraceParameter.TraceType = TraceType.ClearWhrite; // константа для Signaling
             mesureTraceParameter.LevelUnit = LevelUnit.dBm; // константа для Signaling
             mesureTraceParameter.VBW_Hz = -1; // константа для Signaling
             mesureTraceParameter.RBW_Hz = -2; // константа для Signaling
