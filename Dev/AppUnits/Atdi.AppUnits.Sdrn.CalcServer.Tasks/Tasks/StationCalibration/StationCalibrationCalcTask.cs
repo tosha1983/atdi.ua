@@ -60,6 +60,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 
             public string[] Contrours;
 
+            public string Areas;
+
             public CalibrationParameters CalibrationParameters;
 
             public CorellationParameters CorellationParameters;
@@ -126,6 +128,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
             var propagationModel = _contextService.GetPropagationModel(this._calcDbScope, this._taskContext.ClientContextId);
             var iterationAllStationCorellationCalcData = new AllStationCorellationCalcData
             {
+                Areas = this._parameters.Areas,
                 GSIDGroupeStation = this._contextStations,
                 CalibrationParameters = this._parameters.CalibrationParameters,
                 CorellationParameters = this._parameters.CorellationParameters,
@@ -396,7 +399,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                                 c => c.CorrelationThresholdWeak,
                                 c => c.InfocMeasResults,
                                 c => c.StationIds,
-                                c => c.Contours
+                                c => c.Contours,
+                                c => c.Areas
                             )
                             .Where(c => c.TaskId, ConditionOperator.Equal, _taskContext.TaskId);
 
@@ -472,6 +476,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                     MapName = reader.GetValue(c => c.TASK.MapName),
                     StationIds = reader.GetValue(c => c.StationIds),
                     Contrours = reader.GetValue(c => c.Contours),
+                    Areas = reader.GetValue(c => c.Areas),
                     InfocMeasResults = reader.GetValue(c => c.InfocMeasResults),
                     Standard = reader.GetValue(c => c.Standard)
                 };
@@ -688,6 +693,22 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                 )
                 .Where(c => c.RESULT.Id, ConditionOperator.In, partResultIds[i].ToArray())
                 .Where(c => c.Standard, ConditionOperator.Equal, this._parameters.Standard.GetStandardForDriveTest());
+                if (this._parameters.Standard == "GSM-900")
+                {
+                    queryDriveTest.Where(c => c.Freq_MHz, ConditionOperator.LessThan, 1000);
+                }
+                if (this._parameters.Standard == "GSM-1800")
+                {
+                    queryDriveTest.Where(c => c.Freq_MHz, ConditionOperator.GreaterThan, 1000);
+                }
+                if (this._parameters.Standard == "LTE-1800")
+                {
+                    queryDriveTest.Where(c => c.Freq_MHz, ConditionOperator.LessThan, 2000);
+                }
+                if (this._parameters.Standard == "LTE-2600")
+                {
+                    queryDriveTest.Where(c => c.Freq_MHz, ConditionOperator.GreaterThan, 2000);
+                }
                 var contextDriveTestsResults = _infoDbScope.Executor.ExecuteAndFetch(queryDriveTest, reader =>
                 {
                     while (reader.Read())

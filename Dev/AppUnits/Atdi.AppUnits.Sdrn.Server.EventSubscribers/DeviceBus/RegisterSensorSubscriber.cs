@@ -189,6 +189,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                     builderInsertSensor.SetValue(c => c.StepMeasTime, sensorData.StepMeasTime);
                     builderInsertSensor.SetValue(c => c.TypeSensor, sensorData.Type);
                     builderInsertSensor.SetValue(c => c.ApiVersion, "2.0");
+                    builderInsertSensor.SetValue(c => c.Agl, sensorData.AGL);
                     builderInsertSensor.SetValue(c => c.TechId, sensorData.Equipment.TechId);
 
 
@@ -403,6 +404,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                         builderUpdateSensor.SetValue(c => c.Status, sensorData.Status);
                         builderUpdateSensor.SetValue(c => c.StepMeasTime, sensorData.StepMeasTime);
                         builderUpdateSensor.SetValue(c => c.TypeSensor, sensorData.Type);
+                        builderUpdateSensor.SetValue(c => c.Agl, sensorData.AGL);
                         builderUpdateSensor.Where(c => c.Id, ConditionOperator.Equal, idSensor);
                         if (scope.Executor
                         .Execute(builderUpdateSensor) > 0)

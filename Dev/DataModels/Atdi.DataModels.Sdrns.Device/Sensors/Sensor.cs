@@ -68,11 +68,11 @@ namespace Atdi.DataModels.Sdrns.Device
         //[DataMember]
         //public double? Elevation { get; set; }
 
-        ///// <summary>
-        ///// Altitude above ground level, m
-        ///// </summary>
-        //[DataMember]
-        //public double? AGL { get; set; }
+        /// <summary>
+        /// Altitude above ground level, m
+        /// </summary>
+        [DataMember]
+        public double? AGL { get; set; }
 
         ///// <summary>
         ///// ARGUS system identifier
