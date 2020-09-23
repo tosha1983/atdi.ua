@@ -693,6 +693,22 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                 )
                 .Where(c => c.RESULT.Id, ConditionOperator.In, partResultIds[i].ToArray())
                 .Where(c => c.Standard, ConditionOperator.Equal, this._parameters.Standard.GetStandardForDriveTest());
+                if (this._parameters.Standard == "GSM-900")
+                {
+                    queryDriveTest.Where(c => c.Freq_MHz, ConditionOperator.LessThan, 1000);
+                }
+                if (this._parameters.Standard == "GSM-1800")
+                {
+                    queryDriveTest.Where(c => c.Freq_MHz, ConditionOperator.GreaterThan, 1000);
+                }
+                if (this._parameters.Standard == "LTE-1800")
+                {
+                    queryDriveTest.Where(c => c.Freq_MHz, ConditionOperator.LessThan, 2000);
+                }
+                if (this._parameters.Standard == "LTE-2600")
+                {
+                    queryDriveTest.Where(c => c.Freq_MHz, ConditionOperator.GreaterThan, 2000);
+                }
                 var contextDriveTestsResults = _infoDbScope.Executor.ExecuteAndFetch(queryDriveTest, reader =>
                 {
                     while (reader.Read())

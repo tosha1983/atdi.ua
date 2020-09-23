@@ -871,7 +871,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             {
                 for (int i = 0; FreqArr.Length > i; i++)
                 {
-                    if ((FreqArr[i] - BW * 0.49 <= FreqDT) && (FreqArr[i] + BW * 0.49 >= FreqDT)) { return true; }
+                    if ((FreqArr[i] - BW * 0.5001 <= FreqDT) && (FreqArr[i] + BW * 0.5001 >= FreqDT)) { return true; }
                 }
             }
             return false;

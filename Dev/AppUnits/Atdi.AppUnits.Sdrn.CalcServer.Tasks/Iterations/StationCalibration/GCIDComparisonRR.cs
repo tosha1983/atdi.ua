@@ -38,46 +38,85 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         static string localTeck;
         public static bool Compare(string tech, string GCID1, string GCID2)
         {
-            try
+            string[] s1 = GCID1.Split(' ');
+            string[] s2 = GCID2.Split(' ');
+            if (s1.Length == 4)
             {
-                string[] s1 = GCID1.Split(' ');
-                string[] s2 = GCID2.Split(' ');
-                if (s1.Length == 4)
+                if (s2.Length == 4)
                 {
-                    if (s2.Length == 4)
-                    {
-                        localTeck = ReturnLetter(tech).ToLower();
+                    localTeck = ReturnLetter(tech).ToLower();
 
-                        for (i = 0; i < info.Operators.Length; i++)
+                    for (i = 0; i < info.Operators.Length; i++)
+                    {
+                        b0 = false;
+                        b1 = false;
+                        b2 = false;
+                        b3 = false;
+                        for (k = 0; k < info.Operators[i].TechName.Length; k++)
                         {
-                            b0 = false;
-                            b1 = false;
-                            b2 = false;
-                            b3 = false;
-                            for (k = 0; k < info.Operators[i].TechName.Length; k++)
+                            if (localTeck == info.Operators[i].TechName[k].ToLower())
                             {
-                                if (localTeck == info.Operators[i].TechName[k].ToLower())
+                                if (info.Operators[i].S0.Use != null && info.Operators[i].S0.Use.Length > 0)
                                 {
-                                    if (info.Operators[i].S0.Use != null && info.Operators[i].S0.Use.Length > 0)
+                                    // надо просматривать через настройки
+                                    if (info.Operators[i].S0.ValueInDB != null && info.Operators[i].S0.ValueInRadio != null &&
+                                        info.Operators[i].S0.ValueInDB.Length > 0 && info.Operators[i].S0.ValueInRadio.Length > 0)
+                                    {
+                                        t01 = Receive(info.Operators[i].S0.All.Length, info.Operators[i].S0.Use, Convert.ToInt32(s2[ReturnInt(info.Operators[i].S0.CompareWith)]));
+                                        for (int ds00 = 0; ds00 < info.Operators[i].S0.ValueInDB.Length; ds00++)
+                                        {
+                                            t02 = Receive(info.Operators[i].S0.All.Length, info.Operators[i].S0.All, info.Operators[i].S0.ValueInDB[ds00]);
+                                            if (t01 == t02)
+                                            {
+                                                t03 = Receive(info.Operators[i].S0.All.Length, info.Operators[i].S0.Use, Convert.ToInt32(s1[0]));
+                                                for (int ds01 = 0; ds01 < info.Operators[i].S0.ValueInRadio.Length; ds01++)
+                                                {
+                                                    t04 = Receive(info.Operators[i].S0.All.Length, info.Operators[i].S0.All, info.Operators[i].S0.ValueInRadio[ds01]);
+                                                    if (t03 == t04)
+                                                    {
+                                                        b0 = true;
+
+                                                        break;
+                                                    }
+                                                }
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    else //сравниваем одно с другим лоб в лоб
+                                    {
+                                        t01 = Receive(info.Operators[i].S0.All.Length, info.Operators[i].S0.Use, Convert.ToInt32(s2[ReturnInt(info.Operators[i].S0.CompareWith)]));
+                                        t03 = Receive(info.Operators[i].S0.All.Length, info.Operators[i].S0.Use, Convert.ToInt32(s1[0]));
+                                        if (t01 == t03)//нашли оператора по идее
+                                        {
+                                            b0 = true;
+                                        }
+                                    }
+
+                                }
+                                else { b0 = true; }
+
+                                if (b0)
+                                {
+                                    if (info.Operators[i].S1.Use != null && info.Operators[i].S1.Use.Length > 0)
                                     {
                                         // надо просматривать через настройки
-                                        if (info.Operators[i].S0.ValueInDB != null && info.Operators[i].S0.ValueInRadio != null &&
-                                            info.Operators[i].S0.ValueInDB.Length > 0 && info.Operators[i].S0.ValueInRadio.Length > 0)
+                                        if (info.Operators[i].S1.ValueInDB != null && info.Operators[i].S1.ValueInRadio != null &&
+                                            info.Operators[i].S1.ValueInDB.Length > 0 && info.Operators[i].S1.ValueInRadio.Length > 0)
                                         {
-                                            t01 = Receive(info.Operators[i].S0.All.Length, info.Operators[i].S0.Use, Convert.ToInt32(s2[ReturnInt(info.Operators[i].S0.CompareWith)]));
-                                            for (int ds00 = 0; ds00 < info.Operators[i].S0.ValueInDB.Length; ds00++)
+                                            t11 = Receive(info.Operators[i].S1.All.Length, info.Operators[i].S1.Use, Convert.ToInt32(s2[ReturnInt(info.Operators[i].S1.CompareWith)]));
+                                            for (int ds10 = 0; ds10 < info.Operators[i].S1.ValueInDB.Length; ds10++)//поищем такую страну по бд (S0)
                                             {
-                                                t02 = Receive(info.Operators[i].S0.All.Length, info.Operators[i].S0.All, info.Operators[i].S0.ValueInDB[ds00]);
-                                                if (t01 == t02)
+                                                t12 = Receive(info.Operators[i].S1.All.Length, info.Operators[i].S1.All, info.Operators[i].S1.ValueInDB[ds10]);
+                                                if (t11 == t12)//нашли такую страну по идее в бд и настройках
                                                 {
-                                                    t03 = Receive(info.Operators[i].S0.All.Length, info.Operators[i].S0.Use, Convert.ToInt32(s1[0]));
-                                                    for (int ds01 = 0; ds01 < info.Operators[i].S0.ValueInRadio.Length; ds01++)
+                                                    t13 = Receive(info.Operators[i].S1.All.Length, info.Operators[i].S1.Use, Convert.ToInt32(s1[1]));
+                                                    for (int ds11 = 0; ds11 < info.Operators[i].S1.ValueInRadio.Length; ds11++)//поищем такого оператора по бд (S0)
                                                     {
-                                                        t04 = Receive(info.Operators[i].S0.All.Length, info.Operators[i].S0.All, info.Operators[i].S0.ValueInRadio[ds01]);
-                                                        if (t03 == t04)
+                                                        t14 = Receive(info.Operators[i].S1.All.Length, info.Operators[i].S1.All, info.Operators[i].S1.ValueInRadio[ds11]);
+                                                        if (t13 == t14)//нашли оператора по идее
                                                         {
-                                                            b0 = true;
-
+                                                            b1 = true;
                                                             break;
                                                         }
                                                     }
@@ -87,38 +126,38 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                         }
                                         else //сравниваем одно с другим лоб в лоб
                                         {
-                                            t01 = Receive(info.Operators[i].S0.All.Length, info.Operators[i].S0.Use, Convert.ToInt32(s2[ReturnInt(info.Operators[i].S0.CompareWith)]));
-                                            t03 = Receive(info.Operators[i].S0.All.Length, info.Operators[i].S0.Use, Convert.ToInt32(s1[0]));
-                                            if (t01 == t03)//нашли оператора по идее
+                                            t11 = Receive(info.Operators[i].S1.All.Length, info.Operators[i].S1.Use, Convert.ToInt32(s2[ReturnInt(info.Operators[i].S1.CompareWith)]));
+                                            t13 = Receive(info.Operators[i].S1.All.Length, info.Operators[i].S1.Use, Convert.ToInt32(s1[1]));
+                                            if (t11 == t13)//нашли оператора по идее
                                             {
-                                                b0 = true;
+                                                b1 = true;
                                             }
                                         }
-
                                     }
-                                    else { b0 = true; }
+                                    else { b1 = true; }
 
-                                    if (b0)
+
+                                    if (b1)
                                     {
-                                        if (info.Operators[i].S1.Use != null && info.Operators[i].S1.Use.Length > 0)
+                                        if (info.Operators[i].S2.Use != null && info.Operators[i].S2.Use.Length > 0)
                                         {
                                             // надо просматривать через настройки
-                                            if (info.Operators[i].S1.ValueInDB != null && info.Operators[i].S1.ValueInRadio != null &&
-                                                info.Operators[i].S1.ValueInDB.Length > 0 && info.Operators[i].S1.ValueInRadio.Length > 0)
+                                            if (info.Operators[i].S2.ValueInDB != null && info.Operators[i].S2.ValueInRadio != null &&
+                                                info.Operators[i].S2.ValueInDB.Length > 0 && info.Operators[i].S2.ValueInRadio.Length > 0)
                                             {
-                                                t11 = Receive(info.Operators[i].S1.All.Length, info.Operators[i].S1.Use, Convert.ToInt32(s2[ReturnInt(info.Operators[i].S1.CompareWith)]));
-                                                for (int ds10 = 0; ds10 < info.Operators[i].S1.ValueInDB.Length; ds10++)//поищем такую страну по бд (S0)
+                                                t21 = Receive(info.Operators[i].S2.All.Length, info.Operators[i].S2.Use, Convert.ToInt32(s2[ReturnInt(info.Operators[i].S2.CompareWith)]));
+                                                for (int ds20 = 0; ds20 < info.Operators[i].S2.ValueInDB.Length; ds20++)//поищем такую страну по бд (S0)
                                                 {
-                                                    t12 = Receive(info.Operators[i].S1.All.Length, info.Operators[i].S1.All, info.Operators[i].S1.ValueInDB[ds10]);
-                                                    if (t11 == t12)//нашли такую страну по идее в бд и настройках
+                                                    t22 = Receive(info.Operators[i].S2.All.Length, info.Operators[i].S2.All, info.Operators[i].S2.ValueInDB[ds20]);
+                                                    if (t21 == t22)//нашли такую страну по идее в бд и настройках
                                                     {
-                                                        t13 = Receive(info.Operators[i].S1.All.Length, info.Operators[i].S1.Use, Convert.ToInt32(s1[1]));
-                                                        for (int ds11 = 0; ds11 < info.Operators[i].S1.ValueInRadio.Length; ds11++)//поищем такого оператора по бд (S0)
+                                                        t23 = Receive(info.Operators[i].S2.All.Length, info.Operators[i].S2.Use, Convert.ToInt32(s1[2]));
+                                                        for (int ds21 = 0; ds21 < info.Operators[i].S2.ValueInRadio.Length; ds21++)//поищем такого оператора по бд (S0)
                                                         {
-                                                            t14 = Receive(info.Operators[i].S1.All.Length, info.Operators[i].S1.All, info.Operators[i].S1.ValueInRadio[ds11]);
-                                                            if (t13 == t14)//нашли оператора по идее
+                                                            t24 = Receive(info.Operators[i].S2.All.Length, info.Operators[i].S2.All, info.Operators[i].S2.ValueInRadio[ds21]);
+                                                            if (t23 == t24)//нашли оператора по идее
                                                             {
-                                                                b1 = true;
+                                                                b2 = true;
                                                                 break;
                                                             }
                                                         }
@@ -128,38 +167,36 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                             }
                                             else //сравниваем одно с другим лоб в лоб
                                             {
-                                                t11 = Receive(info.Operators[i].S1.All.Length, info.Operators[i].S1.Use, Convert.ToInt32(s2[ReturnInt(info.Operators[i].S1.CompareWith)]));
-                                                t13 = Receive(info.Operators[i].S1.All.Length, info.Operators[i].S1.Use, Convert.ToInt32(s1[1]));
-                                                if (t11 == t13)//нашли оператора по идее
+                                                t21 = Receive(info.Operators[i].S2.All.Length, info.Operators[i].S2.Use, Convert.ToInt32(s2[ReturnInt(info.Operators[i].S2.CompareWith)]));
+                                                t23 = Receive(info.Operators[i].S2.All.Length, info.Operators[i].S2.Use, Convert.ToInt32(s1[2]));
+                                                if (t21 == t23)//нашли оператора по идее
                                                 {
-                                                    b1 = true;
+                                                    b2 = true;
                                                 }
                                             }
                                         }
-                                        else { b1 = true; }
+                                        else { b2 = true; }
 
-
-                                        if (b1)
+                                        if (b2)
                                         {
-                                            if (info.Operators[i].S2.Use != null && info.Operators[i].S2.Use.Length > 0)
+                                            if (info.Operators[i].S3.Use != null && info.Operators[i].S3.Use.Length > 0)
                                             {
-                                                // надо просматривать через настройки
-                                                if (info.Operators[i].S2.ValueInDB != null && info.Operators[i].S2.ValueInRadio != null &&
-                                                    info.Operators[i].S2.ValueInDB.Length > 0 && info.Operators[i].S2.ValueInRadio.Length > 0)
+                                                if (info.Operators[i].S3.ValueInDB != null && info.Operators[i].S3.ValueInRadio != null &&
+                                                    info.Operators[i].S3.ValueInDB.Length > 0 && info.Operators[i].S3.ValueInRadio.Length > 0)
                                                 {
-                                                    t21 = Receive(info.Operators[i].S2.All.Length, info.Operators[i].S2.Use, Convert.ToInt32(s2[ReturnInt(info.Operators[i].S2.CompareWith)]));
-                                                    for (int ds20 = 0; ds20 < info.Operators[i].S2.ValueInDB.Length; ds20++)//поищем такую страну по бд (S0)
+                                                    t31 = Receive(info.Operators[i].S3.All.Length, info.Operators[i].S3.Use, Convert.ToInt32(s2[ReturnInt(info.Operators[i].S3.CompareWith)]));
+                                                    for (int ds30 = 0; ds30 < info.Operators[i].S3.ValueInDB.Length; ds30++)//поищем такую страну по бд (S0)
                                                     {
-                                                        t22 = Receive(info.Operators[i].S2.All.Length, info.Operators[i].S2.All, info.Operators[i].S2.ValueInDB[ds20]);
-                                                        if (t21 == t22)//нашли такую страну по идее в бд и настройках
+                                                        t32 = Receive(info.Operators[i].S3.All.Length, info.Operators[i].S3.All, info.Operators[i].S3.ValueInDB[ds30]);
+                                                        if (t31 == t32)//нашли такую страну по идее в бд и настройках
                                                         {
-                                                            t23 = Receive(info.Operators[i].S2.All.Length, info.Operators[i].S2.Use, Convert.ToInt32(s1[2]));
-                                                            for (int ds21 = 0; ds21 < info.Operators[i].S2.ValueInRadio.Length; ds21++)//поищем такого оператора по бд (S0)
+                                                            t33 = Receive(info.Operators[i].S3.All.Length, info.Operators[i].S3.Use, Convert.ToInt32(s1[3]));
+                                                            for (int ds31 = 0; ds31 < info.Operators[i].S3.ValueInRadio.Length; ds31++)//поищем такого оператора по бд (S0)
                                                             {
-                                                                t24 = Receive(info.Operators[i].S2.All.Length, info.Operators[i].S2.All, info.Operators[i].S2.ValueInRadio[ds21]);
-                                                                if (t23 == t24)//нашли оператора по идее
+                                                                t34 = Receive(info.Operators[i].S3.All.Length, info.Operators[i].S3.All, info.Operators[i].S3.ValueInRadio[ds31]);
+                                                                if (t33 == t34)//нашли оператора по идее
                                                                 {
-                                                                    b2 = true;
+                                                                    b3 = true;
                                                                     break;
                                                                 }
                                                             }
@@ -169,70 +206,26 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                                 }
                                                 else //сравниваем одно с другим лоб в лоб
                                                 {
-                                                    t21 = Receive(info.Operators[i].S2.All.Length, info.Operators[i].S2.Use, Convert.ToInt32(s2[ReturnInt(info.Operators[i].S2.CompareWith)]));
-                                                    t23 = Receive(info.Operators[i].S2.All.Length, info.Operators[i].S2.Use, Convert.ToInt32(s1[2]));
-                                                    if (t21 == t23)//нашли оператора по идее
+                                                    t31 = Receive(info.Operators[i].S3.All.Length, info.Operators[i].S3.Use, Convert.ToInt32(s2[ReturnInt(info.Operators[i].S3.CompareWith)]));
+                                                    t33 = Receive(info.Operators[i].S3.All.Length, info.Operators[i].S3.Use, Convert.ToInt32(s1[3]));
+                                                    if (t31 == t33)//нашли оператора по идее
                                                     {
-                                                        b2 = true;
+                                                        b3 = true;
                                                     }
                                                 }
                                             }
-                                            else { b2 = true; }
-
-                                            if (b2)
-                                            {
-                                                if (info.Operators[i].S3.Use != null && info.Operators[i].S3.Use.Length > 0)
-                                                {
-                                                    if (info.Operators[i].S3.ValueInDB != null && info.Operators[i].S3.ValueInRadio != null &&
-                                                        info.Operators[i].S3.ValueInDB.Length > 0 && info.Operators[i].S3.ValueInRadio.Length > 0)
-                                                    {
-                                                        t31 = Receive(info.Operators[i].S3.All.Length, info.Operators[i].S3.Use, Convert.ToInt32(s2[ReturnInt(info.Operators[i].S3.CompareWith)]));
-                                                        for (int ds30 = 0; ds30 < info.Operators[i].S3.ValueInDB.Length; ds30++)//поищем такую страну по бд (S0)
-                                                        {
-                                                            t32 = Receive(info.Operators[i].S3.All.Length, info.Operators[i].S3.All, info.Operators[i].S3.ValueInDB[ds30]);
-                                                            if (t31 == t32)//нашли такую страну по идее в бд и настройках
-                                                            {
-                                                                t33 = Receive(info.Operators[i].S3.All.Length, info.Operators[i].S3.Use, Convert.ToInt32(s1[3]));
-                                                                for (int ds31 = 0; ds31 < info.Operators[i].S3.ValueInRadio.Length; ds31++)//поищем такого оператора по бд (S0)
-                                                                {
-                                                                    t34 = Receive(info.Operators[i].S3.All.Length, info.Operators[i].S3.All, info.Operators[i].S3.ValueInRadio[ds31]);
-                                                                    if (t33 == t34)//нашли оператора по идее
-                                                                    {
-                                                                        b3 = true;
-                                                                        break;
-                                                                    }
-                                                                }
-                                                                break;
-                                                            }
-                                                        }
-                                                    }
-                                                    else //сравниваем одно с другим лоб в лоб
-                                                    {
-                                                        t31 = Receive(info.Operators[i].S3.All.Length, info.Operators[i].S3.Use, Convert.ToInt32(s2[ReturnInt(info.Operators[i].S3.CompareWith)]));
-                                                        t33 = Receive(info.Operators[i].S3.All.Length, info.Operators[i].S3.Use, Convert.ToInt32(s1[3]));
-                                                        if (t31 == t33)//нашли оператора по идее
-                                                        {
-                                                            b3 = true;
-                                                        }
-                                                    }
-                                                }
-                                                else { b3 = true; }
-                                            }
+                                            else { b3 = true; }
                                         }
                                     }
-                                    if (b0 && b1 && b2 && b3)
-                                    {
-                                        return true;
-                                    }
+                                }
+                                if (b0 && b1 && b2 && b3)
+                                {
+                                    return true;
                                 }
                             }
                         }
                     }
                 }
-            }
-            catch (Exception)
-            {
-                return false;
             }
             return false;
         }
@@ -638,12 +631,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         S2 = new OPSOSInfo.Sn()
                         {
                             Name = "eNodeBId",
-                            Use = new int[]{ 2, 3, 4, 5},
+                            Use = new int[]{ 0, 1, 2, 3, 4, 5},
                             ValueInDB = new int[]{ },
                             ValueInRadio = new int[]{ },
                             All = new int[]{ 0, 1, 2, 3, 4, 5 },
                             Min = 0, Max = 999999,
-                            CompareWith = "S3"
+                            CompareWith = "S2"
                         },
                         S3 = new OPSOSInfo.Sn()
                         {
@@ -653,7 +646,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             ValueInRadio = new int[]{ },
                             All = new int[]{ 0, 1, 2 },
                             Min = 0, Max = 255,
-                            CompareWith = "S2"
+                            CompareWith = "S3"
                         },
                     },
                     new OPSOSInfo.OperatorInfo()
@@ -683,12 +676,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         S2 = new OPSOSInfo.Sn()
                         {
                             Name = "eNodeBId",
-                            Use = new int[]{ 2, 3, 4, 5 },
+                            Use = new int[]{ 0, 1, 2, 3, 4, 5 },
                             ValueInDB = new int[]{ },
                             ValueInRadio = new int[]{ },
                             All = new int[]{ 0, 1, 2, 3, 4, 5 },
                             Min = 0, Max = 999999,
-                            CompareWith = "S3"
+                            CompareWith = "S2"
                         },
                         S3 = new OPSOSInfo.Sn()
                         {
@@ -698,7 +691,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             ValueInRadio = new int[]{ },
                             All = new int[]{ 0, 1, 2 },
                             Min = 0, Max = 255,
-                            CompareWith = "S2"
+                            CompareWith = "S3"
                         },
                     },
                     new OPSOSInfo.OperatorInfo()
@@ -728,12 +721,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         S2 = new OPSOSInfo.Sn()
                         {
                             Name = "eNodeBId",
-                            Use = new int[]{ 2, 3, 4, 5 },
+                            Use = new int[]{ 0, 1, 2, 3, 4, 5 },
                             ValueInDB = new int[]{ },
                             ValueInRadio = new int[]{ },
                             All = new int[]{ 0, 1, 2, 3, 4, 5 },
                             Min = 0, Max = 999999,
-                            CompareWith = "S3"
+                            CompareWith = "S2"
                         },
                         S3 = new OPSOSInfo.Sn()
                         {
@@ -743,7 +736,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             ValueInRadio = new int[]{ },
                             All = new int[]{ 0, 1, 2 },
                             Min = 0, Max = 255,
-                            CompareWith = "S2"
+                            CompareWith = "S3"
                         },
                     },
                     #endregion LTE
