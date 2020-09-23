@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.Map
 {
-    public class MapModel
+    public class MapModel : ICloneable
     {
         public long Id { get; set; }
         public long ProjectId { get; set; }
@@ -20,5 +20,24 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.Map
         public int? OwnerAxisYStep { get; set; }
         public int? OwnerUpperLeftX { get; set; }
         public int? OwnerUpperLeftY { get; set; }
+
+        public object Clone()
+        {
+            return new MapModel()
+            {
+                Id = this.Id,
+                MapName = this.MapName,
+                MapNote = this.MapNote,
+                OwnerAxisXNumber = this.OwnerAxisXNumber,
+                OwnerAxisXStep = this.OwnerAxisXStep,
+                OwnerAxisYNumber = this.OwnerAxisYNumber,
+                OwnerAxisYStep = this.OwnerAxisYStep,
+                OwnerUpperLeftX = this.OwnerUpperLeftX,
+                OwnerUpperLeftY = this.OwnerUpperLeftY,
+                OwnerId = this.OwnerId,
+                ProjectId = this.ProjectId,
+                StepUnit = this.StepUnit
+            };
+        }
     }
 }

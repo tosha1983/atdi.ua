@@ -216,4 +216,43 @@
   <data name="Message_YouMustSelectTheRequiredProject" xml:space="preserve">
     <value>You must select the required project!</value>
   </data>
+  <data name="AxisXNumber" xml:space="preserve">
+    <value>AxisXNumber</value>
+  </data>
+  <data name="AxisXStep" xml:space="preserve">
+    <value>AxisXStep</value>
+  </data>
+  <data name="AxisYNumber" xml:space="preserve">
+    <value>AxisYNumber</value>
+  </data>
+  <data name="AxisYStep" xml:space="preserve">
+    <value>AxisYStep</value>
+  </data>
+  <data name="FileName" xml:space="preserve">
+    <value>FileName</value>
+  </data>
+  <data name="LowerLeftX" xml:space="preserve">
+    <value>LowerLeftX</value>
+  </data>
+  <data name="LowerLeftY" xml:space="preserve">
+    <value>LowerLeftY</value>
+  </data>
+  <data name="LowerRightX" xml:space="preserve">
+    <value>LowerRightX</value>
+  </data>
+  <data name="LowerRightY" xml:space="preserve">
+    <value>LowerRightY</value>
+  </data>
+  <data name="UpperLeftX" xml:space="preserve">
+    <value>UpperLeftX</value>
+  </data>
+  <data name="UpperLeftY" xml:space="preserve">
+    <value>UpperLeftY</value>
+  </data>
+  <data name="UpperRightX" xml:space="preserve">
+    <value>UpperRightX</value>
+  </data>
+  <data name="UpperRightY" xml:space="preserve">
+    <value>UpperRightY</value>
+  </data>
 </root>

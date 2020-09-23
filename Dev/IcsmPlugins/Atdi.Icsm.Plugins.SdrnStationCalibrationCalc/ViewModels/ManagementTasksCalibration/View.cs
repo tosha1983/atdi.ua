@@ -645,7 +645,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
         }
         private void OnRunCalcTaskHandle(Events.OnRunCalcTask data)
         {
-            System.Windows.Forms.MessageBox.Show("Information", "The calculation process has been started successfully.", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            System.Windows.Forms.MessageBox.Show("The calculation process has been started successfully.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             
             ReloadCalcTask();
         }
