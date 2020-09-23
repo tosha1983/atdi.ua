@@ -690,6 +690,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             calcCalibrationResult.ParametersStationOld.Power_dB = calibrationData.GSIDGroupeStation.Transmitter.MaxPower_dBm;
             calcCalibrationResult.ParametersStationOld.Freq_MHz = calibrationData.GSIDGroupeStation.Transmitter.Freq_MHz;
 
+            correlationResult = correlationCalcIteration.Run(taskContext, correlationData);
+            var initialCorrelation = correlationResult.Corellation_pc;
             //var siteCoords_m = _transformation.ConvertCoordinateToAtdi(new Wgs84Coordinate() { Latitude = data.GSIDGroupeStation.Site.Latitude, Longitude = data.GSIDGroupeStation.Site.Longitude }, data.CodeProjection);
 
             if (calibrationData.CalibrationParameters.CascadeTuning)
@@ -725,6 +727,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             //correlationData.GSIDGroupeStation = calibrationData.GSIDGroupeStation;
             correlationResult = correlationCalcIteration.Run(taskContext, correlationData);
 
+            var deltaCorrelation_pc = correlationResult.Corellation_pc - initialCorrelation;
             //- Parameters Station New(Altitude Station, Tilt Station, Azimuth Station, Lat Station, Lon Station, Power Station)
 
             var siteCoords_dec = _transformation.ConvertCoordinateToWgs84(new EpsgCoordinate() { X = correlationData.FieldStrengthCalcData.PointCoordinate.X, Y = correlationData.FieldStrengthCalcData.PointCoordinate.Y }, _transformation.ConvertProjectionToCode(calibrationData.CodeProjection));
