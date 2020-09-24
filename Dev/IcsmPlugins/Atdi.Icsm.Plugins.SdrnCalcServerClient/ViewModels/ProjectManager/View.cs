@@ -16,6 +16,7 @@ using Atdi.DataModels.Sdrn.CalcServer.Entities;
 using VM = Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels;
 using MP = Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.Map;
 using CT = Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ClientContext;
+using Atdi.WpfControls.EntityOrm.Controls;
 
 namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
 {
@@ -33,6 +34,8 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
         private ProjectModel _currentProjectCard;
         private ProjectMapModel _currentProjectMap;
         private ClientContextModel _currentProjectContext;
+        private OrmEnumBoxData[] _projectionSource;
+        private Dictionary<string, OrmEnumBoxData> _projections;
 
         private IEventHandlerToken<Events.OnCreatedProject> _onCreatedProjectToken;
         private IEventHandlerToken<Events.OnEditedProject> _onEditedProjectToken;
@@ -103,6 +106,8 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
             _onEditedClientContextToken = _eventBus.Subscribe<CT.Events.OnEditedClientContext>(this.OnEditedClientContextHandle);
             _onDeletedClientContextToken = _eventBus.Subscribe<CT.Events.OnDeletedClientContext>(this.OnDeletedClientContextHandle);
 
+
+            PrepareProjectionCombo();
             ReloadProjects();
             ReloadProjectContexts();
             ReloadProjectMaps();
@@ -127,10 +132,35 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
             get => this._currentProjectContext;
             set => this.Set(ref this._currentProjectContext, value);
         }
+        public OrmEnumBoxData[] ProjectionSource
+        {
+            get => this._projectionSource;
+            set => this.Set(ref this._projectionSource, value);
+        }
+        private void PrepareProjectionCombo()
+        {
+            var projections = _objectReader.Read<string[]>().By(new GetProjections());
+            this._projections = new Dictionary<string, OrmEnumBoxData>();
+            var enumData = new List<OrmEnumBoxData>();
+            int i = 0;
+
+            foreach (var item in projections)
+            {
+                var data = new OrmEnumBoxData() { Id = ++i, Name = item, ViewName = item };
+                enumData.Add(data);
+                this._projections.Add(item, data);
+            }
+            ProjectionSource = enumData.ToArray();
+        }
 
         private void OnChangedCurrentProject(ProjectModel project)
         {
-            this.CurrentProjectCard = _objectReader.Read<ProjectModel>().By(new GetProjectById { Id = project.Id });
+            var card = _objectReader.Read<ProjectModel>().By(new GetProjectById { Id = project.Id });
+
+            if (this._projections.ContainsKey(card.Projection))
+                card.ProjectionCombo = this._projections[card.Projection];
+
+            this.CurrentProjectCard = card;
             ReloadProjectMaps();
             ReloadProjectContexts();
             this.CurrentProjectMap = null;
@@ -179,7 +209,7 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
                     Name = CurrentProjectCard.Name,
                     Note = CurrentProjectCard.Note,
                     OwnerId = Guid.NewGuid(),
-                    Projection = CurrentProjectCard.Projection
+                    Projection = CurrentProjectCard.ProjectionCombo.Name
                 };
 
                 _commandDispatcher.Send(projectModifier);
@@ -201,7 +231,7 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
                     Id = CurrentProject.Id,
                     Name = CurrentProjectCard.Name,
                     Note = CurrentProjectCard.Note,
-                    Projection = CurrentProjectCard.Projection
+                    Projection = CurrentProjectCard.ProjectionCombo.Name
                 };
 
                 _commandDispatcher.Send(projectModifier);
@@ -275,8 +305,10 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
             try
             {
                 if (CurrentProject == null)
+                {
+                    _starter.ShowException(Exceptions.CalcServerClient, new Exception(Properties.Resources.Message_YouMustSelectTheRequiredProject));
                     return;
-
+                }
                 _starter.Start<VM.Map.View>(isModal: true, f => f.ProjectId = CurrentProject.Id );
             }
             catch (Exception e)
@@ -289,7 +321,10 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
             try
             {
                 if (CurrentProjectMap == null)
+                {
+                    _starter.ShowException(Exceptions.CalcServerClient, new Exception(Properties.Resources.Message_YouMustSelectTheRequiredProject));
                     return;
+                }
 
                 var projectModifier = new MP.Modifiers.DeleteMap
                 {
@@ -312,7 +347,10 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
             try
             {
                 if (CurrentProject == null)
+                {
+                    _starter.ShowException(Exceptions.CalcServerClient, new Exception(Properties.Resources.Message_YouMustSelectTheRequiredProject));
                     return;
+                }
 
                 _starter.Start<VM.ClientContext.View>(isModal: true, f => { f.ProjectId = CurrentProject.Id; });
             }
@@ -325,7 +363,13 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
         {
             try
             {
-                if (CurrentProject == null || CurrentProjectContext == null)
+                if (CurrentProject == null)
+                {
+                    _starter.ShowException(Exceptions.CalcServerClient, new Exception(Properties.Resources.Message_YouMustSelectTheRequiredProject));
+                    return;
+                }
+
+                if (CurrentProjectContext == null)
                     return;
 
                 _starter.Start<VM.ClientContext.View>(isModal: true, f => { f.ContextId = CurrentProjectContext.Id; });
@@ -339,6 +383,12 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
         {
             try
             {
+                if (CurrentProject == null)
+                {
+                    _starter.ShowException(Exceptions.CalcServerClient, new Exception(Properties.Resources.Message_YouMustSelectTheRequiredProject));
+                    return;
+                }
+
                 if (CurrentProjectContext == null)
                     return;
 

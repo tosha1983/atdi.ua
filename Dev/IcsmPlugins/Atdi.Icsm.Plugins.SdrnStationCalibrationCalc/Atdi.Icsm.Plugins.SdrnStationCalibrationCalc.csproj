@@ -75,6 +75,8 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="ViewModels\ManagementTasksCalibration\Queries\GetMapsByProjectId.cs" />
+    <Compile Include="ViewModels\ManagementTasksCalibration\Queries\GetMapsByProjectIdExecutor.cs" />
     <Compile Include="ViewModels\PivotTableConfiguration\Events\OnCreatedCalcTask.cs" />
     <Compile Include="ViewModels\PivotTableConfiguration\Events\OnRunedCalcTask.cs" />
     <Compile Include="ViewModels\PivotTableConfiguration\Models\CalcResultEventsModel.cs" />

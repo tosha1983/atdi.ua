@@ -14,6 +14,8 @@ using Atdi.Platform.Cqrs;
 using Atdi.Platform.Events;
 using System.Data;
 using System.Windows;
+using System.Windows.Forms;
+using Atdi.WpfControls.EntityOrm.Controls;
 
 namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTasksCalibration
 {
@@ -36,6 +38,9 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
 
         private CardEditMode _clientContextEditedMode = CardEditMode.None;
         private CardEditMode _calcTaskEditedMode = CardEditMode.None;
+
+        private OrmEnumBoxData[] _mapSource;
+        private Dictionary<string, OrmEnumBoxData> _maps;
 
         public ViewCommand ContextAddCommand { get; set; }
         public ViewCommand ContextModifyCommand { get; set; }
@@ -147,6 +152,11 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
             get => this._currentCalcTaskCard;
             set => this.Set(ref this._currentCalcTaskCard, value);
         }
+        public OrmEnumBoxData[] MapSource
+        {
+            get => this._mapSource;
+            set => this.Set(ref this._mapSource, value);
+        }
 
         #region visible properties
         private bool _clientContextAddEnabled = false;
@@ -220,6 +230,21 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
         }
         #endregion
 
+        private void PrepareMapCombo()
+        {
+            var maps = _objectReader.Read<string[]>().By(new GetMapsByProjectId() { Id = this._currentProject.Id });
+            this._maps = new Dictionary<string, OrmEnumBoxData>();
+            var enumData = new List<OrmEnumBoxData>();
+            int i = 0;
+
+            foreach (var item in maps)
+            {
+                var data = new OrmEnumBoxData() { Id = ++i, Name = item, ViewName = item };
+                enumData.Add(data);
+                this._maps.Add(item, data);
+            }
+            MapSource = enumData.ToArray();
+        }
         private void OnChangedCurrentProject(ProjectModel project)
         {
             ReloadProjectContext();
@@ -233,6 +258,8 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
             CalcTaskStartCalcEnabled = false;
             CalcTaskShowResultEnabled = false;
             CalcTaskSaveEnabled = false;
+            if (project != null)
+                PrepareMapCombo();
         }
         private void OnChangedCurrentBaseClientContext(ClientContextModel context)
         {
@@ -269,7 +296,13 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
         }
         private void OnChangedCurrentCalcTask(CalcTaskModel task)
         {
-            this.CurrentCalcTaskCard = _objectReader.Read<CalcTaskModel>().By(new GetCalcTaskById { Id = CurrentCalcTask.Id });
+            var card = _objectReader.Read<CalcTaskModel>().By(new GetCalcTaskById { Id = CurrentCalcTask.Id });
+
+            if (this._maps.ContainsKey(card.MapName))
+                card.MapCombo = this._maps[card.MapName];
+
+            this.CurrentCalcTaskCard = card;
+
             if (CurrentCalcTask != null)
             {
                 CalcTaskEditEnabled = true;
@@ -499,7 +532,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
             if (CurrentCalcTaskCard == null)
                 return;
 
-            if (string.IsNullOrEmpty(CurrentCalcTaskCard.MapName))
+            if (string.IsNullOrEmpty(CurrentCalcTaskCard.MapCombo.Name))
             {
                 _starter.ShowException("Warning!", new Exception($"Undefined value '{Properties.Resources.MapName}'!"));
                 return;
@@ -510,7 +543,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
                 var modifier = new Modifiers.CreateCalcTask
                 {
                     ContextId = CurrentCalcTaskCard.ContextId,
-                    MapName = CurrentCalcTaskCard.MapName,
+                    MapName = CurrentCalcTaskCard.MapCombo.Name,
                     OwnerId = Guid.NewGuid()
                 };
 
@@ -522,7 +555,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
                 var modifier = new Modifiers.EditCalcTask
                 {
                     Id = CurrentCalcTask.Id,
-                    MapName = CurrentCalcTaskCard.MapName
+                    MapName = CurrentCalcTaskCard.MapCombo.Name
                 };
 
                 _commandDispatcher.Send(modifier);
@@ -612,6 +645,8 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
         }
         private void OnRunCalcTaskHandle(Events.OnRunCalcTask data)
         {
+            System.Windows.Forms.MessageBox.Show("The calculation process has been started successfully.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            
             ReloadCalcTask();
         }
         public override void Dispose()

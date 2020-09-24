@@ -197,21 +197,28 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                 }
                 else
                 {
+                    var location = new DM.SensorLocation()
+                    {
+                        ASL = _config.AslDefault,
+                        Lon = _config.LonDefault,
+                        Lat = _config.LatDefault,
+                        Status = "A",
+                        Created = DateTime.Now,
+                        From = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 1),
+                        To = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 23, 59, 59)
+                    };
+
+                    if (_config.AglDefault==0)
+                    {
+                        _logger.Error(Contexts.RegisterSensorTaskWorker, Categories.Processing, Exceptions.AglDefaultIsNull);
+                        throw new Exception(Exceptions.AglDefaultIsNull);
+                    }
                     if (_config.EnableGPS == false)
                     {
-                        var location = new DM.SensorLocation()
-                        {
-                            ASL = _config.AslDefault,
-                            Lon = _config.LonDefault,
-                            Lat = _config.LatDefault,
-                            Status = "A",
-                            Created = DateTime.Now,
-                            From = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 1),
-                            To = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 23, 59, 59)
-                        };
                         sensor.Locations = new DM.SensorLocation[1] { location };
                     }
                     sensor.Status = "A";
+                    sensor.AGL = _config.AglDefault;
                     var publisher = this._busGate.CreatePublisher("main");
                     publisher.Send<DM.Sensor>("RegisterSensor", sensor);
                     publisher.Dispose();

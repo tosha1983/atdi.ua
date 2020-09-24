@@ -12,6 +12,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 	public class AllStationCorellationCalcData
     {
         public DriveTestsResult[] GSIDGroupeDriveTests;
+        public string Areas;
         public ContextStation[] GSIDGroupeStation;
         public CorellationParameters CorellationParameters;
         public CalibrationParameters CalibrationParameters;

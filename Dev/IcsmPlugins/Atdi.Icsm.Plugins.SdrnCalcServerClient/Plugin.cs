@@ -26,8 +26,8 @@ namespace XICSM.SdrnCalcServerClient
 		{
 			mainMenu.InsertItem(PluginMetadata.Menu.MainTool, PluginMetadata.Menu.Tools.RunProjectManagerCommand, _menuCommands.OnRunProjectManagerCommand);
 			mainMenu.InsertItem(PluginMetadata.Menu.MainTool, PluginMetadata.Menu.Tools.About, _menuCommands.OnAboutCommand);
-			mainMenu.InsertItem(PluginMetadata.Menu.MainTool, "Entity Orm Test", _menuCommands.OnRunEntityOrmTestCommand);
-			mainMenu.InsertItem(PluginMetadata.Menu.MainTool, "Dialog Test", _menuCommands.OnRunDialogTestCommand);
+			//mainMenu.InsertItem(PluginMetadata.Menu.MainTool, "Entity Orm Test", _menuCommands.OnRunEntityOrmTestCommand);
+			//mainMenu.InsertItem(PluginMetadata.Menu.MainTool, "Dialog Test", _menuCommands.OnRunDialogTestCommand);
 		}
         protected override void AddBoard(IMBoard b)
         {

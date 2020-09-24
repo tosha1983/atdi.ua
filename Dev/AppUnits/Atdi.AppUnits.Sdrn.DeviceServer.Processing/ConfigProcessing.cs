@@ -172,6 +172,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         public int SleepTimeForUpdateContextSOTask_ms { get; set; }
 
         /// <summary>
+        /// Default Agl
+        /// </summary>
+        [ComponentConfigProperty("AglDefault.double")]
+        public double AglDefault { get; set; }
+
+        /// <summary>
         /// Default Asl
         /// </summary>
         [ComponentConfigProperty("AslDefault.double")]

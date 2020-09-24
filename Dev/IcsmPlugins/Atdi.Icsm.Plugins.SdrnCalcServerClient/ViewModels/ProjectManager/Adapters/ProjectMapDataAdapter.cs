@@ -58,5 +58,4 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager.Adapt
             };
         }
     }
-
 }

@@ -18,7 +18,7 @@ using Atdi.DataModels.Sdrn.CalcServer.Entities;
 
 namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ClientContext
 {
-    [ViewXaml("ClientContext.xaml", WindowState = FormWindowState.Normal, Width = 350, Height = 200)]
+    [ViewXaml("ClientContext.xaml", WindowState = FormWindowState.Normal, Width = 530, Height = 290)]
     [ViewCaption("Calc Server Client: Client Context")]
     public class View : ViewBase
     {

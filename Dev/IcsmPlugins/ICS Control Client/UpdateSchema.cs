@@ -50,6 +50,14 @@ namespace XICSM.ICSControlClient
                 s.DeclareField("CREATED_BY", "VARCHAR(150)", null, null, null);
                 s.DeclareField("VISN", "VARCHAR(250)", null, null, null);
             }
+
+            s.DeclareTable("XPROTOCOL_BANDWIDTH", "ICS Control protocol bandwidth", plugin3);
+            {
+                s.DeclareField("ID", "NUMBER(9,0)", null, "NOTNULL", null);
+                s.DeclareIndex("PK_XPROTOCOL_BANDWIDTH", "PRIMARY", "ID");
+                s.DeclareField("STANDARD_NAME", "VARCHAR(150)", null, null, null);
+                s.DeclareField("BW", "NUMBER(30,10)", null, null, null);
+            }
         }
     }
 }
