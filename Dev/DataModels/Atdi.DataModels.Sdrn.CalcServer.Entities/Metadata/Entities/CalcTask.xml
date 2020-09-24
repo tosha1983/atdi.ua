@@ -12,7 +12,7 @@
   <Fields>
     <Field Name="Id" SourceType="Column"  SourceName="ID" DataType="Counter.64" Title="Task ID" Desc="The identifier of the calculation task"/>
     <Field Name="TypeCode" SourceType="Column" SourceName="TYPE_CODE" DataType="Code.32" Required="true" Title="Type Code" Desc="The code of the task type"  />
-    <Field Name="TypeName" SourceType="Column" SourceName="TYPE_NAME" DataType="Text.250" Required="true" Title="Status Name" Desc="The name of the status of the task processing" />
+    <Field Name="TypeName" SourceType="Column" SourceName="TYPE_NAME" DataType="Text.250" Required="true" Title="Status Name" Desc="The name of the task type" />
     <Field Name="StatusCode" SourceType="Column" SourceName="STATUS_CODE" DataType="Code.u08" Required="true" Title="Status Code" Desc="The code of the status of the task processing"  />
     <Field Name="StatusName" SourceType="Column" SourceName="STATUS_NAME" DataType="Text.50" Title="Status Name" Desc="The name of the status of the task processing" />
     <Field Name="StatusNote" SourceType="Column" SourceName="STATUS_NOTE" DataType="Text.MAX" Title="Status Note" Desc="The note of the status of the task processing"/>
