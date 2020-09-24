@@ -37,9 +37,9 @@
           <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-          <RowDefinition Height="60*" MinHeight="100" ></RowDefinition>
+          <RowDefinition Height="65*" MinHeight="100" ></RowDefinition>
           <RowDefinition Height="Auto"></RowDefinition>
-          <RowDefinition Height="40*" MinHeight="100"></RowDefinition>
+          <RowDefinition Height="35*" MinHeight="100"></RowDefinition>
         </Grid.RowDefinitions>
 
         <ScrollViewer>
@@ -251,9 +251,9 @@
           <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-          <RowDefinition Height="60*" MinHeight="100"></RowDefinition>
+          <RowDefinition Height="65*" MinHeight="100"></RowDefinition>
           <RowDefinition Height="Auto"></RowDefinition>
-          <RowDefinition Height="40*" MinHeight="100"></RowDefinition>
+          <RowDefinition Height="35*" MinHeight="100"></RowDefinition>
         </Grid.RowDefinitions>
 
 

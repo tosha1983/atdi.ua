@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="Entities\ICalcResultEvent.cs" />
     <Compile Include="Entities\ICalcResult.cs" />
+    <Compile Include="Entities\ICalcCommand.cs" />
     <Compile Include="Entities\ICluttersDesc.cs" />
     <Compile Include="Entities\ICluttersDescClutter.cs" />
     <Compile Include="Entities\ICluttersDescFreq.cs" />
@@ -334,6 +335,7 @@
     <Content Include="Metadata\DataTypes\Database\Time.xml" />
     <Content Include="Metadata\Entities\CalcResultEvent.xml" />
     <Content Include="Metadata\Entities\CalcResult.xml" />
+    <Content Include="Metadata\Entities\CalcCommand.xml" />
     <Content Include="Metadata\Entities\CluttersDesc.xml" />
     <Content Include="Metadata\Entities\CluttersDescClutter.xml" />
     <Content Include="Metadata\Entities\CluttersDescFreq.xml" />
