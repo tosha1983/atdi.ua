@@ -83,13 +83,15 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             var lstMaxCorellation_pc = new List<double>();
             //обнуляем значение maxCorellation_pc
             maxCorellation_pc = null;
+            //обнуляем значение usedPoints_pc
+            int? usedPoints_pc = 0;
             // переводим статус statusCorellationLinkGroup в false
             statusCorellationLinkGroup = false;
             // цикл по входному массиву драйв тестов
             for (int j = 0; j < arrDriveTests.Length; j++)
             {
                 // расчет корреляции
-                statusCorellationLinkGroup = CalcCorellation(taskContext, station, arrDriveTests[j], data, out maxCorellation_pc);
+                statusCorellationLinkGroup = CalcCorellation(taskContext, station, arrDriveTests[j], data, out maxCorellation_pc, out usedPoints_pc);
                 // если расчет корреляции прошел успешно, тогда флаг statusCorellationLinkGroup изменяем в состояние true и выходим из цикла обработки драйв тестов
                 if (statusCorellationLinkGroup)
                 {
@@ -120,6 +122,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         // если результат выполнения метода CalibrationStations не пустой, тогда добавляем его в список tempResultCorrelationGSIDGroupeStations
                         if (сalibrationStationsGSIDGroupeStations.Length > 0)
                         {
+                            for (int k=0; k< сalibrationStationsGSIDGroupeStations.Length; k++)
+                            {
+                                сalibrationStationsGSIDGroupeStations[k].UsedPoints_pc = usedPoints_pc.Value;
+                            }
+
                             tempResultCorrelationGSIDGroupeStations.AddRange(сalibrationStationsGSIDGroupeStations);
                         }
                     }
@@ -787,8 +794,9 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     {
                         for (int w = 0; w < driveTestsP.Length; w++)
                         {
+                            int? usedPoints_pc = 0;
                             // расчет корелляции
-                            bool statusCorellationLinkGroupP = CalcCorellation(taskContext, stationP, driveTestsP[w], data, out maxCorellationP_pc);
+                            bool statusCorellationLinkGroupP = CalcCorellation(taskContext, stationP, driveTestsP[w], data, out maxCorellationP_pc, out usedPoints_pc);
                             if (statusCorellationLinkGroupP == true)
                             {
                                 driveTestStatusResult = DriveTestStatusResult.UN;
@@ -829,10 +837,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         /// <param name="driveTest">Драйв тест</param>
         /// <param name="data">Набор вспомогательных параметров</param>
         /// <returns></returns>
-        public bool CalcCorellation(ITaskContext taskContext, ContextStation[] stations, DriveTestsResult driveTest, AllStationCorellationCalcData data, out double? maxCorellation_pc)
+        public bool CalcCorellation(ITaskContext taskContext, ContextStation[] stations, DriveTestsResult driveTest, AllStationCorellationCalcData data, out double? maxCorellation_pc, out int? usedPoints_pc)
         {
             maxCorellation_pc = 0;
+            usedPoints_pc = 0;
             var listCorellation_pc = new List<double>();
+            var listUsedPoints_pc = new List<int>();
             bool StatusCorellationLinkGroup = false;
             for (int i = 0; i < stations.Length; i++)
             {
@@ -866,6 +876,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 // Если максимальная корреляция превысит(или равна) Сorrelation threshold weak то возвращаем True
                 if (resultCorellationCalcData.Corellation_pc >= stationCorellationCalcData.GeneralParameters.СorrelationThresholdWeak)
                 {
+                    listUsedPoints_pc.Add(resultCorellationCalcData.UsedPoints_pc);
                     listCorellation_pc.Add(resultCorellationCalcData.Corellation_pc);
                     StatusCorellationLinkGroup = true;
                     break;
@@ -875,6 +886,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             if (listCorellation_pc.Count > 0)
             {
                 maxCorellation_pc = listCorellation_pc.Max();
+            }
+            if (listUsedPoints_pc.Count > 0)
+            {
+                usedPoints_pc = listUsedPoints_pc.Max();
             }
             return StatusCorellationLinkGroup;
         }
@@ -1033,8 +1048,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             StationMonitoringId = calibrationStationsAndDriveTestsResult.ClientContextStation.Id,
                             IsContour = calibrationStationsAndDriveTestsResult.ClientContextStation.Type== ClientContextStationType.A ? true : false,
                             MaxCorellation = (float)calibrationStationsAndDriveTestsResult.MaxCorrelation_PC,
+                            DeltaCorrelation_pc = calibrationStationsAndDriveTestsResult.DeltaCorrelation_pc,
+                            UsedPoints_pc = calibrationStationsAndDriveTestsResult.UsedPoints_pc,
                             Standard = calibrationStationsAndDriveTestsResult.ClientContextStation.RealStandard,
-                            Freq_MHz = calibrationStationsAndDriveTestsResult.DriveTestsResult.Freq_MHz
+                            Freq_MHz = calibrationStationsAndDriveTestsResult.DriveTestsResult.Freq_MHz,
+                            CountPointsInDriveTest = calibrationStationsAndDriveTestsResult.CountPoints
                         };
 
                         var freq_MHz = GetFreqStation(calibrationStationsAndDriveTestsResult.DriveTestsResult, calibrationStationsAndDriveTestsResult.ClientContextStation);
@@ -1100,9 +1118,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         ResultStationStatus = StationStatusResult.NF,
                         IsContour = calibrationStationsAndDriveTestsResult.ClientContextStation.Type == ClientContextStationType.A ? true : false,
                         MaxCorellation = (float)calibrationStationsAndDriveTestsResult.MaxCorrelation_PC,
+                        DeltaCorrelation_pc = calibrationStationsAndDriveTestsResult.DeltaCorrelation_pc,
+                        UsedPoints_pc = calibrationStationsAndDriveTestsResult.UsedPoints_pc,
                         StationMonitoringId = calibrationStationsAndDriveTestsResult.ClientContextStation.Id,
                         Standard = calibrationStationsAndDriveTestsResult.ClientContextStation.RealStandard,
-                        Freq_MHz = calibrationStationsAndDriveTestsResult.ClientContextStation.Transmitter.Freq_MHz
+                        Freq_MHz = calibrationStationsAndDriveTestsResult.ClientContextStation.Transmitter.Freq_MHz,
+                        CountPointsInDriveTest = calibrationStationsAndDriveTestsResult.CountPoints
                     };
                     if ((float)calibrationStationsAndDriveTestsResult.MaxCorrelation_PC > 0)
                     {
@@ -1167,7 +1188,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             IsContour = calibrationStationsAndDriveTestsResult.ClientContextStation.Type == ClientContextStationType.A ? true : false,
                             MaxCorellation = (float)calibrationStationsAndDriveTestsResult.MaxCorrelation_PC,
                             Standard = calibrationStationsAndDriveTestsResult.ClientContextStation.RealStandard,
-                            Freq_MHz = calibrationStationsAndDriveTestsResult.DriveTestsResult.Freq_MHz
+                            Freq_MHz = calibrationStationsAndDriveTestsResult.DriveTestsResult.Freq_MHz,
+                            DeltaCorrelation_pc = calibrationStationsAndDriveTestsResult.DeltaCorrelation_pc,
+                            UsedPoints_pc = calibrationStationsAndDriveTestsResult.UsedPoints_pc,
+                            CountPointsInDriveTest = calibrationStationsAndDriveTestsResult.CountPoints
                         };
 
                         var freq_MHz = GetFreqStation(calibrationStationsAndDriveTestsResult.DriveTestsResult, calibrationStationsAndDriveTestsResult.ClientContextStation);
@@ -1237,11 +1261,14 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         ParametersStationNew = calibrationStationsAndDriveTestsResult.ParametersStationNew,
                         ParametersStationOld = calibrationStationsAndDriveTestsResult.ParametersStationOld,
                         MaxCorellation = (float)calibrationStationsAndDriveTestsResult.MaxCorrelation_PC,
+                        DeltaCorrelation_pc = calibrationStationsAndDriveTestsResult.DeltaCorrelation_pc,
+                        UsedPoints_pc = calibrationStationsAndDriveTestsResult.UsedPoints_pc,
                         IsContour = calibrationStationsAndDriveTestsResult.ClientContextStation.Type == ClientContextStationType.A ? true : false,
                         StationMonitoringId = calibrationStationsAndDriveTestsResult.ClientContextStation.Id,
                         Standard = calibrationStationsAndDriveTestsResult.ClientContextStation.RealStandard,
                         Freq_MHz = calibrationStationsAndDriveTestsResult.ClientContextStation.Transmitter.Freq_MHz,
                         ResultStationStatus = StationStatusResult.NF,
+                        CountPointsInDriveTest = calibrationStationsAndDriveTestsResult.CountPoints
                     };
                     if ((float)calibrationStationsAndDriveTestsResult.MaxCorrelation_PC > 0)
                     {

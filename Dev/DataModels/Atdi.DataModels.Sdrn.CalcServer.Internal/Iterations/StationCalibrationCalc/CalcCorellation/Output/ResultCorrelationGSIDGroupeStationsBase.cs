@@ -13,11 +13,13 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
         public double Freq_MHz;
         public float Delta_dB;
         public double Corellation_pc;
+        public double DeltaCorrelation_pc;
         public double Corellation_factor;
         public float StdDev_dB;
         public float AvErr_dB;
         public string StatusResult;
         public int CountPoints;
+        public int UsedPoints_pc;
         public ContextStation ClientContextStation;
         public DriveTestsResult DriveTestsResult;
         public CalibrationStatusParameters CalibrationStatusParameters;

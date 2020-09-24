@@ -898,7 +898,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                     .SetValue(c => c.ExternalCode, station.ExternalCode)
                     .SetValue(c => c.ExternalSource, station.ExternalSource)
                     .SetValue(c => c.LicenseGsid, station.LicenseGsid)
-                    .SetValue(c => c.MaxCorellation, station.MaxCorellation);
+                    .SetValue(c => c.MaxCorellation, station.MaxCorellation)
+                    .SetValue(c => c.DeltaCorrelation_pc, station.DeltaCorrelation_pc)
+                    .SetValue(c => c.UsedPoints_pc, station.UsedPoints_pc)
+                    .SetValue(c => c.CountPointsInDriveTest, station.CountPointsInDriveTest);
+
                     if (station.ParametersStationNew != null)
                     {
                         insertQueryStationCalibrationStaResult.SetValue(c => c.New_Altitude_m, station.ParametersStationNew.Altitude_m)

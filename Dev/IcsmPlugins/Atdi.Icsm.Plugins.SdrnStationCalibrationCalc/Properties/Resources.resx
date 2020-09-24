@@ -550,4 +550,10 @@
   <data name="Refresh" xml:space="preserve">
     <value>Refresh</value>
   </data>
+  <data name="DeltaCorrelation_pc" xml:space="preserve">
+    <value>Delta correlation percent</value>
+  </data>
+  <data name="UsedPoints_pc" xml:space="preserve">
+    <value>Percentage of points into account in the drive test</value>
+  </data>
 </root>

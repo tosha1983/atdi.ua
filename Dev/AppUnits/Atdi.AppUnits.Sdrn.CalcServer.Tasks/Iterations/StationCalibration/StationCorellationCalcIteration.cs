@@ -322,7 +322,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     calcCorellationResult.Corellation_factor = 0;
                     calcCorellationResult.CountPoints = 0;
                 }
-                var usedPoints_pc = calcCorellationResult.CountPoints / counter * 100;
+                if (counter > 0)
+                {
+                    calcCorellationResult.UsedPoints_pc = calcCorellationResult.CountPoints / counter * 100;
+                }
                 //val += $"Count;DiffractionLoss_dB;Dist_km;FSCalc;FSMeas;X;Y;Corellation_pc={calcCorellationResult.Corellation_pc}" + Environment.NewLine;
                 //for (int k=0; k< data.GSIDGroupeDriveTests.Points.Length; k++)
                 //{
