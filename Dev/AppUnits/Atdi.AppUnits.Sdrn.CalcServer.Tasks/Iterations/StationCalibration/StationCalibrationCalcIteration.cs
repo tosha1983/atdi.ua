@@ -727,7 +727,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             //correlationData.GSIDGroupeStation = calibrationData.GSIDGroupeStation;
             correlationResult = correlationCalcIteration.Run(taskContext, correlationData);
 
-            var deltaCorrelation_pc = correlationResult.Corellation_pc - initialCorrelation;
+            //var deltaCorrelation_pc = correlationResult.Corellation_pc - initialCorrelation;
             //- Parameters Station New(Altitude Station, Tilt Station, Azimuth Station, Lat Station, Lon Station, Power Station)
 
             var siteCoords_dec = _transformation.ConvertCoordinateToWgs84(new EpsgCoordinate() { X = correlationData.FieldStrengthCalcData.PointCoordinate.X, Y = correlationData.FieldStrengthCalcData.PointCoordinate.Y }, _transformation.ConvertProjectionToCode(calibrationData.CodeProjection));

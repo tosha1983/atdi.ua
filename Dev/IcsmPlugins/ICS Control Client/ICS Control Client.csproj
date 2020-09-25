@@ -492,6 +492,8 @@
     <Content Include="ICSM 6.2.70\NetPlugins.dll" />
     <Content Include="ICSM 6.2.70\NetPlugins2.dll" />
     <Content Include="ICSM 6.2.70\OrmCs.dll" />
+    <Content Include="ICSM 6.2.70\Sql\Oracle\XPROTOCOL_BANDWIDTH_INSERT.sql" />
+    <Content Include="ICSM 6.2.70\Sql\Oracle\XPROTOCOL_BANDWIDTH.sql" />
     <Content Include="ICSM 6.2.70\Sql\Oracle\XPROTOCOL_REPORT.sql" />
   </ItemGroup>
   <ItemGroup>
@@ -602,6 +604,10 @@
     <EmbeddedResource Include="Properties\Resources.uk-UA.resx" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ICSM 6.2.70\IcsmReport\REPORT_SIGNALING_NDP.IRP" />
+    <None Include="ICSM 6.2.70\IcsmReport\REPORT_SIGNALING_NDP_RUS.rtf" />
+    <None Include="ICSM 6.2.70\IcsmReport\REPORT_SIGNALING_NDP_SPECTR.IRP" />
+    <None Include="ICSM 6.2.70\IcsmReport\REPORT_SIGNALING_NDP_SPECTR_RUS.rtf" />
     <None Include="Resources\ICSControlClient.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

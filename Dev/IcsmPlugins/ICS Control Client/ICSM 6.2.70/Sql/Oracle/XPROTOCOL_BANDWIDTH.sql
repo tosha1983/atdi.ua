@@ -1,0 +1,63 @@
+CREATE TABLE ICSM.XPROTOCOL_BANDWIDTH
+(
+  ID                 NUMBER(9)                  NOT NULL,
+  STANDARD_NAME      VARCHAR2(150 CHAR),
+  BW                 NUMBER(30,10)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE UNIQUE INDEX ICSM.XPROTOCOL_BANDWIDTH_PK ON ICSM.XPROTOCOL_BANDWIDTH
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+ALTER TABLE ICSM.XPROTOCOL_BANDWIDTH ADD (
+  CONSTRAINT XPROTOCOL_BANDWIDTH_PK
+ PRIMARY KEY
+ (ID)
+    USING INDEX 
+    TABLESPACE USERS
+    PCTFREE    10
+    INITRANS   2
+    MAXTRANS   255
+    STORAGE    (
+                INITIAL          64K
+                NEXT             1M
+                MINEXTENTS       1
+                MAXEXTENTS       UNLIMITED
+                PCTINCREASE      0
+               ));
+
+GRANT INSERT, SELECT, UPDATE ON ICSM.XPROTOCOL_BANDWIDTH TO PUBLIC;
+
