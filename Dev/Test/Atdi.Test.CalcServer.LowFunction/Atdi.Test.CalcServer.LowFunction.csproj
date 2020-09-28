@@ -71,6 +71,8 @@
     <Compile Include="TestProfile\Tresh.cs" />
     <Compile Include="TestPropagationModel.cs" />
     <Compile Include="TestCalcAntennaPattern.cs" />
+    <Compile Include="Test\Coordinated.cs" />
+    <Compile Include="Test\TestGetCoordinated.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
