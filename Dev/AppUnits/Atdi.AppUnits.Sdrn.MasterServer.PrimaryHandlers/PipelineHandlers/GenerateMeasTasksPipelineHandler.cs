@@ -39,6 +39,7 @@ namespace Atdi.AppUnits.Sdrn.MasterServer.PrimaryHandlers.PipelineHandlers
         {
             using (this._logger.StartTrace(Contexts.ThisComponent, Categories.GenerateMeasTasksPipelineHandler, this))
             {
+                var allLinkSensorArggregationServer = new List<LinkSensorArggregationServer>();
                 var allListMeasSubTaskSensors = new List<MeasSubTaskSensor>();
                 var listMeasTasks = new List<MeasTask>();
                 var AggregationServerList = new List<string>();
@@ -57,32 +58,50 @@ namespace Atdi.AppUnits.Sdrn.MasterServer.PrimaryHandlers.PipelineHandlers
                         {
                             for (int j = 0; j < measSubTask.MeasSubTaskSensors.Length; j++)
                             {
-                                if (sensor.GetAggregationServerBySensorId(measSubTask.MeasSubTaskSensors[j].SensorId, out string Name, out string TechId, out string AggregationServerId))
+
+                                var fndLinkSensorArggregationServer = allLinkSensorArggregationServer.Find(v => v.SensorId == measSubTask.MeasSubTaskSensors[j].SensorId);
+                                if (fndLinkSensorArggregationServer == null)
                                 {
-                                    AllMasterSensors.Add(new MeasSensor() {
-                                         SensorId = new MeasSensorIdentifier()
-                                         {
-                                              Value = measSubTask.MeasSubTaskSensors[j].SensorId
-                                         },
-                                          SensorName = Name,
-                                          SensorTechId = TechId
-                                    });
-                                    if (!AggregationServerList.Contains(AggregationServerId))
+                                    if (sensor.GetAggregationServerBySensorId(measSubTask.MeasSubTaskSensors[j].SensorId, out string Name, out string TechId, out string AggregationServerId))
                                     {
-                                        if (!string.IsNullOrEmpty(AggregationServerId))
+                                        allLinkSensorArggregationServer.Add(new LinkSensorArggregationServer()
                                         {
-                                            AggregationServerList.Add(AggregationServerId);
+                                            SensorId = measSubTask.MeasSubTaskSensors[j].SensorId,
+                                            AggregationServerId = AggregationServerId,
+                                            SensorName = Name,
+                                            SensorTechId = TechId
+                                        });
+                                    }
+                                }
+
+                                fndLinkSensorArggregationServer = allLinkSensorArggregationServer.Find(v => v.SensorId == measSubTask.MeasSubTaskSensors[j].SensorId);
+                                if (fndLinkSensorArggregationServer != null)
+                                {
+
+                                    AllMasterSensors.Add(new MeasSensor()
+                                    {
+                                        SensorId = new MeasSensorIdentifier()
+                                        {
+                                            Value = measSubTask.MeasSubTaskSensors[j].SensorId
+                                        },
+                                        SensorName = fndLinkSensorArggregationServer.SensorName,
+                                        SensorTechId = fndLinkSensorArggregationServer.SensorTechId
+                                    });
+                                    if (!AggregationServerList.Contains(fndLinkSensorArggregationServer.AggregationServerId))
+                                    {
+                                        if (!string.IsNullOrEmpty(fndLinkSensorArggregationServer.AggregationServerId))
+                                        {
+                                            AggregationServerList.Add(fndLinkSensorArggregationServer.AggregationServerId);
                                         }
                                     }
                                     if (!dictionaryAggregationWithSensor.ContainsKey(measSubTask.MeasSubTaskSensors[j].SensorId))
                                     {
-                                        dictionaryAggregationWithSensor.Add(measSubTask.MeasSubTaskSensors[j].SensorId, AggregationServerId);
+                                        dictionaryAggregationWithSensor.Add(measSubTask.MeasSubTaskSensors[j].SensorId, fndLinkSensorArggregationServer.AggregationServerId);
                                     }
                                 }
                             }
                         }
                     }
-
 
                     if ((AggregationServerList != null) && (AggregationServerList.Count > 0))
                     {
