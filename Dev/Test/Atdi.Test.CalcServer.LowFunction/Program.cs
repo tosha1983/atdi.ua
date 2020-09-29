@@ -20,6 +20,8 @@ namespace Atdi.Test.CalcServer.LowFunction
             Console.ReadLine();
 
 
+         
+
             TestGetCoordinated.Test();
 
             //var CalcAntennaPattern = new TestCalcAntennaPattern();

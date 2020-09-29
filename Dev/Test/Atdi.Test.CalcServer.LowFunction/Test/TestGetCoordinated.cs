@@ -72,6 +72,10 @@ namespace Atdi.Test.CalcServer.LowFunction
                     }
                     WPF.RunApp.Start(WPF.TypeObject.Points, inputCoords, WPF.TypeObject.Points, inputCoords1);
 
+
+                    TestForm testForm = new TestForm();
+                    testForm.ShowDialog();
+
                 }
                 catch (Exception e)
                 {

@@ -37,7 +37,7 @@ namespace Atdi.Test.DeepServices.Client.WPF
                             Fill = System.Windows.Media.Brushes.BlueViolet,
                             Opacity = 0.85,
                             Width = 5,
-                            Height = 5
+                            Height = 5,
                         });
                     }
                 }
@@ -56,7 +56,8 @@ namespace Atdi.Test.DeepServices.Client.WPF
                             Fill = System.Windows.Media.Brushes.OrangeRed,
                             Opacity = 0.85,
                             Width = 5,
-                            Height = 5
+                            Height = 5,
+                            Name = locationsOutput[i].Name
                         });
                     }
                 }
