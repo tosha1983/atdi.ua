@@ -14,11 +14,11 @@ using System.Data;
 using Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibrationResult.Adapters;
 using Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibrationResult.Queries;
 using VM = Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels;
-
+using FRM = System.Windows.Forms;
 using IC_ES = Atdi.DataModels.Sdrn.Infocenter.Entities.SdrnServer;
 using System.ComponentModel;
-
-
+using Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Reports;
+using System.IO;
 
 namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibrationResult
 {
@@ -38,9 +38,8 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
         private readonly IEventBus _eventBus;
         private readonly ILogger _logger;
 
-
-
         public ViewCommand LoadResultsCommand { get; set; }
+        public ViewCommand ExportResultsCommand { get; set; }
         public ViewCommand CreatePivotTableCommand { get; set; }
 
         private CalcServerDataLayer _dataLayer { get; set; }
@@ -79,6 +78,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
 
 
             this.LoadResultsCommand = new ViewCommand(this.OnLoadResultsCommand);
+            this.ExportResultsCommand = new ViewCommand(this.OnExportResultsCommand);
             this.CreatePivotTableCommand = new ViewCommand(this.OnCreatePivotTableCommand);
 
             this._dataLayer = dataLayer;
@@ -116,6 +116,131 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                 this.StationCalibrationResultDataAdapter.dateTimeStop = new DateTimeOffset(DateStopLoadResults.Value);
                 this.StationCalibrationResultDataAdapter.Refresh();
 
+            }
+            catch (Exception e)
+            {
+                this._logger.Exception(Exceptions.StationCalibrationCalculation, e);
+            }
+        }
+        private void OnExportResultsCommand(object parameter)
+        {
+            try
+            {
+                FRM.SaveFileDialog sfd = new FRM.SaveFileDialog() { Filter = "CSV (*.csv)|*.csv", FileName = $"StationCalibrationResult_{this._resultId}.xlsx" };
+                if (sfd.ShowDialog() == FRM.DialogResult.OK)
+                {
+                    if (File.Exists(sfd.FileName))
+                    {
+                        try
+                        {
+                            File.Delete(sfd.FileName);
+                        }
+                        catch (IOException ex)
+                        {
+                            _starter.ShowException("Warning!", new Exception($"It wasn't possible to write the data to the disk." + ex.Message));
+                        }
+                    }
+
+                    ReportExcelFast rep = new ReportExcelFast();
+                    var line = new List<string>();
+                    rep.Init(sfd.FileName, "Table with stations", "");
+                    var cellStyle = rep.GetCellStyleBorder();
+
+                    line.Add(Properties.Resources.Id);
+                    line.Add(Properties.Resources.ResultStationStatus);
+                    line.Add(Properties.Resources.MaxCorellation);
+                    line.Add(Properties.Resources.ExternalCode);
+                    line.Add(Properties.Resources.ExternalSource);
+                    rep.SetColumnWidth(4, 15);
+                    line.Add(Properties.Resources.LicenseGsid);
+                    rep.SetColumnWidth(5, 20);
+                    line.Add(Properties.Resources.RealGsid);
+                    rep.SetColumnWidth(6, 20);
+                    line.Add(Properties.Resources.New_Tilt_deg);
+                    line.Add(Properties.Resources.Old_Tilt_deg);
+                    line.Add(Properties.Resources.New_Azimuth_deg);
+                    line.Add(Properties.Resources.Old_Azimuth_deg);
+                    line.Add(Properties.Resources.New_Altitude_m);
+                    line.Add(Properties.Resources.Old_Altitude_m);
+                    line.Add(Properties.Resources.New_Lat_deg);
+                    line.Add(Properties.Resources.Old_Lat_deg);
+                    line.Add(Properties.Resources.New_Lon_deg);
+                    line.Add(Properties.Resources.Old_Lon_deg);
+                    line.Add(Properties.Resources.New_Power_dB);
+                    line.Add(Properties.Resources.Old_Power_dB);
+                    line.Add(Properties.Resources.OldFreq_MHz);
+                    line.Add(Properties.Resources.FreqLinkDriveTest_MHz);
+                    line.Add(Properties.Resources.Standard);
+                    rep.WriteLine(line.ToArray());
+
+                    int i = 1;
+                    this.StationCalibrationStaDataAdapter.Reset();
+                    foreach (StationCalibrationStaModel item in this.StationCalibrationStaDataAdapter)
+                    {
+                        rep.WriteLine();
+                        rep.SetCellValue(0, i, item.Id, cellStyle);
+                        rep.SetCellValue(1, i, item.ResultStationStatus, cellStyle);
+                        rep.SetCellValue(2, i, item.MaxCorellation, cellStyle);
+                        rep.SetCellValue(3, i, item.ExternalCode, cellStyle);
+                        rep.SetCellValue(4, i, item.ExternalSource, cellStyle);
+                        rep.SetCellValue(5, i, item.LicenseGsid, cellStyle);
+                        rep.SetCellValue(6, i, item.RealGsid, cellStyle);
+                        rep.SetCellValue(7, i, item.New_Tilt_deg, cellStyle);
+                        rep.SetCellValue(8, i, item.Old_Tilt_deg, cellStyle);
+                        rep.SetCellValue(9, i, item.New_Azimuth_deg, cellStyle);
+                        rep.SetCellValue(10, i, item.Old_Azimuth_deg, cellStyle);
+                        rep.SetCellValue(11, i, item.New_Altitude_m, cellStyle);
+                        rep.SetCellValue(12, i, item.Old_Altitude_m, cellStyle);
+                        rep.SetCellValue(13, i, item.New_Lat_dec_deg, cellStyle);
+                        rep.SetCellValue(14, i, item.Old_Lat_dec_deg, cellStyle);
+                        rep.SetCellValue(15, i, item.New_Lon_dec_deg, cellStyle);
+                        rep.SetCellValue(16, i, item.Old_Lon_dec_deg, cellStyle);
+                        rep.SetCellValue(17, i, item.New_Power_dB, cellStyle);
+                        rep.SetCellValue(18, i, item.Old_Power_dB, cellStyle);
+                        rep.SetCellValue(19, i, item.Old_Freq_MHz, cellStyle);
+                        rep.SetCellValue(20, i, item.Freq_MHz, cellStyle);
+                        rep.SetCellValue(21, i, item.Standard, cellStyle);
+                        i++;
+                    }
+
+                    rep.AddSheet("Drive tests");
+                    line.Clear();
+                    line.Add(Properties.Resources.Id);
+                    line.Add(Properties.Resources.DriveTestId);
+                    line.Add(Properties.Resources.ExternalSource);
+                    line.Add(Properties.Resources.ExternalCode);
+                    line.Add(Properties.Resources.StationGcid);
+                    rep.SetColumnWidth(4, 20);
+                    line.Add(Properties.Resources.MeasGcid);
+                    rep.SetColumnWidth(5, 20);
+                    line.Add(Properties.Resources.ResultDriveTestStatus);
+                    line.Add(Properties.Resources.CountPointsInDriveTest);
+                    line.Add(Properties.Resources.MaxPercentCorellation);
+                    line.Add(Properties.Resources.Freq_MHz);
+                    line.Add(Properties.Resources.Standard);
+                    rep.WriteLine(line.ToArray());
+
+                    i = 1;
+                    this.StationCalibrationDriveTestsDataAdapter.Reset();
+                    foreach (StationCalibrationDriveTestsModel item in this.StationCalibrationDriveTestsDataAdapter)
+                    {
+                        rep.WriteLine();
+                        rep.SetCellValue(0, i, item.Id, cellStyle);
+                        rep.SetCellValue(1, i, item.DriveTestId, cellStyle);
+                        rep.SetCellValue(2, i, item.ExternalSource, cellStyle);
+                        rep.SetCellValue(3, i, item.ExternalCode, cellStyle);
+                        rep.SetCellValue(4, i, item.StationGcid, cellStyle);
+                        rep.SetCellValue(5, i, item.MeasGcid, cellStyle);
+                        rep.SetCellValue(6, i, item.ResultDriveTestStatus, cellStyle);
+                        rep.SetCellValue(7, i, item.CountPointsInDriveTest, cellStyle);
+                        rep.SetCellValue(8, i, item.MaxPercentCorellation, cellStyle);
+                        rep.SetCellValue(9, i, item.Freq_MHz, cellStyle);
+                        rep.SetCellValue(10, i, item.Standard, cellStyle);
+                        i++;
+                    }
+
+                    rep.Save();
+                }
             }
             catch (Exception e)
             {
