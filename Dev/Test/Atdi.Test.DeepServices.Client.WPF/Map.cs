@@ -53,7 +53,15 @@ namespace Atdi.Test.DeepServices.Client.WPF
                             ZIndex = int.MaxValue,
                             Offset = new Point() { X = -point.Width / 2, Y = -point.Width / 2 }
                         };
-                        
+
+                        //var marker1 = new GMapMarker(new PointLatLng(point.Location.Lat, point.Location.Lon))
+                        //{
+                             
+                        //    Shape = new Label() { Opacity = point.Opacity, Width = point.Width, Height = point.Width, ToolTip = point.Name },
+                        //    ZIndex = int.MaxValue,
+                        //    Offset = new Point() { X = -point.Width / 2, Y = -point.Width / 2 }
+                        //};
+
                         //marker. 
                         this.Markers.Add(marker);
                     });
