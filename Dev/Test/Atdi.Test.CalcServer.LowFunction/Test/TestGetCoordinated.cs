@@ -65,7 +65,7 @@ namespace Atdi.Test.CalcServer.LowFunction
                     var arrPnts = track.ToArray();
                     WPF.Location[] inputCoords = new WPF.Location[arrPnts.Length];
                     WPF.Location[] inputCoords1 = new WPF.Location[1];
-                    inputCoords1[0] = new WPF.Location(arrPnts[0].Lon_DEC, arrPnts[0].Lat_DEC);
+                    inputCoords1[0] = new WPF.Location(arrPnts[0].Lon_DEC, arrPnts[0].Lat_DEC, "Test");
                     for (int u = 0; u < arrPnts.Length; u++)
                     {
                         inputCoords[u] = new WPF.Location(arrPnts[u].Lon_DEC, arrPnts[u].Lat_DEC);
