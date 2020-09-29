@@ -72,6 +72,12 @@ namespace XICSM.ICSControlClient
             {
                 public static readonly string ShowResultMonitoring = "Show Result Monitoring (Fix Sensor)";
             }
+            public static class BandWidthParameter
+            {
+                public static readonly string CreateNewRecord = "Create new record";
+                public static readonly string UpdateRecord = "Edit record";
+                public static readonly string DeleteRecord = "Delete record";
+            }
 
         }
 
