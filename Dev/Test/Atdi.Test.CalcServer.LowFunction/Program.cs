@@ -19,6 +19,11 @@ namespace Atdi.Test.CalcServer.LowFunction
             Console.WriteLine($"Press any key to start ...");
             Console.ReadLine();
 
+
+         
+
+            TestGetCoordinated.Test();
+
             //var CalcAntennaPattern = new TestCalcAntennaPattern();
             //CalcAntennaPattern.Test();
             //var CalcPropagationLoss = new TestPropagationModel();
@@ -29,7 +34,7 @@ namespace Atdi.Test.CalcServer.LowFunction
 
             //TestGE06GetBoundaryPointsFromAllotments.Test();
 
-            TestGE06EstimationAssignmentsPointsForEtalonNetwork.Test();
+            //TestGE06EstimationAssignmentsPointsForEtalonNetwork.Test();
 
             //TestGE06GetEtalonBroadcastingAssignmentFromAllotment.Test();
 

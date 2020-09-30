@@ -502,142 +502,162 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
             }
             return status;
         }
+
         public MeasTask ReadBaseTask(long id)
         {
             MeasTask measTask = null;
+            var measSensors = new List<MeasSensor>();
+            var listmeasSubTask = new List<MeasSubTask>();
+            List<MeasSubTaskSensor> listMeasSubTaskStation = new List<MeasSubTaskSensor>();
             try
             {
                 var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
-                var builderMeasTask = this._dataLayer.GetBuilder<MD.IMeasTask>().From();
-                builderMeasTask.Select(c => c.CreatedBy);
-                builderMeasTask.Select(c => c.DateCreated);
-                builderMeasTask.Select(c => c.ExecutionMode);
+                var builderMeasTask = this._dataLayer.GetBuilder<MD.ISubTaskSensor>().From();
+                builderMeasTask.Select(c => c.SUBTASK.MEAS_TASK.CreatedBy);
+                builderMeasTask.Select(c => c.SUBTASK.MEAS_TASK.DateCreated);
+                builderMeasTask.Select(c => c.SUBTASK.MEAS_TASK.ExecutionMode);
+                builderMeasTask.Select(c => c.SUBTASK.MEAS_TASK.IdentStart);
+                builderMeasTask.Select(c => c.SUBTASK.MEAS_TASK.MaxTimeBs);
+                builderMeasTask.Select(c => c.SUBTASK.MEAS_TASK.Name);
+                builderMeasTask.Select(c => c.SUBTASK.MEAS_TASK.OrderId);
+                builderMeasTask.Select(c => c.SUBTASK.MEAS_TASK.PerInterval);
+                builderMeasTask.Select(c => c.SUBTASK.MEAS_TASK.PerStart);
+                builderMeasTask.Select(c => c.SUBTASK.MEAS_TASK.PerStop);
+                builderMeasTask.Select(c => c.SUBTASK.MEAS_TASK.Prio);
+                builderMeasTask.Select(c => c.SUBTASK.MEAS_TASK.ResultType);
+                builderMeasTask.Select(c => c.SUBTASK.MEAS_TASK.Status);
+                builderMeasTask.Select(c => c.SUBTASK.MEAS_TASK.Task);
+                builderMeasTask.Select(c => c.SUBTASK.MEAS_TASK.TimeStart);
+                builderMeasTask.Select(c => c.SUBTASK.MEAS_TASK.TimeStop);
+                builderMeasTask.Select(c => c.SUBTASK.MEAS_TASK.Type);
+
+                builderMeasTask.Select(c => c.SUBTASK.Id);
+                builderMeasTask.Select(c => c.SUBTASK.Interval);
+                builderMeasTask.Select(c => c.SUBTASK.MEAS_TASK.Id);
+                builderMeasTask.Select(c => c.SUBTASK.Status);
+                builderMeasTask.Select(c => c.SUBTASK.TimeStart);
+                builderMeasTask.Select(c => c.SUBTASK.TimeStop);
+
                 builderMeasTask.Select(c => c.Id);
-                builderMeasTask.Select(c => c.IdentStart);
-                builderMeasTask.Select(c => c.MaxTimeBs);
-                builderMeasTask.Select(c => c.Name);
-                builderMeasTask.Select(c => c.OrderId);
-                builderMeasTask.Select(c => c.PerInterval);
-                builderMeasTask.Select(c => c.PerStart);
-                builderMeasTask.Select(c => c.PerStop);
-                builderMeasTask.Select(c => c.Prio);
-                builderMeasTask.Select(c => c.ResultType);
+                builderMeasTask.Select(c => c.Count);
                 builderMeasTask.Select(c => c.Status);
-                builderMeasTask.Select(c => c.Task);
-                builderMeasTask.Select(c => c.TimeStart);
-                builderMeasTask.Select(c => c.TimeStop);
-                builderMeasTask.Select(c => c.Type);
-                builderMeasTask.Where(c => c.Id, ConditionOperator.Equal, id);
-                builderMeasTask.Where(c => c.Status, ConditionOperator.NotEqual, "Z");
-                builderMeasTask.Where(c => c.Status, ConditionOperator.IsNotNull);
+                builderMeasTask.Select(c => c.TimeNextTask);
+                builderMeasTask.Select(c => c.SENSOR.Id);
+
+                builderMeasTask.Where(c => c.SUBTASK.MEAS_TASK.Id, ConditionOperator.Equal, id);
+                builderMeasTask.Where(c => c.SUBTASK.MEAS_TASK.Status, ConditionOperator.NotEqual, "Z");
+                builderMeasTask.Where(c => c.SUBTASK.MEAS_TASK.Status, ConditionOperator.IsNotNull);
+                builderMeasTask.OrderByDesc(c => c.SUBTASK.Id);
                 queryExecuter.Fetch(builderMeasTask, readerMeasTask =>
                 {
                     while (readerMeasTask.Read())
                     {
-                        measTask = new MeasTask();
 
-                        MeasurementType typeMeasurements;
-                        if (Enum.TryParse<MeasurementType>(readerMeasTask.GetValue(c => c.Type), out typeMeasurements))
-                            measTask.TypeMeasurements = typeMeasurements;
-
-                    
-                        measTask.CreatedBy = readerMeasTask.GetValue(c => c.CreatedBy);
-                        measTask.DateCreated = readerMeasTask.GetValue(c => c.DateCreated);
-                        MeasTaskExecutionMode ExecutionMode;
-                        if (Enum.TryParse<MeasTaskExecutionMode>(readerMeasTask.GetValue(c => c.ExecutionMode), out ExecutionMode))
+                        if (listmeasSubTask.Find(x => x.Id.Value == readerMeasTask.GetValue(c => c.SUBTASK.Id)) != null)
                         {
-                            measTask.ExecutionMode = ExecutionMode;
+                            var fnd = listmeasSubTask.Find(x => x.Id.Value == readerMeasTask.GetValue(c => c.SUBTASK.Id));
+
+                            var measSubTaskSensor = new MeasSubTaskSensor();
+                            measSubTaskSensor.Count = readerMeasTask.GetValue(c => c.Count);
+                            measSubTaskSensor.Id = readerMeasTask.GetValue(c => c.Id);
+                            measSubTaskSensor.SensorId = readerMeasTask.GetValue(c => c.SENSOR.Id);
+                            measSubTaskSensor.Status = readerMeasTask.GetValue(c => c.Status);
+                            measSubTaskSensor.TimeNextTask = readerMeasTask.GetValue(c => c.TimeNextTask);
+
+
+                            var lst = fnd.MeasSubTaskSensors.ToList();
+                            lst.Add(measSubTaskSensor);
+
+                            fnd.MeasSubTaskSensors = lst.ToArray();
                         }
-                        measTask.Id = new MeasTaskIdentifier();
-                        measTask.Id.Value = readerMeasTask.GetValue(c => c.Id);
-                        measTask.Name = readerMeasTask.GetValue(c => c.Name);
-                        measTask.Prio = readerMeasTask.GetValue(c => c.Prio);
-                        measTask.Status = readerMeasTask.GetValue(c => c.Status);
 
-
-
-
-
-                        // MeasTimeParamList
-
-                        var timeParamList = new MeasTimeParamList();
-                        timeParamList.PerInterval = readerMeasTask.GetValue(c => c.PerInterval);
-                        if (readerMeasTask.GetValue(c => c.PerStart) != null)
+                        if (measSensors.Find(x => x.SensorId.Value == readerMeasTask.GetValue(c => c.SENSOR.Id)) == null)
                         {
-                            timeParamList.PerStart = readerMeasTask.GetValue(c => c.PerStart).Value;
-                        }
-                        if (readerMeasTask.GetValue(c => c.PerStop) != null)
-                        {
-                            timeParamList.PerStop = readerMeasTask.GetValue(c => c.PerStop).Value;
-                        }
-                        timeParamList.TimeStart = readerMeasTask.GetValue(c => c.TimeStart);
-                        timeParamList.TimeStop = readerMeasTask.GetValue(c => c.TimeStop);
-                        measTask.MeasTimeParamList = timeParamList;
-                      
-                        
-
-                        var measSensors = new List<MeasSensor>();
-                        var listmeasSubTask = new List<MeasSubTask>();
-                        var builderMeasSubTask = this._dataLayer.GetBuilder<MD.ISubTask>().From();
-                        builderMeasSubTask.Select(c => c.Id);
-                        builderMeasSubTask.Select(c => c.Interval);
-                        builderMeasSubTask.Select(c => c.MEAS_TASK.Id);
-                        builderMeasSubTask.Select(c => c.Status);
-                        builderMeasSubTask.Select(c => c.TimeStart);
-                        builderMeasSubTask.Select(c => c.TimeStop);
-                        builderMeasSubTask.Where(c => c.MEAS_TASK.Id, ConditionOperator.Equal, readerMeasTask.GetValue(c => c.Id));
-                        queryExecuter.Fetch(builderMeasSubTask, readerMeasSubTask =>
-                        {
-                            while (readerMeasSubTask.Read())
+                            measSensors.Add(new MeasSensor()
                             {
-                                var measSubTask = new MeasSubTask();
-                                measSubTask.Id = new MeasTaskIdentifier();
-                                measSubTask.Id.Value = readerMeasSubTask.GetValue(c => c.Id);
-                                measSubTask.Interval = readerMeasSubTask.GetValue(c => c.Interval);
-                                measSubTask.Status = readerMeasSubTask.GetValue(c => c.Status);
-                                if (readerMeasSubTask.GetValue(c => c.TimeStart) != null) measSubTask.TimeStart = readerMeasSubTask.GetValue(c => c.TimeStart).Value;
-                                if (readerMeasSubTask.GetValue(c => c.TimeStop) != null) measSubTask.TimeStop = readerMeasSubTask.GetValue(c => c.TimeStop).Value;
-                                var listMeasSubTaskStation = new List<MeasSubTaskSensor>();
-                                var builderMeasSubTaskSta = this._dataLayer.GetBuilder<MD.ISubTaskSensor>().From();
-                                builderMeasSubTaskSta.Select(c => c.Id);
-                                builderMeasSubTaskSta.Select(c => c.Count);
-                                builderMeasSubTaskSta.Select(c => c.SUBTASK.Id);
-                                builderMeasSubTaskSta.Select(c => c.SENSOR.Id);
-                                builderMeasSubTaskSta.Select(c => c.Status);
-                                builderMeasSubTaskSta.Select(c => c.TimeNextTask);
-                                builderMeasSubTaskSta.Where(c => c.SUBTASK.Id, ConditionOperator.Equal, readerMeasSubTask.GetValue(c => c.Id));
-                                queryExecuter.Fetch(builderMeasSubTaskSta, readerMeasSubTaskSta =>
+                                SensorId = new MeasSensorIdentifier()
                                 {
-                                    while (readerMeasSubTaskSta.Read())
-                                    {
-                                        var measSubTaskSensor = new MeasSubTaskSensor();
-                                        measSubTaskSensor.Count = readerMeasSubTaskSta.GetValue(c => c.Count);
-                                        measSubTaskSensor.Id = readerMeasSubTaskSta.GetValue(c => c.Id);
-                                        measSubTaskSensor.SensorId = readerMeasSubTaskSta.GetValue(c => c.SENSOR.Id);
-                                        measSubTaskSensor.Status = readerMeasSubTaskSta.GetValue(c => c.Status);
-                                        measSubTaskSensor.TimeNextTask = readerMeasSubTaskSta.GetValue(c => c.TimeNextTask);
-                                        listMeasSubTaskStation.Add(measSubTaskSensor);
-                                        measSensors.Add(new MeasSensor()
-                                        {
-                                            SensorId = new MeasSensorIdentifier()
-                                            {
-                                                Value = measSubTaskSensor.SensorId
-                                            }
-                                        });
-                                    }
-                                    return true;
-                                });
-                                measSubTask.MeasSubTaskSensors = listMeasSubTaskStation.ToArray();
-                                listmeasSubTask.Add(measSubTask);
+                                    Value = readerMeasTask.GetValue(c => c.SENSOR.Id)
+                                }
+                            });
+                        }
+
+
+                        MeasSubTask measSubTask = null;
+                        
+                        if (listmeasSubTask.Find(x => x.Id.Value == readerMeasTask.GetValue(c => c.SUBTASK.Id)) == null)
+                        {
+                            var measSubTaskSensor = new MeasSubTaskSensor();
+                            measSubTaskSensor.Count = readerMeasTask.GetValue(c => c.Count);
+                            measSubTaskSensor.Id = readerMeasTask.GetValue(c => c.Id);
+                            measSubTaskSensor.SensorId = readerMeasTask.GetValue(c => c.SENSOR.Id);
+                            measSubTaskSensor.Status = readerMeasTask.GetValue(c => c.Status);
+                            measSubTaskSensor.TimeNextTask = readerMeasTask.GetValue(c => c.TimeNextTask);
+
+                            measSubTask = new MeasSubTask();
+                            measSubTask.Id = new MeasTaskIdentifier();
+                            measSubTask.Id.Value = readerMeasTask.GetValue(c => c.SUBTASK.Id);
+                            measSubTask.Interval = readerMeasTask.GetValue(c => c.SUBTASK.Interval);
+                            measSubTask.Status = readerMeasTask.GetValue(c => c.SUBTASK.Status);
+                            if (readerMeasTask.GetValue(c => c.SUBTASK.TimeStart) != null) measSubTask.TimeStart = readerMeasTask.GetValue(c => c.SUBTASK.TimeStart).Value;
+                            if (readerMeasTask.GetValue(c => c.SUBTASK.TimeStop) != null) measSubTask.TimeStop = readerMeasTask.GetValue(c => c.SUBTASK.TimeStop).Value;
+
+                            measSubTask.MeasSubTaskSensors = new MeasSubTaskSensor[1] { measSubTaskSensor };
+                            listmeasSubTask.Add(measSubTask);
+
+                            if (measTask == null)
+                            {
+                                measTask = new MeasTask();
+
+                                MeasurementType typeMeasurements;
+                                if (Enum.TryParse<MeasurementType>(readerMeasTask.GetValue(c => c.SUBTASK.MEAS_TASK.Type), out typeMeasurements))
+                                    measTask.TypeMeasurements = typeMeasurements;
+
+
+                                measTask.CreatedBy = readerMeasTask.GetValue(c => c.SUBTASK.MEAS_TASK.CreatedBy);
+                                measTask.DateCreated = readerMeasTask.GetValue(c => c.SUBTASK.MEAS_TASK.DateCreated);
+                                MeasTaskExecutionMode ExecutionMode;
+                                if (Enum.TryParse<MeasTaskExecutionMode>(readerMeasTask.GetValue(c => c.SUBTASK.MEAS_TASK.ExecutionMode), out ExecutionMode))
+                                {
+                                    measTask.ExecutionMode = ExecutionMode;
+                                }
+                                measTask.Id = new MeasTaskIdentifier();
+                                measTask.Id.Value = readerMeasTask.GetValue(c => c.SUBTASK.MEAS_TASK.Id);
+                                measTask.Name = readerMeasTask.GetValue(c => c.SUBTASK.MEAS_TASK.Name);
+                                measTask.Prio = readerMeasTask.GetValue(c => c.SUBTASK.MEAS_TASK.Prio);
+                                measTask.Status = readerMeasTask.GetValue(c => c.SUBTASK.MEAS_TASK.Status);
+
+
+
+
+
+                                // MeasTimeParamList
+
+                                var timeParamList = new MeasTimeParamList();
+                                timeParamList.PerInterval = readerMeasTask.GetValue(c => c.SUBTASK.MEAS_TASK.PerInterval);
+                                if (readerMeasTask.GetValue(c => c.SUBTASK.MEAS_TASK.PerStart) != null)
+                                {
+                                    timeParamList.PerStart = readerMeasTask.GetValue(c => c.SUBTASK.MEAS_TASK.PerStart).Value;
+                                }
+                                if (readerMeasTask.GetValue(c => c.SUBTASK.MEAS_TASK.PerStop) != null)
+                                {
+                                    timeParamList.PerStop = readerMeasTask.GetValue(c => c.SUBTASK.MEAS_TASK.PerStop).Value;
+                                }
+                                timeParamList.TimeStart = readerMeasTask.GetValue(c => c.SUBTASK.MEAS_TASK.TimeStart);
+                                timeParamList.TimeStop = readerMeasTask.GetValue(c => c.SUBTASK.MEAS_TASK.TimeStop);
+                                measTask.MeasTimeParamList = timeParamList;
 
                             }
-                            return true;
-                        });
-                        measTask.MeasSubTasks = listmeasSubTask.ToArray();
-                        measTask.Sensors = measSensors.ToArray();
+                        }
                     }
                     return true;
                 });
+
+                if (measTask != null)
+                {
+                    measTask.MeasSubTasks = listmeasSubTask.ToArray();
+                    measTask.Sensors = measSensors.ToArray();
+                }
             }
             catch (Exception e)
             {
@@ -645,6 +665,149 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
             }
             return measTask;
         }
+        //public MeasTask ReadBaseTask(long id)
+        //{
+        //    MeasTask measTask = null;
+        //    try
+        //    {
+        //        var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
+        //        var builderMeasTask = this._dataLayer.GetBuilder<MD.IMeasTask>().From();
+        //        builderMeasTask.Select(c => c.CreatedBy);
+        //        builderMeasTask.Select(c => c.DateCreated);
+        //        builderMeasTask.Select(c => c.ExecutionMode);
+        //        builderMeasTask.Select(c => c.Id);
+        //        builderMeasTask.Select(c => c.IdentStart);
+        //        builderMeasTask.Select(c => c.MaxTimeBs);
+        //        builderMeasTask.Select(c => c.Name);
+        //        builderMeasTask.Select(c => c.OrderId);
+        //        builderMeasTask.Select(c => c.PerInterval);
+        //        builderMeasTask.Select(c => c.PerStart);
+        //        builderMeasTask.Select(c => c.PerStop);
+        //        builderMeasTask.Select(c => c.Prio);
+        //        builderMeasTask.Select(c => c.ResultType);
+        //        builderMeasTask.Select(c => c.Status);
+        //        builderMeasTask.Select(c => c.Task);
+        //        builderMeasTask.Select(c => c.TimeStart);
+        //        builderMeasTask.Select(c => c.TimeStop);
+        //        builderMeasTask.Select(c => c.Type);
+        //        builderMeasTask.Where(c => c.Id, ConditionOperator.Equal, id);
+        //        builderMeasTask.Where(c => c.Status, ConditionOperator.NotEqual, "Z");
+        //        builderMeasTask.Where(c => c.Status, ConditionOperator.IsNotNull);
+        //        queryExecuter.Fetch(builderMeasTask, readerMeasTask =>
+        //        {
+        //            while (readerMeasTask.Read())
+        //            {
+        //                measTask = new MeasTask();
+
+        //                MeasurementType typeMeasurements;
+        //                if (Enum.TryParse<MeasurementType>(readerMeasTask.GetValue(c => c.Type), out typeMeasurements))
+        //                    measTask.TypeMeasurements = typeMeasurements;
+
+
+        //                measTask.CreatedBy = readerMeasTask.GetValue(c => c.CreatedBy);
+        //                measTask.DateCreated = readerMeasTask.GetValue(c => c.DateCreated);
+        //                MeasTaskExecutionMode ExecutionMode;
+        //                if (Enum.TryParse<MeasTaskExecutionMode>(readerMeasTask.GetValue(c => c.ExecutionMode), out ExecutionMode))
+        //                {
+        //                    measTask.ExecutionMode = ExecutionMode;
+        //                }
+        //                measTask.Id = new MeasTaskIdentifier();
+        //                measTask.Id.Value = readerMeasTask.GetValue(c => c.Id);
+        //                measTask.Name = readerMeasTask.GetValue(c => c.Name);
+        //                measTask.Prio = readerMeasTask.GetValue(c => c.Prio);
+        //                measTask.Status = readerMeasTask.GetValue(c => c.Status);
+
+
+
+
+
+        //                // MeasTimeParamList
+
+        //                var timeParamList = new MeasTimeParamList();
+        //                timeParamList.PerInterval = readerMeasTask.GetValue(c => c.PerInterval);
+        //                if (readerMeasTask.GetValue(c => c.PerStart) != null)
+        //                {
+        //                    timeParamList.PerStart = readerMeasTask.GetValue(c => c.PerStart).Value;
+        //                }
+        //                if (readerMeasTask.GetValue(c => c.PerStop) != null)
+        //                {
+        //                    timeParamList.PerStop = readerMeasTask.GetValue(c => c.PerStop).Value;
+        //                }
+        //                timeParamList.TimeStart = readerMeasTask.GetValue(c => c.TimeStart);
+        //                timeParamList.TimeStop = readerMeasTask.GetValue(c => c.TimeStop);
+        //                measTask.MeasTimeParamList = timeParamList;
+
+
+
+        //                var measSensors = new List<MeasSensor>();
+        //                var listmeasSubTask = new List<MeasSubTask>();
+        //                var builderMeasSubTask = this._dataLayer.GetBuilder<MD.ISubTask>().From();
+        //                builderMeasSubTask.Select(c => c.Id);
+        //                builderMeasSubTask.Select(c => c.Interval);
+        //                builderMeasSubTask.Select(c => c.MEAS_TASK.Id);
+        //                builderMeasSubTask.Select(c => c.Status);
+        //                builderMeasSubTask.Select(c => c.TimeStart);
+        //                builderMeasSubTask.Select(c => c.TimeStop);
+        //                builderMeasSubTask.Where(c => c.MEAS_TASK.Id, ConditionOperator.Equal, readerMeasTask.GetValue(c => c.Id));
+        //                queryExecuter.Fetch(builderMeasSubTask, readerMeasSubTask =>
+        //                {
+        //                    while (readerMeasSubTask.Read())
+        //                    {
+        //                        var measSubTask = new MeasSubTask();
+        //                        measSubTask.Id = new MeasTaskIdentifier();
+        //                        measSubTask.Id.Value = readerMeasSubTask.GetValue(c => c.Id);
+        //                        measSubTask.Interval = readerMeasSubTask.GetValue(c => c.Interval);
+        //                        measSubTask.Status = readerMeasSubTask.GetValue(c => c.Status);
+        //                        if (readerMeasSubTask.GetValue(c => c.TimeStart) != null) measSubTask.TimeStart = readerMeasSubTask.GetValue(c => c.TimeStart).Value;
+        //                        if (readerMeasSubTask.GetValue(c => c.TimeStop) != null) measSubTask.TimeStop = readerMeasSubTask.GetValue(c => c.TimeStop).Value;
+        //                        var listMeasSubTaskStation = new List<MeasSubTaskSensor>();
+        //                        var builderMeasSubTaskSta = this._dataLayer.GetBuilder<MD.ISubTaskSensor>().From();
+        //                        builderMeasSubTaskSta.Select(c => c.Id);
+        //                        builderMeasSubTaskSta.Select(c => c.Count);
+        //                        builderMeasSubTaskSta.Select(c => c.SUBTASK.Id);
+        //                        builderMeasSubTaskSta.Select(c => c.SENSOR.Id);
+        //                        builderMeasSubTaskSta.Select(c => c.Status);
+        //                        builderMeasSubTaskSta.Select(c => c.TimeNextTask);
+        //                        builderMeasSubTaskSta.Where(c => c.SUBTASK.Id, ConditionOperator.Equal, readerMeasSubTask.GetValue(c => c.Id));
+        //                        queryExecuter.Fetch(builderMeasSubTaskSta, readerMeasSubTaskSta =>
+        //                        {
+        //                            while (readerMeasSubTaskSta.Read())
+        //                            {
+        //                                var measSubTaskSensor = new MeasSubTaskSensor();
+        //                                measSubTaskSensor.Count = readerMeasSubTaskSta.GetValue(c => c.Count);
+        //                                measSubTaskSensor.Id = readerMeasSubTaskSta.GetValue(c => c.Id);
+        //                                measSubTaskSensor.SensorId = readerMeasSubTaskSta.GetValue(c => c.SENSOR.Id);
+        //                                measSubTaskSensor.Status = readerMeasSubTaskSta.GetValue(c => c.Status);
+        //                                measSubTaskSensor.TimeNextTask = readerMeasSubTaskSta.GetValue(c => c.TimeNextTask);
+        //                                listMeasSubTaskStation.Add(measSubTaskSensor);
+        //                                measSensors.Add(new MeasSensor()
+        //                                {
+        //                                    SensorId = new MeasSensorIdentifier()
+        //                                    {
+        //                                        Value = measSubTaskSensor.SensorId
+        //                                    }
+        //                                });
+        //                            }
+        //                            return true;
+        //                        });
+        //                        measSubTask.MeasSubTaskSensors = listMeasSubTaskStation.ToArray();
+        //                        listmeasSubTask.Add(measSubTask);
+
+        //                    }
+        //                    return true;
+        //                });
+        //                measTask.MeasSubTasks = listmeasSubTask.ToArray();
+        //                measTask.Sensors = measSensors.ToArray();
+        //            }
+        //            return true;
+        //        });
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        this._logger.Exception(Contexts.ThisComponent, e);
+        //    }
+        //    return measTask;
+        //}
 
         public StationDataForMeasurements[] GetStationDataForMeasurementsByTaskId(long taskId)
         {
