@@ -243,6 +243,28 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 				};
 
 				jobBroker.Run(jobDef);
+
+
+				startDelaySeconds = appConfig.CommandJobStartDelay;
+				if (!startDelaySeconds.HasValue)
+				{
+					startDelaySeconds = 0;
+				}
+				repeatDelaySeconds = appConfig.CommandJobRepeatDelay;
+				if (!repeatDelaySeconds.HasValue)
+				{
+					repeatDelaySeconds = 5;
+				}
+				var commandJobDef = new JobDefinition<CommandJob>()
+				{
+					Name = "Command Job",
+					Recoverable = true,
+					Repeatable = true,
+					StartDelay = new TimeSpan(TimeSpan.TicksPerSecond * startDelaySeconds.Value),
+					RepeatDelay = new TimeSpan(TimeSpan.TicksPerMillisecond * repeatDelaySeconds.Value)
+				};
+
+				jobBroker.Run(commandJobDef);
 			});
 
 		}

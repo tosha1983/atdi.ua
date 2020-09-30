@@ -100,5 +100,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 
 		[ComponentConfigProperty("Maps.LocalStorage.Folder")]
 		public string MapsLocalStorageFolder { get; set; }
+
+		[ComponentConfigProperty("CommandJob.StartDelay")]
+		public int? CommandJobStartDelay { get; set; }
+
+		[ComponentConfigProperty("CommandJob.RepeatDelay")]
+		public int? CommandJobRepeatDelay { get; set; }
 	}
 }

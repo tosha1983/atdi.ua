@@ -50,6 +50,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\ICalcCheckPointData.cs" />
+    <Compile Include="Entities\ICalcCheckPoint.cs" />
     <Compile Include="Entities\ICalcResultEvent.cs" />
     <Compile Include="Entities\ICalcResult.cs" />
     <Compile Include="Entities\ICalcCommand.cs" />
@@ -331,6 +333,8 @@
     <Content Include="Metadata\DataTypes\Database\Text.Bytes.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.MAX.xml" />
     <Content Include="Metadata\DataTypes\Database\Time.xml" />
+    <Content Include="Metadata\Entities\CalcCheckPointData.xml" />
+    <Content Include="Metadata\Entities\CalcCheckPoint.xml" />
     <Content Include="Metadata\Entities\CalcResultEvent.xml" />
     <Content Include="Metadata\Entities\CalcResult.xml" />
     <Content Include="Metadata\Entities\CalcCommand.xml" />

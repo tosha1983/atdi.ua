@@ -86,7 +86,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 		/// <summary>
 		/// Комманда "честной" остановки выполнения запущенной ранее задачи 
 		/// </summary>
-		StopCalcTask= 1,
+		CancelCalcTask= 1,
 
 		/// <summary>
 		/// Комманда прерывания выполнения запущенной ранее задачи 
@@ -94,4 +94,13 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 		AbortCalcTask = 2,
 
     }
+
+	public class CancelCalcTaskCommand
+	{
+		public long ResultId;
+	}
+	public class AbortCalcTaskCommand
+	{
+		public long ResultId;
+	}
 }
