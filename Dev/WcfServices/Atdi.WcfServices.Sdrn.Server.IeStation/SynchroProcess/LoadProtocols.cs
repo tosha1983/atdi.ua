@@ -559,6 +559,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                         protocols.Address = readerProtocols.GetValue(c => c.STATION_EXTENDED.Address);
                         protocols.Latitude = readerProtocols.GetValue(c => c.STATION_EXTENDED.Latitude);
                         protocols.Longitude = readerProtocols.GetValue(c => c.STATION_EXTENDED.Longitude);
+                        protocols.DesigEmission = readerProtocols.GetValue(c => c.STATION_EXTENDED.DesigEmission);
                         protocols.Id = readerProtocols.GetValue(c => c.Id);
 
                         var permissionNumberTemp = string.Empty;
@@ -986,6 +987,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                         protocols.Address = readerProtocols.GetValue(c => c.STATION_EXTENDED.Address);
                         protocols.Latitude = readerProtocols.GetValue(c => c.STATION_EXTENDED.Latitude);
                         protocols.Longitude = readerProtocols.GetValue(c => c.STATION_EXTENDED.Longitude);
+                        protocols.DesigEmission = readerProtocols.GetValue(c => c.STATION_EXTENDED.DesigEmission);
                         protocols.Id = readerProtocols.GetValue(c => c.Id);
 
                         var permissionNumberTemp = string.Empty;
@@ -1240,7 +1242,6 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                             headProtocol.PermissionStop = allDetailProtocolsForPerm[0].PermissionStop;
                             headProtocol.StandardName = allDetailProtocolsForPerm[0].StandardName;
                             headProtocol.TitleSensor = allDetailProtocolsForPerm[0].TitleSensor;
-
                             var protocolWithStatusI = allDetailProtocolsForPerm.Find(x => x.StatusMeas == "I");
                             var protocolWithStatusA = allDetailProtocolsForPerm.Find(x => x.StatusMeas == "A");
 

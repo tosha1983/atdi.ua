@@ -147,6 +147,11 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server.IeStation
         [DataMember]
         public double? Latitude { get; set; }
         /// <summary>
+        /// Класс випромінювання
+        /// </summary>
+        [DataMember]
+        public string DesigEmission { get; set; }
+        /// <summary>
         /// Власник РЕЗ
         /// </summary>
         [DataMember]
