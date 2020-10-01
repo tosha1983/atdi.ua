@@ -23,6 +23,7 @@ namespace XICSM.ICSControlClient.Models.Views
         public string StatusMeas { get; set; }
         public string StatusMeasFull { get; set; }
         public string SensorName { get; set; }
+        public string DesigEmission { get; set; }
         public double? Freq_MHz { get; set; }
         public double? BandWidth { get; set; }
         public double? RadioControlMeasFreq_MHz { get; set; }
