@@ -95,3 +95,7 @@
 > "Видалити запис ..."
 "Could not load 'WebQuery.Schema' :"
 > "Не можу завантажити 'WebQuery.Schema'"
+"No information about the request code!"
+> "Відстуня інформація про код запиту!"
+"No information about the request!"
+> "Відстуня інформація про запит!"
