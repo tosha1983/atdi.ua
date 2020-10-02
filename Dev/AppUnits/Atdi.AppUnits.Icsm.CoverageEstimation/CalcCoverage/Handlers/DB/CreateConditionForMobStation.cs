@@ -11,6 +11,9 @@ using System.IO;
 using Atdi.DataModels.DataConstraint;
 using Atdi.Platform.Logging;
 using Atdi.AppUnits.Icsm.CoverageEstimation.Models;
+using Atdi.Contracts.CoreServices.DataLayer;
+using Atdi.Contracts.LegacyServices.Icsm;
+using Atdi.AppUnits.Icsm.CoverageEstimation.Localization;
 
 
 namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
@@ -18,21 +21,48 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
     public class CreateConditionForMobStation
     {
         private CodeOperatorAndStatusConfig _dataConfig { get; set; }
+        private readonly IDataLayer<IcsmDataOrm> _dataLayer;
         private ILogger _logger { get; set; }
         private string _provincesConfigName { get; set; }
-        public CreateConditionForMobStation(CodeOperatorAndStatusConfig dataConfig, string provincesConfigName, ILogger logger)
+        public CreateConditionForMobStation(IDataLayer<IcsmDataOrm> dataLayer, CodeOperatorAndStatusConfig dataConfig, string provincesConfigName, ILogger logger)
         {
+            this._dataLayer = dataLayer;
             this._dataConfig = dataConfig;
             this._logger = logger;
             this._provincesConfigName = provincesConfigName;
         }
 
 
+
+        public bool CheckField(string fld_check, string tableName)
+        {
+            bool isSuccess = false;
+            try
+            {
+                var QueryNext = _dataLayer.Builder
+                .From(tableName)
+                .Where("ID", -1)
+                .Select(fld_check);
+
+                var scope = this._dataLayer.CreateScope<IcsmDataContext>();
+                isSuccess = scope.Executor.Fetch(QueryNext, reader =>
+                    {
+                        return true;
+                    });
+            }
+            catch (Exception)
+            {
+                isSuccess = false;
+            }
+            return isSuccess;
+        }
+
         public Condition GetCondition()
         {
             var complexCondition = new ComplexCondition();
             try
             {
+
                 var provs = this._provincesConfigName.Split(new char[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
 
                 complexCondition.Operator = LogicalOperator.And;
@@ -172,6 +202,24 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                          Operator = ConditionOperator.Equal,
                          RightOperand = new StringValueOperand { Value = codeOperatorAndStatusesConfig.Status }
                      });
+                }
+
+                if ((codeOperatorAndStatusesConfig.MaskFieldName != null) && (codeOperatorAndStatusesConfig.MaskPattern != null))
+                {
+                    if (CheckField(codeOperatorAndStatusesConfig.MaskFieldName, "MOB_STATION"))
+                    {
+                        lsitConditionExpressionsAnd.Add(
+                         new ConditionExpression()
+                         {
+                             LeftOperand = new ColumnOperand { ColumnName = codeOperatorAndStatusesConfig.MaskFieldName },
+                             Operator = ConditionOperator.Like,
+                             RightOperand = new StringValueOperand { Value = codeOperatorAndStatusesConfig.MaskPattern }
+                         });
+                    }
+                    else
+                    {
+                        this._logger.Warning(Contexts.CalcCoverages, (EventText)$"Value Mask.FieldName ='{codeOperatorAndStatusesConfig.MaskFieldName}' not found in table 'MOB_STATION'");
+                    }
                 }
 
                 var listConditions = new List<Condition>();
