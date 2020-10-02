@@ -19,7 +19,6 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
 
     public class GdalCalc
     {
-        private static int[,] grayMatrixGlobal { get; set; }
         private ILogger _logger { get; set; }
         private AppServerComponentConfig _appServerComponentConfig { get; set; }
 
@@ -150,8 +149,8 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                         outGrayBand.WriteRaster(0, h, width, 1, gray, width, 1, 0, 0);
                     }
                     outImage.FlushCache();
+                    GC.SuppressFinalize(MergedMatrix);
                 }
-                GC.Collect();
             }
         }
 
@@ -299,6 +298,8 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                                 outGrayBand.WriteRaster(0, h, width, 1, gray, width, 1, 0, 0);
                             }
                             outImage.FlushCache();
+
+                            GC.SuppressFinalize(MergedMatrix);
                             isSuccessCreateFiles = true;
                             this._logger.Info(Contexts.CalcCoverages, string.Format(CLocaliz.TxT(Events.OperationSaveTempCovarageFileCompleted.ToString()), tempCoverageFile));
                         }
@@ -393,7 +394,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                         var proj = image.GetProjection();
                         outImage.SetProjection(proj);
                         outImage.SetGeoTransform(geoTransformerData);
-                        var grayMatrix = GetMaxRasterFromGeoTiffFilesWithThread(dataConfig, width, height, this._logger);
+                        var grayMatrixGlobal = GetMaxRasterFromGeoTiffFilesWithThread(dataConfig, width, height, this._logger);
                        
 
                         for (int h = 0; h < height; h++)
@@ -405,12 +406,12 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
 
                             for (int w = 0; w < width; w++)
                             {
-                                if (grayMatrix[h, w] != 0)
+                                if (grayMatrixGlobal[h, w] != 0)
                                 {
-                                    var color = GetColorValue(dataConfig, grayMatrix[h, w]);
+                                    var color = GetColorValue(dataConfig, grayMatrixGlobal[h, w]);
                                     if (color != null)
                                     {
-                                        if (grayMatrix[h, w] == color.Gray)
+                                        if (grayMatrixGlobal[h, w] == color.Gray)
                                         {
                                             red[w] = color.Red;
                                             green[w] = color.Green;
@@ -420,7 +421,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                                         }
                                     }
 
-                                    var colorValue = GetColorByRangeValue(dataConfig, grayMatrix[h, w]);
+                                    var colorValue = GetColorByRangeValue(dataConfig, grayMatrixGlobal[h, w]);
                                     if (colorValue != null)
                                     {
                                         red[w] = colorValue.Red;
@@ -429,14 +430,14 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                                         alpha[w] = colorValue.Alpha;
                                     }
 
-                                    if (grayMatrix[h, w] < GetMinimumGrayValue(dataConfig))
+                                    if (grayMatrixGlobal[h, w] < GetMinimumGrayValue(dataConfig))
                                     {
                                         red[w] = 0;
                                         green[w] = 0;
                                         blue[w] = 0;
                                         alpha[w] = 0;
                                     }
-                                    else if (grayMatrix[h, w] >= GetMaximumGrayValue(dataConfig))
+                                    else if (grayMatrixGlobal[h, w] >= GetMaximumGrayValue(dataConfig))
                                     {
                                         var colorMaximum = GetColorValue(dataConfig, GetMaximumGrayValue(dataConfig));
                                         if (colorMaximum != null)
@@ -456,9 +457,23 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                         }
                         outImage.FlushCache();
                         isSuccessCreateFile = true;
+
+                        GC.SuppressFinalize(grayMatrixGlobal);
+
+                        GC.SuppressFinalize(outRBand);
+                        GC.SuppressFinalize(outGBand);
+                        GC.SuppressFinalize(outBBand);
+                        GC.SuppressFinalize(outABand);
+
                         this._logger.Info(Contexts.CalcCoverages, string.Format(CLocaliz.TxT(Events.OperationSaveFinalCovarageFileCompleted.ToString()), outPutFileName));
                     }
+
+                    GC.SuppressFinalize(alphaBand);
+                    GC.SuppressFinalize(blueBand);
+                    GC.SuppressFinalize(greenBand);
+                    GC.SuppressFinalize(redBand);
                 }
+                GC.Collect();
             }
             catch (Exception e)
             {
@@ -493,16 +508,16 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                 {
                     if (gray[w] != 0)
                     {
-                        if ((grayMatrixGlobal[h, w] != 0) && (gray[w] != 0))
+                        if ((dataForThread.GrayMatrixGlobal[h, w] != 0) && (gray[w] != 0))
                         {
-                            if (grayMatrixGlobal[h, w] < gray[w])
+                            if (dataForThread.GrayMatrixGlobal[h, w] < gray[w])
                             {
-                                grayMatrixGlobal[h, w] = gray[w];
+                                dataForThread.GrayMatrixGlobal[h, w] = gray[w];
                             }
                         }
-                        else if (grayMatrixGlobal[h, w] == 0)
+                        else if (dataForThread.GrayMatrixGlobal[h, w] == 0)
                         {
-                            grayMatrixGlobal[h, w] = gray[w];
+                            dataForThread.GrayMatrixGlobal[h, w] = gray[w];
                         }
                     }
                 }
@@ -512,7 +527,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
 
         private int[,] GetMaxRasterFromGeoTiffFilesWithThread(DataConfig dataConfig, int widthValue, int heightValue, ILogger logger)
         {
-            grayMatrixGlobal = new int[heightValue, widthValue];
+            var yMatrixGlobal = new int[heightValue, widthValue];
             var filesSources = Directory.GetFiles(Path.GetDirectoryName(dataConfig.DirectoryConfig.TempTIFFFilesDirectory), "*_out.TIF");
             var lstFiles = BreakDown(filesSources, this._appServerComponentConfig.MaxCountThreadFilesForFinalCoverage);
             for (int j = 0; j < lstFiles.Count; j++)
@@ -523,7 +538,8 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                 {
                     var param = new DataForThread()
                     {
-                        SourceFileName = filesSource[i]
+                        SourceFileName = filesSource[i],
+                        GrayMatrixGlobal = yMatrixGlobal
                     };
                     listThreads[i] = CreateNewThreadGetMaxRasterFromGeoTiffFiles(param);
                 }
@@ -535,47 +551,8 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                     cnt++;
                 }
             }
-            return grayMatrixGlobal;
+            return yMatrixGlobal;
         }
-
-
-        private int[,] GetMaxRasterFromGeoTiffFiles(DataConfig dataConfig, int widthValue, int heightValue, ILogger logger)
-        {
-            var grayMatrix = new int[heightValue, widthValue];
-            var filesSource = Directory.GetFiles(Path.GetDirectoryName(dataConfig.DirectoryConfig.TempTIFFFilesDirectory), "*_out.TIF");
-            for (int i = 0; i < filesSource.Length; i++)
-            {
-                var imageSource = Gdal.Open(filesSource[i], Access.GA_ReadOnly);
-                var grayBand = imageSource.GetRasterBand(5);
-                var width = grayBand.XSize;
-                var height = grayBand.YSize;
-                for (int h = 0; h < height; h++)
-                {
-                    var gray = new int[width];
-                    grayBand.ReadRaster(0, h, width, 1, gray, width, 1, 0, 0);
-                    for (int w = 0; w < width; w++)
-                    {
-                        if (gray[w] != 0)
-                        {
-                            if ((grayMatrix[h, w] != 0) && (gray[w] != 0))
-                            {
-                                if (grayMatrix[h, w] < gray[w])
-                                {
-                                    grayMatrix[h, w] = gray[w];
-                                }
-                            }
-                            else if (grayMatrix[h, w] == 0)
-                            {
-                                grayMatrix[h, w] = gray[w];
-                            }
-                        }
-                    }
-                }
-                imageSource.Dispose();
-            }
-            return grayMatrix;
-        }
-
 
 
         private int GetMinimumGrayValue(DataConfig dataConfig)
@@ -772,32 +749,6 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
             }
             this._logger.Info(Contexts.CalcCoverages,CLocaliz.TxT(Events.ClearFilesFromICSTelecomProjectDir.ToString()));
         }
-
-        /*
-        public void ClearOutTIFFFilesDirectoryForMobStation(DataConfig dataConfig)
-        {
-            for (int i = 0; i < dataConfig.BlockStationsConfig.MobStationConfig.Length; i++)
-            {
-                var codeOperator = dataConfig.BlockStationsConfig.MobStationConfig[i];
-                for (int l = 0; l < codeOperator.StandardConfig.provincesConfig.Length; l++)
-                {
-                    var provincesConfig = codeOperator.StandardConfig.provincesConfig[l];
-                    if (!string.IsNullOrEmpty(provincesConfig.OutTIFFFilesDirectory))
-                    {
-                        var filesOutTIFFFilesDirectory = Directory.GetFiles(provincesConfig.OutTIFFFilesDirectory);
-                        for (int j = 0; j < filesOutTIFFFilesDirectory.Length; j++)
-                        {
-                            if (!File.Exists(filesOutTIFFFilesDirectory[j]))
-                            {
-                                File.Delete(filesOutTIFFFilesDirectory[j]);
-                            }
-                        }
-                    }
-                }
-            }
-            this._logger.Info(Contexts.CalcCoverages, Events.ClearFilesFromOutTIFFFilesDirectory);
-        }
-        */
     }
 }
 
