@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTasksCalibration.Modifiers
 {
-    public class RunCalcTask
+    public class StopCalcTask
     {
-        public long Id;
+        public long ResultId;
     }
 }

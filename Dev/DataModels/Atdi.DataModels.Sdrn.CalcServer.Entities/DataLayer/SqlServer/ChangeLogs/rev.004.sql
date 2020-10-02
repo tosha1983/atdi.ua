@@ -1,0 +1,3 @@
+﻿ALTER TABLE [CALC].[CALCTASKS] ADD [NOTE] [nvarchar](250) NULL
+GO
+

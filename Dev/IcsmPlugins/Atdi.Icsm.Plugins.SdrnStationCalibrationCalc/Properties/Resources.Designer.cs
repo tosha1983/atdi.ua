@@ -61,6 +61,15 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Abort calc.
+        /// </summary>
+        public static string AbortCalc {
+            get {
+                return ResourceManager.GetString("AbortCalc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Activate.
         /// </summary>
         public static string Activate {
@@ -457,6 +466,15 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Edit Note.
+        /// </summary>
+        public static string EditNote {
+            get {
+                return ResourceManager.GetString("EditNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Elevation.
         /// </summary>
         public static string Elevation {
@@ -507,6 +525,15 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         public static string FileName {
             get {
                 return ResourceManager.GetString("FileName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Finish Time.
+        /// </summary>
+        public static string FinishTime {
+            get {
+                return ResourceManager.GetString("FinishTime", resourceCulture);
             }
         }
         
@@ -835,7 +862,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Number station.
+        ///   Looks up a localized string similar to Number of station.
         /// </summary>
         public static string NumberStation {
             get {
@@ -844,11 +871,20 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Number station in contour.
+        ///   Looks up a localized string similar to Number of station in contour.
         /// </summary>
         public static string NumberStationInContour {
             get {
                 return ResourceManager.GetString("NumberStationInContour", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Number of time started.
+        /// </summary>
+        public static string NumberTimeStarted {
+            get {
+                return ResourceManager.GetString("NumberTimeStarted", resourceCulture);
             }
         }
         
@@ -943,6 +979,15 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to % of completed task.
+        /// </summary>
+        public static string PercentCompleteTask {
+            get {
+                return ResourceManager.GetString("PercentCompleteTask", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Power Station.
         /// </summary>
         public static string PowerStation {
@@ -1024,6 +1069,24 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Result Status Name.
+        /// </summary>
+        public static string ResultStatusName {
+            get {
+                return ResourceManager.GetString("ResultStatusName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Result Status Note.
+        /// </summary>
+        public static string ResultStatusNote {
+            get {
+                return ResourceManager.GetString("ResultStatusNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to RxLoss.
         /// </summary>
         public static string RxLoss {
@@ -1038,6 +1101,15 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         public static string Save {
             get {
                 return ResourceManager.GetString("Save", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save &amp; Start.
+        /// </summary>
+        public static string SaveAndStart {
+            get {
+                return ResourceManager.GetString("SaveAndStart", resourceCulture);
             }
         }
         
@@ -1222,6 +1294,15 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Start Time.
+        /// </summary>
+        public static string StartTime {
+            get {
+                return ResourceManager.GetString("StartTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to State for active station.
         /// </summary>
         public static string StateForActiveStation {
@@ -1281,6 +1362,15 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties {
         public static string StatusNote {
             get {
                 return ResourceManager.GetString("StatusNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stop calc.
+        /// </summary>
+        public static string StopCalc {
+            get {
+                return ResourceManager.GetString("StopCalc", resourceCulture);
             }
         }
         

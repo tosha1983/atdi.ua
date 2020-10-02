@@ -125,6 +125,7 @@
     <Content Include="DataLayer\Oracle\ChangeLogs\rev.003.sql" />
     <Content Include="DataLayer\Oracle\ChangeLogs\rev.002.sql" />
     <Content Include="DataLayer\Oracle\ChangeLogs\rev.001.sql" />
+    <Content Include="DataLayer\Oracle\ChangeLogs\rev.004.sql" />
     <Content Include="DataLayer\Oracle\Functions\CALC.GetID.sql" />
     <Content Include="DataLayer\Oracle\Sequences\CALC.REF_SPECTRUM_BY_DRIVE_TESTS_ARGS_DEF_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\CALC.REF_SPECTRUM_BY_DRIVE_TESTS_ARGS_ID_SEQ.sql" />
@@ -230,6 +231,7 @@
     <Content Include="DataLayer\SqlServer\ChangeLogs\rev.001.sql" />
     <Content Include="DataLayer\SqlServer\ChangeLogs\rev.002.sql" />
     <Content Include="DataLayer\SqlServer\ChangeLogs\rev.003.sql" />
+    <Content Include="DataLayer\SqlServer\ChangeLogs\rev.004.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.CALCRESULTS_REF_SPECTRUM_BY_DRIVE_TESTS.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.CALCRESULTS_REF_SPECTRUM_BY_DRIVE_TESTS_DETAIL.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.CALCRESULT_EVENTS.sql" />
