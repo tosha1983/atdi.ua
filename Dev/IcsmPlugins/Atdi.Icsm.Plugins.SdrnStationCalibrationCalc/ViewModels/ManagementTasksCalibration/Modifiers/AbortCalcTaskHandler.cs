@@ -35,7 +35,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
                 .SetValue(c => c.StatusName, CalcCommandStatusCode.Pending.ToString())
                 // тип команды
                 .SetValue(c => c.TypeCode, (byte)CalcCommandTypeCode.CancelCalcTask)
-                .SetValue(c => c.TypeName, CalcCommandTypeCode.CancelCalcTask.ToString())
+                .SetValue(c => c.TypeName, CalcCommandTypeCode.AbortCalcTask.ToString())
                 // для данного типа есть обязательные аргументы
                 .SetValueAsJson(c => c.ArgsJson, new AbortCalcTaskCommand
                 {
