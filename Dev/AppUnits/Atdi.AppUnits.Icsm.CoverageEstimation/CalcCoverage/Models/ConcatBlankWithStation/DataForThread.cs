@@ -8,6 +8,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Models
 {
     public class DataForThread
     {
+        public int[,] GrayMatrixGlobal { get; set; }
         public DataConfig  DataConfig { get; set; }
         public TFWParameter TFWBlank { get; set; }
         public string BlankFileName { get; set; }

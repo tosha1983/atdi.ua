@@ -44,12 +44,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 				// при первом запуске, попытка восстановить расчеты по задачам которые имеют точки восстановления - остальные нужно прервать
 				if (!context.IsRepeat)
 				{
-					var nextRecoveryTaskResults = this.GetNextCalcTaskResults(dbScope);
+					var nextRecoveryTaskResults = this.GetNextRecoverCalcTaskResults(dbScope);
 					if (nextRecoveryTaskResults != null && nextRecoveryTaskResults.Length > 0)
 					{
 						foreach (var resultId in nextRecoveryTaskResults)
 						{
-							_taskDispatcher.RunTask(resultId, this);
+							_taskDispatcher.ResumeTask(resultId, this);
 						}
 					}
 				}
@@ -162,13 +162,13 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 				.From()
 				.Select(c => c.Id)
 				// Рассчет в ожидании запуска
-				.Where(c => c.StatusCode, ConditionOperator.Equal, (byte)CalcResultStatusCode.Processing)
+				.Where(c => c.StatusCode, ConditionOperator.Equal, (byte)CalcResultStatusCode.Processing);
 				// статус задач Доступная 
-				.Where(c => c.TASK.StatusCode, ConditionOperator.Equal, (byte)CalcTaskStatusCode.Available)
-				// контекст подготовлен
-				.Where(c => c.TASK.CONTEXT.StatusCode, ConditionOperator.Equal, (byte)ClientContextStatusCode.Prepared)
-				// статус проекта Доступен
-				.Where(c => c.TASK.CONTEXT.PROJECT.StatusCode, ConditionOperator.Equal, (byte)ProjectStatusCode.Available);
+				//.Where(c => c.TASK.StatusCode, ConditionOperator.Equal, (byte)CalcTaskStatusCode.Available)
+				//// контекст подготовлен
+				//.Where(c => c.TASK.CONTEXT.StatusCode, ConditionOperator.Equal, (byte)ClientContextStatusCode.Prepared)
+				//// статус проекта Доступен
+				//.Where(c => c.TASK.CONTEXT.PROJECT.StatusCode, ConditionOperator.Equal, (byte)ProjectStatusCode.Available);
 
 			var ids = dbScope.Executor.ExecuteAndFetch(taskResultQuery, reader =>
 			{
