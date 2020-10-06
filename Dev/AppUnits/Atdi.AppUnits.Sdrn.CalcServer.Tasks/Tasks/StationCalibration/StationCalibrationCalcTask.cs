@@ -147,79 +147,101 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
             iterationAllStationCorellationCalcData.resultId = CreateResult();
             var iterationResultCalibration = _iterationsPool.GetIteration<AllStationCorellationCalcData, CalibrationResult[]>();
             var resulCalibration = iterationResultCalibration.Run(_taskContext, iterationAllStationCorellationCalcData);
-            for (int i = 0; i < resulCalibration.Length; i++)
+            if ((resulCalibration != null) && (resulCalibration.Length > 0))
             {
-                SaveTaskResult(resulCalibration[i], iterationAllStationCorellationCalcData.resultId);
+                for (int i = 0; i < resulCalibration.Length; i++)
+                {
+                    if (resulCalibration[i] != null)
+                    {
+                        SaveTaskResult(resulCalibration[i], iterationAllStationCorellationCalcData.resultId);
+                    }
+                }
             }
-            // переводим результат в статус "Completed"
-            var updQuery = _calcServerDataLayer.GetBuilder<ICalcResult>()
-               .Update()
-               .SetValue(c => c.StatusCode, (byte)CalcResultStatusCode.Completed)
-               .SetValue(c => c.StatusName, CalcResultStatusCode.Completed.ToString())
-               .SetValue(c => c.StatusNote, "The calc  result completed")
-               .Where(c => c.TASK.Id, ConditionOperator.Equal, _taskContext.TaskId)
-               .Where(c => c.Id, ConditionOperator.Equal, _taskContext.ResultId);
-            _calcDbScope.Executor.Execute(updQuery);
 
-            //CalibrationResult resulCalibration1 = new CalibrationResult()
-            //{
+            if (_taskContext.CancellationToken.IsCancellationRequested)
+            {
+                //// переводим результат в статус "CancellationRequested"
+                //var updQuery = _calcServerDataLayer.GetBuilder<ICalcResult>()
+                //   .Update()
+                //   .SetValue(c => c.StatusCode, (byte)CalcResultStatusCode.Processing)
+                //   .SetValue(c => c.StatusName, CalcResultStatusCode.Processing.ToString())
+                //   .SetValue(c => c.StatusNote, "The calc  result in Processing")
+                //   .Where(c => c.TASK.Id, ConditionOperator.Equal, _taskContext.TaskId)
+                //   .Where(c => c.Id, ConditionOperator.Equal, _taskContext.ResultId);
+                //_calcDbScope.Executor.Execute(updQuery);
+            }
+            else
+            {
+                // переводим результат в статус "Completed"
+                var updQuery = _calcServerDataLayer.GetBuilder<ICalcResult>()
+                   .Update()
+                   .SetValue(c => c.StatusCode, (byte)CalcResultStatusCode.Completed)
+                   .SetValue(c => c.StatusName, CalcResultStatusCode.Completed.ToString())
+                   .SetValue(c => c.StatusNote, "The calc  result completed")
+                   .Where(c => c.TASK.Id, ConditionOperator.Equal, _taskContext.TaskId)
+                   .Where(c => c.Id, ConditionOperator.Equal, _taskContext.ResultId);
+                _calcDbScope.Executor.Execute(updQuery);
+            }
 
-            //    AreaName = "Area",
-            //    CountMeasGSID = 1,
-            //    IdResult = 67,
-            //    GeneralParameters = new GeneralParameters()
-            //    {
-            //        DistanceAroundContour_km = 22,
-            //        TrustOldResults = true
-            //    },
-            //    ResultCalibrationDriveTest = new CalibrationDriveTestResult[2]
-            //              {
-            //                   new CalibrationDriveTestResult()
-            //                   {
-            //                         DriveTestId = 1,
-            //                        CountPointsInDriveTest=1,
-            //                         Gsid="22",
-            //                          ResultDriveTestStatus = DriveTestStatusResult.LS,
-            //                           LinkToStationMonitoringId = 4325
-            //                   },
-            //                   new CalibrationDriveTestResult()
-            //                   {
-            //                         DriveTestId = 1,
-            //                        CountPointsInDriveTest=1,
-            //                         Gsid="23",
-            //                          ResultDriveTestStatus = DriveTestStatusResult.UN,
-            //                           LinkToStationMonitoringId = 4325
-            //                   }
-            //              },
-            //    ResultCalibrationStation = new CalibrationStationResult[2]
-            //               {
-            //                    new CalibrationStationResult()
-            //                    {
-            //                         StationMonitoringId = 4325,
-            //                         ExternalCode="2",
-            //                          ExternalSource = "MOB_STATION",
-            //                           RealGsid="RG2",
-            //                            ResultStationStatus = StationStatusResult.CS,
+                //CalibrationResult resulCalibration1 = new CalibrationResult()
+                //{
+
+                //    AreaName = "Area",
+                //    CountMeasGSID = 1,
+                //    IdResult = 67,
+                //    GeneralParameters = new GeneralParameters()
+                //    {
+                //        DistanceAroundContour_km = 22,
+                //        TrustOldResults = true
+                //    },
+                //    ResultCalibrationDriveTest = new CalibrationDriveTestResult[2]
+                //              {
+                //                   new CalibrationDriveTestResult()
+                //                   {
+                //                         DriveTestId = 1,
+                //                        CountPointsInDriveTest=1,
+                //                         Gsid="22",
+                //                          ResultDriveTestStatus = DriveTestStatusResult.LS,
+                //                           LinkToStationMonitoringId = 4325
+                //                   },
+                //                   new CalibrationDriveTestResult()
+                //                   {
+                //                         DriveTestId = 1,
+                //                        CountPointsInDriveTest=1,
+                //                         Gsid="23",
+                //                          ResultDriveTestStatus = DriveTestStatusResult.UN,
+                //                           LinkToStationMonitoringId = 4325
+                //                   }
+                //              },
+                //    ResultCalibrationStation = new CalibrationStationResult[2]
+                //               {
+                //                    new CalibrationStationResult()
+                //                    {
+                //                         StationMonitoringId = 4325,
+                //                         ExternalCode="2",
+                //                          ExternalSource = "MOB_STATION",
+                //                           RealGsid="RG2",
+                //                            ResultStationStatus = StationStatusResult.CS,
 
 
-            //                    },
-            //                    new CalibrationStationResult()
-            //                    {
-            //                         StationMonitoringId = 4325,
-            //                         ExternalCode="3",
-            //                          ExternalSource = "MOB_STATION",
-            //                           RealGsid="RG1",
-            //                            ResultStationStatus = StationStatusResult.NF,
+                //                    },
+                //                    new CalibrationStationResult()
+                //                    {
+                //                         StationMonitoringId = 4325,
+                //                         ExternalCode="3",
+                //                          ExternalSource = "MOB_STATION",
+                //                           RealGsid="RG1",
+                //                            ResultStationStatus = StationStatusResult.NF,
 
 
-            //                    }
-            //               }
+                //                    }
+                //               }
 
-            //};
-            //SaveTaskResult(in resulCalibration1);
-            //SaveTaskResult(in resulCalibration1);
-            //SaveTaskResult(in resulCalibration1);
-        }
+                //};
+                //SaveTaskResult(in resulCalibration1);
+                //SaveTaskResult(in resulCalibration1);
+                //SaveTaskResult(in resulCalibration1);
+            }
 
         private void ValidateTaskParameters()
 		{

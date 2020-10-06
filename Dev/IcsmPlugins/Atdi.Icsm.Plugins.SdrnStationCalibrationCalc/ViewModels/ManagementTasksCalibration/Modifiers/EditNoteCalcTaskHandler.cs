@@ -10,23 +10,23 @@ using Atdi.Platform.Events;
 
 namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTasksCalibration.Modifiers
 {
-    public class EditCalcTaskHandler : ICommandHandler<EditCalcTask>
+    public class EditNoteCalcTaskHandler : ICommandHandler<EditNoteCalcTask>
     {
         private readonly AppComponentConfig _config;
         private readonly CalcServerDataLayer _dataLayer;
         private readonly IEventBus _eventBus;
 
-        public EditCalcTaskHandler(AppComponentConfig config, CalcServerDataLayer dataLayer, IEventBus eventBus)
+        public EditNoteCalcTaskHandler(AppComponentConfig config, CalcServerDataLayer dataLayer, IEventBus eventBus)
         {
             _config = config;
             _dataLayer = dataLayer;
             _eventBus = eventBus;
         }
-        public void Handle(EditCalcTask command)
+        public void Handle(EditNoteCalcTask command)
         {
             var query = _dataLayer.GetBuilder<ICalcTask>()
                 .Update()
-                .SetValue(c => c.MapName, command.MapName)
+                .SetValue(c => c.Note, command.Note)
                 .Filter(c => c.Id, command.Id);
             _dataLayer.Executor.Execute(query);
 

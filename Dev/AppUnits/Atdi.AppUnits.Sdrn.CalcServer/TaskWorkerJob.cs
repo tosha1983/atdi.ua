@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Atdi.Contracts.CoreServices.DataLayer;
 using Atdi.Contracts.CoreServices.EntityOrm;
@@ -19,6 +20,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 	{
 		public long ResultId;
 		public ITaskObserver TaskObserver;
+		public CancellationTokenSource CancellationSource;
+		public TaskRunningMode RunMode;
 	}
 
 	internal class TaskWorkerJob : IJobExecutor<TaskWorkerContext>
@@ -48,19 +51,35 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 					var taskResultData = this.LoadTaskResultData(calcDbScope, state.ResultId);
 
 					// валидируем состояние
-					CheckTaskResultStatus(taskResultData);
+					CheckTaskResultStatus(taskResultData, state.RunMode);
 
 					// готовим обработчик
 					var handler = _tasksFactory.Create(taskResultData.TaskType);
-					
-					//меняем статус 
-					this.ChangeTaskResultStatusToProcessing(calcDbScope, state.ResultId);
 
+					if (state.RunMode == TaskRunningMode.Normal)
+					{
+						//меняем статус 
+						this.ChangeTaskResultStatusToProcessing(calcDbScope, state.ResultId);
+					}
+					else if (state.RunMode == TaskRunningMode.Normal)
+					{
+						// мы уже в нужном статусе, ничего менять не нужно - пока...
+						_logger.Info(Contexts.ThisComponent, Categories.TaskRunning, $"The calculation task will be recovered: Result #{state.ResultId}");
+					}
+
+					TaskContext taskContext = null;
 					// загружаем задачу
 					try
 					{
-						var taskContext = new TaskContext(taskResultData, state.TaskObserver);
+						taskContext = new TaskContext(taskResultData, state.TaskObserver, state.RunMode, state.CancellationSource.Token, this._calcServerDataLayer);
 						handler.Load(taskContext);
+					}
+					catch (ThreadAbortException)
+					{
+						Thread.ResetAbort();
+						this.ChangeTaskResultStatusToAborted(calcDbScope, state.ResultId, "The calculation task was aborted");
+						_logger.Warning(Contexts.ThisComponent, Categories.TaskRunning, $"The calculation task was aborted: Result #{state.ResultId}");
+						return JobExecutionResult.Completed;
 					}
 					catch (Exception e)
 					{
@@ -75,7 +94,15 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 						var timer = System.Diagnostics.Stopwatch.StartNew();
 						handler.Run();
 						timer.Stop();
-						System.Diagnostics.Debug.WriteLine($"EXECUTED TASK: {timer.Elapsed.TotalMilliseconds}ms/{timer.Elapsed.TotalSeconds}sec");
+						System.Diagnostics.Debug.WriteLine(
+							$"EXECUTED TASK: {timer.Elapsed.TotalMilliseconds}ms/{timer.Elapsed.TotalSeconds}sec");
+					}
+					catch (ThreadAbortException)
+					{
+						Thread.ResetAbort();
+						this.ChangeTaskResultStatusToAborted(calcDbScope, state.ResultId, "The calculation task was aborted");
+						_logger.Warning( Contexts.ThisComponent, Categories.TaskRunning, $"The calculation task was aborted: Result #{state.ResultId}");
+						return JobExecutionResult.Completed;
 					}
 					catch (Exception e)
 					{
@@ -83,8 +110,17 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 						throw;
 					}
 
-					// меняем статус
-					this.ChangeTaskResultStatusToCompleted(calcDbScope, state.ResultId);
+					if (!taskContext.CancellationToken.IsCancellationRequested)
+					{
+						// меняем статус
+						this.ChangeTaskResultStatusToCompleted(calcDbScope, state.ResultId);
+					}
+					else
+					{
+						// меняем статус н аотмену
+						this.ChangeTaskResultStatusToCanceled(calcDbScope, state.ResultId, "The calculation task was canceled");
+						_logger.Warning(Contexts.ThisComponent, Categories.TaskRunning, $"The calculation task was canceled: Result #{state.ResultId}");
+					}
 				}
 			}
 			catch (Exception e)
@@ -95,15 +131,19 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 			return JobExecutionResult.Completed;
 		}
 
-		private static void CheckTaskResultStatus(DM.CalcTaskResultData taskResultData)
+		private static void CheckTaskResultStatus(DM.CalcTaskResultData taskResultData, TaskRunningMode runningMode)
 		{
 			if (taskResultData.TaskStatus != CalcTaskStatusCode.Available)
 			{
 				throw new InvalidOperationException($"Invalid the current task status '{taskResultData.ResultStatus}'. Expected is Available.");
 			}
-			if (taskResultData.ResultStatus != CalcResultStatusCode.Accepted)
+			if (runningMode == TaskRunningMode.Normal && taskResultData.ResultStatus != CalcResultStatusCode.Accepted)
 			{
-				throw new InvalidOperationException($"Invalid the current task result status '{taskResultData.ResultStatus}'. Expected is Accepted.");
+				throw new InvalidOperationException($"Invalid the current task result status '{taskResultData.ResultStatus}'. Expected is Accepted for normal running mode.");
+			}
+			if (runningMode == TaskRunningMode.Recovery && taskResultData.ResultStatus != CalcResultStatusCode.Processing)
+			{
+				throw new InvalidOperationException($"Invalid the current task result status '{taskResultData.ResultStatus}'. Expected is Processing for recovery running mode.");
 			}
 		}
 
@@ -154,6 +194,34 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 				.SetValue(c => c.StatusName, CalcResultStatusCode.Completed.ToString())
 				.SetValue(c => c.FinishTime, DateTimeOffset.Now)
 				.SetValue(c => c.StatusNote, null)
+				.Where(c => c.Id, ConditionOperator.Equal, resultId)
+				.Where(c => c.StatusCode, ConditionOperator.Equal, (byte)CalcResultStatusCode.Processing);
+
+			return calcDbScope.Executor.Execute(query) > 0;
+		}
+
+		private bool ChangeTaskResultStatusToCanceled(IDataLayerScope calcDbScope, long resultId, string reason)
+		{
+			var query = _calcServerDataLayer.GetBuilder<ICalcResult>()
+				.Update()
+				.SetValue(c => c.StatusCode, (byte)CalcResultStatusCode.Canceled)
+				.SetValue(c => c.StatusName, CalcResultStatusCode.Canceled.ToString())
+				.SetValue(c => c.StatusNote, reason)
+				.SetValue(c => c.FinishTime, DateTimeOffset.Now)
+				.Where(c => c.Id, ConditionOperator.Equal, resultId)
+				.Where(c => c.StatusCode, ConditionOperator.Equal, (byte)CalcResultStatusCode.Processing);
+
+			return calcDbScope.Executor.Execute(query) > 0;
+		}
+
+		private bool ChangeTaskResultStatusToAborted(IDataLayerScope calcDbScope, long resultId, string reason)
+		{
+			var query = _calcServerDataLayer.GetBuilder<ICalcResult>()
+				.Update()
+				.SetValue(c => c.StatusCode, (byte)CalcResultStatusCode.Aborted)
+				.SetValue(c => c.StatusName, CalcResultStatusCode.Aborted.ToString())
+				.SetValue(c => c.StatusNote, reason)
+				.SetValue(c => c.FinishTime, DateTimeOffset.Now)
 				.Where(c => c.Id, ConditionOperator.Equal, resultId)
 				.Where(c => c.StatusCode, ConditionOperator.Equal, (byte)CalcResultStatusCode.Processing);
 

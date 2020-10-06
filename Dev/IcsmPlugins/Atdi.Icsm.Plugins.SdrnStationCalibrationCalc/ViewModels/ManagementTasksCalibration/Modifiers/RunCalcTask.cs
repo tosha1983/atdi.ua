@@ -9,6 +9,5 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
     public class RunCalcTask
     {
         public long Id;
-
     }
 }

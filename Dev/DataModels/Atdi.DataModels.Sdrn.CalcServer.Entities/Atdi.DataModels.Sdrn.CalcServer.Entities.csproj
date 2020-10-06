@@ -50,6 +50,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\ICalcCheckPointData.cs" />
+    <Compile Include="Entities\ICalcCheckPoint.cs" />
     <Compile Include="Entities\ICalcResultEvent.cs" />
     <Compile Include="Entities\ICalcResult.cs" />
     <Compile Include="Entities\ICalcCommand.cs" />
@@ -124,7 +126,11 @@
     <Content Include="DataLayer\Oracle\ChangeLogs\rev.003.sql" />
     <Content Include="DataLayer\Oracle\ChangeLogs\rev.002.sql" />
     <Content Include="DataLayer\Oracle\ChangeLogs\rev.001.sql" />
+    <Content Include="DataLayer\Oracle\ChangeLogs\rev.004.sql" />
     <Content Include="DataLayer\Oracle\Functions\CALC.GetID.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\CALC.COMMANDS_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\CALC.CHECKPOINTS_DATA_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\CALC.CHECKPOINTS_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\CALC.REF_SPECTRUM_BY_DRIVE_TESTS_ARGS_DEF_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\CALC.REF_SPECTRUM_BY_DRIVE_TESTS_ARGS_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\CALC.CALCRESULTS_REF_SPECTRUM_BY_DRIVE_TESTS_DETAIL_ID_SEQ.sql" />
@@ -181,6 +187,9 @@
     <Content Include="DataLayer\Oracle\Tables\CALC.CALCRESULTS_STATION_CALIBRATION.sql" />
     <Content Include="DataLayer\Oracle\Tables\CALC.CALCRESULTS_STATION_CALIBRATION_STA.sql" />
     <Content Include="DataLayer\Oracle\Tables\CALC.CALCRESULT_EVENTS.sql" />
+    <Content Include="DataLayer\Oracle\Tables\CALC.CHECKPOINTS_DATA.sql" />
+    <Content Include="DataLayer\Oracle\Tables\CALC.CHECKPOINTS.sql" />
+    <Content Include="DataLayer\Oracle\Tables\CALC.COMMANDS.sql" />
     <Content Include="DataLayer\Oracle\Tables\CALC.CALCTASKS_GN06_ARGS.sql" />
     <Content Include="DataLayer\Oracle\Tables\CALC.CALCTASKS_GN06_ARGS_DEF.sql" />
     <Content Include="DataLayer\Oracle\Tables\CALC.CALCTASKS_STATION_CALIBRATION_ARGS.sql" />
@@ -333,6 +342,8 @@
     <Content Include="Metadata\DataTypes\Database\Text.Bytes.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.MAX.xml" />
     <Content Include="Metadata\DataTypes\Database\Time.xml" />
+    <Content Include="Metadata\Entities\CalcCheckPointData.xml" />
+    <Content Include="Metadata\Entities\CalcCheckPoint.xml" />
     <Content Include="Metadata\Entities\CalcResultEvent.xml" />
     <Content Include="Metadata\Entities\CalcResult.xml" />
     <Content Include="Metadata\Entities\CalcCommand.xml" />

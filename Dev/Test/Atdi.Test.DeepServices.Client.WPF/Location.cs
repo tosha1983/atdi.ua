@@ -21,6 +21,13 @@ namespace Atdi.Test.DeepServices.Client.WPF
             this.Lat = lat;
         }
 
+        public Location(double lon, double lat, string name)
+        {
+            this.Lon = lon;
+            this.Lat = lat;
+            this.Name = name;
+        }
+
         public Location(double lon, double lat, double lon_m, double lat_m, double height, double fs)
         {
             this.Lon = lon;
@@ -31,6 +38,7 @@ namespace Atdi.Test.DeepServices.Client.WPF
             this.Height = height;
         }
 
+        public string Name;
         public double Lon;
         public double Lat;
         public double Height;

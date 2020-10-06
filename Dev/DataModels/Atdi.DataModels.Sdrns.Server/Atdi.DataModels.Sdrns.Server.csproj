@@ -64,6 +64,7 @@
     <Compile Include="Messages\SendSensorFromAggregationToMasterServer.cs" />
     <Compile Include="PipeBox\CommonOperation.cs" />
     <Compile Include="OnlineMeasurement\SensorAvailabilityDescriptor.cs" />
+    <Compile Include="PipeBox\LinkSensorArggregationServer.cs" />
     <Compile Include="PipeBox\RegisterSensorSendEvent.cs" />
     <Compile Include="Pipelines.cs" />
     <Compile Include="PipeBox\PrepareSendEvent.cs" />

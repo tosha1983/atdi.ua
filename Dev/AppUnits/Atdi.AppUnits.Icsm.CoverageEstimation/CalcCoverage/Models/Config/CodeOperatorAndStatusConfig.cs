@@ -10,5 +10,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Models
         public FreqConfig  FreqConfig { get; set; }
         public StandardConfig StandardConfig { get; set; }
         public string Status { get; set; }
+        public string MaskFieldName { get; set; }
+        public string MaskPattern { get; set; }
     }
 }

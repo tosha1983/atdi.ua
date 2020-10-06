@@ -11,7 +11,7 @@ using Atdi.Contracts.Sdrn.Server;
 using Atdi.Contracts.Api.DataBus;
 using Atdi.DataModels.Api.EventSystem;
 using Atdi.DataModels.Sdrns.Server.Events;
-
+using MD = Atdi.DataModels.Sdrns.Server.Entities;
 
 
 
@@ -43,25 +43,34 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers.Handlers
         { 
             using (this._logger.StartTrace(Contexts.ThisComponent, Categories.MeasTasksOnAggServerSendEventPipelineHandler, this))
             {
-                var saveMeasTask = new SaveMeasTask(this._dataLayer, this._logger);
+                //var saveMeasTask = new SaveMeasTask(this._dataLayer, this._logger);
                 var measSubTasks = data.MeasTaskPipeBox.MeasSubTasks;
                 var prepareSendEvents = data.PrepareSendEvents;
                 if ((measSubTasks != null) && (measSubTasks.Length > 0))
                 {
-                    for (int i = 0; i < measSubTasks.Length; i++)
+                    using (var scope = this._dataLayer.CreateScope<SdrnServerDataContext>())
                     {
-                        var measSubTask = measSubTasks[i];
-                        if ((measSubTask.MeasSubTaskSensors != null) && (measSubTask.MeasSubTaskSensors.Length > 0))
+                        scope.BeginTran();
+                        for (int i = 0; i < measSubTasks.Length; i++)
                         {
-                            for (int j = 0; j < measSubTask.MeasSubTaskSensors.Length; j++)
+                            var measSubTask = measSubTasks[i];
+                            if ((measSubTask.MeasSubTaskSensors != null) && (measSubTask.MeasSubTaskSensors.Length > 0))
                             {
-                                var MeasSubTaskSensor = measSubTask.MeasSubTaskSensors[j];
-                                if (MeasSubTaskSensor.MasterId != null)
+                                for (int j = 0; j < measSubTask.MeasSubTaskSensors.Length; j++)
                                 {
-                                    saveMeasTask.SetAggregationMeasTaskId(MeasSubTaskSensor.Id, MeasSubTaskSensor.MasterId.Value);
+                                    var MeasSubTaskSensor = measSubTask.MeasSubTaskSensors[j];
+                                    if (MeasSubTaskSensor.MasterId != null)
+                                    {
+                                        //saveMeasTask.SetAggregationMeasTaskId(scope, MeasSubTaskSensor.Id, MeasSubTaskSensor.MasterId.Value);
+                                        var builderUpdateLinkSensor = this._dataLayer.GetBuilder<MD.ILinkSubTaskSensorMasterId>().Insert();
+                                        builderUpdateLinkSensor.SetValue(c => c.SubtaskSensorMasterId, MeasSubTaskSensor.MasterId.Value);
+                                        builderUpdateLinkSensor.SetValue(c => c.SUBTASK_SENSOR.Id, MeasSubTaskSensor.Id);
+                                        var linkAggregationSensor_PKId = scope.Executor.Execute<MD.ILinkSubTaskSensorMasterId_PK>(builderUpdateLinkSensor);
+                                    }
                                 }
                             }
                         }
+                        scope.Commit();
                     }
                 }
                

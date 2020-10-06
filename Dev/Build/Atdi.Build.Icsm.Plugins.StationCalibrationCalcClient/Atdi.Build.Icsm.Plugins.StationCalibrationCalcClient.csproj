@@ -290,6 +290,11 @@ copy "..\..\..\..\IcsmPlugins\Atdi.Icsm.Plugins.SdrnStationCalibrationCalc\Bin\$
 
 xcopy /Y /I /E "..\..\..\..\packages\GDAL.Native.2.4.4\build\gdal\*.*" "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)\gdal"
 
-</PostBuildEvent>
+copy "..\..\..\..\packages\NPOI.2.5.1\lib\net45\NPOI.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+copy "..\..\..\..\packages\NPOI.2.5.1\lib\net45\NPOI.OOXML.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+copy "..\..\..\..\packages\NPOI.2.5.1\lib\net45\NPOI.OpenXml4Net.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+copy "..\..\..\..\packages\NPOI.2.5.1\lib\net45\NPOI.OpenXmlFormats.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+copy "..\..\..\..\packages\NPOI.2.5.1\lib\net45\NPOI.OpenXmlFormats.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"
+copy "..\..\..\..\packages\SharpZipLib.1.2.0\lib\net45\ICSharpCode.SharpZipLib.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Client\SdrnStationCalibrationCalc\Bin$(ConfigurationName)"</PostBuildEvent>
   </PropertyGroup>
 </Project>

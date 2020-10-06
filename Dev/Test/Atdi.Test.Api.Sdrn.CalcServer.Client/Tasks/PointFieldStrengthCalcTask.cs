@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Atdi.Api.EntityOrm.WebClient;
 using Atdi.Contracts.Api.EntityOrm.WebClient;
@@ -62,6 +63,17 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client.Tasks
 					// запускаем расчет
 					RunCalcTask(dataLayer, executor, calcTaskId, calcResultId);
 
+					// Пример отправки отмены задачи
+					var commandId = SendStopCalcTaskCommand(dataLayer, executor, calcTaskId, calcResultId);
+
+					// тут возможно стоит подождапть результат работы комманды если нужно
+					Thread.Sleep(1000);
+					
+					// и если отмены не дождалдись шлем принудительное завершения задачи
+					commandId = SendAbortCalcTaskCommand(dataLayer, executor, calcTaskId, calcResultId);
+
+					WaitCommandExecution(dataLayer, executor, commandId, 100);
+
 					// ожидаем результат
 					var calcResultObject = WaitForCalcResult(dataLayer, executor, calcTaskId, calcResultId);
 
@@ -94,7 +106,86 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client.Tasks
 			
 		}
 
-		
+		private static CalcCommandStatusCode WaitCommandExecution(WebApiDataLayer dataLayer, IQueryExecutor executor, long commandId, int millisecondsPeriod)
+		{
+			CalcCommandStatusCode status = CalcCommandStatusCode.Created;
+			var cancel = false;
+			while (!cancel)
+			{
+				System.Threading.Thread.Sleep(millisecondsPeriod);
+
+				var checkQuery = dataLayer.GetBuilder<ICalcCommand>()
+					.Read()
+					.Select(c => c.StatusCode)
+					.Select(c => c.StatusNote)
+					.Filter(c => c.Id, commandId);
+
+				cancel = executor.ExecuteAndFetch(checkQuery, reader =>
+				{
+					if (reader.Count == 0 || !reader.Read())
+					{
+						throw new InvalidOperationException($"A command not found by ID #{commandId}");
+					}
+
+					status = (CalcCommandStatusCode)reader.GetValue(c => c.StatusCode);
+					return status != CalcCommandStatusCode.Executing;
+				});
+			}
+
+			return status;
+		}
+
+		private static long SendStopCalcTaskCommand(WebApiDataLayer dataLayer, IQueryExecutor executor, long calcTaskId, long calcResultId)
+		{
+			var insQuery = dataLayer.GetBuilder<ICalcCommand>()
+					.Create()
+					.SetValue(c => c.CreatedDate, DateTimeOffset.Now)
+					.SetValue(c => c.CallerInstance, OwnerInstance)
+					.SetValue(c => c.CallerCommandId, Guid.NewGuid())
+					// состоние - сразу отправляем клманду  на выполнение
+					.SetValue(c => c.StatusCode, (byte)CalcCommandStatusCode.Pending)
+					.SetValue(c => c.StatusName, CalcCommandStatusCode.Pending.ToString())
+					// тип команды
+					.SetValue(c => c.TypeCode, (byte)CalcCommandTypeCode.CancelCalcTask)
+					.SetValue(c => c.TypeName, CalcCommandTypeCode.CancelCalcTask.ToString())
+					// для данного типа есть обязательные аргументы 
+					.SetValueAsJson(c => c.ArgsJson, new CancelCalcTaskCommand
+					{
+						ResultId = calcResultId
+					})
+				;
+			var resultPk = executor.Execute<ICalcCommand_PK>(insQuery);
+
+			Console.WriteLine($"The Calc Command was created with ID #{resultPk.Id} ");
+
+			return resultPk.Id;
+		}
+
+		private static long SendAbortCalcTaskCommand(WebApiDataLayer dataLayer, IQueryExecutor executor, long calcTaskId, long calcResultId)
+		{
+			var insQuery = dataLayer.GetBuilder<ICalcCommand>()
+					.Create()
+					.SetValue(c => c.CreatedDate, DateTimeOffset.Now)
+					.SetValue(c => c.CallerInstance, OwnerInstance)
+					.SetValue(c => c.CallerCommandId, Guid.NewGuid())
+					// состоние - сразу отправляем клманду  на выполнение
+					.SetValue(c => c.StatusCode, (byte)CalcCommandStatusCode.Pending)
+					.SetValue(c => c.StatusName, CalcCommandStatusCode.Pending.ToString())
+					// тип команды
+					.SetValue(c => c.TypeCode, (byte)CalcCommandTypeCode.AbortCalcTask)
+					.SetValue(c => c.TypeName, CalcCommandTypeCode.AbortCalcTask.ToString())
+					// для данного типа есть обязательные аргументы 
+					.SetValueAsJson(c => c.ArgsJson, new AbortCalcTaskCommand
+					{
+						ResultId = calcResultId
+					})
+				;
+			var resultPk = executor.Execute<ICalcCommand_PK>(insQuery);
+
+			Console.WriteLine($"The Calc Command was created with ID #{resultPk.Id} ");
+
+			return resultPk.Id;
+		}
 
 		private static long DefineProject(WebApiDataLayer dataLayer, IQueryExecutor executor)
 		{

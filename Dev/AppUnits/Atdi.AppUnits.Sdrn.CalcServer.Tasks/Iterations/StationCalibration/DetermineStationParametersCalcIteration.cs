@@ -180,6 +180,13 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         /// <returns>массив CalibrationResult[]</returns>
         public CalibrationResult[] Run(ITaskContext taskContext, AllStationCorellationCalcData data)
         {
+            ICheckPoint checkPoint = null;
+
+            if (taskContext.RunMode == TaskRunningMode.Recovery)
+            {
+                checkPoint = taskContext.GetLastCheckPoint();
+            }
+
             // если нет ни одной группы драйв тестов с набором значений, тогда генерируем ошибку
             if (data.GSIDGroupeDriveTests.Length==0)
             {
@@ -193,6 +200,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
             try
             {
+                bool isCancelledTask = false;
                 // переменная для хранения процента выполнения задачи
                 int percentComplete = 0;
                 // предварительная обработка
@@ -248,6 +256,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     }
                 }
 
+
                 ///////////////////////////////////////////////////////////////////////////////////////////
                 ///     
                 ///     включение механизма перфорации по всем станциям
@@ -279,7 +288,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 }
 
                 // создаем список неповторяющихся значений стандартов
-                var arrStandards = allStandards.Distinct().ToArray();
+                var arrStandards = allStandards.Distinct().OrderBy(x => x).ToArray();
 
                 // выполняем фильтрацию перечня драйв тестов по перечню уникальных стандартов, полученных с массива станций
                 var selectDriveTestsByStandards = new List<DriveTestsResult>();
@@ -317,6 +326,22 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     // получить очередное значение стандарта
                     var standard = arrStandards[v];
 
+                    LinkGoupDriveTestsAndStations[] linkDriveTestsAndStations = null;
+
+                    ContextStation[][] outContextStations = null;
+
+                    DriveTestsResult[][] outDriveTestsResults = null;
+
+                    if (checkPoint != null)
+                    {
+                        var checkPointStandard = checkPoint.RestoreData<string>("context_standard");
+                        if (checkPointStandard != standard)
+                        {
+                            continue;
+                        }
+                    }
+
+
                     /////////////////////////////////////////////////////////////////////////////////////////////////////////
                     ///
                     ///                     БЛОК
@@ -326,7 +351,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
                     // вызов метода сравнения станций и драйв тестов (с использованием функции CompareGSID)
                     // результатом выполнения данной функции есть три сущности: массив связей между набором станций и драйв тестами (сгруппирован по GSID), а также массив драйв тестов и массив станций (каждый из которых сгруппирован по GSID), которые не удалось связать через функцию CompareGSID
-                    var linkDriveTestsAndStations = Utils.CompareDriveTestAndStation(data.GSIDGroupeDriveTests, data.GSIDGroupeStation, standard, out DriveTestsResult[][] outDriveTestsResults, out ContextStation[][] outContextStations, _transformation, _earthGeometricService, 100, data.Projection);
+
+                    linkDriveTestsAndStations = Utils.CompareDriveTestAndStation(data.GSIDGroupeDriveTests, data.GSIDGroupeStation, standard, out outDriveTestsResults, out outContextStations, _transformation, _earthGeometricService, 100, data.Projection);
 
                     // преобразуем в список массив драйв тестов, для которого не найдены соотвествия со станциями (данный список будет пополняться при дальнейшей работе алгоритма)
 
@@ -361,9 +387,77 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     // создаем список для хранения результатов обработки по отдельно взятому стандарту и заданой группе GSID
                     var calibrationStationsAndDriveTestsResultByGroup = new List<CalibrationStationsAndDriveTestsResult>();
 
+                    if (checkPoint != null)
+                    {
+                        var checkPointCalibrationStationsAndDriveTestsResultByGroup = checkPoint.RestoreData<List<CalibrationStationsAndDriveTestsResult>>("context_CalibrationStationsAndDriveTestsResultByGroup");
+                        if ((checkPointCalibrationStationsAndDriveTestsResultByGroup != null) && (checkPointCalibrationStationsAndDriveTestsResultByGroup.Count > 0))
+                        {
+                            calibrationStationsAndDriveTestsResultByGroup.AddRange(checkPointCalibrationStationsAndDriveTestsResultByGroup);
+                        }
+
+                        var checkPointIndex = checkPoint.RestoreData<int>("context_linkDriveTestsAndStations_index");
+                        var context_outListDriveTestsResults_index = checkPoint.RestoreData<int>("context_outListDriveTestsResults_index");
+                        if ((checkPointIndex > 0) || (context_outListDriveTestsResults_index > 0))
+                        {
+                            var checkPointContext_outListContextStations = checkPoint.RestoreData<List<ContextStation[]>>("context_outListContextStations");
+                            if ((checkPointContext_outListContextStations != null) && (checkPointContext_outListContextStations.Count > 0))
+                            {
+                                outListContextStations.AddRange(checkPointContext_outListContextStations);
+                            }
+
+
+                            var checkPointContext_context_outListDriveTestsResults = checkPoint.RestoreData<List<DriveTestsResult[]>>("context_outListDriveTestsResults");
+                            if ((checkPointContext_context_outListDriveTestsResults != null) && (checkPointContext_context_outListDriveTestsResults.Count > 0))
+                            {
+                                outListDriveTestsResults.AddRange(checkPointContext_context_outListDriveTestsResults);
+                            }
+                        }
+                    }
+
+
                     /// обработка по отдельно взятой группе (GSID) пролинкованных массивов станций и драйв тестов
                     for (int z = 0; z < linkDriveTestsAndStations.Length; z++)
                     {
+
+                        if (checkPoint != null)
+                        {
+                            var checkPointIndex = checkPoint.RestoreData<int>("context_linkDriveTestsAndStations_index");
+                            if (checkPointIndex > z)
+                            {
+                                continue;
+                            }
+                        }
+
+                        if (taskContext.CancellationToken.IsCancellationRequested)
+                        {
+                            // нас просят прервать работу
+                            // тут  возможно стоит сфомировть тчоку восстановления
+                            using (var createCheckPoint = taskContext.CreateCheckPoint("main"))
+                            {
+                                //checkPoint.SaveData("context_LinkDriveTestsAndStations", linkDriveTestsAndStations);
+                                createCheckPoint.SaveData("context_standard", standard);
+                                createCheckPoint.SaveData("context_linkDriveTestsAndStations_index", z);
+                                if ((outListContextStations != null) && (outListContextStations.Count > 0))
+                                {
+                                    createCheckPoint.SaveData("context_outListContextStations", outListContextStations);
+                                }
+                                if ((outListDriveTestsResults != null) && (outListDriveTestsResults.Count > 0))
+                                {
+                                    createCheckPoint.SaveData("context_outListDriveTestsResults", outListDriveTestsResults);
+                                }
+                                if ((calibrationStationsAndDriveTestsResultByGroup != null) && (calibrationStationsAndDriveTestsResultByGroup.Count > 0))
+                                {
+                                    createCheckPoint.SaveData("context_CalibrationStationsAndDriveTestsResultByGroup", calibrationStationsAndDriveTestsResultByGroup);
+                                }
+                                // фиксируем контрольную точку
+                                createCheckPoint.Commit();
+                                isCancelledTask = true;
+                                break;
+                                // тогда возможно реанимироать и продолжить расчет
+                            }
+                            // здесь нужен механизм выхода из цикла обработки.
+                        }
+
                         // получаем массив станций одной группы (связанных с драйв тестами)
                         var station = linkDriveTestsAndStations[z].ContextStation;
 
@@ -404,13 +498,19 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                 }
                             }
                         }
-                        
                         // обновление процента выполнения задачи
                         if (linkDriveTestsAndStations.Length > 0)
                         {
                             percentComplete = (z + 1) * (int)(50.0 / linkDriveTestsAndStations.Length);
                             UpdatePercentComplete(data.resultId, percentComplete);
                         }
+
+                       
+                    }
+
+                    if (isCancelledTask)
+                    {
+                        break;
                     }
 
                     /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -486,8 +586,48 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     // список для хранения сведений о станциях со статусом UN
                     var groupsContextStations = new List<GroupsContextStations>();
 
+                    if (checkPoint != null)
+                    {
+                     
+                        var checkPointContext_groupsContextStations = checkPoint.RestoreData<List<GroupsContextStations>>("context_groupsContextStations");
+                        if ((checkPointContext_groupsContextStations != null) && (checkPointContext_groupsContextStations.Count > 0))
+                        {
+                            groupsContextStations.AddRange(checkPointContext_groupsContextStations);
+                        }
+
+
+                        var checkPointContext_groupsDriveTestsResult = checkPoint.RestoreData<List<GroupsDriveTestsResult>>("context_groupsDriveTestsResult");
+                        if ((checkPointContext_groupsDriveTestsResult != null) && (checkPointContext_groupsDriveTestsResult.Count > 0))
+                        {
+                            groupsDriveTestsResult.AddRange(checkPointContext_groupsDriveTestsResult);
+                        }
+
+                        //var checkPointContext_outListContextStations = checkPoint.RestoreData<List<ContextStation[]>>("context_outListContextStations");
+                        //if ((checkPointContext_outListContextStations != null) && (checkPointContext_outListContextStations.Count > 0))
+                        //{
+                        //    outListContextStations.AddRange(checkPointContext_outListContextStations);
+                        //}
+
+
+                        //var checkPointContext_context_outListDriveTestsResults = checkPoint.RestoreData<List<DriveTestsResult[]>>("context_outListDriveTestsResults");
+                        //if ((checkPointContext_context_outListDriveTestsResults != null) && (checkPointContext_context_outListDriveTestsResults.Count > 0))
+                        //{
+                        //    outListDriveTestsResults.AddRange(checkPointContext_context_outListDriveTestsResults);
+                        //}
+                    }
+
                     for (int i = 0; i < outListDriveTestsResults.Count; i++)
                     {
+                        if (checkPoint != null)
+                        {
+                            var checkPointIndex = checkPoint.RestoreData<int>("context_outListDriveTestsResults_index");
+                            if (checkPointIndex > i)
+                            {
+                                continue;
+                            }
+                        }
+
+
                         var GSIDGroupeStations = new List<ContextStation[]>();
                         var arrDriveTests = outListDriveTestsResults[i];
                         /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -502,6 +642,43 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         {
                             for (int m = 0; m < GSIDGroupeStations.Count; m++)
                             {
+
+                                if (taskContext.CancellationToken.IsCancellationRequested)
+                                {
+                                    using (var createCheckPoint = taskContext.CreateCheckPoint("main"))
+                                    {
+                                        createCheckPoint.SaveData("context_standard", standard);
+                                        createCheckPoint.SaveData("context_outListDriveTestsResults_index", i);
+                                        if ((outListContextStations != null) && (outListContextStations.Count > 0))
+                                        {
+                                            createCheckPoint.SaveData("context_outListContextStations", outListContextStations);
+                                        }
+                                        if ((outListDriveTestsResults != null) && (outListDriveTestsResults.Count > 0))
+                                        {
+                                            createCheckPoint.SaveData("context_outListDriveTestsResults", outListDriveTestsResults);
+                                        }
+                                        if ((calibrationStationsAndDriveTestsResultByGroup != null) && (calibrationStationsAndDriveTestsResultByGroup.Count > 0))
+                                        {
+                                            createCheckPoint.SaveData("context_CalibrationStationsAndDriveTestsResultByGroup", calibrationStationsAndDriveTestsResultByGroup);
+                                        }
+                                        if ((groupsContextStations != null) && (groupsContextStations.Count > 0))
+                                        {
+                                            createCheckPoint.SaveData("context_groupsContextStations", groupsContextStations);
+                                        }
+                                        if ((groupsDriveTestsResult != null) && (groupsDriveTestsResult.Count > 0))
+                                        {
+                                            createCheckPoint.SaveData("context_groupsDriveTestsResult", groupsDriveTestsResult);
+                                        }
+                                        // фиксируем контрольную точку
+                                        createCheckPoint.Commit();
+                                        isCancelledTask = true;
+                                        break;
+                                        // тогда возможно реанимироать и продолжить расчет
+                                    }
+                                }
+
+                              
+
                                 // проводим анализ по каждой отдельно взятой группе станций отдельно
                                 var station = GSIDGroupeStations[m];
                                 var resultCorrelationGSIDGroupeStations = new List<ResultCorrelationGSIDGroupeStations>();
@@ -552,6 +729,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                     AppendGroupsContextStations(ref groupsContextStations, station, maxCorellation_pc);
                                 }
                             }
+
+                            if (isCancelledTask)
+                            {
+                                break;
+                            }
                         }
 
                         //обновление процента времени
@@ -560,6 +742,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             percentComplete = 50 + ((i + 1) * (int)(50.0 / outListDriveTestsResults.Count));
                             UpdatePercentComplete(data.resultId, percentComplete);
                         }
+                      
+                    }
+
+                    if (isCancelledTask)
+                    {
+                        break;
                     }
 
                     /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -759,6 +947,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     listCalcCorellationResult[v] = calcCorellationResult;
                 }
                 UpdatePercentComplete(data.resultId, 100);
+                if (taskContext.CancellationToken.IsCancellationRequested)
+                {
+                    UpdatePercentComplete(data.resultId, 0);
+                }
                 return listCalcCorellationResult;
             }
             catch (Exception e)
