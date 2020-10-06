@@ -127,6 +127,9 @@
     <Content Include="DataLayer\Oracle\ChangeLogs\rev.001.sql" />
     <Content Include="DataLayer\Oracle\ChangeLogs\rev.004.sql" />
     <Content Include="DataLayer\Oracle\Functions\CALC.GetID.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\CALC.COMMANDS_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\CALC.CHECKPOINTS_DATA_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\CALC.CHECKPOINTS_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\CALC.REF_SPECTRUM_BY_DRIVE_TESTS_ARGS_DEF_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\CALC.REF_SPECTRUM_BY_DRIVE_TESTS_ARGS_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\CALC.CALCRESULTS_REF_SPECTRUM_BY_DRIVE_TESTS_DETAIL_ID_SEQ.sql" />
