@@ -69,6 +69,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 			this.Container.Register<MapBuilder>(ServiceLifetime.Singleton);
 			this.Container.Register<ProcessJob>(ServiceLifetime.Singleton);
 			this.Container.Register<TaskWorkerJob>(ServiceLifetime.Singleton);
+			this.Container.Register<CommandJob>(ServiceLifetime.Singleton);
 			this.Container.Register<IClientContextService, ClientContextService>(ServiceLifetime.Singleton);
 			this.Container.Register<IMapRepository, MapRepository>(ServiceLifetime.Singleton);
 		}
