@@ -254,7 +254,7 @@ namespace XICSM.ICSControlClient.ViewModels
                     rs.Put("LEVEL_DBM", Math.Round(row.ProtocolsLinkedWithEmittings.CurentPower_dBm.Value, 1));
                 }
             }
-            //rs.Put("DESIG_EMISSION", row.DesigEmission);
+            rs.Put("DESIG_EMISSION", row.DesigEmission);
             rs.Put("GLOBAL_SID", row.GlobalSID);
             rs.Put("CREATED_BY", GetUserFio(IM.ConnectedUser()));
             rs.Update();
@@ -285,7 +285,8 @@ namespace XICSM.ICSControlClient.ViewModels
                     var bm = new System.Drawing.Bitmap(1400, 800);
                     buildSpectrogram.CreateBitmapSpectrogram(row, bm, 1300, 700);
                     //InsertSpectrogram.InsertImageToRtf(nameFile, bm, 16000, 6800);
-                    InsertSpectrogram.InsertImageToRtf(nameFile, bm, 17000, 7234);
+                    //InsertSpectrogram.InsertImageToRtf(nameFile, bm, 17000, 7234);
+                    InsertSpectrogram.InsertImageToRtf(nameFile, bm, 17000, 9042);
                     bm.Dispose();
                     GC.Collect();
                 }
@@ -305,7 +306,8 @@ namespace XICSM.ICSControlClient.ViewModels
                     var bm = new System.Drawing.Bitmap(1400, 800);
                     buildSpectrogram.CreateBitmapSpectrogram(row, bm, 1300, 700);
                     //InsertSpectrogram.InsertImageToRtf(nameFile, bm, 16000, 6800);
-                    InsertSpectrogram.InsertImageToRtf(nameFile, bm, 17000, 7234);
+                    //InsertSpectrogram.InsertImageToRtf(nameFile, bm, 17000, 7234);
+                    InsertSpectrogram.InsertImageToRtf(nameFile, bm, 17000, 9042);
                     bm.Dispose();
                     GC.Collect();
                 }

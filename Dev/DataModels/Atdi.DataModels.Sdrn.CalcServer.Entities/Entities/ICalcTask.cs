@@ -34,9 +34,11 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 		DateTimeOffset CreatedDate { get; set; }
 
 		string MapName { get; set; }
-	}
 
-	public enum CalcTaskStatusCode
+        string Note { get; set; }
+    }
+
+    public enum CalcTaskStatusCode
 	{
 		/// <summary>
 		/// Задача создана но не доступна для использования

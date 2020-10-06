@@ -156,22 +156,34 @@
                 <DataGridTextColumn Header="{x:Static res:Resources.StatusNote}" Binding="{Binding Path=StatusNote}"></DataGridTextColumn>
                 <DataGridTextColumn Header="{x:Static res:Resources.CreatedDate}" Binding="{Binding Path=CreatedDate, StringFormat='{}{0:dd.MM.yyyy HH:mm}'}"></DataGridTextColumn>
                 <DataGridTextColumn Header="{x:Static res:Resources.MapName}" Binding="{Binding Path=MapName}"></DataGridTextColumn>
-                <DataGridTextColumn Header="{x:Static res:Resources.OwnerInstance}" Binding="{Binding Path=OwnerInstance}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.StartTime}" Binding="{Binding Path=StartTime}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.FinishTime}" Binding="{Binding Path=FinishTime}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.PercentCompleteTask}" Binding="{Binding Path=PercentComplete}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.Standard}" Binding="{Binding Path=Standard}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.Method}" Binding="{Binding Path=Method}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.NumberStation}" Binding="{Binding Path=NumberStation}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.NumberTimeStarted}" Binding="{Binding Path=NumberTimeStarted}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.ResultStatusName}" Binding="{Binding Path=ResultStatusName}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.ResultStatusNote}" Binding="{Binding Path=ResultStatusNote}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.Note}" Binding="{Binding Path=Note}"></DataGridTextColumn>
               </DataGrid.Columns>
+              <DataGrid.ContextMenu>
+                <ContextMenu>
+                  <MenuItem Header="{x:Static res:Resources.EditNote}" Command="{Binding EditNoteCommand}"/>
+                </ContextMenu>
+              </DataGrid.ContextMenu>
             </orm:OrmDataGrid>
             <WrapPanel Grid.Column="1" Orientation="Vertical">
               <WrapPanel>
                 <orm:OrmButton Content="{x:Static res:Resources.CreateNew}" Width="70" Height="20" Command="{Binding TaskAddCommand}" IsEnabled="{Binding Path=CalcTaskAddEnabled, Mode=TwoWay}"/>
                 <orm:OrmButton Content="{x:Static res:Resources.Modify}" Width="70" Height="20" Command="{Binding TaskModifyCommand}" IsEnabled="{Binding Path=CalcTaskEditEnabled, Mode=TwoWay}"/>
                 <orm:OrmButton Content="{x:Static res:Resources.Delete}" Width="70" Height="20" Command="{Binding TaskDeleteCommand}" IsEnabled="{Binding Path=CalcTaskDelEnabled, Mode=TwoWay}"/>
-                <orm:OrmButton Content="{x:Static res:Resources.Save}" Width="70" Height="20" Command="{Binding TaskSaveCommand}" IsEnabled="{Binding Path=CalcTaskSaveEnabled, Mode=TwoWay}"/>
               </WrapPanel>
-              <orm:OrmTextBox CaptionWith="100" Width="300" Caption="{x:Static res:Resources.Context}" Text ="{Binding Path=CurrentCalcTaskCard.ContextName, Mode=TwoWay}" Enabled="False"/>
-              <!--<orm:OrmTextBox CaptionWith="100" Width="300" Caption="{x:Static res:Resources.MapName}" Text ="{Binding Path=CurrentCalcTaskCard.MapName, Mode=TwoWay}" Enabled="{Binding Path=CalcTaskSaveEnabled, Mode=TwoWay}"/>-->
-              <orm:OrmEnumBox CaptionWith="100" Width="300" Caption="{x:Static res:Resources.MapName}" Source="{Binding Path=MapSource}" SelectedValue="{Binding Path=CurrentCalcTaskCard.MapCombo, Mode=TwoWay}" IsEnabled="{Binding Path=CalcTaskSaveEnabled, Mode=TwoWay}"/>
               <WrapPanel>
                 <orm:OrmButton Content="{x:Static res:Resources.StartCalc}" Width="70" Height="20" Command="{Binding TaskStartCalcCommand}" IsEnabled="{Binding Path=CalcTaskStartCalcEnabled, Mode=TwoWay}"/>
                 <orm:OrmButton Content="{x:Static res:Resources.ShowResult}" Width="70" Height="20" Command="{Binding TaskShowResultCommand}" IsEnabled="{Binding Path=CalcTaskShowResultEnabled, Mode=TwoWay}"/>
+                <orm:OrmButton Content="{x:Static res:Resources.StopCalc}" Width="70" Height="20" Command="{Binding TaskStopCalcCommand}" IsEnabled="{Binding Path=CalcTaskStopCalcEnabled, Mode=TwoWay}"/>
+                <orm:OrmButton Content="{x:Static res:Resources.AbortCalc}" Width="70" Height="20" Command="{Binding TaskStopCalcCommand}" IsEnabled="{Binding Path=CalcTaskAbortCalcEnabled, Mode=TwoWay}"/>
               </WrapPanel>
             </WrapPanel>
           </Grid>
