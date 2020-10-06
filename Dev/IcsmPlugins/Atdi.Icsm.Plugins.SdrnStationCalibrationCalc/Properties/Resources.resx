@@ -586,4 +586,10 @@
   <data name="StopCalc" xml:space="preserve">
     <value>Stop calc</value>
   </data>
+  <data name="DeltaCorrelation_pc" xml:space="preserve">
+    <value>Delta correlation percent</value>
+  </data>
+  <data name="UsedPoints_pc" xml:space="preserve">
+    <value>Used points percent</value>
+  </data>
 </root>

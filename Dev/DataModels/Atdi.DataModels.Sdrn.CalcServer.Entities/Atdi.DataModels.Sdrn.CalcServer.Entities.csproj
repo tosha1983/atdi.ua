@@ -122,7 +122,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="DataLayer\Oracle\ChangeLogs\rev.000.sql" />
-    <Content Include="DataLayer\Oracle\ChangeLogs\rev.004.sql" />
     <Content Include="DataLayer\Oracle\ChangeLogs\rev.003.sql" />
     <Content Include="DataLayer\Oracle\ChangeLogs\rev.002.sql" />
     <Content Include="DataLayer\Oracle\ChangeLogs\rev.001.sql" />
