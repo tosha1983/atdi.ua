@@ -125,7 +125,7 @@ namespace Atdi.WpfControls.EntityOrm.Controls
         }
         private void cmbMain_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (cmbMain.SelectedValue != null)
+            if (cmbMain.SelectedValue != null && e.AddedItems.Count > 0)
                 SelectedValueId = (e.AddedItems[0] as OrmEnumBoxData).Id;
         }
     }

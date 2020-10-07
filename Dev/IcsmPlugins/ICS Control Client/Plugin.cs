@@ -41,6 +41,7 @@ namespace XICSM.ICSControlClient
             b.RegisterQueryMenuBuilder(MD.Inspection.TableName, InspectionsContextMenuBuilder.Build);
             b.RegisterQueryMenuBuilder(MD.MobStations.TableName, OtherTerrestrialStationsContextMenuBuilder.Build);
             b.RegisterQueryMenuBuilder(MD.MobStations2.TableName, YetOtherTerrestrialStationsContextMenuBuilder.Build);
+            b.RegisterQueryMenuBuilder(MD.ProtocolBandWidth.TableName, BandWidthParametersContextMenuBuilder.Build);
         }
 
         public void RegisterSchema(IMSchema s)

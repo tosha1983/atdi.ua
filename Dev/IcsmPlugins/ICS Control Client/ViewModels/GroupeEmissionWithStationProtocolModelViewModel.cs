@@ -187,6 +187,23 @@ namespace XICSM.ICSControlClient.ViewModels
         private void PrintRow(DataSynchronizationProcessProtocolsViewModel row, string selectedPath, bool isPacketProcess)
         {
             var buildSpectrogram = new BuildSpectrogram();
+
+            IMRecordset rsBandWidth = new IMRecordset("XPROTOCOL_BANDWIDTH", IMRecordset.Mode.ReadWrite);
+            rsBandWidth.Select("ID,STANDARD_NAME,BW");
+            rsBandWidth.SetWhere("STANDARD_NAME", IMRecordset.Operation.Eq, row.Standard);
+            rsBandWidth.Open();
+            if (!rsBandWidth.IsEOF())
+            {
+                if (rsBandWidth.GetD("BW") != IM.NullD)
+                {
+                    row.BandWidth = rsBandWidth.GetD("BW");
+                }
+            }
+            if (rsBandWidth.IsOpen())
+                rsBandWidth.Close();
+            rsBandWidth.Destroy();
+
+
             // заполненеие таблицы XPROTOCOL_REPORT
             IMRecordset rs = new IMRecordset("XPROTOCOL_REPORT", IMRecordset.Mode.ReadWrite);
             rs.Select("ID,DATE_CREATED,STANDARD_NAME,OWNER_NAME,PERMISSION_NUMBER,PERMISSION_START,PERMISSION_STOP,ADDRESS,LONGITUDE,LATITUDE,SENSOR_LON,SENSOR_LAT,SENSOR_NAME,DATE_MEAS,S_FREQ_MHZ,S_BW,FREQ_MHZ,BW,LEVEL_DBM,DESIG_EMISSION,GLOBAL_SID,CREATED_BY,VISN");
@@ -225,11 +242,11 @@ namespace XICSM.ICSControlClient.ViewModels
             if (row.Freq_MHz.HasValue)
                 rs.Put("S_FREQ_MHZ", Math.Round(row.Freq_MHz.Value, 3));
             if (row.BandWidth.HasValue)
-                rs.Put("S_BW", Math.Round(row.BandWidth.Value, 3));
+                rs.Put("S_BW", Math.Round(row.BandWidth.Value/1000, 3));
             if (row.RadioControlMeasFreq_MHz.HasValue)
                 rs.Put("FREQ_MHZ", Math.Round(row.RadioControlMeasFreq_MHz.Value, 3));
             if (row.RadioControlBandWidth_KHz.HasValue)
-                rs.Put("BW", Math.Round(row.RadioControlBandWidth_KHz.Value, 3));
+                rs.Put("BW", Math.Round(row.RadioControlBandWidth_KHz.Value/1000, 3));
             if (row.ProtocolsLinkedWithEmittings != null)
             {
                 if (row.ProtocolsLinkedWithEmittings.CurentPower_dBm != null)
@@ -237,7 +254,7 @@ namespace XICSM.ICSControlClient.ViewModels
                     rs.Put("LEVEL_DBM", Math.Round(row.ProtocolsLinkedWithEmittings.CurentPower_dBm.Value, 1));
                 }
             }
-            //rs.Put("DESIG_EMISSION", row.DesigEmission);
+            rs.Put("DESIG_EMISSION", row.DesigEmission);
             rs.Put("GLOBAL_SID", row.GlobalSID);
             rs.Put("CREATED_BY", GetUserFio(IM.ConnectedUser()));
             rs.Update();
@@ -257,22 +274,47 @@ namespace XICSM.ICSControlClient.ViewModels
                 System.IO.File.Delete(nameFile);
             }
 
-            RecordPtr recPtr;
-            recPtr.Table = "XPROTOCOL_REPORT";
-            recPtr.Id = id;
-            if ((row.ProtocolsLinkedWithEmittings != null) && (row.ProtocolsLinkedWithEmittings.Levels_dBm != null) && (row.ProtocolsLinkedWithEmittings.SpectrumStartFreq_MHz != null) && (row.ProtocolsLinkedWithEmittings.SpectrumSteps_kHz != null))
+            if ((row.StatusMeasFull == "Ліцензіат; Фіксується робота РЕЗ") || (row.StatusMeasFull == "Ліцензіат; НЕ зафіксована робота РЕЗ"))
             {
-                recPtr.PrintRTFReport2(InsertSpectrogram.GetDirTemplates("SHDIR-REP") + @"\REPORT_SIGNALING_SPECTR.IRP", "RUS", nameFile, "", true, false);
-                var bm = new System.Drawing.Bitmap(1400, 800);
-                buildSpectrogram.CreateBitmapSpectrogram(row, bm, 1300, 700);
-                //bm.Save("C:\\Temp\\Res.jpg", System.Drawing.Imaging.ImageFormat.Jpeg);
-                InsertSpectrogram.InsertImageToRtf(nameFile, bm, 16000, 6800);
-                bm.Dispose();
-                GC.Collect();
+                RecordPtr recPtr;
+                recPtr.Table = "XPROTOCOL_REPORT";
+                recPtr.Id = id;
+                if ((row.ProtocolsLinkedWithEmittings != null) && (row.ProtocolsLinkedWithEmittings.Levels_dBm != null) && (row.ProtocolsLinkedWithEmittings.SpectrumStartFreq_MHz != null) && (row.ProtocolsLinkedWithEmittings.SpectrumSteps_kHz != null))
+                {
+                    recPtr.PrintRTFReport2(InsertSpectrogram.GetDirTemplates("SHDIR-REP") + @"\REPORT_SIGNALING_SPECTR.IRP", "RUS", nameFile, "", true, false);
+                    var bm = new System.Drawing.Bitmap(1400, 800);
+                    buildSpectrogram.CreateBitmapSpectrogram(row, bm, 1300, 700);
+                    //InsertSpectrogram.InsertImageToRtf(nameFile, bm, 16000, 6800);
+                    //InsertSpectrogram.InsertImageToRtf(nameFile, bm, 17000, 7234);
+                    InsertSpectrogram.InsertImageToRtf(nameFile, bm, 17000, 9042);
+                    bm.Dispose();
+                    GC.Collect();
+                }
+                else
+                {
+                    recPtr.PrintRTFReport2(InsertSpectrogram.GetDirTemplates("SHDIR-REP") + @"\REPORT_SIGNALING.IRP", "RUS", nameFile, "", true, false);
+                }
             }
-            else
+            else //if (row.StatusMeasFull == "НДП")
             {
-                recPtr.PrintRTFReport2(InsertSpectrogram.GetDirTemplates("SHDIR-REP") + @"\REPORT_SIGNALING.IRP", "RUS", nameFile, "", true, false);
+                RecordPtr recPtr;
+                recPtr.Table = "XPROTOCOL_REPORT";
+                recPtr.Id = id;
+                if ((row.ProtocolsLinkedWithEmittings != null) && (row.ProtocolsLinkedWithEmittings.Levels_dBm != null) && (row.ProtocolsLinkedWithEmittings.SpectrumStartFreq_MHz != null) && (row.ProtocolsLinkedWithEmittings.SpectrumSteps_kHz != null))
+                {
+                    recPtr.PrintRTFReport2(InsertSpectrogram.GetDirTemplates("SHDIR-REP") + @"\REPORT_SIGNALING_NDP_SPECTR.IRP", "RUS", nameFile, "", true, false);
+                    var bm = new System.Drawing.Bitmap(1400, 800);
+                    buildSpectrogram.CreateBitmapSpectrogram(row, bm, 1300, 700);
+                    //InsertSpectrogram.InsertImageToRtf(nameFile, bm, 16000, 6800);
+                    //InsertSpectrogram.InsertImageToRtf(nameFile, bm, 17000, 7234);
+                    InsertSpectrogram.InsertImageToRtf(nameFile, bm, 17000, 9042);
+                    bm.Dispose();
+                    GC.Collect();
+                }
+                else
+                {
+                    recPtr.PrintRTFReport2(InsertSpectrogram.GetDirTemplates("SHDIR-REP") + @"\REPORT_SIGNALING_NDP.IRP", "RUS", nameFile, "", true, false);
+                }
             }
 
             if (isPacketProcess == false)

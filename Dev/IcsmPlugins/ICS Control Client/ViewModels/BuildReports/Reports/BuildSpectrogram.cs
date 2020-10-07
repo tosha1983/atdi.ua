@@ -186,11 +186,11 @@ namespace XICSM.ICSControlClient.ViewModels.Reports
 
         public void CreateBitmapSpectrogram(DataSynchronizationProcessProtocolsViewModel emit, Bitmap bm,  int ActualWidth, int ActualHeight)
         {
-            var deltaY = -50;
+            var deltaY = -75;
             var _option = GetChartOption(emit);
             var Width = ActualWidth;
             var Height = ActualHeight;
-            var cnt = 40;
+            var cnt = 65;
             var pt = new PointF();
             float dx, dy;
             using (Graphics gr = Graphics.FromImage(bm))
@@ -214,7 +214,7 @@ namespace XICSM.ICSControlClient.ViewModels.Reports
 
                 gr.Clear(Color.White);
                 gr.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-                var stringFont = new Font("Times New Roman", 10, FontStyle.Bold);
+                var stringFont = new Font("Times New Roman", 14, FontStyle.Regular);
                 Height = Height - cnt;
                 var chartRect = new Rectangle() { Size = new Size((int)XMax, Height), X = cnt, Y = -deltaY, Location = new Point(cnt, -deltaY) };
                 gr.DrawRectangle(new Pen(Color.Black, 1), chartRect);
@@ -268,6 +268,20 @@ namespace XICSM.ICSControlClient.ViewModels.Reports
 
 
                 // Create x-axis tick marks:
+                var n1 = (float)((_option.XMax - _option.XMin) / (stepX * 3));
+                var n2 = 7.0f;
+
+                int koef = 0;
+                if (n1 >= 7)
+                {
+                    koef = (int)(n1 / n2);
+                }
+                else
+                {
+                    koef = 1;
+                }
+                int k = 0;
+
                 for (dx = _option.XMin; LessOrEqual(dx, _option.XMax); dx += stepX*3/*_option.XTick*/)
                 {
                     pt = NormalizePoint(new PointF(dx, _option.YMin), Width, Height, _option);
@@ -277,20 +291,28 @@ namespace XICSM.ICSControlClient.ViewModels.Reports
                         gr.DrawLine(thick_pen, pt.X + cnt, pt.Y + 5 - deltaY, pt.X + cnt, pt.Y - 5 - deltaY);
                     }
 
+                    if (((k % koef)==0) || (k == 0))
+                    {
+                        using (Pen thick_pen = new Pen(Color.Black, 3.0f))
+                        {
+                            thick_pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Solid;
+                            gr.DrawLine(thick_pen, pt.X + cnt, pt.Y + 7 - deltaY, pt.X + cnt, pt.Y - 7 - deltaY);
+                        }
 
-                    if (dx == _option.XMin)
-                    {
-                        gr.DrawString(dx.ToString(), stringFont, Brushes.Black, new PointF(pt.X + cnt - 15, pt.Y+5 - deltaY));
+                        if (dx == _option.XMin)
+                        {
+                            gr.DrawString(dx.ToString(), stringFont, Brushes.Black, new PointF(pt.X + cnt - 15, pt.Y + 5 - deltaY));
+                        }
+                        else if (LessOrEqual((dx + stepX * 3/*_option.XTick*/), _option.XMax))
+                        {
+                            gr.DrawString(dx.ToString(), stringFont, Brushes.Black, new PointF(pt.X + cnt - 15, pt.Y + 5 - deltaY));
+                        }
+                        else
+                        {
+                            gr.DrawString(dx.ToString(), stringFont, Brushes.Black, new PointF(pt.X + cnt - 15, pt.Y + 5 - deltaY));
+                        }
                     }
-                    else if (LessOrEqual((dx + stepX*3/*_option.XTick*/), _option.XMax))
-                    {
-                        gr.DrawString(dx.ToString(), stringFont, Brushes.Black, new PointF(pt.X + cnt - 15, pt.Y + 5 - deltaY));
-                    }
-                    else
-                    {
-                        gr.DrawString(dx.ToString(), stringFont, Brushes.Black, new PointF(pt.X + cnt - 15, pt.Y + 5 - deltaY));
-                    }
-
+                    k++;
                 }
 
 
@@ -341,7 +363,7 @@ namespace XICSM.ICSControlClient.ViewModels.Reports
                 foreach (var lines in _option.LinesArray)
                 {
                     gr.DrawString($"{lines.Num}: {lines.Name} МГц", stringFont, lines.LineColor, NumLine * (Width / 4) - 200, 10);
-                    gr.DrawString($"{Math.Round(lines.level_dBm, 6).ToString()} дБм", stringFont, lines.LineColor, NumLine * (Width / 4) - 200, 30);
+                    gr.DrawString($"{Math.Round(lines.level_dBm, 6).ToString()} дБм", stringFont, lines.LineColor, NumLine * (Width / 4) - 200, 42);
                     linesSignalM.Add(lines.Freq_Mhz);
                     NumLine++;
                 }
@@ -356,7 +378,7 @@ namespace XICSM.ICSControlClient.ViewModels.Reports
                 if (m1!=null)
                 {
                     gr.DrawString($"△F: {Math.Round(deltaF *1000,6)} КГц", stringFont, m1.LineColor, NumLine * (Width / 4) - 200, 10);
-                    gr.DrawString($"Span: {Math.Round((stopFreq - startFreq) * 1000, 6).ToString()} КГц", stringFont, m1.LineColor, NumLine * (Width / 4) - 200, 30);
+                    gr.DrawString($"Span: {Math.Round((stopFreq - startFreq) * 1000, 6).ToString()} КГц", stringFont, m1.LineColor, NumLine * (Width / 4) - 200, 42);
                 }
 
 
@@ -404,7 +426,7 @@ namespace XICSM.ICSControlClient.ViewModels.Reports
                 }
                 //System.Drawing.StringFormat drawFormat = new System.Drawing.StringFormat();
                 //drawFormat.FormatFlags = StringFormatFlags.DirectionVertical;
-                gr.DrawString(_option.XLabel, stringFont, Brushes.Black, new PointF((float)Width / 2, Height - deltaY + 25));
+                gr.DrawString(_option.XLabel, stringFont, Brushes.Black, new PointF((float)Width / 2, Height - deltaY + 42));
                 gr.DrawString(_option.YLabel, stringFont, Brushes.Black, new PointF(15, 10));
             }
         }

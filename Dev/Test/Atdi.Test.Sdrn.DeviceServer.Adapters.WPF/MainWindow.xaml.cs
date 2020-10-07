@@ -941,9 +941,9 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 command.Parameter.VBW_Hz = 5000;
                 command.Parameter.RefLevel_dBm = -40;
                 command.Parameter.SweepTime_s = 0.00001;
-                command.Parameter.TraceCount = 10;
-                command.Parameter.TracePoint = 150000;
-                command.Parameter.TraceType = CMD.Parameters.TraceType.Average;
+                command.Parameter.TraceCount = 2;
+                command.Parameter.TracePoint = 1000;
+                command.Parameter.TraceType = CMD.Parameters.TraceType.MaxHold;
                 command.Parameter.DetectorType = CMD.Parameters.DetectorType.MaxPeak;
                 command.Parameter.LevelUnit = CMD.Parameters.LevelUnit.dBm;
 

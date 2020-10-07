@@ -23,7 +23,10 @@
   NEW_POWER_DB                        NUMBER(30,10),
   STATION_MONITORING_ID               NUMBER(15),
   FREQ_MHZ                            NUMBER(30,10),
-  STANDARD                            NVARCHAR2(50)
+  STANDARD                            NVARCHAR2(50),
+  DELTA_CORRELATION_PC                NUMBER(30,10),
+  USED_POINTS_PC                      NUMBER(9),
+  COUNT_POINTS_IN_DRIVE_TEST          NUMBER(9)
 )
 TABLESPACE USERS
 PCTUSED    0
@@ -31,6 +34,10 @@ PCTFREE    10
 INITRANS   1
 MAXTRANS   255
 STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
             PCTINCREASE      0
             BUFFER_POOL      DEFAULT
            )
@@ -49,6 +56,10 @@ PCTFREE    10
 INITRANS   2
 MAXTRANS   255
 STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
             PCTINCREASE      0
             BUFFER_POOL      DEFAULT
            )
@@ -58,4 +69,16 @@ NOPARALLEL;
 ALTER TABLE CALC.CALCRESULTS_STATION_CALIBRATION_STA ADD (
   CONSTRAINT CALCRESULTS_STATION_STA_PK
  PRIMARY KEY
- (ID));
+ (ID)
+    USING INDEX 
+    TABLESPACE USERS
+    PCTFREE    10
+    INITRANS   2
+    MAXTRANS   255
+    STORAGE    (
+                INITIAL          64K
+                NEXT             1M
+                MINEXTENTS       1
+                MAXEXTENTS       UNLIMITED
+                PCTINCREASE      0
+               ));

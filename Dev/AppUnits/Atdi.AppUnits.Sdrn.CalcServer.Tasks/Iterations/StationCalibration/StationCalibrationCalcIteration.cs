@@ -45,7 +45,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             _logger = logger;
         }
 
-
+        
         /// <summary>
         /// Exhaustive Search Station Callibration Method
         /// </summary>
@@ -379,6 +379,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     if (correlationData.FieldStrengthCalcData.Antenna.Azimuth_deg - calibrationData.CalibrationParameters.ShiftAzimuthStationStep_deg >= azimuthStationMin)
                     {
                         correlationData.FieldStrengthCalcData.Antenna.Azimuth_deg -= calibrationData.CalibrationParameters.ShiftAzimuthStationStep_deg;
+                        
                         correlationResult = corellationCalcIteration.Run(taskContext, correlationData);
                         if (maxCorrelation_pc < correlationResult.Corellation_pc)
                         {
@@ -690,6 +691,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             calcCalibrationResult.ParametersStationOld.Power_dB = calibrationData.GSIDGroupeStation.Transmitter.MaxPower_dBm;
             calcCalibrationResult.ParametersStationOld.Freq_MHz = calibrationData.GSIDGroupeStation.Transmitter.Freq_MHz;
 
+            correlationResult = correlationCalcIteration.Run(taskContext, correlationData);
+            var initialCorrelation = correlationResult.Corellation_pc;
             //var siteCoords_m = _transformation.ConvertCoordinateToAtdi(new Wgs84Coordinate() { Latitude = data.GSIDGroupeStation.Site.Latitude, Longitude = data.GSIDGroupeStation.Site.Longitude }, data.CodeProjection);
 
             if (calibrationData.CalibrationParameters.CascadeTuning)
@@ -725,11 +728,20 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             //correlationData.GSIDGroupeStation = calibrationData.GSIDGroupeStation;
             correlationResult = correlationCalcIteration.Run(taskContext, correlationData);
 
+            calcCalibrationResult.DeltaCorrelation_pc  = correlationResult.Corellation_pc - initialCorrelation;
             //- Parameters Station New(Altitude Station, Tilt Station, Azimuth Station, Lat Station, Lon Station, Power Station)
 
             var siteCoords_dec = _transformation.ConvertCoordinateToWgs84(new EpsgCoordinate() { X = correlationData.FieldStrengthCalcData.PointCoordinate.X, Y = correlationData.FieldStrengthCalcData.PointCoordinate.Y }, _transformation.ConvertProjectionToCode(calibrationData.CodeProjection));
             calcCalibrationResult.ParametersStationNew = new ParametersStation();
             calcCalibrationResult.ParametersStationNew.Altitude_m = (int)correlationData.FieldStrengthCalcData.PointAltitude_m;//////////////!!!!!!!!!!!
+            if (correlationData.FieldStrengthCalcData.Antenna.Azimuth_deg > 360)
+            {
+                correlationData.FieldStrengthCalcData.Antenna.Azimuth_deg = correlationData.FieldStrengthCalcData.Antenna.Azimuth_deg % 360;
+            }
+            if (correlationData.FieldStrengthCalcData.Antenna.Azimuth_deg < 0)
+            {
+                correlationData.FieldStrengthCalcData.Antenna.Azimuth_deg = -(float)Math.Floor(correlationData.FieldStrengthCalcData.Antenna.Azimuth_deg / 360) * 360 + correlationData.FieldStrengthCalcData.Antenna.Azimuth_deg;
+            }
             calcCalibrationResult.ParametersStationNew.Azimuth_deg = correlationData.FieldStrengthCalcData.Antenna.Azimuth_deg;
             calcCalibrationResult.ParametersStationNew.Tilt_Deg = correlationData.FieldStrengthCalcData.Antenna.Tilt_deg;
             calcCalibrationResult.ParametersStationNew.Lat_deg = siteCoords_dec.Latitude;//data.GSIDGroupeStation.Site.Latitude;

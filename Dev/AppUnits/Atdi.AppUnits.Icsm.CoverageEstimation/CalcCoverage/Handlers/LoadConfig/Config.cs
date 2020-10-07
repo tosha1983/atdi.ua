@@ -300,6 +300,27 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                                 mobStationConfig2[index].Status = xel.Value;
                             }
                         }
+
+                        if ((xel.Name.ToString() == "Mask") || (xel.Name.LocalName == "Mask"))
+                        {
+                            var maskFieldName = xel.Element("FieldName");
+                            if (maskFieldName != null)
+                            {
+                                if (!string.IsNullOrEmpty(maskFieldName.Value))
+                                {
+                                    mobStationConfig2[index].MaskFieldName = maskFieldName.Value;
+                                }
+                            }
+                            var maskPattern = xel.Element("Pattern");
+                            if (maskPattern != null)
+                            {
+                                if (!string.IsNullOrEmpty(maskPattern.Value))
+                                {
+                                    mobStationConfig2[index].MaskPattern = maskPattern.Value;
+                                }
+                            }
+                        }
+
                         if ((xel.Name.ToString() == "Frequency") || (xel.Name.LocalName == "Frequency"))
                         {
                             mobStationConfig2[index].FreqConfig = new FreqConfig();
@@ -454,6 +475,27 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                                 mobStationConfig[index].Status = xel.Value;
                             }
                         }
+
+                        if ((xel.Name.ToString() == "Mask") || (xel.Name.LocalName == "Mask"))
+                        {
+                            var maskFieldName = xel.Element("FieldName");
+                            if (maskFieldName != null)
+                            {
+                                if (!string.IsNullOrEmpty(maskFieldName.Value))
+                                {
+                                    mobStationConfig[index].MaskFieldName = maskFieldName.Value;
+                                }
+                            }
+                            var maskPattern = xel.Element("Pattern");
+                            if (maskPattern != null)
+                            {
+                                if (!string.IsNullOrEmpty(maskPattern.Value))
+                                {
+                                    mobStationConfig[index].MaskPattern = maskPattern.Value;
+                                }
+                            }
+                        }
+
                         if ((xel.Name.ToString() == "Standard") || (xel.Name.LocalName == "Standard"))
                         {
                             mobStationConfig[index].StandardConfig = new StandardConfig();

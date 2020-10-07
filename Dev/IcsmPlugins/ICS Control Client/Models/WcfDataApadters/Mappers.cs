@@ -599,6 +599,7 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 GlobalSID = source.GlobalSID,
                 Latitude = source.Latitude,
                 Longitude = source.Longitude,
+                DesigEmission = source.DesigEmission,
                 //Coordinates = (source.Longitude.HasValue ? source.Longitude.Value.ToString() : "") + ", " + (source.Latitude.HasValue ? source.Latitude.Value.ToString() : ""),
                 Coordinates = ConvertCoordinates.DecToDmsToString2(source.Longitude.GetValueOrDefault(), EnumCoordLine.Lon) + ", " + ConvertCoordinates.DecToDmsToString2(source.Latitude.GetValueOrDefault(), EnumCoordLine.Lat),
                 CoordinatesLat = ConvertCoordinates.DecToDmsToString2(source.Latitude.GetValueOrDefault(), EnumCoordLine.Lat),

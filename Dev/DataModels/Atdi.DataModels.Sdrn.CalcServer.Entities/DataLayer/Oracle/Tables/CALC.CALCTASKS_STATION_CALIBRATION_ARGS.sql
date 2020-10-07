@@ -1,6 +1,6 @@
 ﻿CREATE TABLE CALC.CALCTASKS_STATION_CALIBRATION_ARGS
 (
-  STANDARD							   NVARCHAR2(50),
+  STANDARD                             NVARCHAR2(50),
   TASK_ID                              NUMBER(15) NOT NULL,
   CORRELATION_THRESHOLD_HARD           NUMBER(22,8),
   CORRELATION_THRESHOLD_WEAK           NUMBER(22,8),
@@ -43,7 +43,9 @@
   METHOD                               NUMBER(3),
   INFOC_MEAS_RESULTS                   BLOB,
   STATION_IDS                          BLOB,
-  AREA_CONTOURS                        BLOB
+  MAX_DEVIATION_POWER_STATION_DB       NUMBER(22,8),
+  AREA_CONTOURS                        BLOB,
+  AREAS                                NVARCHAR2(1000)
 )
 TABLESPACE USERS
 PCTUSED    0
@@ -60,7 +62,7 @@ STORAGE    (
            )
 LOGGING 
 NOCOMPRESS 
-LOB (INFOC_MEAS_RESULTS) STORE AS SECUREFILE 
+LOB (STATION_IDS) STORE AS SECUREFILE 
       ( TABLESPACE  USERS 
         ENABLE      STORAGE IN ROW
         CHUNK       8192
@@ -84,7 +86,31 @@ LOB (INFOC_MEAS_RESULTS) STORE AS SECUREFILE
                     BUFFER_POOL      DEFAULT
                    )
       )
-  LOB (STATION_IDS) STORE AS SECUREFILE 
+  LOB (INFOC_MEAS_RESULTS) STORE AS SECUREFILE 
+      ( TABLESPACE  USERS 
+        ENABLE      STORAGE IN ROW
+        CHUNK       8192
+        NOCACHE
+        INDEX       (
+          TABLESPACE USERS
+          STORAGE    (
+                      INITIAL          64K
+                      NEXT             1
+                      MINEXTENTS       1
+                      MAXEXTENTS       UNLIMITED
+                      PCTINCREASE      0
+                      BUFFER_POOL      DEFAULT
+                     ))
+        STORAGE    (
+                    INITIAL          104K
+                    NEXT             1M
+                    MINEXTENTS       1
+                    MAXEXTENTS       UNLIMITED
+                    PCTINCREASE      0
+                    BUFFER_POOL      DEFAULT
+                   )
+      )
+  LOB (AREA_CONTOURS) STORE AS SECUREFILE 
       ( TABLESPACE  USERS 
         ENABLE      STORAGE IN ROW
         CHUNK       8192

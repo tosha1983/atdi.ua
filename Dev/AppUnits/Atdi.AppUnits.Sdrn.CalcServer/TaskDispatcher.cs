@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Atdi.Contracts.CoreServices.DataLayer;
 using Atdi.Contracts.CoreServices.EntityOrm;
@@ -18,9 +19,16 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 {
 	internal sealed class TaskDispatcher : ITaskDispatcher, IDisposable
 	{
+		private class TaskExecutingDescriptor
+		{
+			public TaskWorkerContext Context;
+			public IJobToken JobToken;
+		}
+
 		private readonly IDataLayer<EntityDataOrm<CalcServerEntityOrmContext>> _calcServerDataLayer;
 		private readonly IJobBroker _jobBroker;
 		private readonly ILogger _logger;
+		private readonly Dictionary<long, TaskExecutingDescriptor> _descriptors;
 
 		public TaskDispatcher(
 			IDataLayer<EntityDataOrm<CalcServerEntityOrmContext>> calcServerDataLayer,
@@ -30,6 +38,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 			_calcServerDataLayer = calcServerDataLayer;
 			_jobBroker = jobBroker;
 			_logger = logger;
+			_descriptors = new Dictionary<long, TaskExecutingDescriptor>();
 		}
 
 		public void RunTask(TaskLaunchHandle launchHandle, ITaskObserver observer)
@@ -38,7 +47,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 			// перевести ее в Pending, все задачу запустят потом
 		}
 
-		public void RunTask(long resultId, ITaskObserver observer)
+		private void RunTask(long resultId, ITaskObserver observer, TaskRunningMode runMode)
 		{
 			try
 			{
@@ -49,15 +58,21 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 					calcDbScope.BeginTran();
 					try
 					{
-						if (!this.TryAcceptTaskResult(calcDbScope, resultId))
+						if (runMode == TaskRunningMode.Normal)
 						{
-							throw new InvalidOperationException("Failed to accept the task result record for processing. Invalid identifier value or record status.");
+							if (!this.TryAcceptTaskResult(calcDbScope, resultId))
+							{
+								throw new InvalidOperationException("Failed to accept the task result record for processing. Invalid identifier value or record status.");
+							}
 						}
+						
 
 						var taskWorkerContext = new TaskWorkerContext
 						{
 							ResultId = resultId,
-							TaskObserver = observer
+							TaskObserver = observer,
+							CancellationSource = new CancellationTokenSource(),
+							RunMode = runMode
 						};
 
 						var taskWorkerJobDef = new JobDefinition<TaskWorkerJob, TaskWorkerContext>()
@@ -67,7 +82,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 							Repeatable = false
 						};
 
-						_jobBroker.Run(taskWorkerJobDef, taskWorkerContext);
+						var jobToken = _jobBroker.Run(taskWorkerJobDef, taskWorkerContext);
+						_descriptors.Add(resultId, new TaskExecutingDescriptor
+						{
+							Context =  taskWorkerContext,
+							JobToken = jobToken
+						});
 
 						calcDbScope.Commit();
 					}
@@ -99,11 +119,62 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 			return calcDbScope.Executor.Execute(query) > 0;
 		}
 
+		private bool CheckTaskInProcess(IDataLayerScope calcDbScope, long resultId)
+		{
+			var query = _calcServerDataLayer.GetBuilder<ICalcResult>()
+				.From()
+				.Select(c => c.Id)
+				.Where(c => c.Id, ConditionOperator.Equal, resultId)
+				.Where(c => c.StatusCode, ConditionOperator.Equal, (byte)CalcResultStatusCode.Processing);
+
+			return calcDbScope.Executor.Execute(query) > 0;
+		}
+
 		public void Dispose()
 		{
 			//throw new NotImplementedException();
 		}
 
-		
+		public void StopTask(long resultId)
+		{
+			using (var calcDbScope = this._calcServerDataLayer.CreateScope<CalcServerDataContext>())
+			{
+				if (!CheckTaskInProcess(calcDbScope, resultId))
+				{
+					return;
+				}
+
+				if (_descriptors.TryGetValue(resultId, out var descriptor))
+				{
+					descriptor.Context.CancellationSource.Cancel();
+				}
+			}
+				
+		}
+
+		public void AbortTask(long resultId)
+		{
+			using (var calcDbScope = this._calcServerDataLayer.CreateScope<CalcServerDataContext>())
+			{
+				if (!CheckTaskInProcess(calcDbScope, resultId))
+				{
+					return;
+				}
+				if (_descriptors.TryGetValue(resultId, out var descriptor))
+				{
+					descriptor.JobToken.Abort();
+				}
+			}
+		}
+
+		public void ResumeTask(long resultId, ITaskObserver observer)
+		{
+			this.RunTask(resultId, observer, TaskRunningMode.Recovery);
+		}
+
+		public void RunTask(long resultId, ITaskObserver observer)
+		{
+			this.RunTask(resultId, observer, TaskRunningMode.Normal);
+		}
 	}
 }

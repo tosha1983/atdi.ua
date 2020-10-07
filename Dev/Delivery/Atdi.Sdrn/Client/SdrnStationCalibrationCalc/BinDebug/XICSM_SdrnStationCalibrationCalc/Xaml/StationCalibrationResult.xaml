@@ -56,8 +56,9 @@
           <DatePicker Grid.Column="0" Grid.Row="0" Margin="110,5,5,5" Height="20" Width="100" HorizontalAlignment="Left" VerticalAlignment="Top" SelectedDate="{Binding Path=DateStartLoadResults, StringFormat='{}{0:dd.MM.yyyy}'}"/>
           <Label Height="40" Grid.Column="0" Grid.Row="0" Margin="215,5,5,5" Content="{x:Static res:Resources.To}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
           <DatePicker Grid.Column="0" Grid.Row="0" Margin="240,5,5,5" Height="20" Width="100" HorizontalAlignment="Left" VerticalAlignment="Top" SelectedDate="{Binding Path=DateStopLoadResults, StringFormat='{}{0:dd.MM.yyyy}'}"/>
-          <Button Grid.Column="0" Grid.Row="0" Margin="350,5,5,5" Content="Load" Command="{Binding LoadResultsCommand}" Width="70" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-          
+          <Button Grid.Column="0" Grid.Row="0" Margin="350,5,5,5" Content="{x:Static res:Resources.Load}" Command="{Binding LoadResultsCommand}" Width="70" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+          <Button Grid.Column="0" Grid.Row="0" Margin="430,5,5,5" Content="{x:Static res:Resources.Export}" Command="{Binding ExportResultsCommand}" Width="70" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+
           <GroupBox Grid.Row="0" Margin="5, 25, 5, 5" Header="Results">
             <cdg:OrmDataGrid IsReadOnly="True" Margin="5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding StationCalibrationResultDataAdapter}" SelectedItem="{Binding CurrentStationCalibrationResult}" SelectedItemsList="{Binding CurrentStationCalibrationResultModel, Mode=TwoWay}" >
             <DataGrid.Columns>
@@ -200,8 +201,14 @@
               <DataGridTextColumn Header="{x:Static res:Resources.FreqLinkDriveTest_MHz}" Binding="{Binding Path=Freq_MHz}"></DataGridTextColumn>
 
               <DataGridTextColumn Header="{x:Static res:Resources.Standard}" Binding="{Binding Path=Standard}"></DataGridTextColumn>
-              
-              
+
+              <DataGridTextColumn Header="{x:Static res:Resources.DeltaCorrelation_pc}" Binding="{Binding Path=DeltaCorrelation_pc}"></DataGridTextColumn>
+
+              <DataGridTextColumn Header="{x:Static res:Resources.UsedPoints_pc}" Binding="{Binding Path=UsedPoints_pc}"></DataGridTextColumn>
+
+              <DataGridTextColumn Header="{x:Static res:Resources.CountPointsInDriveTest}" Binding="{Binding Path=CountPointsInDriveTest}"></DataGridTextColumn>
+
+
             </DataGrid.Columns>
           </cdg:OrmDataGrid>
         </GroupBox>

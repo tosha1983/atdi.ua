@@ -154,7 +154,7 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
         {
             if (string.IsNullOrEmpty(textBoxQuery.Text.ToString()))
             {
-                MessageBox.Show("Відстуня інформація про запит!");
+                MessageBox.Show(CLocaliz.TxT("No information about the request code!"));
                 return;
             }
             DialogResult DA = MessageBox.Show("Editable query manually may cause it to malfunction on the side of the Web portal to continue?", "Warning!", MessageBoxButtons.YesNo);
@@ -232,13 +232,13 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
         {
             if (string.IsNullOrEmpty(textBoxQuery.Text.ToString()))
             {
-                MessageBox.Show("Відстуня інформація про запит!");
+                MessageBox.Show(CLocaliz.TxT("No information about the request!"));
                 return;
             }
 
             if (string.IsNullOrEmpty(textBox_code.Text.ToString()))
             {
-                MessageBox.Show("Відстуня інформація про код запиту!");
+                MessageBox.Show(CLocaliz.TxT("No information about the request code!"));
                 return;
             }
 

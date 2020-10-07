@@ -36,5 +36,8 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
         public long ResultId { get; set; }
         public double Freq_MHz { get; set; }
         public string Standard { get; set; }
+        public double DeltaCorrelation_pc { get; set; }
+        public int UsedPoints_pc { get; set; }
+        public int CountPointsInDriveTest { get; set; }
     }
 }

@@ -87,6 +87,8 @@
     <Compile Include="ViewModels\ClientContext\Modifiers\EditClientContextHandler.cs" />
     <Compile Include="ViewModels\ClientContext\Queries\GetClientContextById.cs" />
     <Compile Include="ViewModels\ClientContext\Queries\GetClientContextByIdExecutor.cs" />
+    <Compile Include="ViewModels\Map\Adapters\MapDataAdapter.cs" />
+    <Compile Include="ViewModels\Map\Models\MapInfoModel.cs" />
     <Compile Include="ViewModels\ProjectManager\Queries\GetProjections.cs" />
     <Compile Include="ViewModels\ProjectManager\Queries\GetProjectionsExecutor.cs" />
     <Compile Include="ViewModels\ClientContext\View.cs" />
@@ -153,6 +155,14 @@
       <Project>{a252d199-1162-484d-b50a-8c44a4edd670}</Project>
       <Name>Atdi.Contracts.Api.EntityOrm.WebClient</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeepServices.Gis\Atdi.Contracts.Sdrn.DeepServices.Gis.csproj">
+      <Project>{567b4c34-9ff5-4c05-9e7b-d1ed94eadaaf}</Project>
+      <Name>Atdi.Contracts.Sdrn.DeepServices.Gis</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeepServices\Atdi.Contracts.Sdrn.DeepServices.csproj">
+      <Project>{dbbcbdeb-202d-4068-94f6-bb78bd47d51a}</Project>
+      <Name>Atdi.Contracts.Sdrn.DeepServices</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Api.EntityOrm.WebClient\Atdi.DataModels.Api.EntityOrm.WebClient.csproj">
       <Project>{36ae7031-fc14-4305-bd04-87c70fda0f25}</Project>
       <Name>Atdi.DataModels.Api.EntityOrm.WebClient</Name>
@@ -160,6 +170,10 @@
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.CalcServer.Entities\Atdi.DataModels.Sdrn.CalcServer.Entities.csproj">
       <Project>{6a72e0c5-f8a4-412f-9395-13abe07367b1}</Project>
       <Name>Atdi.DataModels.Sdrn.CalcServer.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices.Gis\Atdi.DataModels.Sdrn.DeepServices.Gis.csproj">
+      <Project>{d83887b2-4444-4207-a703-c99b94a4c170}</Project>
+      <Name>Atdi.DataModels.Sdrn.DeepServices.Gis</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.Infocenter.Entities\Atdi.DataModels.Sdrn.Infocenter.Entities.csproj">
       <Project>{b793c198-41c4-4e9e-9e18-479a8a51b0b0}</Project>
@@ -195,7 +209,6 @@
     <Folder Include="Events\" />
     <Folder Include="Queries\" />
     <Folder Include="ViewModels\ClientContext\Adapters\" />
-    <Folder Include="ViewModels\Map\Adapters\" />
     <Folder Include="ViewModels\Map\Queries\" />
     <Folder Include="Xaml\" />
   </ItemGroup>

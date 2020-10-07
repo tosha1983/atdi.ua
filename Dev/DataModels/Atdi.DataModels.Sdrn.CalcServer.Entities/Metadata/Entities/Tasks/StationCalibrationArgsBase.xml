@@ -16,6 +16,7 @@
     <Field Name="Standard" SourceType="Column" SourceName="STANDARD" DataType="Text.50" Required="false" Title="Standard" Desc="The standard" />
     <Field Name="StationIds" SourceType="Column" Required="false" SourceName="STATION_IDS" DataType="Array.Long" Title="Context station identifiers" Desc="Context station identifiers"/>
     <Field Name="Contours" SourceType="Column" Required="false" SourceName="AREA_CONTOURS" DataType="Array.String" Title="Area contours" Desc="Area contours"/>
+    <Field Name="Areas" SourceType="Column" Required="false" SourceName="AREAS" DataType="Text.1000" Title="Areas" Desc="Areas"/>
     <Field Name="CorrelationThresholdHard" SourceType="Column" Required="false" SourceName="CORRELATION_THRESHOLD_HARD" DataType="Float.22.8" Title="CorrelationThresholdHard" Desc="CorrelationThresholdHard"/>
     <Field Name="CorrelationThresholdWeak" SourceType="Column" Required="false" SourceName="CORRELATION_THRESHOLD_WEAK" DataType="Float.22.8" Title="CrrelationThresholdWeak" Desc="CrrelationThresholdWeak"/>
     <Field Name="TrustOldResults" SourceType="Column" Required="false" SourceName="TRUST_OLD_RESULTS" DataType="Boolean" Title="TrustOldResults" Desc="TrustOldResults"/>
