@@ -87,6 +87,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
             var readerResult = _dataLayer.Executor.ExecuteReader(queryResults);
             while (readerResult.Read())
             {
+                task.PercentComplete = readerResult.GetValue(c => c.PercentComplete);
                 task.NumberStation = readerResult.GetValue(c => c.NumberStation);
                 task.NumberTimeStarted = ++count;
             }
