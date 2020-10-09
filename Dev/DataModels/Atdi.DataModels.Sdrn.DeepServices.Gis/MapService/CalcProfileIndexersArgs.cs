@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.DeepServices.Gis.MapService
 {
-	public struct CalcProfileIndexersArgs
+    [Serializable]
+    public struct CalcProfileIndexersArgs
 	{
 		/// <summary>
 		/// Координата опорной точки с которой нужно начать построить профиль

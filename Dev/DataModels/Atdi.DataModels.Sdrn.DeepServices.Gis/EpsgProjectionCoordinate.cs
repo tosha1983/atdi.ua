@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.DeepServices.Gis
 {
-	/// <summary>
-	/// Метровые координаты с проекцией
-	/// </summary>
-	public struct EpsgProjectionCoordinate
+    /// <summary>
+    /// Метровые координаты с проекцией
+    /// </summary>
+    [Serializable]
+    public struct EpsgProjectionCoordinate
 	{
 		public uint Projection;
 		public double X;

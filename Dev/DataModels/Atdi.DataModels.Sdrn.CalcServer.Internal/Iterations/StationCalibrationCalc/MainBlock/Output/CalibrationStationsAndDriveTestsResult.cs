@@ -8,7 +8,8 @@ using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
-	public class CalibrationStationsAndDriveTestsResult
+    [Serializable]
+    public class CalibrationStationsAndDriveTestsResult
     {
         public CalibrationStationResult[] ResultCalibrationStation;
         public CalibrationDriveTestResult[] ResultCalibrationDriveTest;

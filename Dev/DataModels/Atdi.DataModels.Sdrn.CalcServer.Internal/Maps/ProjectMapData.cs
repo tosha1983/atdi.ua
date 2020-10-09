@@ -8,7 +8,8 @@ using Atdi.DataModels.Sdrn.DeepServices.Gis;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Maps
 {
-	public class ProjectMapData
+    [Serializable]
+    public class ProjectMapData
 	{
 		public long Id { get; set; }
 

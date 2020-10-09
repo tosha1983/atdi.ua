@@ -8,7 +8,8 @@ using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
-	public struct CorellationParameters
+    [Serializable]
+    public struct CorellationParameters
     {
         public float MinRangeMeasurements_dBmkV;
 

@@ -9,6 +9,7 @@ using Atdi.DataModels.Sdrn.CalcServer.Internal.Clients;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
+    [Serializable]
     public static class RulesStatusParameters
     {
 

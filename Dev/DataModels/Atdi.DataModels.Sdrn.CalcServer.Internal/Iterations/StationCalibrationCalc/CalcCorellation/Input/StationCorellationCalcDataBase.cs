@@ -9,7 +9,8 @@ using Atdi.DataModels.Sdrn.CalcServer.Internal.Clients;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
-	public class StationCorellationCalcDataBase
+    [Serializable]
+    public class StationCorellationCalcDataBase
     {
         public DriveTestsResult GSIDGroupeDriveTests;
         //public ContextStation GSIDGroupeStation;

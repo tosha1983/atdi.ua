@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.DeepServices.Gis.Maps.Json
 {
-	public class CluttersDescFreq
+    [Serializable]
+    public class CluttersDescFreq
 	{
 		public double Freq_MHz;
 

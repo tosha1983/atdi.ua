@@ -7,7 +7,8 @@ using Atdi.DataModels.Sdrn.DeepServices.Gis;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
-	public sealed class ProfileIndexersCalcData
+    [Serializable]
+    public sealed class ProfileIndexersCalcData
 	{
 
 		/// <summary>

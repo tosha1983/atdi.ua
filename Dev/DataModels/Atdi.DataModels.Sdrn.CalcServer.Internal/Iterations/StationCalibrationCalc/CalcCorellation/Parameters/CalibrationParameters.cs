@@ -8,7 +8,8 @@ using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
-	public struct CalibrationParameters
+    [Serializable]
+    public struct CalibrationParameters
     {
         public bool AltitudeStation;
         public int ShiftAltitudeStationMin_m;
@@ -39,7 +40,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
         public Method Method;
 
     }
-
+    [Serializable]
     public enum Method
     {
         ExhaustiveSearch=0,
