@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.DeepServices.RadioSystem.SignalService
 {
+    [Serializable]
     public struct CalcLossArgs
     {
         public PropagationModel Model;
