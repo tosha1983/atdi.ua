@@ -8,7 +8,8 @@ using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
-	public class GroupsDriveTestsResult
+    [Serializable]
+    public class GroupsDriveTestsResult
     {
         public DriveTestsResult DriveTestsResult;
 

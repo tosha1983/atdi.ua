@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Gis
 {
-	public class CluttersDesc
+    [Serializable]
+    public class CluttersDesc
 	{
 		public long Id;
 

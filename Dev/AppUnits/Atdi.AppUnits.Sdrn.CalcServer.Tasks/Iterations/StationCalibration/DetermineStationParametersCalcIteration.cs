@@ -18,6 +18,7 @@ using Atdi.Contracts.CoreServices.EntityOrm;
 using Atdi.DataModels.Sdrn.CalcServer.Entities;
 using Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks;
 using Atdi.DataModels.DataConstraint;
+using Atdi.Common.Extensions;
 
 
 namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
@@ -172,6 +173,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             return minDistance.Value;
         }
 
+      
         /// <summary>
         /// Основной вычислительный метод итерации
         /// </summary>
@@ -180,12 +182,34 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         /// <returns>массив CalibrationResult[]</returns>
         public CalibrationResult[] Run(ITaskContext taskContext, AllStationCorellationCalcData data)
         {
-            ICheckPoint checkPoint = null;
-
-            if (taskContext.RunMode == TaskRunningMode.Recovery)
+            int? ThresholdsPeriosSaveCheckPointsInMinutes = 5;
+            if (this._appServerComponentConfig.ThresholdsPeriodSaveCheckPointsInMinutes!=null)
             {
-                checkPoint = taskContext.GetLastCheckPoint();
+                ThresholdsPeriosSaveCheckPointsInMinutes = this._appServerComponentConfig.ThresholdsPeriodSaveCheckPointsInMinutes;
             }
+            ICheckPoint checkPointCreate = null;
+            ICheckPoint checkPointRestore= taskContext.GetLastCheckPoint();
+            long sourceContentId = -1;
+            DateTimeOffset dateTimeOffset = DateTimeOffset.Now;
+
+            if (checkPointRestore == null)
+            {
+                sourceContentId = StationCalibrationCalcTask.CreateNewTempResultRecord(this._calcServerDataLayer, data, taskContext.ResultId);
+
+                checkPointCreate = taskContext.CreateCheckPoint("StationCalibration");
+                checkPointCreate.SaveData("SourceContent", sourceContentId);
+            }
+            else
+            {
+                sourceContentId = checkPointRestore.RestoreData<long>("SourceContent");
+                checkPointCreate = taskContext.CreateCheckPoint("StationCalibration");
+                checkPointCreate.SaveData("SourceContent", sourceContentId);
+            }
+            
+            
+
+            //ICheckPoint checkPoint = taskContext.GetLastCheckPoint();
+
 
             // если нет ни одной группы драйв тестов с набором значений, тогда генерируем ошибку
             if (data.GSIDGroupeDriveTests.Length==0)
@@ -266,6 +290,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                 data.GSIDGroupeStation = perforationStations.ToArray();
 
 
+
                 ///////////////////////////////////////////////////////////////////////////////////////////
                 ///
                 ///  4.2.1. Формирование соответствий между станциями и результатами измерений (схема бл 1)
@@ -332,17 +357,24 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
                     DriveTestsResult[][] outDriveTestsResults = null;
 
-                    if (checkPoint != null)
+                    if (checkPointRestore != null)
                     {
-                        var checkPointStandard = checkPoint.RestoreData<string>("context_standard");
-                        if (checkPointStandard != standard)
+                        var checkPointStandard = checkPointRestore.RestoreData<string>("context_standard");
+                        if (checkPointStandard != null)
                         {
-                            continue;
+                            if (checkPointStandard != standard)
+                            {
+                                continue;
+                            }
                         }
                     }
 
 
-                    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+                   /////////////////////////////////////////////////////////////////////////////////////////////////////////
                     ///
                     ///                     БЛОК
                     ///          "Прямые соответсвия GSID (основная масса)"
@@ -386,27 +418,36 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
                     // создаем список для хранения результатов обработки по отдельно взятому стандарту и заданой группе GSID
                     var calibrationStationsAndDriveTestsResultByGroup = new List<CalibrationStationsAndDriveTestsResult>();
-
-                    if (checkPoint != null)
+                    int? outListDriveTestsResults_index2 = null;
+                    if (checkPointRestore != null)
                     {
-                        var checkPointCalibrationStationsAndDriveTestsResultByGroup = checkPoint.RestoreData<List<CalibrationStationsAndDriveTestsResult>>("context_CalibrationStationsAndDriveTestsResultByGroup");
-                        if ((checkPointCalibrationStationsAndDriveTestsResultByGroup != null) && (checkPointCalibrationStationsAndDriveTestsResultByGroup.Count > 0))
+                        outListDriveTestsResults_index2 = checkPointRestore.RestoreData<int?>("context_outListDriveTestsResults_index2");
+                        var checkPointIndex = checkPointRestore.RestoreData<int?>("context_linkDriveTestsAndStations_index1");
+                        if (checkPointIndex != null)
                         {
-                            calibrationStationsAndDriveTestsResultByGroup.AddRange(checkPointCalibrationStationsAndDriveTestsResultByGroup);
-                        }
 
-                        var checkPointIndex = checkPoint.RestoreData<int>("context_linkDriveTestsAndStations_index");
-                        var context_outListDriveTestsResults_index = checkPoint.RestoreData<int>("context_outListDriveTestsResults_index");
-                        if ((checkPointIndex > 0) || (context_outListDriveTestsResults_index > 0))
-                        {
-                            var checkPointContext_outListContextStations = checkPoint.RestoreData<List<ContextStation[]>>("context_outListContextStations");
+                            outListDriveTestsResults = new List<DriveTestsResult[]>();
+
+                            outListContextStations = new List<ContextStation[]>(); 
+
+
+                            var context_CalibrationStationsAndDriveTestsResultByGroup1_Id = checkPointRestore.RestoreData<long>("context_CalibrationStationsAndDriveTestsResultByGroup1");
+                            var checkPointCalibrationStationsAndDriveTestsResultByGroup = StationCalibrationCalcTask.GetTempResultRecord<List<CalibrationStationsAndDriveTestsResult>>(this._calcServerDataLayer, context_CalibrationStationsAndDriveTestsResultByGroup1_Id);
+                            if ((checkPointCalibrationStationsAndDriveTestsResultByGroup != null) && (checkPointCalibrationStationsAndDriveTestsResultByGroup.Count > 0))
+                            {
+                                calibrationStationsAndDriveTestsResultByGroup.AddRange(checkPointCalibrationStationsAndDriveTestsResultByGroup);
+                            }
+
+                            var context_outListContextStations1_Id = checkPointRestore.RestoreData<long>("context_outListContextStations1");
+                            var checkPointContext_outListContextStations = StationCalibrationCalcTask.GetTempResultRecord<List<ContextStation[]>>(this._calcServerDataLayer, context_outListContextStations1_Id);
                             if ((checkPointContext_outListContextStations != null) && (checkPointContext_outListContextStations.Count > 0))
                             {
                                 outListContextStations.AddRange(checkPointContext_outListContextStations);
                             }
 
 
-                            var checkPointContext_context_outListDriveTestsResults = checkPoint.RestoreData<List<DriveTestsResult[]>>("context_outListDriveTestsResults");
+                            var context_outListDriveTestsResults1_Id = checkPointRestore.RestoreData<long>("context_outListDriveTestsResults1");
+                            var checkPointContext_context_outListDriveTestsResults = StationCalibrationCalcTask.GetTempResultRecord<List<DriveTestsResult[]>>(this._calcServerDataLayer, context_outListDriveTestsResults1_Id);
                             if ((checkPointContext_context_outListDriveTestsResults != null) && (checkPointContext_context_outListDriveTestsResults.Count > 0))
                             {
                                 outListDriveTestsResults.AddRange(checkPointContext_context_outListDriveTestsResults);
@@ -415,97 +456,137 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     }
 
 
-                    /// обработка по отдельно взятой группе (GSID) пролинкованных массивов станций и драйв тестов
-                    for (int z = 0; z < linkDriveTestsAndStations.Length; z++)
+                    if (outListDriveTestsResults_index2 == null)
                     {
 
-                        if (checkPoint != null)
+                        /// обработка по отдельно взятой группе (GSID) пролинкованных массивов станций и драйв тестов
+                        for (int z = 0; z < linkDriveTestsAndStations.Length; z++)
                         {
-                            var checkPointIndex = checkPoint.RestoreData<int>("context_linkDriveTestsAndStations_index");
-                            if (checkPointIndex > z)
-                            {
-                                continue;
-                            }
-                        }
 
-                        if (taskContext.CancellationToken.IsCancellationRequested)
-                        {
-                            // нас просят прервать работу
-                            // тут  возможно стоит сфомировть тчоку восстановления
-                            using (var createCheckPoint = taskContext.CreateCheckPoint("main"))
+                            if (checkPointRestore != null)
                             {
+                                var checkPointIndex = checkPointRestore.RestoreData<int?>("context_linkDriveTestsAndStations_index1");
+                                if ((checkPointIndex!=null) && (checkPointIndex > z))
+                                {
+                                    continue;
+                                }
+                            }
+
+                            //taskContext.CancellationToken.ThrowIfCancellationRequested();
+
+                            if (taskContext.CancellationToken.IsCancellationRequested)
+                            {
+                                // нас просят прервать работу
+                                // тут  возможно стоит сфомировть тчоку восстановления
+                                //using (var createCheckPoint = taskContext.CreateCheckPoint("main"))
+                                //{
                                 //checkPoint.SaveData("context_LinkDriveTestsAndStations", linkDriveTestsAndStations);
-                                createCheckPoint.SaveData("context_standard", standard);
-                                createCheckPoint.SaveData("context_linkDriveTestsAndStations_index", z);
-                                if ((outListContextStations != null) && (outListContextStations.Count > 0))
+                                if (checkPointCreate != null)
                                 {
-                                    createCheckPoint.SaveData("context_outListContextStations", outListContextStations);
+                                    checkPointCreate.SaveData("context_standard", standard);
+                                    checkPointCreate.SaveData("context_linkDriveTestsAndStations_index1", (int?)z);
+                                    if ((outListContextStations != null) && (outListContextStations.Count > 0))
+                                    {
+                                        var context_outListContextStations1_Id = StationCalibrationCalcTask.CreateNewTempResultRecord(this._calcServerDataLayer, outListContextStations, taskContext.ResultId);
+                                        checkPointCreate.SaveData("context_outListContextStations1", context_outListContextStations1_Id);
+                                    }
+                                    if ((outListDriveTestsResults != null) && (outListDriveTestsResults.Count > 0))
+                                    {
+                                        var context_outListDriveTestsResults1_Id = StationCalibrationCalcTask.CreateNewTempResultRecord(this._calcServerDataLayer, outListDriveTestsResults, taskContext.ResultId);
+                                        checkPointCreate.SaveData("context_outListDriveTestsResults1", context_outListDriveTestsResults1_Id);
+                                    }
+                                    if ((calibrationStationsAndDriveTestsResultByGroup != null) && (calibrationStationsAndDriveTestsResultByGroup.Count > 0))
+                                    {
+                                        var context_CalibrationStationsAndDriveTestsResultByGroup1_Id = StationCalibrationCalcTask.CreateNewTempResultRecord(this._calcServerDataLayer, calibrationStationsAndDriveTestsResultByGroup, taskContext.ResultId);
+                                        checkPointCreate.SaveData("context_CalibrationStationsAndDriveTestsResultByGroup1", context_CalibrationStationsAndDriveTestsResultByGroup1_Id);
+                                    }
+                                    // фиксируем контрольную точку
+                                    checkPointCreate.Commit();
+                                    isCancelledTask = true;
+                                    break;
                                 }
-                                if ((outListDriveTestsResults != null) && (outListDriveTestsResults.Count > 0))
-                                {
-                                    createCheckPoint.SaveData("context_outListDriveTestsResults", outListDriveTestsResults);
-                                }
-                                if ((calibrationStationsAndDriveTestsResultByGroup != null) && (calibrationStationsAndDriveTestsResultByGroup.Count > 0))
-                                {
-                                    createCheckPoint.SaveData("context_CalibrationStationsAndDriveTestsResultByGroup", calibrationStationsAndDriveTestsResultByGroup);
-                                }
-                                // фиксируем контрольную точку
-                                createCheckPoint.Commit();
-                                isCancelledTask = true;
-                                break;
                                 // тогда возможно реанимироать и продолжить расчет
+                                //}
+                                // здесь нужен механизм выхода из цикла обработки.
                             }
-                            // здесь нужен механизм выхода из цикла обработки.
-                        }
 
-                        // получаем массив станций одной группы (связанных с драйв тестами)
-                        var station = linkDriveTestsAndStations[z].ContextStation;
+                            // получаем массив станций одной группы (связанных с драйв тестами)
+                            var station = linkDriveTestsAndStations[z].ContextStation;
 
-                        // получаем массив драйв тестов одной группы (связанных со станциями)
-                        var driveTest = linkDriveTestsAndStations[z].DriveTestsResults;
+                            // получаем массив драйв тестов одной группы (связанных со станциями)
+                            var driveTest = linkDriveTestsAndStations[z].DriveTestsResults;
 
-                        ///  4.2.2. Расчет корреляции weake (схема бл 2)
-                        ///  4.2.3  Подбор параметров станции по результатам Drive Test (hard) (схема бл 3)
-                        var tempResultCorrelationGSIDGroupeStations = CalcStationCalibration(driveTest, taskContext, station, data, ref outListContextStations, ref outListDriveTestsResults, out bool statusCorellationLinkGroup, out double? maxCorellation_pc);
-                        var contextStations = new List<ContextStation>();
-                        var driveTestsResult = new List<DriveTestsResult>();
-                        // По максимуму значения Correlation_pc из п.1 привязываем станции и драйв тесты.
-                        var resultCorrelationGSIDGroupeStations = LinkedStationsAndDriveTests(tempResultCorrelationGSIDGroupeStations, out contextStations, out driveTestsResult);
+                            ///  4.2.2. Расчет корреляции weake (схема бл 2)
+                            ///  4.2.3  Подбор параметров станции по результатам Drive Test (hard) (схема бл 3)
+                            var tempResultCorrelationGSIDGroupeStations = CalcStationCalibration(driveTest, taskContext, station, data, ref outListContextStations, ref outListDriveTestsResults, out bool statusCorellationLinkGroup, out double? maxCorellation_pc);
+                            var contextStations = new List<ContextStation>();
+                            var driveTestsResult = new List<DriveTestsResult>();
+                            // По максимуму значения Correlation_pc из п.1 привязываем станции и драйв тесты.
+                            var resultCorrelationGSIDGroupeStations = LinkedStationsAndDriveTests(tempResultCorrelationGSIDGroupeStations, out contextStations, out driveTestsResult);
 
-                        if (resultCorrelationGSIDGroupeStations.Count > 0)
-                        {
-
-                            //4.2.4. Сохранение соответствия, изымание станций и Drive Test из дальнейших расчетов (схема бл 4)
-                            var calibrationStationsAndDriveTestsResult = FillCalibrationStationResultFirstBlock(resultCorrelationGSIDGroupeStations, data.CalibrationParameters, data.CorellationParameters, data.GeneralParameters);
-                            if (calibrationStationsAndDriveTestsResult != null)
+                            if (resultCorrelationGSIDGroupeStations.Count > 0)
                             {
-                                if ((calibrationStationsAndDriveTestsResult.ResultCalibrationStation.Length > 0) || (calibrationStationsAndDriveTestsResult.ResultCalibrationDriveTest.Length > 0))
-                                {
-                                    // добавляем промежуточный результат в массив результатов
-                                    calibrationStationsAndDriveTestsResultByGroup.Add(calibrationStationsAndDriveTestsResult);
 
-                                    // убираем из общего списка станций и  драйв тестов  те которые попали в результаты
-                                    CompressedStationsAndDriveTest(ref outListContextStations, ref outListDriveTestsResults, resultCorrelationGSIDGroupeStations);
+                                //4.2.4. Сохранение соответствия, изымание станций и Drive Test из дальнейших расчетов (схема бл 4)
+                                var calibrationStationsAndDriveTestsResult = FillCalibrationStationResultFirstBlock(resultCorrelationGSIDGroupeStations, data.CalibrationParameters, data.CorellationParameters, data.GeneralParameters);
+                                if (calibrationStationsAndDriveTestsResult != null)
+                                {
+                                    if ((calibrationStationsAndDriveTestsResult.ResultCalibrationStation.Length > 0) || (calibrationStationsAndDriveTestsResult.ResultCalibrationDriveTest.Length > 0))
+                                    {
+                                        // добавляем промежуточный результат в массив результатов
+                                        calibrationStationsAndDriveTestsResultByGroup.Add(calibrationStationsAndDriveTestsResult);
+
+                                        // убираем из общего списка станций и  драйв тестов  те которые попали в результаты
+                                        CompressedStationsAndDriveTest(ref outListContextStations, ref outListDriveTestsResults, resultCorrelationGSIDGroupeStations);
+                                    }
+                                }
+                                // если результат пустой, тогда станции и драйв тесты возвращаем в итоговые массивы для дальнейшей обработки
+                                else
+                                {
+                                    if ((contextStations != null) && (contextStations.Count > 0))
+                                    {
+                                        outListContextStations.Add(contextStations.ToArray());
+                                        outListDriveTestsResults.Add(driveTestsResult.ToArray());
+                                    }
                                 }
                             }
-                            // если результат пустой, тогда станции и драйв тесты возвращаем в итоговые массивы для дальнейшей обработки
-                            else
+                            // обновление процента выполнения задачи
+                            if (linkDriveTestsAndStations.Length > 0)
                             {
-                                if ((contextStations != null) && (contextStations.Count > 0))
-                                {
-                                    outListContextStations.Add(contextStations.ToArray());
-                                    outListDriveTestsResults.Add(driveTestsResult.ToArray());
-                                }
+                                percentComplete = (z + 1) * (int)(50.0 / linkDriveTestsAndStations.Length);
+                                UpdatePercentComplete(data.resultId, percentComplete);
                             }
-                        }
-                        // обновление процента выполнения задачи
-                        if (linkDriveTestsAndStations.Length > 0)
-                        {
-                            percentComplete = (z + 1) * (int)(50.0 / linkDriveTestsAndStations.Length);
-                            UpdatePercentComplete(data.resultId, percentComplete);
-                        }
 
-                       
+                            var sub = DateTimeOffset.Now - dateTimeOffset;
+                            if (sub.TotalMinutes > ThresholdsPeriosSaveCheckPointsInMinutes)
+                            {
+                                using (var nextCheckPointCreate = taskContext.CreateCheckPoint("StationCalibration"))
+                                {
+                                    nextCheckPointCreate.SaveData("SourceContent", sourceContentId);
+                                    nextCheckPointCreate.SaveData("context_standard", standard);
+                                    nextCheckPointCreate.SaveData("context_linkDriveTestsAndStations_index1", (int?)(z + 1));
+                                    if ((outListContextStations != null) && (outListContextStations.Count > 0))
+                                    {
+                                        var context_outListContextStations1_Id = StationCalibrationCalcTask.CreateNewTempResultRecord(this._calcServerDataLayer, outListContextStations, taskContext.ResultId);
+                                        nextCheckPointCreate.SaveData("context_outListContextStations1", context_outListContextStations1_Id);
+                                    }
+                                    if ((outListDriveTestsResults != null) && (outListDriveTestsResults.Count > 0))
+                                    {
+                                        var context_outListDriveTestsResults1_Id = StationCalibrationCalcTask.CreateNewTempResultRecord(this._calcServerDataLayer, outListDriveTestsResults, taskContext.ResultId);
+                                        nextCheckPointCreate.SaveData("context_outListDriveTestsResults1", context_outListDriveTestsResults1_Id);
+                                    }
+                                    if ((calibrationStationsAndDriveTestsResultByGroup != null) && (calibrationStationsAndDriveTestsResultByGroup.Count > 0))
+                                    {
+                                        var context_CalibrationStationsAndDriveTestsResultByGroup1_Id = StationCalibrationCalcTask.CreateNewTempResultRecord(this._calcServerDataLayer, calibrationStationsAndDriveTestsResultByGroup, taskContext.ResultId);
+                                        nextCheckPointCreate.SaveData("context_CalibrationStationsAndDriveTestsResultByGroup1", context_CalibrationStationsAndDriveTestsResultByGroup1_Id);
+                                    }
+                                    // фиксируем контрольную точку
+                                    nextCheckPointCreate.Commit();
+                                }
+                                dateTimeOffset = DateTimeOffset.Now;
+                            }
+
+                        }
                     }
 
                     if (isCancelledTask)
@@ -586,42 +667,65 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     // список для хранения сведений о станциях со статусом UN
                     var groupsContextStations = new List<GroupsContextStations>();
 
-                    if (checkPoint != null)
+                    if (checkPointRestore != null)
                     {
-                     
-                        var checkPointContext_groupsContextStations = checkPoint.RestoreData<List<GroupsContextStations>>("context_groupsContextStations");
-                        if ((checkPointContext_groupsContextStations != null) && (checkPointContext_groupsContextStations.Count > 0))
+
+                        var checkPointIndex = checkPointRestore.RestoreData<int?>("context_outListDriveTestsResults_index2");
+                        if (checkPointIndex != null)
                         {
-                            groupsContextStations.AddRange(checkPointContext_groupsContextStations);
+
+                            outListDriveTestsResults = new List<DriveTestsResult[]>();
+
+                            outListContextStations = new List<ContextStation[]>();
+
+                            var context_CalibrationStationsAndDriveTestsResultByGroup2_Id = checkPointRestore.RestoreData<long>("context_CalibrationStationsAndDriveTestsResultByGroup2");
+                            var checkPointCalibrationStationsAndDriveTestsResultByGroup = StationCalibrationCalcTask.GetTempResultRecord<List<CalibrationStationsAndDriveTestsResult>>(this._calcServerDataLayer, context_CalibrationStationsAndDriveTestsResultByGroup2_Id);
+                            if ((checkPointCalibrationStationsAndDriveTestsResultByGroup != null) && (checkPointCalibrationStationsAndDriveTestsResultByGroup.Count > 0))
+                            {
+                                calibrationStationsAndDriveTestsResultByGroup.AddRange(checkPointCalibrationStationsAndDriveTestsResultByGroup);
+                            }
+
+
+                            var context_outListContextStations2_Id = checkPointRestore.RestoreData<long>("context_outListContextStations2");
+                            var checkPointContext_outListContextStations = StationCalibrationCalcTask.GetTempResultRecord<List<ContextStation[]>>(this._calcServerDataLayer, context_outListContextStations2_Id);
+                            if ((checkPointContext_outListContextStations != null) && (checkPointContext_outListContextStations.Count > 0))
+                            {
+                                outListContextStations.AddRange(checkPointContext_outListContextStations);
+                            }
+
+
+
+                            var context_outListDriveTestsResults2_Id = checkPointRestore.RestoreData<long>("context_outListDriveTestsResults2");
+                            var checkPointContext_context_outListDriveTestsResults = StationCalibrationCalcTask.GetTempResultRecord<List<DriveTestsResult[]>>(this._calcServerDataLayer, context_outListDriveTestsResults2_Id);
+                            if ((checkPointContext_context_outListDriveTestsResults != null) && (checkPointContext_context_outListDriveTestsResults.Count > 0))
+                            {
+                                outListDriveTestsResults.AddRange(checkPointContext_context_outListDriveTestsResults);
+                            }
+
+
+                            var context_groupsContextStations2_Id = checkPointRestore.RestoreData<long>("context_groupsContextStations2");
+                            var checkPointContext_groupsContextStations = StationCalibrationCalcTask.GetTempResultRecord<List<GroupsContextStations>>(this._calcServerDataLayer, context_groupsContextStations2_Id);
+                            if ((checkPointContext_groupsContextStations != null) && (checkPointContext_groupsContextStations.Count > 0))
+                            {
+                                groupsContextStations.AddRange(checkPointContext_groupsContextStations);
+                            }
+
+
+                            var context_groupsDriveTestsResult2_Id = checkPointRestore.RestoreData<long>("context_groupsDriveTestsResult2");
+                            var checkPointContext_groupsDriveTestsResult = StationCalibrationCalcTask.GetTempResultRecord<List<GroupsDriveTestsResult>>(this._calcServerDataLayer, context_groupsDriveTestsResult2_Id);
+                            if ((checkPointContext_groupsDriveTestsResult != null) && (checkPointContext_groupsDriveTestsResult.Count > 0))
+                            {
+                                groupsDriveTestsResult.AddRange(checkPointContext_groupsDriveTestsResult);
+                            }
                         }
-
-
-                        var checkPointContext_groupsDriveTestsResult = checkPoint.RestoreData<List<GroupsDriveTestsResult>>("context_groupsDriveTestsResult");
-                        if ((checkPointContext_groupsDriveTestsResult != null) && (checkPointContext_groupsDriveTestsResult.Count > 0))
-                        {
-                            groupsDriveTestsResult.AddRange(checkPointContext_groupsDriveTestsResult);
-                        }
-
-                        //var checkPointContext_outListContextStations = checkPoint.RestoreData<List<ContextStation[]>>("context_outListContextStations");
-                        //if ((checkPointContext_outListContextStations != null) && (checkPointContext_outListContextStations.Count > 0))
-                        //{
-                        //    outListContextStations.AddRange(checkPointContext_outListContextStations);
-                        //}
-
-
-                        //var checkPointContext_context_outListDriveTestsResults = checkPoint.RestoreData<List<DriveTestsResult[]>>("context_outListDriveTestsResults");
-                        //if ((checkPointContext_context_outListDriveTestsResults != null) && (checkPointContext_context_outListDriveTestsResults.Count > 0))
-                        //{
-                        //    outListDriveTestsResults.AddRange(checkPointContext_context_outListDriveTestsResults);
-                        //}
                     }
 
                     for (int i = 0; i < outListDriveTestsResults.Count; i++)
                     {
-                        if (checkPoint != null)
+                        if (checkPointRestore != null)
                         {
-                            var checkPointIndex = checkPoint.RestoreData<int>("context_outListDriveTestsResults_index");
-                            if (checkPointIndex > i)
+                            var checkPointIndex = checkPointRestore.RestoreData<int?>("context_outListDriveTestsResults_index2");
+                            if ((checkPointIndex != null) && (checkPointIndex > i))
                             {
                                 continue;
                             }
@@ -634,7 +738,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         ///     4.2.6. Ранжирование Stations под данный Drive Test
                         /////////////////////////////////////////////////////////////////////////////////////////////////////////
                         if (arrDriveTests != null)
-                        {GSIDGroupeStations = GetOrderStationForDriveTests(ref arrDriveTests, ref outListContextStations, standard); }
+                        { GSIDGroupeStations = GetOrderStationForDriveTests(ref arrDriveTests, ref outListContextStations, standard); }
                         /////////////////////////////////////////////////////////////////////////////////////////////////////////
                         ///    4.2.7 Подбор параметров станции по результатам Drive Test (hard) (схема бл 7)
                         /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -642,42 +746,51 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         {
                             for (int m = 0; m < GSIDGroupeStations.Count; m++)
                             {
+                                //taskContext.CancellationToken.ThrowIfCancellationRequested();
 
                                 if (taskContext.CancellationToken.IsCancellationRequested)
                                 {
-                                    using (var createCheckPoint = taskContext.CreateCheckPoint("main"))
+                                    //using (var createCheckPoint = taskContext.CreateCheckPoint("main"))
+                                    //{
+                                    if (checkPointCreate != null)
                                     {
-                                        createCheckPoint.SaveData("context_standard", standard);
-                                        createCheckPoint.SaveData("context_outListDriveTestsResults_index", i);
+                                        checkPointCreate.SaveData("context_standard", standard);
+                                        checkPointCreate.SaveData("context_outListDriveTestsResults_index2", (int?)i);
                                         if ((outListContextStations != null) && (outListContextStations.Count > 0))
                                         {
-                                            createCheckPoint.SaveData("context_outListContextStations", outListContextStations);
+                                            var context_outListContextStations2_Id = StationCalibrationCalcTask.CreateNewTempResultRecord(this._calcServerDataLayer, outListContextStations, taskContext.ResultId);
+                                            checkPointCreate.SaveData("context_outListContextStations2", context_outListContextStations2_Id);
                                         }
                                         if ((outListDriveTestsResults != null) && (outListDriveTestsResults.Count > 0))
                                         {
-                                            createCheckPoint.SaveData("context_outListDriveTestsResults", outListDriveTestsResults);
+                                            var context_outListDriveTestsResults2_Id = StationCalibrationCalcTask.CreateNewTempResultRecord(this._calcServerDataLayer, outListDriveTestsResults, taskContext.ResultId);
+                                            checkPointCreate.SaveData("context_outListDriveTestsResults2", context_outListDriveTestsResults2_Id);
                                         }
                                         if ((calibrationStationsAndDriveTestsResultByGroup != null) && (calibrationStationsAndDriveTestsResultByGroup.Count > 0))
                                         {
-                                            createCheckPoint.SaveData("context_CalibrationStationsAndDriveTestsResultByGroup", calibrationStationsAndDriveTestsResultByGroup);
+                                            var context_CalibrationStationsAndDriveTestsResultByGroup2_Id = StationCalibrationCalcTask.CreateNewTempResultRecord(this._calcServerDataLayer, calibrationStationsAndDriveTestsResultByGroup, taskContext.ResultId);
+                                            checkPointCreate.SaveData("context_CalibrationStationsAndDriveTestsResultByGroup2", context_CalibrationStationsAndDriveTestsResultByGroup2_Id);
                                         }
                                         if ((groupsContextStations != null) && (groupsContextStations.Count > 0))
                                         {
-                                            createCheckPoint.SaveData("context_groupsContextStations", groupsContextStations);
+                                            var context_groupsContextStations2_Id = StationCalibrationCalcTask.CreateNewTempResultRecord(this._calcServerDataLayer, groupsContextStations, taskContext.ResultId);
+                                            checkPointCreate.SaveData("context_groupsContextStations2", context_groupsContextStations2_Id);
                                         }
                                         if ((groupsDriveTestsResult != null) && (groupsDriveTestsResult.Count > 0))
                                         {
-                                            createCheckPoint.SaveData("context_groupsDriveTestsResult", groupsDriveTestsResult);
+                                            var context_groupsDriveTestsResult2_Id = StationCalibrationCalcTask.CreateNewTempResultRecord(this._calcServerDataLayer, groupsDriveTestsResult, taskContext.ResultId);
+                                            checkPointCreate.SaveData("context_groupsDriveTestsResult2", context_groupsDriveTestsResult2_Id);
                                         }
                                         // фиксируем контрольную точку
-                                        createCheckPoint.Commit();
+                                        checkPointCreate.Commit();
                                         isCancelledTask = true;
                                         break;
-                                        // тогда возможно реанимироать и продолжить расчет
                                     }
+                                    // тогда возможно реанимироать и продолжить расчет
+                                    //}
                                 }
 
-                              
+
 
                                 // проводим анализ по каждой отдельно взятой группе станций отдельно
                                 var station = GSIDGroupeStations[m];
@@ -723,7 +836,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                                     break;
                                 }
                                 ///   в случае, если флаг Drive Test (hard) равен false,  Drive Test (weak) имеют значение true
-                                else if ((isСorrelationThresholdHard==false) && (statusCorellationLinkGroup == true))
+                                else if ((isСorrelationThresholdHard == false) && (statusCorellationLinkGroup == true))
                                 {
                                     AppendGroupsDriveTestsResult(ref groupsDriveTestsResult, arrDriveTests, maxCorellation_pc);
                                     AppendGroupsContextStations(ref groupsContextStations, station, maxCorellation_pc);
@@ -742,7 +855,47 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             percentComplete = 50 + ((i + 1) * (int)(50.0 / outListDriveTestsResults.Count));
                             UpdatePercentComplete(data.resultId, percentComplete);
                         }
-                      
+
+                        var sub = DateTimeOffset.Now - dateTimeOffset;
+                        if (sub.TotalMinutes > ThresholdsPeriosSaveCheckPointsInMinutes)
+                        {
+
+                            using (var nextCheckPointCreate = taskContext.CreateCheckPoint("StationCalibration"))
+                            {
+                                nextCheckPointCreate.SaveData("SourceContent", sourceContentId);
+                                nextCheckPointCreate.SaveData("context_standard", standard);
+                                nextCheckPointCreate.SaveData("context_outListDriveTestsResults_index2", (int?)(i + 1));
+                                if ((outListContextStations != null) && (outListContextStations.Count > 0))
+                                {
+                                    var context_outListContextStations2_Id = StationCalibrationCalcTask.CreateNewTempResultRecord(this._calcServerDataLayer, outListContextStations, taskContext.ResultId);
+                                    nextCheckPointCreate.SaveData("context_outListContextStations2", context_outListContextStations2_Id);
+                                }
+                                if ((outListDriveTestsResults != null) && (outListDriveTestsResults.Count > 0))
+                                {
+                                    var context_outListDriveTestsResults2_Id = StationCalibrationCalcTask.CreateNewTempResultRecord(this._calcServerDataLayer, outListDriveTestsResults, taskContext.ResultId);
+                                    nextCheckPointCreate.SaveData("context_outListDriveTestsResults2", context_outListDriveTestsResults2_Id);
+                                }
+                                if ((calibrationStationsAndDriveTestsResultByGroup != null) && (calibrationStationsAndDriveTestsResultByGroup.Count > 0))
+                                {
+                                    var context_CalibrationStationsAndDriveTestsResultByGroup2_Id = StationCalibrationCalcTask.CreateNewTempResultRecord(this._calcServerDataLayer, calibrationStationsAndDriveTestsResultByGroup, taskContext.ResultId);
+                                    nextCheckPointCreate.SaveData("context_CalibrationStationsAndDriveTestsResultByGroup2", context_CalibrationStationsAndDriveTestsResultByGroup2_Id);
+                                }
+                                if ((groupsContextStations != null) && (groupsContextStations.Count > 0))
+                                {
+                                    var context_groupsContextStations2_Id = StationCalibrationCalcTask.CreateNewTempResultRecord(this._calcServerDataLayer, groupsContextStations, taskContext.ResultId);
+                                    nextCheckPointCreate.SaveData("context_groupsContextStations2", context_groupsContextStations2_Id);
+                                }
+                                if ((groupsDriveTestsResult != null) && (groupsDriveTestsResult.Count > 0))
+                                {
+                                    var context_groupsDriveTestsResult2_Id = StationCalibrationCalcTask.CreateNewTempResultRecord(this._calcServerDataLayer, groupsDriveTestsResult, taskContext.ResultId);
+                                    nextCheckPointCreate.SaveData("context_groupsDriveTestsResult2", context_groupsDriveTestsResult2_Id);
+                                }
+                                // фиксируем контрольную точку
+                                nextCheckPointCreate.Commit();
+                            }
+                            dateTimeOffset = DateTimeOffset.Now;
+                        }
+                        
                     }
 
                     if (isCancelledTask)
@@ -945,6 +1098,14 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         TimeStart = DateTime.Now
                     };
                     listCalcCorellationResult[v] = calcCorellationResult;
+                }
+                if (checkPointCreate != null)
+                {
+                    checkPointCreate.Dispose();
+                }
+                if (checkPointRestore != null)
+                {
+                    checkPointRestore.Dispose();
                 }
                 UpdatePercentComplete(data.resultId, 100);
                 if (taskContext.CancellationToken.IsCancellationRequested)

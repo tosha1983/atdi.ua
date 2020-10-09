@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
+    [Serializable]
     public sealed class VoidResult
     {
 		public static readonly VoidResult Instance = new VoidResult(); 

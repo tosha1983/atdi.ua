@@ -8,7 +8,8 @@ using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
-	public class ResultCorrelationGSIDGroupeStationsBase
+    [Serializable]
+    public class ResultCorrelationGSIDGroupeStationsBase
     {
         public double Freq_MHz;
         public float Delta_dB;

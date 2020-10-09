@@ -8,7 +8,8 @@ using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
-	public struct CorrellationPoint
+    [Serializable]
+    public struct CorrellationPoint
     {
         public double Lon_DEC;
 

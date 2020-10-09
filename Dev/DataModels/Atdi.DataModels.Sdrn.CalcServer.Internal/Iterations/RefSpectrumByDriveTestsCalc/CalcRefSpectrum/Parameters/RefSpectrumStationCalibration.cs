@@ -8,7 +8,8 @@ using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
-	public class RefSpectrumStationCalibration
+    [Serializable]
+    public class RefSpectrumStationCalibration
     {
         public string RealGsid;
         public long StationMonitoringId;

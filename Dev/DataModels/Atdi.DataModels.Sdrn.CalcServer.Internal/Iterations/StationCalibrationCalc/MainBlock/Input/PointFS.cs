@@ -8,7 +8,8 @@ using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
-	public struct PointFS
+    [Serializable]
+    public struct PointFS
     {
         public EpsgCoordinate Coordinate;
 

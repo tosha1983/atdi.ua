@@ -8,7 +8,8 @@ using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
-	public class RefSpectrumParameters
+    [Serializable]
+    public class RefSpectrumParameters
     {
         public long ResultId;
 

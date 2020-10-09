@@ -90,5 +90,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 
         public string StandardsForDuplicateStations { get; set; }
 
+
+        [ComponentConfigProperty("Thresholds.PeriodSaveCheckPointsInMinutes")]
+        public int? ThresholdsPeriodSaveCheckPointsInMinutes { get; set; }
     }
 }

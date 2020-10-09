@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Gis
 {
-	public struct CluttersDescFreqClutter
+    [Serializable]
+    public struct CluttersDescFreqClutter
 	{
 		public int Height_m;
 

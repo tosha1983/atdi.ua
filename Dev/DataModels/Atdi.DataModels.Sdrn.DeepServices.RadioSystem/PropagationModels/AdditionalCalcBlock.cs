@@ -6,14 +6,15 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.DeepServices.RadioSystem.PropagationModels
 {
-	public struct AdditionalCalcBlock
+    [Serializable]
+    public struct AdditionalCalcBlock
 	{
 		public AdditionalCalcBlockModelType ModelType;
 
 		public bool Available;
 	}
-
-	public enum AdditionalCalcBlockModelType
+    [Serializable]
+    public enum AdditionalCalcBlockModelType
 	{
 		/// <summary>
 		/// Unknown Model

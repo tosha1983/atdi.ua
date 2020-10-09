@@ -6,14 +6,15 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.DeepServices.RadioSystem.PropagationModels
 {
-	public struct SubPathDiffractionCalcBlock
+    [Serializable]
+    public struct SubPathDiffractionCalcBlock
 	{
 		public SubPathDiffractionCalcBlockModelType ModelType;
 
 		public bool Available;
 	}
-
-	public enum SubPathDiffractionCalcBlockModelType
+    [Serializable]
+    public enum SubPathDiffractionCalcBlockModelType
 	{
 		/// <summary>
 		/// Unknown Model

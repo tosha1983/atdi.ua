@@ -8,7 +8,8 @@ using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
-	public struct CalcPoint
+    [Serializable]
+    public struct CalcPoint
     {
         public double X;
         public double Y;

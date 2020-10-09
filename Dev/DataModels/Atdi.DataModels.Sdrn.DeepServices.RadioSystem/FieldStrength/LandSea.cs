@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.DeepServices.RadioSystem.FieldStrength
 {
+    [Serializable]
     public struct LandSea
     {
         public double land;

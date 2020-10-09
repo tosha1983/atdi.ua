@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
-	public struct ReceivedPowerCalcResult
+    [Serializable]
+    public struct ReceivedPowerCalcResult
     {
 		//public double? FS_dBuVm;
 		public double? Level_dBm;

@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.DeepServices.Gis
 {
-	/// <summary>
-	/// Координаты WGS84 в DEC
-	/// </summary>
-	public struct Wgs84Site
+    /// <summary>
+    /// Координаты WGS84 в DEC
+    /// </summary>
+    [Serializable]
+    public struct Wgs84Site
 	{
 		public double Longitude;
 

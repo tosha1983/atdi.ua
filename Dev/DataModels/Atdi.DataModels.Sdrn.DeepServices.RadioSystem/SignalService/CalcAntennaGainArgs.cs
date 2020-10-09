@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.DeepServices.RadioSystem.SignalService
 {
-	public struct CalcAntennaGainArgs
+    [Serializable]
+    public struct CalcAntennaGainArgs
 	{
 		public StationAntenna Antenna;
         public PolarizationType PolarizationEquipment;
