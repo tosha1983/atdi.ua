@@ -234,7 +234,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 				.From()
 				.Select(c => c.ModelTypeCode)
 				.Select(c => c.Available)
-				.Where(c => c.ContextId, ConditionOperator.Equal, contextId);
+                .Select(c => c.Hybrid)
+                .Where(c => c.ContextId, ConditionOperator.Equal, contextId);
 
 			model.AbsorptionBlock = calcDbScope.Executor.ExecuteAndFetch(query, reader =>
 			{
@@ -243,14 +244,16 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 					return new AbsorptionCalcBlock
 					{
 						ModelType = AbsorptionCalcBlockModelType.Unknown,
-						Available = false
+						Available = false,
+                        Hybrid = false
 					};
 				}
 				return new AbsorptionCalcBlock
 				{
 					ModelType = (AbsorptionCalcBlockModelType)reader.GetValue(c => c.ModelTypeCode),
-					Available = reader.GetValue(c => c.Available)
-				};
+					Available = reader.GetValue(c => c.Available),
+                    Hybrid = reader.GetValue(c => c.Hybrid)
+                };
 			});
 		}
 

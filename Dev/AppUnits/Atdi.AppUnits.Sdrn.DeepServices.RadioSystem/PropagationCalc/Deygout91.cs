@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.SignalService;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -46,25 +47,25 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             int secondaryHillCorrectionStart = 1;
             int secondaryHillCorrectionEnd = 1;
 
-            if ( mainHillCalc == false )
+            if (mainHillCalc == false)
             {
                 // calculate correction to excludebuilding counted when main hill calculated
                 double secondaryHillCorrectionDistance = 70; //[m]
                 int secondaryHillCorrectionPoints = (int)Math.Ceiling(secondaryHillCorrectionDistance / dN);
-                
+
                 if (profileStart + secondaryHillCorrectionPoints < profile.Length)
                 {
-                    for (int n = profileStart+1; n < profileStart + secondaryHillCorrectionPoints; n++)
+                    for (int n = profileStart + 1; n < profileStart + secondaryHillCorrectionPoints; n++)
                     {
                         double htrN = CalcHtoRn(hA, hB, wavelength, dAB, in profile, profileStart, profilePointsNumber, inv2rE, dN, n);
-                        double htrNm1 = CalcHtoRn(hA, hB, wavelength, dAB, in profile, profileStart, profilePointsNumber, inv2rE, dN, n -1);
+                        double htrNm1 = CalcHtoRn(hA, hB, wavelength, dAB, in profile, profileStart, profilePointsNumber, inv2rE, dN, n - 1);
                         if (htrN <= -0.5 && htrNm1 >= -0.5)
                         {
                             secondaryHillCorrectionStart = n - profileStart + 1;
                         }
                     }
                 }
-                
+
                 if (profileStart + profilePointsNumber - secondaryHillCorrectionPoints > 1)
                 {
                     //NuMaxOut nuMaxEnd = FindMaxHtoR(hA, hB, wavelength, secondaryHillCorrectionDistance, in profile, profileStart + profilePointsNumber - secondaryHillCorrectionPoints, secondaryHillCorrectionPoints, inv2rE, dN, true);
@@ -117,10 +118,12 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
                 return (double)(16 + 20 * Math.Log10(htr));
             }
         }
-        
 
-        public static double Calc(double ha_m, double hb_m, double Freq_MHz, double d_km, in short[] profile_m, int profileStartIndex, int profilePointsNumber, double rE_km, double SubDiffractionLoss)
+
+        public static DiffractionLossResult Calc(double ha_m, double hb_m, double Freq_MHz, double d_km, in short[] profile_m, int profileStartIndex, int profilePointsNumber, double rE_km, double SubDiffractionLoss)
         {
+            var lossResult = new DiffractionLossResult { };
+
             int profileEndIndex = profileStartIndex + profilePointsNumber - 1;
             bool mainHill = true;
             double dAB = d_km * 1000;
@@ -131,7 +134,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             hb_m += profile_m[profileEndIndex];
             double inv2rE = 1 / (2 * rE);
             NuMaxOut htrP = FindMaxHtoR(ha_m, hb_m, wavelength, dAB, profile_m, profileStartIndex, profilePointsNumber, inv2rE, dN, mainHill);
-            
+
             double dAP = dN * htrP.nMax;
             double dPB = dN * (profileEndIndex - htrP.nMax);
 
@@ -148,7 +151,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
 
                 double dAT = 1;
                 if (htrR.nMax > 0)
-                { 
+                {
                     dAT = dN * htrT.nMax;
                 }
                 double dTP = dAB - htrT.nMax * dN;
@@ -177,12 +180,22 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
                 {
                     Ltc = (12 - 20 * Math.Log10(2 / (1 - alpha / Math.PI))) * Math.Pow(q / p, 2 * p);
                 }
-                
+
                 diffractionLoss_dB = J(htrP.nuMax) + J(htrS) + SubDiffractionLoss - Ltc;
                 //System.Console.WriteLine($"    L_mh={J(htrP.nuMax)}dB, L_sh={J(htrS)}dB;  h/r={htrP.nuMax}, h/r_s={htrS}, nM={htrP.nMax}, ns1={htrR.nMax}, ns2={htrT.nMax}");
+
+                lossResult = new DiffractionLossResult
+                {
+                    DiffractionLoss_dB = diffractionLoss_dB,
+                    ObstaclesProfileIndexes = new int[] { htrT.nMax, htrP.nMax, htrR.nMax }
+                };
+
+
+
             }
-            
-            return diffractionLoss_dB;
+
+            //return diffractionLoss_dB;
+            return lossResult;
         }
     }
 

@@ -13,14 +13,17 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
 {
     public static class PropagationLoss
     {
+        //private static int[] obstaclesIndexes = new int[3] { 0, 0, 0 };
+        //private static double[] obstaclesLosses = new double[3] { 0, 0, 0 };
 
         public static CalcLossResult Calc(CalcLossArgs args)
-        {// Нужно тестировать
+        {
+            // Нужно тестировать
             double Lbf_dB = CalclMainBlock(in args);
             double Ldsub_dB = 0;
             if (args.Model.SubPathDiffractionBlock.Available) { Ldsub_dB = CalcSubPathDiffractionBlok(in args); }
-            double Ld_dB = 0;
-            if (args.Model.DiffractionBlock.Available) { Ld_dB = CalcDiffraction(in args, Ldsub_dB); }
+            //double Ld_dB = 0;
+            //if (args.Model.DiffractionBlock.Available) { Ld_dB = CalcDiffraction(in args, Ldsub_dB); }
             CalcLossResult Labsorption_dB = new CalcLossResult();
 
             if (args.Model.AbsorptionBlock.Available) { Labsorption_dB = CalcAbsorptionBlok(in args); }
@@ -37,19 +40,83 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             //double Ladditional_dB = 0;
             //if (args.Model.AdditionalBlock.Available) { Ladditional_dB = CalcAdditionalBlok(in args); }
             // Далее логика обединения моделей будет дописываться по мере возникновения новых моделей 
+
+            DiffractionLossResult diffLoss = new DiffractionLossResult { DiffractionLoss_dB = 0, ObstaclesProfileIndexes = new int[3] { 0, 0, 0 } };
+            if (args.Model.DiffractionBlock.Available) { diffLoss = CalcDiffraction(in args, Ldsub_dB); }
+            //// в случае если при расчёте диффракции какое-то из учитываемых препятствий попало на лес - пересчитываем диффракцию
+            CalcLossResult hybridLoss = new CalcLossResult();
+            //bool hybridDiffraction = false;
+            if (args.Model.AbsorptionBlock.Hybrid)//(args.Model.AbsorptionBlock.Available && args.Model.DiffractionBlock.Available)
+            {
+                for (int i = 0; i < diffLoss.ObstaclesProfileIndexes.Length; i++)
+                {
+                    if (args.ClutterProfile[diffLoss.ObstaclesProfileIndexes[i]] != 0 && args.BuildingProfile[diffLoss.ObstaclesProfileIndexes[i]] == 0)
+                    {
+                        args.HybridDiffraction = true;
+                        break;
+                    }
+                }
+                if (args.HybridDiffraction)
+                {
+                    //// убираем лес из профиля высот и здания из клатеров
+                    //for (int i = args.ReliefStartIndex; i < args.ReliefStartIndex + args.ProfileLength; i++)
+                    //{
+                    //    if (args.BuildingProfile[i] != 0)
+                    //    //if (args.ClutterProfile[i] != 0 && args.BuildingProfile[i] == 0)
+                    //    {
+                    //        //args.HeightProfile[i] -= (short)args.CluttersDesc.Frequencies[0].Clutters[args.ClutterProfile[i]].Height_m;
+                    //        args.ReliefProfile[i] += args.BuildingProfile[i];
+                    //    }
+                    //    else if (args.ClutterProfile[i] != 0 && args.BuildingProfile[i] != 0)
+                    //    {
+                    //        args.ClutterProfile[i] = 0;
+                    //    }
+                    //}
+
+                    // пересчёт диффракции
+                    if (args.Model.AbsorptionBlock.Available)
+                    {
+                        hybridLoss = CalcAbsorptionBlok(in args);
+                        //if (diffLoss.DiffractionLoss_dB > hybridLoss.LossA_dB)
+                        //{
+                        //    diffLoss.DiffractionLoss_dB = hybridLoss.LossA_dB;
+                        //}
+                        
+                    }
+                }
+            }
+
             double tilta; double tiltb;
             if (args.Model.DiffractionBlock.Available)
-            { ProfilesCalculation.CalcTilts(args.Model.Parameters.EarthRadius_km, args.Ha_m, args.Hb_m, args.D_km, args.HeightProfile, args.BuildingStartIndex, args.ProfileLength, out tilta, out tiltb); }
+            {
+                ProfilesCalculation.CalcTilts(args.Model.Parameters.EarthRadius_km, args.Ha_m, args.Hb_m, args.D_km, args.HeightProfile, args.BuildingStartIndex, args.ProfileLength, out tilta, out tiltb);
+            }
             else
             { ProfilesCalculation.CalcTilts(args.Model.Parameters.EarthRadius_km, args.Ha_m, args.Hb_m, args.D_km, out tilta, out tiltb); }
+            //// hybr
             CalcLossResult LossResult = new CalcLossResult()
             {
                 TiltaD_Deg = tilta,
                 TiltbD_Deg = tiltb,
-                LossD_dB = Lbf_dB + Ld_dB + Lclutter_dB,
-                DiffractionLoss_dB = Ld_dB
-                
             };
+            if (args.HybridDiffraction && hybridLoss.LossA_dB < diffLoss.DiffractionLoss_dB)
+            {
+                LossResult.LossD_dB = Lbf_dB + hybridLoss.LossA_dB + Lclutter_dB;
+                LossResult.DiffractionLoss_dB = hybridLoss.LossA_dB;
+                args.HybridDiffraction = false;
+            }
+            else
+            {
+                LossResult.LossD_dB = Lbf_dB + diffLoss.DiffractionLoss_dB + Lclutter_dB;
+                LossResult.DiffractionLoss_dB = diffLoss.DiffractionLoss_dB;
+            }
+            //CalcLossResult LossResult = new CalcLossResult()
+            //{
+            //    TiltaD_Deg = tilta,
+            //    TiltbD_Deg = tiltb,
+            //    LossD_dB = Lbf_dB + Ld_dB + Lclutter_dB,
+            //    DiffractionLoss_dB = Ld_dB
+            //};
             if (args.Model.AbsorptionBlock.Available)
             {
                 LossResult.TiltaA_Deg = Labsorption_dB.TiltaA_Deg;
@@ -106,7 +173,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
                             {
                                 h2aboveSea = true;
                             }
-                            
+
                         }
                         else { aboveLand_px++; }
 
@@ -154,7 +221,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             }
             return Ldsub_dB;
         }
-        private static double CalcDiffraction(in CalcLossArgs args, double Ldsub_dB, bool calcabsorbtion = false)
+        private static DiffractionLossResult CalcDiffraction(in CalcLossArgs args, double Ldsub_dB, bool calcabsorbtion = false)
         {
             // 2 - cases
             // lowering ant in above clutter HeightProfile - ReliefStartIndex
@@ -164,15 +231,25 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             var hB_m = args.Hb_m;
             if (calcabsorbtion)
             {
-                prof = args.ReliefProfile; startIndex = args.ReliefStartIndex;
+                if (args.HybridDiffraction && args.BuildingProfile != null && args.BuildingProfile.Length > 0)
+                {
+                    prof = args.BuildHeightProfile; startIndex = args.HeightStartIndex;
+                    hA_m -= args.BuildingProfile[startIndex];
+                    hB_m -= args.BuildingProfile[startIndex + args.ProfileLength - 1];
+                }
+                else
+                {
+                    prof = args.ReliefProfile; startIndex = args.ReliefStartIndex;
+                }
             }
             else
             {
                 prof = args.HeightProfile; startIndex = args.HeightStartIndex;
+
                 int hAcorr = 0;
                 int hBcorr = 0;
                 //Ha = Ha - args.CluttersDesc.Frequencies[0].Clutters[0].Height_m;
-                
+
                 if (args.ClutterProfile != null && args.ClutterProfile.Length > 0 &&
                     args.CluttersDesc.Frequencies != null && args.CluttersDesc.Frequencies.Length > 0 &&
                     args.CluttersDesc.Frequencies[0].Clutters != null)
@@ -202,21 +279,22 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             }
             //if (Ha < 0) { return 999;}
 
-            double Ld_dB = 0;
+            //double Ld_dB = 0;
+            DiffractionLossResult Ld = new DiffractionLossResult { DiffractionLoss_dB = 0, ObstaclesProfileIndexes = new int[3] { 0, 0, 0 } };
             switch (args.Model.DiffractionBlock.ModelType)
             {
                 case DiffractionCalcBlockModelType.Deygout91:
                     // вызов модели дегу
-                    Ld_dB = Deygout91.Calc(hA_m, hB_m, args.Freq_Mhz, args.D_km, prof, startIndex, args.ProfileLength, args.Model.Parameters.EarthRadius_km, Ldsub_dB);
+                    Ld = Deygout91.Calc(hA_m, hB_m, args.Freq_Mhz, args.D_km, prof, startIndex, args.ProfileLength, args.Model.Parameters.EarthRadius_km, Ldsub_dB);
                     break;
                 case DiffractionCalcBlockModelType.Deygout66:
                 case DiffractionCalcBlockModelType.Bullington:
                 case DiffractionCalcBlockModelType.ITU526_15:
-                default:
-                    Ld_dB = 0;
+                    //default:
+                    //    Ld;
                     break;
             }
-            return Ld_dB;
+            return Ld;
         }
         private static CalcLossResult CalcAbsorptionBlok(in CalcLossArgs args)
         { // Надо тестировать
@@ -224,9 +302,19 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             double Ldsub_dB = 0;
             if (args.Model.SubPathDiffractionBlock.Available) { Ldsub_dB = CalcSubPathDiffractionBlok(in args); }
             double Ld_dB = 0;
-            if (args.Model.DiffractionBlock.Available) { Ld_dB = CalcDiffraction(in args, Ldsub_dB, true); }
+            if (args.Model.DiffractionBlock.Available) { Ld_dB = CalcDiffraction(in args, Ldsub_dB, true).DiffractionLoss_dB; }
             // определение УМ
-            ProfilesCalculation.CalcTilts(args.Model.Parameters.EarthRadius_km, args.Ha_m, args.Hb_m, args.D_km, args.ReliefProfile, args.ReliefStartIndex, args.ProfileLength, out double tilta, out double tiltb);
+            double tilta;
+            double tiltb;
+            if (args.HybridDiffraction)
+            {
+                ProfilesCalculation.CalcTilts(args.Model.Parameters.EarthRadius_km, args.Ha_m, args.Hb_m, args.D_km, args.BuildHeightProfile, args.ReliefStartIndex, args.ProfileLength, out tilta, out tiltb);
+            }
+            else
+            {
+                ProfilesCalculation.CalcTilts(args.Model.Parameters.EarthRadius_km, args.Ha_m, args.Hb_m, args.D_km, args.ReliefProfile, args.ReliefStartIndex, args.ProfileLength, out tilta, out tiltb);
+            }
+
             AbsorptionCalcBlockModelType AbModel = args.Model.AbsorptionBlock.ModelType;
             double Freq_MHz = args.Freq_Mhz;
             double Time_PC = args.Model.Parameters.Time_pc;
@@ -237,6 +325,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             double Labsorption_dB = ProfilesCalculation.CalcLossOfObstacles((currentLoss, obs) => AbsorptionCalc.CalcAbsorption(in CluttersDesc, IndexFreqUp, AbModel, Freq_MHz, Time_PC, currentLoss, obs), in args, tilta, tiltb);
             CalcLossResult result = new CalcLossResult()
             {
+                DiffractionLoss_dB = Ld_dB,
                 LossA_dB = Labsorption_dB + Ld_dB,
                 TiltaA_Deg = tilta,
                 TiltbA_Deg = tiltb

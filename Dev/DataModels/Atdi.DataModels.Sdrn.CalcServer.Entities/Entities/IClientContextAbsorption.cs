@@ -20,7 +20,8 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 		string ModelTypeName { get; set; }
 
 		bool Available { get; set; }
-	}
+        bool Hybrid { get; set; }
+    }
 
 
 	public enum AbsorptionModelTypeCode

@@ -26,9 +26,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
         private readonly IObjectPoolSite _poolSite;
         private readonly IObjectPool<ProfileIndexer[]> _indexerArrayPool;
         private readonly IObjectPool<byte[]> _clutterArrayPool;
+        private readonly IObjectPool<byte[]> _clutterForestArrayPool;
         private readonly IObjectPool<byte[]> _buildingArrayPool;
         private readonly IObjectPool<short[]> _reliefArrayPool;
         private readonly IObjectPool<short[]> _heightArrayPool;
+        private readonly IObjectPool<short[]> _heightBuildingOnlyArrayPool;
         private readonly IEarthGeometricService _earthGeometricService;
         //private static int _dIndex;
         //private static int _dYIndex;
@@ -175,9 +177,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
             _indexerArrayPool = _poolSite.GetPool<ProfileIndexer[]>(ObjectPools.GisProfileIndexerArrayObjectPool);
             _clutterArrayPool = _poolSite.GetPool<byte[]>(ObjectPools.GisProfileClutterArrayObjectPool);
+            _clutterForestArrayPool = _poolSite.GetPool<byte[]>(ObjectPools.GisProfileClutterArrayObjectPool);
             _buildingArrayPool = _poolSite.GetPool<byte[]>(ObjectPools.GisProfileBuildingArrayObjectPool);
             _reliefArrayPool = _poolSite.GetPool<short[]>(ObjectPools.GisProfileReliefArrayObjectPool);
             _heightArrayPool = _poolSite.GetPool<short[]>(ObjectPools.GisProfileHeightArrayObjectPool);
+            _heightBuildingOnlyArrayPool = _poolSite.GetPool<short[]>(ObjectPools.GisProfileHeightArrayObjectPool);
         }
 
         public FieldStrengthCalcResult Run(ITaskContext taskContext, FieldStrengthCalcData data)
@@ -186,9 +190,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
             var indexerBuffer = default(ProfileIndexer[]);
             var clutterBuffer = default(byte[]);
+            var clutterBufferForestOnly = default(byte[]);
             var buildingBuffer = default(byte[]);
             var reliefBuffer = default(short[]);
             var heightBuffer = default(short[]);
+            var heightBufferBuildingsOnly = default(short[]);
             var profileLenght = 0;
 
             try
@@ -229,10 +235,19 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     if (profileOptions.Clutter)
                     {
                         clutterBuffer = _clutterArrayPool.Take();
+                        if (data.PropagationModel.AbsorptionBlock.Hybrid)
+                        {
+                            clutterBufferForestOnly = _clutterForestArrayPool.Take();
+                        }
+                           
                     }
                     if (profileOptions.Height)
                     {
                         heightBuffer = _heightArrayPool.Take();
+                        if (data.PropagationModel.AbsorptionBlock.Hybrid)
+                        {
+                            heightBufferBuildingsOnly = _heightBuildingOnlyArrayPool.Take();
+                        }
                     }
                     // заполняем профель данными
                     var axisXNumber = data.MapArea.AxisX.Number;
@@ -246,7 +261,15 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                         //_dXIndex = indexer.XIndex;
 
 
-
+                        var buildingValue = MapSpecification.DefaultForBuilding;
+                        if (profileOptions.Height || profileOptions.Building)
+                        {
+                            buildingValue = data.BuildingContent[contentIndex];
+                            if (profileOptions.Building)
+                            {
+                                buildingBuffer[i] = buildingValue;
+                            }
+                        }
 
                         var clutterValue = MapSpecification.DefaultForClutter;
                         int clutterH = 0;
@@ -257,22 +280,18 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             {
                                 clutterBuffer[i] = clutterValue;
 
+                                if (data.PropagationModel.AbsorptionBlock.Hybrid && profileOptions.Building && buildingBuffer[i] == 0 && clutterBuffer[i] != 0)
+                                //if (data.PropagationModel.AbsorptionBlock.Hybrid && clutterBuffer[i] == 3 || clutterBuffer[i] == 5)
+                                {
+                                    clutterBufferForestOnly[i] = clutterValue;
+                                }
+
                                 if (data.CluttersDesc.Frequencies != null && data.CluttersDesc.Frequencies.Length > 0 &&
                                     data.CluttersDesc.Frequencies[0].Clutters != null)
                                 {
                                     clutterH = data.CluttersDesc.Frequencies[0].Clutters[clutterValue].Height_m;// добавить проверку что это существует.
                                 }
 
-                            }
-                        }
-
-                        var buildingValue = MapSpecification.DefaultForBuilding;
-                        if (profileOptions.Height || profileOptions.Building)
-                        {
-                            buildingValue = data.BuildingContent[contentIndex];
-                            if (profileOptions.Building)
-                            {
-                                buildingBuffer[i] = buildingValue;
                             }
                         }
 
@@ -296,6 +315,14 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                             {
                                 heightBuffer[i] = (short)(reliefValue + clutterH);
                             }
+                            if (data.PropagationModel.AbsorptionBlock.Hybrid)
+                            {
+                                if (buildingValue != MapSpecification.DefaultForBuilding)
+                                {
+                                    heightBufferBuildingsOnly[i] = (short)(reliefValue + buildingValue);
+                                }
+                                else { heightBufferBuildingsOnly[i] = reliefValue; }
+                            }
                         }
                     }
                 }
@@ -308,12 +335,15 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     BuildingProfile = buildingBuffer,
                     BuildingStartIndex = 0,
                     ClutterProfile = clutterBuffer,
+                    ForestClutterProfile = clutterBufferForestOnly,
                     ClutterStartIndex = 0,
                     HeightProfile = heightBuffer,
+                    BuildHeightProfile = heightBufferBuildingsOnly,
                     HeightStartIndex = 0,
                     ReliefProfile = reliefBuffer,
                     ReliefStartIndex = 0,
                     ProfileLength = profileLenght,
+                    HybridDiffraction = false,
                     Freq_Mhz = data.Transmitter.Freq_MHz,
                     D_km = d_km,
                     Ha_m = data.PointAltitude_m,
@@ -359,7 +389,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     FS_dBuVm = FS_dBuVm,
                     Level_dBm = Level_dBm,
                     AntennaPatternLoss_dB = -antennaPatternLoss_dB,
-                    diffractionLoss_dB = lossResult.DiffractionLoss_dB 
+                    diffractionLoss_dB = lossResult.DiffractionLoss_dB
                 };
             }
             catch (Exception)

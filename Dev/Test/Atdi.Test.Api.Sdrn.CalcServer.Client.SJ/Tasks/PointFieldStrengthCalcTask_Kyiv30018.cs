@@ -41,9 +41,9 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client.Tasks
         //private static double[] pointsHeights = new double[] { 2, 2, 2};
 
         //// j-746
-        private static double[] pointsLatitudes = new double[] { 50.474911 };
-        private static double[] pointsLongitudes = new double[] { 30.610237 };
-        private static double[] pointsHeights = new double[] { 2 };
+        //private static double[] pointsLatitudes = new double[] { 50.474911 };
+        //private static double[] pointsLongitudes = new double[] { 30.610237 };
+        //private static double[] pointsHeights = new double[] { 2 };
 
         //// j-0
         //private static double[] pointsLatitudes = new double[] { 50.474911 };
@@ -101,9 +101,9 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client.Tasks
         //private static double[] pointsHeights = new double[] { 2 };
 
         //// j-161
-        //private static double[] pointsLatitudes = new double[] { 50.475243 };
-        //private static double[] pointsLongitudes = new double[] { 30.619875 };
-        //private static double[] pointsHeights = new double[] { 2 };
+        private static double[] pointsLatitudes = new double[] { 50.475243 };
+        private static double[] pointsLongitudes = new double[] { 30.619875 };
+        private static double[] pointsHeights = new double[] { 2 };
 
         //// j-182
         //private static double[] pointsLatitudes = new double[] { 50.482784 };
@@ -510,6 +510,7 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client.Tasks
                 //.SetValue(c => c.ModelTypeCode, (byte) AbsorptionModelTypeCode.ITU2109_2)
                 //.SetValue(c => c.ModelTypeName, AbsorptionModelTypeCode.ITU2109_2.ToString())
                 .SetValue(c => c.Available, true)
+                .SetValue(c => c.Hybrid, false)
                 ;
             count = executor.Execute(absorptionQuery);
             if (count == 0)

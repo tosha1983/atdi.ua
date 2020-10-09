@@ -62,7 +62,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
         /// <param name="FunctionCalc">сама функция расчета ослабления</param>
         /// <param name="args">профили</param>
         /// <param name="tilta_deg"></param>
-        /// <param name="tiltb_deg"></param>
+        /// <param name="tiltb_deg"></param>    
         /// <returns></returns>
         public static double CalcLossOfObstacles(Func<double, EstimationClutterObstaclesResult, double> FunctionCalc, in CalcLossArgs args, double tilta_deg, double tiltb_deg)
         {
@@ -93,8 +93,21 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
 
             int profileEndIndex = args.ReliefStartIndex + args.ProfileLength - 1;
 
-            var ha_m = args.Ha_m + args.ReliefProfile[args.ReliefStartIndex];
-            var hb_m = args.Hb_m + args.ReliefProfile[profileEndIndex];
+            short[] reliefProfile;
+            byte[] clutterProfile;
+            if (args.HybridDiffraction)
+            {
+                reliefProfile = args.BuildHeightProfile;
+                clutterProfile = args.ForestClutterProfile;
+            }
+            else
+            {
+                reliefProfile = args.ReliefProfile;
+                clutterProfile = args.ClutterProfile;
+            }
+
+            var ha_m = args.Ha_m + reliefProfile[args.ReliefStartIndex];
+            var hb_m = args.Hb_m + reliefProfile[profileEndIndex];
 
             var tanTiltA = Math.Tan(tilta_deg * degToRad);
             var tanTiltB = Math.Tan(tiltb_deg * degToRad);
@@ -102,8 +115,8 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             for (int i = args.ReliefStartIndex + 1; i <= profileEndIndex; i++)
             {
 
-                clutterHeightMin = args.ReliefProfile[i];
-                clutterHeightMax = args.HeightProfile[i];//args.ReliefProfile[i] + args.ClutterProfile[i];//args.HeightProfile[i];
+                clutterHeightMin = reliefProfile[i];
+                clutterHeightMax = args.HeightProfile[i];
 
                 beamAHeight = 1000 * pixelLength_km * (i - args.ReliefStartIndex) * (tanTiltA + .5 * pixelLength_km * (i - args.ReliefStartIndex) * invRe) + ha_m;
                 beamBHeight = 1000 * pixelLength_km * (profileEndIndex - i) * (tanTiltB + .5 * pixelLength_km * (profileEndIndex - i) * invRe) + hb_m;
@@ -131,7 +144,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
                     if (beamPrevHeight >= clutterHeightMin && beamHeight <= clutterHeightMax && obstacleIntersection == false)
                     {
                         theta_deg = alpha - 180 * distanceTo_km * invPi * invRe;
-                        if (args.ClutterProfile[i] == args.ClutterProfile[i - 1] && theta_deg > 45)
+                        if (clutterProfile[i] == clutterProfile[i - 1] && theta_deg > 45)
                         {
                             theta_deg = 90 - alpha + 180 * distanceTo_km * invPi * invRe;
                         }
@@ -158,8 +171,8 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
                 //    (args.ClutterProfile[i] != args.ClutterProfile[i+1] && i < profileEndIndex && obstacleIntersection == true) || 
                 //    (i == profileEndIndex) || (i != profileEndIndex && args.ClutterProfile[i+1] != args.ClutterProfile[i]))
                 if ((obstacleIntersection == true) && ((beamHeight < clutterHeightMin || beamHeight > clutterHeightMax) ||
-                    (args.ClutterProfile[i] != args.ClutterProfile[i + 1] && i < profileEndIndex && obstacleIntersection == true) ||
-                    (i == profileEndIndex) || (i != profileEndIndex && args.ClutterProfile[i + 1] != args.ClutterProfile[i])))
+                    (clutterProfile[i] != clutterProfile[i + 1] && i < profileEndIndex && obstacleIntersection == true) ||
+                    (i == profileEndIndex) || (i != profileEndIndex && clutterProfile[i + 1] != clutterProfile[i])))
                 {
                     obstacleIntersection = false;
                 }
@@ -172,7 +185,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
 
                     EstimationClutterObstaclesResult obs = new EstimationClutterObstaclesResult()
                     {
-                        clutterCode = args.ClutterProfile[i - 1], // код клатера определяется из профиля клатеров
+                        clutterCode = clutterProfile[i - 1], // код клатера определяется из профиля клатеров
                         d_km = distanceInside_km, // дистанция прохождения в данном клатере
                         elevation_deg = theta_deg, // УМ вхождения в клатер
                         endPoint = isEndPoint, // признак того что это препятсвие в котором (внутри) находиться точка а иди б
