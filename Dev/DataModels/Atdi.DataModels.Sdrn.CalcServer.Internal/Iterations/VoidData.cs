@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
-	public sealed class VoidData
+    [Serializable]
+    public sealed class VoidData
 	{
 		public static readonly VoidData Instance = new VoidData();
 	}

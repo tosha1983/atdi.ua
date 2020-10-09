@@ -11,7 +11,8 @@ using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Gis;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
-	public struct FieldStrengthCalcData
+    [Serializable]
+    public struct FieldStrengthCalcData
 	{
 		public PropagationModel PropagationModel;
         

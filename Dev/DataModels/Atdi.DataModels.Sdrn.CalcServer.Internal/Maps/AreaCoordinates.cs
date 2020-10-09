@@ -7,13 +7,14 @@ using Atdi.DataModels.Sdrn.DeepServices.Gis;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Maps
 {
-	/// <summary>
-	/// Координаты области карты
-	/// Важно: граничные точки принадлежат другой области
-	///  - UpperLeft.Y / LowerRight.X - эти значения являються началом другой смежной области
-	/// и определяют ее точки
-	/// </summary>
-	public struct AreaCoordinates
+    /// <summary>
+    /// Координаты области карты
+    /// Важно: граничные точки принадлежат другой области
+    ///  - UpperLeft.Y / LowerRight.X - эти значения являються началом другой смежной области
+    /// и определяют ее точки
+    /// </summary>
+    [Serializable]
+    public struct AreaCoordinates
 	{
 		public AtdiCoordinate UpperLeft;
 		public AtdiCoordinate LowerRight;

@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Clients
 {
-	public class ClientContext
+    [Serializable]
+    public class ClientContext
 	{
 		public long Id;
 
@@ -21,8 +22,8 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Clients
 
 		public ClientContextStatus Status;
 	}
-
-	public enum ClientContextStatus
+    [Serializable]
+    public enum ClientContextStatus
 	{
 		/// <summary>
 		/// Контекст создан 

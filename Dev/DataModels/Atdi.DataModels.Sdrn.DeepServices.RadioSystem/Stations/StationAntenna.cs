@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations
 {
-	public class StationAntenna
+    [Serializable]
+    public class StationAntenna
 	{
 		public float Gain_dB;
 
@@ -29,7 +30,8 @@ namespace Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations
 		public StationAntennaPattern VvPattern;
 	}
 
-	public enum AntennaItuPattern
+    [Serializable]
+    public enum AntennaItuPattern
 	{
 		None = 0,
 		ITU465 = 1,

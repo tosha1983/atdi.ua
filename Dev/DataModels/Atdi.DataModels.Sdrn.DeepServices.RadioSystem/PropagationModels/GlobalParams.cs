@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.DeepServices.RadioSystem.PropagationModels
 {
-	public struct GlobalParams
+    [Serializable]
+    public struct GlobalParams
 	{
 		public const float TimeMin = 00.0001F;
 		public const float TimeMax = 99.9999F;

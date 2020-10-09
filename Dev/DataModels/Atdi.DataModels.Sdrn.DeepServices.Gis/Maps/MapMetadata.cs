@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.DeepServices.Gis.Maps
 {
-	public class MapMetadata
+    [Serializable]
+    public class MapMetadata
 	{
 		/// <summary>
 		/// Описание карты
@@ -42,8 +43,8 @@ namespace Atdi.DataModels.Sdrn.DeepServices.Gis.Maps
 
 		public int LowerRightY;
 	}
-
-	public enum MapContentType
+    [Serializable]
+    public enum MapContentType
 	{
 		Unknown = 0,
 		Relief = 1,

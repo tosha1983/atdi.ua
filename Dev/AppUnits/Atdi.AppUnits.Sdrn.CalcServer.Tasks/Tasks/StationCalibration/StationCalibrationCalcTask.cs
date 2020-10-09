@@ -27,6 +27,7 @@ using Atdi.Common;
 using Atdi.Common.Extensions;
 using Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations;
 using Atdi.Platform.Data;
+using Atdi.Common.Helpers;
 
 namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 {
@@ -48,7 +49,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
         private TaskParameters _parameters;
 		private ContextStation[] _contextStations;
         private DriveTestsResult[] _contextDriveTestsResult;
-       
+        private AllStationCorellationCalcData allStationCorellationCalcDataFromCheckPoint = null;
 
         private class TaskParameters
 		{
@@ -110,41 +111,104 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
             _taskContext = null;
 		}
 
+        public static T GetTempResultRecord<T>(IDataLayer<EntityDataOrm<CalcServerEntityOrmContext>> calcServerDataLayer, long id)
+        {
+            var res = default(T);
+
+            var calcDbScope = calcServerDataLayer.CreateScope<CalcServerDataContext>();
+            var selectQuery = calcServerDataLayer.GetBuilder<IStationCalibrationTempResult>()
+                    .From()
+                    .Select(c => c.Content)
+                    .Where(c => c.Id, ConditionOperator.Equal, id);
+            ;
+            var result = calcDbScope.Executor.ExecuteAndFetch(selectQuery, reader =>
+            {
+                while (reader.Read())
+                {
+                    var content = reader.GetValue(c => c.Content);
+                    if (content != null)
+                    {
+                        var resContent = Compressor.Decompress(reader.GetValue(c => c.Content));
+                        res = resContent.DeserializeAs<T>();
+                    }
+                }
+                return true;
+            });
+
+            return res;
+        }
+
+
+        public static long CreateNewTempResultRecord<T>(IDataLayer<EntityDataOrm<CalcServerEntityOrmContext>> calcServerDataLayer, T contextStations, long resultId)
+        {
+            var compressedBuffer = Compressor.Compress(contextStations.Serialize());
+            var calcDbScope = calcServerDataLayer.CreateScope<CalcServerDataContext>();
+            var insertQuery = calcServerDataLayer.GetBuilder<IStationCalibrationTempResult>()
+                    .Insert()
+                    .SetValue(c => c.RESULT.Id, resultId)
+                    .SetValue(c => c.Content, compressedBuffer)
+                ;
+            var pk = calcDbScope.Executor.Execute<IStationCalibrationTempResult_PK>(insertQuery);
+            return pk.Id;
+        }
+
         public void Load(ITaskContext taskContext)
         {
-            this._taskContext = taskContext;
             this._calcDbScope = this._calcServerDataLayer.CreateScope<CalcServerDataContext>();
             this._infoDbScope = this._infocenterDataLayer.CreateScope<InfocenterDataContext>();
+            this._taskContext = taskContext;
 
-            // загрузить параметры задачи
-            this.LoadTaskParameters();
-            this.ValidateTaskParameters();
+            if (taskContext.RunMode == TaskRunningMode.Recovery)
+            {
+                ICheckPoint checkPoint = taskContext.GetLastCheckPoint();
+                if (checkPoint != null)
+                {
+                    var sourceContentId = checkPoint.RestoreData<long>("SourceContent");
+                    allStationCorellationCalcDataFromCheckPoint = StationCalibrationCalcTask.GetTempResultRecord<AllStationCorellationCalcData>(this._calcServerDataLayer, sourceContentId);
+                    checkPoint.Dispose();
+                }
+            }
+
+            if (allStationCorellationCalcDataFromCheckPoint == null)
+            {
+                // загрузить параметры задачи
+                this.LoadTaskParameters();
+                this.ValidateTaskParameters();
+            }
         }
 
 
         public void Run()
         {
-            var mapData = _mapRepository.GetMapByName(this._calcDbScope, this._taskContext.ProjectId, this._parameters.MapName);
-            var propagationModel = _contextService.GetPropagationModel(this._calcDbScope, this._taskContext.ClientContextId);
-            var iterationAllStationCorellationCalcData = new AllStationCorellationCalcData
+            AllStationCorellationCalcData iterationAllStationCorellationCalcData = null;
+            if (allStationCorellationCalcDataFromCheckPoint == null)
             {
-                Areas = this._parameters.Areas,
-                GSIDGroupeStation = this._contextStations,
-                CalibrationParameters = this._parameters.CalibrationParameters,
-                CorellationParameters = this._parameters.CorellationParameters,
-                GSIDGroupeDriveTests = this._contextDriveTestsResult,
-                GeneralParameters = this._parameters.GeneralParameters,
-                MapData = mapData,
-                CluttersDesc = _mapRepository.GetCluttersDesc(this._calcDbScope, mapData.Id),
-                PropagationModel = propagationModel,
-                Projection = this._parameters.Projection,
-                FieldStrengthCalcData = new FieldStrengthCalcData
+                var mapData = _mapRepository.GetMapByName(this._calcDbScope, this._taskContext.ProjectId, this._parameters.MapName);
+                var propagationModel = _contextService.GetPropagationModel(this._calcDbScope, this._taskContext.ClientContextId);
+                iterationAllStationCorellationCalcData = new AllStationCorellationCalcData
                 {
+                    Areas = this._parameters.Areas,
+                    GSIDGroupeStation = this._contextStations,
+                    CalibrationParameters = this._parameters.CalibrationParameters,
+                    CorellationParameters = this._parameters.CorellationParameters,
+                    GSIDGroupeDriveTests = this._contextDriveTestsResult,
+                    GeneralParameters = this._parameters.GeneralParameters,
+                    MapData = mapData,
+                    CluttersDesc = _mapRepository.GetCluttersDesc(this._calcDbScope, mapData.Id),
                     PropagationModel = propagationModel,
-                    MapArea = mapData.Area
-                }
-            };
-            iterationAllStationCorellationCalcData.resultId = CreateResult();
+                    Projection = this._parameters.Projection,
+                    FieldStrengthCalcData = new FieldStrengthCalcData
+                    {
+                        PropagationModel = propagationModel,
+                        MapArea = mapData.Area
+                    }
+                };
+                iterationAllStationCorellationCalcData.resultId = CreateResult();
+            }
+            else
+            {
+                iterationAllStationCorellationCalcData = allStationCorellationCalcDataFromCheckPoint;
+            }
             var iterationResultCalibration = _iterationsPool.GetIteration<AllStationCorellationCalcData, CalibrationResult[]>();
             var resulCalibration = iterationResultCalibration.Run(_taskContext, iterationAllStationCorellationCalcData);
             if ((resulCalibration != null) && (resulCalibration.Length > 0))
@@ -177,6 +241,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                    .Update()
                    .SetValue(c => c.StatusCode, (byte)CalcResultStatusCode.Completed)
                    .SetValue(c => c.StatusName, CalcResultStatusCode.Completed.ToString())
+                   .SetValue(c => c.FinishTime, DateTimeOffset.Now)
                    .SetValue(c => c.StatusNote, "The calc  result completed")
                    .Where(c => c.TASK.Id, ConditionOperator.Equal, _taskContext.TaskId)
                    .Where(c => c.Id, ConditionOperator.Equal, _taskContext.ResultId);
@@ -679,18 +744,19 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
                         //{
                             clientContextStations.Add(stationRecord);
                         //}
-                        var standards = clientContextStations.Select(c => c.Standard).ToArray();
-                        for (int j = 0; j < standards.Length; j++)
-                        {
-                            var fndStations = clientContextStations.FindAll(x => x.Standard == standards[j]);
-                            if (fndStations.Count > _appServerComponentConfig.MaxCountStationsByOneStandard)
-                            {
-                                throw new InvalidOperationException($"Too much station. For standard #{standards[j]} greater {_appServerComponentConfig.MaxCountStationsByOneStandard}. Please select other contour!");
-                            }
-                        }
                     }
                     return true;
                 });
+
+                var standards = clientContextStations.Select(c => c.Standard).ToArray();
+                for (int j = 0; j < standards.Length; j++)
+                {
+                    var fndStations = clientContextStations.FindAll(x => x.Standard == standards[j]);
+                    if (fndStations.Count > _appServerComponentConfig.MaxCountStationsByOneStandard)
+                    {
+                        throw new InvalidOperationException($"Too much station. For standard #{standards[j]} greater {_appServerComponentConfig.MaxCountStationsByOneStandard}. Please select other contour!");
+                    }
+                }
             }
             this._contextStations = clientContextStations.ToArray();
 

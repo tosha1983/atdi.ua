@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "StationCalibrationTempResult"
+  Title       = "Station calibration temp result"
+  Desc        = "The station calibration temp result"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>CALCRESULTS_STATION_CALIBRATION_TEMP</Name>
+    <Schema>CALC</Schema>
+  </DataSource>
+  <Fields>
+    <Field Name="Id" SourceType="Column"  SourceName="ID" DataType="Counter.64" Title="Project Map ID" Desc="The identifier of the station calibration temp result"/>
+    <Field Name="ResultId" SourceType="Column" SourceName="RESULT_ID" DataType="Integer.64"  Required="true" Title="Result ID" Desc="The result ID" />
+    <Field Name="RESULT" SourceType="Reference" SourceName="Atdi.DataModels.Sdrn.CalcServer.Entities.CalcResult"  Required="true" Title="Calc Result" Desc="The calc result" />
+    <Field Name="Content" DataType="Bytes.MAX" SourceName="CONTENT" SourceType="Column" Desc="The content of the temp result" Title="Content" Required="true"/>
+
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>

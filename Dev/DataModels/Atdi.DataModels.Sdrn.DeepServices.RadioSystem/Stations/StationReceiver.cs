@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations
 {
-	public class StationReceiver
+    [Serializable]
+    public class StationReceiver
     {
         public double[] Freqs_MHz;
 

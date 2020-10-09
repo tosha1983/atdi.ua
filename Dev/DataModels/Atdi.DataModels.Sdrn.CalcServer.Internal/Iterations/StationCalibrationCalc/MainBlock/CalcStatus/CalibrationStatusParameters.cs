@@ -9,7 +9,8 @@ using Atdi.DataModels.Sdrn.CalcServer.Internal.Clients;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
-	public class CalibrationStatusParameters
+    [Serializable]
+    public class CalibrationStatusParameters
     {
         public ClientContextStationType StatusStation;
 

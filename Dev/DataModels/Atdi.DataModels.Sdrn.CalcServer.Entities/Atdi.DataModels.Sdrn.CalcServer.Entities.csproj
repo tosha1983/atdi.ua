@@ -102,6 +102,7 @@
     <Compile Include="Entities\Tasks\IRefSpectrumByDriveTestsResult.cs" />
     <Compile Include="Entities\Tasks\IRefSpectrumByDriveTestsArgsBase.cs" />
     <Compile Include="Entities\Tasks\IRefSpectrumByDriveTestsArgs.cs" />
+    <Compile Include="Entities\Tasks\IStationCalibrationTempResult.cs" />
     <Compile Include="Entities\Tasks\IStationCalibrationStaResult.cs" />
     <Compile Include="Entities\Tasks\IStationCalibrationDriveTestResult.cs" />
     <Compile Include="Entities\Tasks\IStationCalibrationResult.cs" />
@@ -121,12 +122,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="DataLayer\Oracle\ChangeLogs\rev.005.sql" />
     <Content Include="DataLayer\Oracle\ChangeLogs\rev.000.sql" />
     <Content Include="DataLayer\Oracle\ChangeLogs\rev.003.sql" />
     <Content Include="DataLayer\Oracle\ChangeLogs\rev.002.sql" />
     <Content Include="DataLayer\Oracle\ChangeLogs\rev.001.sql" />
     <Content Include="DataLayer\Oracle\ChangeLogs\rev.004.sql" />
     <Content Include="DataLayer\Oracle\Functions\CALC.GetID.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\CALC.CALCRESULTS_STATION_CALIBRATION_TEMP_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\CALC.COMMANDS_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\CALC.CHECKPOINTS_DATA_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\CALC.CHECKPOINTS_ID_SEQ.sql" />
@@ -180,6 +183,7 @@
     <Content Include="DataLayer\Oracle\Sequences\CALC.PROJECT_MAPS_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\CALC.PROJECT_MAP_CONTENTS_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\CALC.PROJECT_MAP_CONTENT_SOURCES_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Tables\CALC.CALCRESULTS_STATION_CALIBRATION_TEMP.sql" />
     <Content Include="DataLayer\Oracle\Tables\CALC.CALCRESULTS_GN06.sql" />
     <Content Include="DataLayer\Oracle\Tables\CALC.CALCRESULTS_REF_SPECTRUM_BY_DRIVE_TESTS.sql" />
     <Content Include="DataLayer\Oracle\Tables\CALC.CALCRESULTS_REF_SPECTRUM_BY_DRIVE_TESTS_DETAIL.sql" />
@@ -238,8 +242,10 @@
     <Content Include="DataLayer\SqlServer\ChangeLogs\rev.002.sql" />
     <Content Include="DataLayer\SqlServer\ChangeLogs\rev.003.sql" />
     <Content Include="DataLayer\SqlServer\ChangeLogs\rev.004.sql" />
+    <Content Include="DataLayer\SqlServer\ChangeLogs\rev.005.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.CALCRESULTS_REF_SPECTRUM_BY_DRIVE_TESTS.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.CALCRESULTS_REF_SPECTRUM_BY_DRIVE_TESTS_DETAIL.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.CALCRESULTS_STATION_CALIBRATION_TEMP.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.CALCRESULT_EVENTS.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.CALCRESULTS_GN06.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.REF_SPECTRUM_BY_DRIVE_TESTS_ARGS_DEF.sql" />
@@ -374,6 +380,7 @@
     <Content Include="Metadata\Entities\Tasks\PointFieldStrengthArgsDefault.xml" />
     <Content Include="Metadata\Entities\Tasks\Gn06Result.xml" />
     <Content Include="Metadata\Entities\Tasks\Gn06AffectedADMResult.xml" />
+    <Content Include="Metadata\Entities\Tasks\StationCalibrationTempResult.xml" />
     <Content Include="Metadata\Entities\Tasks\RefSpectrumByDriveTestsArgsDefault.xml" />
     <Content Include="Metadata\Entities\Tasks\RefSpectrumByDriveTestsArgs.xml" />
     <Content Include="Metadata\Entities\Tasks\RefSpectrumByDriveTestsResult.xml" />

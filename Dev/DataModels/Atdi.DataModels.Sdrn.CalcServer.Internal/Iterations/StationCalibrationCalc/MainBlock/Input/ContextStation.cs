@@ -9,6 +9,7 @@ using Atdi.DataModels.Sdrn.CalcServer.Internal.Clients;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
+    [Serializable]
     public class ContextStation : ClientContextStation
     {
         public DateTimeOffset? ModifiedDate;

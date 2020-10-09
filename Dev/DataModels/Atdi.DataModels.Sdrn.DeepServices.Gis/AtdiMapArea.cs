@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.DeepServices.Gis
 {
-	public struct AtdiMapArea
+    [Serializable]
+    public struct AtdiMapArea
 	{
 		public AtdiAxis AxisX { get; set; }
 

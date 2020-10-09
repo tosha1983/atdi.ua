@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.DeepServices.RadioSystem.PropagationModels
 {
-	public struct ReflectionCalcBlock
+    [Serializable]
+    public struct ReflectionCalcBlock
 	{
 		public bool Available;
 	}

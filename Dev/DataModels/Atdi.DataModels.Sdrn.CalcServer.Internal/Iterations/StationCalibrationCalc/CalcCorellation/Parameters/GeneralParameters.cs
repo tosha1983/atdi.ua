@@ -8,7 +8,8 @@ using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
-	public struct GeneralParameters
+    [Serializable]
+    public struct GeneralParameters
     {
         public float СorrelationThresholdHard;
         public float СorrelationThresholdWeak;

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.DeepServices.RadioSystem.AntennaPattern
 {
+    [Serializable]
     public class AntennaDiagrammArgs
     {
         public List<double> Angles;
