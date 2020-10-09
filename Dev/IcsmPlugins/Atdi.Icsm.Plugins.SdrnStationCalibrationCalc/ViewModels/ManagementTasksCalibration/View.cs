@@ -50,6 +50,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
         public ViewCommand TaskStopCommand { get; set; }
         public ViewCommand TaskAbortCommand { get; set; }
         public ViewCommand EditNoteCommand { get; set; }
+        public ViewCommand TaskRefreshCommand { get; set; }
 
         public ProjectDataAdapter Projects { get; set; }
         public BaseClientContextDataAdapter BaseClientContexts { get; set; }
@@ -94,6 +95,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
             this.TaskShowResultCommand = new ViewCommand(this.OnTaskShowResultCommand);
             this.TaskStopCommand = new ViewCommand(this.OnTaskStopCommand);
             this.TaskAbortCommand = new ViewCommand(this.OnTaskAbortCommand);
+            this.TaskRefreshCommand = new ViewCommand(this.OnTaskRefreshCommand);
 
             this.EditNoteCommand = new ViewCommand(this.OnEditNoteCommand);
 
@@ -616,6 +618,10 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
             {
                 this._logger.Exception(Exceptions.StationCalibrationCalculation, e);
             }
+        }
+        private void OnTaskRefreshCommand(object parameter)
+        {
+            ReloadCalcTask();
         }
 
         private void OnEditNoteCommand(object parameter)
