@@ -81,9 +81,9 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 						_logger.Warning(Contexts.ThisComponent, Categories.TaskRunning, $"The calculation task was aborted: Result #{state.ResultId}");
 						return JobExecutionResult.Completed;
 					}
-					catch (Exception e)
+					catch (Exception)
 					{
-						this.ChangeTaskResultStatus(calcDbScope, state.ResultId, CalcResultStatusCode.Failed, e.ToString());
+						this.ChangeTaskResultStatus(calcDbScope, state.ResultId, CalcResultStatusCode.Failed, "The task preparation stopped unexpectedly, analysis of the calculation server log is required");
 						throw;
 					}
 
@@ -104,9 +104,9 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 						_logger.Warning( Contexts.ThisComponent, Categories.TaskRunning, $"The calculation task was aborted: Result #{state.ResultId}");
 						return JobExecutionResult.Completed;
 					}
-					catch (Exception e)
+					catch (Exception)
 					{
-						this.ChangeTaskResultStatus(calcDbScope, state.ResultId, CalcResultStatusCode.Aborted, e.ToString());
+						this.ChangeTaskResultStatus(calcDbScope, state.ResultId, CalcResultStatusCode.Failed, "The calculation task execution stopped unexpectedly, analysis of the calculation server log is required");
 						throw;
 					}
 
@@ -117,7 +117,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 					}
 					else
 					{
-						// меняем статус н аотмену
+						// меняем статус на отмену
 						this.ChangeTaskResultStatusToCanceled(calcDbScope, state.ResultId, "The calculation task was canceled");
 						_logger.Warning(Contexts.ThisComponent, Categories.TaskRunning, $"The calculation task was canceled: Result #{state.ResultId}");
 					}
