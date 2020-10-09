@@ -170,6 +170,7 @@
               <DataGrid.ContextMenu>
                 <ContextMenu>
                   <MenuItem Header="{x:Static res:Resources.EditNote}" Command="{Binding EditNoteCommand}"/>
+                  <MenuItem Header="{x:Static res:Resources.Refresh}" Command="{Binding TaskRefreshCommand}"/>
                 </ContextMenu>
               </DataGrid.ContextMenu>
             </orm:OrmDataGrid>
@@ -178,6 +179,7 @@
                 <orm:OrmButton Content="{x:Static res:Resources.CreateNew}" Width="70" Height="20" Command="{Binding TaskAddCommand}" IsEnabled="{Binding Path=CalcTaskAddEnabled, Mode=TwoWay}"/>
                 <orm:OrmButton Content="{x:Static res:Resources.Modify}" Width="70" Height="20" Command="{Binding TaskModifyCommand}" IsEnabled="{Binding Path=CalcTaskEditEnabled, Mode=TwoWay}"/>
                 <orm:OrmButton Content="{x:Static res:Resources.Delete}" Width="70" Height="20" Command="{Binding TaskDeleteCommand}" IsEnabled="{Binding Path=CalcTaskDelEnabled, Mode=TwoWay}"/>
+                <orm:OrmButton Content="{x:Static res:Resources.Refresh}" Width="70" Height="20" Command="{Binding TaskRefreshCommand}"/>
               </WrapPanel>
               <WrapPanel>
                 <orm:OrmButton Content="{x:Static res:Resources.StartCalc}" Width="70" Height="20" Command="{Binding TaskStartCalcCommand}" IsEnabled="{Binding Path=CalcTaskStartCalcEnabled, Mode=TwoWay}"/>

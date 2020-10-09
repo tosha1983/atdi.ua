@@ -102,53 +102,53 @@ namespace Atdi.Test.CalcServer
 
             double DiffractionLoss = 0;
 
-            DiffractionLoss = Deygout91.Calc(ha_m, hb_m, freq_MHz, d_j000, ht_j000, 0, ht_j000.Length, re_km, C, ref obstaclesIndexes, ref obstaclesLosses);
-            System.Console.WriteLine($"j-0: L_dg: {DiffractionLoss}; L_tc-dg: {38.66 - DiffractionLoss}");
+            //DiffractionLoss = Deygout91.Calc(ha_m, hb_m, freq_MHz, d_j000, ht_j000, 0, ht_j000.Length, re_km, C, ref obstaclesIndexes, ref obstaclesLosses);
+            //System.Console.WriteLine($"j-0: L_dg: {DiffractionLoss}; L_tc-dg: {38.66 - DiffractionLoss}");
 
-            DiffractionLoss = Deygout91.Calc(ha_m, hb_m, freq_MHz, d_j002, ht_j002, 0, ht_j002.Length, re_km, C, ref obstaclesIndexes, ref obstaclesLosses);
-            System.Console.WriteLine($"j-2: L_dg: {DiffractionLoss}; L_tc-dg: {18.7 - DiffractionLoss}");
-            //System.Console.WriteLine($"j-2: L_dg: {DiffractionLoss}; L_tc-dg: {42.2 - DiffractionLoss}");
+            //DiffractionLoss = Deygout91.Calc(ha_m, hb_m, freq_MHz, d_j002, ht_j002, 0, ht_j002.Length, re_km, C, ref obstaclesIndexes, ref obstaclesLosses);
+            //System.Console.WriteLine($"j-2: L_dg: {DiffractionLoss}; L_tc-dg: {18.7 - DiffractionLoss}");
+            ////System.Console.WriteLine($"j-2: L_dg: {DiffractionLoss}; L_tc-dg: {42.2 - DiffractionLoss}");
 
-            DiffractionLoss = Deygout91.Calc(ha_m, hb_m, freq_MHz, d_j018, ht_j018, 0, ht_j018.Length, re_km, C, ref obstaclesIndexes, ref obstaclesLosses);
-            System.Console.WriteLine($"j-18: L_dg: {DiffractionLoss}; L_tc-dg: {28.5 - DiffractionLoss}");
+            //DiffractionLoss = Deygout91.Calc(ha_m, hb_m, freq_MHz, d_j018, ht_j018, 0, ht_j018.Length, re_km, C, ref obstaclesIndexes, ref obstaclesLosses);
+            //System.Console.WriteLine($"j-18: L_dg: {DiffractionLoss}; L_tc-dg: {28.5 - DiffractionLoss}");
 
-            DiffractionLoss = Deygout91.Calc(ha_m, hb_m, freq_MHz, d_j021, ht_j021, 0, ht_j021.Length, re_km, C, ref obstaclesIndexes, ref obstaclesLosses);
-            System.Console.WriteLine($"j-21: L_dg: {DiffractionLoss}; L_tc-dg: {30.2 - DiffractionLoss}");
+            //DiffractionLoss = Deygout91.Calc(ha_m, hb_m, freq_MHz, d_j021, ht_j021, 0, ht_j021.Length, re_km, C, ref obstaclesIndexes, ref obstaclesLosses);
+            //System.Console.WriteLine($"j-21: L_dg: {DiffractionLoss}; L_tc-dg: {30.2 - DiffractionLoss}");
 
-            DiffractionLoss = Deygout91.Calc(ha_m, hb_m, freq_MHz, d_j038, ht_j038, 0, ht_j038.Length, re_km, C, ref obstaclesIndexes, ref obstaclesLosses);
-            System.Console.WriteLine($"j-38: L_dg: {DiffractionLoss}; L_tc-dg: {36.1 - DiffractionLoss}");
+            //DiffractionLoss = Deygout91.Calc(ha_m, hb_m, freq_MHz, d_j038, ht_j038, 0, ht_j038.Length, re_km, C, ref obstaclesIndexes, ref obstaclesLosses);
+            //System.Console.WriteLine($"j-38: L_dg: {DiffractionLoss}; L_tc-dg: {36.1 - DiffractionLoss}");
 
-            DiffractionLoss = Deygout91.Calc(ha_m, hb_m, freq_MHz, d_j118, ht_j118, 0, ht_j118.Length, re_km, C, ref obstaclesIndexes, ref obstaclesLosses);
-            System.Console.WriteLine($"j-118: L_dg: {DiffractionLoss}; L_tc-dg: {31.5 - DiffractionLoss}");
+            //DiffractionLoss = Deygout91.Calc(ha_m, hb_m, freq_MHz, d_j118, ht_j118, 0, ht_j118.Length, re_km, C, ref obstaclesIndexes, ref obstaclesLosses);
+            //System.Console.WriteLine($"j-118: L_dg: {DiffractionLoss}; L_tc-dg: {31.5 - DiffractionLoss}");
 
-            DiffractionLoss = Deygout91.Calc(ha_m, hb_m, freq_MHz, d_j124, ht_j124, 0, ht_j124.Length, re_km, C, ref obstaclesIndexes, ref obstaclesLosses);
-            System.Console.WriteLine($"j-124: L_dg: {DiffractionLoss}; L_tc-dg: {27.7 - DiffractionLoss}");
+            //DiffractionLoss = Deygout91.Calc(ha_m, hb_m, freq_MHz, d_j124, ht_j124, 0, ht_j124.Length, re_km, C, ref obstaclesIndexes, ref obstaclesLosses);
+            //System.Console.WriteLine($"j-124: L_dg: {DiffractionLoss}; L_tc-dg: {27.7 - DiffractionLoss}");
 
-            DiffractionLoss = Deygout91.Calc(ha_m, hb_m, freq_MHz, d_j161, ht_j161, 0, ht_j161.Length, re_km, C, ref obstaclesIndexes, ref obstaclesLosses);
-            //System.Console.WriteLine($"j-161: L_dg: {DiffractionLoss}; L_tc-dg: {47.1 - DiffractionLoss}");
-            System.Console.WriteLine($"j-161: L_dg: {DiffractionLoss}; L_tc-dg: {35.2 - DiffractionLoss}");
+            //DiffractionLoss = Deygout91.Calc(ha_m, hb_m, freq_MHz, d_j161, ht_j161, 0, ht_j161.Length, re_km, C, ref obstaclesIndexes, ref obstaclesLosses);
+            ////System.Console.WriteLine($"j-161: L_dg: {DiffractionLoss}; L_tc-dg: {47.1 - DiffractionLoss}");
+            //System.Console.WriteLine($"j-161: L_dg: {DiffractionLoss}; L_tc-dg: {35.2 - DiffractionLoss}");
 
-            DiffractionLoss = Deygout91.Calc(ha_m, hb_m, freq_MHz, d_j182, ht_j182, 0, ht_j182.Length, re_km, C, ref obstaclesIndexes, ref obstaclesLosses);
-            //System.Console.WriteLine($"j-182: L_dg: {DiffractionLoss}; L_tc-dg: {47.4 - DiffractionLoss}");
-            System.Console.WriteLine($"j-182: L_dg: {DiffractionLoss}; L_tc-dg: {15.4 - DiffractionLoss}");
+            //DiffractionLoss = Deygout91.Calc(ha_m, hb_m, freq_MHz, d_j182, ht_j182, 0, ht_j182.Length, re_km, C, ref obstaclesIndexes, ref obstaclesLosses);
+            ////System.Console.WriteLine($"j-182: L_dg: {DiffractionLoss}; L_tc-dg: {47.4 - DiffractionLoss}");
+            //System.Console.WriteLine($"j-182: L_dg: {DiffractionLoss}; L_tc-dg: {15.4 - DiffractionLoss}");
 
-            DiffractionLoss = Deygout91.Calc(ha_m, hb_m, freq_MHz, d_j212, ht_j212, 0, ht_j212.Length, re_km, C, ref obstaclesIndexes, ref obstaclesLosses);
-            System.Console.WriteLine($"j-212: L_dg: {DiffractionLoss}; L_tc-dg: {15.6 - DiffractionLoss}");
+            //DiffractionLoss = Deygout91.Calc(ha_m, hb_m, freq_MHz, d_j212, ht_j212, 0, ht_j212.Length, re_km, C, ref obstaclesIndexes, ref obstaclesLosses);
+            //System.Console.WriteLine($"j-212: L_dg: {DiffractionLoss}; L_tc-dg: {15.6 - DiffractionLoss}");
 
-            DiffractionLoss = Deygout91.Calc(ha_m, hb_m, freq_MHz, d_j213, ht_j213, 0, ht_j213.Length, re_km, C, ref obstaclesIndexes, ref obstaclesLosses);
-            System.Console.WriteLine($"j-213: L_dg: {DiffractionLoss}; L_tc-dg: {18.4 - DiffractionLoss}");
+            //DiffractionLoss = Deygout91.Calc(ha_m, hb_m, freq_MHz, d_j213, ht_j213, 0, ht_j213.Length, re_km, C, ref obstaclesIndexes, ref obstaclesLosses);
+            //System.Console.WriteLine($"j-213: L_dg: {DiffractionLoss}; L_tc-dg: {18.4 - DiffractionLoss}");
 
-            DiffractionLoss = Deygout91.Calc(ha_m, hb_m, freq_MHz, d_j223, ht_j223, 0, ht_j223.Length, re_km, C, ref obstaclesIndexes, ref obstaclesLosses);
-            System.Console.WriteLine($"j-223: L_dg: {DiffractionLoss}; L_tc-dg: {15.7 - DiffractionLoss}");
+            //DiffractionLoss = Deygout91.Calc(ha_m, hb_m, freq_MHz, d_j223, ht_j223, 0, ht_j223.Length, re_km, C, ref obstaclesIndexes, ref obstaclesLosses);
+            //System.Console.WriteLine($"j-223: L_dg: {DiffractionLoss}; L_tc-dg: {15.7 - DiffractionLoss}");
 
-            DiffractionLoss = Deygout91.Calc(ha_m, hb_m, freq_MHz, d_j300, ht_j300, 0, ht_j300.Length, re_km, C, ref obstaclesIndexes, ref obstaclesLosses);
-            System.Console.WriteLine($"j-300: L_dg: {DiffractionLoss}; L_tc-dg: {21.18 - DiffractionLoss}");
+            //DiffractionLoss = Deygout91.Calc(ha_m, hb_m, freq_MHz, d_j300, ht_j300, 0, ht_j300.Length, re_km, C, ref obstaclesIndexes, ref obstaclesLosses);
+            //System.Console.WriteLine($"j-300: L_dg: {DiffractionLoss}; L_tc-dg: {21.18 - DiffractionLoss}");
 
-            DiffractionLoss = Deygout91.Calc(ha_m, hb_m, freq_MHz, d_j449, ht_j449, 0, ht_j449.Length, re_km, C, ref obstaclesIndexes, ref obstaclesLosses);
-            System.Console.WriteLine($"j-449: L_dg: {DiffractionLoss}; L_tc-dg: {32.6 - DiffractionLoss}");
+            //DiffractionLoss = Deygout91.Calc(ha_m, hb_m, freq_MHz, d_j449, ht_j449, 0, ht_j449.Length, re_km, C, ref obstaclesIndexes, ref obstaclesLosses);
+            //System.Console.WriteLine($"j-449: L_dg: {DiffractionLoss}; L_tc-dg: {32.6 - DiffractionLoss}");
 
-            DiffractionLoss = Deygout91.Calc(ha_m, hb_m, freq_MHz, d_j552, ht_j552, 0, ht_j552.Length, re_km, C, ref obstaclesIndexes, ref obstaclesLosses);
-            System.Console.WriteLine($"j-552: L_dg: {DiffractionLoss}; L_tc-dg: {16.86 - DiffractionLoss}");
+            //DiffractionLoss = Deygout91.Calc(ha_m, hb_m, freq_MHz, d_j552, ht_j552, 0, ht_j552.Length, re_km, C, ref obstaclesIndexes, ref obstaclesLosses);
+            //System.Console.WriteLine($"j-552: L_dg: {DiffractionLoss}; L_tc-dg: {16.86 - DiffractionLoss}");
 
             //ha_m = 80;
             //hb_m = 30;
