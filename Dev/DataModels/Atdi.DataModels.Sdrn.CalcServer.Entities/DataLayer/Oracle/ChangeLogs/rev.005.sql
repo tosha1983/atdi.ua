@@ -427,3 +427,9 @@ end if;
 return(n);
 end;
 /
+
+
+ALTER TABLE CALC.CLIENT_CONTEXTS_ABSORPTION
+  ADD (
+		HYBRID           NUMBER(1)                    DEFAULT 0
+);
