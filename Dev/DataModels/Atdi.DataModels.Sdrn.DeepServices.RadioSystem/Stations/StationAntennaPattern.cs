@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations
 {
-	public struct StationAntennaPattern
+    [Serializable]
+    public struct StationAntennaPattern
 	{
 		public float[] Loss_dB;
 

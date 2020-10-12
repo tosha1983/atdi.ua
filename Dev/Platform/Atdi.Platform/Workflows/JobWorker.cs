@@ -8,7 +8,9 @@ namespace Atdi.Platform.Workflows
     {
         internal sealed class  JobToken : IJobToken
         {
-            public JobToken(JobDefinition definition)
+	        private Thread _thread;
+
+			public JobToken(JobDefinition definition)
             {
                 Definition = definition;
                 Instance = Guid.NewGuid();
@@ -32,7 +34,45 @@ namespace Atdi.Platform.Workflows
             {
                 return $"{this.Definition}, Status={this.Status}, Instance='{this.Instance}'";
             }
-        }
+
+            internal void StartExecution(ThreadStart action, string name)
+            {
+	            this._thread = new Thread(action)
+	            {
+		            Name = name
+	            };
+	            this._thread.Start();
+            }
+
+            internal void Cancel()
+            {
+	            if (_thread != null)
+	            {
+		            this.Breaker.Cancel();
+	            }
+            }
+
+            internal void Clean()
+            {
+	            _thread = null;
+
+            }
+
+			public void Abort()
+			{
+				if (_thread != null)
+				{
+					try
+					{
+						_thread.Abort();
+					}
+					catch (Exception e)
+					{
+						System.Diagnostics.Debug.WriteLine($"Job Worker Aborting Exception: {e.Message}");
+					}
+				}
+			}
+		}
 
         private readonly JobDefinition _jobDefinition;
         private readonly ILogger _logger;
@@ -40,7 +80,7 @@ namespace Atdi.Platform.Workflows
         private readonly JobBroker _broker;
         private readonly IJobExecutorResolver _executorResolver;
         protected readonly JobExecutionContext _executionContext;
-        private Thread _thread;
+        
 
         protected JobWorker(JobDefinition jobDefinition, JobBroker broker, IJobExecutorResolver executorResolver, ILogger logger)
         {
@@ -52,16 +92,12 @@ namespace Atdi.Platform.Workflows
             this._executionContext = new JobExecutionContext(this._jobToken);
         }
 
-        private void StartExecution()
-        {
-            this._thread = new Thread(this.Process)
-            {
-                Name = $"ATDI.JobWorker.Execution: {_jobDefinition.Name} - {_jobToken.Instance}"
-            };
-            this._thread.Start();
-        }
+		internal void StartExecution()
+		{
+			this._jobToken.StartExecution(this.Process, $"ATDI.JobWorker.Execution: {_jobDefinition.Name} - {_jobToken.Instance}");
+		}
 
-        private void Process()
+		private void Process()
         {
             _logger.Verbouse("JobWorker", "Processing", $"The job thread started: Name='{Thread.CurrentThread.Name}', {_jobToken}");
 
@@ -145,7 +181,8 @@ namespace Atdi.Platform.Workflows
             _logger.Verbouse("JobWorker", "Processing", $"The job thread finished: Name='{Thread.CurrentThread.Name}', {_jobToken}");
 
             _broker.OnFinishJobProcessing(this);
-            _thread = null;
+			_jobToken.Clean();
+
         }
 
         protected abstract JobExecutionResult Execute();
@@ -159,11 +196,8 @@ namespace Atdi.Platform.Workflows
 
         public void Cancel()
         {
-            if (_thread != null)
-            {
-                this._jobToken.Breaker.Cancel();
-            }
-        }
+			this._jobToken.Cancel();
+		}
 
         public override string ToString()
         {

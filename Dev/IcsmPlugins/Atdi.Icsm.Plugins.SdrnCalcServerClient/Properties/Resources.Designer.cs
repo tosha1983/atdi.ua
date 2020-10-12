@@ -70,6 +70,42 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to AxisXNumber.
+        /// </summary>
+        public static string AxisXNumber {
+            get {
+                return ResourceManager.GetString("AxisXNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to AxisXStep.
+        /// </summary>
+        public static string AxisXStep {
+            get {
+                return ResourceManager.GetString("AxisXStep", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to AxisYNumber.
+        /// </summary>
+        public static string AxisYNumber {
+            get {
+                return ResourceManager.GetString("AxisYNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to AxisYStep.
+        /// </summary>
+        public static string AxisYStep {
+            get {
+                return ResourceManager.GetString("AxisYStep", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Base client contexts.
         /// </summary>
         public static string BaseClientContexts {
@@ -124,6 +160,15 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to FileName.
+        /// </summary>
+        public static string FileName {
+            get {
+                return ResourceManager.GetString("FileName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Id.
         /// </summary>
         public static string Id {
@@ -138,6 +183,42 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.Properties {
         public static string Lock {
             get {
                 return ResourceManager.GetString("Lock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to LowerLeftX.
+        /// </summary>
+        public static string LowerLeftX {
+            get {
+                return ResourceManager.GetString("LowerLeftX", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to LowerLeftY.
+        /// </summary>
+        public static string LowerLeftY {
+            get {
+                return ResourceManager.GetString("LowerLeftY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to LowerRightX.
+        /// </summary>
+        public static string LowerRightX {
+            get {
+                return ResourceManager.GetString("LowerRightX", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to LowerRightY.
+        /// </summary>
+        public static string LowerRightY {
+            get {
+                return ResourceManager.GetString("LowerRightY", resourceCulture);
             }
         }
         
@@ -354,6 +435,42 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.Properties {
         public static string TypeName {
             get {
                 return ResourceManager.GetString("TypeName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UpperLeftX.
+        /// </summary>
+        public static string UpperLeftX {
+            get {
+                return ResourceManager.GetString("UpperLeftX", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UpperLeftY.
+        /// </summary>
+        public static string UpperLeftY {
+            get {
+                return ResourceManager.GetString("UpperLeftY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UpperRightX.
+        /// </summary>
+        public static string UpperRightX {
+            get {
+                return ResourceManager.GetString("UpperRightX", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UpperRightY.
+        /// </summary>
+        public static string UpperRightY {
+            get {
+                return ResourceManager.GetString("UpperRightY", resourceCulture);
             }
         }
     }

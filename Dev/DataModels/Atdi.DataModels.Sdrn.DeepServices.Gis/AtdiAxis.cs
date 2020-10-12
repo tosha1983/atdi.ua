@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.DeepServices.Gis
 {
-	/// <summary>
-	/// Масштаб оси
-	/// </summary>
-	public struct AtdiAxis
+    /// <summary>
+    /// Масштаб оси
+    /// </summary>
+    [Serializable]
+    public struct AtdiAxis
 	{
 		/// <summary>
 		/// Кол-во шагов

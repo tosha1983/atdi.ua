@@ -9,7 +9,8 @@ using Atdi.DataModels.Sdrn.CalcServer.Internal.Clients;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
-	public class StationCalibrationCalcData : StationCorellationCalcDataBase
+    [Serializable]
+    public class StationCalibrationCalcData : StationCorellationCalcDataBase
     {
         public CorellationParameters CorellationParameters;
         public CalibrationParameters CalibrationParameters;

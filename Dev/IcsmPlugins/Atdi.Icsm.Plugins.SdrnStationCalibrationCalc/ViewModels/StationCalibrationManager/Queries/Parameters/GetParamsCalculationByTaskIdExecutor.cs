@@ -70,7 +70,8 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                 c => c.CorrelationThresholdWeak,
                 c => c.InfocMeasResults,
                 c => c.StationIds,
-                c => c.Contours
+                c => c.Contours,
+                c => c.Areas
                     )
                 .Filter(c => c.TASK.Id, criterion.TaskId);
 
@@ -123,7 +124,8 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ProjectManager
                 CorrelationThresholdHard = reader.GetValue(c => c.CorrelationThresholdHard),
                 CorrelationThresholdWeak = reader.GetValue(c => c.CorrelationThresholdWeak),
                 Standard = reader.GetValue(c => c.Standard),
-                Contours = reader.GetValue(c => c.Contours)
+                Contours = reader.GetValue(c => c.Contours),
+                Areas = reader.GetValue(c => c.Areas)
                 //InfocMeasResults = reader.GetValue(c => c.InfocMeasResults),
                 //StationIds = reader.GetValue(c => c.StationIds)
             };

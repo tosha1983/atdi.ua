@@ -14,6 +14,7 @@
     <Field Name="ModelTypeCode" SourceType="Column" SourceName="MODEL_TYPE_CODE" DataType="Code.u08" Required="true" Title="Model Type Code" Desc="The code of the type of the model"  />
     <Field Name="ModelTypeName" SourceType="Column" SourceName="MODEL_TYPE_NAME" DataType="Text.100" Required="true" Title="Model Type Name" Desc="The name of the type of the model" />
     <Field Name="Available" SourceType="Column" SourceName="AVAILABLE" DataType="Boolean" Required="true" Title="Available" Desc="The model availability during the calculation process" />
+    <Field Name="Hybrid" SourceType="Column" SourceName="HYBRID" DataType="Boolean" Required="true" Title="Hybrid" Desc="The model availability during the calculation process" />
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="ContextId"/>

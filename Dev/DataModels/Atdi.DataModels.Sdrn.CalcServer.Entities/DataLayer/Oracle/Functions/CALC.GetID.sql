@@ -304,6 +304,32 @@ from dual;
 end if;
 
 
+
+if inttable_name ='COMMANDS' then
+select CALC.COMMANDS_ID_SEQ.nextval
+into n
+from dual;
+end if;
+
+if inttable_name ='CHECKPOINTS' then
+select CALC.CHECKPOINTS_ID_SEQ.nextval
+into n
+from dual;
+end if;
+
+if inttable_name ='CHECKPOINTS_DATA' then
+select CALC.CHECKPOINTS_DATA_ID_SEQ.nextval
+into n
+from dual;
+end if;
+
+
+if inttable_name ='CALCRESULTS_STATION_CALIBRATION_TEMP' then
+select CALC.CALCRESULTS_STATION_CALIBRATION_TEMP_ID_SEQ.nextval
+into n
+from dual;
+end if;
+
 return(n);
 end;
 /

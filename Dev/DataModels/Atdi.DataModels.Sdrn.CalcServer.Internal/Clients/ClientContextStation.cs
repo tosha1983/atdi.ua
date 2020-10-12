@@ -8,7 +8,8 @@ using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Clients
 {
-	public class ClientContextStation
+    [Serializable]
+    public class ClientContextStation
 	{
 		public long Id;
 
@@ -36,7 +37,8 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Clients
 
     }
 
-	public enum ClientContextStationType
+    [Serializable]
+    public enum ClientContextStationType
 	{
 		/// <summary>
 		/// Unknown

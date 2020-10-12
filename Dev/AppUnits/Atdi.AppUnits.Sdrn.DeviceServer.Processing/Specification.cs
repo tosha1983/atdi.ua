@@ -81,6 +81,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         public static readonly string NotFoundInformationWithGetDevicesProperties = "Not found information about sensor by 'GetDevicesProperties'";
         public static readonly string NotFoundInformationAboutSensor = "Not found information about sensor";
         public static readonly string UnknownErrorEventCommand = "Unknown error in EventCommand";
+        public static readonly string AglDefaultIsNull = "AGL value is null or empty";
         
     }
 }

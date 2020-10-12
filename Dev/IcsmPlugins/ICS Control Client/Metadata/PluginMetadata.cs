@@ -12,7 +12,7 @@ namespace XICSM.ICSControlClient
     {
         public static readonly string Title = "ICS Control Client";
         public static readonly string Ident = "ICSControlClient";
-        public static readonly double SchemaVersion = 20200728.1630;
+        public static readonly double SchemaVersion = 20201006.1644;
 
         public class Processes
         {
@@ -71,6 +71,12 @@ namespace XICSM.ICSControlClient
             public static class YetOtherTerrestrialStations
             {
                 public static readonly string ShowResultMonitoring = "Show Result Monitoring (Fix Sensor)";
+            }
+            public static class BandWidthParameter
+            {
+                public static readonly string CreateNewRecord = "Create new record";
+                public static readonly string UpdateRecord = "Edit record";
+                public static readonly string DeleteRecord = "Delete record";
             }
 
         }

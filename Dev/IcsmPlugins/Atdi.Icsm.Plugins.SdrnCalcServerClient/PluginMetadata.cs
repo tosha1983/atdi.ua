@@ -24,7 +24,7 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient
     {
         public static readonly string Title = "ICS Calc Server Client";
         public static readonly string Ident = "SdrnCalcServerClient";
-        public static readonly double SchemaVersion = 20200818.2244;
+        public static readonly double SchemaVersion = 20201006.1644;
 
         public class Processes
         {

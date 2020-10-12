@@ -9,6 +9,7 @@ namespace Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Gis
     /// <summary>
     /// Параметры клатеров на некой частоте Freq_MHz
     /// </summary>
+    [Serializable]
     public class CluttersDescFreq
 	{
 		public long Id;

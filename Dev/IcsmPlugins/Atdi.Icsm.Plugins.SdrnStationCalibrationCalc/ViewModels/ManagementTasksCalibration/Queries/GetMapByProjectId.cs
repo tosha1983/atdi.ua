@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTasksCalibration.Queries
 {
-    public class GetMapsByProjectId
+    public class GetMapByProjectId
     {
         public long Id;
     }

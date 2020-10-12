@@ -12,5 +12,11 @@ namespace Atdi.Contracts.Sdrn.CalcServer
 		void RunTask(TaskLaunchHandle launchHandle, ITaskObserver observer);
 
 		void RunTask(long resultId, ITaskObserver observer);
+
+		void ResumeTask(long resultId, ITaskObserver observer);
+
+		void StopTask(long resultId);
+
+		void AbortTask(long resultId);
 	} 
 }

@@ -8,28 +8,31 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.DeepServices.RadioSystem.SignalService
 {
-	public struct CalcLossArgs
-	{
-		public PropagationModel Model;
+    [Serializable]
+    public struct CalcLossArgs
+    {
+        public PropagationModel Model;
         // profiles
-		public short[] ReliefProfile;
-		public byte[] ClutterProfile;
-		public byte[] BuildingProfile;
-		public short[] HeightProfile;
-		public int ProfileLength;
-		public int ReliefStartIndex;
-		public int ClutterStartIndex;
-		public int BuildingStartIndex;
-		public int HeightStartIndex;
+        public short[] ReliefProfile;
+        public byte[] ClutterProfile;
+        public byte[] BuildingProfile;
+        public short[] HeightProfile;
+        public short[] BuildHeightProfile;
+        public byte[] ForestClutterProfile;
+        public int ProfileLength;
+        public int ReliefStartIndex;
+        public int ClutterStartIndex;
+        public int BuildingStartIndex;
+        public int HeightStartIndex;
         public double Freq_Mhz;
-
+        public bool HybridDiffraction;
         public CluttersDesc CluttersDesc;
 
-		// Дополнительные параметры определяющие геометрию трассы
-		/// <summary>
-		/// Длинна пролета
-		/// </summary>
-		public double D_km;
+        // Дополнительные параметры определяющие геометрию трассы
+        /// <summary>
+        /// Длинна пролета
+        /// </summary>
+        public double D_km;
         /// <summary>
         /// Высота первой точки (Базовой станции) 
         /// </summary>

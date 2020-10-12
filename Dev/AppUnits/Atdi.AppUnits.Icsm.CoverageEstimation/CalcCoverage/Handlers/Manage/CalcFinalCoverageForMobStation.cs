@@ -30,8 +30,8 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
 
         public CalcFinalCoverageForMobStation(AppServerComponentConfig appServerComponentConfig, IDataLayer<IcsmDataOrm> dataLayer, ILogger logger)
         {
-            this._logger = logger;
             this._dataLayer = dataLayer;
+            this._logger = logger;
             this._appServerComponentConfig = appServerComponentConfig;
             this._checkOperation = new CheckOperation(appServerComponentConfig.ProtocolOperationFileNameForMobStation);
         }
@@ -120,7 +120,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
 
                             // формирование объекта Condition для отправки запроса в WebQuery
                             Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"{ CLocaliz.TxT("The procedure of forming the Condition object for further generation of SQL - query is started")}");
-                            var condition = new CreateConditionForMobStation(codeOperatorAndStatusesConfig, provincesConfig.Name, this._logger);
+                            var condition = new CreateConditionForMobStation(this._dataLayer, codeOperatorAndStatusesConfig, provincesConfig.Name, this._logger);
                             Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"{CLocaliz.TxT("The procedure of forming the Condition object for further generation of SQL - query was successfully completed")}");
 
                             var operationCreateEwx = new CurrentOperation()
@@ -310,6 +310,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                                             File.Delete(filesOuttempEwxFilesDirectory[h]);
                                         }
 
+                                        GC.Collect();
                                     }
 
 
@@ -420,6 +421,8 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                 this._logger.Info(Contexts.CalcCoverages, string.Format(CLocaliz.TxT(Events.EndIterationNumber.ToString()), iterationNumber));
 
                 Utils.LogInfo(loadConfig, Contexts.CalcCoverages, CLocaliz.TxT("Coverage calculation procedure for 'GroupsMobStationConfig' section completed successfully"));
+
+                GC.Collect();
             }
             catch (Exception e)
             {

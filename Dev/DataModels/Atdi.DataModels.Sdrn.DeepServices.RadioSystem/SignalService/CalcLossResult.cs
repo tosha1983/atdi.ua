@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.DeepServices.RadioSystem.SignalService
 {
-	public struct CalcLossResult
+    [Serializable]
+    public struct CalcLossResult
 	{
 		public double LossD_dB;
         public double DiffractionLoss_dB;

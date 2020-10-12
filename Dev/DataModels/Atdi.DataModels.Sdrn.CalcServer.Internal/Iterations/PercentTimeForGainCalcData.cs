@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
-	public struct PercentTimeForGainCalcData
+    [Serializable]
+    public struct PercentTimeForGainCalcData
     {
         public ReceivedPowerCalcResult[] StationData;
         public long SensorId;

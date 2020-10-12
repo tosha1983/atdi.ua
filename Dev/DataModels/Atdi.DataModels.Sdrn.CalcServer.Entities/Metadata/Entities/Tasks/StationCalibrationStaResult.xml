@@ -38,6 +38,9 @@
     <Field Name="New_Power_dB" SourceType="Column" Required="false" SourceName="NEW_POWER_DB" DataType="Float.22.8" Title="New station power, dB" Desc="The New station parameter power, dB"/>
     <Field Name="Standard" SourceType="Column" SourceName="STANDARD" DataType="Text.50" Required="false" Title="Standard" Desc="The Standard of the station calibration" />
     <Field Name="Freq_MHz" SourceType="Column" Required="true" SourceName="FREQ_MHZ" DataType="Double.30.10" Title="Freq, MHz" Desc="The Freq in MHz"/>
+    <Field Name="DeltaCorrelation_pc" SourceType="Column" Required="false" SourceName="DELTA_CORRELATION_PC" DataType="Double.30.10" Title="Delta correlation, percent" Desc="The Delta correlation, percent"/>
+    <Field Name="UsedPoints_pc" SourceType="Column" Required="false" SourceName="USED_POINTS_PC" DataType="Integer.32" Title="Used points, percent" Desc="The used points, percent"/>
+    <Field Name="CountPointsInDriveTest" SourceType="Column" Required="false" SourceName="COUNT_POINTS_IN_DRIVE_TEST" DataType="Integer.32" Title="Count points in drive test" Desc="The count points in drive test"/>
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>

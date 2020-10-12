@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations
 {
-	public enum PolarizationType
+    [Serializable]
+    public enum PolarizationType
 	{
 		/// <summary>
 		/// Unknown

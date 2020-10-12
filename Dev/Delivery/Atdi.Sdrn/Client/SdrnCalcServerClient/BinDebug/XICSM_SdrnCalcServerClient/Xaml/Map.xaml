@@ -30,6 +30,7 @@
       <GroupBox Header="{x:Static res:Resources.Maps}" Margin="5, 5, 5, 5">
         <Grid>
           <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="400"/>
             <ColumnDefinition Width="*"/>
           </Grid.ColumnDefinitions>
           <Grid.RowDefinitions>
@@ -49,8 +50,59 @@
             <orm:OrmEnumBox CaptionWith="100" Width="300" Caption="{x:Static res:Resources.MapName}"/>-->
             <Button HorizontalAlignment="Left" Margin="5" Content="{x:Static res:Resources.CreateMap}" Width="70" Height="20" Command="{Binding MapAddCommand}"/>
           </WrapPanel>
+          <Grid Grid.Column="1">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="*" MinHeight="30"></RowDefinition>
+              <RowDefinition Height="Auto"></RowDefinition>
+              <RowDefinition Height="*" MinHeight="30"></RowDefinition>
+            </Grid.RowDefinitions>
+            <orm:OrmDataGrid IsReadOnly="True" Margin="5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding Maps}" SelectedItem="{Binding CurrentMap}" SelectedItemsList="{Binding CurrentMaps, Mode=TwoWay}">
+              <DataGrid.Columns>
+                <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=Id}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.MapName}" Binding="{Binding Path=MapName}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.MapNote}" Binding="{Binding Path=MapNote}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.Projection}" Binding="{Binding Path=Projection}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.FileName}" Binding="{Binding Path=FileName}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.UpperLeftX}" Binding="{Binding Path=UpperLeftX}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.UpperLeftY}" Binding="{Binding Path=UpperLeftY}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.UpperRightX}" Binding="{Binding Path=UpperRightX}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.UpperRightY}" Binding="{Binding Path=UpperRightY}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.LowerLeftX}" Binding="{Binding Path=LowerLeftX}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.LowerLeftY}" Binding="{Binding Path=LowerLeftY}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.LowerRightX}" Binding="{Binding Path=LowerRightX}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.LowerRightY}" Binding="{Binding Path=LowerRightY}"></DataGridTextColumn>
+
+                <DataGridTextColumn Header="{x:Static res:Resources.AxisXNumber}" Binding="{Binding Path=AxisXNumber}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.AxisXStep}" Binding="{Binding Path=AxisXStep}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.AxisYNumber}" Binding="{Binding Path=AxisYNumber}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.AxisYStep}" Binding="{Binding Path=AxisYStep}"></DataGridTextColumn>
+
+                <!--<DataGridTextColumn Header="{x:Static res:Resources.Status}" Binding="{Binding Path=Status}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.Name}" Binding="{Binding Path=Name}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.Azimuth}" Binding="{Binding Path=Azimuth}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.Elevation}" Binding="{Binding Path=Elevation}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.Agl}" Binding="{Binding Path=Agl}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.RxLoss}" Binding="{Binding Path=RxLoss}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.TechId}" Binding="{Binding Path=TechId}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.BringIntoUse}" Binding="{Binding Path=BiuseDate, StringFormat='{}{0:dd.MM.yyyy HH:mm}'}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.EndOfUse}" Binding="{Binding Path=EouseDate, StringFormat='{}{0:dd.MM.yyyy HH:mm}'}"></DataGridTextColumn>-->
+              </DataGrid.Columns>
+            </orm:OrmDataGrid>            
+            <orm:OrmGridSplitter Grid.Row="1" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center"></orm:OrmGridSplitter>
+            <orm:Map Grid.Row="2" DrawingData="{Binding CurrentMapData}"></orm:Map>
+          </Grid>
         </Grid>
       </GroupBox>
     </Grid>
   </DockPanel>
 </UserControl>
+
+
+
+
+
+
+

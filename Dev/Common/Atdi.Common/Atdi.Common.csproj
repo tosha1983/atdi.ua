@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="BreakDownElemBlocks.cs" />
     <Compile Include="CopyHelper.cs" />
+    <Compile Include="Extensions\Compressor.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
     <Compile Include="Extensions\DoubleExtensions.cs" />
     <Compile Include="Extensions\EnumExtensions.cs" />
