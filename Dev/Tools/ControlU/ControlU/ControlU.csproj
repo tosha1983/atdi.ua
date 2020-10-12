@@ -34,7 +34,7 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x64</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>true</Optimize>
@@ -58,12 +58,12 @@
     <OutputPath>bin\x64\Debug\</OutputPath>
     <DefineConstants>DEBUG</DefineConstants>
     <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
-    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
-    <Optimize>false</Optimize>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>true</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
@@ -82,36 +82,29 @@
     <StartupObject>ControlU.App</StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Atdi.Api.Sdrn.Device.BusController, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\ATDI_Project_VS2017\Dev\Delivery\Atdi.Sdrn\Device\ClientApi\BinDebug\Atdi.Api.Sdrn.Device.BusController.dll</HintPath>
+    <Reference Include="Atdi.Api.Sdrn.Device.BusController">
+      <HintPath>..\..\..\Delivery\Atdi.Sdrn\Device\ClientApi\BinRelease\Atdi.Api.Sdrn.Device.BusController.dll</HintPath>
     </Reference>
-    <Reference Include="Atdi.Contracts.Api.Sdrn.MessageBus, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\ATDI_Project_VS2017\Dev\Delivery\Atdi.Sdrn\Device\ClientApi\BinDebug\Atdi.Contracts.Api.Sdrn.MessageBus.dll</HintPath>
+    <Reference Include="Atdi.Contracts.Api.Sdrn.MessageBus">
+      <HintPath>..\..\..\Delivery\Atdi.Sdrn\Device\ClientApi\BinRelease\Atdi.Contracts.Api.Sdrn.MessageBus.dll</HintPath>
     </Reference>
-    <Reference Include="Atdi.DataModels, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\ATDI_Project_VS2017\Dev\Delivery\Atdi.Sdrn\Device\ClientApi\BinDebug\Atdi.DataModels.dll</HintPath>
+    <Reference Include="Atdi.DataModels">
+      <HintPath>..\..\..\Delivery\Atdi.Sdrn\Device\ClientApi\BinRelease\Atdi.DataModels.dll</HintPath>
     </Reference>
-    <Reference Include="Atdi.DataModels.Sdrns, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\ATDI_Project_VS2017\Dev\Delivery\Atdi.Sdrn\Device\ClientApi\BinDebug\Atdi.DataModels.Sdrns.dll</HintPath>
+    <Reference Include="Atdi.DataModels.Sdrns">
+      <HintPath>..\..\..\Delivery\Atdi.Sdrn\Device\ClientApi\BinRelease\Atdi.DataModels.Sdrns.dll</HintPath>
     </Reference>
-    <Reference Include="Atdi.DataModels.Sdrns.Device, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\ATDI_Project_VS2017\Dev\Delivery\Atdi.Sdrn\Device\ClientApi\BinDebug\Atdi.DataModels.Sdrns.Device.dll</HintPath>
+    <Reference Include="Atdi.DataModels.Sdrns.Device">
+      <HintPath>..\..\..\Delivery\Atdi.Sdrn\Device\ClientApi\BinRelease\Atdi.DataModels.Sdrns.Device.dll</HintPath>
     </Reference>
     <Reference Include="Atdi.Modules.AmqpBroker">
-      <HintPath>..\..\..\..\ATDI_Project_VS2017\Dev\Delivery\Atdi.Sdrn\Device\ClientApi\BinDebug\Atdi.Modules.AmqpBroker.dll</HintPath>
+      <HintPath>..\..\..\Delivery\Atdi.Sdrn\Device\ClientApi\BinRelease\Atdi.Modules.AmqpBroker.dll</HintPath>
     </Reference>
-    <Reference Include="Atdi.Modules.Licensing, Version=1.0.0.0, Culture=neutral, PublicKeyToken=79d55ebd8cf97c51, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\ATDI_Project_VS2017\Dev\Delivery\Atdi.Sdrn\Device\ClientApi\BinDebug\Atdi.Modules.Licensing.dll</HintPath>
+    <Reference Include="Atdi.Modules.Licensing">
+      <HintPath>..\..\..\Delivery\Atdi.Sdrn\Device\ClientApi\BinRelease\Atdi.Modules.Licensing.dll</HintPath>
     </Reference>
-    <Reference Include="Atdi.Modules.Sdrn.MessageBus, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\ATDI_Project_VS2017\Dev\Delivery\Atdi.Sdrn\Device\ClientApi\BinDebug\Atdi.Modules.Sdrn.MessageBus.dll</HintPath>
+    <Reference Include="Atdi.Modules.Sdrn.MessageBus">
+      <HintPath>..\..\..\Delivery\Atdi.Sdrn\Device\ClientApi\BinRelease\Atdi.Modules.Sdrn.MessageBus.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.1.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
@@ -141,11 +134,11 @@
     </Reference>
     <Reference Include="RohdeSchwarz.Tools.Net, Version=1.0.0.0, Culture=neutral, PublicKeyToken=a4e32815b8e4d134, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\x64\Debug\bin\RohdeSchwarz.Tools.Net.dll</HintPath>
+      <HintPath>..\..\..\Delivery\Atdi.Sdrn\Device\ControlU\BinDebug\RohdeSchwarz.Tools.Net.dll</HintPath>
     </Reference>
     <Reference Include="RohdeSchwarz.ViCom.Net, Version=1.0.0.0, Culture=neutral, PublicKeyToken=a4e32815b8e4d134, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\x64\Debug\bin\RohdeSchwarz.ViCom.Net.dll</HintPath>
+      <HintPath>..\..\..\Delivery\Atdi.Sdrn\Device\ControlU\BinDebug\RohdeSchwarz.ViCom.Net.dll</HintPath>
     </Reference>
     <Reference Include="SharpGL, Version=2.4.0.0, Culture=neutral, PublicKeyToken=27fc851303210b27, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
