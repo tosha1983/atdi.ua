@@ -1,0 +1,933 @@
+﻿<UserControl x:Class="ControlU.Controls.MobileMon"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ControlU.Controls"
+             xmlns:ident="clr-namespace:ControlU.Controls.Identification"
+             xmlns:meas="clr-namespace:ControlU.Controls.Meas"
+             mc:Ignorable="d" 
+             d:DesignHeight="500" d:DesignWidth="1300">
+    <Grid >
+        <Grid.Resources>
+            <local:FreqConverter x:Key="FreqConverter"/>
+            <local:LocalBooleanDirectToVisibilityConverter x:Key="DirectToVisibilityConverter"/>
+        </Grid.Resources>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition MinWidth="300" Width="5*"/>
+            <ColumnDefinition Width="7"/>
+            <ColumnDefinition Width="5*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="27"/>
+            <RowDefinition Height="193*"/>
+        </Grid.RowDefinitions>
+        <GridSplitter Margin="1,5" HorizontalAlignment="Center" Grid.RowSpan="5" Grid.Column="1" Panel.ZIndex="1">
+            <GridSplitter.Template>
+                <ControlTemplate TargetType="{x:Type GridSplitter}">
+                    <Grid>
+                        <Button>
+                            <Grid VerticalAlignment="Center">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="5"/>
+                                    <RowDefinition Height="5"/>
+                                    <RowDefinition Height="5"/>
+                                    <RowDefinition Height="5"/>
+                                </Grid.RowDefinitions>
+                                <Ellipse Fill="{DynamicResource Brush_Blue_Light}" Height="3" Width="3" VerticalAlignment="Center" Grid.Row="0" />
+                                <Ellipse Fill="{DynamicResource Brush_Blue_Light}" Height="3" Width="3" VerticalAlignment="Center" Grid.Row="1" />
+                                <Ellipse Fill="{DynamicResource Brush_Blue_Light}" Height="3" Width="3" VerticalAlignment="Center" Grid.Row="2" />
+                                <Ellipse Fill="{DynamicResource Brush_Blue_Light}" Height="3" Width="3" VerticalAlignment="Center" Grid.Row="3" />
+                            </Grid>
+                        </Button>
+                        <Rectangle Fill="#00FFFFFF" />
+                    </Grid>
+                </ControlTemplate>
+            </GridSplitter.Template>
+        </GridSplitter>
+
+
+        <Expander Header="{DynamicResource Settings}" Margin="4,2,0,0" Panel.ZIndex="2" VerticalAlignment="Top" HorizontalAlignment="Left" Grid.RowSpan="2">
+            <TabControl TabStripPlacement="Left" Margin="2,8,2,2">
+                <TabControl.Effect>
+                    <!--// opacity does not need to be specified but it looks cooler when you do-->
+                    <DropShadowEffect BlurRadius="20" ShadowDepth="0" Opacity="0.8" Color="{DynamicResource Foreground_NormalColor}" />
+                </TabControl.Effect>
+                <TabItem Header="GSM" Width="70" FontSize="16" Height="25" VerticalAlignment="Bottom">
+                    <TabItem.Resources>
+                        <Style TargetType="{x:Type TabItem}" BasedOn="{StaticResource {x:Type TabItem}}">
+                            <Setter Property="Visibility" Value="Visible" />
+                            <Style.Triggers>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding Equipments_Settings.RuSTSMx.UseEquipment, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True"/>
+                                        <Condition Binding="{Binding TSMxReceiver_Settings.Option.GSM, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="0"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding Equipments_Settings.RuSTSMx.UseEquipment, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True"/>
+                                        <Condition Binding="{Binding TSMxReceiver_Settings.Option.v, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="2"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TabItem.Resources>
+                    <ListBox ItemsSource="{Binding TSMxReceiver_Settings.GSM.Bands}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Background="{x:Null}" BorderBrush="{x:Null}" HorizontalContentAlignment="Stretch">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="#FF007ACC" CornerRadius="2" BorderThickness="1" Margin="0,2,0,2">
+                                    <Grid Margin="4" Width="Auto">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="5"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Path Data="{DynamicResource ArrowRLeftStop_PathData}" Stretch="Uniform" Width="14" Height="14" Stroke="{DynamicResource Brush_Foreground_Normal}"/>
+                                        <TextBlock Text="{Binding Path=FreqStart,Converter={StaticResource FreqConverter}}" FontSize="12" Grid.Row="0" Grid.Column="1"/>
+
+                                        <Path Data="{DynamicResource ArrowRightStop_PathData}" Stretch="Uniform" Width="14" Height="14" Stroke="{DynamicResource Brush_Foreground_Normal}" Grid.Column="4"/>
+                                        <TextBlock Text="{Binding Path=FreqStop,Converter={StaticResource FreqConverter}}" FontSize="12" Grid.Row="0" Grid.Column="3"/>
+
+                                        <DockPanel Grid.Row="2" Grid.ColumnSpan="4">
+                                            <TextBlock Text="Use" Margin="0,0,2,0" FontSize="14" VerticalAlignment="Center"/>
+                                            <CheckBox IsChecked="{Binding Path=Use, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                      Checked="SettingsFreqUse_Changed" Unchecked="SettingsFreqUse_Changed"
+                                                      VerticalAlignment="Center" Height="20" Margin="2,0" Style="{DynamicResource CheckBox_Switcher}" HorizontalAlignment="Left"/>
+                                        </DockPanel>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                        <!--<ListBox.Resources>
+                            <Style TargetType="{x:Type TextBox}">
+                                <Setter Property="IsEnabled" Value="True"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=RunMeasDVB, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ListBox.Resources>-->
+                    </ListBox>
+                </TabItem>
+                <TabItem Header="UMTS" Width="70" FontSize="16" Height="25" VerticalAlignment="Bottom">
+                    <TabItem.Resources>
+                        <Style TargetType="{x:Type TabItem}" BasedOn="{StaticResource {x:Type TabItem}}">
+                            <Setter Property="Visibility" Value="Visible" />
+                            <Style.Triggers>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding Equipments_Settings.RuSTSMx.UseEquipment, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True"/>
+                                        <Condition Binding="{Binding TSMxReceiver_Settings.Option.UMTS, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="0"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding Equipments_Settings.RuSTSMx.UseEquipment, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True"/>
+                                        <Condition Binding="{Binding TSMxReceiver_Settings.Option.UMTS, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="2"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TabItem.Resources>
+                    <ListBox ItemsSource="{Binding TSMxReceiver_Settings.UMTS.Freqs}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Background="{x:Null}" BorderBrush="{x:Null}" HorizontalContentAlignment="Stretch">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="#FF007ACC" CornerRadius="2" BorderThickness="1" Margin="0,2,0,2">
+                                    <Grid Margin="4" Width="Auto">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="5"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Freq Dn" FontSize="12" VerticalAlignment="Center"/>
+                                        <TextBlock Text="{Binding Path=FreqDn,Converter={StaticResource FreqConverter}}" FontSize="12" Grid.Row="0" Grid.Column="2"/>
+
+                                        <DockPanel Grid.Row="2" Grid.ColumnSpan="4">
+                                            <TextBlock Text="Use" Margin="0,0,2,0" FontSize="14" VerticalAlignment="Center"/>
+                                            <CheckBox IsChecked="{Binding Path=Use, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                      Checked="SettingsFreqUse_Changed" Unchecked="SettingsFreqUse_Changed"
+                                                      VerticalAlignment="Center" Height="20" Margin="2,0" Style="{DynamicResource CheckBox_Switcher}" HorizontalAlignment="Left"/>
+                                        </DockPanel>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                        <!--<ListBox.Resources>
+                            <Style TargetType="{x:Type TextBox}">
+                                <Setter Property="IsEnabled" Value="True"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=RunMeasDVB, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ListBox.Resources>-->
+                    </ListBox>
+                </TabItem>
+                <TabItem Header="LTE" Width="70" FontSize="16" Height="25" VerticalAlignment="Bottom">
+                    <TabItem.Resources>
+                        <Style TargetType="{x:Type TabItem}" BasedOn="{StaticResource {x:Type TabItem}}">
+                            <Setter Property="Visibility" Value="Visible" />
+                            <Style.Triggers>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding Equipments_Settings.RuSTSMx.UseEquipment, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True"/>
+                                        <Condition Binding="{Binding TSMxReceiver_Settings.Option.LTE, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="0"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding Equipments_Settings.RuSTSMx.UseEquipment, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True"/>
+                                        <Condition Binding="{Binding TSMxReceiver_Settings.Option.LTE, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="2"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TabItem.Resources>
+                    <ListBox ItemsSource="{Binding TSMxReceiver_Settings.LTE.Freqs}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Background="{x:Null}" BorderBrush="{x:Null}" HorizontalContentAlignment="Stretch">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="#FF007ACC" CornerRadius="2" BorderThickness="1" Margin="0,2,0,2">
+                                    <Grid Margin="4" Width="Auto">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="5"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Freq Dn" FontSize="12" VerticalAlignment="Center"/>
+                                        <TextBlock Text="{Binding Path=FreqDn,Converter={StaticResource FreqConverter}}" FontSize="12" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center"/>
+
+                                        <DockPanel Grid.Row="2" Grid.ColumnSpan="4">
+                                            <TextBlock Text="Use" Margin="0,0,2,0" FontSize="14" VerticalAlignment="Center"/>
+                                            <CheckBox IsChecked="{Binding Path=Use, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                      Checked="SettingsFreqUse_Changed" Unchecked="SettingsFreqUse_Changed"
+                                                      VerticalAlignment="Center" Height="20" Margin="2,0" Style="{DynamicResource CheckBox_Switcher}" HorizontalAlignment="Left"/>
+                                        </DockPanel>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                        <!--<ListBox.Resources>
+                            <Style TargetType="{x:Type TextBox}">
+                                <Setter Property="IsEnabled" Value="True"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=RunMeasDVB, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ListBox.Resources>-->
+                    </ListBox>
+                </TabItem>
+                <TabItem Header="CDMA" Width="70" FontSize="16" Height="25" VerticalAlignment="Bottom">
+                    <TabItem.Resources>
+                        <Style TargetType="{x:Type TabItem}" BasedOn="{StaticResource {x:Type TabItem}}">
+                            <Setter Property="Visibility" Value="Visible" />
+                            <Style.Triggers>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding Equipments_Settings.RuSTSMx.UseEquipment, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True"/>
+                                        <Condition Binding="{Binding TSMxReceiver_Settings.Option.CDMA, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="0"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding Equipments_Settings.RuSTSMx.UseEquipment, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True"/>
+                                        <Condition Binding="{Binding TSMxReceiver_Settings.Option.CDMA, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="2"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TabItem.Resources>
+                    <ListBox ItemsSource="{Binding TSMxReceiver_Settings.CDMA.Freqs}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Background="{x:Null}" BorderBrush="{x:Null}" HorizontalContentAlignment="Stretch">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="#FF007ACC" CornerRadius="2" BorderThickness="1" Margin="0,2,0,2">
+                                    <Grid Margin="4" Width="Auto">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="5"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Freq Dn" FontSize="12"/>
+                                        <TextBlock Text="{Binding Path=FreqDn,Converter={StaticResource FreqConverter}}" FontSize="12" Grid.Row="0" Grid.Column="2"/>
+
+                                        <DockPanel Grid.Row="2" Grid.ColumnSpan="3">
+                                            <TextBlock Text="Use" Margin="0,0,2,0" FontSize="12" VerticalAlignment="Center"/>
+                                            <CheckBox IsChecked="{Binding Path=Use, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                      Checked="SettingsFreqUse_Changed" Unchecked="SettingsFreqUse_Changed"
+                                                      VerticalAlignment="Center" Height="20" Margin="2,0" Style="{DynamicResource CheckBox_Switcher}" 
+                                                      HorizontalAlignment="Left"/>
+                                            <TextBlock Text="Off(CDMA)/On(EVDO)" Margin="5,0,0,0" FontSize="12" VerticalAlignment="Center"/>
+                                            <CheckBox IsChecked="{Binding Path=EVDOvsCDMA, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                      Checked="SettingsFreqUse_Changed" Unchecked="SettingsFreqUse_Changed"
+                                                      VerticalAlignment="Center" Height="20" Margin="2,0" Style="{DynamicResource CheckBox_Switcher}"
+                                                      HorizontalAlignment="Left"/>
+                                        </DockPanel>
+
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                        <!--<ListBox.Resources>
+                            <Style TargetType="{x:Type TextBox}">
+                                <Setter Property="IsEnabled" Value="True"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=RunMeasDVB, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ListBox.Resources>-->
+                    </ListBox>
+                </TabItem>
+                <TabItem Header="ACD" Width="70" FontSize="16" Height="25" VerticalAlignment="Bottom">
+                    <TabItem.Resources>
+                        <Style TargetType="{x:Type TabItem}" BasedOn="{StaticResource {x:Type TabItem}}">
+                            <Setter Property="Visibility" Value="Visible" />
+                            <Style.Triggers>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding Equipments_Settings.RuSTSMx.UseEquipment, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True"/>
+                                        <Condition Binding="{Binding TSMxReceiver_Settings.Option.ACD, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="0"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding Equipments_Settings.RuSTSMx.UseEquipment, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True"/>
+                                        <Condition Binding="{Binding TSMxReceiver_Settings.Option.ACD, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="2"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TabItem.Resources>
+                    <StackPanel Width="190" Margin="4">
+                        <TextBlock Text="Bands" HorizontalAlignment="Center"/>
+
+                        <ComboBox ItemsSource="{Binding Path=TSMxReceiver_Settings.ACD.Data}" VerticalAlignment="Center" Height="25">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="0,1">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="50"/>
+                                            <ColumnDefinition Width="90"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{Binding TechStr,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                        <TextBlock Text="{Binding BandStr,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="1"/>
+                                        <CheckBox IsChecked="{Binding Use, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
+                                                  Checked="SettingsFreqUse_Changed" Unchecked="SettingsFreqUse_Changed"
+                                                  Height="23" HorizontalAlignment="Right" Margin="5,0" VerticalAlignment="Stretch" Grid.Column="2" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                        <TextBlock Text="Measurement Mode" HorizontalAlignment="Center"/>
+                        <ComboBox SelectedIndex="{Binding Path=TSMxReceiver_Settings.ACD.MeasurementMode,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                  VerticalAlignment="Center" Height="25" SelectionChanged="SettingsACD_Changed">
+                            <ComboBoxItem Content="Not Selected" Visibility="Collapsed"/>
+                            <ComboBoxItem Content="SIMPLE" />
+                            <ComboBoxItem Content="SMART" />
+                        </ComboBox>
+
+                        <TextBlock Text="Sensitivity" HorizontalAlignment="Center"/>
+                        <ComboBox SelectedIndex="{Binding Path=TSMxReceiver_Settings.ACD.Sensitivity,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                  VerticalAlignment="Center" Height="25" SelectionChanged="SettingsACD_Changed">
+                            <ComboBoxItem Content="Not Selected" Visibility="Collapsed"/>
+                            <ComboBoxItem Content="FAIR" />
+                            <ComboBoxItem Content="GOOD" />
+                            <ComboBoxItem Content="EXCELLENT" />
+                        </ComboBox>
+
+                    </StackPanel>
+                </TabItem>
+                <!--<TabItem Header="WRLS" Width="70" FontSize="16" Height="25"
+                         Visibility="{Binding Equipments_Settings.WR61.UseEquipment,Converter={StaticResource DirectToVisibilityConverter}}">
+                    <ListBox x:Name="WRLS_ScanList" ItemsSource="{Binding WRLSFreqList}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Background="{x:Null}" BorderBrush="{x:Null}" Grid.Row="2" HorizontalContentAlignment="Stretch">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="#FF007ACC" CornerRadius="2" BorderThickness="1" Margin="0,2,0,2" Grid.Row="2" >
+                                    <Grid Margin="4" Width="Auto">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="FreqStart" Margin="0,0,5,0" FontSize="12" Grid.Row="0" Grid.Column="0"/>
+                                        <TextBlock Text="{Binding Path=FreqStart}" FontSize="12" Grid.Row="0" Grid.Column="1"/>
+
+                                        <TextBlock Text="FreqStop" Margin="0,0,5,0" FontSize="12" Grid.Row="0" Grid.Column="2"/>
+                                        <TextBlock Text="{Binding Path=FreqStop}" FontSize="12" Grid.Row="0" Grid.Column="3" TextWrapping="Wrap"/>
+
+                                        <TextBlock Text="Board" Margin="0,0,5,0" FontSize="12" Grid.Row="1" Grid.Column="0"/>
+                                        <TextBlock Text="{Binding Path=Board}" FontSize="12" Grid.Row="1" Grid.Column="1" TextWrapping="Wrap" Margin="0,0,4,0"/>
+
+                                        <TextBlock Text="BW" Margin="0,0,5,0" FontSize="12" Grid.Row="1" Grid.Column="2"/>
+                                        <TextBlock Text="{Binding Path=BW}" FontSize="12" Grid.Row="1" Grid.Column="3" TextWrapping="Wrap"/>
+
+                                        <TextBlock Text="Use" Margin="0,0,5,0" FontSize="14" Grid.Row="2" Grid.Column="0" />
+                                        <CheckBox  IsChecked="{Binding Path=Use, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Checked="WRLSFreqListUse_Changed" Unchecked="WRLSFreqListUse_Changed" VerticalAlignment="Center" Height="20" Margin="2,0" Foreground="#FF4F4F4F" HorizontalAlignment="Left" Width="62" Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2" />
+
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                        <ListBox.Resources>
+                            <Style TargetType="{x:Type TextBox}">
+                                <Setter Property="IsEnabled" Value="True"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=RunMeasDVB, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ListBox.Resources>
+                    </ListBox>
+
+                </TabItem>-->
+            </TabControl>
+
+        </Expander>
+
+        <DockPanel Grid.ColumnSpan="2" Margin="140,0,0,0" HorizontalAlignment="Left">
+            <Button x:Name="StateMeasMon_btn" Click="StateMeasMon_Click" ToolTip="{DynamicResource EnableMeas}" VerticalAlignment="Center" Width="87">
+                <DockPanel>
+                    <TextBlock Text="Meas "/>
+                    <Path Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Center" Width="35" Margin="4" Height="10" >
+                        <Path.Data>
+                            <RectangleGeometry Rect="0,0 140,39" RadiusX="10" RadiusY="10" />
+                        </Path.Data>
+                        <Path.Resources>
+                            <Style TargetType="Path">
+                                <Setter Property="Fill" Value="#FF787878"></Setter>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=MeasMonState, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                        <Setter Property="Fill" Value="#FF4696CC"></Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Path.Resources>
+                    </Path>
+                </DockPanel>
+            </Button>
+            <Button x:Name="StateTrackMon_btn" Click="StateTrackMon_Click" ToolTip="{DynamicResource EnableMeas}" VerticalAlignment="Center" Width="87" Margin="10,0,0,0">
+                <DockPanel>
+                    <TextBlock Text="Track "/>
+                    <Path Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Center" Width="35" Margin="4" Height="10" >
+                        <Path.Data>
+                            <RectangleGeometry Rect="0,0 140,39" RadiusX="10" RadiusY="10" />
+                        </Path.Data>
+                        <Path.Resources>
+                            <Style TargetType="Path">
+                                <Setter Property="Fill" Value="#FF787878"></Setter>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=MeasTrackState, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                        <Setter Property="Fill" Value="#FF4696CC"></Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Path.Resources>
+                    </Path>
+                </DockPanel>
+            </Button>
+
+            <Button Visibility="Collapsed" Click="SendToATDI_Click" Tag="ATDI" ToolTip="Включить измерение" ClickMode="Press" Grid.Column="1" VerticalAlignment="Center" Width="87" Margin="5,0,0,0">
+                <DockPanel>
+                    <TextBlock Text="To ICSC"/>
+                    <!--<Path Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Center" Width="35" Margin="4" Height="10" >
+                        <Path.Data>
+                            <RectangleGeometry Rect="0,0 140,39" RadiusX="10" RadiusY="10" />
+                        </Path.Data>
+                        <Path.Resources>
+                            <Style TargetType="Path">
+                                <Setter Property="Fill" Value="#FF787878"></Setter>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=MeasMonATDIState, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                        <Setter Property="Fill" Value="#FF4696CC"></Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Path.Resources>
+                    </Path>-->
+                </DockPanel>
+
+            </Button>
+        </DockPanel>
+        <DockPanel Name="TSMxPanel" Visibility="Collapsed" HorizontalAlignment="Left" Margin="215,0,0,0">
+            <TextBlock Text="GSM" Margin="10,0,0,0"/>
+            <Path Data="M -1,0 A 1,1 0 1 1 1,0 M -1,0 A 1,1 0 1 0 1,0" Stretch="Uniform" VerticalAlignment="Center" 
+                              HorizontalAlignment="Center" Width="13" ToolTip="Filtr" Height="13">
+                <Path.Resources>
+                    <Style TargetType="Path">
+                        <Setter Property="Fill" Value="#FF787878"></Setter>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=GSMIsRuning, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                <Setter Property="Fill" Value="#FF4696CC"></Setter>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Path.Resources>
+            </Path>
+            <TextBlock Text="UMTS" Margin="10,0,0,0"/>
+            <Path Data="M -1,0 A 1,1 0 1 1 1,0 M -1,0 A 1,1 0 1 0 1,0" Stretch="Uniform" VerticalAlignment="Center" 
+                              HorizontalAlignment="Center" Width="13" ToolTip="Filtr" Height="13">
+                <Path.Resources>
+                    <Style TargetType="Path">
+                        <Setter Property="Fill" Value="#FF787878"></Setter>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=UMTSIsRuning, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                <Setter Property="Fill" Value="#FF4696CC"></Setter>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Path.Resources>
+            </Path>
+            <TextBlock Text="LTE" Margin="10,0,0,0"/>
+            <Path Data="M -1,0 A 1,1 0 1 1 1,0 M -1,0 A 1,1 0 1 0 1,0" Stretch="Uniform" VerticalAlignment="Center" 
+                              HorizontalAlignment="Center" Width="13" ToolTip="Filtr" Height="13">
+                <Path.Resources>
+                    <Style TargetType="Path">
+                        <Setter Property="Fill" Value="#FF787878"></Setter>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=LTEIsRuning, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                <Setter Property="Fill" Value="#FF4696CC"></Setter>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Path.Resources>
+            </Path>
+            <TextBlock Text="CDMA" Margin="10,0,0,0"/>
+            <Path Data="M -1,0 A 1,1 0 1 1 1,0 M -1,0 A 1,1 0 1 0 1,0" Stretch="Uniform" VerticalAlignment="Center" 
+                              HorizontalAlignment="Center" Width="13" ToolTip="Filtr" Height="13">
+                <Path.Resources>
+                    <Style TargetType="Path">
+                        <Setter Property="Fill" Value="#FF787878"></Setter>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=CDMAIsRuning, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                <Setter Property="Fill" Value="#FF4696CC"></Setter>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Path.Resources>
+            </Path>
+            <TextBlock Text="GNSS" Margin="10,0,0,0"/>
+            <Path Data="M -1,0 A 1,1 0 1 1 1,0 M -1,0 A 1,1 0 1 0 1,0" Stretch="Uniform" VerticalAlignment="Center" 
+                              HorizontalAlignment="Center" Width="13" ToolTip="Filtr" Height="13">
+                <Path.Resources>
+                    <Style TargetType="Path">
+                        <Setter Property="Fill" Value="#FF787878"></Setter>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=GPSIsRuning, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                <Setter Property="Fill" Value="#FF4696CC"></Setter>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Path.Resources>
+            </Path>
+            <TextBlock Text="RFPS" Margin="10,0,0,0"/>
+            <Path Data="M -1,0 A 1,1 0 1 1 1,0 M -1,0 A 1,1 0 1 0 1,0" Stretch="Uniform" VerticalAlignment="Center" 
+                              HorizontalAlignment="Center" Width="13" ToolTip="Filtr" Height="13">
+                <Path.Resources>
+                    <Style TargetType="Path">
+                        <Setter Property="Fill" Value="#FF787878"></Setter>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=RFPSIsRuning, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                <Setter Property="Fill" Value="#FF4696CC"></Setter>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Path.Resources>
+            </Path>
+            <TextBlock Text="ACD" Margin="10,0,0,0"/>
+            <Path Data="M -1,0 A 1,1 0 1 1 1,0 M -1,0 A 1,1 0 1 0 1,0" Stretch="Uniform" VerticalAlignment="Center" 
+                  HorizontalAlignment="Center" Width="13" ToolTip="Filtr" Height="13">
+                <Path.Resources>
+                    <Style TargetType="Path">
+                        <Setter Property="Fill" Value="#FF787878"></Setter>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=ACDIsRuning, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                <Setter Property="Fill" Value="#FF4696CC"></Setter>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Path.Resources>
+            </Path>
+        </DockPanel>
+
+        <Grid Grid.Column="0" Margin="0,5,5,5" Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="7"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
+            <ListView Background="{x:Null}" BorderBrush="{x:Null}" VirtualizingStackPanel.ScrollUnit="Pixel" Margin="0,0,25,0">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListViewItem}">
+                        <Style.Resources>
+                            <!-- Foreground for Selected ListViewItem -->
+                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" 
+                                 Color="Black"/>
+                            <!-- Background for Selected ListViewItem -->
+                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
+                                 Color="Transparent"/>
+                        </Style.Resources>
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListViewItem HorizontalContentAlignment="Stretch">
+                    <ident:GSM x:Name="Identification_GSM">
+                        <ident:GSM.Resources>
+                            <Style TargetType="{x:Type ident:GSM}">
+                                <Setter Property="Visibility" Value="Visible" />
+                                <Style.Triggers>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding Equipments_Settings.RuSTSMx.UseEquipment, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True"/>
+                                            <Condition Binding="{Binding TSMxReceiver_Settings.Option.GSM, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="0"/>
+                                        </MultiDataTrigger.Conditions>
+                                        <MultiDataTrigger.Setters>
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </MultiDataTrigger.Setters>
+                                    </MultiDataTrigger>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding Equipments_Settings.RuSTSMx.UseEquipment, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True"/>
+                                            <Condition Binding="{Binding TSMxReceiver_Settings.Option.GSM, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="2"/>
+                                        </MultiDataTrigger.Conditions>
+                                        <MultiDataTrigger.Setters>
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </MultiDataTrigger.Setters>
+                                    </MultiDataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ident:GSM.Resources>
+                    </ident:GSM>
+                </ListViewItem>
+                <ListViewItem HorizontalContentAlignment="Stretch">
+                    <ident:UMTS x:Name="Identification_UMTS">
+                        <ident:UMTS.Resources>
+                            <Style TargetType="{x:Type ident:UMTS}">
+                                <Setter Property="Visibility" Value="Visible" />
+                                <Style.Triggers>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding Equipments_Settings.RuSTSMx.UseEquipment, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True"/>
+                                            <Condition Binding="{Binding TSMxReceiver_Settings.Option.UMTS, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="0"/>
+                                        </MultiDataTrigger.Conditions>
+                                        <MultiDataTrigger.Setters>
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </MultiDataTrigger.Setters>
+                                    </MultiDataTrigger>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding Equipments_Settings.RuSTSMx.UseEquipment, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True"/>
+                                            <Condition Binding="{Binding TSMxReceiver_Settings.Option.UMTS, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="2"/>
+                                        </MultiDataTrigger.Conditions>
+                                        <MultiDataTrigger.Setters>
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </MultiDataTrigger.Setters>
+                                    </MultiDataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ident:UMTS.Resources>
+                    </ident:UMTS>
+                </ListViewItem>
+                <ListViewItem HorizontalContentAlignment="Stretch">
+                    <ident:LTE x:Name="Identification_LTE">
+                        <ident:LTE.Resources>
+                            <Style TargetType="{x:Type ident:LTE}">
+                                <Setter Property="Visibility" Value="Visible" />
+                                <Style.Triggers>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding Equipments_Settings.RuSTSMx.UseEquipment, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True"/>
+                                            <Condition Binding="{Binding TSMxReceiver_Settings.Option.LTE, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="0"/>
+                                        </MultiDataTrigger.Conditions>
+                                        <MultiDataTrigger.Setters>
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </MultiDataTrigger.Setters>
+                                    </MultiDataTrigger>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding Equipments_Settings.RuSTSMx.UseEquipment, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True"/>
+                                            <Condition Binding="{Binding TSMxReceiver_Settings.Option.LTE, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="2"/>
+                                        </MultiDataTrigger.Conditions>
+                                        <MultiDataTrigger.Setters>
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </MultiDataTrigger.Setters>
+                                    </MultiDataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ident:LTE.Resources>
+                    </ident:LTE>
+                </ListViewItem>
+                <ListViewItem HorizontalContentAlignment="Stretch">
+                    <ident:CDMA x:Name="Identification_CDMA">
+                        <ident:CDMA.Resources>
+                            <Style TargetType="{x:Type ident:CDMA}">
+                                <Setter Property="Visibility" Value="Visible" />
+                                <Style.Triggers>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding Equipments_Settings.RuSTSMx.UseEquipment, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True"/>
+                                            <Condition Binding="{Binding TSMxReceiver_Settings.Option.CDMA, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="0"/>
+                                        </MultiDataTrigger.Conditions>
+                                        <MultiDataTrigger.Setters>
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </MultiDataTrigger.Setters>
+                                    </MultiDataTrigger>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding Equipments_Settings.RuSTSMx.UseEquipment, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True"/>
+                                            <Condition Binding="{Binding TSMxReceiver_Settings.Option.CDMA, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="2"/>
+                                        </MultiDataTrigger.Conditions>
+                                        <MultiDataTrigger.Setters>
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </MultiDataTrigger.Setters>
+                                    </MultiDataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ident:CDMA.Resources>
+                    </ident:CDMA>
+                </ListViewItem>
+                <!--Visibility="{Binding Equipments_Settings.RuSTSMx.UseEquipment,Converter={StaticResource DirectToVisibilityConverter}}"-->
+                <ListViewItem HorizontalContentAlignment="Stretch">
+                    <ident:ACD x:Name="Identification_ACD">
+                        <ident:ACD.Resources>
+                            <Style TargetType="{x:Type ident:ACD}">
+                                <Setter Property="Visibility" Value="Visible" />
+                                <Style.Triggers>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding Equipments_Settings.RuSTSMx.UseEquipment, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True"/>
+                                            <Condition Binding="{Binding TSMxReceiver_Settings.Option.ACD, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="0"/>
+                                        </MultiDataTrigger.Conditions>
+                                        <MultiDataTrigger.Setters>
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </MultiDataTrigger.Setters>
+                                    </MultiDataTrigger>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding Equipments_Settings.RuSTSMx.UseEquipment, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True"/>
+                                            <Condition Binding="{Binding TSMxReceiver_Settings.Option.ACD, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="2"/>
+                                        </MultiDataTrigger.Conditions>
+                                        <MultiDataTrigger.Setters>
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </MultiDataTrigger.Setters>
+                                    </MultiDataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ident:ACD.Resources>
+                    </ident:ACD>
+                </ListViewItem>
+            </ListView>
+            <Expander x:Name="SIBs_Expander" Margin="0,0,1,0" ExpandDirection="Left" Background="{DynamicResource Brush_Background_Dark}" BorderBrush="#FF99B4D1" HorizontalAlignment="Right" MaxHeight="{Binding ElementName=spec_info, Mode=OneWay,Path=ActualHeight}" Padding="0" BorderThickness="1" >
+                <Expander.Header>
+                    <TextBlock Text="SIBs" FontSize="20" Margin="0,0,-34,0" RenderTransformOrigin="0,0" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBlock.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform/>
+                                <SkewTransform/>
+                                <RotateTransform Angle="90"/>
+                                <TranslateTransform X="16"/>
+                            </TransformGroup>
+                        </TextBlock.RenderTransform>
+                    </TextBlock>
+                </Expander.Header>
+                <!--InformationBlocks-->
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <ItemsControl ItemsSource="{Binding Path=BTSSelectedItem.station_sys_info.information_blocks,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Margin="3" >
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Click="InformationBlock_Select_Click" Tag="{Binding datastring,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                        Style="{StaticResource {x:Type Button}}" Width="Auto" Margin="0,0,5,0">
+                                    <TextBlock Text="{Binding type,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Margin="5,2" FontSize="12" />
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Grid.Row="1" Padding="3" >
+                        <TextBlock Text="{Binding InformationBlock_TextData,UpdateSourceTrigger=PropertyChanged,Mode=OneWay}"
+                                                    Grid.Row="1" TextWrapping="Wrap" FontSize="12" Margin="5,0" VerticalAlignment="Top" />
+                    </ScrollViewer>
+                </Grid>
+
+
+            </Expander>
+
+            <GridSplitter VerticalAlignment="Center" Margin="0,0,1,0" HorizontalAlignment="Stretch" Grid.Row="1" Height="5" >
+                <GridSplitter.Template>
+                    <ControlTemplate TargetType="{x:Type GridSplitter}">
+                        <Grid>
+                            <Button>
+                                <Grid VerticalAlignment="Center">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="5"/>
+                                        <ColumnDefinition Width="5"/>
+                                        <ColumnDefinition Width="5"/>
+                                        <ColumnDefinition Width="5"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Ellipse Fill="{DynamicResource Brush_Blue_Light}" Height="3" Width="3" VerticalAlignment="Center" />
+                                    <Ellipse Fill="{DynamicResource Brush_Blue_Light}" Height="3" Width="3" VerticalAlignment="Center" Grid.Column="1" />
+                                    <Ellipse Fill="{DynamicResource Brush_Blue_Light}" Height="3" Width="3" VerticalAlignment="Center" Grid.Column="2" />
+                                    <Ellipse Fill="{DynamicResource Brush_Blue_Light}" Height="3" Width="3" VerticalAlignment="Center"  Grid.Column="3" />
+                                </Grid>
+                            </Button>
+                            <Rectangle Fill="#00FFFFFF" />
+                        </Grid>
+                    </ControlTemplate>
+                </GridSplitter.Template>
+            </GridSplitter>
+            <Grid Grid.Row="2" >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="27"/>
+                    <RowDefinition Height="200*"/>
+                </Grid.RowDefinitions>
+                <DockPanel Name="tsmxxx" Margin="100,0,0,0" Visibility="Collapsed">
+                    <TextBlock Name="frst" Text="{Binding status,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Width="170" HorizontalAlignment="Left"/>
+                    <TextBlock Name="frst2" Text="{Binding AutoMeas_Status,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Width="170" HorizontalAlignment="Left"/>
+                    <TextBlock Text="{Binding MeasMonItem.FreqDN,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Width="100" HorizontalAlignment="Left">
+                        <TextBlock.Style>
+                            <Style TargetType="{x:Type TextBlock}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=MeasMonItem.FreqDN}" Value="False">
+                                        <Setter Property="Background" Value="{x:Null}"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Path=FreqTrue}" Value="True">
+                                        <Setter Property="Background" Value="Aqua"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                </DockPanel>
+                <meas:MeasMonData x:Name="MonDataGrid_uc" Grid.RowSpan="2" MinHeight="40"/>
+            </Grid>
+        </Grid>
+        <Grid Grid.Column="2" Grid.RowSpan="2" Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="27"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="1" Orientation="Horizontal" Panel.ZIndex="2">
+                <Button x:Name="MobileMonSpectrum_btn" Click="SpectrumFromReceiver_Click" ClickMode="Press" HorizontalAlignment="Right" Width="23" IsDefault="True" Height="23" DockPanel.Dock="Right">
+                    <Path Data="M -1,0 A 1,1 0 1 1 1,0 M -1,0 A 1,1 0 1 0 1,0" Stretch="Uniform" VerticalAlignment="Center" 
+                          HorizontalAlignment="Center" Width="13" ToolTip="Спектр с приемника" Height="13">
+                        <Path.Resources>
+                            <Style TargetType="Path">
+                                <Setter Property="Fill" Value="#FF787878"></Setter>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ElementName=DrawSpec, Path=SpectrumFromDevice, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                        <Setter Property="Fill" Value="#FF4696CC"></Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Path.Resources>
+                    </Path>
+                </Button>
+            </StackPanel>
+            <local:DrawSpectrum x:Name="DrawSpec" Device="{Binding Path=MeasMons_Settings.SpectrumMeasDeviece,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                SpectrumFromDevice="True" ShowUpPanel="False" ShowDownPanel="True" Grid.Row="3" MinHeight="100"/>
+            <!--<local:MobileMonSpectrum x:Name="MobileMonSpectrum_uc" Grid.Row="3"/>-->
+            <GridSplitter VerticalAlignment="Center" Margin="0" HorizontalAlignment="Stretch" Grid.Row="4" Height="5" >
+                <GridSplitter.Template>
+                    <ControlTemplate TargetType="{x:Type GridSplitter}">
+                        <Grid>
+                            <Button>
+                                <Grid VerticalAlignment="Center">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="5"/>
+                                        <ColumnDefinition Width="5"/>
+                                        <ColumnDefinition Width="5"/>
+                                        <ColumnDefinition Width="5"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Ellipse Fill="{DynamicResource Brush_Blue_Light}" Height="3" Width="3" VerticalAlignment="Center" />
+                                    <Ellipse Fill="{DynamicResource Brush_Blue_Light}" Height="3" Width="3" VerticalAlignment="Center" Grid.Column="1" />
+                                    <Ellipse Fill="{DynamicResource Brush_Blue_Light}" Height="3" Width="3" VerticalAlignment="Center" Grid.Column="2" />
+                                    <Ellipse Fill="{DynamicResource Brush_Blue_Light}" Height="3" Width="3" VerticalAlignment="Center"  Grid.Column="3" />
+                                </Grid>
+                            </Button>
+                            <Rectangle Fill="#00FFFFFF" />
+                        </Grid>
+                    </ControlTemplate>
+                </GridSplitter.Template>
+            </GridSplitter>
+
+            <local:GlobalOSMMap Grid.Row="5" x:Name="MonMap" MinHeight="40"/>
+        </Grid>
+
+
+    </Grid>
+</UserControl>

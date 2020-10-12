@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PluginConfiguration>
+  <RootElement ListPlugins="SettingConfigurations">
+    <OwnerId>OID-BD12-A00-N00</OwnerId>
+    <ProductKey>020B-CJHO-TDNI-ZEEO-2KDI</ProductKey>
+    <SensorEquipmentTechId>MMS-02</SensorEquipmentTechId>
+    <RabbitHostName>109.237.91.29</RabbitHostName>
+    <RabbitVirtualHostName>/</RabbitVirtualHostName>
+    <RabbitHostPort>5672</RabbitHostPort>
+    <RabbitUserName>SDR_Client</RabbitUserName>
+    <RabbitPassword>32Xr567</RabbitPassword>
+    <SensorQueue>SENSORS_List</SensorQueue>
+    <SensorConfirmQueue>Event_Confirm_SENSORS_Send_</SensorConfirmQueue>
+    <TaskQueue>MEAS_TASK_Main_List_APPServer_</TaskQueue>
+    <ResultQueue>MEAS_SDR_RESULTS_Main_List_APPServer_</ResultQueue>
+    <ServerInstance>SDRNSV-SBD13-G65-3690</ServerInstance>
+ </RootElement>
+</PluginConfiguration>

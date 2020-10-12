@@ -1,0 +1,428 @@
+; 0;  1;KERNEL32                                               ;P;-1; 15
+; 0;  1;KERNEL32                                               ;S; 0;  0
+; 0;  2;TEST                                                   ;P;-1; 16
+; 0; 14;PHYLKERN_MESSAGE_TRACER                                ;P;-1; 18
+; 0; 16;MSGMAN                                                 ;P;-1;  1
+; 0; 48;VICOM_GSM                                              ;P;-1; 65
+; 0; 57;SOCKET_LINK_WORKER                                     ;P;-1; 97
+; 0; 57;SOCKET_LINK_WORKER<10:KERNEL32>                        ;S; 0;215
+; 0; 57;SOCKET_LINK_WORKER<10:PHYLIS_TIMER>                    ;S; 0; 10
+; 0; 57;SOCKET_LINK_WORKER<10:PHYLKERN_MESSAGE_TRACER>         ;S; 0;  9
+; 0; 57;SOCKET_LINK_WORKER<10:ROMES_REMOTE_CTRL>               ;S; 0;141
+; 0; 57;SOCKET_LINK_WORKER<10:SOCKET_LINK_WORKER>              ;S; 0;140
+; 0; 57;SOCKET_LINK_WORKER<3:>                                 ;S; 1;261
+; 0; 57;SOCKET_LINK_WORKER<3:>                                 ;S; 1;263
+; 0; 57;SOCKET_LINK_WORKER<3:>                                 ;S; 1;136
+; 0; 57;SOCKET_LINK_WORKER<3:>                                 ;S; 1;290
+; 0; 57;SOCKET_LINK_WORKER<3:>                                 ;S; 1;295
+; 0; 57;SOCKET_LINK_WORKER<3:BTS_LOCATION_FINDER>              ;S; 1; 91
+; 0; 57;SOCKET_LINK_WORKER<3:CDMA2000PNS>                      ;S; 1; 63
+; 0; 57;SOCKET_LINK_WORKER<3:CDMA2000_DEMODULATOR>             ;S; 1; 95
+; 0; 57;SOCKET_LINK_WORKER<3:CW_SCANNER>                       ;S; 1;169
+; 0; 57;SOCKET_LINK_WORKER<3:EVDO_DEMODULATOR>                 ;S; 1;106
+; 0; 57;SOCKET_LINK_WORKER<3:FIVEG_NR_SYNC_SCANNER>            ;S; 1;288
+; 0; 57;SOCKET_LINK_WORKER<3:GS3_WORKER>                       ;S; 1; 64
+; 0; 57;SOCKET_LINK_WORKER<3:GSM_DEMODULATOR>                  ;S; 1; 89
+; 0; 57;SOCKET_LINK_WORKER<3:KERNEL32>                         ;S; 1; 23
+; 0; 57;SOCKET_LINK_WORKER<3:L3DECODER>                        ;S; 1; 85
+; 0; 57;SOCKET_LINK_WORKER<3:LTE_DEMODULATOR>                  ;S; 1;112
+; 0; 57;SOCKET_LINK_WORKER<3:LTE_NBIOT_DEMODULATOR>            ;S; 1;173
+; 0; 57;SOCKET_LINK_WORKER<3:LTE_NBIOT_SCANNER>                ;S; 1;171
+; 0; 57;SOCKET_LINK_WORKER<3:LTE_SCANNER>                      ;S; 1;101
+; 0; 57;SOCKET_LINK_WORKER<3:PHYLIS_TIMER>                     ;S; 1; 20
+; 0; 57;SOCKET_LINK_WORKER<3:PHYLKERN_MESSAGE_TRACER>          ;S; 1; 21
+; 0; 57;SOCKET_LINK_WORKER<3:SOCKET_LINK_WORKER>               ;S; 1;139
+; 0; 57;SOCKET_LINK_WORKER<3:SWEEP_WORKER>                     ;S; 1; 71
+; 0; 57;SOCKET_LINK_WORKER<3:TD_SCDMA_DEMODULATOR>             ;S; 1;153
+; 0; 57;SOCKET_LINK_WORKER<3:TD_SCDMA_SCANNER>                 ;S; 1;152
+; 0; 57;SOCKET_LINK_WORKER<3:TETRA_DEMODULATOR>                ;S; 1;156
+; 0; 57;SOCKET_LINK_WORKER<3:TETRA_SCANNER>                    ;S; 1;114
+; 0; 57;SOCKET_LINK_WORKER<3:TSME_ADMIN>                       ;S; 1;125
+; 0; 57;SOCKET_LINK_WORKER<3:TSMU_WORKER<1:TSMU_DEV_UTILITY>>  ;S; 1; 42
+; 0; 57;SOCKET_LINK_WORKER<3:TSMU_WORKER<1:TSMU_ERROR_HANDLER>>;S; 1; 43
+; 0; 57;SOCKET_LINK_WORKER<3:TSMU_WORKER<1:TSMU_MAINTANANCE>>  ;S; 1; 41
+; 0; 57;SOCKET_LINK_WORKER<3:TSMU_WORKER<1:TSMU_POST_OFFICE>>  ;S; 1; 44
+; 0; 57;SOCKET_LINK_WORKER<3:TSMU_WORKER<1:TSMU_REC>>          ;S; 1; 40
+; 0; 57;SOCKET_LINK_WORKER<3:TSMU_WORKER<1:TSMU_RS232>>        ;S; 1; 45
+; 0; 57;SOCKET_LINK_WORKER<3:TSMU_WORKER>                      ;S; 1; 47
+; 0; 57;SOCKET_LINK_WORKER<3:TSMW_ADMIN>                       ;S; 1;102
+; 0; 57;SOCKET_LINK_WORKER<3:TSMW_RF_POWER_SCAN>               ;S; 1;113
+; 0; 57;SOCKET_LINK_WORKER<3:TSMW_WORKER>                      ;S; 1; 92
+; 0; 57;SOCKET_LINK_WORKER<3:UMTS_DEMODULATOR>                 ;S; 1; 61
+; 0; 57;SOCKET_LINK_WORKER<3:UMTS_PNSCANNER>                   ;S; 1; 31
+; 0; 57;SOCKET_LINK_WORKER<3:WIMAX_DEMODULATOR>                ;S; 1;127
+; 0; 57;SOCKET_LINK_WORKER<3:WIMAX_SCANNER>                    ;S; 1;100
+; 0; 64;VICOM_CDMA2000                                         ;P;-1; 80
+; 0; 66;PHYLIS_TIMER                                           ;P;-1; 82
+; 0; 68;VICOM_CW                                               ;P;-1; 84
+; 0; 70;VICOM_RF_POWERSCAN                                     ;P;-1; 86
+; 0; 71;VICOM_WCDMA                                            ;P;-1; 87
+; 0; 74;VICOM_RS232                                            ;P;-1; 90
+; 0;100;VICOM_GSM_TSMW                                         ;P;-1;116
+; 0;101;VICOM_WCDMA_TSMW                                       ;P;-1;117
+; 0;102;VICOM_CDMA2000_TSMW                                    ;P;-1;118
+; 0;107;VICOM_POSITIONESTIMATOR                                ;P;-1;123
+; 0;110;VICOM_LTE_TSMW                                         ;P;-1;126
+; 0;112;VICOM_RF_POWERSCAN_TSMW                                ;P;-1;128
+; 0;113;VICOM_WIMAX_TSMW                                       ;P;-1;129
+; 0;114;VICOM_TETRA_TSMW                                       ;P;-1;130
+; 0;117;VICOM_GPS_TSMW                                         ;P;-1;133
+; 0;126;VICOM_GSM_TSME                                         ;P;-1;142
+; 0;127;VICOM_WCDMA_TSME                                       ;P;-1;143
+; 0;128;VICOM_CDMA2000_TSME                                    ;P;-1;144
+; 0;129;VICOM_LTE_TSME                                         ;P;-1;145
+; 0;130;VICOM_RF_POWER_SCAN_TSME                               ;P;-1;146
+; 0;131;VICOM_WIMAX_TSME                                       ;P;-1;147
+; 0;132;VICOM_TETRA_TSME                                       ;P;-1;148
+; 0;133;VICOM_TD_SCDMA_TSME                                    ;P;-1;149
+; 0;134;VICOM_TD_SCDMA_TSMW                                    ;P;-1;150
+; 0;135;VICOM_GPS_TSME                                         ;P;-1;151
+; 0;141;VICOM_ACD                                              ;P;-1;157
+; 0;146;VICOM_CWSCAN_TSMW                                      ;P;-1;162
+; 0;147;VICOM_CWSCAN_TSME                                      ;P;-1;163
+; 0;148;VICOM_GPS_TSMXPPS2                                     ;P;-1; 58
+; 0;149;GPS_TSMXPPS2                                           ;P;-1; 57
+; 0;177;VICOM_LTE_NBIOT_TSME                                   ;P;-1; 59
+; 0;178;VICOM_LTE_NBIOT_TSMW                                   ;P;-1; 60
+; 0;181;                                                       ;P;-1; 56
+; 0;183;VICOM_IQ_STREAM_TSME                                   ;P;-1; 70
+; 0;184;IQ_STREAMING                                           ;P;-1; 83
+; 0;187;WCDMA_DRIFT_SCANNER                                    ;P;-1;131
+; 0;192;                                                       ;P;-1; 93
+; 0;196;                                                       ;P;-1; 94
+; 1;273;TSMU_REC                                               ;P;-1; 40
+; 1;274;TSMU_MAINTANANCE                                       ;P;-1; 41
+; 1;275;TSMU_DEV_UTILITY                                       ;P;-1; 42
+; 1;276;TSMU_ERROR_HANDLER                                     ;P;-1; 43
+; 1;277;TSMU_POST_OFFICE                                       ;P;-1; 44
+; 1;278;TSMU_RS232                                             ;P;-1; 45
+; 2;220;TSMW_MAIN                                              ;P;-1; 50
+; 2;221;TSMW_GPS                                               ;P;-1; 51
+; 2;222;TSMW_REC                                               ;P;-1; 52
+; 2;223;TSMW_RS232                                             ;P;-1; 53
+; 2;224;TSMW_DIGIQ                                             ;P;-1; 54
+; 3;  1;KERNEL32                                               ;P;-1; 23
+; 3;  1;KERNEL32                                               ;S; 0;  0
+; 3;  2;TEST                                                   ;P;-1; 22
+; 3; 14;PHYLKERN_MESSAGE_TRACER                                ;P;-1; 21
+; 3; 25;UMTS_PNSCANNER                                         ;P;-1; 31
+; 3; 35;TSMU_WORKER                                            ;P;-1; 47
+; 3; 35;TSMU_WORKER<1:TSMU_DEV_UTILITY>                        ;S; 0; 42
+; 3; 35;TSMU_WORKER<1:TSMU_ERROR_HANDLER>                      ;S; 0; 43
+; 3; 35;TSMU_WORKER<1:TSMU_MAINTANANCE>                        ;S; 0; 41
+; 3; 35;TSMU_WORKER<1:TSMU_POST_OFFICE>                        ;S; 0; 44
+; 3; 35;TSMU_WORKER<1:TSMU_REC>                                ;S; 0; 40
+; 3; 35;TSMU_WORKER<1:TSMU_RS232>                              ;S; 0; 45
+; 3; 44;UMTS_DEMODULATOR                                       ;P;-1; 61
+; 3; 46;CDMA2000PNS                                            ;P;-1; 63
+; 3; 47;GS3_WORKER                                             ;P;-1; 64
+; 3; 53;SWEEP_WORKER                                           ;P;-1; 71
+; 3; 57;SOCKET_LINK_WORKER                                     ;P;-1;139
+; 3; 57;SOCKET_LINK_WORKER<0:>                                 ;S; 0; 56
+; 3; 57;SOCKET_LINK_WORKER<0:>                                 ;S; 0; 93
+; 3; 57;SOCKET_LINK_WORKER<0:>                                 ;S; 0; 94
+; 3; 57;SOCKET_LINK_WORKER<0:IQ_STREAMING>                     ;S; 0; 83
+; 3; 57;SOCKET_LINK_WORKER<0:KERNEL32>                         ;S; 0; 15
+; 3; 57;SOCKET_LINK_WORKER<0:MSGMAN>                           ;S; 0;  1
+; 3; 57;SOCKET_LINK_WORKER<0:PHYLIS_TIMER>                     ;S; 0; 82
+; 3; 57;SOCKET_LINK_WORKER<0:PHYLKERN_MESSAGE_TRACER>          ;S; 0; 18
+; 3; 57;SOCKET_LINK_WORKER<0:SOCKET_LINK_WORKER>               ;S; 0; 97
+; 3; 57;SOCKET_LINK_WORKER<0:VICOM_ACD>                        ;S; 0;157
+; 3; 57;SOCKET_LINK_WORKER<0:VICOM_CDMA2000>                   ;S; 0; 80
+; 3; 57;SOCKET_LINK_WORKER<0:VICOM_CDMA2000_TSME>              ;S; 0;144
+; 3; 57;SOCKET_LINK_WORKER<0:VICOM_CDMA2000_TSMW>              ;S; 0;118
+; 3; 57;SOCKET_LINK_WORKER<0:VICOM_CW>                         ;S; 0; 84
+; 3; 57;SOCKET_LINK_WORKER<0:VICOM_CWSCAN_TSME>                ;S; 0;163
+; 3; 57;SOCKET_LINK_WORKER<0:VICOM_CWSCAN_TSMW>                ;S; 0;162
+; 3; 57;SOCKET_LINK_WORKER<0:VICOM_GPS_TSME>                   ;S; 0;151
+; 3; 57;SOCKET_LINK_WORKER<0:VICOM_GPS_TSMW>                   ;S; 0;133
+; 3; 57;SOCKET_LINK_WORKER<0:VICOM_GPS_TSMXPPS2>               ;S; 0; 58
+; 3; 57;SOCKET_LINK_WORKER<0:VICOM_GSM>                        ;S; 0; 65
+; 3; 57;SOCKET_LINK_WORKER<0:VICOM_GSM_TSME>                   ;S; 0;142
+; 3; 57;SOCKET_LINK_WORKER<0:VICOM_GSM_TSMW>                   ;S; 0;116
+; 3; 57;SOCKET_LINK_WORKER<0:VICOM_IQ_STREAM_TSME>             ;S; 0; 70
+; 3; 57;SOCKET_LINK_WORKER<0:VICOM_LTE_NBIOT_TSME>             ;S; 0; 59
+; 3; 57;SOCKET_LINK_WORKER<0:VICOM_LTE_NBIOT_TSMW>             ;S; 0; 60
+; 3; 57;SOCKET_LINK_WORKER<0:VICOM_LTE_TSME>                   ;S; 0;145
+; 3; 57;SOCKET_LINK_WORKER<0:VICOM_LTE_TSMW>                   ;S; 0;126
+; 3; 57;SOCKET_LINK_WORKER<0:VICOM_POSITIONESTIMATOR>          ;S; 0;123
+; 3; 57;SOCKET_LINK_WORKER<0:VICOM_RF_POWERSCAN>               ;S; 0; 86
+; 3; 57;SOCKET_LINK_WORKER<0:VICOM_RF_POWERSCAN_TSMW>          ;S; 0;128
+; 3; 57;SOCKET_LINK_WORKER<0:VICOM_RF_POWER_SCAN_TSME>         ;S; 0;146
+; 3; 57;SOCKET_LINK_WORKER<0:VICOM_RS232>                      ;S; 0; 90
+; 3; 57;SOCKET_LINK_WORKER<0:VICOM_TD_SCDMA_TSME>              ;S; 0;149
+; 3; 57;SOCKET_LINK_WORKER<0:VICOM_TD_SCDMA_TSMW>              ;S; 0;150
+; 3; 57;SOCKET_LINK_WORKER<0:VICOM_TETRA_TSME>                 ;S; 0;148
+; 3; 57;SOCKET_LINK_WORKER<0:VICOM_TETRA_TSMW>                 ;S; 0;130
+; 3; 57;SOCKET_LINK_WORKER<0:VICOM_WCDMA>                      ;S; 0; 87
+; 3; 57;SOCKET_LINK_WORKER<0:VICOM_WCDMA_TSME>                 ;S; 0;143
+; 3; 57;SOCKET_LINK_WORKER<0:VICOM_WCDMA_TSMW>                 ;S; 0;117
+; 3; 57;SOCKET_LINK_WORKER<0:VICOM_WIMAX_TSME>                 ;S; 0;147
+; 3; 57;SOCKET_LINK_WORKER<0:VICOM_WIMAX_TSMW>                 ;S; 0;129
+; 3; 57;SOCKET_LINK_WORKER<0:WCDMA_DRIFT_SCANNER>              ;S; 0;131
+; 3; 57;SOCKET_LINK_WORKER<10:>                                ;S; 1;293
+; 3; 57;SOCKET_LINK_WORKER<10:>                                ;S; 1;294
+; 3; 57;SOCKET_LINK_WORKER<10:CDMA2000PNS_ROMES_DRV>           ;S; 1; 17
+; 3; 57;SOCKET_LINK_WORKER<10:CIBTS>                           ;S; 1;  6
+; 3; 57;SOCKET_LINK_WORKER<10:CIDRV>                           ;S; 1;  5
+; 3; 57;SOCKET_LINK_WORKER<10:CIGSS>                           ;S; 1;  4
+; 3; 57;SOCKET_LINK_WORKER<10:CIPM>                            ;S; 1;  3
+; 3; 57;SOCKET_LINK_WORKER<10:CIPMN>                           ;S; 1; 12
+; 3; 57;SOCKET_LINK_WORKER<10:CITRG>                           ;S; 1;  8
+; 3; 57;SOCKET_LINK_WORKER<10:DRV_5G_NR_SCANNER>               ;S; 1;161
+; 3; 57;SOCKET_LINK_WORKER<10:DRV_5G_SCANNER>                  ;S; 1;160
+; 3; 57;SOCKET_LINK_WORKER<10:DRV_CW_SCANNER>                  ;S; 1;170
+; 3; 57;SOCKET_LINK_WORKER<10:DRV_TSMW_GPS>                    ;S; 1;108
+; 3; 57;SOCKET_LINK_WORKER<10:DRV_TSMW_LTE_SCANNER>            ;S; 1;109
+; 3; 57;SOCKET_LINK_WORKER<10:DRV_TSMW_RF_POWER_SCAN>          ;S; 1;119
+; 3; 57;SOCKET_LINK_WORKER<10:DRV_TSMW_TETRA_SCANNER>          ;S; 1;115
+; 3; 57;SOCKET_LINK_WORKER<10:DRV_WIMAX_SCANNER>               ;S; 1; 99
+; 3; 57;SOCKET_LINK_WORKER<10:GS3_FREQUENCY_REUSE_ANALYSER>    ;S; 1; 19
+; 3; 57;SOCKET_LINK_WORKER<10:GS3_ROMES_DRV>                   ;S; 1; 66
+; 3; 57;SOCKET_LINK_WORKER<10:GS3_ROMES_EXPORT>                ;S; 1; 67
+; 3; 57;SOCKET_LINK_WORKER<10:GS3_TM_SCAN_VIEW>                ;S; 1; 68
+; 3; 57;SOCKET_LINK_WORKER<10:GSM_BTS_LAYER>                   ;S; 1; 29
+; 3; 57;SOCKET_LINK_WORKER<10:K6_BTS_LAYER>                    ;S; 1; 30
+; 3; 57;SOCKET_LINK_WORKER<10:KERNEL32>                        ;S; 1;215
+; 3; 57;SOCKET_LINK_WORKER<10:MOBCIAT>                         ;S; 1;  7
+; 3; 57;SOCKET_LINK_WORKER<10:MSGMAN>                          ;S; 1; 11
+; 3; 57;SOCKET_LINK_WORKER<10:PE_ROMES_DRV>                    ;S; 1; 96
+; 3; 57;SOCKET_LINK_WORKER<10:PE_ROMES_EXPORT>                 ;S; 1;107
+; 3; 57;SOCKET_LINK_WORKER<10:PE_ROMES_FRAMEGRABBER>           ;S; 1;158
+; 3; 57;SOCKET_LINK_WORKER<10:PHYLIS_TIMER>                    ;S; 1; 10
+; 3; 57;SOCKET_LINK_WORKER<10:PHYLKERN_MESSAGE_TRACER>         ;S; 1;  9
+; 3; 57;SOCKET_LINK_WORKER<10:PREMEAS>                         ;S; 1;  2
+; 3; 57;SOCKET_LINK_WORKER<10:ROMES_DRIVER_REPOSITORY>         ;S; 1; 79
+; 3; 57;SOCKET_LINK_WORKER<10:ROMES_REMOTE_CTRL>               ;S; 1;141
+; 3; 57;SOCKET_LINK_WORKER<10:ROMES_TSMW_DEV_SCAN>             ;S; 1;120
+; 3; 57;SOCKET_LINK_WORKER<10:SOCKET_LINK_WORKER>              ;S; 1;140
+; 3; 57;SOCKET_LINK_WORKER<10:SQA_HOST>                        ;S; 1; 75
+; 3; 57;SOCKET_LINK_WORKER<10:SQA_WORKER>                      ;S; 1; 76
+; 3; 57;SOCKET_LINK_WORKER<10:SWEEP_HOST_APP>                  ;S; 1; 72
+; 3; 57;SOCKET_LINK_WORKER<10:TECCDMA2000>                     ;S; 1; 73
+; 3; 57;SOCKET_LINK_WORKER<10:TECCDMA2000DB>                   ;S; 1; 74
+; 3; 57;SOCKET_LINK_WORKER<10:TECLTE>                          ;S; 1;110
+; 3; 57;SOCKET_LINK_WORKER<10:TECLTEDB>                        ;S; 1;111
+; 3; 57;SOCKET_LINK_WORKER<10:TECTETRA>                        ;S; 1;121
+; 3; 57;SOCKET_LINK_WORKER<10:TECTETRADB>                      ;S; 1;122
+; 3; 57;SOCKET_LINK_WORKER<10:TECUMTS>                         ;S; 1; 35
+; 3; 57;SOCKET_LINK_WORKER<10:TECWIMAX>                        ;S; 1;103
+; 3; 57;SOCKET_LINK_WORKER<10:TECWIMAXDB>                      ;S; 1;104
+; 3; 57;SOCKET_LINK_WORKER<10:TEC_FIVEG>                       ;S; 1;155
+; 3; 57;SOCKET_LINK_WORKER<10:TEC_GSM>                         ;S; 1; 28
+; 3; 57;SOCKET_LINK_WORKER<10:TEC_LTE_NBIOT>                   ;S; 1;154
+; 3; 57;SOCKET_LINK_WORKER<10:TM_SCAN_VIEW>                    ;S; 1; 13
+; 3; 57;SOCKET_LINK_WORKER<10:TSMU_CLIENT_UTILS>               ;S; 1; 69
+; 3; 57;SOCKET_LINK_WORKER<10:TSMU_HOST_OPTION1>               ;S; 1; 62
+; 3; 57;SOCKET_LINK_WORKER<10:TSMU_ROMES_IBPM>                 ;S; 1; 49
+; 3; 57;SOCKET_LINK_WORKER<10:TSMX_ROMES_LM>                   ;S; 1; 88
+; 3; 57;SOCKET_LINK_WORKER<10:UMTS_BTS_LAYER>                  ;S; 1; 37
+; 3; 57;SOCKET_LINK_WORKER<10:UMTS_DRIVER_QUALCOM>             ;S; 1; 46
+; 3; 57;SOCKET_LINK_WORKER<10:UMTS_DRIVER_WORKER>              ;S; 1; 39
+; 3; 57;SOCKET_LINK_WORKER<10:VQA_HOST>                        ;S; 1; 77
+; 3; 57;SOCKET_LINK_WORKER<10:VQA_WORKER>                      ;S; 1; 78
+; 3; 65;EVDO_PNS                                               ;P;-1; 81
+; 3; 66;PHYLIS_TIMER                                           ;P;-1; 20
+; 3; 69;L3DECODER                                              ;P;-1; 85
+; 3; 73;GSM_DEMODULATOR                                        ;P;-1; 89
+; 3; 75;BTS_LOCATION_FINDER                                    ;P;-1; 91
+; 3; 76;TSMW_WORKER                                            ;P;-1; 92
+; 3; 76;TSMW_WORKER<2:TSMW_DIGIQ>                              ;S; 0; 54
+; 3; 76;TSMW_WORKER<2:TSMW_GPS>                                ;S; 0; 51
+; 3; 76;TSMW_WORKER<2:TSMW_MAIN>                               ;S; 0; 50
+; 3; 76;TSMW_WORKER<2:TSMW_REC>                                ;S; 0; 52
+; 3; 76;TSMW_WORKER<2:TSMW_RS232>                              ;S; 0; 53
+; 3; 79;CDMA2000_DEMODULATOR                                   ;P;-1; 95
+; 3; 82;FILTER_DESIGNER                                        ;P;-1; 98
+; 3; 84;WIMAX_SCANNER                                          ;P;-1;100
+; 3; 85;LTE_SCANNER                                            ;P;-1;101
+; 3; 86;TSMW_ADMIN                                             ;P;-1;102
+; 3; 89;WIMAX_SYNC                                             ;P;-1;105
+; 3; 90;EVDO_DEMODULATOR                                       ;P;-1;106
+; 3; 96;LTE_DEMODULATOR                                        ;P;-1;112
+; 3; 97;TSMW_RF_POWER_SCAN                                     ;P;-1;113
+; 3; 98;TETRA_SCANNER                                          ;P;-1;114
+; 3;108;TSME_WORKER                                            ;P;-1;124
+; 3;109;TSME_ADMIN                                             ;P;-1;125
+; 3;111;WIMAX_DEMODULATOR                                      ;P;-1;127
+; 3;116;LTE_MIMO_SCANNER                                       ;P;-1;132
+; 3;119;TSME_RESULT_PROCESSOR                                  ;P;-1;135
+; 3;121;TSME_OKL                                               ;P;-1;137
+; 3;122;TSME_MEMORY                                            ;P;-1;138
+; 3;136;TD_SCDMA_SCANNER                                       ;P;-1;152
+; 3;137;TD_SCDMA_DEMODULATOR                                   ;P;-1;153
+; 3;140;TETRA_DEMODULATOR                                      ;P;-1;156
+; 3;143;LTE_EMBMS_SCANNER                                      ;P;-1;159
+; 3;150;LTE_WB_SYNC                                            ;P;-1;166
+; 3;153;CW_SCANNER                                             ;P;-1;169
+; 3;155;LTE_NBIOT_SCANNER                                      ;P;-1;171
+; 3;157;LTE_NBIOT_DEMODULATOR                                  ;P;-1;173
+; 3;158;                                                       ;P;-1;174
+; 3;159;                                                       ;P;-1;175
+; 3;160;                                                       ;P;-1;260
+; 3;161;                                                       ;P;-1;261
+; 3;162;                                                       ;P;-1;262
+; 3;163;                                                       ;P;-1;263
+; 3;179;FIVEG_SCANNER                                          ;P;-1;134
+; 3;182;                                                       ;P;-1;136
+; 3;188;FIVEG_NR_SYNC_SCANNER                                  ;P;-1;288
+; 3;190;                                                       ;P;-1;290
+; 3;195;                                                       ;P;-1;295
+; 3;198;                                                       ;P;-1;298
+; 3;199;                                                       ;P;-1;299
+; 3;200;                                                       ;P;-1;300
+; 3;201;                                                       ;P;-1;301
+; 3;202;                                                       ;P;-1;302
+; 3;203;                                                       ;P;-1;303
+; 3;204;                                                       ;P;-1;304
+; 3;205;                                                       ;P;-1;305
+;10;  1;KERNEL32                                               ;P;-1;215
+;10;  1;KERNEL32                                               ;S; 0;  0
+;10;  2;TEST                                                   ;P;-1; 14
+;10;  7;PREMEAS                                                ;P;-1;  2
+;10;  8;CIPM                                                   ;P;-1;  3
+;10;  9;CIGSS                                                  ;P;-1;  4
+;10; 10;CIDRV                                                  ;P;-1;  5
+;10; 11;CIBTS                                                  ;P;-1;  6
+;10; 12;MOBCIAT                                                ;P;-1;  7
+;10; 13;CDMA2000PNS_ROMES_DRV                                  ;P;-1; 17
+;10; 14;PHYLKERN_MESSAGE_TRACER                                ;P;-1;  9
+;10; 15;GS3_FREQUENCY_REUSE_ANALYSER                           ;P;-1; 19
+;10; 16;MSGMAN                                                 ;P;-1; 11
+;10; 17;CITRG                                                  ;P;-1;  8
+;10; 18;CIPMN                                                  ;P;-1; 12
+;10; 19;TM_SCAN_VIEW                                           ;P;-1; 13
+;10; 22;TEC_GSM                                                ;P;-1; 28
+;10; 23;GSM_BTS_LAYER                                          ;P;-1; 29
+;10; 24;K6_BTS_LAYER                                           ;P;-1; 30
+;10; 29;TECUMTS                                                ;P;-1; 35
+;10; 30;TECUMTSDB                                              ;P;-1; 36
+;10; 31;UMTS_BTS_LAYER                                         ;P;-1; 37
+;10; 33;UMTS_DRIVER_WORKER                                     ;P;-1; 39
+;10; 34;UMTS_DRIVER_QUALCOM                                    ;P;-1; 46
+;10; 37;TSMU_ROMES_IBPM                                        ;P;-1; 49
+;10; 45;TSMU_HOST_OPTION1                                      ;P;-1; 62
+;10; 49;GS3_ROMES_DRV                                          ;P;-1; 66
+;10; 50;GS3_ROMES_EXPORT                                       ;P;-1; 67
+;10; 51;GS3_TM_SCAN_VIEW                                       ;P;-1; 68
+;10; 52;TSMU_CLIENT_UTILS                                      ;P;-1; 69
+;10; 54;SWEEP_HOST_APP                                         ;P;-1; 72
+;10; 55;TECCDMA2000                                            ;P;-1; 73
+;10; 56;TECCDMA2000DB                                          ;P;-1; 74
+;10; 57;SOCKET_LINK_WORKER                                     ;P;-1;140
+;10; 57;SOCKET_LINK_WORKER<0:>                                 ;S; 0; 56
+;10; 57;SOCKET_LINK_WORKER<0:>                                 ;S; 0; 93
+;10; 57;SOCKET_LINK_WORKER<0:>                                 ;S; 0; 94
+;10; 57;SOCKET_LINK_WORKER<0:IQ_STREAMING>                     ;S; 0; 83
+;10; 57;SOCKET_LINK_WORKER<0:KERNEL32>                         ;S; 0; 15
+;10; 57;SOCKET_LINK_WORKER<0:MSGMAN>                           ;S; 0;  1
+;10; 57;SOCKET_LINK_WORKER<0:PHYLIS_TIMER>                     ;S; 0; 82
+;10; 57;SOCKET_LINK_WORKER<0:PHYLKERN_MESSAGE_TRACER>          ;S; 0; 18
+;10; 57;SOCKET_LINK_WORKER<0:SOCKET_LINK_WORKER>               ;S; 0; 97
+;10; 57;SOCKET_LINK_WORKER<0:VICOM_ACD>                        ;S; 0;157
+;10; 57;SOCKET_LINK_WORKER<0:VICOM_CDMA2000>                   ;S; 0; 80
+;10; 57;SOCKET_LINK_WORKER<0:VICOM_CDMA2000_TSME>              ;S; 0;144
+;10; 57;SOCKET_LINK_WORKER<0:VICOM_CDMA2000_TSMW>              ;S; 0;118
+;10; 57;SOCKET_LINK_WORKER<0:VICOM_CW>                         ;S; 0; 84
+;10; 57;SOCKET_LINK_WORKER<0:VICOM_CWSCAN_TSME>                ;S; 0;163
+;10; 57;SOCKET_LINK_WORKER<0:VICOM_CWSCAN_TSMW>                ;S; 0;162
+;10; 57;SOCKET_LINK_WORKER<0:VICOM_GPS_TSME>                   ;S; 0;151
+;10; 57;SOCKET_LINK_WORKER<0:VICOM_GPS_TSMW>                   ;S; 0;133
+;10; 57;SOCKET_LINK_WORKER<0:VICOM_GPS_TSMXPPS2>               ;S; 0; 58
+;10; 57;SOCKET_LINK_WORKER<0:VICOM_GSM>                        ;S; 0; 65
+;10; 57;SOCKET_LINK_WORKER<0:VICOM_GSM_TSME>                   ;S; 0;142
+;10; 57;SOCKET_LINK_WORKER<0:VICOM_GSM_TSMW>                   ;S; 0;116
+;10; 57;SOCKET_LINK_WORKER<0:VICOM_IQ_STREAM_TSME>             ;S; 0; 70
+;10; 57;SOCKET_LINK_WORKER<0:VICOM_LTE_NBIOT_TSME>             ;S; 0; 59
+;10; 57;SOCKET_LINK_WORKER<0:VICOM_LTE_NBIOT_TSMW>             ;S; 0; 60
+;10; 57;SOCKET_LINK_WORKER<0:VICOM_LTE_TSME>                   ;S; 0;145
+;10; 57;SOCKET_LINK_WORKER<0:VICOM_LTE_TSMW>                   ;S; 0;126
+;10; 57;SOCKET_LINK_WORKER<0:VICOM_POSITIONESTIMATOR>          ;S; 0;123
+;10; 57;SOCKET_LINK_WORKER<0:VICOM_RF_POWERSCAN>               ;S; 0; 86
+;10; 57;SOCKET_LINK_WORKER<0:VICOM_RF_POWERSCAN_TSMW>          ;S; 0;128
+;10; 57;SOCKET_LINK_WORKER<0:VICOM_RF_POWER_SCAN_TSME>         ;S; 0;146
+;10; 57;SOCKET_LINK_WORKER<0:VICOM_RS232>                      ;S; 0; 90
+;10; 57;SOCKET_LINK_WORKER<0:VICOM_TD_SCDMA_TSME>              ;S; 0;149
+;10; 57;SOCKET_LINK_WORKER<0:VICOM_TD_SCDMA_TSMW>              ;S; 0;150
+;10; 57;SOCKET_LINK_WORKER<0:VICOM_TETRA_TSME>                 ;S; 0;148
+;10; 57;SOCKET_LINK_WORKER<0:VICOM_TETRA_TSMW>                 ;S; 0;130
+;10; 57;SOCKET_LINK_WORKER<0:VICOM_WCDMA>                      ;S; 0; 87
+;10; 57;SOCKET_LINK_WORKER<0:VICOM_WCDMA_TSME>                 ;S; 0;143
+;10; 57;SOCKET_LINK_WORKER<0:VICOM_WCDMA_TSMW>                 ;S; 0;117
+;10; 57;SOCKET_LINK_WORKER<0:VICOM_WIMAX_TSME>                 ;S; 0;147
+;10; 57;SOCKET_LINK_WORKER<0:VICOM_WIMAX_TSMW>                 ;S; 0;129
+;10; 57;SOCKET_LINK_WORKER<3:>                                 ;S; 1;261
+;10; 57;SOCKET_LINK_WORKER<3:>                                 ;S; 1;262
+;10; 57;SOCKET_LINK_WORKER<3:>                                 ;S; 1;263
+;10; 57;SOCKET_LINK_WORKER<3:>                                 ;S; 1;290
+;10; 57;SOCKET_LINK_WORKER<3:BTS_LOCATION_FINDER>              ;S; 1; 91
+;10; 57;SOCKET_LINK_WORKER<3:CDMA2000PNS>                      ;S; 1; 63
+;10; 57;SOCKET_LINK_WORKER<3:CDMA2000_DEMODULATOR>             ;S; 1; 95
+;10; 57;SOCKET_LINK_WORKER<3:CW_SCANNER>                       ;S; 1;169
+;10; 57;SOCKET_LINK_WORKER<3:EVDO_DEMODULATOR>                 ;S; 1;106
+;10; 57;SOCKET_LINK_WORKER<3:EVDO_PNS>                         ;S; 1; 81
+;10; 57;SOCKET_LINK_WORKER<3:FIVEG_NR_SYNC_SCANNER>            ;S; 1;288
+;10; 57;SOCKET_LINK_WORKER<3:FIVEG_SCANNER>                    ;S; 1;134
+;10; 57;SOCKET_LINK_WORKER<3:GS3_WORKER>                       ;S; 1; 64
+;10; 57;SOCKET_LINK_WORKER<3:GSM_DEMODULATOR>                  ;S; 1; 89
+;10; 57;SOCKET_LINK_WORKER<3:KERNEL32>                         ;S; 1; 23
+;10; 57;SOCKET_LINK_WORKER<3:LTE_DEMODULATOR>                  ;S; 1;112
+;10; 57;SOCKET_LINK_WORKER<3:LTE_EMBMS_SCANNER>                ;S; 1;159
+;10; 57;SOCKET_LINK_WORKER<3:LTE_MIMO_SCANNER>                 ;S; 1;132
+;10; 57;SOCKET_LINK_WORKER<3:LTE_NBIOT_SCANNER>                ;S; 1;171
+;10; 57;SOCKET_LINK_WORKER<3:LTE_SCANNER>                      ;S; 1;101
+;10; 57;SOCKET_LINK_WORKER<3:PHYLIS_TIMER>                     ;S; 1; 20
+;10; 57;SOCKET_LINK_WORKER<3:PHYLKERN_MESSAGE_TRACER>          ;S; 1; 21
+;10; 57;SOCKET_LINK_WORKER<3:SOCKET_LINK_WORKER>               ;S; 1;139
+;10; 57;SOCKET_LINK_WORKER<3:SWEEP_WORKER>                     ;S; 1; 71
+;10; 57;SOCKET_LINK_WORKER<3:TD_SCDMA_DEMODULATOR>             ;S; 1;153
+;10; 57;SOCKET_LINK_WORKER<3:TD_SCDMA_SCANNER>                 ;S; 1;152
+;10; 57;SOCKET_LINK_WORKER<3:TETRA_DEMODULATOR>                ;S; 1;156
+;10; 57;SOCKET_LINK_WORKER<3:TETRA_SCANNER>                    ;S; 1;114
+;10; 57;SOCKET_LINK_WORKER<3:TSME_ADMIN>                       ;S; 1;125
+;10; 57;SOCKET_LINK_WORKER<3:TSME_WORKER>                      ;S; 1;124
+;10; 57;SOCKET_LINK_WORKER<3:TSMU_WORKER<1:TSMU_DEV_UTILITY>>  ;S; 1; 42
+;10; 57;SOCKET_LINK_WORKER<3:TSMU_WORKER<1:TSMU_ERROR_HANDLER>>;S; 1; 43
+;10; 57;SOCKET_LINK_WORKER<3:TSMU_WORKER<1:TSMU_MAINTANANCE>>  ;S; 1; 41
+;10; 57;SOCKET_LINK_WORKER<3:TSMU_WORKER<1:TSMU_POST_OFFICE>>  ;S; 1; 44
+;10; 57;SOCKET_LINK_WORKER<3:TSMU_WORKER<1:TSMU_REC>>          ;S; 1; 40
+;10; 57;SOCKET_LINK_WORKER<3:TSMU_WORKER<1:TSMU_RS232>>        ;S; 1; 45
+;10; 57;SOCKET_LINK_WORKER<3:TSMU_WORKER>                      ;S; 1; 47
+;10; 57;SOCKET_LINK_WORKER<3:TSMW_ADMIN>                       ;S; 1;102
+;10; 57;SOCKET_LINK_WORKER<3:TSMW_RF_POWER_SCAN>               ;S; 1;113
+;10; 57;SOCKET_LINK_WORKER<3:TSMW_WORKER>                      ;S; 1; 92
+;10; 57;SOCKET_LINK_WORKER<3:UMTS_DEMODULATOR>                 ;S; 1; 61
+;10; 57;SOCKET_LINK_WORKER<3:UMTS_PNSCANNER>                   ;S; 1; 31
+;10; 57;SOCKET_LINK_WORKER<3:WIMAX_DEMODULATOR>                ;S; 1;127
+;10; 57;SOCKET_LINK_WORKER<3:WIMAX_SCANNER>                    ;S; 1;100
+;10; 57;SOCKET_LINK_WORKER<3:WIMAX_SYNC>                       ;S; 1;105
+;10; 59;SQA_HOST                                               ;P;-1; 75
+;10; 60;SQA_WORKER                                             ;P;-1; 76
+;10; 61;VQA_HOST                                               ;P;-1; 77
+;10; 62;VQA_WORKER                                             ;P;-1; 78
+;10; 63;ROMES_DRIVER_REPOSITORY                                ;P;-1; 79
+;10; 66;PHYLIS_TIMER                                           ;P;-1; 10
+;10; 72;TSMX_ROMES_LM                                          ;P;-1; 88
+;10; 80;PE_ROMES_DRV                                           ;P;-1; 96
+;10; 83;DRV_WIMAX_SCANNER                                      ;P;-1; 99
+;10; 87;TECWIMAX                                               ;P;-1;103
+;10; 88;TECWIMAXDB                                             ;P;-1;104
+;10; 91;PE_ROMES_EXPORT                                        ;P;-1;107
+;10; 92;DRV_TSMW_GPS                                           ;P;-1;108
+;10; 93;DRV_TSMW_LTE_SCANNER                                   ;P;-1;109
+;10; 94;TECLTE                                                 ;P;-1;110
+;10; 95;TECLTEDB                                               ;P;-1;111
+;10; 99;DRV_TSMW_TETRA_SCANNER                                 ;P;-1;115
+;10;103;DRV_TSMW_RF_POWER_SCAN                                 ;P;-1;119
+;10;104;ROMES_TSMW_DEV_SCAN                                    ;P;-1;120
+;10;105;TECTETRA                                               ;P;-1;121
+;10;106;TECTETRADB                                             ;P;-1;122
+;10;151;ROMES_REMOTE_CTRL                                      ;P;-1;141
+;10;154;DRV_CW_SCANNER                                         ;P;-1;170
+;10;176;TEC_LTE_NBIOT                                          ;P;-1;154
+;10;180;TEC_FIVEG                                              ;P;-1;155
+;10;185;PE_ROMES_FRAMEGRABBER                                  ;P;-1;158
+;10;186;DRV_5G_SCANNER                                         ;P;-1;160
+;10;189;DRV_5G_NR_SCANNER                                      ;P;-1;161
+;10;193;                                                       ;P;-1;293
+;10;194;                                                       ;P;-1;294

@@ -1,0 +1,3 @@
+byteTotal=11 bitTotal=3 lenByte=7 lenBit=0
+byteTotal=8 bitTotal=1 lenByte=8 lenBit=0
+byteTotal=11 bitTotal=3 lenByte=7 lenBit=0

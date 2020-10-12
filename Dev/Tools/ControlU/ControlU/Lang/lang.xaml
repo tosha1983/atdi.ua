@@ -1,0 +1,307 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:l="clr-namespace:System;assembly=mscorlib">
+    <!-- Glob -->
+    <l:String x:Key="Sent">Sent</l:String>
+    <l:String x:Key="NotSent">Not sent</l:String>
+    <l:String x:Key="Confirmed">Confirmed</l:String>
+    <l:String x:Key="ReceivedWithError">Received with error</l:String>
+    <l:String x:Key="Results">Результаты</l:String>
+    <l:String x:Key="Register">Register</l:String>
+    <l:String x:Key="Settings">Settings</l:String>
+    <l:String x:Key="Latitude">Latitude</l:String>
+    <l:String x:Key="Longitude">Longitude</l:String>
+    <l:String x:Key="LAST_NAME">Last name</l:String>
+    <l:String x:Key="FIRST_NAME">First name</l:String>
+    <l:String x:Key="SECOND_NAME">Second name</l:String>
+    <l:String x:Key="POSITION">Position</l:String>
+    <l:String x:Key="Create">Create</l:String>
+    <l:String x:Key="Apply">Apply</l:String>
+    <l:String x:Key="Save">Save</l:String>
+    <l:String x:Key="Change">Change</l:String>
+    <l:String x:Key="Confirm">Confirm</l:String>
+    <l:String x:Key="Close">Close</l:String>
+    <l:String x:Key="Yes">Yes</l:String>
+    <l:String x:Key="No">No</l:String>
+    <l:String x:Key="Ok">OK</l:String>
+    <l:String x:Key="Cancel">Cancel</l:String>
+    <l:String x:Key="Remove">Remove</l:String>
+    <l:String x:Key="Send">Send</l:String>
+    <l:String x:Key="OnOff">On/Off</l:String>
+    <l:String x:Key="From">from</l:String>
+    <l:String x:Key="or">or</l:String>
+    <l:String x:Key="OR">OR</l:String>
+    <l:String x:Key="All">ALL</l:String>
+    <l:String x:Key="Mode">Mode</l:String>
+    <l:String x:Key="Warning">Warning</l:String>
+    <l:String x:Key="Conclusions">Conclusions</l:String>
+    <l:String x:Key="Transmissionfrequency">Transmission frequency</l:String>
+    <l:String x:Key="Frequency">Frequency</l:String>
+    <l:String x:Key="Frequency (MHz)">Frequency (MHz)</l:String>
+    <l:String x:Key="FreqStart (MHz)">Start frequency (MHz)</l:String>
+    <l:String x:Key="FreqStop (MHz)">Stop frequency (MHz)</l:String>
+    <l:String x:Key="SignalBW (MHz)">Signal bandwidth (MHz)</l:String>
+    <l:String x:Key="MeasuredSignalBW">Measured Signal BandWidth</l:String>
+    <l:String x:Key="Standard">Standard</l:String>
+    <l:String x:Key="Band">Band</l:String>
+    <l:String x:Key="SpectrumAnalyzer">Spectrum Analyzer</l:String>
+    <l:String x:Key="SpectrumReceiver">Monitoring Receiver</l:String>
+    <l:String x:Key="DemodulationReceiver">Demodulation Receiver</l:String>
+    <l:String x:Key="WRLSReceiver">Wireless Receiver</l:String>
+    <l:String x:Key="IPAdress">IP-Adress</l:String>
+    <l:String x:Key="Port">Port</l:String>
+    <l:String x:Key="LanSettings">Lan Settings</l:String>
+    <l:String x:Key="ConnectWhenTheApplicationStarts">Connect when the application starts</l:String>
+    <l:String x:Key="ResetSettingsWhenConnected">Reset settings when connected</l:String>
+    <l:String x:Key="UseInternalGPS">Use internal GPS</l:String>
+    <l:String x:Key="Model">Model</l:String>
+    <l:String x:Key="Description">Description</l:String>
+    <l:String x:Key="Technology">Technology</l:String>
+    <l:String x:Key="Formula">Formula</l:String>
+    <l:String x:Key="Azimuth">Azimuth</l:String>
+    <l:String x:Key="Altitude[m]">Altitude [m]</l:String>
+    <l:String x:Key="MAP">MAP</l:String>
+    <l:String x:Key="ClassOfEmission">Class Of Emission</l:String>
+    <l:String x:Key="DeleteAllFilters">Delete all filters</l:String>
+    <l:String x:Key="Start">Start</l:String>
+    <l:String x:Key="Stop">Stop</l:String>
+    <l:String x:Key="Update">Update</l:String>
+    <l:String x:Key="Done">Done</l:String>
+    <l:String x:Key="DateTime">Date Time</l:String>
+    <l:String x:Key="DateTimeStart">Date Time Start</l:String>
+    <l:String x:Key="Operator">Operator</l:String>
+    <l:String x:Key="SpectrumMeasFalse">No measurement device selected</l:String>
+    <l:String x:Key="EnableMeas">Enable measurement</l:String>
+    <l:String x:Key="ScreenShotPathFail">The path to save the screenshots is not set!</l:String>
+    <l:String x:Key="EnterFileName">Enter the file name</l:String>
+    <l:String x:Key="FileNameType">Selecting the type of file name</l:String>
+    <l:String x:Key="FileSaved">File *NAME* is saved</l:String>
+    <l:String x:Key="NotSetIPAddressEquipment">The IP address of the *Equipment* connection is not set</l:String>
+    <l:String x:Key="NotSetPortEquipment">The connection port for the *Equipment* is not set</l:String>
+    <l:String x:Key="EqSpectrumAnalyzer">spectrum analyzer</l:String>
+    <l:String x:Key="EqMonitoringReceiver">monitoring receiver</l:String>
+    <l:String x:Key="EqNetworkAnalyzer">network analyzer</l:String>
+    <l:String x:Key="Level">Level</l:String>
+    <l:String x:Key="LicenseFail">Missing ICS Control license</l:String>
+    <l:String x:Key="FileIsExists">The file FileName already exists</l:String>
+    <!-- Markers -->
+    <l:String x:Key="Marker_Markers">Markers</l:String>
+    <l:String x:Key="Marker_Type">Type</l:String>
+    <l:String x:Key="Marker_Ref">Ref</l:String>
+    <l:String x:Key="Marker_Trc">Trc</l:String>
+    <l:String x:Key="Marker_Frequency">Frequency</l:String>
+    <l:String x:Key="Marker_Level">Level</l:String>
+    <l:String x:Key="Marker_Function">Function</l:String>
+    <l:String x:Key="Marker_FunctionResult">Function Result</l:String>
+    <!-- Markers -->
+    
+    <!-- DB -->
+    <l:String x:Key="DB_Result">Result</l:String>
+    <l:String x:Key="DB_Identified">Identified</l:String>
+    <l:String x:Key="DB_Standard">Standard</l:String>
+    <l:String x:Key="DB_Callsign_DB">Callsign DB</l:String>
+    <l:String x:Key="DB_Callsign_Radio">Callsign Radio</l:String>
+    <l:String x:Key="DB_StationAddress">Station address</l:String>
+    <l:String x:Key="DB_StationRegion">Station Region</l:String>
+    <l:String x:Key="DB_StationLatitude">Station Latitude</l:String>
+    <l:String x:Key="DB_StationLongitude">Station Longitude</l:String>
+    <l:String x:Key="DB_Owner">Owner</l:String>
+    <l:String x:Key="DB_OwnerCode">Owner Code</l:String>
+    <l:String x:Key="DB_OwnerOKPO">Owner OKPO</l:String>
+    <l:String x:Key="DB_OwnerZIP">Owner ZIP</l:String>
+    <l:String x:Key="DB_OwnerAddress">Owner Address</l:String>
+    <l:String x:Key="DB_Status">Status</l:String>
+    <l:String x:Key="DB_Permission">Permission</l:String>
+    <l:String x:Key="DB_PermissionStart">Permission Start</l:String>
+    <l:String x:Key="DB_PermissionEnd">Permission End</l:String>
+    <l:String x:Key="DB_PermissionClose">Permission Close</l:String>
+    <l:String x:Key="DB_AGL">AGL</l:String>
+    <l:String x:Key="DB_AGL_ToolTip">Altitude above ground level</l:String>
+    <l:String x:Key="DB_EIRP[dBm]">EIRP [dBm]</l:String>
+    <l:String x:Key="DB_EIRP[dBm]_ToolTip">Equivalent Isotropically Radiated Power</l:String>
+    <l:String x:Key="DB_TaskState_Warning">The measurement process is working! Changing the status of the task is not available.</l:String>
+    <l:String x:Key="DB_Task_Delete">Remove task №*TaskNumber*?</l:String>
+    <l:String x:Key="DB_Task_Deleted">Task №*TaskNumber* has been deleted</l:String>
+    <l:String x:Key="DB_ImpossibleToDdelete">Unable to delete №*TaskNumber*</l:String>
+    <l:String x:Key="DB_Results_Delete">Delete task results №*TaskNumber*?</l:String>
+    <l:String x:Key="DB_Results_Deleted">Task results №*TaskNumber* deleted</l:String>
+    <l:String x:Key="DB_Delete">Delete</l:String>
+    <l:String x:Key="DB_DeleteTask">Delete Task</l:String>
+    <l:String x:Key="DB_DeleteAllResult">Delete All Result</l:String>
+    <!-- DB -->
+    
+    <!-- MAP -->
+    <l:String x:Key="MAP_Opacity">Opacity</l:String>
+    <l:String x:Key="MAP_Opacity_All">All</l:String>
+    <l:String x:Key="MAP_Opacity_station_group">Station/Group</l:String>
+    <l:String x:Key="MAP_ShowSearchRadius">Show search radius</l:String>
+    <l:String x:Key="MAP_StationInfo">Station Info</l:String>
+    <l:String x:Key="MAP_ShowMyLocation">Show location by GNSS</l:String>
+    <l:String x:Key="MAP_FollowMyLocation">Follow the GNSS</l:String>
+    <l:String x:Key="MAP_ShowSelectedCoordinates">Show the coordinates of the selected point on the map</l:String>
+    <l:String x:Key="MAP_GetImageFromMap">Save a screenshot of the visible area of the map</l:String>
+    <l:String x:Key="MAP_ShowOnMap">Show on map</l:String>
+    <l:String x:Key="MAP_ShowStation_ToolTip">Show all stations on the map</l:String>
+    <l:String x:Key="MAP_HideCompleted_ToolTip">Hide completed</l:String>
+    
+    <!-- MAP -->
+    
+    <!-- MeasMonData -->
+    <l:String x:Key="MeasMonData_AdditionalIdentifier">Ad. id.</l:String>
+    <l:String x:Key="MeasMonData_AdditionalIdentifier_ToolTip">Additional(shortened) identifier</l:String>
+    <l:String x:Key="MeasMonData_MeasCount">Meas Count</l:String>
+    <l:String x:Key="MeasMonData_MeasCount_ToolTip">The number of traces recorded in the accumulated spectrum</l:String>
+    <l:String x:Key="MeasMonData_AllMeasCount">All M.C.</l:String>
+    <l:String x:Key="MeasMonData_AllMeasCount_ToolTip">Total number of measurements</l:String>
+    <l:String x:Key="MeasMonData_AllTimeMeas">Meas Time [s]</l:String>
+    <l:String x:Key="MeasMonData_AllTimeMeas_ToolTip">Total measurement time in seconds</l:String>
+    <l:String x:Key="MeasMonData_MeasuredChanelBW">Meas Sig BW</l:String>
+    <l:String x:Key="MeasMonData_LastMeasDateTime">Last Meas</l:String>
+    <l:String x:Key="MeasMonData_LastMeasDateTime_ToolTip">The time of the last modification of the accumulated spectrum</l:String>
+    <!-- MeasMonData -->
+
+    <!-- DBPanel -->
+    <l:String x:Key="DBPanel_ShowResults">Show Results</l:String>
+    <l:String x:Key="DBPanel_DownloadTasks">Download tasks from ICS Control</l:String>
+    <l:String x:Key="DBPanel_UploadTasksResults">Unload task results in ICS Control</l:String>
+    <l:String x:Key="DBPanel_SaveTrackToCSV">Save track result in CSV format</l:String>
+    <l:String x:Key="DBPanel_CenterFrequency">Center Frequency</l:String>
+    <l:String x:Key="DBPanel_Permission">Permission</l:String>
+    <l:String x:Key="DBPanel_Measured">Measured</l:String>
+    <l:String x:Key="DBPanel_TaskState_Waiting">Waiting</l:String>
+    <l:String x:Key="DBPanel_TaskState_Disabled">Disabled</l:String>
+    <l:String x:Key="DBPanel_TaskState_Enabled">Enabled</l:String>
+    <l:String x:Key="DBPanel_StationCount">Station Count</l:String>
+    <l:String x:Key="DBPanel_Sectors">Sectors</l:String>
+    <l:String x:Key="DBPanel_CenterFrequencyPermission">Center frequency of permission</l:String>
+    <l:String x:Key="DBPanel_IdentifierFromRadio">Identifier From Radio</l:String>
+    <l:String x:Key="DBPanel_IdentifierFromPermission">Identifier From Permission</l:String>
+    <l:String x:Key="DBPanel_Strength">Strength</l:String>
+    <l:String x:Key="DBPanel_Duration[s]">Duration [s]</l:String>
+    <l:String x:Key="DBPanel_ResultCannotBeDeleted">Unable to delete result, data is being written.</l:String>
+    <!-- DBPanel -->
+    
+    <!-- Meas -->
+    <l:String x:Key="DetectionLevel">Detection level [dBm]</l:String>
+    <l:String x:Key="OBWPercent">OBW Percent</l:String>
+    <l:String x:Key="NdBLevel">NdB Level [dB]</l:String>
+    <l:String x:Key="RelativeFrequencyDeviation">Relative frequency deviation [ppm]</l:String>
+    <l:String x:Key="BandwidthOfTheSignalInMHz">Max. bandwidth on permission [MHz]</l:String>
+    <l:String x:Key="SignalBandwidth">Signal bandwidth</l:String>
+    
+    
+    <!-- Main window -->
+    <l:String x:Key="m_menu_File">File</l:String>
+    <l:String x:Key="m_menu_File_Exit">_Exit</l:String>
+    <l:String x:Key="m_ExitMessege">Are you sure you want to close the application?</l:String>
+
+
+    <l:String x:Key="m_menu_Properties">Properties</l:String>
+    <l:String x:Key="m_menu_Properties_Settings">_Settings</l:String>
+    <l:String x:Key="m_menu_Properties_Language">_Language</l:String>
+    <l:String x:Key="m_menu_Properties_SaveAppSettings">_Save application settings</l:String>
+    <l:String x:Key="m_menu_Properties_LoadAppSettings">_Load application settings</l:String>
+    <l:String x:Key="m_menu_Properties_LicenseAgreement">License Agreement</l:String>
+    
+    <!-- settings -->
+    <l:String x:Key="SettingsControl_Title">Settings</l:String>
+    <l:String x:Key="SettingsControl_General">General</l:String>
+    <!-- SettingsControl_General -->
+    <!-- ICS Control Connection -->
+    <l:String x:Key="ICSControlLicense">ICS Control License</l:String>
+    <l:String x:Key="SettingsControl_SensorName">Sensor Name</l:String>
+    <l:String x:Key="SettingsControl_SensorRegistered">Sensor *SensorName* registered</l:String>
+    <l:String x:Key="SettingsControl_SensorNotRegistered">Sensor *SensorName* not registered</l:String>
+    <!-- Users -->
+    <l:String x:Key="Users_Expander">Users</l:String>
+    <l:String x:Key="AddUser">Create User</l:String>
+    <l:String x:Key="RemoveUser">Remove User?</l:String>
+    <l:String x:Key="SelectedUserFalse">No operator selected</l:String>
+    <!-- Conclusions -->
+    <l:String x:Key="Confirms">Confirms</l:String>
+    <l:String x:Key="IllegallyOperatingTransmitter">Illegal transmitter</l:String>
+    <l:String x:Key="ViolationOfFrequencyOperationRules">Transmitter with violation on frequency</l:String>
+    <l:String x:Key="ViolationOfBandWidthOperationRules">Transmitter with violation on bandwidth</l:String>
+    <!-- SettingsControl_Equipment -->
+    <l:String x:Key="SettingsControl_Equipment">Equipment</l:String>
+    <l:String x:Key="SettingsControl_SelectTypeEquipment">Select the type of equipment</l:String>    
+    <l:String x:Key="SettingsControl_SpectrumAnalyzer">Spectrum Analyzer</l:String>
+    <l:String x:Key="SettingsControl_SpectrumAnalyzer_DisplayOfWorkOnTheDevice">Display of work on the device</l:String>
+    <l:String x:Key="SettingsControl_SpectrumAnalyzer_DisplayOfWorkOnTheDevice_ToolTip">It is not recommended to include it. The display on the instrument consumes considerable resources of the device</l:String>
+    <l:String x:Key="SettingsControl_RuSReceiver">Rohde&amp;Schwarz Monitoring Receiver</l:String>
+    <l:String x:Key="SettingsControl_RuSNATSMx">Rohde&amp;Schwarz Network Analyzer TSMx</l:String>
+    <l:String x:Key="SettingsControl_RuSNATSMx_ConnectingInputs">Connecting inputs TSMW</l:String>
+    <l:String x:Key="SettingsControl_RuSNATSMx_AntennaInputTSMWRX1">Antenna input TSMW RX1</l:String>
+    <l:String x:Key="SettingsControl_RuSNATSMx_AntennaInputTSMWRX2">Antenna input TSMW RX2</l:String>
+    <l:String x:Key="SettingsControl_RuSNATSMx_AntennaInputTSMExRX">Antenna input TSMEx RX</l:String>
+    <l:String x:Key="SettingsControl_RuSNATSMx_UseRFPowerScan">Use RF Power Scan</l:String>
+    <l:String x:Key="SettingsControl_RuSNATSMx_FrequencyOfIdentification">Frequency of identification</l:String>
+    <l:String x:Key="SettingsControl_GNSSReceiver">GNSS Receiver</l:String>
+    <l:String x:Key="SettingsControl_GNSSReceiver_ToolTip">Any GNSS Receiver with NMEA 0183</l:String>
+    <l:String x:Key="SettingsControl_GNSSReceiver_PortBaudRate">Baud Rate</l:String>
+    <l:String x:Key="SettingsControl_GNSSReceiver_DataBits">Data Bits</l:String>
+    <l:String x:Key="SettingsControl_GNSSReceiver_Parity">Parity</l:String>
+    <l:String x:Key="SettingsControl_GNSSReceiver_StopBits">Stop Bits</l:String>
+    <l:String x:Key="SettingsControl_GNSSReceiver_Handshake">Handshake</l:String>
+    <l:String x:Key="SettingsControl_ScreenShot">ScreenShots</l:String>
+    <l:String x:Key="SettingsControl_ScreenShot_Path">Path of saving screenshots</l:String>
+    <l:String x:Key="SettingsControl_ScreenShot_Resolution">Spectrogram resolution</l:String>
+    <l:String x:Key="SettingsControl_ScreenShot_FormatFile">Format of the spectrogram file</l:String>
+    <l:String x:Key="SettingsControl_Measurements">Measurements</l:String>
+    <l:String x:Key="SettingsControl_Measurements_UseOfInstruments">Use of instruments</l:String>
+    <l:String x:Key="SettingsControl_Measurements_IdentificationDCC">Identification of digital cellular communication</l:String>
+    <l:String x:Key="SettingsControl_Measurements_SpectrumMeasurements">Spectrum measurements</l:String>
+    <l:String x:Key="SettingsControl_Detection">Detection</l:String>
+    <l:String x:Key="SettingsControl_MobileOperators">Mobile operators</l:String>
+    <l:String x:Key="SettingsControl_Maps">Maps</l:String>
+    <l:String x:Key="SettingsControl_Maps_Settings">Map settings</l:String>
+    <l:String x:Key="SettingsControl_Maps_Path">Path to maps</l:String>
+    <l:String x:Key="SettingsControl_Maps_MemorizeLocation">Memorize location</l:String>
+    <l:String x:Key="SettingsControl_Maps_ItemsTooltip">Items displayed in the tooltip when hovering over a station/group</l:String>
+    <l:String x:Key="SettingsControl_Track_Title">Track data collection step</l:String>
+    <l:String x:Key="SettingsControl_Track_DistanceStep">Every (m)</l:String>
+    <l:String x:Key="SettingsControl_Track_TimeStep">Every (s)</l:String>
+    
+    <!-- ChangeIP -->
+    <l:String x:Key="ChangeIP_Title">Change IP address</l:String>
+    <l:String x:Key="NetworkIPaddress">IPv4 Address</l:String>
+    <l:String x:Key="NetworkMask">IPv4 Subnet Mask</l:String>
+    <l:String x:Key="NetworkGateway">IPv4 Gateway</l:String>
+    
+    <!-- Antenna -->
+    <l:String x:Key="Antenna_Title">Antennas</l:String>
+    <l:String x:Key="Antenna_EnterAntennaName">Enter the antenna name</l:String>
+    <l:String x:Key="Antenna">Antenna</l:String>
+    <l:String x:Key="Antenna Factor (dBm)">Antenna factor (dBm)</l:String>
+    <l:String x:Key="Field strength sensitivity (dBµV/m)">Field strength sensitivity (dBµV/m)</l:String>
+    <!-- WRLS -->
+    <l:String x:Key="Board">Board</l:String>
+    <l:String x:Key="BoardName">Board name</l:String>
+
+    <l:Double x:Key="m_Number">10.5</l:Double>
+    <!-- DVB-Tx -->
+    <l:String x:Key="Meas_DVB-Tx_NumberOfMeas">Number of meas:</l:String>
+    <l:String x:Key="Meas_DVB-Tx_DotName">Point name:</l:String>
+    <l:String x:Key="Meas_DVB-Tx_CreateProtocol">Create protocol</l:String>
+
+    <!-- MyATDI -->
+    <l:String x:Key="MyATDI_Registered">Registered</l:String>
+    <l:String x:Key="MyATDI_NotRegistered">Not registered</l:String>
+    <l:String x:Key="MyATDI_ResultSended">Result №*ResultNumber* task №*TaskNumber* sent</l:String>
+    <l:String x:Key="MyATDI_ResultNotSent">Result №*ResultNumber* task №*TaskNumber* is not sent</l:String>
+    <l:String x:Key="MyATDI_ICSCConnected">Connection to server ICS Control established</l:String>
+    <l:String x:Key="MyATDI_ICSCNotConnected">Connection to the server ICS Control not established</l:String>
+    <l:String x:Key="MyATDI_ReceivedTaskSaved">The received task *tasknumber* is saved</l:String>
+
+    <!-- MyATDI -->
+    <l:String x:Key="DeviceStatus_AllState">Connect/Disconnect all devices</l:String>
+    <l:String x:Key="DeviceStatus_SA">Connect/Disconnect spectrum analyzer</l:String>
+    <l:String x:Key="DeviceStatus_RSR">Connect/Disconnect R&amp;S monitoring receiver</l:String>
+    <l:String x:Key="DeviceStatus_TSMx">Connect/Disconnect R&amp;S network analyzer TSMx</l:String>
+    <l:String x:Key="DeviceStatus_SH">Connect/Disconnect Signal Hound</l:String>
+    <l:String x:Key="DeviceStatus_GNSS">Connect/Disconnect GNSS Receiver</l:String>
+
+    <l:String x:Key="SaveTrackData_Title">Save track data to CSV</l:String>
+    <l:String x:Key="SaveTrackData_DataSaved">The track data is saved to the track.csv file</l:String>
+    <l:String x:Key="SaveTrackData_AntennaGain">Antenna gain</l:String>
+</ResourceDictionary>
