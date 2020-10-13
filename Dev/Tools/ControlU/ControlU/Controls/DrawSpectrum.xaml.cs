@@ -1417,8 +1417,15 @@ namespace ControlU.Controls
         }
         private void waterfall2_Resized(object sender, SharpGL.SceneGraph.OpenGLEventArgs args)
         {
-            WFImageHeight = (int)waterfall2.ActualHeight;
-            WFImageWidth = (int)waterfall2.ActualWidth;
+            if (waterfall2.ActualHeight > 0)
+                WFImageHeight = (int)waterfall2.ActualHeight;
+            else
+                WFImageHeight = 1;
+            if (waterfall2.ActualWidth > 0)
+                WFImageWidth = (int)waterfall2.ActualWidth;
+            else
+                WFImageWidth = 1;
+
             //System.Diagnostics.Debug.WriteLine(ImageWidth + " " + ImageHeight);
             var gl = args.OpenGL;
             //  Create an orthographic projection.

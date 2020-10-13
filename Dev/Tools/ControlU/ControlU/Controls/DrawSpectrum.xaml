@@ -43,7 +43,20 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
+            <!--<RowDefinition Height="*">
+                --><!--<RowDefinition.Resources>
+                    <Style TargetType="RowDefinition">
+                        <Setter Property="Height" Value="1"/>
+                        --><!--<Setter Property="IsEnabled" Value="False"/>--><!--
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ShowWaterfall, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True" >
+                                <Setter Property="Height" Value="*"/>
+                                <Setter Property="IsEnabled" Value="True"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </RowDefinition.Resources>--><!--
+            </RowDefinition>-->
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid Name="UpPanel" Grid.ColumnSpan="3"/>
@@ -51,9 +64,9 @@
         <gl:OpenGLControl Name="openGLControl" OpenGLDraw="openGLControl_OpenGLDraw" Resized="openGLControl_Resized"  OpenGLInitialized="openGLControl_OpenGLInitialized"
                           MouseDown="openGLControl_MouseDown" MouseUp="openGLControl_MouseUp" PreviewMouseMove="openGLControl_PreviewMouseMove"
                           DrawFPS="False" FrameRate="60" OpenGLVersion="OpenGL2_0" Grid.Row="1" MinHeight="10" MinWidth="10"/>
-        <gl:OpenGLControl x:Name="waterfall2" OpenGLDraw="waterfall2_OpenGLDraw" Resized="waterfall2_Resized"  OpenGLInitialized="waterfall2_OpenGLInitialized"
+        <!--<gl:OpenGLControl x:Name="waterfall2" OpenGLDraw="waterfall2_OpenGLDraw" Resized="waterfall2_Resized"  OpenGLInitialized="waterfall2_OpenGLInitialized"
                           RenderContextType="FBO"  OpenGLVersion="OpenGL2_0"
-                          DrawFPS="False" Grid.Row="2" MinHeight="10" MinWidth="10" />
+                          DrawFPS="False" Grid.Row="2" MinHeight="1" MinWidth="1" />-->
         <local:GlobalOSMMap x:Name="DFMap" ShowDFBearing="True" MinHeight="1" MinWidth="1" Grid.Column="2" Grid.Row="2"/>
         <Grid x:Name="DFPanel_Par" Panel.ZIndex="3" VerticalAlignment="Center" HorizontalAlignment="Right" Grid.ColumnSpan="3" Grid.Row="2" />
         <Grid x:Name="Markers_control" Grid.Row="3" Grid.ColumnSpan="3">
