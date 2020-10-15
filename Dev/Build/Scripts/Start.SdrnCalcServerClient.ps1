@@ -13,7 +13,6 @@ $context = . $createContext -sourceRootFolder $sourceRootFolder -scriptsPath $sc
 $context.Logger.Info("Start test building")
 $logger.Info("");
 
-
 ### Этап 01 - Очистка каталаога сборки
 $result = $context.Execute("Builder.ClearRootFolder.ps1")
 
@@ -24,10 +23,8 @@ $result = $context.Execute("Builder.CloneRepos.ps1")
 $result = $context.Execute("Builder.LoadNugetPackages.ps1")
 
 ### Этап 04 - Действия перед сборкой - это может быть очистка катлоаг артифактов от предыдущих компонентов
-$result = $context.Execute("CalcServer.PreBuild.ps1")
+$result = $context.Execute("SdrnCalcServerClient.PreBuild.ps1")
 
 ### Этап 05 - Сборка проекта
-$result = $context.Execute("CalcServer.Build.ps1")
+$result = $context.Execute("SdrnCalcServerClient.Build.ps1")
 
-### Этап 06 - Копирование методаных
-$result = $context.Execute("CalcServer.PosBuild.ps1")
