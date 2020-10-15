@@ -1040,13 +1040,15 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             }
             return isSuccess;
         }
+        private void SaveStationCalibrationCommandAction()
+        {
+            SaveStationCalibrationAction(false);
+        }
         private void SaveAndStartStationCalibrationCommandAction()
         {
-            SaveStationCalibrationCommandAction();
-            var modifier = new MG.Modifiers.RunCalcTask { Id = TaskId };
-            _commandDispatcher.Send(modifier);
+            SaveStationCalibrationAction(true);
         }
-        private void SaveStationCalibrationCommandAction()
+        private void SaveStationCalibrationAction(bool isStart = false)
         {
             //bool isSuccess = false;
             if (ValidateTaskParameters())
@@ -1076,7 +1078,16 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                     listStationMonitoringModel.Add(x.Id);
                 }
 
-                OnLoadStationsHandle(listStationMonitoringModel);
+                Task.Run(() =>
+                {
+                    var isSuccess = OnLoadStationsHandle(listStationMonitoringModel);
+                    if (isStart && isSuccess)
+                    {
+                        var modifier = new MG.Modifiers.RunCalcTask { Id = TaskId };
+                        _commandDispatcher.Send(modifier);
+                    }
+                });
+
                 //_viewStarter.StartLongProcess(
                 //    new LongProcessOptions()
                 //    {
