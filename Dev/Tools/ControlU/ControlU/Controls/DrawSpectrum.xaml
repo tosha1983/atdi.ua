@@ -67,9 +67,9 @@
         <!--<gl:OpenGLControl x:Name="waterfall2" OpenGLDraw="waterfall2_OpenGLDraw" Resized="waterfall2_Resized"  OpenGLInitialized="waterfall2_OpenGLInitialized"
                           RenderContextType="FBO"  OpenGLVersion="OpenGL2_0"
                           DrawFPS="False" Grid.Row="2" MinHeight="1" MinWidth="1" />-->
-        <local:GlobalOSMMap x:Name="DFMap" ShowDFBearing="True" MinHeight="1" MinWidth="1" Grid.Column="2" Grid.Row="2"/>
-        <Grid x:Name="DFPanel_Par" Panel.ZIndex="3" VerticalAlignment="Center" HorizontalAlignment="Right" Grid.ColumnSpan="3" Grid.Row="2" />
-        <Grid x:Name="Markers_control" Grid.Row="3" Grid.ColumnSpan="3">
+        <local:GlobalOSMMap x:Name="DFMap" ShowDFBearing="True" MinHeight="1" MinWidth="1" Grid.Column="2" Grid.Row="1"/>
+        <Grid x:Name="DFPanel_Par" Panel.ZIndex="3" VerticalAlignment="Center" HorizontalAlignment="Right" Grid.ColumnSpan="2" Grid.Row="2" />
+        <Grid x:Name="Markers_control" Grid.Row="3" Grid.ColumnSpan="2">
             <Grid.Resources>
                 <local:FreqConverter x:Key="FreqConverter"/>
                 <local:MultiValueLevelConverter x:Key="MultiValueLevelConverter"/>

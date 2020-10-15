@@ -386,27 +386,71 @@ namespace ControlU.DB
         {
             var config = gateFactory.CreateConfig();
 
-            config["License.FileName"] = "license.lic"; //"LIC-DBD12-A00-187.SENSOR-DBD12-A00-1280.lic";  // наименование файла лицензии
-            config["License.OwnerId"] = ControlU.MainWindow.db_v2.ATDIConnectionData_Selsected.owner_id;// "OID-BD12-A00-N00";//  OwnerId лицензии
-            config["License.ProductKey"] = ControlU.MainWindow.db_v2.ATDIConnectionData_Selsected.product_key;// "0ZB0-DVZR-ATI1-WIHB-NC1B";// ProductKey лицензии
-            config["RabbitMQ.Host"] = ControlU.MainWindow.db_v2.ATDIConnectionData_Selsected.rabbit_host_name;// "109.237.91.29";//  IP RabbitMQ
-            config["RabbitMQ.VirtualHost"] = ControlU.MainWindow.db_v2.ATDIConnectionData_Selsected.rabbit_virtual_host_name;// Прописать в xml настройки
-            config["RabbitMQ.Port"] = ControlU.MainWindow.db_v2.ATDIConnectionData_Selsected.rabbit_host_port;// Прописать в xml настройки
-            config["RabbitMQ.User"] = ControlU.MainWindow.db_v2.ATDIConnectionData_Selsected.rabbit_user_name;// "SDR_Client";//  User Name RabbitMQ
-            config["RabbitMQ.Password"] = ControlU.MainWindow.db_v2.ATDIConnectionData_Selsected.rabbit_password;// "32Xr567";//  Password RabbitMQ
-            config["SDRN.Device.SensorTechId"] = ControlU.MainWindow.db_v2.ATDIConnectionData_Selsected.sensor_equipment_tech_id;// "SomeSensor"; // здесь произвольное наименование  SensorTechId
 
 
-            config["SDRN.ApiVersion"] = "2.0"; // версия АПИ - не менять
-            config["SDRN.Server.Instance"] = ControlU.MainWindow.db_v2.ATDIConnectionData_Selsected.server_instance;// "ServerSDRN01"; // здесь имя сервера SDRN (т.е. серверов может быть много) (не менять, а вот фиг)
-            config["SDRN.Server.QueueNamePart"] = "Q.SDRN.Server";   //- это часть наименования конечной очереди в которую будут приходить сообщения от сенсора сервису SDRN (путь следования такой  EX.SDRN.Device.[v2.0] ->Q.SDRN.Server.[ServerSDRN01].[#01].[v2.0])  - не изменять
-            config["SDRN.Device.Exchange"] = "EX.SDRN.Device"; // здесь часть имени точки обмена EX.SDRN.Device.[v2.0] - не изменять
-            config["SDRN.Device.QueueNamePart"] = "Q.SDRN.Device"; // здесь часть имени конечной очереди в которую вервис SDRN отправляет данные сенсору (путь следования такой EX.SDRN.Server.[v2.0] ->  Q.SDRN.Device.[SENSOR-DBD12-A00-1280].[SomeSensor].[v2.0]) - не изменять
-            config["SDRN.Device.MessagesBindings"] = "{messageType=RegisterSensor, routingKey=#01};{messageType=SendCommandResult, routingKey=#02};{messageType=SendMeasResults, routingKey=#03};{messageType=SendEntity, routingKey=#04};{messageType=SendEntityPart, routingKey=#05};{messageType=UpdateSensor, routingKey=#06}"; // здесь наименования подочередей для обработки сообщений конкретного типа (фактически создаются очереди Q.SDRN.Server.[ServerSDRN01].[#01].[v2.0], Q.SDRN.Server.[ServerSDRN01].[#02].[v2.0], Q.SDRN.Server.[ServerSDRN01].[#03].[v2.0], Q.SDRN.Server.[ServerSDRN01].[#04].[v2.0], Q.SDRN.Server.[ServerSDRN01].[#05].[v2.0], Q.SDRN.Server.[ServerSDRN01].[#06].[v2.0]) - не изменять
+            config["License.FileName"] = "license.lic";
+            config["License.OwnerId"] = "OID-BD12-A00-N00";
+            config["License.ProductKey"] = "0VE1-OCOL-S4S0-C1D1-SEXB";
 
-            // Шифрование и компресия сообщений
-            config["SDRN.MessageConvertor.UseEncryption"] = "false"; //"false";// "true"; //признак шифрования сообщения (на данный момент пока не внедрено в сервис, но в конфигурации должно быть)
-            config["SDRN.MessageConvertor.UseСompression"] = "false"; //"false";//"true"; //признак упаковки сообщения (на данный момент пока не внедрено в сервис, но в конфигурации должно быть)
+            config["RabbitMQ.Host"] = "109.237.91.29";
+            config["RabbitMQ.VirtualHost"] = "177-A-SBD12-A00-1589.DevicesBus";
+            config["RabbitMQ.User"] = "SDR_Client";
+            config["RabbitMQ.Password"] = "32Xr567";
+
+            config["SDRN.ApiVersion"] = "2.0";
+            config["SDRN.ServerInstance"] = "SDRNSV-SBD12-A00-1589";
+            config["SDRN.MessagesExchange"] = "EX.SDRN.Device";
+            config["SDRN.ServerQueueNamePart"] = "Q.SDRN.Server";
+            config["SDRN.DeviceQueueNamePart"] = "Q.SDRN.Device";
+            config["SDRN.MessagesBindings"] = "{messageType=RegisterSensor, routingKey=#01};{messageType=SendCommandResult, routingKey=#02};{messageType=SendMeasResults, routingKey=#03};{messageType=SendEntity, routingKey=#04};{messageType=SendEntityPart, routingKey=#05};{messageType=UpdateSensor, routingKey=#06}";
+            config["SDRN.MessageConvertor.UseEncryption"] = "false";
+            config["SDRN.MessageConvertor.UseСompression"] = "false";
+            config["RabbitMQ.Port"] = "5674";
+            config["Messages.OutboxFolder"] = "c:\\ATDI\\APIServices\\OutBox";
+            config["Messages.InboxFolder"] = "c:\\ATDI\\APIServices\\InBox";
+
+            config["SDRN.Server.Instance"] = "SDRNSV-SBD12-A00-1589";
+            config["SDRN.Device.SensorTechId"] = "MMS-02";
+            config["SDRN.Device.Exchange"] = "EX.SDRN.Device";
+            config["SDRN.Server.QueueNamePart"] = "Q.SDRN.Server";
+            config["SDRN.Device.QueueNamePart"] = "Q.SDRN.Device";
+            config["SDRN.Device.MessagesBindings"] = "{messageType=RegisterSensor, routingKey=#01};{messageType=SendCommandResult, routingKey=#02};{messageType=SendMeasResults, routingKey=#03};{messageType=SendEntity, routingKey=#04};{messageType=SendEntityPart, routingKey=#05};{messageType=UpdateSensor, routingKey=#06}";
+            config["DeviceBus.ContentType"] = "Json";
+            config["DeviceBus.SharedSecretKey"] = "sbfsbfufbsb";
+            config["DeviceBus.Outbox.UseBuffer"] = "FileSystem";
+            config["DeviceBus.Inbox.UseBuffer"] = "FileSystem";
+            config["DeviceBus.Outbox.Buffer.Folder"] = "c:\\ATDI\\APIServices\\OutBox";
+            config["DeviceBus.Inbox.Buffer.Folder"] = "c:\\ATDI\\APIServices\\InBox";
+            config["SDRN.MessageConvertor.UseCompression"] = "false";
+            config["DeviceBus.Outbox.Buffer.ContentType"] = "Binary";
+            config["DeviceBus.Inbox.Buffer.ContentType"] = "Binary";
+
+
+            ////config["License.FileName"] = "license.lic"; //"LIC-DBD12-A00-187.SENSOR-DBD12-A00-1280.lic";  // наименование файла лицензии
+            ////config["License.OwnerId"] = ControlU.MainWindow.db_v2.ATDIConnectionData_Selsected.owner_id;// "OID-BD12-A00-N00";//  OwnerId лицензии
+            ////config["License.ProductKey"] = ControlU.MainWindow.db_v2.ATDIConnectionData_Selsected.product_key;// "0ZB0-DVZR-ATI1-WIHB-NC1B";// ProductKey лицензии
+            ////config["RabbitMQ.Host"] = ControlU.MainWindow.db_v2.ATDIConnectionData_Selsected.rabbit_host_name;// "109.237.91.29";//  IP RabbitMQ
+            ////config["RabbitMQ.VirtualHost"] = ControlU.MainWindow.db_v2.ATDIConnectionData_Selsected.rabbit_virtual_host_name;// Прописать в xml настройки
+            ////config["RabbitMQ.Port"] = ControlU.MainWindow.db_v2.ATDIConnectionData_Selsected.rabbit_host_port;// Прописать в xml настройки
+            ////config["RabbitMQ.User"] = ControlU.MainWindow.db_v2.ATDIConnectionData_Selsected.rabbit_user_name;// "SDR_Client";//  User Name RabbitMQ
+            ////config["RabbitMQ.Password"] = ControlU.MainWindow.db_v2.ATDIConnectionData_Selsected.rabbit_password;// "32Xr567";//  Password RabbitMQ
+            ////config["SDRN.Device.SensorTechId"] = ControlU.MainWindow.db_v2.ATDIConnectionData_Selsected.sensor_equipment_tech_id;// "SomeSensor"; // здесь произвольное наименование  SensorTechId
+
+
+            ////config["SDRN.ApiVersion"] = "2.0"; // версия АПИ - не менять
+            ////config["SDRN.Server.Instance"] = ControlU.MainWindow.db_v2.ATDIConnectionData_Selsected.server_instance;// "ServerSDRN01"; // здесь имя сервера SDRN (т.е. серверов может быть много) (не менять, а вот фиг)
+            ////config["SDRN.Server.QueueNamePart"] = "Q.SDRN.Server";   //- это часть наименования конечной очереди в которую будут приходить сообщения от сенсора сервису SDRN (путь следования такой  EX.SDRN.Device.[v2.0] ->Q.SDRN.Server.[ServerSDRN01].[#01].[v2.0])  - не изменять
+            ////config["SDRN.Device.Exchange"] = "EX.SDRN.Device"; // здесь часть имени точки обмена EX.SDRN.Device.[v2.0] - не изменять
+            ////config["SDRN.Device.QueueNamePart"] = "Q.SDRN.Device"; // здесь часть имени конечной очереди в которую вервис SDRN отправляет данные сенсору (путь следования такой EX.SDRN.Server.[v2.0] ->  Q.SDRN.Device.[SENSOR-DBD12-A00-1280].[SomeSensor].[v2.0]) - не изменять
+            ////config["SDRN.Device.MessagesBindings"] = "{messageType=RegisterSensor, routingKey=#01};{messageType=SendCommandResult, routingKey=#02};{messageType=SendMeasResults, routingKey=#03};{messageType=SendEntity, routingKey=#04};{messageType=SendEntityPart, routingKey=#05};{messageType=UpdateSensor, routingKey=#06}"; // здесь наименования подочередей для обработки сообщений конкретного типа (фактически создаются очереди Q.SDRN.Server.[ServerSDRN01].[#01].[v2.0], Q.SDRN.Server.[ServerSDRN01].[#02].[v2.0], Q.SDRN.Server.[ServerSDRN01].[#03].[v2.0], Q.SDRN.Server.[ServerSDRN01].[#04].[v2.0], Q.SDRN.Server.[ServerSDRN01].[#05].[v2.0], Q.SDRN.Server.[ServerSDRN01].[#06].[v2.0]) - не изменять
+            //////config["DeviceBus.Outbox.ContentType"] = "Json";
+            //////config["DeviceBus.Outbox.UseBuffer"] = "FileSystem";
+            //////config["DeviceBus.Outbox.Buffer.Folder"] = "C:\\Temp\\DeviceBus\\";
+            //////config["DeviceBus.Outbox.Buffer.ContentType"] = "Binary";
+
+            ////// Шифрование и компресия сообщений
+            ////config["SDRN.MessageConvertor.UseEncryption"] = "false"; //"false";// "true"; //признак шифрования сообщения (на данный момент пока не внедрено в сервис, но в конфигурации должно быть)
+            ////config["SDRN.MessageConvertor.UseСompression"] = "false"; //"false";//"true"; //признак упаковки сообщения (на данный момент пока не внедрено в сервис, но в конфигурации должно быть)
 
             return config;
         }       

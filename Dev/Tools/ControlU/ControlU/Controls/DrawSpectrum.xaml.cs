@@ -1223,6 +1223,7 @@ namespace ControlU.Controls
         {
             //  Get the OpenGL instance.
             //OpenGL gl = openGLControl.OpenGL;
+            SharpGL.WPF.OpenGLControl cntr = (OpenGLControl)sender;
             var gl = args.OpenGL;
 
             //  Create an orthographic projection.
@@ -1230,8 +1231,8 @@ namespace ControlU.Controls
             //gl.MatrixMode(OpenGL.GL_PROJECTION);
             gl.LoadIdentity();
             double wGrid = 0.1;
-            if (openGLControl.ActualWidth > 0)
-                wGrid = (FreqStop - FreqStart) / openGLControl.ActualWidth;
+            if (cntr.ActualWidth > 0)
+                wGrid = (FreqStop - FreqStart) / cntr.ActualWidth;
             gl.Ortho(FreqStart - wGrid, FreqStop + wGrid, LowestLevel - 0.01, RefLevel + 0.01, 1, -1);
 
 
@@ -1417,12 +1418,13 @@ namespace ControlU.Controls
         }
         private void waterfall2_Resized(object sender, SharpGL.SceneGraph.OpenGLEventArgs args)
         {
-            if (waterfall2.ActualHeight > 0)
-                WFImageHeight = (int)waterfall2.ActualHeight;
+            SharpGL.WPF.OpenGLControl cntr = (OpenGLControl)sender;
+            if (cntr.ActualHeight > 0)
+                WFImageHeight = (int)cntr.ActualHeight;
             else
                 WFImageHeight = 1;
-            if (waterfall2.ActualWidth > 0)
-                WFImageWidth = (int)waterfall2.ActualWidth;
+            if (cntr.ActualWidth > 0)
+                WFImageWidth = (int)cntr.ActualWidth;
             else
                 WFImageWidth = 1;
 

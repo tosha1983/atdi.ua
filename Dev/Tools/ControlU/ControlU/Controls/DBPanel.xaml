@@ -1087,21 +1087,24 @@
                                                                     <TextBlock Text="{Binding name}"  VerticalAlignment="Center" Height="23" Margin="4,0,0,0" HorizontalAlignment="Left" Width="180">
                                                                     </TextBlock>
 
-                                                                    <!--<Button Click="ATDI_SendResult_Click" Tag="{Binding}" ToolTip="{DynamicResource DBPanel_UploadTasksResults}" HorizontalAlignment="Left" Width="27" Margin="10,0,0,0" Height="27" Grid.Column="1">
-                                                                <Path Data="{StaticResource ArrowUp_inv_PathData}" Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Center" Fill="#FF787878" Height="19"/>
-                                                            </Button>-->
+                                                                    <Button Click="ATDI_SendResult_Click" Tag="{Binding}" ToolTip="{DynamicResource DBPanel_UploadTasksResults}" 
+                                                                            HorizontalAlignment="Left" Width="27" Margin="10,0,0,0" Height="27" Grid.Column="1">
+                                                                        <Path Data="{StaticResource ArrowUp_inv_PathData}" Stretch="Uniform" VerticalAlignment="Center" 
+                                                                              HorizontalAlignment="Center" Fill="#FF787878" Height="19"/>
+                                                                    </Button>
+                                                                    
                                                                     <Button Click="SaveTrackToCSV_Click" Tag="{Binding}" ToolTip="{DynamicResource DBPanel_SaveTrackToCSV}" HorizontalAlignment="Left" Width="27" Margin="10,0,0,0" Height="27" Grid.Column="1">
                                                                         <Path Data="{StaticResource Save_PathData}" Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Center" Fill="#FF787878" Height="19"/>
                                                                     </Button>
 
                                                                     <TextBlock Margin="4,0,0,0" VerticalAlignment="Center" Height="23" Width="130">
-                                                                <Run Text="Results:"/>
-                                                                <Run Text="{Binding Data.Count, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                                                        <Run Text="Results:"/>
+                                                                        <Run Text="{Binding Data.Count, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
                                                                     </TextBlock>
 
                                                                     <TextBlock  Height="23" Margin="4,0,0,0" HorizontalAlignment="Left" Width="200" Grid.Column="4" >
-                                                                <Run Text="{DynamicResource Start}"/>
-                                                                <Run Text="{Binding Path=time_start, Mode=OneWay, UpdateSourceTrigger=PropertyChanged,StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}"/>
+                                                                        <Run Text="{DynamicResource Start}"/>
+                                                                        <Run Text="{Binding Path=time_start, Mode=OneWay, UpdateSourceTrigger=PropertyChanged,StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}"/>
                                                                     </TextBlock>
 
                                                                     <!--<TextBlock  Height="23" Margin="4,0,0,0" HorizontalAlignment="Left" Width="140" Grid.Column="4" >

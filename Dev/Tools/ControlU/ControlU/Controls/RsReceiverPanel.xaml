@@ -1465,18 +1465,14 @@
                 </Button>
             </Grid>
             <Button Click="OpenScreenFolder_click" Content="OpenScreen" Width="100" Height="24" Margin="0,6,0,0"/>
-            <Button Click="Save_Click" Width="100" Height="24" Margin="0,6,0,0">
+            <!--<Button Click="Save_Click" Width="100" Height="24" Margin="0,6,0,0">
                 <Button.Style>
                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
                         <Setter Property="Visibility" Value="Visible"/>
-                        <!--<Setter Property="Background" Value="{DynamicResource Brush_Background_Normal}"/>-->
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding UniqueData.SaveAllData, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True" >
                                 <Setter Property="Visibility" Value="Visible"/>
                             </DataTrigger>
-                            <!--<DataTrigger Binding="{Binding SaveAllData, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True" >
-                                <Setter Property="Background" Value="{DynamicResource Brush_Fail_Dark}"/>
-                            </DataTrigger>-->
                         </Style.Triggers>
                     </Style>
                 </Button.Style>
@@ -1503,14 +1499,10 @@
                 <Button.Style>
                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
                         <Setter Property="Visibility" Value="Visible"/>
-                        <!--<Setter Property="Background" Value="{DynamicResource Brush_Background_Normal}"/>-->
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding UniqueData.SaveAllData, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True" >
                                 <Setter Property="Visibility" Value="Visible"/>
                             </DataTrigger>
-                            <!--<DataTrigger Binding="{Binding SaveAllData, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True" >
-                                <Setter Property="Background" Value="{DynamicResource Brush_Fail_Dark}"/>
-                            </DataTrigger>-->
                         </Style.Triggers>
                     </Style>
                 </Button.Style>
@@ -1580,7 +1572,7 @@
                 <ProgressBar Minimum="0" Maximum="{Binding ReplayMax,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
                              Value="{Binding ReplayIndex,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
                              Grid.Row="2" Grid.ColumnSpan="2"/>
-            </Grid>
+            </Grid>-->
 
         </StackPanel>
     </Grid>

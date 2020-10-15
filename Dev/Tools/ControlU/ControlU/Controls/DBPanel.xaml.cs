@@ -193,6 +193,27 @@ namespace ControlU.Controls
 
                     MainWindow.db_v2.ATDI_UpdateResultInfoToDB_v2(res.ResultsInfo.ToArray(), false, res.id);
                 }
+                else if (((Button)sender).Tag is DB.Track)
+                {
+                    DB.Track res = (DB.Track)((Button)sender).Tag;
+                    ATDI.AtdiDataConverter dc = new ATDI.AtdiDataConverter();
+                    Atdi.DataModels.Sdrns.Device.MeasResults measResult = dc.ConvertToATDI(res);
+                    DB.localatdi_result_state_data resdata = new DB.localatdi_result_state_data()
+                    {
+                        SaveInDB = false,
+                        ResultId = measResult.ResultId,
+                        DeliveryConfirmation = -1,
+                        ResponseReceived = DateTime.MinValue,
+                        ResultSended = DateTime.MinValue,
+                    };
+                    //if (MainWindow.db_v2.ATDI_AddNewResultInfoToDB_v2(resdata, false, res.id))
+                    //{
+                    //    res.ResultsInfo.Add(resdata);
+                    //}
+
+                    MainWindow.atdi.SendResult(measResult, ref resdata);
+                    //MainWindow.db_v2.ATDI_UpdateResultInfoToDB_v2(res.ResultsInfo.ToArray(), false, res.id);
+                }
             }
 
         }
