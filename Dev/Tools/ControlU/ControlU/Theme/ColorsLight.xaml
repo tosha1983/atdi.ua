@@ -1,0 +1,69 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:ControlU.Theme">
+    <!--Цвет текста-->
+    <Color x:Key="Foreground_DarkColor">#FF323232</Color>
+    <Color x:Key="Foreground_NormalColor">#FF464646</Color>
+    <Color x:Key="Foreground_LightColor">#FF646464</Color>
+    <!--Цвет Border-->
+    <Color x:Key="Border_DarkColor">#FFB4B4B4</Color>
+    <Color x:Key="Border_NormalColor">#FFC8C8C8</Color>
+    <Color x:Key="Border_LightColor">#FFDCDCDC</Color>
+    <!--Цвет фона-->
+    <Color x:Key="Background_DarkColor">#FFDCDCDC</Color>
+    <Color x:Key="Background_NormalColor">#EFEFF2</Color>
+    <Color x:Key="Background_LightColor">#FFFAFAFA</Color>
+    <!--Цвет при наведении мыши-->
+    <Color x:Key="IsMouseOver_DarkColor">#FF646464</Color>
+    <Color x:Key="IsMouseOver_NormalColor">#FF787878</Color>
+    <Color x:Key="IsMouseOver_LightColor">#FF8C8C8C</Color>
+    <!--Цвет при наведении мыши-->
+    <Color x:Key="IsPressed_DarkColor">#FFAFAFAF</Color>
+    <Color x:Key="IsPressed_NormalColor">#FFC3C3C3</Color>
+    <Color x:Key="IsPressed_LightColor">#FFD7D7D7</Color>
+
+    <Color x:Key="Blue_DarkColor">#FF1E6EA4</Color>
+    <Color x:Key="Blue_NormalColor">#FF3282B8</Color>
+    <Color x:Key="Blue_LightColor">#FF99B4D1</Color>
+    <!--Цвет в плохом случае-->
+    <Color x:Key="Fail_DarkColor">#B2C80000</Color>
+    <Color x:Key="Fail_NormalColor">#7FFF0000</Color>
+    <Color x:Key="Fail_LightColor">#59FF0000</Color>
+    <!--Цвет все хорошо))-->
+    <Color x:Key="Good_DarkColor">#BF08B400</Color>
+    <Color x:Key="Good_NormalColor">#7F08B400</Color>
+    <Color x:Key="Good_LightColor">#4C0CFF00</Color>
+
+    <SolidColorBrush x:Key="test" Color="#EFEFF2"/>
+
+    <SolidColorBrush x:Key="Brush_Foreground_Dark" Color="{StaticResource Foreground_DarkColor}"/>
+    <SolidColorBrush x:Key="Brush_Foreground_Normal" Color="{StaticResource Foreground_NormalColor}"/>
+    <SolidColorBrush x:Key="Brush_Foreground_Light" Color="{StaticResource Foreground_LightColor}"/>
+
+    <SolidColorBrush x:Key="Brush_BorderColor_Dark" Color="{StaticResource Border_DarkColor}"/>
+    <SolidColorBrush x:Key="Brush_BorderColor_Normal" Color="{StaticResource Border_NormalColor}"/>
+    <SolidColorBrush x:Key="Brush_BorderColor_Light" Color="{StaticResource Border_LightColor}"/>
+
+    <SolidColorBrush x:Key="Brush_Background_Dark" Color="{StaticResource Background_DarkColor}"/>
+    <SolidColorBrush x:Key="Brush_Background_Normal" Color="{StaticResource Background_NormalColor}"/>
+    <SolidColorBrush x:Key="Brush_Background_Light" Color="{StaticResource Background_LightColor}"/>
+
+    <SolidColorBrush x:Key="Brush_IsMouseOver_Dark" Color="{StaticResource IsMouseOver_DarkColor}"/>
+    <SolidColorBrush x:Key="Brush_IsMouseOver_Normal" Color="{StaticResource IsMouseOver_NormalColor}"/>
+    <SolidColorBrush x:Key="Brush_IsMouseOver_Light" Color="{StaticResource IsMouseOver_LightColor}"/>
+
+    <SolidColorBrush x:Key="Brush_IsPressed_Dark" Color="{StaticResource IsPressed_DarkColor}"/>
+    <SolidColorBrush x:Key="Brush_IsPressed_Normal" Color="{StaticResource IsPressed_NormalColor}"/>
+    <SolidColorBrush x:Key="Brush_IsPressed_Light" Color="{StaticResource IsPressed_LightColor}"/>
+
+    <SolidColorBrush x:Key="Brush_Blue_Dark" Color="{StaticResource Blue_DarkColor}"/>
+    <SolidColorBrush x:Key="Brush_Blue_Normal" Color="{StaticResource Blue_NormalColor}"/>
+    <SolidColorBrush x:Key="Brush_Blue_Light" Color="{StaticResource Blue_LightColor}"/>
+
+    <SolidColorBrush x:Key="Brush_Fail_Dark" Color="{StaticResource Fail_DarkColor}"/>
+    <SolidColorBrush x:Key="Brush_Fail_Normal" Color="{StaticResource Fail_NormalColor}"/>
+    <SolidColorBrush x:Key="Brush_Fail_Light" Color="{StaticResource Fail_LightColor}"/>
+    
+    <SolidColorBrush x:Key="invalidUnfocused" Color="#FFF55E7F" />
+    <SolidColorBrush x:Key="invalidFocused" Color="#FFD0284C" />
+</ResourceDictionary>

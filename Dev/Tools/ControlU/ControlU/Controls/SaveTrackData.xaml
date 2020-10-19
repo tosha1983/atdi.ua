@@ -1,0 +1,68 @@
+﻿<UserControl x:Class="ControlU.Controls.SaveTrackData"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ControlU.Controls"
+             mc:Ignorable="d" 
+             Height="155" Width="300">
+    <Border BorderBrush="#FF007ACC" CornerRadius="3" BorderThickness="2" Background="{DynamicResource Brush_Background_Normal}" Padding="2">
+        <Grid>
+            <Grid.Resources>
+                <local:LevelConverter x:Key="LevelConverter"/>
+            </Grid.Resources>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="90"/>
+                <RowDefinition Height="30"/>
+            </Grid.RowDefinitions>
+            <TextBlock Text="{DynamicResource SaveTrackData_Title}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="16"/>
+            <Grid Grid.Row="1" Margin="5,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="55"/>
+                    <RowDefinition Height="30"/>
+                </Grid.RowDefinitions>
+                <GroupBox Header="{DynamicResource SaveTrackData_AntennaGain}" VerticalAlignment="Top" FontSize="14">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="27"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="27"/>
+                        </Grid.ColumnDefinitions>
+                        <RepeatButton Click="AntennaGainMinus_Click" Height="27" VerticalAlignment="Top" Width="27">
+                            <Path Data="{StaticResource Minus_PathData}" Stretch="Uniform" Stroke="{DynamicResource Brush_Foreground_Normal}" VerticalAlignment="Center" HorizontalAlignment="Center" Width="12"/>
+                        </RepeatButton>
+                        <TextBox Text="{Binding Path=AntennaGain, Mode=OneWay, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource LevelConverter},ConverterParameter=dB}" 
+                                     MouseWheel="AntennaGain_MouseWheel" KeyDown="AntennaGain_KeyDown" PreviewTextInput="Uni_PreKeyDownDecimal" GotMouseCapture="Uni_GotMouseCapture" 
+                                     TextAlignment="Center" 
+                                     FontSize="14" Height="25" VerticalAlignment="Center" Grid.Column="1"/>
+                        <RepeatButton Click="AntennaGainPlus_Click" Height="27" VerticalAlignment="Top" Width="27" Grid.Column="2">
+                            <Path Data="{StaticResource Plus_PathData}" Stretch="Uniform" Stroke="{DynamicResource Brush_Foreground_Normal}" VerticalAlignment="Center" HorizontalAlignment="Center" Width="12" />
+                        </RepeatButton>
+                    </Grid>
+                </GroupBox>
+                <ProgressBar Name="SaveProgress_PB" Grid.Row="1"
+                             Minimum="0" 
+                             Maximum="{Binding Track.Data.Count, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
+                             Value="{Binding SaveProgress, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBlock  Margin="0" Width="120" VerticalAlignment="Center" TextAlignment="Center" FontSize="14" Grid.Row="1">
+                    <Run Text="{Binding ElementName=SaveProgress_PB, Path=Value, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Run Text="/"/>
+                    <Run Text="{Binding ElementName=SaveProgress_PB, Path=Maximum, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                </TextBlock>
+            </Grid>
+            
+
+
+            <Grid HorizontalAlignment="Right" Grid.Row="2" Margin="0,0,10,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+                <Button Content="{DynamicResource Save}" Click="Save_Click" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" Width="74" Height="18"/>
+                <Button Content="{DynamicResource Cancel}" Click="Cancel_Click" Margin="0" Width="74" Height="18" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" />
+            </Grid>
+        </Grid>
+    </Border>
+</UserControl>

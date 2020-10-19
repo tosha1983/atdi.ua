@@ -158,5 +158,6 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
             }
             return NextId.Value;
         }
+
     }
 }

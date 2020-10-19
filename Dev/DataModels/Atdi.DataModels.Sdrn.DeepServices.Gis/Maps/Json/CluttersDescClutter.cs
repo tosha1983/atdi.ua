@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.DeepServices.Gis.Maps.Json
 {
-	public class CluttersDescClutter
+    [Serializable]
+    public class CluttersDescClutter
 	{
 		public byte Code;
 

@@ -8,7 +8,8 @@ using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
-	public enum StationStatusResult
+    [Serializable]
+    public enum StationStatusResult
     {
         CS,
         NS,

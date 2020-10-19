@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
-	public class ResultRefSpectrumBySensors
+    [Serializable]
+    public class ResultRefSpectrumBySensors
     {
         public int OrderId { get; set; }
         public string TableIcsmName { get; set; }

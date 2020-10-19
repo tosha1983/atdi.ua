@@ -1,0 +1,18 @@
+Version:          0x05031000
+BitFileName:      tsme6.bin
+
+Version:          0x05030600
+BitFileName:      tsme_taz6_2gbit.bin
+
+Version:          0x05030500
+BitFileName:      tsme_taz5_2gbit.bin
+
+Version:          0x05030300
+BitFileName:      tsme_taz6.bin
+
+Version:          0x05030100
+BitFileName:      tsme_taz5.bin
+
+Version:          0x02010003
+BitFileName:      tsme_taz4.bin
+

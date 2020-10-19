@@ -265,10 +265,10 @@
     <value>Number cascade</value>
   </data>
   <data name="NumberStation" xml:space="preserve">
-    <value>Number station</value>
+    <value>Number of station</value>
   </data>
   <data name="NumberStationInContour" xml:space="preserve">
-    <value>Number station in contour</value>
+    <value>Number of station in contour</value>
   </data>
   <data name="OwnerInstance" xml:space="preserve">
     <value>Owner Instance</value>
@@ -555,5 +555,41 @@
   </data>
   <data name="Load" xml:space="preserve">
     <value>Load</value>
+  </data>
+  <data name="FinishTime" xml:space="preserve">
+    <value>Finish Time</value>
+  </data>
+  <data name="NumberTimeStarted" xml:space="preserve">
+    <value>Number of time started</value>
+  </data>
+  <data name="PercentCompleteTask" xml:space="preserve">
+    <value>% of completed task</value>
+  </data>
+  <data name="SaveAndStart" xml:space="preserve">
+    <value>Save &amp; Start</value>
+  </data>
+  <data name="StartTime" xml:space="preserve">
+    <value>Start Time</value>
+  </data>
+  <data name="AbortCalc" xml:space="preserve">
+    <value>Abort calc</value>
+  </data>
+  <data name="EditNote" xml:space="preserve">
+    <value>Edit Note</value>
+  </data>
+  <data name="ResultStatusName" xml:space="preserve">
+    <value>Result Status Name</value>
+  </data>
+  <data name="ResultStatusNote" xml:space="preserve">
+    <value>Result Status Note</value>
+  </data>
+  <data name="StopCalc" xml:space="preserve">
+    <value>Stop calc</value>
+  </data>
+  <data name="DeltaCorrelation_pc" xml:space="preserve">
+    <value>Delta correlation percent</value>
+  </data>
+  <data name="UsedPoints_pc" xml:space="preserve">
+    <value>Used points percent</value>
   </data>
 </root>

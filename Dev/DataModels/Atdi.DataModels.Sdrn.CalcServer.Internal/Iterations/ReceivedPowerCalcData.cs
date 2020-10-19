@@ -11,6 +11,7 @@ using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Gis;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
+    [Serializable]
     public struct ReceivedPowerCalcData
     {
         public PropagationModel PropagationModel;

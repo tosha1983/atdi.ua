@@ -16,6 +16,7 @@ using System.Data;
 using System.Windows;
 using System.Windows.Forms;
 using Atdi.WpfControls.EntityOrm.Controls;
+using Microsoft.VisualBasic;
 
 namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTasksCalibration
 {
@@ -34,13 +35,8 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
         private ClientContextModel _currentClientContext;
         private ClientContextModel _currentClientContextCard;
         private CalcTaskModel _currentCalcTask;
-        private CalcTaskModel _currentCalcTaskCard;
 
         private CardEditMode _clientContextEditedMode = CardEditMode.None;
-        private CardEditMode _calcTaskEditedMode = CardEditMode.None;
-
-        private OrmEnumBoxData[] _mapSource;
-        private Dictionary<string, OrmEnumBoxData> _maps;
 
         public ViewCommand ContextAddCommand { get; set; }
         public ViewCommand ContextModifyCommand { get; set; }
@@ -49,9 +45,12 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
         public ViewCommand TaskAddCommand { get; set; }
         public ViewCommand TaskModifyCommand { get; set; }
         public ViewCommand TaskDeleteCommand { get; set; }
-        public ViewCommand TaskSaveCommand { get; set; }
         public ViewCommand TaskStartCalcCommand { get; set; }
         public ViewCommand TaskShowResultCommand { get; set; }
+        public ViewCommand TaskStopCommand { get; set; }
+        public ViewCommand TaskAbortCommand { get; set; }
+        public ViewCommand EditNoteCommand { get; set; }
+        public ViewCommand TaskRefreshCommand { get; set; }
 
         public ProjectDataAdapter Projects { get; set; }
         public BaseClientContextDataAdapter BaseClientContexts { get; set; }
@@ -91,13 +90,16 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
             this.TaskAddCommand = new ViewCommand(this.OnTaskAddCommand);
             this.TaskModifyCommand = new ViewCommand(this.OnTaskModifyCommand);
             this.TaskDeleteCommand = new ViewCommand(this.OnTaskDeleteCommand);
-            this.TaskSaveCommand = new ViewCommand(this.OnTaskSaveCommand);
 
             this.TaskStartCalcCommand = new ViewCommand(this.OnTaskStartCalcCommand);
             this.TaskShowResultCommand = new ViewCommand(this.OnTaskShowResultCommand);
+            this.TaskStopCommand = new ViewCommand(this.OnTaskStopCommand);
+            this.TaskAbortCommand = new ViewCommand(this.OnTaskAbortCommand);
+            this.TaskRefreshCommand = new ViewCommand(this.OnTaskRefreshCommand);
+
+            this.EditNoteCommand = new ViewCommand(this.OnEditNoteCommand);
 
             this.CurrentClientContextCard = new ClientContextModel();
-            this.CurrentCalcTaskCard = new CalcTaskModel();
 
             this.Projects = projectDataAdapter;
             this.BaseClientContexts = baseContextDataAdapter;
@@ -146,16 +148,6 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
         {
             get => this._currentCalcTask;
             set => this.Set(ref this._currentCalcTask, value, () => { this.OnChangedCurrentCalcTask(value); });
-        }
-        public CalcTaskModel CurrentCalcTaskCard
-        {
-            get => this._currentCalcTaskCard;
-            set => this.Set(ref this._currentCalcTaskCard, value);
-        }
-        public OrmEnumBoxData[] MapSource
-        {
-            get => this._mapSource;
-            set => this.Set(ref this._mapSource, value);
         }
 
         #region visible properties
@@ -208,18 +200,25 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
             set => this.Set(ref this._calcTaskDelEnabled, value);
         }
 
-        private bool _calcTaskSaveEnabled = false;
-        public bool CalcTaskSaveEnabled
-        {
-            get => this._calcTaskSaveEnabled;
-            set => this.Set(ref this._calcTaskSaveEnabled, value);
-        }
-
         private bool _calcTaskStartCalcEnabled = false;
         public bool CalcTaskStartCalcEnabled
         {
             get => this._calcTaskStartCalcEnabled;
             set => this.Set(ref this._calcTaskStartCalcEnabled, value);
+        }
+
+        private bool _calcTaskStopCalcEnabled = false;
+        public bool CalcTaskStopCalcEnabled
+        {
+            get => this._calcTaskStopCalcEnabled;
+            set => this.Set(ref this._calcTaskStopCalcEnabled, value);
+        }
+
+        private bool _calcTaskAbortCalcEnabled = false;
+        public bool CalcTaskAbortCalcEnabled
+        {
+            get => this._calcTaskAbortCalcEnabled;
+            set => this.Set(ref this._calcTaskAbortCalcEnabled, value);
         }
 
         private bool _calcTaskShowResultEnabled = false;
@@ -230,36 +229,19 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
         }
         #endregion
 
-        private void PrepareMapCombo()
-        {
-            var maps = _objectReader.Read<string[]>().By(new GetMapsByProjectId() { Id = this._currentProject.Id });
-            this._maps = new Dictionary<string, OrmEnumBoxData>();
-            var enumData = new List<OrmEnumBoxData>();
-            int i = 0;
-
-            foreach (var item in maps)
-            {
-                var data = new OrmEnumBoxData() { Id = ++i, Name = item, ViewName = item };
-                enumData.Add(data);
-                this._maps.Add(item, data);
-            }
-            MapSource = enumData.ToArray();
-        }
         private void OnChangedCurrentProject(ProjectModel project)
         {
             ReloadProjectContext();
             ReloadClientContext();
             ReloadCalcTask();
             CurrentClientContextCard = new ClientContextModel();
-            CurrentCalcTaskCard = new CalcTaskModel();
             ClientContextSaveEnabled = false;
             CalcTaskEditEnabled = false;
             CalcTaskDelEnabled = false;
             CalcTaskStartCalcEnabled = false;
+            CalcTaskStopCalcEnabled = false;
+            CalcTaskAbortCalcEnabled = false;
             CalcTaskShowResultEnabled = false;
-            CalcTaskSaveEnabled = false;
-            if (project != null)
-                PrepareMapCombo();
         }
         private void OnChangedCurrentBaseClientContext(ClientContextModel context)
         {
@@ -279,7 +261,6 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
             {
                 ReloadCalcTask();
                 this.CurrentClientContextCard = _objectReader.Read<ClientContextModel>().By(new GetClientContextById { Id = CurrentClientContext.Id });
-                CurrentCalcTaskCard = new CalcTaskModel();
                 ClientContextEditEnabled = true;
                 ClientContextDelEnabled = true;
                 CalcTaskAddEnabled = true;
@@ -292,29 +273,35 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
 
             }
             ClientContextSaveEnabled = false;
-            CalcTaskSaveEnabled = false;
         }
         private void OnChangedCurrentCalcTask(CalcTaskModel task)
         {
-            var card = _objectReader.Read<CalcTaskModel>().By(new GetCalcTaskById { Id = CurrentCalcTask.Id });
-
-            if (this._maps.ContainsKey(card.MapName))
-                card.MapCombo = this._maps[card.MapName];
-
-            this.CurrentCalcTaskCard = card;
-
             if (CurrentCalcTask != null)
             {
                 CalcTaskEditEnabled = true;
                 CalcTaskDelEnabled = true;
-                CalcTaskStartCalcEnabled = true;
                 CalcTaskShowResultEnabled = true;
+
+                if (CurrentCalcTask.ResultStatusCode == 3)
+                {
+                    CalcTaskStartCalcEnabled = false;
+                    CalcTaskStopCalcEnabled = true;
+                    CalcTaskAbortCalcEnabled = true;
+                }
+                else
+                {
+                    CalcTaskStartCalcEnabled = true;
+                    CalcTaskStopCalcEnabled = false;
+                    CalcTaskAbortCalcEnabled = false;
+                }
             }
             else
             {
                 CalcTaskEditEnabled = false;
                 CalcTaskDelEnabled = false;
                 CalcTaskStartCalcEnabled = false;
+                CalcTaskStopCalcEnabled = false;
+                CalcTaskAbortCalcEnabled = false;
                 CalcTaskShowResultEnabled = false;
             }
         }
@@ -346,6 +333,8 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
             CalcTaskEditEnabled = false;
             CalcTaskDelEnabled = false;
             CalcTaskStartCalcEnabled = false;
+            CalcTaskStopCalcEnabled = false;
+            CalcTaskAbortCalcEnabled = false;
             CalcTaskShowResultEnabled = false;
         }
         private void ReloadClientContext()
@@ -468,20 +457,13 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
                 if (this.CurrentClientContext == null)
                     return;
 
-                CurrentCalcTaskCard = new CalcTaskModel()
+                var modifier = new Modifiers.CreateCalcTask
                 {
-                    ContextId = CurrentClientContext.Id,
-                    ContextName = CurrentClientContext.Name,
-                    MapName = ""
+                    ContextId = this.CurrentClientContext.Id,
+                    MapName = _objectReader.Read<string>().By(new GetMapByProjectId { Id = CurrentProject.Id }),
+                    OwnerId = Guid.NewGuid()
                 };
-
-                CalcTaskSaveEnabled = true;
-                CalcTaskAddEnabled = false;
-                CalcTaskEditEnabled = false;
-                CalcTaskDelEnabled = false;
-                CalcTaskStartCalcEnabled = false;
-                CalcTaskShowResultEnabled = false;
-                _calcTaskEditedMode = CardEditMode.Add;
+                _commandDispatcher.Send(modifier);
             }
             catch (Exception e)
             {
@@ -492,16 +474,10 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
         {
             try
             {
-                if (CurrentCalcTaskCard == null)
+                if (CurrentCalcTask == null)
                     return;
 
-                CalcTaskSaveEnabled = true;
-                CalcTaskAddEnabled = false;
-                CalcTaskEditEnabled = false;
-                CalcTaskDelEnabled = false;
-                CalcTaskStartCalcEnabled = false;
-                CalcTaskShowResultEnabled = false;
-                _calcTaskEditedMode = CardEditMode.Edit;
+                _starter.Start<VM.StationCalibrationManager.View>(isModal: true, f => { f.TaskId = CurrentCalcTask.Id; });
             }
             catch (Exception e)
             {
@@ -512,14 +488,10 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
         {
             try
             {
-                if (CurrentCalcTaskCard == null)
+                if (CurrentCalcTask == null)
                     return;
 
-                var modifier = new Modifiers.DeleteCalcTask
-                {
-                    Id = CurrentCalcTask.Id
-                };
-
+                var modifier = new Modifiers.DeleteCalcTask { Id = CurrentCalcTask.Id };
                 _commandDispatcher.Send(modifier);
             }
             catch (Exception e)
@@ -527,45 +499,45 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
                 this._logger.Exception(Exceptions.StationCalibrationCalculation, e);
             }
         }
-        private void OnTaskSaveCommand(object parameter)
-        {
-            if (CurrentCalcTaskCard == null)
-                return;
+        //private void OnTaskSaveCommand(object parameter)
+        //{
+        //    if (CurrentCalcTaskCard == null)
+        //        return;
 
-            if (string.IsNullOrEmpty(CurrentCalcTaskCard.MapCombo.Name))
-            {
-                _starter.ShowException("Warning!", new Exception($"Undefined value '{Properties.Resources.MapName}'!"));
-                return;
-            }
-            
-            if (_calcTaskEditedMode == CardEditMode.Add)
-            {
-                var modifier = new Modifiers.CreateCalcTask
-                {
-                    ContextId = CurrentCalcTaskCard.ContextId,
-                    MapName = CurrentCalcTaskCard.MapCombo.Name,
-                    OwnerId = Guid.NewGuid()
-                };
+        //    if (string.IsNullOrEmpty(CurrentCalcTaskCard.MapCombo.Name))
+        //    {
+        //        _starter.ShowException("Warning!", new Exception($"Undefined value '{Properties.Resources.MapName}'!"));
+        //        return;
+        //    }
 
-                _commandDispatcher.Send(modifier);
-            }
+        //    if (_calcTaskEditedMode == CardEditMode.Add)
+        //    {
+        //        var modifier = new Modifiers.CreateCalcTask
+        //        {
+        //            ContextId = CurrentCalcTaskCard.ContextId,
+        //            MapName = CurrentCalcTaskCard.MapCombo.Name,
+        //            OwnerId = Guid.NewGuid()
+        //        };
 
-            if (_calcTaskEditedMode == CardEditMode.Edit)
-            {
-                var modifier = new Modifiers.EditCalcTask
-                {
-                    Id = CurrentCalcTask.Id,
-                    MapName = CurrentCalcTaskCard.MapCombo.Name
-                };
+        //        _commandDispatcher.Send(modifier);
+        //    }
 
-                _commandDispatcher.Send(modifier);
-            }
+        //    if (_calcTaskEditedMode == CardEditMode.Edit)
+        //    {
+        //        var modifier = new Modifiers.EditCalcTask
+        //        {
+        //            Id = CurrentCalcTask.Id,
+        //            MapName = CurrentCalcTaskCard.MapCombo.Name
+        //        };
 
-            _calcTaskEditedMode = CardEditMode.None;
-            CalcTaskSaveEnabled = false;
-            if (CurrentClientContext != null)
-                CalcTaskAddEnabled = true;
-        }
+        //        _commandDispatcher.Send(modifier);
+        //    }
+
+        //    _calcTaskEditedMode = CardEditMode.None;
+        //    CalcTaskSaveEnabled = false;
+        //    if (CurrentClientContext != null)
+        //        CalcTaskAddEnabled = true;
+        //}
         private void OnTaskStartCalcCommand(object parameter)
         {
             try
@@ -617,7 +589,64 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
                 this._logger.Exception(Exceptions.StationCalibrationCalculation, e);
             }
         }
+        private void OnTaskStopCommand(object parameter)
+        {
+            try
+            {
+                var modifier = new Modifiers.StopCalcTask
+                {
+                    ResultId = CurrentCalcTask.ResultId
+                };
+                _commandDispatcher.Send(modifier);
+            }
+            catch (Exception e)
+            {
+                this._logger.Exception(Exceptions.StationCalibrationCalculation, e);
+            }
+        }
+        private void OnTaskAbortCommand(object parameter)
+        {
+            try
+            {
+                var modifier = new Modifiers.AbortCalcTask
+                {
+                    ResultId = CurrentCalcTask.ResultId
+                };
+                _commandDispatcher.Send(modifier);
+            }
+            catch (Exception e)
+            {
+                this._logger.Exception(Exceptions.StationCalibrationCalculation, e);
+            }
+        }
+        private void OnTaskRefreshCommand(object parameter)
+        {
+            ReloadCalcTask();
+        }
 
+        private void OnEditNoteCommand(object parameter)
+        {
+            try
+            {
+                if (CurrentCalcTask != null)
+                {
+                    var newNote = Interaction.InputBox("Enter note", Exceptions.StationCalibrationCalculation);
+                    if (!string.IsNullOrEmpty(newNote))
+                    {
+                        var modifier = new Modifiers.EditNoteCalcTask
+                        {
+                            Id = CurrentCalcTask.Id,
+                            Note = newNote
+                        };
+                        _commandDispatcher.Send(modifier);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                this._logger.Exception(Exceptions.StationCalibrationCalculation, e);
+            }
+        }
         private void OnCreatedClientContextHandle(Events.OnCreatedClientContext data)
         {
             ReloadClientContext();

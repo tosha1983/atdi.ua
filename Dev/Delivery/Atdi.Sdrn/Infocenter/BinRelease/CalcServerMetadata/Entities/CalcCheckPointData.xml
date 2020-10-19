@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "CalcCheckPointData"
+  Title       = "Calculation Check Point Data"
+  Desc        = "The data of the the calculation check point"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>CHECKPOINTS_DATA</Name>
+    <Schema>CALC</Schema>
+  </DataSource>
+  <Fields>
+    <Field Name="Id" SourceType="Column"  SourceName="ID" DataType="Counter.64" Title="Data ID" Desc="The identifier of the check point data"/>
+    <Field Name="CHECKPOINT" SourceType="Reference" SourceName="CalcCheckPoint"  Required="true" Title="Result" Desc="The check point" />
+    <Field Name="CreatedDate" SourceType="Column" SourceName="CREATED_DATE" DataType="DateTimeOffset" Required="true" Title="Created date" Desc="The date of the check point data created"  />
+    <Field Name="DataContext" SourceType="Column" SourceName="DATA_CONTEXT" DataType="Text.250" Required="true" Title="Data Context" Desc="The context of the the check point data" />
+    <Field Name="DataJson" SourceType="Column" SourceName="DATA_JSON" DataType="Text.MAX" Title="Data JSON" Desc="The checkpoint data packed in JSON"/>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>

@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.DeepServices.RadioSystem.FieldStrength
 {
-	public struct CalcFSResult
+    [Serializable]
+    public struct CalcFSResult
     {
 		public double FSResult;
     }

@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.DeepServices.Gis
 {
-	public struct ProfileIndexer
+    [Serializable]
+    public struct ProfileIndexer
 	{
 		public int XIndex;
 		public int YIndex;

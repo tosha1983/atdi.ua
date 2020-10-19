@@ -20,7 +20,7 @@ using WPF =  System.Windows.Controls;
 using Atdi.DataModels.Sdrn.DeepServices.Gis;
 using Atdi.Contracts.Sdrn.DeepServices.Gis;
 using Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties;
-
+using MG = Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTasksCalibration;
 
 
 
@@ -74,7 +74,8 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
         public StationMonitoringDataAdapter StationMonitoringDataAdapter { get; set; }
         public ParametersDataAdapter ParametersDataAdapter { get; set; }
 
-        public ViewCommand StartStationCalibrationCommand { get; set; }
+        public ViewCommand SaveAndStartStationCalibrationCommand { get; set; }
+        public ViewCommand SaveStationCalibrationCommand { get; set; }
         public ViewCommand LoadDriveTestsCommand { get; set; }
 
 
@@ -106,10 +107,9 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             this._appComponentConfig = appComponentConfig;
 
 
-            this.StartStationCalibrationCommand = new ViewCommand(this.OnStartStationCalibrationCommand);
+            this.SaveAndStartStationCalibrationCommand = new ViewCommand(this.OnSaveAndStartStationCalibrationCommand);
+            this.SaveStationCalibrationCommand = new ViewCommand(this.OnSaveStationCalibrationCommand);
             this.LoadDriveTestsCommand = new ViewCommand(this.OnLoadDriveTestsCommand);
-
-
 
             this._currentParamsCalculationModel = new ParamsCalculationModel();
             this._currentGetStationsParameters = new GetStationsParamsModel();
@@ -176,8 +176,6 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             get => this._isVisibleFieldStandard;
             set => this.Set(ref this._isVisibleFieldStandard, value);
         }
-
-
 
         public long TaskId
         {
@@ -736,9 +734,13 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             }
         }
 
-        private void OnStartStationCalibrationCommand(object parameter)
+        private void OnSaveAndStartStationCalibrationCommand(object parameter)
         {
-            _viewStarter.StartInUserContext("Warning!", "Are you sure you want to start this process?", StartStationCalibrationCommandAction);
+            _viewStarter.StartInUserContext("Warning!", "Are you sure you want to start this process?", SaveAndStartStationCalibrationCommandAction);
+        }
+        private void OnSaveStationCalibrationCommand(object parameter)
+        {
+            _viewStarter.StartInUserContext("Warning!", "Are you sure you want to start this process?", SaveStationCalibrationCommandAction);
         }
 
         private void OnSavedStationsHandle(Events.OnSavedStations data)
@@ -1038,10 +1040,17 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             }
             return isSuccess;
         }
-
-        private void StartStationCalibrationCommandAction()
+        private void SaveStationCalibrationCommandAction()
         {
-            bool isSuccess = false;
+            SaveStationCalibrationAction(false);
+        }
+        private void SaveAndStartStationCalibrationCommandAction()
+        {
+            SaveStationCalibrationAction(true);
+        }
+        private void SaveStationCalibrationAction(bool isStart = false)
+        {
+            //bool isSuccess = false;
             if (ValidateTaskParameters())
             {
                 var listStationMonitoringModel = new List<long>();
@@ -1069,28 +1078,38 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                     listStationMonitoringModel.Add(x.Id);
                 }
 
-                _viewStarter.StartLongProcess(
-                    new LongProcessOptions()
-                    {
-                        CanStop = false,
-                        CanAbort = false,
-                        UseProgressBar = true,
-                        UseLog = false,
-                        IsModal = true,
-                        MinValue = 0,
-                        MaxValue = 1000,
-                        ValueKind = LongProcessValueKind.Infinity,
-                        Title = "Saving stations ...",
-                        Note = "Selection and saving of stations in the calculation server in accordance with the specified parameters."
-                    },
-                    token =>
-                    {
-                        isSuccess = OnLoadStationsHandle(listStationMonitoringModel);
-                    });
-                if (isSuccess)
+                Task.Run(() =>
                 {
-                    _viewStarter.Stop(this);
-                }
+                    var isSuccess = OnLoadStationsHandle(listStationMonitoringModel);
+                    if (isStart && isSuccess)
+                    {
+                        var modifier = new MG.Modifiers.RunCalcTask { Id = TaskId };
+                        _commandDispatcher.Send(modifier);
+                    }
+                });
+
+                //_viewStarter.StartLongProcess(
+                //    new LongProcessOptions()
+                //    {
+                //        CanStop = false,
+                //        CanAbort = false,
+                //        UseProgressBar = true,
+                //        UseLog = false,
+                //        IsModal = true,
+                //        MinValue = 0,
+                //        MaxValue = 1000,
+                //        ValueKind = LongProcessValueKind.Infinity,
+                //        Title = "Saving stations ...",
+                //        Note = "Selection and saving of stations in the calculation server in accordance with the specified parameters."
+                //    },
+                //    token =>
+                //    {
+                //        isSuccess = OnLoadStationsHandle(listStationMonitoringModel);
+                //    });
+                //if (isSuccess)
+                //{
+                _viewStarter.Stop(this);
+                //}
             }
         }
         private void OnEditParamsCalculationsHandle(Events.OnEditParamsCalculation data)

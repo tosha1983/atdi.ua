@@ -54,15 +54,42 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Example.Tasks
 			//   1. Сгенерировать и отправить евент с описанием пробелым, он дойдет до каллера расчета
 			//   2. бросит ексепшен с описанием проблемы (это делать обязательно в случаи если расчет в принципе не возможен)
 
+			if (taskContext.RunMode == TaskRunningMode.Recovery)
+			{
+				// режим восстановления
+			}
+
 		}
 
 		public void Run()
 		{
 			try
 			{
+				FirstIterationData firstData = null;
+
+				// проверим режим запсука
+				if (_taskContext.RunMode == TaskRunningMode.Normal)
+				{
+					// запсук с нул
+					firstData = new FirstIterationData();
+				}
+				else if (_taskContext.RunMode == TaskRunningMode.Recovery)
+				{
+					// нужно востановиться
+					var lastCheckPoint = _taskContext.GetLastCheckPoint();
+					if ("main".Equals(lastCheckPoint.Name))
+					{
+						firstData = lastCheckPoint.RestoreData<FirstIterationData>("context_first_data");
+					}
+					if ("main-1".Equals(lastCheckPoint.Name))
+					{
+						firstData = lastCheckPoint.RestoreData<FirstIterationData>("context_second_data");
+					}
+					// и так далее по всем возможным точкам востановлениям
+				}
 				//тут код организации процесса расчета
 
-				var firstData = new FirstIterationData();
+				
 				var firstResult = _iterationsPool.GetIteration<FirstIterationData, FirstIterationResult>().Run(_taskContext, firstData);
 
 				// в процессе можно генерировать евенты
@@ -90,6 +117,29 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Example.Tasks
 						State = 10 // 10%
 					}
 				});
+
+				for (int i = 0; i < 1000; i++)
+				{
+					// пример обработки запроса на отмену
+					if (_taskContext.CancellationToken.IsCancellationRequested)
+					{
+						// нас просят прервать работу
+						// тут  возможно стоит сфомировть тчоку восстановления
+						using (var checkPoint = _taskContext.CreateCheckPoint("main"))
+						{
+							checkPoint.SaveData("context_first_data", firstData);
+							checkPoint.SaveData("context_second_data", firstData);
+							checkPoint.SaveData("context_third_data", firstData);
+							// фиксируем контрольную точку
+							checkPoint.Commit();
+							// тогда возможно реанимироать и продолжить расчет
+						}
+
+						// но можно и просто выйти - все завист от логики задачи и ее объема выполняемых работ и расчетов
+						return;
+						// важно - ексепшен не стоит бросать так как результат получит не свойственный ситуации статус - Failed
+					}
+				}
 			}
 			catch (Exception e)
 			{

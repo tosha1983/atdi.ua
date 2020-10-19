@@ -6,14 +6,15 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.DeepServices.RadioSystem.PropagationModels
 {
-	public struct DiffractionCalcBlock
+    [Serializable]
+    public struct DiffractionCalcBlock
 	{
 		public DiffractionCalcBlockModelType ModelType;
 
 		public bool Available;
 	}
-
-	public enum DiffractionCalcBlockModelType
+    [Serializable]
+    public enum DiffractionCalcBlockModelType
 	{
 		/// <summary>
 		/// Unknown Model

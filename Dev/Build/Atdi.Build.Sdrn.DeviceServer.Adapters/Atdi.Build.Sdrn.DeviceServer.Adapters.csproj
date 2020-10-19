@@ -80,26 +80,31 @@
     <PostBuildEvent>copy "$(TargetDir)Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\GPS\Bin$(ConfigurationName)"
 copy "$(TargetDir)Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS.dll.config" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\GPS\Bin$(ConfigurationName)"
 
-copy "$(TargetDir)Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\SignalHound\Bin$(ConfigurationName)"
-copy "$(TargetDir)Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound.dll.config" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\SignalHound\Bin$(ConfigurationName)"
-copy "$(TargetDir)bb_api.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\SignalHound\Bin$(ConfigurationName)"
-copy "$(TargetDir)ftd2xx.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\SignalHound\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\SignalHound\Bin$(ConfigurationName)\x86"
+copy "$(TargetDir)Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound.dll.config" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\SignalHound\Bin$(ConfigurationName)\x86"
+copy "$(TargetDir)bb_api.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\SignalHound\Bin$(ConfigurationName)\x86"
+copy "$(TargetDir)ftd2xx.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\SignalHound\Bin$(ConfigurationName)\x86"
+
+copy "$(TargetDir)Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\SignalHound\Bin$(ConfigurationName)\x64"
+copy "$(TargetDir)Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound.dll.config" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\SignalHound\Bin$(ConfigurationName)\x64"
+copy "$(TargetDir)bb_api.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\SignalHound\Bin$(ConfigurationName)\x64"
+copy "$(TargetDir)ftd2xx.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\SignalHound\Bin$(ConfigurationName)\x64"
 
 copy "$(TargetDir)Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\SpectrumAnalyzer\Bin$(ConfigurationName)"
 copy "$(TargetDir)Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer.dll.config" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\SpectrumAnalyzer\Bin$(ConfigurationName)"
 copy "$(TargetDir)NationalInstruments.VisaNS.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\SpectrumAnalyzer\Bin$(ConfigurationName)"
 
-copy "$(TargetDir)Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\RSTSMx\Bin$(ConfigurationName)"
-copy "$(TargetDir)Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx.dll.config" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\RSTSMx\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\RSTSMx\Bin$(ConfigurationName)\x86"
+copy "$(TargetDir)Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx.dll.config" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\RSTSMx\Bin$(ConfigurationName)\x86"
 
 copy "$(TargetDir)Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\RSFPL\Bin$(ConfigurationName)"
 copy "$(TargetDir)Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL.dll.config" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\RSFPL\Bin$(ConfigurationName)"
 copy "$(TargetDir)Ivi.Visa.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\RSFPL\Bin$(ConfigurationName)"
 copy "$(TargetDir)RohdeSchwarz.Visa.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\RSFPL\Bin$(ConfigurationName)"
 
-copy "$(TargetDir)UserLowLevelErrorMessageHandler.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\RSTSMx\Bin$(ConfigurationName)"
-copy "$(TargetDir)RohdeSchwarz.ViCom.Net.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\RSTSMx\Bin$(ConfigurationName)"
-copy "$(TargetDir)RohdeSchwarz.Tools.Net.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\RSTSMx\Bin$(ConfigurationName)"
+copy "$(TargetDir)UserLowLevelErrorMessageHandler.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\RSTSMx\Bin$(ConfigurationName)\x86"
+copy "$(TargetDir)RohdeSchwarz.ViCom.Net.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\RSTSMx\Bin$(ConfigurationName)\x86"
+copy "$(TargetDir)RohdeSchwarz.Tools.Net.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\RSTSMx\Bin$(ConfigurationName)\x86"
 
 copy "$(TargetDir)Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\RSFPL\Bin$(ConfigurationName)"
 copy "$(TargetDir)Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL.dll.config" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\RSFPL\Bin$(ConfigurationName)"
@@ -108,7 +113,6 @@ copy "$(TargetDir)Ivi.Visa.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer
 
 
 copy "$(TargetDir)Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\KTN6841A\Bin$(ConfigurationName)"
-copy "$(TargetDir)Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound.dll.config" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\KTN6841A\Bin$(ConfigurationName)"
 copy "$(TargetDir)dll\agSal.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\KTN6841A\Bin$(ConfigurationName)"
 copy "$(TargetDir)dll\agSal_x64.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\KTN6841A\Bin$(ConfigurationName)"</PostBuildEvent>
   </PropertyGroup>

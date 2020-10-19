@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.DeepServices.RadioSystem.PropagationModels
 {
-	public class PropagationModel
+    [Serializable]
+    public class PropagationModel
 	{
 		public MainCalcBlock MainBlock;
 

@@ -8,7 +8,8 @@ using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
-	public class SensorParameters
+    [Serializable]
+    public class SensorParameters
     {
 
         public long? SensorId;

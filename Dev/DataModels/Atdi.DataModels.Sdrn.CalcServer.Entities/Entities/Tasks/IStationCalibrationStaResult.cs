@@ -40,6 +40,9 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks
         float? New_Power_dB { get; set; }
         double Freq_MHz { get; set; }
         string Standard { get; set; }
+        double DeltaCorrelation_pc { get; set; }
+        int UsedPoints_pc { get; set; }
+        int CountPointsInDriveTest { get; set; }
     }
 
 }

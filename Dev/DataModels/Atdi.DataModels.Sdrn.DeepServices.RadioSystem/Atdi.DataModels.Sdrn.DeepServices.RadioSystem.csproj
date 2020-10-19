@@ -69,6 +69,7 @@
     <Compile Include="PropagationModels\TropoCalcBlock.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SignalService\CalcAntennaGainArgs.cs" />
+    <Compile Include="SignalService\DiffractionLossResult.cs" />
     <Compile Include="SignalService\CalcLossArgs.cs" />
     <Compile Include="SignalService\CalcLossResult.cs" />
     <Compile Include="Stations\PolarizationType.cs" />

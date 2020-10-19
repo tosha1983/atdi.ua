@@ -9,7 +9,8 @@ using Atdi.DataModels.Sdrn.CalcServer.Internal.Clients;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
-	public class ParametersStation
+    [Serializable]
+    public class ParametersStation
     {
         public int Altitude_m;
 

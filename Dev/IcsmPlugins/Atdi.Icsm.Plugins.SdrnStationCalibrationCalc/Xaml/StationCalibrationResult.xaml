@@ -201,8 +201,14 @@
               <DataGridTextColumn Header="{x:Static res:Resources.FreqLinkDriveTest_MHz}" Binding="{Binding Path=Freq_MHz}"></DataGridTextColumn>
 
               <DataGridTextColumn Header="{x:Static res:Resources.Standard}" Binding="{Binding Path=Standard}"></DataGridTextColumn>
-              
-              
+
+              <DataGridTextColumn Header="{x:Static res:Resources.DeltaCorrelation_pc}" Binding="{Binding Path=DeltaCorrelation_pc}"></DataGridTextColumn>
+
+              <DataGridTextColumn Header="{x:Static res:Resources.UsedPoints_pc}" Binding="{Binding Path=UsedPoints_pc}"></DataGridTextColumn>
+
+              <DataGridTextColumn Header="{x:Static res:Resources.CountPointsInDriveTest}" Binding="{Binding Path=CountPointsInDriveTest}"></DataGridTextColumn>
+
+
             </DataGrid.Columns>
           </cdg:OrmDataGrid>
         </GroupBox>

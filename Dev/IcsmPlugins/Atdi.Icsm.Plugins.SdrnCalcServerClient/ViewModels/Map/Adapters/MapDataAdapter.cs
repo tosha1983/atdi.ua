@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Atdi.Contracts.Api.EntityOrm.WebClient;
 using CS_ES = Atdi.DataModels.Sdrn.Infocenter.Entities;
 using Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager;
+using Atdi.DataModels.Api.EntityOrm.WebClient;
 
 namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.Map.Adapters
 {
@@ -51,6 +52,7 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.Map.Adapters
                 c => c.SectorsCount,
                 c => c.SectorsXCount,
                 c => c.SectorsYCount)
+            .Filter(c => c.TypeCode, 1)
             .OrderByAsc(o => o.FileName);
         }
         protected override MapInfoModel ReadData(IDataReader<CS_ES.IMap> reader, int index)

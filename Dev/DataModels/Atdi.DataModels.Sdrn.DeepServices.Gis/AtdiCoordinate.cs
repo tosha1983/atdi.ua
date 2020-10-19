@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.DeepServices.Gis
 {
-	/// <summary>
-	/// Метровые целочисленные координаты 
-	/// </summary>
-	public struct AtdiCoordinate
+    /// <summary>
+    /// Метровые целочисленные координаты 
+    /// </summary>
+    [Serializable]
+    public struct AtdiCoordinate
 	{
 		public int X;
 		public int Y;

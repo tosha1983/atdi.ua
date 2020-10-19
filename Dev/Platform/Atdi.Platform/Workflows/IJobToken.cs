@@ -17,5 +17,7 @@ namespace Atdi.Platform.Workflows
 
         JobDefinition Definition { get; }
 
+        void Abort();
+
     }
 }

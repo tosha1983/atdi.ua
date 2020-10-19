@@ -41,6 +41,20 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 		{
 			using (var dbScope = this._calcServerDataLayer.CreateScope<CalcServerDataContext>())
 			{
+				// при первом запуске, попытка восстановить расчеты по задачам которые имеют точки восстановления - остальные нужно прервать
+				if (!context.IsRepeat)
+				{
+					var nextRecoveryTaskResults = this.GetNextRecoverCalcTaskResults(dbScope);
+					if (nextRecoveryTaskResults != null && nextRecoveryTaskResults.Length > 0)
+					{
+						foreach (var resultId in nextRecoveryTaskResults)
+						{
+							_taskDispatcher.ResumeTask(resultId, this);
+						}
+					}
+				}
+
+
 				// опрашиваем список карт
 				var nextMaps = this.GetNextProjectMaps(dbScope);
 				if (nextMaps != null && nextMaps.Length > 0)
@@ -140,6 +154,85 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 				return res.ToArray();
 			});
 			return result;
+		}
+
+		private long[] GetNextRecoverCalcTaskResults(IDataLayerScope dbScope)
+		{
+			var taskResultQuery = _calcServerDataLayer.GetBuilder<ICalcResult>()
+				.From()
+				.Select(c => c.Id)
+				// Рассчет в ожидании запуска
+				.Where(c => c.StatusCode, ConditionOperator.Equal, (byte)CalcResultStatusCode.Processing);
+				// статус задач Доступная 
+				//.Where(c => c.TASK.StatusCode, ConditionOperator.Equal, (byte)CalcTaskStatusCode.Available)
+				//// контекст подготовлен
+				//.Where(c => c.TASK.CONTEXT.StatusCode, ConditionOperator.Equal, (byte)ClientContextStatusCode.Prepared)
+				//// статус проекта Доступен
+				//.Where(c => c.TASK.CONTEXT.PROJECT.StatusCode, ConditionOperator.Equal, (byte)ProjectStatusCode.Available);
+
+			var ids = dbScope.Executor.ExecuteAndFetch(taskResultQuery, reader =>
+			{
+				var res = new List<long>();
+				while (reader.Read())
+				{
+					var resultId = reader.GetValue(c => c.Id);
+					
+					res.Add(resultId);
+				}
+
+				return res.ToArray();
+			});
+
+			var result = new List<long>();
+			foreach (var resultId in ids)
+			{
+				// проверим есть ли точка востановления
+				if (ExistsCheckPoint(dbScope, resultId))
+				{
+					result.Add(resultId);
+				}
+				else
+				{
+					this.ChangeTaskResultStatusToAborted(dbScope, resultId, "The calculation task was aborted by restarting the application server");
+				}
+
+			}
+
+			return result.ToArray();
+		}
+		private bool ChangeTaskResultStatusToAborted(IDataLayerScope calcDbScope, long resultId, string reason)
+		{
+			var query = _calcServerDataLayer.GetBuilder<ICalcResult>()
+				.Update()
+				.SetValue(c => c.StatusCode, (byte)CalcResultStatusCode.Aborted)
+				.SetValue(c => c.StatusName, CalcResultStatusCode.Aborted.ToString())
+				.SetValue(c => c.StatusNote, reason)
+				.SetValue(c => c.FinishTime, DateTimeOffset.Now)
+				.Where(c => c.Id, ConditionOperator.Equal, resultId)
+				.Where(c => c.StatusCode, ConditionOperator.Equal, (byte)CalcResultStatusCode.Processing);
+
+			return calcDbScope.Executor.Execute(query) > 0;
+		}
+
+		private bool ExistsCheckPoint(IDataLayerScope dbScope, long resultId)
+		{
+			var selQuery = _calcServerDataLayer.GetBuilder<ICalcCheckPoint>()
+				.From()
+				.Select(c => c.Id)
+				.Where(c => c.RESULT.Id, ConditionOperator.Equal, resultId)
+				.Where(c => c.StatusCode, ConditionOperator.Equal, (byte)CalcCheckPointStatusCode.Available);
+
+			var data = dbScope.Executor.ExecuteAndFetch(selQuery, reader =>
+			{
+				if (!reader.Read())
+				{
+					return false;
+				}
+
+				return true;
+			});
+
+			return data;
 		}
 
 		public void OnCompleted(ICalcContextHandle context)

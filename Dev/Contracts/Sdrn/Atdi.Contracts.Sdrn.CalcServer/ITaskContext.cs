@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Atdi.Contracts.Sdrn.CalcServer
@@ -23,8 +24,21 @@ namespace Atdi.Contracts.Sdrn.CalcServer
 
 		void SendEvent(CalcResultEvent @event);
 
+		TaskRunningMode RunMode { get; }
+
+		CancellationToken CancellationToken { get; }
+
+		ICheckPoint CreateCheckPoint(string name);
+
+		ICheckPoint GetLastCheckPoint();
 		//TResult RunIteration<TData, TResult>(TData data);
 
 		//IIterationHandler<TData, TResult> GetIteration<TData, TResult>();
+	}
+
+	public enum TaskRunningMode
+	{
+		Normal = 0,
+		Recovery = 1
 	}
 }

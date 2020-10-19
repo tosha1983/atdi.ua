@@ -8,7 +8,8 @@ using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
-	public class GroupsContextStations
+    [Serializable]
+    public class GroupsContextStations
     {
         public ContextStation  ContextStations;
 

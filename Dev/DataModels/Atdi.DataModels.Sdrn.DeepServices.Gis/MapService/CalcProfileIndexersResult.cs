@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.DeepServices.Gis.MapService
 {
-	public struct CalcProfileIndexersResult
+    [Serializable]
+    public struct CalcProfileIndexersResult
 	{
 		/// <summary>
 		/// Подготовленый вызываемой стороной буфер индексаторов для заполнения результатами расчета профиля

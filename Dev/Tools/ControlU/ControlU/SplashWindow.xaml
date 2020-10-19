@@ -1,0 +1,47 @@
+﻿<Window x:Class="ControlU.SplashWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ControlU.Controls"
+        mc:Ignorable="d"
+        Icon="ControlUIcon.ico"
+        ShowInTaskbar="False" WindowStartupLocation="CenterScreen" WindowStyle="None" AllowsTransparency="True" Background="{x:Null}" Height="200" Width="400">
+    <Border CornerRadius="0"
+            BorderThickness="5"
+            Margin="0"
+            Background="#7FCBD9E2"
+            Padding="10" SnapsToDevicePixels="True">
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="13" Direction="0" ShadowDepth="0" />
+        </Border.Effect>
+        <StackPanel>
+            <TextBlock
+                    Text="Control U"
+                    Foreground="{DynamicResource Brush_Blue_Normal}"
+                    FontSize="72"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Margin="0" />
+            <!--<Image
+                    Width="308" Height="80">
+                    <Image.Source>
+                        <BitmapImage
+                            UriSource="Image\WPF-Logo.PNG" />
+                    </Image.Source>
+                </Image>-->
+            <Label
+                    x:Name="lblProgress"
+                    Content="Loading."
+                    Foreground="White"
+                    FontWeight="Bold"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Margin="0,16,0,0" />
+            <ProgressBar
+                    Height="20"
+                    HorizontalAlignment="Stretch"
+                    IsIndeterminate="True" />
+        </StackPanel>
+    </Border>
+</Window>

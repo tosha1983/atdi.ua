@@ -1,0 +1,23 @@
+; 3;Cdma2000Pns.dll        
+; 3;CwScanner.dll          
+; 3;Gs3Worker.dll          
+; 3;GsmDriftScanner.dll    
+; 3;LteNbScanner.dll       
+; 3;LteNbSyncFinder.dll    
+; 3;LteScanner.dll         
+; 3;LteSpyGlass.dll        
+; 3;NewRadioSyncScanner.dll
+; 3;PositionEstimator.dll  
+; 3;SpectrumWorker.dll     
+; 3;TDSCdmaScanner.dll     
+; 3;TETRAScanner.dll       
+; 3;TSMWSpectrum.dll       
+; 3;TsmeAdmin.dll          
+; 3;TsmuWorker.dll         
+; 3;TsmwAdmin.dll          
+; 3;TsmwWorker.dll         
+; 3;UmtsL3DecIfcMod.dll    
+; 3;UmtsPnsOption2.dll     
+; 3;VGNrSsPbchFinder.dll   
+; 3;WiMaxScanner.dll       
+;10;RomesRemoteWorker.dll  

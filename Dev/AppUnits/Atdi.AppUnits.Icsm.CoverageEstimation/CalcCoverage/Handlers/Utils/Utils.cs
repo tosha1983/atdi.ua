@@ -15,7 +15,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Utilities
         {
             if (!string.IsNullOrEmpty(dataConfig.DirectoryConfig.SpecifiedLogFile))
             {
-                System.IO.File.AppendAllText(dataConfig.DirectoryConfig.SpecifiedLogFile,  DateTime.Now.ToString() + "."+ DateTime.Now.Millisecond + " Inf " + context.Name + " " + eventText.Text + Environment.NewLine);
+                System.IO.File.AppendAllText(dataConfig.DirectoryConfig.SpecifiedLogFile, DateTime.Now.ToString() + "." + DateTime.Now.Millisecond + " Inf " + context.Name + " " + eventText.Text + Environment.NewLine);
             }
         }
 
@@ -35,7 +35,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Utilities
             }
         }
 
-        
+
 
         /// <summary>
         /// Метод, который возвращает по перечню областей их кодовые значения
@@ -69,13 +69,13 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Utilities
             int cnt = 0;
             var loadConfig = dataConfig;
             var tempProvArr = Province.Split(new char[] { ',', '_', '-' }, StringSplitOptions.RemoveEmptyEntries);
-            if ((loadConfig.ProvinceCodeConfig != null) && (tempProvArr!=null))
+            if ((loadConfig.ProvinceCodeConfig != null) && (tempProvArr != null))
             {
                 var lst = tempProvArr.ToList();
                 for (int i = 0; i < loadConfig.ProvinceCodeConfig.Length; i++)
                 {
                     var provCodeConfig = loadConfig.ProvinceCodeConfig[i];
-                    if (tempProvArr.Length>0)
+                    if (tempProvArr.Length > 0)
                     {
                         var temp = lst.Find(x => x.Contains(provCodeConfig.Code));
                         if (!string.IsNullOrEmpty(temp))
@@ -154,9 +154,12 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Utilities
             var templateFile = loadConfig.DirectoryConfig.TemplateOutputFileNameForMobStation2;
             string prov = isAllProvinces(dataConfig, Province) ? RegionInfo.CurrentRegion.ThreeLetterISORegionName : Province;
             string oper = string.IsNullOrEmpty(Operator) ? "ALL" : Operator;
-            resultOutFileName = templateFile.Replace(ProvinceTemplate, prov).Replace(",", "-").Replace(".", "-").Replace(FreqTemplate, Freq.Replace(";","-")).Replace(OperatorTemplate, oper).Replace(DateTemplate, DateTime.Now.ToString("dd_MM_yyyy"));
+            resultOutFileName = templateFile.Replace(ProvinceTemplate, prov).Replace(",", "-").Replace(".", "-").Replace(FreqTemplate, Freq.Replace(";", "-")).Replace(OperatorTemplate, oper).Replace(DateTemplate, DateTime.Now.ToString("dd_MM_yyyy"));
             return resultOutFileName;
         }
 
+
+
     }
+    
 }

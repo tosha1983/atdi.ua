@@ -39,6 +39,7 @@
     <Reference Include="ICSharpCode.SharpZipLib, Version=1.2.0.246, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <HintPath>..\..\packages\SharpZipLib.1.2.0\lib\net45\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="NetPlugins">
       <HintPath>..\ICS Control Client\ICSM 6.2.70\NetPlugins.dll</HintPath>
     </Reference>
@@ -96,8 +97,14 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Reports\ReportExcelFast.cs" />
-    <Compile Include="ViewModels\ManagementTasksCalibration\Queries\GetMapsByProjectId.cs" />
-    <Compile Include="ViewModels\ManagementTasksCalibration\Queries\GetMapsByProjectIdExecutor.cs" />
+    <Compile Include="ViewModels\ManagementTasksCalibration\Events\OnAbortCalcTask.cs" />
+    <Compile Include="ViewModels\ManagementTasksCalibration\Events\OnStopCalcTask.cs" />
+    <Compile Include="ViewModels\ManagementTasksCalibration\Modifiers\AbortCalcTask.cs" />
+    <Compile Include="ViewModels\ManagementTasksCalibration\Modifiers\AbortCalcTaskHandler.cs" />
+    <Compile Include="ViewModels\ManagementTasksCalibration\Modifiers\StopCalcTask.cs" />
+    <Compile Include="ViewModels\ManagementTasksCalibration\Modifiers\StopCalcTaskHandler.cs" />
+    <Compile Include="ViewModels\ManagementTasksCalibration\Queries\GetMapByProjectId.cs" />
+    <Compile Include="ViewModels\ManagementTasksCalibration\Queries\GetMapByProjectIdExecutor.cs" />
     <Compile Include="ViewModels\PivotTableConfiguration\Events\OnCreatedCalcTask.cs" />
     <Compile Include="ViewModels\PivotTableConfiguration\Events\OnRunedCalcTask.cs" />
     <Compile Include="ViewModels\PivotTableConfiguration\Models\CalcResultEventsModel.cs" />
@@ -137,8 +144,8 @@
     <Compile Include="ViewModels\ManagementTasksCalibration\Modifiers\DeleteClientContext.cs" />
     <Compile Include="ViewModels\ManagementTasksCalibration\Modifiers\DeleteClientContextHandler.cs" />
     <Compile Include="ViewModels\ManagementTasksCalibration\Modifiers\RunCalcTask.cs" />
-    <Compile Include="ViewModels\ManagementTasksCalibration\Modifiers\EditCalcTask.cs" />
-    <Compile Include="ViewModels\ManagementTasksCalibration\Modifiers\EditCalcTaskHandler.cs" />
+    <Compile Include="ViewModels\ManagementTasksCalibration\Modifiers\EditNoteCalcTask.cs" />
+    <Compile Include="ViewModels\ManagementTasksCalibration\Modifiers\EditNoteCalcTaskHandler.cs" />
     <Compile Include="ViewModels\ManagementTasksCalibration\Modifiers\EditClientContext.cs" />
     <Compile Include="ViewModels\ManagementTasksCalibration\Modifiers\EditClientContextHandler.cs" />
     <Compile Include="ViewModels\ManagementTasksCalibration\Queries\GetCalcResultById.cs" />
