@@ -502,6 +502,7 @@ namespace ControlU
                 {
                     p1.Kill();
                 }
+                atdi.NameSensor = db_v2.Check(App.Sett.ATDIConnection_Settings.Selected.LicenseOwnerId, App.Sett.ATDIConnection_Settings.Selected.LicenseProductKey);
             }
             catch (Exception e)
             {
@@ -574,28 +575,16 @@ namespace ControlU
         {
             if (e.PropertyName == "ServerIsLoaded")
             {
-                if (db_v2.ServerIsLoaded == true)
-                {
-                    if (db_v2.ATDIConnectionData_Selsected.owner_id == App.Sett.ATDIConnection_Settings.Selected.owner_id &&
-                          db_v2.ATDIConnectionData_Selsected.product_key == App.Sett.ATDIConnection_Settings.Selected.product_key)
-                    {
-                        //Atdi.SDR.Server.Bus.Classes.GlobalInit.MainRabbitMQServices =
-                        //    "host=" + db_v2.ATDIConnectionData_Selsected.rabbit_host_name +
-                        //    "; username=" + db_v2.ATDIConnectionData_Selsected.rabbit_user_name +
-                        //    "; password=" + db_v2.ATDIConnectionData_Selsected.rabbit_password;
-                        //Atdi.SDR.Server.Bus.Classes.GlobalInit.Template_SENSORS_List_ = db_v2.ATDIConnectionData_Selsected.sensor_queue;
-                        //Atdi.SDR.Server.Bus.Classes.GlobalInit.Template_MEAS_TASK_Main_List_APPServer = db_v2.ATDIConnectionData_Selsected.task_queue;
-                        //Atdi.SDR.Server.Bus.Classes.GlobalInit.Res_Template_MEAS_TASK_Main_List_APPServer = db_v2.ATDIConnectionData_Selsected.result_queue;
-                        atdi.NameSensor = db_v2.Check(db_v2.ATDIConnectionData_Selsected.owner_id, db_v2.ATDIConnectionData_Selsected.product_key); //db_v2.ATDIConnectionData_Selsected.owner_id;
-                                                                                                                                                    //atdi.NameTechId = db_v2.ATDIConnectionData_Selsected.sensor_equipment_tech_id;
-
-
-                        //atdi.Initialize();
-
-                    }
-                }
-                else
-                    atdi.NameSensor = db_v2.Check(db_v2.ATDIConnectionData_Selsected.owner_id, db_v2.ATDIConnectionData_Selsected.product_key);
+                //if (db_v2.ServerIsLoaded == true)
+                //{
+                //    if (App.Sett.ATDIConnection_Settings.Selected.owner_id != "" &&
+                //        App.Sett.ATDIConnection_Settings.Selected.product_key != "")
+                //    {
+                //        atdi.NameSensor = db_v2.Check(App.Sett.ATDIConnection_Settings.Selected.owner_id, App.Sett.ATDIConnection_Settings.Selected.product_key); //db_v2.ATDIConnectionData_Selsected.owner_id;
+                //    }
+                //}
+                //else
+                //    atdi.NameSensor = db_v2.Check(App.Sett.ATDIConnection_Settings.Selected.owner_id, App.Sett.ATDIConnection_Settings.Selected.product_key);
             }
         }
         #endregion

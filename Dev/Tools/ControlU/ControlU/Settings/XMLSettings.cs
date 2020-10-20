@@ -1355,7 +1355,7 @@ namespace ControlU.Settings
                         }
                         zip.ExtractToDirectory(AppPath);
                         ReadAll();
-                        MainWindow.db_v2.UpdateATDIConnection(App.Sett.ATDIConnection_Settings.Selected);
+                        //MainWindow.db_v2.UpdateATDIConnection(App.Sett.ATDIConnection_Settings.Selected);
                     }
                 }
             }
@@ -5545,108 +5545,206 @@ namespace ControlU.Settings
     public class ATDIConnection : INotifyPropertyChanged
     {
         [XmlElement(ElementName = "Data0")]
-        public string owner_id
+        public string LicenseOwnerId
         {
-            get { return _owner_id; }
-            set { _owner_id = value; OnPropertyChanged("owner_id"); }
+            get { return _LicenseOwnerId; }
+            set { _LicenseOwnerId = value; OnPropertyChanged("LicenseOwnerId"); }
         }
-        private string _owner_id = "";
+        private string _LicenseOwnerId = "";
 
         [XmlElement(ElementName = "Data1")]
-        public string product_key
+        public string LicenseProductKey
         {
-            get { return _product_key; }
-            set { _product_key = value; OnPropertyChanged("product_key"); }
+            get { return _LicenseProductKey; }
+            set { _LicenseProductKey = value; OnPropertyChanged("LicenseProductKey"); }
         }
-        private string _product_key = "";
+        private string _LicenseProductKey = "";
 
         [XmlElement(ElementName = "Data2")]
-        public string sensor_equipment_tech_id
+        public string RabbitMQHost
         {
-            get { return _sensor_equipment_tech_id; }
-            set { _sensor_equipment_tech_id = value; OnPropertyChanged("sensor_equipment_tech_id"); }
+            get { return _RabbitMQHost; }
+            set { _RabbitMQHost = value; OnPropertyChanged("RabbitMQHost"); }
         }
-        private string _sensor_equipment_tech_id = "";
+        private string _RabbitMQHost = "";
 
         [XmlElement(ElementName = "Data3")]
-        public string rabbit_host_name
+        public string RabbitMQVirtualHost
         {
-            get { return _rabbit_host_name; }
-            set { _rabbit_host_name = value; OnPropertyChanged("rabbit_host_name"); }
+            get { return _RabbitMQVirtualHost; }
+            set { _RabbitMQVirtualHost = value; OnPropertyChanged("RabbitMQVirtualHost"); }
         }
-        private string _rabbit_host_name = "";
+        private string _RabbitMQVirtualHost = "";
 
         [XmlElement(ElementName = "Data4")]
-        public string rabbit_virtual_host_name
+        public string RabbitMQUser
         {
-            get { return _rabbit_virtual_host_name; }
-            set { _rabbit_virtual_host_name = value; OnPropertyChanged("rabbit_virtual_host_name"); }
+            get { return _RabbitMQUser; }
+            set { _RabbitMQUser = value; OnPropertyChanged("RabbitMQUser"); }
         }
-        private string _rabbit_virtual_host_name = "";
+        private string _RabbitMQUser = "";
 
         [XmlElement(ElementName = "Data5")]
-        public string rabbit_host_port
+        public string RabbitMQPassword
         {
-            get { return _rabbit_host_port; }
-            set { _rabbit_host_port = value; OnPropertyChanged("rabbit_host_port"); }
+            get { return _RabbitMQPassword; }
+            set { _RabbitMQPassword = value; OnPropertyChanged("RabbitMQPassword"); }
         }
-        private string _rabbit_host_port = "";
+        private string _RabbitMQPassword = "";
 
         [XmlElement(ElementName = "Data6")]
-        public string rabbit_user_name
+        public string RabbitMQPort
         {
-            get { return _rabbit_user_name; }
-            set { _rabbit_user_name = value; OnPropertyChanged("rabbit_user_name"); }
+            get { return _RabbitMQPort; }
+            set { _RabbitMQPort = value; OnPropertyChanged("RabbitMQPort"); }
         }
-        private string _rabbit_user_name = "";
+        private string _RabbitMQPort = "";
 
         [XmlElement(ElementName = "Data7")]
-        public string rabbit_password
+        public string SDRNApiVersion
         {
-            get { return _rabbit_password; }
-            set { _rabbit_password = value; OnPropertyChanged("rabbit_password"); }
+            get { return _SDRNApiVersion; }
+            set { _SDRNApiVersion = value; OnPropertyChanged("SDRNApiVersion"); }
         }
-        private string _rabbit_password = "";
+        private string _SDRNApiVersion = "";
 
         [XmlElement(ElementName = "Data8")]
-        public string sensor_queue
+        public string SDRNServerInstance
         {
-            get { return _sensor_queue; }
-            set { _sensor_queue = value; OnPropertyChanged("sensor_queue"); }
+            get { return _SDRNServerInstance; }
+            set { _SDRNServerInstance = value; OnPropertyChanged("SDRNServerInstance"); }
         }
-        private string _sensor_queue = "";
+        private string _SDRNServerInstance = "";
 
         [XmlElement(ElementName = "Data9")]
-        public string sensor_confirm_queue
+        public string SDRNServerQueueNamePart
         {
-            get { return _sensor_confirm_queue; }
-            set { _sensor_confirm_queue = value; OnPropertyChanged("sensor_confirm_queue"); }
+            get { return _SDRNServerQueueNamePart; }
+            set { _SDRNServerQueueNamePart = value; OnPropertyChanged("SDRNServerQueueNamePart"); }
         }
-        private string _sensor_confirm_queue = "";
+        private string _SDRNServerQueueNamePart = "";
 
         [XmlElement(ElementName = "Data10")]
-        public string task_queue
+        public string SDRNDeviceSensorTechId
         {
-            get { return _task_queue; }
-            set { _task_queue = value; OnPropertyChanged("task_queue"); }
+            get { return _SDRNDeviceSensorTechId; }
+            set { _SDRNDeviceSensorTechId = value; OnPropertyChanged("SDRNDeviceSensorTechId"); }
         }
-        private string _task_queue = "";
+        private string _SDRNDeviceSensorTechId = "";
 
         [XmlElement(ElementName = "Data11")]
-        public string result_queue
+        public string SDRNDeviceExchange
         {
-            get { return _result_queue; }
-            set { _result_queue = value; OnPropertyChanged("result_queue"); }
+            get { return _SDRNDeviceExchange; }
+            set { _SDRNDeviceExchange = value; OnPropertyChanged("SDRNDeviceExchange"); }
         }
-        private string _result_queue = "";
+        private string _SDRNDeviceExchange = "";
 
         [XmlElement(ElementName = "Data12")]
-        public string server_instance
+        public string SDRNDeviceQueueNamePart
         {
-            get { return _server_instance; }
-            set { _server_instance = value; OnPropertyChanged("server_instance"); }
+            get { return _SDRNDeviceQueueNamePart; }
+            set { _SDRNDeviceQueueNamePart = value; OnPropertyChanged("SDRNDeviceQueueNamePart"); }
         }
-        private string _server_instance = "";
+        private string _SDRNDeviceQueueNamePart = "";
+               
+        [XmlElement(ElementName = "Data13")]
+        public string SDRNDeviceMessagesBindings
+        {
+            get { return _SDRNDeviceMessagesBindings; }
+            set { _SDRNDeviceMessagesBindings = value; OnPropertyChanged("SDRNDeviceMessagesBindings"); }
+        }
+        private string _SDRNDeviceMessagesBindings = "";
+
+        [XmlElement(ElementName = "Data14")]
+        public string SDRNMessageConvertorUseEncryption
+        {
+            get { return _SDRNMessageConvertorUseEncryption; }
+            set { _SDRNMessageConvertorUseEncryption = value; OnPropertyChanged("SDRNMessageConvertorUseEncryption"); }
+        }
+        private string _SDRNMessageConvertorUseEncryption = "";
+
+        [XmlElement(ElementName = "Data15")]
+        public string SDRNMessageConvertorUseCompression
+        {
+            get { return _SDRNMessageConvertorUseCompression; }
+            set { _SDRNMessageConvertorUseCompression = value; OnPropertyChanged("SDRNMessageConvertorUseCompression"); }
+        }
+        private string _SDRNMessageConvertorUseCompression = "";
+
+        [XmlElement(ElementName = "Data16")]
+        public string DeviceBusSharedSecretKey
+        {
+            get { return _DeviceBusSharedSecretKey; }
+            set { _DeviceBusSharedSecretKey = value; OnPropertyChanged("DeviceBusSharedSecretKey"); }
+        }
+        private string _DeviceBusSharedSecretKey = "";
+
+        [XmlElement(ElementName = "Data17")]
+        public string DeviceBusClient
+        {
+            get { return _DeviceBusClient; }
+            set { _DeviceBusClient = value; OnPropertyChanged("DeviceBusClient"); }
+        }
+        private string _DeviceBusClient = "";
+
+        [XmlElement(ElementName = "Data18")]
+        public string DeviceBusContentType
+        {
+            get { return _DeviceBusContentType; }
+            set { _DeviceBusContentType = value; OnPropertyChanged("DeviceBusContentType"); }
+        }
+        private string _DeviceBusContentType = "";
+
+        [XmlElement(ElementName = "Data19")]
+        public string DeviceBusOutboxUseBuffer
+        {
+            get { return _DeviceBusOutboxUseBuffer; }
+            set { _DeviceBusOutboxUseBuffer = value; OnPropertyChanged("DeviceBusOutboxUseBuffer"); }
+        }
+        private string _DeviceBusOutboxUseBuffer = "";
+
+        [XmlElement(ElementName = "Data20")]
+        public string DeviceBusInboxUseBuffer
+        {
+            get { return _DeviceBusInboxUseBuffer; }
+            set { _DeviceBusInboxUseBuffer = value; OnPropertyChanged("DeviceBusInboxUseBuffer"); }
+        }
+        private string _DeviceBusInboxUseBuffer = "";
+
+        [XmlElement(ElementName = "Data21")]
+        public string DeviceBusOutboxBufferFolder
+        {
+            get { return _DeviceBusOutboxBufferFolder; }
+            set { _DeviceBusOutboxBufferFolder = value; OnPropertyChanged("DeviceBusOutboxBufferFolder"); }
+        }
+        private string _DeviceBusOutboxBufferFolder = "";
+
+        [XmlElement(ElementName = "Data22")]
+        public string DeviceBusInboxBufferFolder
+        {
+            get { return _DeviceBusInboxBufferFolder; }
+            set { _DeviceBusInboxBufferFolder = value; OnPropertyChanged("DeviceBusInboxBufferFolder"); }
+        }
+        private string _DeviceBusInboxBufferFolder = "";
+
+        [XmlElement(ElementName = "Data23")]
+        public string DeviceBusOutboxBufferContentType
+        {
+            get { return _DeviceBusOutboxBufferContentType; }
+            set { _DeviceBusOutboxBufferContentType = value; OnPropertyChanged("DeviceBusOutboxBufferContentType"); }
+        }
+        private string _DeviceBusOutboxBufferContentType = "";
+
+        [XmlElement(ElementName = "Data24")]
+        public string DeviceBusInboxBufferContentType
+        {
+            get { return _DeviceBusInboxBufferContentType; }
+            set { _DeviceBusInboxBufferContentType = value; OnPropertyChanged("DeviceBusInboxBufferContentType"); }
+        }
+        private string _DeviceBusInboxBufferContentType = "";
+
+
 
 
         public event PropertyChangedEventHandler PropertyChanged; // Событие, которое нужно вызывать при изменении

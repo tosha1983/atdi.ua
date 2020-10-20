@@ -133,7 +133,7 @@ namespace ControlU.Controls
         {
             InitializeComponent();
             Sett = Helpers.ExtensionMethods.DeepCloneXML(App.Sett);
-            SensorNameTemp = Sett.ATDIConnection_Settings.Selected.sensor_equipment_tech_id;
+            SensorNameTemp = Sett.ATDIConnection_Settings.Selected.SDRNDeviceSensorTechId;
             this.DataContext = Sett;
 
             //ATDIConnection_EX.DataContext = MainWindow.db_v2;
@@ -188,16 +188,18 @@ namespace ControlU.Controls
         #region Users
         private void RegisterSensor_Click(object sender, RoutedEventArgs e)
         {
-            Settings.ATDIConnection con = MainWindow.db_v2.ATDIConnectionData_Selsected;
-            con.sensor_equipment_tech_id = SensorNameTemp;
-            if (MainWindow.db_v2.ServerIsLoaded && MainWindow.atdi.RabbitIsUsed == false)
+            Settings.ATDIConnection con = App.Sett.ATDIConnection_Settings.Selected;
+            con.SDRNDeviceSensorTechId = SensorNameTemp;
+            if (MainWindow.atdi.RabbitIsUsed == false)
                 MainWindow.atdi.Initialize();
-            if (MainWindow.db_v2.ServerIsLoaded && MainWindow.atdi.RabbitIsUsed == true)
+            if (MainWindow.atdi.RabbitIsUsed == true)
             {
                 if (MainWindow.atdi.RegisterSensor(SensorNameTemp))
                 {
-                    MainWindow.db_v2.UpdateATDIConnection(con);
+                    //MainWindow.db_v2.UpdateATDIConnection(con);
                     Sett.ATDIConnection_Settings.Selected = con;
+                    App.Sett.ATDIConnection_Settings.Selected = con;
+                    App.Sett.SaveAll();
                 }
             }
         }

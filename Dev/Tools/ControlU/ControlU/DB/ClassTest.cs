@@ -251,7 +251,7 @@ namespace ControlU.DB
                 },
                 Equipment = new dev.SensorEquipment
                 {
-                    TechId = ControlU.MainWindow.db_v2.ATDIConnectionData_Selsected.sensor_equipment_tech_id,
+                    TechId = App.Sett.ATDIConnection_Settings.Selected.SDRNDeviceSensorTechId,
                     
                 },
                 //Name = NameSensor

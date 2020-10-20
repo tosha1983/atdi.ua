@@ -74,7 +74,49 @@ namespace ControlU
             //Language = new CultureInfo("ru-RU");//Sett.GlogalApps_Settings.UILanguage;
             Sett = new Settings.XMLSettings();
             //MVSSett = new Settings.MVSSettings();
-            
+            FindATDIConnectionFile();
+        }
+        public void FindATDIConnectionFile()
+        {
+            try
+            {
+                string file = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "/Connection.xml";
+                if (System.IO.File.Exists(file))
+                {
+                    XMLLibrary.XmlReaderStruct obj = XMLLibrary.XMLReader.GetXmlSettings(file);
+                    Settings.ATDIConnection dt = new Settings.ATDIConnection();
+                    dt.LicenseOwnerId = obj._LicenseOwnerId;
+                    dt.LicenseProductKey = obj._LicenseProductKey;
+                    dt.RabbitMQHost = obj._RabbitMQHost;
+                    dt.RabbitMQVirtualHost = obj._RabbitMQVirtualHost;
+                    dt.RabbitMQUser = obj._RabbitMQUser;
+                    dt.RabbitMQPassword = obj._RabbitMQPassword;
+                    dt.RabbitMQPort = obj._RabbitMQPort;
+                    dt.SDRNApiVersion = obj._SDRNApiVersion;
+                    dt.SDRNServerInstance = obj._SDRNServerInstance;
+                    dt.SDRNServerQueueNamePart = obj._SDRNServerQueueNamePart;
+                    dt.SDRNDeviceSensorTechId = obj._SDRNDeviceSensorTechId;
+                    dt.SDRNDeviceExchange = obj._SDRNDeviceExchange;
+                    dt.SDRNDeviceQueueNamePart = obj._SDRNDeviceQueueNamePart;
+                    dt.SDRNDeviceMessagesBindings = obj._SDRNDeviceMessagesBindings;
+                    dt.SDRNMessageConvertorUseEncryption = obj._SDRNMessageConvertorUseEncryption;
+                    dt.SDRNMessageConvertorUseCompression = obj._SDRNMessageConvertorUseCompression;
+                    dt.DeviceBusSharedSecretKey = obj._DeviceBusSharedSecretKey;
+                    dt.DeviceBusClient = obj._DeviceBusClient;
+                    dt.DeviceBusContentType = obj._DeviceBusContentType;
+                    dt.DeviceBusOutboxUseBuffer = obj._DeviceBusOutboxUseBuffer;
+                    dt.DeviceBusInboxUseBuffer = obj._DeviceBusInboxUseBuffer;
+                    dt.DeviceBusOutboxBufferFolder = obj._DeviceBusOutboxBufferFolder;
+                    dt.DeviceBusInboxBufferFolder = obj._DeviceBusInboxBufferFolder;
+                    dt.DeviceBusOutboxBufferContentType = obj._DeviceBusOutboxBufferContentType;
+                    dt.DeviceBusInboxBufferContentType = obj._DeviceBusInboxBufferContentType;
+                    Sett.ATDIConnection_Settings.Selected = dt;
+                    Sett.SaveAll();
+                    System.IO.File.Delete(file);                   
+                }
+            }
+            catch { }
+            finally { }
         }
         // Событие, которое нужно вызывать при изменении
         public static event PropertyChangedEventHandler PropertyChanged; 
