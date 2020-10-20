@@ -189,6 +189,8 @@
     <Compile Include="ViewModels\StationCalibrationManager\Modifiers\Parameters\EditParamsCalculation.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Queries\CalcTask\CalcTaskModelByContextId.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Queries\CalcTask\CalcTaskModelByContextIdExecutor.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Queries\CalcTask\GetCalcTaskStatusById.cs" />
+    <Compile Include="ViewModels\StationCalibrationManager\Queries\CalcTask\GetCalcTaskStatusByIdExecutor.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Queries\ContextStations\ClientContextStationModelByParamsResult.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Queries\ContextStations\ClientContextStationModelByParamsExecutor.cs" />
     <Compile Include="ViewModels\StationCalibrationManager\Queries\ContextStations\ClientContextStationModelByParams.cs" />

@@ -206,9 +206,13 @@ namespace XICSM.ICSControlClient.Forms
         public void ApplyAllDataGridsFilters()
         {
             foreach (var item in _dataGridFilters.Keys)
-            {
                 DataGridApplyFilters(item);
-            }
+        }
+        public void ApplyDataGridsFiltersByGridName(string name)
+        {
+            foreach (var item in _dataGridFilters.Keys)
+                if (item.Name == name)
+                    DataGridApplyFilters(item);
         }
         void DataGridApplyFilters(CTR.DataGrid grid)
         {
