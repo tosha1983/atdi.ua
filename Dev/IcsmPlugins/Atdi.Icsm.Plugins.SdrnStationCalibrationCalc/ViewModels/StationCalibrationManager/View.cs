@@ -317,13 +317,27 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             var siteEPSG = this._transformation.ConvertCoordinateToEpgs(new Wgs84Coordinate { Latitude = LatitudeSource, Longitude = LongitudeSource }, 31466);
             if (typeCoord == TypeCoord.RecalcLatitude)
             {
-                siteEPSG.Y = siteEPSG.Y + distance_km * 1000;
-                wgs84Coordinate = this._transformation.ConvertCoordinateToWgs84(siteEPSG, 31466);
+                if (distance_km != 0)
+                {
+                    siteEPSG.Y = siteEPSG.Y + distance_km * 1000;
+                    wgs84Coordinate = this._transformation.ConvertCoordinateToWgs84(siteEPSG, 31466);
+                }
+                else
+                {
+                    wgs84Coordinate = new Wgs84Coordinate { Latitude = LatitudeSource, Longitude = LongitudeSource };
+                }
             }
             if (typeCoord == TypeCoord.RecalcLongitude)
             {
-                siteEPSG.X = siteEPSG.X + distance_km * 1000;
-                wgs84Coordinate = this._transformation.ConvertCoordinateToWgs84(siteEPSG, 31466);
+                if (distance_km != 0)
+                {
+                    siteEPSG.X = siteEPSG.X + distance_km * 1000;
+                    wgs84Coordinate = this._transformation.ConvertCoordinateToWgs84(siteEPSG, 31466);
+                }
+                else
+                {
+                    wgs84Coordinate = new Wgs84Coordinate { Latitude = LatitudeSource, Longitude = LongitudeSource };
+                }
             }
             return wgs84Coordinate;
         }
