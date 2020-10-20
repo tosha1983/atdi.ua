@@ -90,7 +90,6 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
             this.TaskAddCommand = new ViewCommand(this.OnTaskAddCommand);
             this.TaskModifyCommand = new ViewCommand(this.OnTaskModifyCommand);
             this.TaskDeleteCommand = new ViewCommand(this.OnTaskDeleteCommand);
-
             this.TaskStartCalcCommand = new ViewCommand(this.OnTaskStartCalcCommand);
             this.TaskShowResultCommand = new ViewCommand(this.OnTaskShowResultCommand);
             this.TaskStopCommand = new ViewCommand(this.OnTaskStopCommand);
@@ -419,6 +418,12 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
         }
         private void OnContextSaveCommand(object parameter)
         {
+            if (string.IsNullOrEmpty(CurrentClientContextCard.Name))
+            {
+                _starter.ShowException("Warning!", new Exception($"You must specify the name of the context!"));
+                return;
+            }
+
             if(_clientContextEditedMode == CardEditMode.Add)
             {
                 var projectModifier = new Modifiers.CreateClientContext
@@ -477,7 +482,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
                 if (CurrentCalcTask == null)
                     return;
 
-                _starter.Start<VM.StationCalibrationManager.View>(isModal: true, f => { f.TaskId = CurrentCalcTask.Id; });
+                _starter.Start<VM.StationCalibrationManager.View>(isModal: true, f => { f.Mode = StationCalibrationManager.FormMode.Edit; f.TaskId = CurrentCalcTask.Id; });
             }
             catch (Exception e)
             {
@@ -485,6 +490,10 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
             }
         }
         private void OnTaskDeleteCommand(object parameter)
+        {
+            _starter.StartInUserContext("Warning!", "Are you sure?", TaskDelete);
+        }
+        private void TaskDelete()
         {
             try
             {
@@ -499,45 +508,6 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
                 this._logger.Exception(Exceptions.StationCalibrationCalculation, e);
             }
         }
-        //private void OnTaskSaveCommand(object parameter)
-        //{
-        //    if (CurrentCalcTaskCard == null)
-        //        return;
-
-        //    if (string.IsNullOrEmpty(CurrentCalcTaskCard.MapCombo.Name))
-        //    {
-        //        _starter.ShowException("Warning!", new Exception($"Undefined value '{Properties.Resources.MapName}'!"));
-        //        return;
-        //    }
-
-        //    if (_calcTaskEditedMode == CardEditMode.Add)
-        //    {
-        //        var modifier = new Modifiers.CreateCalcTask
-        //        {
-        //            ContextId = CurrentCalcTaskCard.ContextId,
-        //            MapName = CurrentCalcTaskCard.MapCombo.Name,
-        //            OwnerId = Guid.NewGuid()
-        //        };
-
-        //        _commandDispatcher.Send(modifier);
-        //    }
-
-        //    if (_calcTaskEditedMode == CardEditMode.Edit)
-        //    {
-        //        var modifier = new Modifiers.EditCalcTask
-        //        {
-        //            Id = CurrentCalcTask.Id,
-        //            MapName = CurrentCalcTaskCard.MapCombo.Name
-        //        };
-
-        //        _commandDispatcher.Send(modifier);
-        //    }
-
-        //    _calcTaskEditedMode = CardEditMode.None;
-        //    CalcTaskSaveEnabled = false;
-        //    if (CurrentClientContext != null)
-        //        CalcTaskAddEnabled = true;
-        //}
         private void OnTaskStartCalcCommand(object parameter)
         {
             try
@@ -591,6 +561,10 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
         }
         private void OnTaskStopCommand(object parameter)
         {
+            _starter.StartInUserContext("Warning!", "Are you sure?", TaskStop);
+        }
+        private void TaskStop()
+        {
             try
             {
                 var modifier = new Modifiers.StopCalcTask
@@ -605,6 +579,10 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
             }
         }
         private void OnTaskAbortCommand(object parameter)
+        {
+            _starter.StartInUserContext("Warning!", "Are you sure?", TaskAbort);
+        }
+        private void TaskAbort()
         {
             try
             {
@@ -662,7 +640,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTask
         private void OnCreatedCalcTaskHandle(Events.OnCreatedCalcTask data)
         {
             ReloadCalcTask();
-            _starter.Start<VM.StationCalibrationManager.View>(isModal: true, f => { f.TaskId = data.CalcTasktId; });
+            _starter.Start<VM.StationCalibrationManager.View>(isModal: true, f => { f.Mode = StationCalibrationManager.FormMode.Add; f.TaskId = data.CalcTasktId; });
         }
         private void OnEditedCalcTasktHandle(Events.OnEditedCalcTask data)
         {

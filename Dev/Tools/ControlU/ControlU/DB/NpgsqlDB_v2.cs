@@ -61,12 +61,12 @@ namespace ControlU.DB
         private bool LoadingData = false;
 
 
-        public Settings.ATDIConnection ATDIConnectionData_Selsected
-        {
-            get { return _ATDIConnectionData_Selsected; }
-            set { _ATDIConnectionData_Selsected = value; OnPropertyChanged("ATDIConnectionData_Selsected"); }
-        }
-        private Settings.ATDIConnection _ATDIConnectionData_Selsected = new Settings.ATDIConnection();
+        //public Settings.ATDIConnection ATDIConnectionData_Selsected
+        //{
+        //    get { return _ATDIConnectionData_Selsected; }
+        //    set { _ATDIConnectionData_Selsected = value; OnPropertyChanged("ATDIConnectionData_Selsected"); }
+        //}
+        //private Settings.ATDIConnection _ATDIConnectionData_Selsected = new Settings.ATDIConnection();
 
         public ObservableCollection<DFData> BearingsData
         {
@@ -302,8 +302,8 @@ namespace ControlU.DB
         {
             dbt = sameWork;
             dbt += ATDI_CheckDbData_v2;
-            dbt += LoadATDIConnectionTable;
-            dbt += FindATDIConnectionFile;
+            //dbt += LoadATDIConnectionTable;
+            //dbt += FindATDIConnectionFile;
             dbt += ATDI_LoadAtdiUnknownResultsTable_v2;//Загрузка основной инфы результатов без тасков
             dbt += ATDI_LoadAtdiUnknownResults_v2;//Загрузка данных результатов без тасков
             dbt += ATDI_CheckUnknownResults;//Проверка месяца и добавление нового
@@ -1325,51 +1325,51 @@ namespace ControlU.DB
                     #endregion                    
 
                     #region проверка существования таблицы sensor_registration_data
-                    cdb.Open();
-                    SQL = "SELECT relname, pg_class.relkind as relkind FROM pg_class, pg_namespace WHERE pg_class.relnamespace = pg_namespace.oid AND pg_class.relkind IN ('r') AND relname = 'sensor_registration_data';";
-                    bool SensorRegistrationDataTableExist = false;
-                    using (NpgsqlCommand command = new NpgsqlCommand(SQL, cdb))
-                    {
-                        NpgsqlDataReader dr2 = command.ExecuteReader();
-                        while (dr2.Read())
-                        {
-                            string temp = dr2[0] as string;
-                            if (temp == "sensor_registration_data")
-                            { SensorRegistrationDataTableExist = true; }
-                        }
-                        cdb.Close();
-                    }
-                    if (!SensorRegistrationDataTableExist)
-                    {
-                        cdb.Open();
-                        SQL = "CREATE TABLE sensor_registration_data(id integer, owner_id character varying(500), product_key character varying(500), " +
-                            "sensor_equipment_tech_id character varying(500), rabbit_host_name character varying(500), rabbit_virtual_host_name character varying(500), " +
-                            "rabbit_host_port character varying(10), rabbit_user_name character varying(300), " +
-                            "rabbit_password character varying(500), sensor_queue character varying(500), " +
-                            "sensor_confirm_queue character varying(500), task_queue character varying(500), result_queue character varying(500), " +
-                            "server_instance character varying(500));";
+                    //cdb.Open();
+                    //SQL = "SELECT relname, pg_class.relkind as relkind FROM pg_class, pg_namespace WHERE pg_class.relnamespace = pg_namespace.oid AND pg_class.relkind IN ('r') AND relname = 'sensor_registration_data';";
+                    //bool SensorRegistrationDataTableExist = false;
+                    //using (NpgsqlCommand command = new NpgsqlCommand(SQL, cdb))
+                    //{
+                    //    NpgsqlDataReader dr2 = command.ExecuteReader();
+                    //    while (dr2.Read())
+                    //    {
+                    //        string temp = dr2[0] as string;
+                    //        if (temp == "sensor_registration_data")
+                    //        { SensorRegistrationDataTableExist = true; }
+                    //    }
+                    //    cdb.Close();
+                    //}
+                    //if (!SensorRegistrationDataTableExist)
+                    //{
+                    //    cdb.Open();
+                    //    SQL = "CREATE TABLE sensor_registration_data(id integer, owner_id character varying(500), product_key character varying(500), " +
+                    //        "sensor_equipment_tech_id character varying(500), rabbit_host_name character varying(500), rabbit_virtual_host_name character varying(500), " +
+                    //        "rabbit_host_port character varying(10), rabbit_user_name character varying(300), " +
+                    //        "rabbit_password character varying(500), sensor_queue character varying(500), " +
+                    //        "sensor_confirm_queue character varying(500), task_queue character varying(500), result_queue character varying(500), " +
+                    //        "server_instance character varying(500));";
 
-                        using (NpgsqlCommand command = new NpgsqlCommand(SQL, cdb))
-                        {
-                            command.ExecuteReader();
-                        }
-                        cdb.Close();
-                        cdb.Open();
-                        SQL = @"INSERT INTO sensor_registration_data " +
-                            "(id, owner_id, product_key, sensor_equipment_tech_id, rabbit_host_name, rabbit_virtual_host_name, " +
-                            "rabbit_user_name, rabbit_host_port, " +
-                            "rabbit_password, sensor_queue, sensor_confirm_queue, task_queue, result_queue, " +
-                            "server_instance) VALUES " +
-                            "(0, 's', 's', 's', 's', 's', " +
-                            "'s', 's', " +
-                            "'s', 's', 's', 's', 's', " +
-                            "'s');";
-                        using (NpgsqlCommand command = new NpgsqlCommand(SQL, cdb))
-                        {
-                            command.ExecuteReader();
-                        }
-                        cdb.Close();
-                    }
+                    //    using (NpgsqlCommand command = new NpgsqlCommand(SQL, cdb))
+                    //    {
+                    //        command.ExecuteReader();
+                    //    }
+                    //    cdb.Close();
+                    //    cdb.Open();
+                    //    SQL = @"INSERT INTO sensor_registration_data " +
+                    //        "(id, owner_id, product_key, sensor_equipment_tech_id, rabbit_host_name, rabbit_virtual_host_name, " +
+                    //        "rabbit_user_name, rabbit_host_port, " +
+                    //        "rabbit_password, sensor_queue, sensor_confirm_queue, task_queue, result_queue, " +
+                    //        "server_instance) VALUES " +
+                    //        "(0, 's', 's', 's', 's', 's', " +
+                    //        "'s', 's', " +
+                    //        "'s', 's', 's', 's', 's', " +
+                    //        "'s');";
+                    //    using (NpgsqlCommand command = new NpgsqlCommand(SQL, cdb))
+                    //    {
+                    //        command.ExecuteReader();
+                    //    }
+                    //    cdb.Close();
+                    //}
                     #endregion
 
                     #region проверка существования таблицы tracks_data
@@ -2282,194 +2282,194 @@ namespace ControlU.DB
         #endregion Загрузка данных из бд
 
         #region Connection Control Server data
-        public void LoadATDIConnectionTable()
-        {
-            using (NpgsqlConnection cdb = new NpgsqlConnection(UserconnToDb))
-            {
-                NpgsqlCommand command;
-                NpgsqlDataReader dr;
-                cdb.Open();
-                #region Data
-                #region узнаем количевство строк
-                using (command = new NpgsqlCommand("SELECT COUNT(*) FROM sensor_registration_data;", cdb))
-                {
-                    try
-                    {
-                        dr = command.ExecuteReader();
-                        dr.Read();
-                        MaxLoadProgressBar += Int32.Parse(dr["count"].ToString());
-                    }
-                    catch (Exception exp)
-                    {
-                        MainWindow.exp.ExceptionData = new ExData() { ex = exp, ClassName = "NpgsqlDB", AdditionalInformation = System.Reflection.MethodInfo.GetCurrentMethod().Name };
-                    }
-                }
-                #endregion
-                cdb.Close();
-                cdb.Open();
-                try
-                {
-                    using (command = new NpgsqlCommand("SELECT * FROM sensor_registration_data WHERE id = 0;", cdb))
-                    {
-                        #region
-                        dr = command.ExecuteReader();
-                        while (dr.Read())
-                        {
-                            Settings.ATDIConnection dt = new Settings.ATDIConnection();
+        //public void LoadATDIConnectionTable()
+        //{
+        //    using (NpgsqlConnection cdb = new NpgsqlConnection(UserconnToDb))
+        //    {
+        //        NpgsqlCommand command;
+        //        NpgsqlDataReader dr;
+        //        cdb.Open();
+        //        #region Data
+        //        #region узнаем количевство строк
+        //        using (command = new NpgsqlCommand("SELECT COUNT(*) FROM sensor_registration_data;", cdb))
+        //        {
+        //            try
+        //            {
+        //                dr = command.ExecuteReader();
+        //                dr.Read();
+        //                MaxLoadProgressBar += Int32.Parse(dr["count"].ToString());
+        //            }
+        //            catch (Exception exp)
+        //            {
+        //                MainWindow.exp.ExceptionData = new ExData() { ex = exp, ClassName = "NpgsqlDB", AdditionalInformation = System.Reflection.MethodInfo.GetCurrentMethod().Name };
+        //            }
+        //        }
+        //        #endregion
+        //        cdb.Close();
+        //        cdb.Open();
+        //        try
+        //        {
+        //            using (command = new NpgsqlCommand("SELECT * FROM sensor_registration_data WHERE id = 0;", cdb))
+        //            {
+        //                #region
+        //                dr = command.ExecuteReader();
+        //                while (dr.Read())
+        //                {
+        //                    Settings.ATDIConnection dt = new Settings.ATDIConnection();
 
-                            dt.owner_id = (string)dr["owner_id"];
-                            dt.product_key = (string)dr["product_key"];
-                            dt.sensor_equipment_tech_id = (string)dr["sensor_equipment_tech_id"];
-                            dt.rabbit_host_name = (string)dr["rabbit_host_name"];
-                            dt.rabbit_virtual_host_name = (string)dr["rabbit_virtual_host_name"];
-                            dt.rabbit_host_port = (string)dr["rabbit_host_port"];
-                            dt.rabbit_user_name = (string)dr["rabbit_user_name"];
-                            dt.rabbit_password = (string)dr["rabbit_password"];
-                            dt.sensor_queue = (string)dr["sensor_queue"];
-                            dt.sensor_confirm_queue = (string)dr["sensor_confirm_queue"];
-                            dt.task_queue = (string)dr["task_queue"];
-                            dt.result_queue = (string)dr["result_queue"];
-                            dt.server_instance = (string)dr["server_instance"];
-                            ATDIConnectionData_Selsected = dt;
+        //                    dt.owner_id = (string)dr["owner_id"];
+        //                    dt.product_key = (string)dr["product_key"];
+        //                    dt.sensor_equipment_tech_id = (string)dr["sensor_equipment_tech_id"];
+        //                    dt.rabbit_host_name = (string)dr["rabbit_host_name"];
+        //                    dt.rabbit_virtual_host_name = (string)dr["rabbit_virtual_host_name"];
+        //                    dt.rabbit_host_port = (string)dr["rabbit_host_port"];
+        //                    dt.rabbit_user_name = (string)dr["rabbit_user_name"];
+        //                    dt.rabbit_password = (string)dr["rabbit_password"];
+        //                    dt.sensor_queue = (string)dr["sensor_queue"];
+        //                    dt.sensor_confirm_queue = (string)dr["sensor_confirm_queue"];
+        //                    dt.task_queue = (string)dr["task_queue"];
+        //                    dt.result_queue = (string)dr["result_queue"];
+        //                    dt.server_instance = (string)dr["server_instance"];
+        //                    ATDIConnectionData_Selsected = dt;
 
-                        }
+        //                }
 
-                        #endregion
-                    }
-                }
-                catch (Exception exp)
-                {
-                    MainWindow.exp.ExceptionData = new ExData() { ex = exp, ClassName = "NpgsqlDB", AdditionalInformation = System.Reflection.MethodInfo.GetCurrentMethod().Name };
-                }
-                finally
-                {
-                    if (cdb != null) { cdb.Close(); cdb.Dispose(); }
-                }
-                #endregion
-            }
-            dbt -= LoadATDIConnectionTable;
-        }
-        public void FindATDIConnectionFile()
-        {
-            try
-            {
-                string file = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "/Connection.xml";
-                if (File.Exists(file))
-                {
-                    XMLLibrary.XmlReaderStruct obj = XMLLibrary.XMLReader.GetXmlSettings(file);
-                    Settings.ATDIConnection dt = new Settings.ATDIConnection();
-                    dt.owner_id = obj._OwnerId;
-                    dt.product_key = obj._ProductKey;
-                    dt.sensor_equipment_tech_id = obj._SensorEquipmentTechId;
-                    dt.rabbit_host_name = obj._RabbitHostName;
-                    dt.rabbit_virtual_host_name = obj._RabbitVirtualHostName;
-                    dt.rabbit_host_port = obj._RabbitHostPort;
-                    dt.rabbit_user_name = obj._RabbitUserName;
-                    dt.rabbit_password = obj._RabbitPassword;
-                    dt.sensor_queue = obj._SensorQueue;
-                    dt.sensor_confirm_queue = obj._SensorConfirmQueue;
-                    dt.task_queue = obj._TaskQueue;
-                    dt.result_queue = obj._ResultQueue;
-                    dt.server_instance = obj._ServerInstance;
-                    bool res = UpdateATDIConnection(dt);
-                    if (res)
-                    {
-                        File.Delete(file);
-                        //System.Windows.MessageBox.Show("alahabar");
-                    }
-                }
-            }
-            catch { }
-            finally { dbt -= FindATDIConnectionFile; }
-        }
+        //                #endregion
+        //            }
+        //        }
+        //        catch (Exception exp)
+        //        {
+        //            MainWindow.exp.ExceptionData = new ExData() { ex = exp, ClassName = "NpgsqlDB", AdditionalInformation = System.Reflection.MethodInfo.GetCurrentMethod().Name };
+        //        }
+        //        finally
+        //        {
+        //            if (cdb != null) { cdb.Close(); cdb.Dispose(); }
+        //        }
+        //        #endregion
+        //    }
+        //    dbt -= LoadATDIConnectionTable;
+        //}
+        //public void FindATDIConnectionFile()
+        //{
+        //    try
+        //    {
+        //        string file = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "/Connection.xml";
+        //        if (File.Exists(file))
+        //        {
+        //            XMLLibrary.XmlReaderStruct obj = XMLLibrary.XMLReader.GetXmlSettings(file);
+        //            Settings.ATDIConnection dt = new Settings.ATDIConnection();
+        //            dt.owner_id = obj._OwnerId;
+        //            dt.product_key = obj._ProductKey;
+        //            dt.sensor_equipment_tech_id = obj._SensorEquipmentTechId;
+        //            dt.rabbit_host_name = obj._RabbitHostName;
+        //            dt.rabbit_virtual_host_name = obj._RabbitVirtualHostName;
+        //            dt.rabbit_host_port = obj._RabbitHostPort;
+        //            dt.rabbit_user_name = obj._RabbitUserName;
+        //            dt.rabbit_password = obj._RabbitPassword;
+        //            dt.sensor_queue = obj._SensorQueue;
+        //            dt.sensor_confirm_queue = obj._SensorConfirmQueue;
+        //            dt.task_queue = obj._TaskQueue;
+        //            dt.result_queue = obj._ResultQueue;
+        //            dt.server_instance = obj._ServerInstance;
+        //            bool res = UpdateATDIConnection(dt);
+        //            if (res)
+        //            {
+        //                File.Delete(file);
+        //                //System.Windows.MessageBox.Show("alahabar");
+        //            }
+        //        }
+        //    }
+        //    catch { }
+        //    finally { dbt -= FindATDIConnectionFile; }
+        //}
 
-        /// <summary>
-        /// добавляет новые настройки подключения и новый выбирает текущим
-        /// </summary>
-        /// <param name="newdata"></param>
+        ///// <summary>
+        ///// добавляет новые настройки подключения и новый выбирает текущим
+        ///// </summary>
+        ///// <param name="newdata"></param>
 
-        public bool UpdateATDIConnection(Settings.ATDIConnection data)
-        {
-            bool result = false;
+        //public bool UpdateATDIConnection(Settings.ATDIConnection data)
+        //{
+        //    bool result = false;
 
-            using (NpgsqlConnection cdb = new NpgsqlConnection(UserconnToDb))
-            {
-                string SQL = "UPDATE sensor_registration_data SET " +
-                    "owner_id = :owner_id, product_key = :product_key, sensor_equipment_tech_id = :sensor_equipment_tech_id, " +
-                    "rabbit_host_name = :rabbit_host_name, rabbit_virtual_host_name = :rabbit_virtual_host_name, " +
-                    "rabbit_host_port = :rabbit_host_port, rabbit_user_name = :rabbit_user_name, " +
-                    "rabbit_password = :rabbit_password, sensor_queue = :sensor_queue, sensor_confirm_queue = :sensor_confirm_queue, " +
-                    "task_queue = :task_queue, result_queue = :result_queue, server_instance = :server_instance WHERE id = 0";
+        //    using (NpgsqlConnection cdb = new NpgsqlConnection(UserconnToDb))
+        //    {
+        //        string SQL = "UPDATE sensor_registration_data SET " +
+        //            "owner_id = :owner_id, product_key = :product_key, sensor_equipment_tech_id = :sensor_equipment_tech_id, " +
+        //            "rabbit_host_name = :rabbit_host_name, rabbit_virtual_host_name = :rabbit_virtual_host_name, " +
+        //            "rabbit_host_port = :rabbit_host_port, rabbit_user_name = :rabbit_user_name, " +
+        //            "rabbit_password = :rabbit_password, sensor_queue = :sensor_queue, sensor_confirm_queue = :sensor_confirm_queue, " +
+        //            "task_queue = :task_queue, result_queue = :result_queue, server_instance = :server_instance WHERE id = 0";
 
-                // (id, owner_id, product_key, sensor_equipment_tech_id, rabbit_host_name, rabbit_user_name, " +
-                //"rabbit_password, sensor_queue, sensor_confirm_queue, task_queue, result_queue)
-                try
-                {
-                    cdb.Open();
-                    using (NpgsqlCommand command = new NpgsqlCommand(SQL, cdb))
-                    {
-                        command.Parameters.Add(new NpgsqlParameter(":owner_id", NpgsqlTypes.NpgsqlDbType.Varchar));
-                        command.Parameters.Add(new NpgsqlParameter(":product_key", NpgsqlTypes.NpgsqlDbType.Varchar));
-                        command.Parameters.Add(new NpgsqlParameter(":sensor_equipment_tech_id", NpgsqlTypes.NpgsqlDbType.Varchar));
-                        command.Parameters.Add(new NpgsqlParameter(":rabbit_host_name", NpgsqlTypes.NpgsqlDbType.Varchar));
-                        command.Parameters.Add(new NpgsqlParameter(":rabbit_virtual_host_name", NpgsqlTypes.NpgsqlDbType.Varchar));
-                        command.Parameters.Add(new NpgsqlParameter(":rabbit_host_port", NpgsqlTypes.NpgsqlDbType.Varchar));
-                        command.Parameters.Add(new NpgsqlParameter(":rabbit_user_name", NpgsqlTypes.NpgsqlDbType.Varchar));
-                        command.Parameters.Add(new NpgsqlParameter(":rabbit_password", NpgsqlTypes.NpgsqlDbType.Varchar));
-                        command.Parameters.Add(new NpgsqlParameter(":sensor_queue", NpgsqlTypes.NpgsqlDbType.Varchar));
-                        command.Parameters.Add(new NpgsqlParameter(":sensor_confirm_queue", NpgsqlTypes.NpgsqlDbType.Varchar));
-                        command.Parameters.Add(new NpgsqlParameter(":task_queue", NpgsqlTypes.NpgsqlDbType.Varchar));
-                        command.Parameters.Add(new NpgsqlParameter(":result_queue", NpgsqlTypes.NpgsqlDbType.Varchar));
-                        command.Parameters.Add(new NpgsqlParameter(":server_instance", NpgsqlTypes.NpgsqlDbType.Varchar));
-                        // Prepare the command.
-                        command.Prepare();
-                        // Add value to the paramater.
-                        command.Parameters[0].Value = data.owner_id;
-                        command.Parameters[1].Value = data.product_key;
-                        command.Parameters[2].Value = data.sensor_equipment_tech_id;
-                        command.Parameters[3].Value = data.rabbit_host_name;
-                        command.Parameters[4].Value = data.rabbit_virtual_host_name;
-                        command.Parameters[5].Value = data.rabbit_host_port;
-                        command.Parameters[6].Value = data.rabbit_user_name;
-                        command.Parameters[7].Value = data.rabbit_password;
-                        command.Parameters[8].Value = data.sensor_queue;
-                        command.Parameters[9].Value = data.sensor_confirm_queue;
-                        command.Parameters[10].Value = data.task_queue;
-                        command.Parameters[11].Value = data.result_queue;
-                        command.Parameters[12].Value = data.server_instance;
-                        // Execute SQL command.
-                        int recordAffected = command.ExecuteNonQuery();
-                        if (Convert.ToBoolean(recordAffected))
-                        {
-                            ATDIConnectionData_Selsected = data;
-                            App.Sett.ATDIConnection_Settings.Selected = data;
-                            App.Sett.SaveAll();
-                            result = true;
-                        }
-                    }
-                    cdb.Close();
-                }
-                catch (NpgsqlException exp)
-                {
-                    App.Current.Dispatcher.BeginInvoke((Action)(() =>
-                    {
-                        MainWindow.exp.ExceptionData = new ExData() { ex = exp, ClassName = "NpgsqlDB", AdditionalInformation = System.Reflection.MethodInfo.GetCurrentMethod().Name };
-                    }));
-                }
-                catch (Exception exp)
-                {
-                    App.Current.Dispatcher.BeginInvoke((Action)(() =>
-                    {
-                        MainWindow.exp.ExceptionData = new ExData() { ex = exp, ClassName = "NpgsqlDB", AdditionalInformation = System.Reflection.MethodInfo.GetCurrentMethod().Name };
-                    }));
-                }
-                finally
-                {
-                    if (cdb != null) { cdb.Close(); cdb.Dispose(); }
-                }
-            }
-            return result;
-        }
+        //        // (id, owner_id, product_key, sensor_equipment_tech_id, rabbit_host_name, rabbit_user_name, " +
+        //        //"rabbit_password, sensor_queue, sensor_confirm_queue, task_queue, result_queue)
+        //        try
+        //        {
+        //            cdb.Open();
+        //            using (NpgsqlCommand command = new NpgsqlCommand(SQL, cdb))
+        //            {
+        //                command.Parameters.Add(new NpgsqlParameter(":owner_id", NpgsqlTypes.NpgsqlDbType.Varchar));
+        //                command.Parameters.Add(new NpgsqlParameter(":product_key", NpgsqlTypes.NpgsqlDbType.Varchar));
+        //                command.Parameters.Add(new NpgsqlParameter(":sensor_equipment_tech_id", NpgsqlTypes.NpgsqlDbType.Varchar));
+        //                command.Parameters.Add(new NpgsqlParameter(":rabbit_host_name", NpgsqlTypes.NpgsqlDbType.Varchar));
+        //                command.Parameters.Add(new NpgsqlParameter(":rabbit_virtual_host_name", NpgsqlTypes.NpgsqlDbType.Varchar));
+        //                command.Parameters.Add(new NpgsqlParameter(":rabbit_host_port", NpgsqlTypes.NpgsqlDbType.Varchar));
+        //                command.Parameters.Add(new NpgsqlParameter(":rabbit_user_name", NpgsqlTypes.NpgsqlDbType.Varchar));
+        //                command.Parameters.Add(new NpgsqlParameter(":rabbit_password", NpgsqlTypes.NpgsqlDbType.Varchar));
+        //                command.Parameters.Add(new NpgsqlParameter(":sensor_queue", NpgsqlTypes.NpgsqlDbType.Varchar));
+        //                command.Parameters.Add(new NpgsqlParameter(":sensor_confirm_queue", NpgsqlTypes.NpgsqlDbType.Varchar));
+        //                command.Parameters.Add(new NpgsqlParameter(":task_queue", NpgsqlTypes.NpgsqlDbType.Varchar));
+        //                command.Parameters.Add(new NpgsqlParameter(":result_queue", NpgsqlTypes.NpgsqlDbType.Varchar));
+        //                command.Parameters.Add(new NpgsqlParameter(":server_instance", NpgsqlTypes.NpgsqlDbType.Varchar));
+        //                // Prepare the command.
+        //                command.Prepare();
+        //                // Add value to the paramater.
+        //                command.Parameters[0].Value = data.owner_id;
+        //                command.Parameters[1].Value = data.product_key;
+        //                command.Parameters[2].Value = data.sensor_equipment_tech_id;
+        //                command.Parameters[3].Value = data.rabbit_host_name;
+        //                command.Parameters[4].Value = data.rabbit_virtual_host_name;
+        //                command.Parameters[5].Value = data.rabbit_host_port;
+        //                command.Parameters[6].Value = data.rabbit_user_name;
+        //                command.Parameters[7].Value = data.rabbit_password;
+        //                command.Parameters[8].Value = data.sensor_queue;
+        //                command.Parameters[9].Value = data.sensor_confirm_queue;
+        //                command.Parameters[10].Value = data.task_queue;
+        //                command.Parameters[11].Value = data.result_queue;
+        //                command.Parameters[12].Value = data.server_instance;
+        //                // Execute SQL command.
+        //                int recordAffected = command.ExecuteNonQuery();
+        //                if (Convert.ToBoolean(recordAffected))
+        //                {
+        //                    ATDIConnectionData_Selsected = data;
+        //                    App.Sett.ATDIConnection_Settings.Selected = data;
+        //                    App.Sett.SaveAll();
+        //                    result = true;
+        //                }
+        //            }
+        //            cdb.Close();
+        //        }
+        //        catch (NpgsqlException exp)
+        //        {
+        //            App.Current.Dispatcher.BeginInvoke((Action)(() =>
+        //            {
+        //                MainWindow.exp.ExceptionData = new ExData() { ex = exp, ClassName = "NpgsqlDB", AdditionalInformation = System.Reflection.MethodInfo.GetCurrentMethod().Name };
+        //            }));
+        //        }
+        //        catch (Exception exp)
+        //        {
+        //            App.Current.Dispatcher.BeginInvoke((Action)(() =>
+        //            {
+        //                MainWindow.exp.ExceptionData = new ExData() { ex = exp, ClassName = "NpgsqlDB", AdditionalInformation = System.Reflection.MethodInfo.GetCurrentMethod().Name };
+        //            }));
+        //        }
+        //        finally
+        //        {
+        //            if (cdb != null) { cdb.Close(); cdb.Dispose(); }
+        //        }
+        //    }
+        //    return result;
+        //}
         #endregion
 
 
@@ -6265,6 +6265,8 @@ namespace ControlU.DB
         {
             bool res = false;
             bool findintask = false;
+            bool findinunk = false;
+
             for (int i = 0; i < AtdiTasks.Count(); i++)
             {
                 for (int j = 0; j < AtdiTasks[i].ResultsInfo.Count(); j++)
@@ -6297,6 +6299,7 @@ namespace ControlU.DB
                     {
                         if (AtdiUnknownResults[i].ResultsInfo[j].ResultId.ToLower() == ResultId.ToLower())
                         {
+                            findinunk = true;
                             AtdiUnknownResults[i].ResultsInfo[j].ResponseReceived = ResponseReceived;
                             if (Status.ToLower().Contains("success"))
                             {
@@ -6314,6 +6317,32 @@ namespace ControlU.DB
                         }
                     }
                 }
+            }
+            if (findinunk == false)
+            {
+                //for (int i = 0; i < AtdiUnknownResults.Count(); i++)
+                //{
+                //    for (int j = 0; j < AtdiUnknownResults[i].ResultsInfo.Count(); j++)
+                //    {
+                //        if (AtdiUnknownResults[i].ResultsInfo[j].ResultId.ToLower() == ResultId.ToLower())
+                //        {
+                //            AtdiUnknownResults[i].ResultsInfo[j].ResponseReceived = ResponseReceived;
+                //            if (Status.ToLower().Contains("success"))
+                //            {
+                //                AtdiUnknownResults[i].ResultsInfo[j].DeliveryConfirmation = 2;
+                //                AtdiUnknownResults[i].ResultsInfo[j].ErrorText = "";
+                //                AtdiUnknownResults[i].ResultsInfo[j].SaveInDB = true;
+                //            }
+                //            else if (Status.ToLower().Contains("fail"))
+                //            {
+                //                AtdiUnknownResults[i].ResultsInfo[j].DeliveryConfirmation = 2;
+                //                AtdiUnknownResults[i].ResultsInfo[j].ErrorText = Message;
+                //                AtdiUnknownResults[i].ResultsInfo[j].SaveInDB = true;
+                //            }
+                //            res = ATDI_UpdateResultInfoToDB_v2(AtdiUnknownResults[i].ResultsInfo.ToArray(), findintask, AtdiUnknownResults[i].id);
+                //        }
+                //    }
+                //}
             }
             return res;
         }

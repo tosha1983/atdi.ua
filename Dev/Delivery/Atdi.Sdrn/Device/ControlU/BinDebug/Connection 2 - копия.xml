@@ -1,18 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PluginConfiguration>
   <RootElement ListPlugins="SettingConfigurations">
-    <OwnerId>OID-BD12-A00-N00</OwnerId>
-    <ProductKey>020B-CJHO-TDNI-ZEEO-2KDI</ProductKey>
-    <SensorEquipmentTechId>MMS-02</SensorEquipmentTechId>
-    <RabbitHostName>109.237.91.29</RabbitHostName>
-    <RabbitVirtualHostName>/</RabbitVirtualHostName>
-    <RabbitHostPort>5672</RabbitHostPort>
-    <RabbitUserName>SDR_Client</RabbitUserName>
-    <RabbitPassword>32Xr567</RabbitPassword>
-    <SensorQueue>SENSORS_List</SensorQueue>
-    <SensorConfirmQueue>Event_Confirm_SENSORS_Send_</SensorConfirmQueue>
-    <TaskQueue>MEAS_TASK_Main_List_APPServer_</TaskQueue>
-    <ResultQueue>MEAS_SDR_RESULTS_Main_List_APPServer_</ResultQueue>
-    <ServerInstance>SDRNSV-SBD13-G65-3690</ServerInstance>
+    <LicenseOwnerId>OID-BD12-A00-N00</LicenseOwnerId>
+    <LicenseProductKey>0VE1-OCOL-S4S0-C1D1-SEXB</LicenseProductKey>
+    <RabbitMQHost>109.237.91.29</RabbitMQHost>
+    <RabbitMQVirtualHost>177-A-SBD12-A00-1589.DevicesBus</RabbitMQVirtualHost>
+    <RabbitMQUser>SDR_Client</RabbitMQUser>
+    <RabbitMQPassword>32Xr567</RabbitMQPassword>
+    <RabbitMQPort>5674</RabbitMQPort>
+    <SDRNApiVersion>2.0</SDRNApiVersion>
+    <SDRNServerInstance>SDRNSV-SBD12-A00-1589</SDRNServerInstance>
+    <SDRNServerQueueNamePart>Q.SDRN.Server</SDRNServerQueueNamePart>
+    <SDRNDeviceSensorTechId>MMS-02</SDRNDeviceSensorTechId>
+    <SDRNDeviceExchange>EX.SDRN.Device</SDRNDeviceExchange>
+    <SDRNDeviceQueueNamePart>Q.SDRN.Device</SDRNDeviceQueueNamePart>
+    <SDRNDeviceMessagesBindings>{messageType=RegisterSensor, routingKey=#01};{messageType=SendCommandResult, routingKey=#02};{messageType=SendMeasResults, routingKey=#03};{messageType=SendEntity, routingKey=#04};{messageType=SendEntityPart, routingKey=#05};{messageType=UpdateSensor, routingKey=#06}</SDRNDeviceMessagesBindings>
+    <SDRNMessageConvertorUseEncryption>false</SDRNMessageConvertorUseEncryption>
+    <SDRNMessageConvertorUseCompression>false</SDRNMessageConvertorUseCompression>
+    <DeviceBusSharedSecretKey>sbfsbfufbsb</DeviceBusSharedSecretKey>
+    <DeviceBusClient>Test Client 1</DeviceBusClient>
+    <DeviceBusContentType>Json</DeviceBusContentType>
+    <DeviceBusOutboxUseBuffer>FileSystem</DeviceBusOutboxUseBuffer>
+    <DeviceBusInboxUseBuffer>FileSystem</DeviceBusInboxUseBuffer>
+    <DeviceBusOutboxBufferFolder>c:\ATDI\APIServices\OutBox</DeviceBusOutboxBufferFolder>
+    <DeviceBusInboxBufferFolder>c:\ATDI\APIServices\InBox</DeviceBusInboxBufferFolder>
+    <DeviceBusOutboxBufferContentType>Binary</DeviceBusOutboxBufferContentType>
+    <DeviceBusInboxBufferContentType>Binary</DeviceBusInboxBufferContentType>
  </RootElement>
 </PluginConfiguration>

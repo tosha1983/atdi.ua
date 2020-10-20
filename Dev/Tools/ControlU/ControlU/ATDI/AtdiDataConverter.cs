@@ -286,8 +286,9 @@ namespace ControlU.ATDI
             to.ResultId = MainWindow.db_v2.ATDI_AddResultID().ToString();//"";//попровить на id
             to.Status = "";
             to.SwNumber = 0;
-            to.TaskId = task.task_id.Replace("I", "|");
+            to.TaskId = "SDRN.SubTaskSensorId." + task.task_id;//.Replace("I", "|");
             to.Measured = DateTime.Now;
+            to.Measurement = Atdi.DataModels.Sdrns.MeasurementType.MonitoringStations;
             DateTime StartTime = DateTime.MaxValue;
             DateTime StopTime = DateTime.MinValue;
             #region Routes            
@@ -550,8 +551,9 @@ namespace ControlU.ATDI
             to.ResultId = MainWindow.db_v2.ATDI_AddResultID().ToString();//"";//попровить на id
             to.Status = "";
             to.SwNumber = 0;
-            to.TaskId = "";// task.task_id;
+            to.TaskId = Guid.NewGuid().ToString(); //"";// task.task_id;
             to.Measured = DateTime.Now;
+            to.Measurement = Atdi.DataModels.Sdrns.MeasurementType.MonitoringStations;
             DateTime StartTime = DateTime.MaxValue;
             DateTime StopTime = DateTime.MinValue;
             #region Routes            
@@ -809,8 +811,9 @@ namespace ControlU.ATDI
             to.ResultId = MainWindow.db_v2.ATDI_AddResultID().ToString();//"";//попровить на id
             to.Status = "";
             to.SwNumber = 0;
-            to.TaskId = "";// task.task_id;
+            to.TaskId = Guid.NewGuid().ToString(); //"";// task.task_id;
             to.Measured = DateTime.Now;
+            to.Measurement = Atdi.DataModels.Sdrns.MeasurementType.MonitoringStations;
             DateTime StartTime = DateTime.MaxValue;
             DateTime StopTime = DateTime.MinValue;
             #region Routes            
@@ -856,7 +859,7 @@ namespace ControlU.ATDI
             #region StationResults
             List<StationMeasResult> smrs = new List<StationMeasResult>() { };
             #region StationMeasResult
-            for (int t = 0; t < track.Data.Count(); t++) //task.data_from_tech.Count(); t++)
+            for (int t = 0; t < track.Data.Count(); t++) //2; t++)//  //task.data_from_tech.Count(); t++)
             {
                 //for (int rt = 0; rt < task.data_from_tech[t].ResultItems.Count(); rt++)
                 //{

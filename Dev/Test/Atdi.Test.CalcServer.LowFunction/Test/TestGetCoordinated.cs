@@ -35,8 +35,24 @@ namespace Atdi.Test.CalcServer.LowFunction
             {
                 try
                 {
+                    int[] index_start_stop = new int[12];
+
+                    index_start_stop[0] = 33500;
+                    index_start_stop[1] = 45000;
+                    index_start_stop[2] = 48500;
+                    index_start_stop[3] = 62000;
+                    index_start_stop[4] = 104000;
+                    index_start_stop[5] = 117000;
+                    index_start_stop[6] = 119500;
+                    index_start_stop[7] = 135500;
+                    index_start_stop[8] = 189000;
+                    index_start_stop[9] = 201000;
+                    index_start_stop[10] = 203500;
+                    index_start_stop[11] = 219500;
+                    ValueProsessing valueProsessing = ValueProsessing.Average;
+
                     host.Start();
-                    string fileName = System.IO.Path.Combine(Environment.CurrentDirectory, "Save545.2MHz.dat");
+                    string fileName = System.IO.Path.Combine(Environment.CurrentDirectory, "Save545.6MHz.dat");
                     List<Coordinated> pointEarthGeometricslst = new List<Coordinated>();
                     var str = System.IO.File.ReadAllText(fileName);
                     string[] a = str.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
@@ -57,23 +73,46 @@ namespace Atdi.Test.CalcServer.LowFunction
                             }
                         }
                     }
-                    // начало оботки данных
-                    pointEarthGeometricslst = convertmkVtodBm(ref pointEarthGeometricslst);
-                    var track = Filter(pointEarthGeometricslst, ValueProsessing.Max, -100);
-                    // данные подчищены
-
-                    var arrPnts = track.ToArray();
+                    List<Coordinated> tracks = new List<Coordinated>();
+                    List<int> extrs = new List<int>();
+                    TestForm testForm = new TestForm();
+                    for (int k = 0; index_start_stop.Length > k; k = k + 2)
+                    {
+                        var index_start = index_start_stop[k];
+                        var index_stop = index_start_stop[k + 1];
+                        // начало оботки данных
+                        var pointEarthGeometricslst1 = convertmkVtodBm(ref pointEarthGeometricslst, index_start, index_stop);
+                        var track = Filter(pointEarthGeometricslst1, valueProsessing, -100);
+                        tracks.AddRange(track);
+                        var extr = FoundMaxExtrim(track);
+                        extrs.AddRange(extr);
+                        // данные подчищены
+                        double[] a1 = new double[track.Count * 2];
+                        for (int i = 0; track.Count > i; i++)
+                        {
+                            //testForm.Arr1[2 * i] = arrPnts[i].Lon_DEC;
+                            a1[2 * i] = track[i].Lat_DEC;
+                            a1[2 * i + 1] = track[i].Level_dBm;
+                        }
+                        testForm.Arr1.Add(a1);
+                    }
+                    var arrPnts = tracks.ToArray();
                     WPF.Location[] inputCoords = new WPF.Location[arrPnts.Length];
-                    WPF.Location[] inputCoords1 = new WPF.Location[1];
-                    inputCoords1[0] = new WPF.Location(arrPnts[0].Lon_DEC, arrPnts[0].Lat_DEC, "Test");
                     for (int u = 0; u < arrPnts.Length; u++)
                     {
-                        inputCoords[u] = new WPF.Location(arrPnts[u].Lon_DEC, arrPnts[u].Lat_DEC);
+                            inputCoords[u] = new WPF.Location(arrPnts[u].Lon_DEC, arrPnts[u].Lat_DEC);
+                    }
+                    int point_start = 0;
+                    int point_end = Math.Min(extrs.Count, extrs.Count);
+                    WPF.Location[] inputCoords1 = new WPF.Location[point_end - point_start];
+                    for (int i = 0; inputCoords1.Length > i; i++)
+                    {
+                        string value = arrPnts[extrs[point_start + i]].Level_dBm.ToString();
+                        inputCoords1[i] = new WPF.Location(arrPnts[extrs[point_start + i]].Lon_DEC, arrPnts[extrs[point_start + i]].Lat_DEC, value);
                     }
                     WPF.RunApp.Start(WPF.TypeObject.Points, inputCoords, WPF.TypeObject.Points, inputCoords1);
 
 
-                    TestForm testForm = new TestForm();
                     testForm.ShowDialog();
 
                 }
@@ -134,7 +173,7 @@ namespace Atdi.Test.CalcServer.LowFunction
                 if (arr[i] >= Noice) { Av = Av + arr[i]; count++; }
             }
             Av = Av / count;
-            if (Max - Min > 10)
+            if (Max - Min > 20)
             {
 
             }
@@ -146,10 +185,11 @@ namespace Atdi.Test.CalcServer.LowFunction
             Average,
             Max,
         }
-        public static List<Coordinated> convertmkVtodBm(ref List<Coordinated> arr)
+        public static List<Coordinated> convertmkVtodBm(ref List<Coordinated> arr, int start_index, int stop_index)
         {
             List<Coordinated> outArr = new List<Coordinated>();
-            for (int i = 0; arr.Count > i; i++)
+            if (stop_index > arr.Count) { stop_index = arr.Count; }
+            for (int i = start_index; stop_index > i; i++)
             {
                 var coord = arr[i];
                 coord.Level_dBm = coord.Level_dBm - 106.9;
@@ -157,11 +197,55 @@ namespace Atdi.Test.CalcServer.LowFunction
             }
             return outArr;
         }
-        public static List<int> FoundExtrim(List<Coordinated> Points)
-        {  
-        return null;
+        public static List<int> FoundMaxExtrim(List<Coordinated> Points, int number_points = 1)
+        {
+            bool goToMax = true;
+            List<int> extr = new List<int>();
+            double CurMin= Points[0].Level_dBm; double CurMax=Points[0].Level_dBm;
+            int indexCurMax =0; int indexCurMin = 0;
+            int countAfterMax=0; int countAfterMin=0;
+            for (int i = 0; Points.Count > i; i++)
+            {
+                if (goToMax)
+                {// движение вверх 
+                    if (CurMax <= Points[i].Level_dBm)
+                    { CurMax = Points[i].Level_dBm;
+                        indexCurMax = i;
+                        countAfterMax = 0; }
+                    else
+                    {
+                        countAfterMax++;
+                        if (countAfterMax > number_points)
+                        {
+                            goToMax = false;
+                            extr.Add(indexCurMax);
+                            CurMin = CurMax;
+                            i = indexCurMax;
+                        }
+                    }
+                }
+                else
+                { // движение вниз
+                    if (CurMin >= Points[i].Level_dBm)
+                    {
+                        CurMin = Points[i].Level_dBm;
+                        indexCurMin = i;
+                        countAfterMin = 0;
+                    }
+                    else
+                    {
+                        countAfterMin++;
+                        if (countAfterMin > number_points)
+                        {
+                            goToMax = true;
+                            extr.Add(indexCurMin);
+                            CurMax = CurMin;
+                            i = indexCurMin;
+                        }
+                    }
+                }
+            }
+            return extr;
         }
-
-
     }
 }

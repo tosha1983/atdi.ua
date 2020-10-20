@@ -21,8 +21,7 @@ using Atdi.DataModels.Sdrn.DeepServices.Gis;
 using Atdi.Contracts.Sdrn.DeepServices.Gis;
 using Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.Properties;
 using MG = Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.ManagementTasksCalibration;
-
-
+using Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibrationManager.Queries;
 
 namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibrationManager
 {
@@ -37,6 +36,7 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
         private DateTime? _dateStopLoadDriveTest;
 
         private long _taskId;
+        private FormMode _mode = FormMode.None;
 
         private readonly ViewStarter _viewStarter;
         private MP.MapDrawingData _currentMapData;
@@ -176,7 +176,11 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
             get => this._isVisibleFieldStandard;
             set => this.Set(ref this._isVisibleFieldStandard, value);
         }
-
+        public FormMode Mode
+        {
+            get => this._mode;
+            set => this.Set(ref this._mode, value);
+        }
         public long TaskId
         {
             get => this._taskId;
@@ -714,6 +718,13 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                 this.DateStartLoadDriveTest = DateTime.Now.AddDays(-30);
                 this.DateStopLoadDriveTest = DateTime.Now;
                 this.AreasDataAdapter.Refresh();
+
+                if (this.AreasDataAdapter.Count() > 0)
+                {
+                //    this._currentAreas = this.AreasDataAdapter.Source[0];
+                }
+
+                //AreaModel area in this._currentAreas
             }
             catch (Exception e)
             {
@@ -1064,7 +1075,16 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
         }
         private void SaveStationCalibrationAction(bool isStart = false)
         {
-            //bool isSuccess = false;
+            if (this._mode == FormMode.Edit)
+            {
+                var taskStatus = _objectReader.Read<byte>().By(new GetCalcTaskStatusById { TaskId = this._taskId });
+                if (taskStatus == 0)
+                {
+                    _viewStarter.ShowException("Warning!", new Exception($"The process of saving stations already running!"));
+                    return;
+                }
+            }
+
             if (ValidateTaskParameters())
             {
                 var listStationMonitoringModel = new List<long>();
@@ -1092,38 +1112,45 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
                     listStationMonitoringModel.Add(x.Id);
                 }
 
-                Task.Run(() =>
+                bool isSuccess = false;
+                if (isStart)
                 {
-                    var isSuccess = OnLoadStationsHandle(listStationMonitoringModel);
-                    if (isStart && isSuccess)
+                    Task.Run(() =>
                     {
-                        var modifier = new MG.Modifiers.RunCalcTask { Id = TaskId };
-                        _commandDispatcher.Send(modifier);
+                        isSuccess = OnLoadStationsHandle(listStationMonitoringModel);
+                        if (isSuccess)
+                        {
+                            var modifier = new MG.Modifiers.RunCalcTask { Id = TaskId };
+                            _commandDispatcher.Send(modifier);
+                        }
+                    });
+                    _viewStarter.Stop(this);
+                }
+                else
+                {
+                    _viewStarter.StartLongProcess(
+                        new LongProcessOptions()
+                        {
+                            CanStop = false,
+                            CanAbort = false,
+                            UseProgressBar = true,
+                            UseLog = false,
+                            IsModal = true,
+                            MinValue = 0,
+                            MaxValue = 1000,
+                            ValueKind = LongProcessValueKind.Infinity,
+                            Title = "Saving stations ...",
+                            Note = "Selection and saving of stations in the calculation server in accordance with the specified parameters."
+                        },
+                        token =>
+                        {
+                            isSuccess = OnLoadStationsHandle(listStationMonitoringModel);
+                        });
+                    if (isSuccess)
+                    {
+                        _viewStarter.Stop(this);
                     }
-                });
-
-                //_viewStarter.StartLongProcess(
-                //    new LongProcessOptions()
-                //    {
-                //        CanStop = false,
-                //        CanAbort = false,
-                //        UseProgressBar = true,
-                //        UseLog = false,
-                //        IsModal = true,
-                //        MinValue = 0,
-                //        MaxValue = 1000,
-                //        ValueKind = LongProcessValueKind.Infinity,
-                //        Title = "Saving stations ...",
-                //        Note = "Selection and saving of stations in the calculation server in accordance with the specified parameters."
-                //    },
-                //    token =>
-                //    {
-                //        isSuccess = OnLoadStationsHandle(listStationMonitoringModel);
-                //    });
-                //if (isSuccess)
-                //{
-                _viewStarter.Stop(this);
-                //}
+                }
             }
         }
         private void OnEditParamsCalculationsHandle(Events.OnEditParamsCalculation data)
@@ -1204,5 +1231,11 @@ namespace Atdi.Icsm.Plugins.SdrnStationCalibrationCalc.ViewModels.StationCalibra
         RecalcLatitude,
         RecalcLongitude,
     }
-
+    public enum FormMode
+    {
+        None,
+        Add,
+        Edit,
+        Delete
+    }
 }

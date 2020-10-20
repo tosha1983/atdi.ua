@@ -164,7 +164,7 @@ namespace ControlU.DB
                     },
                     Equipment = new DM.SensorEquipment
                     {
-                        TechId = ControlU.MainWindow.db_v2.ATDIConnectionData_Selsected.sensor_equipment_tech_id
+                        TechId = App.Sett.ATDIConnection_Settings.Selected.SDRNDeviceSensorTechId
                     },
                     Name = NameSensor
 
@@ -386,44 +386,57 @@ namespace ControlU.DB
         {
             var config = gateFactory.CreateConfig();
 
-
-
+            string rootPath = System.IO.Path.GetPathRoot(Environment.CurrentDirectory);
             config["License.FileName"] = "license.lic";
-            config["License.OwnerId"] = "OID-BD12-A00-N00";
-            config["License.ProductKey"] = "0VE1-OCOL-S4S0-C1D1-SEXB";
+            config["License.OwnerId"] = App.Sett.ATDIConnection_Settings.Selected.LicenseOwnerId;// "OID-BD12-A00-N00";//  OwnerId лицензии
+            config["License.ProductKey"] = App.Sett.ATDIConnection_Settings.Selected.LicenseProductKey;// "0ZB0-DVZR-ATI1-WIHB-NC1B";// ProductKey лицензии
 
-            config["RabbitMQ.Host"] = "109.237.91.29";
-            config["RabbitMQ.VirtualHost"] = "177-A-SBD12-A00-1589.DevicesBus";
-            config["RabbitMQ.User"] = "SDR_Client";
-            config["RabbitMQ.Password"] = "32Xr567";
+            config["RabbitMQ.Host"] = App.Sett.ATDIConnection_Settings.Selected.RabbitMQHost;// "109.237.91.29";
+            config["RabbitMQ.VirtualHost"] = App.Sett.ATDIConnection_Settings.Selected.RabbitMQVirtualHost;// "177-A-SBD12-A00-1589.DevicesBus";
+            config["RabbitMQ.User"] = App.Sett.ATDIConnection_Settings.Selected.RabbitMQUser;//"SDR_Client"; 
+            config["RabbitMQ.Password"] = App.Sett.ATDIConnection_Settings.Selected.RabbitMQPassword;//"32Xr567";
+            config["RabbitMQ.Port"] = App.Sett.ATDIConnection_Settings.Selected.RabbitMQPort;//"5674"; 
 
-            config["SDRN.ApiVersion"] = "2.0";
-            config["SDRN.ServerInstance"] = "SDRNSV-SBD12-A00-1589";
-            config["SDRN.MessagesExchange"] = "EX.SDRN.Device";
-            config["SDRN.ServerQueueNamePart"] = "Q.SDRN.Server";
-            config["SDRN.DeviceQueueNamePart"] = "Q.SDRN.Device";
-            config["SDRN.MessagesBindings"] = "{messageType=RegisterSensor, routingKey=#01};{messageType=SendCommandResult, routingKey=#02};{messageType=SendMeasResults, routingKey=#03};{messageType=SendEntity, routingKey=#04};{messageType=SendEntityPart, routingKey=#05};{messageType=UpdateSensor, routingKey=#06}";
-            config["SDRN.MessageConvertor.UseEncryption"] = "false";
-            config["SDRN.MessageConvertor.UseСompression"] = "false";
-            config["RabbitMQ.Port"] = "5674";
-            config["Messages.OutboxFolder"] = "c:\\ATDI\\APIServices\\OutBox";
-            config["Messages.InboxFolder"] = "c:\\ATDI\\APIServices\\InBox";
+            config["SDRN.ApiVersion"] = App.Sett.ATDIConnection_Settings.Selected.SDRNApiVersion;//"2.0"; // версия АПИ - не менять
+            config["SDRN.Server.Instance"] = App.Sett.ATDIConnection_Settings.Selected.SDRNServerInstance;//"SDRNSV-SBD12-A00-1589"; 
+            config["SDRN.Server.QueueNamePart"] = App.Sett.ATDIConnection_Settings.Selected.SDRNServerQueueNamePart;//"Q.SDRN.Server";
+            config["SDRN.Device.SensorTechId"] = App.Sett.ATDIConnection_Settings.Selected.SDRNDeviceSensorTechId;//"MMS-09";
+            config["SDRN.Device.Exchange"] = App.Sett.ATDIConnection_Settings.Selected.SDRNDeviceExchange;//"EX.SDRN.Device";
+            config["SDRN.Device.QueueNamePart"] = App.Sett.ATDIConnection_Settings.Selected.SDRNDeviceQueueNamePart;//"Q.SDRN.Device";
+            config["SDRN.Device.MessagesBindings"] = App.Sett.ATDIConnection_Settings.Selected.SDRNDeviceMessagesBindings;//"{messageType=RegisterSensor, routingKey=#01};{messageType=SendCommandResult, routingKey=#02};{messageType=SendMeasResults, routingKey=#03};{messageType=SendEntity, routingKey=#04};{messageType=SendEntityPart, routingKey=#05};{messageType=UpdateSensor, routingKey=#06}";
+            config["SDRN.MessageConvertor.UseEncryption"] = App.Sett.ATDIConnection_Settings.Selected.SDRNMessageConvertorUseEncryption;//"false";
+            config["SDRN.MessageConvertor.UseCompression"] = App.Sett.ATDIConnection_Settings.Selected.SDRNMessageConvertorUseCompression;//"false";
 
-            config["SDRN.Server.Instance"] = "SDRNSV-SBD12-A00-1589";
-            config["SDRN.Device.SensorTechId"] = "MMS-02";
-            config["SDRN.Device.Exchange"] = "EX.SDRN.Device";
-            config["SDRN.Server.QueueNamePart"] = "Q.SDRN.Server";
-            config["SDRN.Device.QueueNamePart"] = "Q.SDRN.Device";
-            config["SDRN.Device.MessagesBindings"] = "{messageType=RegisterSensor, routingKey=#01};{messageType=SendCommandResult, routingKey=#02};{messageType=SendMeasResults, routingKey=#03};{messageType=SendEntity, routingKey=#04};{messageType=SendEntityPart, routingKey=#05};{messageType=UpdateSensor, routingKey=#06}";
-            config["DeviceBus.ContentType"] = "Json";
-            config["DeviceBus.SharedSecretKey"] = "sbfsbfufbsb";
-            config["DeviceBus.Outbox.UseBuffer"] = "FileSystem";
-            config["DeviceBus.Inbox.UseBuffer"] = "FileSystem";
-            config["DeviceBus.Outbox.Buffer.Folder"] = "c:\\ATDI\\APIServices\\OutBox";
-            config["DeviceBus.Inbox.Buffer.Folder"] = "c:\\ATDI\\APIServices\\InBox";
-            config["SDRN.MessageConvertor.UseCompression"] = "false";
-            config["DeviceBus.Outbox.Buffer.ContentType"] = "Binary";
-            config["DeviceBus.Inbox.Buffer.ContentType"] = "Binary";
+            config["DeviceBus.SharedSecretKey"] = App.Sett.ATDIConnection_Settings.Selected.DeviceBusSharedSecretKey;//"sbfsbfufbsb";
+            config["DeviceBus.Client"] = App.Sett.ATDIConnection_Settings.Selected.DeviceBusClient;//"Test Client 1";
+
+
+
+            config["DeviceBus.ContentType"] = App.Sett.ATDIConnection_Settings.Selected.DeviceBusContentType;//"Json";
+            config["DeviceBus.Outbox.UseBuffer"] = App.Sett.ATDIConnection_Settings.Selected.DeviceBusOutboxUseBuffer;//"FileSystem";
+            config["DeviceBus.Inbox.UseBuffer"] = App.Sett.ATDIConnection_Settings.Selected.DeviceBusInboxUseBuffer;//"FileSystem";           
+            if (!System.IO.Directory.Exists(App.Sett.ATDIConnection_Settings.Selected.DeviceBusOutboxBufferFolder))
+            {
+                System.IO.Directory.CreateDirectory(App.Sett.ATDIConnection_Settings.Selected.DeviceBusOutboxBufferFolder);
+            }
+            config["DeviceBus.Outbox.Buffer.Folder"] = App.Sett.ATDIConnection_Settings.Selected.DeviceBusOutboxBufferFolder;//"c:\\ATDI\\APIServices\\OutBox";
+            if (!System.IO.Directory.Exists(App.Sett.ATDIConnection_Settings.Selected.DeviceBusInboxBufferFolder))
+            {
+                System.IO.Directory.CreateDirectory(App.Sett.ATDIConnection_Settings.Selected.DeviceBusInboxBufferFolder);
+            }
+            config["DeviceBus.Inbox.Buffer.Folder"] = App.Sett.ATDIConnection_Settings.Selected.DeviceBusInboxBufferFolder;//"c:\\ATDI\\APIServices\\InBox";
+            config["DeviceBus.Outbox.Buffer.ContentType"] = App.Sett.ATDIConnection_Settings.Selected.DeviceBusOutboxBufferContentType;//"Binary";
+            config["DeviceBus.Inbox.Buffer.ContentType"] = App.Sett.ATDIConnection_Settings.Selected.DeviceBusInboxBufferContentType;//"Binary";
+
+            //string rootpath = System.IO.Path.GetPathRoot(Environment.CurrentDirectory);
+            //if (!System.IO.Directory.Exists(rootpath + "ATDI\\APIServices\\OutBox"))
+            //{
+            //    System.IO.Directory.CreateDirectory(rootpath + "ATDI\\APIServices\\OutBox");
+            //}
+            //if (!System.IO.Directory.Exists(rootpath + "ATDI\\APIServices\\InBox"))
+            //{
+            //    System.IO.Directory.CreateDirectory(rootpath + "ATDI\\APIServices\\InBox");
+            //}
 
 
             ////config["License.FileName"] = "license.lic"; //"LIC-DBD12-A00-187.SENSOR-DBD12-A00-1280.lic";  // наименование файла лицензии

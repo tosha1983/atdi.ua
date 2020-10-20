@@ -114,11 +114,13 @@
       <HintPath>..\packages\Microsoft.Diagnostics.Tracing.EventSource.Redist.1.1.28\lib\net40\Microsoft.Diagnostics.Tracing.EventSource.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="NationalInstruments.Common, Version=13.0.40.190, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
-      <Private>True</Private>
+    <Reference Include="NationalInstruments.Common, Version=19.0.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\NationalInstruments.Common.dll</HintPath>
     </Reference>
     <Reference Include="NationalInstruments.VisaNS, Version=13.0.45.167, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
-      <Private>True</Private>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\NationalInstruments.VisaNS.dll</HintPath>
     </Reference>
     <Reference Include="NAudio, Version=1.9.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\NAudio.1.9.0\lib\net35\NAudio.dll</HintPath>
@@ -138,11 +140,11 @@
     </Reference>
     <Reference Include="RohdeSchwarz.Tools.Net, Version=1.0.0.0, Culture=neutral, PublicKeyToken=a4e32815b8e4d134, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Delivery\Atdi.Sdrn\Device\ControlU\BinDebug\RohdeSchwarz.Tools.Net.dll</HintPath>
+      <HintPath>.\RohdeSchwarz.Tools.Net.dll</HintPath>
     </Reference>
     <Reference Include="RohdeSchwarz.ViCom.Net, Version=1.0.0.0, Culture=neutral, PublicKeyToken=a4e32815b8e4d134, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Delivery\Atdi.Sdrn\Device\ControlU\BinDebug\RohdeSchwarz.ViCom.Net.dll</HintPath>
+      <HintPath>.\RohdeSchwarz.ViCom.Net.dll</HintPath>
     </Reference>
     <Reference Include="SharpGL, Version=2.4.0.0, Culture=neutral, PublicKeyToken=27fc851303210b27, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -207,9 +209,9 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
-    <Reference Include="UserLowLevelErrorMessageHandler, Version=1.0.6516.18215, Culture=neutral, PublicKeyToken=a4e32815b8e4d134, processorArchitecture=x86">
+    <Reference Include="UserLowLevelErrorMessageHandler, Version=1.0.7340.30112, Culture=neutral, PublicKeyToken=a4e32815b8e4d134, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\RuS\RS-ViCom-16.20.0.474\src\SampleApplications\SampleForVicom.Net\UserLowLevelErrorMessageHandler.dll</HintPath>
+      <HintPath>.\UserLowLevelErrorMessageHandler.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
