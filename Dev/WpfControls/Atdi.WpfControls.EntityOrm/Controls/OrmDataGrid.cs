@@ -20,6 +20,7 @@ namespace Atdi.WpfControls.EntityOrm.Controls
         public OrmDataGrid()
         {
             this.SelectionChanged += OrmDataGrid_SelectionChanged;
+            this.Loaded += OrmDataGrid_Loaded;
 
             this.VerticalGridLinesBrush = new SolidColorBrush(Colors.LightGray);  //"DarkGray" 
             this.HorizontalGridLinesBrush = new SolidColorBrush(Colors.LightGray);
@@ -27,6 +28,11 @@ namespace Atdi.WpfControls.EntityOrm.Controls
             this.FontSize = 12;
             this.HeadersVisibility = DataGridHeadersVisibility.Column;
 
+        }
+
+        void OrmDataGrid_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.SelectedIndex = -1;
         }
         void OrmDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
