@@ -152,10 +152,12 @@
     <Content Include="CalcCoverage\Handlers\XML\CalcCovConfig.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="WebQueryTranslate.txt">
+    <Content Include="CalcCoverage\Localization\CST\WebQueryTranslate.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="CalcCoverage\Localization\ENG\WebQueryTranslate.txt" />
     <Content Include="GdalConfiguration.vb" />
+    <Content Include="WebQueryTranslate.txt" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
