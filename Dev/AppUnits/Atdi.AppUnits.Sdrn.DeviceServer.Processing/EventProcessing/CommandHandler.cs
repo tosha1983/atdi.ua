@@ -38,8 +38,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
             ITaskContext<Task, Process> findTask = null;
             if (contextTasks != null)
             {
-                var cnt = contextTasks.Count;
-                for (int i = 0; i < cnt; i++)
+                for (int i = 0; i < contextTasks.Count; i++)
                 {
                     var val = contextTasks.ElementAt(i);
                     if (val != null)
@@ -68,8 +67,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
             ITaskContext<Task, Process> findTask = null;
             if (contextTasks != null)
             {
-                var cnt = contextTasks.Count;
-                for (int i = 0; i < cnt; i++)
+                for (int i = 0; i < contextTasks.Count; i++)
                 {
                     var val = contextTasks.ElementAt(i);
                     if (val != null)
@@ -97,8 +95,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
             bool isFindTask = false;
             if (listDeferredTasks != null)
             {
-                var cnt = listDeferredTasks.Count;
-                for (int i = 0; i < cnt; i++)
+                for (int i = 0; i < listDeferredTasks.Count; i++)
                 {
                     var val = listDeferredTasks.ElementAt(i);
                     if (val != null)
@@ -288,7 +285,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                 }
                 else if (tskParam.status == StatusTask.Z.ToString())
                 {
-                    var cnt = listDeferredTasks.Count;
                     findTask = FindTask(contextTasks, tskParam, ref isSuccess);
                     if (findTask != null)
                     {
@@ -297,8 +293,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                         listRunTask.Remove(tskParam.SDRTaskId);
                         contextTasks = contextTasks.Remove(findTask);
                     }
-                    cnt = listDeferredTasks.Count;
-                    for (int i = 0; i < cnt; i++)
+                    for (int i = 0; i < listDeferredTasks.Count; i++)
                     {
                         var valDeferredTask = listDeferredTasks.ElementAt(i);
                         if (valDeferredTask != null)
